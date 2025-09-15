@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 AI - Driven Video Editing - Script - Cue - Driven Dynamic Effects in Blender
 
 This module provides intelligent video editing capabilities that parse script cues
@@ -26,7 +26,7 @@ Supported Script Cues:
 
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -140,7 +140,7 @@ class ScriptCue:
 
     # Effect parameters
     intensity: EffectIntensity = EffectIntensity.MODERATE
-    custom_parameters: Dict[str, Any] = field(default_factory = dict)
+    custom_parameters: Dict[str, Any] = field(default_factory = dict):
 
     # Metadata
     line_number: int = 0
@@ -163,7 +163,7 @@ class VisualEffect:
 
     # Effect parameters
     intensity: EffectIntensity
-    parameters: Dict[str, Any] = field(default_factory = dict)
+    parameters: Dict[str, Any] = field(default_factory = dict):
 
     # Blender - specific
     blender_nodes: List[Dict[str, Any]] = field(default_factory = list)
@@ -195,14 +195,16 @@ class BlenderScene:
     resolution_y: int = 1080
 
     # Camera settings
-    camera_location: Tuple[float, float, float] = (0.0, -10.0, 0.0)
+    camera_location: Tuple[float, float, float] = (0.0, -10.0, 0.0):
     camera_rotation: Tuple[float, float, float] = (90.0, 0.0, 0.0)
     camera_lens: float = 50.0
 
     # Lighting setup
     lighting_setup: str = (
         "three_point"  # "three_point", "natural", "dramatic", "custom"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # Render settings
     render_engine: str = "CYCLES"  # "CYCLES", "EEVEE"
@@ -232,8 +234,12 @@ class EditingProject:
     # Scene configuration
     blender_scene: BlenderScene = field(
         default_factory = lambda: BlenderScene(scene_name="AI_Edit_Scene",
-    video_path="")
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     video_path="")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # Processing options
     auto_detect_cues: bool = True
@@ -268,7 +274,7 @@ class EditingJob:
     current_effect: Optional[str] = None
 
     # Timing
-    created_at: datetime = field(default_factory = datetime.now)
+    created_at: datetime = field(default_factory = datetime.now):
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     processing_time: float = 0.0
@@ -302,46 +308,61 @@ class ScriptParser:
                     r"\\[TENSION\\]",
                     r"\\[DRAMATIC[_\\s]PAUSE\\]",
                     r"\\[SUSPENSEFUL\\]",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 ScriptCueType.ACTION_SEQUENCE: [
                 r"\\[ACTION[_\\s]SEQUENCE\\]",
                     r"\\[ACTION\\]",
                     r"\\[FIGHT[_\\s]SCENE\\]",
                     r"\\[CHASE\\]",
                     r"\\[EXPLOSION\\]",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 ScriptCueType.EMOTIONAL_BEAT: [
                 r"\\[EMOTIONAL[_\\s]BEAT\\]",
                     r"\\[EMOTIONAL\\]",
                     r"\\[HEARTFELT\\]",
                     r"\\[TOUCHING\\]",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 ScriptCueType.REVEAL: [
                 r"\\[REVEAL\\]",
                     r"\\[BIG[_\\s]REVEAL\\]",
                     r"\\[PLOT[_\\s]TWIST\\]",
                     r"\\[SURPRISE\\]",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 ScriptCueType.CLIMAX: [
                 r"\\[CLIMAX\\]",
                     r"\\[FINALE\\]",
                     r"\\[PEAK[_\\s]MOMENT\\]",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 ScriptCueType.TRANSITION: [
                 r"\\[TRANSITION\\]",
                     r"\\[SCENE[_\\s]CHANGE\\]",
                     r"\\[CUT[_\\s]TO\\]",
                     r"\\[FADE[_\\s]IN\\]",
                     r"\\[FADE[_\\s]OUT\\]",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 ScriptCueType.FLASHBACK: [r"\\[FLASHBACK\\]", r"\\[MEMORY\\]", r"\\[PAST\\]"],
                 ScriptCueType.DREAM_SEQUENCE: [
                 r"\\[DREAM[_\\s]SEQUENCE\\]",
                     r"\\[DREAM\\]",
                     r"\\[SURREAL\\]",
                     r"\\[FANTASY\\]",
-                    ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
 
         logger.info("Script parser initialized with default cue patterns")
 
@@ -403,13 +424,18 @@ class ScriptParser:
                                 metadata={
                                     "pattern_matched": pattern,
                                         "line_content": line,
-                                        },
-                                    )
+# BRACKET_SURGEON: disabled
+#                                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                             cues.append(cue)
                             logger.info(
                                 f"Found cue: {cue_type.value} at {start_time:.2f}s"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             # Sort cues by start time
             cues.sort(key = lambda c: c.start_time)
@@ -441,7 +467,8 @@ class ScriptParser:
                 ScriptCueType.TRANSITION: 1.0,
                 ScriptCueType.FLASHBACK: 3.0,
                 ScriptCueType.DREAM_SEQUENCE: 4.0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return duration_map.get(cue_type, 2.0)
 
 
@@ -497,66 +524,81 @@ class EffectGenerator:
                     "strength": 0.1,
                         "frequency": 8.0,
                         "duration_multiplier": 1.0,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "color_grading": {
                     "contrast": 1.2,
                         "saturation": 0.8,
                         "shadows": -0.1,
                         "highlights": 0.1,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "lighting": {
                     "intensity_multiplier": 0.7,
                         "color_temperature": 3200,  # Warmer, more dramatic
-                },
-                    },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#                     },
                 ScriptCueType.ACTION_SEQUENCE: {
                 "motion_blur": {"strength": 0.8, "samples": 16},
                     "camera_shake": {"strength": 0.3, "frequency": 12.0},
                     "color_grading": {"contrast": 1.4, "saturation": 1.2, "vibrance": 0.3},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 ScriptCueType.EMOTIONAL_BEAT: {
                 "depth_of_field": {"f_stop": 1.4, "focus_distance": 2.0},
                     "color_grading": {"warmth": 0.2, "saturation": 1.1, "highlights": 0.2},
                     "lighting": {"softness": 0.8, "intensity_multiplier": 1.1},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 ScriptCueType.REVEAL: {
                 "camera_zoom": {
                     "start_focal_length": 85.0,
                         "end_focal_length": 35.0,
                         "duration": 2.0,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "lighting_change": {
                     "intensity_change": 0.5,
                         "color_temperature_change": 1000,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "particle_effects": {"type": "sparkles", "count": 100, "lifetime": 2.0},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 ScriptCueType.CLIMAX: {
                 "camera_shake": {"strength": 0.4, "frequency": 15.0},
                     "color_grading": {"contrast": 1.6, "saturation": 1.3, "vibrance": 0.4},
                     "lens_flare": {"intensity": 0.7, "size": 2.0},
                     "particle_effects": {"type": "energy", "count": 200, "intensity": 1.5},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 ScriptCueType.FLASHBACK: {
                 "color_grading": {"saturation": 0.3, "contrast": 0.8, "sepia": 0.4},
                     "vignette": {"strength": 0.6, "feather": 0.8},
                     "time_effects": {"speed_multiplier": 0.8, "frame_blending": True},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 ScriptCueType.DREAM_SEQUENCE: {
                 "depth_of_field": {"f_stop": 0.8, "focus_distance": 1.5},
                     "color_grading": {
                     "saturation": 1.4,
                         "highlights": 0.3,
                         "ethereal_glow": 0.2,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "particle_effects": {
                     "type": "floating_particles",
                         "count": 50,
                         "float_speed": 0.1,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "atmospheric": {"fog_density": 0.3, "light_scattering": 0.4},
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def generate_effects(
@@ -572,7 +614,9 @@ class EffectGenerator:
 
                 logger.info(
                     f"Generated {len(cue_effects)} effects for cue: {cue.cue_type.value}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Sort effects by start time
             effects.sort(key = lambda e: e.start_time)
@@ -600,7 +644,9 @@ class EffectGenerator:
                 # Adjust parameters based on intensity
                 adjusted_params = self._adjust_effect_intensity(
                     effect_params.copy(), cue.intensity, intensity_multiplier
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 effect = VisualEffect(
                     effect_id = f"{cue.cue_type.value}_{effect_name}_{int(cue.start_time)}",
@@ -614,8 +660,11 @@ class EffectGenerator:
                         metadata={
                         "cue_type": cue.cue_type.value,
                             "original_template": effect_name,
-                            },
-                        )
+# BRACKET_SURGEON: disabled
+#                             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Generate Blender - specific data
                 effect.blender_nodes = self._generate_blender_nodes(effect)
@@ -644,7 +693,8 @@ class EffectGenerator:
                 "atmospheric": EffectType.ATMOSPHERIC,
                 "camera_zoom": EffectType.CAMERA_SHAKE,  # Camera movement
             "lighting_change": EffectType.LIGHTING_CHANGE,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return mapping.get(effect_name, EffectType.CUSTOM)
 
 
@@ -657,7 +707,8 @@ class EffectGenerator:
                 EffectIntensity.MODERATE: 1.0,
                 EffectIntensity.STRONG: 1.5,
                 EffectIntensity.EXTREME: 2.0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         factor = intensity_factors.get(intensity, 1.0) * multiplier
 
@@ -670,9 +721,12 @@ class EffectGenerator:
                         "contrast",
                         "saturation",
                         "vibrance",
-                        ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]:
                     params[key] = value * factor
                         elif key in ["frequency", "count"]:
+                            pass
                     params[key] = max(1, int(value * factor))
 
         return params
@@ -691,8 +745,11 @@ class EffectGenerator:
                             "lift": effect.parameters.get("shadows", 0),
                             "gamma": effect.parameters.get("midtones", 1),
                             "gain": effect.parameters.get("highlights", 1),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 nodes.append(
                     {
@@ -700,8 +757,11 @@ class EffectGenerator:
                             "name": f"HueSat_{effect.effect_id}",
                             "color_saturation": effect.parameters.get("saturation", 1),
                             "color_value": effect.parameters.get("brightness", 1),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             elif effect.effect_type == EffectType.MOTION_BLUR:
                 nodes.append(
@@ -710,8 +770,11 @@ class EffectGenerator:
                             "name": f"MotionBlur_{effect.effect_id}",
                             "factor": effect.parameters.get("strength", 0.5),
                             "samples": effect.parameters.get("samples", 16),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             elif effect.effect_type == EffectType.LENS_FLARE:
                 nodes.append(
@@ -720,8 +783,11 @@ class EffectGenerator:
                             "name": f"LensFlare_{effect.effect_id}",
                             "distortion": effect.parameters.get("intensity", 0.1),
                             "dispersion": effect.parameters.get("dispersion", 0.05),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             logger.error(f"Blender node generation failed: {e}")
@@ -747,11 +813,15 @@ class EffectGenerator:
                     shake_x = (
                         math.sin(time_offset * shake_frequency * 2 * math.pi)
                         * shake_strength
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     shake_y = (
                         math.cos(time_offset * shake_frequency * 2 * math.pi * 1.3)
                         * shake_strength
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     keyframes.append(
                         {
@@ -759,8 +829,11 @@ class EffectGenerator:
                                 "property": "location",
                                 "value": [shake_x, shake_y, 0],
                                 "interpolation": "LINEAR",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             elif effect.effect_type == EffectType.LIGHTING_CHANGE:
                 # Generate lighting animation keyframes
@@ -773,21 +846,28 @@ class EffectGenerator:
                                 "property": "energy",
                                 "value": 1.0,
                                 "interpolation": "BEZIER",
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "frame": start_frame + (end_frame - start_frame)//2,
                                 "property": "energy",
                                 "value": 1.0 + intensity_change,
                                 "interpolation": "BEZIER",
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "frame": end_frame,
                                 "property": "energy",
                                 "value": 1.0,
                                 "interpolation": "BEZIER",
-                                },
-                            ]
-                )
+# BRACKET_SURGEON: disabled
+#                                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             logger.error(f"Keyframe generation failed: {e}")
@@ -819,7 +899,9 @@ class BlenderInterface:
             "/usr/bin/blender",  # Linux
             "C:\\\\Program Files\\\\Blender Foundation\\\\Blender\\\\blender.exe",  # Windows
             "blender",  # PATH
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for path in possible_paths:
             if os.path.exists(path) or shutil.which(path):
@@ -836,7 +918,9 @@ class BlenderInterface:
                     capture_output = True,
                     text = True,
                     timeout = 10,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             return result.returncode == 0 and "Blender" in result.stdout
         except Exception as e:
             logger.error(f"Blender validation failed: {e}")
@@ -845,7 +929,8 @@ class BlenderInterface:
 
     def generate_blender_script(
         self, scene: BlenderScene, effects: List[VisualEffect]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate Python script for Blender automation."""
         script_lines = [
             "import bpy",
@@ -854,11 +939,11 @@ class BlenderInterface:
                 "import math",
                 "from mathutils import Vector, Euler",
                 "",
-                "# Clear existing mesh objects",
+                "# Clear existing mesh objects","
                 "bpy.ops.object.select_all(action='SELECT')",
                 "bpy.ops.object.delete(use_global = False)",
                 "",
-                "# Scene setup",
+                "# Scene setup","
                 f"scene = bpy.context.scene",
                 f"scene.frame_start = {scene.frame_start}",
                 f"scene.frame_end = {scene.frame_end}",
@@ -866,38 +951,43 @@ class BlenderInterface:
                 f"scene.render.resolution_x = {scene.resolution_x}",
                 f"scene.render.resolution_y = {scene.resolution_y}",
                 "",
-                "# Add camera",
+                "# Add camera","
                 "bpy.ops.object.camera_add()",
                 "camera = bpy.context.active_object",
                 f"camera.location = {scene.camera_location}",
                 f"camera.rotation_euler = {tuple(math.radians(r) for r in scene.camera_rotation)}",
                 f"camera.data.lens = {scene.camera_lens}",
                 "",
-                "# Set camera as active",
+                "# Set camera as active","
                 "scene.camera = camera",
                 "",
-                "# Add video as plane",
-                "bpy.ops.import_image.to_plane(files=[{'name': '"
+                "# Add video as plane","
+                "bpy.ops.import_image.to_plane(files=[{'name': '"'
             + os.path.basename(scene.video_path)
-            + "'}], directory='"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             + "'}], directory='"
             + os.path.dirname(scene.video_path)
-            + "')",
+# BRACKET_SURGEON: disabled
+#             + "')",'
                 "video_plane = bpy.context.active_object",
                 "",
-                "# Setup compositor",
+                "# Setup compositor","
                 "scene.use_nodes = True",
                 "tree = scene.node_tree",
                 "tree.nodes.clear()",
                 "",
-                "# Add render layers node",
+                "# Add render layers node","
                 "render_layers = tree.nodes.new('CompositorNodeRLayers')",
                 "render_layers.location = (0, 0)",
                 "",
-                "# Add composite node",
+                "# Add composite node","
                 "composite = tree.nodes.new('CompositorNodeComposite')",
                 "composite.location = (800, 0)",
                 "",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Add effects
         node_x_offset = 200
@@ -906,7 +996,9 @@ class BlenderInterface:
         for i, effect in enumerate(effects):
             script_lines.extend(
                 self._generate_effect_script(effect, i, node_x_offset, last_node)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             node_x_offset += 200
             last_node = f"effect_node_{i}"
 
@@ -914,22 +1006,26 @@ class BlenderInterface:
         script_lines.extend(
             [
                 "",
-                    f"# Connect final effect to composite",
-                    f"tree.links.new({last_node}.outputs['Image'],
-    composite.inputs['Image'])",
+                    f"# Connect final effect to composite","
+                    f"tree.links.new({last_node}.outputs['Image'],"
+    composite.inputs['Image'])","
                     "",
-                    "# Set render settings",
+                    "# Set render settings","
                     f"scene.render.engine = '{scene.render_engine}'",
                     "scene.render.image_settings.file_format = 'FFMPEG'",
                     "scene.render.ffmpeg.format = 'MPEG4'",
                     "scene.render.ffmpeg.codec = 'H264'",
                     "",
-                    "# Render animation",
+                    "# Render animation","
                     "bpy.ops.render.render(animation = True)",
                     "",
                     "print('Rendering completed successfully')",
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return "\\n".join(script_lines)
 
@@ -945,71 +1041,94 @@ class BlenderInterface:
             if effect.effect_type == EffectType.COLOR_GRADING:
                 lines.extend(
                     [
-                        f"# {effect.name}",
+                        f"# {effect.name}","
                             f"{node_name} = tree.nodes.new('CompositorNodeColorBalance')",
                             f"{node_name}.location = ({x_offset}, 0)",
-                            f"{node_name}.lift = ({effect.parameters.get('shadows',
+                            f"{node_name}.lift = ({effect.parameters.get('shadows',"
     0)}, {effect.parameters.get('shadows',
     0)}, {effect.parameters.get('shadows',
-    0)})",
-                            f"{node_name}.gamma = ({effect.parameters.get('midtones',
+# BRACKET_SURGEON: disabled
+#     0)})","
+                            f"{node_name}.gamma = ({effect.parameters.get('midtones',"
     1)}, {effect.parameters.get('midtones',
     1)}, {effect.parameters.get('midtones',
-    1)})",
-                            f"{node_name}.gain = ({effect.parameters.get('highlights',
+# BRACKET_SURGEON: disabled
+#     1)})","
+                            f"{node_name}.gain = ({effect.parameters.get('highlights',"
     1)}, {effect.parameters.get('highlights',
     1)}, {effect.parameters.get('highlights',
-    1)})",
+# BRACKET_SURGEON: disabled
+#     1)})","
                             f"tree.links.new({input_node}.outputs['Image'], {node_name}.inputs['Image'])",
-                            ]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             elif effect.effect_type == EffectType.MOTION_BLUR:
                 lines.extend(
                     [
-                        f"# {effect.name}",
+                        f"# {effect.name}","
                             f"{node_name} = tree.nodes.new('CompositorNodeVecBlur')",
                             f"{node_name}.location = ({x_offset}, 0)",
-                            f"{node_name}.factor = {effect.parameters.get('strength',
-    0.5)}",
-                            f"{node_name}.samples = {effect.parameters.get('samples',
-    16)}",
+                            f"{node_name}.factor = {effect.parameters.get('strength',"
+# BRACKET_SURGEON: disabled
+#     0.5)}","
+                            f"{node_name}.samples = {effect.parameters.get('samples',"
+# BRACKET_SURGEON: disabled
+#     16)}","
                             f"tree.links.new({input_node}.outputs['Image'], {node_name}.inputs['Image'])",
-                            ]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             elif effect.effect_type == EffectType.CAMERA_SHAKE:
                 # Camera shake is handled through keyframes, not compositor nodes
                 lines.extend(
                     [
-                        f"# {effect.name} - Camera shake keyframes",
+                        f"# {effect.name} - Camera shake keyframes","
                             f"camera.location = {scene.camera_location}",
-                            ]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Add keyframes
                 for keyframe in effect.keyframes:
                     if keyframe["property"] == "location":
                         lines.append(
                             f"camera.location = {keyframe['value']}"
-                            f"\\ncamera.keyframe_insert(data_path='location',
-    frame={keyframe['frame']})"
-                        )
+                            f"\\ncamera.keyframe_insert(data_path='location',"
+    frame={keyframe['frame']})""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             else:
                 # Generic effect node
                 lines.extend(
                     [
-                        f"# {effect.name} (Generic)",
+                        f"# {effect.name} (Generic)","
                             f"{node_name} = tree.nodes.new('CompositorNodeMixRGB')",
                             f"{node_name}.location = ({x_offset}, 0)",
                             f"tree.links.new({input_node}.outputs['Image'], {node_name}.inputs['Image1'])",
-                            ]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             logger.error(f"Effect script generation failed: {e}")
-            lines = [f"# Error generating effect: {effect.name}"]
+            lines = [f"# Error generating effect: {effect.name}"]"
 
         return lines
 
@@ -1032,13 +1151,17 @@ class BlenderInterface:
                     output_path,
                     "--render - format",
                     "FFMPEG",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             # Execute Blender
             logger.info(f"Executing Blender script: {script_path}")
             result = subprocess.run(
                 cmd, capture_output = True, text = True, timeout = 3600  # 1 hour timeout
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if result.returncode == 0:
                 logger.info(f"Blender script executed successfully")
@@ -1065,7 +1188,8 @@ class AIVideoEditor:
 
     def __init__(
         self, blender_executable: Optional[str] = None, temp_dir: Optional[str] = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.script_parser = ScriptParser()
         self.effect_generator = EffectGenerator()
         self.blender_interface = BlenderInterface(blender_executable)
@@ -1075,7 +1199,9 @@ class AIVideoEditor:
             Path(temp_dir)
             if temp_dir
             else Path(tempfile.gettempdir())/"ai_video_editor"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.temp_dir.mkdir(parents = True, exist_ok = True)
 
         # Job tracking
@@ -1093,7 +1219,8 @@ class AIVideoEditor:
             output_path: str,
             project_id: Optional[str] = None,
             audio_path: Optional[str] = None,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Create a new AI video editing project."""
 
         if not project_id:
@@ -1102,7 +1229,9 @@ class AIVideoEditor:
         # Setup Blender scene
         blender_scene = BlenderScene(
             scene_name = f"AI_Edit_{project_id}", video_path = video_path
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if audio_path:
             blender_scene.metadata["audio_path"] = audio_path
@@ -1119,8 +1248,11 @@ class AIVideoEditor:
                 "created_at": datetime.now().isoformat(),
                     "script_length": len(script_content),
                     "video_path": video_path,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         logger.info(f"Created AI video editing project: {project_id}")
         return project_id
@@ -1139,8 +1271,11 @@ class AIVideoEditor:
                 "project_name": project.name,
                     "script_length": len(project.script_content),
                     "video_path": project.video_path,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         with self._job_lock:
             self.active_jobs[job_id] = job
@@ -1148,7 +1283,9 @@ class AIVideoEditor:
         # Start processing in background thread
         threading.Thread(
             target = self._process_job_async, args=(job,), daemon = True
-        ).start()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).start()
 
         logger.info(f"Started AI video editing job: {job_id}")
         return job_id
@@ -1167,13 +1304,17 @@ class AIVideoEditor:
 
             cues = self.script_parser.parse_script(
                 job.project.script_content, job.project.custom_cue_patterns
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             job.parsed_cues = cues
 
             if not cues:
                 job.warnings.append(
                     "No script cues found - video will be processed without effects"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Step 2: Generate effects
             logger.info(f"Generating effects for job: {job.job_id}")
@@ -1183,7 +1324,9 @@ class AIVideoEditor:
 
             effects = self.effect_generator.generate_effects(
                 cues, job.project.effect_intensity_multiplier
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             job.generated_effects = effects
 
             # Step 3: Setup Blender scene
@@ -1202,7 +1345,9 @@ class AIVideoEditor:
 
             blender_script = self.blender_interface.generate_blender_script(
                 job.project.blender_scene, effects
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Save script for debugging
             script_path = self.temp_dir/f"blender_script_{job.job_id}.py"
@@ -1218,7 +1363,9 @@ class AIVideoEditor:
 
             success = self.blender_interface.execute_blender_script(
                 blender_script, job.project.output_path
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if not success:
                 raise Exception("Blender rendering failed")
@@ -1243,7 +1390,9 @@ class AIVideoEditor:
 
             logger.info(
                 f"AI video editing completed: {job.job_id} ({job.processing_time:.2f}s)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             job.status = ProcessingStatus.ERROR
@@ -1266,7 +1415,9 @@ class AIVideoEditor:
                 if job.status not in [
                     ProcessingStatus.COMPLETED,
                         ProcessingStatus.ERROR,
-                        ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]:
                     # Terminate Blender processes
                     for process in job.blender_processes:
                         try:
@@ -1333,7 +1484,8 @@ class AIVideoEditor:
                 "render_qualities": [rq.value for rq in RenderQuality],
                 "script_parsing_enabled": True,
                 "blender_integration_enabled": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 # Example usage and testing
 if __name__ == "__main__":
@@ -1348,7 +1500,7 @@ if __name__ == "__main__":
             print(f"  {key}: {value}")
 
         # Example script with cues
-        sample_script = """
+        sample_script = """"""
         FADE IN:
 
         INT. OFFICE - DAY
@@ -1374,7 +1526,7 @@ if __name__ == "__main__":
         John jumps up, knocking over his chair.
 
         JOHN
-        This can't be happening!
+        This can't be happening!'
 
         [EMOTIONAL_BEAT]
 
@@ -1389,7 +1541,7 @@ if __name__ == "__main__":
         John runs toward the door as the building shakes.
 
         FADE OUT.
-        """
+        """"""
 
         # Test script parsing
         print(f"\\n📝 Testing script parsing...")
@@ -1399,7 +1551,9 @@ if __name__ == "__main__":
         for cue in cues:
             print(
                 f"  • {cue.cue_type.value} at {cue.start_time:.1f}s ({cue.duration:.1f}s)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(f"    Text: {cue.original_text}")
             print(f"    Context: {cue.scene_description[:50]}...")
 
@@ -1412,7 +1566,9 @@ if __name__ == "__main__":
             print(f"  • {effect.name} ({effect.effect_type.value})")
             print(
                 f"    Duration: {effect.duration:.1f}s, Intensity: {effect.intensity.value}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(f"    Parameters: {list(effect.parameters.keys())}")
 
         # Example project creation (requires actual video file)
@@ -1428,7 +1584,9 @@ if __name__ == "__main__":
                         script_content = sample_script,
                         video_path = video_file,
                         output_path = output_file,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 print(f"Project created: {project_id}")
 
@@ -1439,7 +1597,9 @@ if __name__ == "__main__":
                         script_content = sample_script,
                         video_path = video_file,
                         output_path = output_file,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Process project
                 print("Processing video with AI effects...")
@@ -1451,12 +1611,16 @@ if __name__ == "__main__":
                     if job:
                         print(
                             f"Progress: {job.progress_percentage:.1f}% - {job.current_step}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                         if job.status in [
                             ProcessingStatus.COMPLETED,
                                 ProcessingStatus.ERROR,
-                                ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ]:
                             break
 
                     time.sleep(5)
@@ -1474,7 +1638,9 @@ if __name__ == "__main__":
                 print(f"Sample video file not found: {video_file}")
                 print(
                     "To test with actual video, place a video file at the specified path"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             print(f"Project creation failed: {e}")

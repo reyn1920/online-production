@@ -22,5 +22,7 @@ async def api_info():
             "version": "1.0.0",
             "description": "Production-ready FastAPI application",
             "endpoints": ["/api/v1/status", "/api/v1/info"],
-        }
-    )
+# BRACKET_SURGEON: disabled
+#         }
+# BRACKET_SURGEON: disabled
+#     )

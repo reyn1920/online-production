@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Security Check Script (Rule - 1 friendly)
 - No banned vocabulary in strings / comments / UI.
 - Local, zero - cost scanning; no network calls.
@@ -7,12 +7,20 @@ Security Check Script (Rule - 1 friendly)
 - Integrated with API Discovery System for comprehensive security
 
 Checks:
-1) Secret patterns (AWS keys, private keys, common tokens)
-2) Risky Python calls (subprocess with shell = True)
-3) Loose .env* permissions
-4) Forbidden - token sweep (encoded; no plaintext forbidden tokens appear here)
-5) API key exposure in discovery system
-"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# 1) Secret patterns (AWS keys, private keys, common tokens)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# 2) Risky Python calls (subprocess with shell = True)
+# BRACKET_SURGEON: disabled
+# 3) Loose .env* permissions
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# 4) Forbidden - token sweep (encoded; no plaintext forbidden tokens appear here)
+# BRACKET_SURGEON: disabled
+# 5) API key exposure in discovery system
+""""""
 
 from __future__ import annotations
 
@@ -74,14 +82,16 @@ class SecurityAuditor:
                 "google_api_key": r"AIza[0 - 9A - Za - z\\-_]{35}",
                 "private_key": r"-----BEGIN (RSA |EC |DSA )?PRIVATE KEY-----",
                 "generic_secret": r'(secret|password|token|key)\\s*[=:]\\s*["\\'][a - zA - Z0 - 9_\\-\\.]{8,}["\\']',
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Risky subprocess patterns
         self.subprocess_patterns = {
             "shell_true": r"subprocess\\.[a - zA - Z_]+\\([^)]*shell\\s*=\\s * True",
                 "os_system": r"os\\.system\\s*\\(",
                 "eval_exec": r"(eval|exec)\\s*\\(",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def scan_file(self, file_path: Path) -> None:
@@ -115,8 +125,12 @@ class SecurityAuditor:
                         line_number = None,
                         description = f"Failed to scan file: {e}",
                         recommendation="Investigate file access issues",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _check_secrets(self, file_path: Path, content: str, lines: List[str]) -> None:
@@ -133,15 +147,20 @@ class SecurityAuditor:
                             file_path = str(file_path),
                             line_number = line_num,
                             description = f"Potential {pattern_name} found",
-                            recommendation="Move secrets to environment variables \
-    or secure vault",
-                            )
-                )
+                            recommendation="Move secrets to environment variables \"
+#     or secure vault",
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def _check_subprocess(
         self, file_path: Path, content: str, lines: List[str]
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Check for risky subprocess usage."""
         for pattern_name, pattern in self.subprocess_patterns.items():
             matches = re.finditer(pattern, content, re.IGNORECASE | re.MULTILINE)
@@ -155,10 +174,14 @@ class SecurityAuditor:
                             file_path = str(file_path),
                             line_number = line_num,
                             description = f"Risky {pattern_name} usage detected",
-                            recommendation="Use subprocess with shell = False \
-    and validate inputs",
-                            )
-                )
+                            recommendation="Use subprocess with shell = False \"
+#     and validate inputs",
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def _check_env_permissions(self, file_path: Path) -> None:
@@ -177,15 +200,20 @@ class SecurityAuditor:
                             line_number = None,
                             description="Environment file readable by others",
                             recommendation="Set permissions to 600 (owner read / write only)",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except Exception as e:
             pass  # Skip permission check if it fails
 
 
     def scan_directory(
         self, directory: Path, exclude_patterns: List[str] = None
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Recursively scan directory for security issues."""
         if exclude_patterns is None:
             exclude_patterns = [".git", "__pycache__", "node_modules", ".venv", "venv"]
@@ -207,7 +235,9 @@ class SecurityAuditor:
                         ".env",
                         ".txt",
                         ".md",
-                        ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]:
                     self.scan_file(item)
 
 
@@ -225,14 +255,17 @@ class SecurityAuditor:
                 "secrets": len([i for i in self.issues if i.category == "secrets"]),
                 "permissions": len([i for i in self.issues if i.category == "permissions"]),
                 "subprocess": len([i for i in self.issues if i.category == "subprocess"]),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return SecurityReport(
             timestamp = datetime.now().isoformat(),
                 total_files_scanned = self.files_scanned,
                 issues_found = self.issues,
                 summary = summary,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
 def main() -> int:

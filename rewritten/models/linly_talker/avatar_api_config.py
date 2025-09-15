@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 Avatar API Configuration for Production - Ready Linly - Talker
 
 This module provides configuration and utilities for integrating with
 major avatar generation APIs for production deployment.
-"""
+""""""
 
 import os
 from dataclasses import dataclass
@@ -52,7 +52,8 @@ class ProductionAvatarConfig:
                 base_url="https://api.heygen.com/v2",
                 default_avatar_id="Josh_public_2_20230714",
                 timeout_seconds=180,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # D - ID Configuration
         did_key = os.getenv("DID_API_KEY")
@@ -63,7 +64,8 @@ class ProductionAvatarConfig:
                 base_url="https://api.d - id.com",
                 default_avatar_id="alice",
                 timeout_seconds=150,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Synthesia Configuration
         synthesia_key = os.getenv("SYNTHESIA_API_KEY")
@@ -74,7 +76,8 @@ class ProductionAvatarConfig:
                 base_url="https://api.synthesia.io/v2",
                 default_avatar_id="anna_costume1_cameraA",
                 timeout_seconds=200,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return configs
 
@@ -102,10 +105,12 @@ class ProductionAvatarConfig:
                         "Real - time streaming",
                         "Professional presenters",
                         "Multi - language support",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "quality": "HD 1280x720",
                     "avg_generation_time": "15 - 20 seconds",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "name": "D - ID",
                     "description": "Photorealistic Talking Heads",
@@ -113,19 +118,24 @@ class ProductionAvatarConfig:
                         "Photorealistic avatars",
                         "Custom face upload",
                         "Natural expressions",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "quality": "HD with advanced lip - sync",
                     "avg_generation_time": "10 - 15 seconds",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "name": "Synthesia",
                     "description": "Professional AI Presenters",
                     "features": ["4K quality", "100+ avatars", "Enterprise features"],
                     "quality": "4K Ultra HD",
                     "avg_generation_time": "15 - 25 seconds",
-                },
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Avatar quality presets
@@ -135,26 +145,31 @@ AVATAR_QUALITY_PRESETS = {
         "fps": 15,
         "bitrate": "500k",
         "description": "Fast generation, lower quality",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "medium": {
         "resolution": "1280x720",
         "fps": 25,
         "bitrate": "2M",
         "description": "Balanced quality and speed",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "high": {
         "resolution": "1920x1080",
         "fps": 30,
         "bitrate": "5M",
         "description": "High quality, slower generation",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "ultra": {
         "resolution": "3840x2160",
         "fps": 30,
         "bitrate": "15M",
         "description": "4K quality, longest generation time",
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 # Voice configuration options
 VOICE_PRESETS = {
@@ -163,26 +178,31 @@ VOICE_PRESETS = {
         "did_voice": "Sara",
         "synthesia_voice": "anna",
         "description": "Professional female presenter voice",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "professional_male": {
         "heygen_voice_id": "2d5b0e8c4a1f3d9e7b6c8a5f2e9d1c4b",
         "did_voice": "Adam",
         "synthesia_voice": "james",
         "description": "Professional male presenter voice",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "friendly_female": {
         "heygen_voice_id": "3e6c1f9d8b2a5e7c4f1d9b6e3a8c5f2e",
         "did_voice": "Emma",
         "synthesia_voice": "lily",
         "description": "Friendly, approachable female voice",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "authoritative_male": {
         "heygen_voice_id": "4f7d2e0a9c3b6f8e5a2f0d7b4e1a9c6f",
         "did_voice": "Brian",
         "synthesia_voice": "david",
         "description": "Authoritative, confident male voice",
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 
 def get_production_config() -> ProductionAvatarConfig:
@@ -196,14 +216,15 @@ def validate_api_keys() -> Dict[str, bool]:
         "heygen": bool(os.getenv("HEYGEN_API_KEY")),
         "did": bool(os.getenv("DID_API_KEY")),
         "synthesia": bool(os.getenv("SYNTHESIA_API_KEY")),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     return validation_results
 
 
 def get_setup_instructions() -> str:
     """Get setup instructions for avatar APIs"""
-    return """
+    return """"""
 🔧 AVATAR API SETUP INSTRUCTIONS
 
 1. HeyGen API Setup:
@@ -234,7 +255,7 @@ For production use, consider:
 - Caching generated videos
 - Fallback mechanisms
 - Cost monitoring and alerts
-"""
+""""""
 
 
 if __name__ == "__main__":

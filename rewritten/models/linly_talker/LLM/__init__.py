@@ -19,7 +19,8 @@ def test_Linly(
     question="如何应对压力？",
     mode="offline",
     model_path="Linly - AI/Chinese - LLaMA - 2 - 7B - hf",
-):
+# BRACKET_SURGEON: disabled
+# ):
     llm = Linly(mode, model_path)
     answer = llm.generate(question)
     print(answer)
@@ -42,7 +43,8 @@ def test_ChatGPT(
     model_path="gpt - 3.5 - turbo",
     api_key=None,
     proxy_url=None,
-):
+# BRACKET_SURGEON: disabled
+# ):
     llm = ChatGPT(model_path, api_key, proxy_url)
     answer = llm.generate(question)
     print(answer)
@@ -59,7 +61,8 @@ class LLM:
         api_key=None,
         proxy_url=None,
         prefix_prompt="""请用少于25个字回答以下问题\\n\\n""",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         if model_name not in [
             "Linly",
             "Qwen",
@@ -71,10 +74,12 @@ class LLM:
             "GPT4Free",
             "QAnything",
             "直接回复 Direct Reply",
-        ]:
+# BRACKET_SURGEON: disabled
+#         ]:
             raise ValueError(
                 "model_name must be one of ['Linly', 'Qwen', 'Qwen2', 'Gemini', 'ChatGLM', 'ChatGPT', 'Llama2Chinese', 'GPT4Free', 'QAnything', '直接回复 Direct Reply']"
-            )
+# BRACKET_SURGEON: disabled
+#             )
         if model_name == "Linly":
             llm = Linly(self.mode, model_path)
         elif model_name == "Qwen":
@@ -110,7 +115,8 @@ class LLM:
         self,
         question="如何应对压力？",
         model_path="Linly - AI/Chinese - LLaMA - 2 - 7B - hf",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         llm = Linly(self.mode, model_path)
         answer = llm.generate(question)
         print(answer)
@@ -126,7 +132,8 @@ class LLM:
         model_path="gemini - pro",
         api_key=None,
         proxy_url=None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         llm = Gemini(model_path, api_key, proxy_url)
         answer = llm.generate(question)
         print(answer)
@@ -137,7 +144,8 @@ class LLM:
         model_path="gpt - 3.5 - turbo",
         api_key=None,
         proxy_url=None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         llm = ChatGPT(model_path, api_key, proxy_url)
         answer = llm.generate(question)
         print(answer)

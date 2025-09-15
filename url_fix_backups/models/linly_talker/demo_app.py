@@ -26,13 +26,15 @@ try:
         EnhancedAPIOrchestrator,
         OrchestrationRequest,
         RequestStatus,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     from backend.services.avatar_engines import (
         AvatarRequest,
         generate_avatar,
         initialize_engines,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     REAL_AVATAR_AVAILABLE = True
 except ImportError as e:
@@ -74,7 +76,8 @@ async def real_avatar_animation(text, avatar_image=None):
             "source_image": avatar_image,
             "voice_settings": {"quality": "medium", "speed": 1.0, "pitch": 1.0},
             "video_settings": {"quality": "medium", "fps": 25},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Create orchestration request
         request = OrchestrationRequest(
@@ -83,7 +86,8 @@ async def real_avatar_animation(text, avatar_image=None):
             payload=payload,
             timeout_seconds=120,
             max_retries=2,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Execute request
         result = await orchestrator.orchestrate_request(request)
@@ -128,12 +132,14 @@ def demo_avatar_animation(text, avatar_image=None):
                     "Voice modulation applied to PNG avatar",
                     "Real - time rendering optimized for transparency",
                     "Emotion detection integrated with facial features",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 selected_features = random.sample(animation_features, 4)
                 result = (
                     f"🎭 PNG Avatar Animation Complete!\\n\\n{status_msg}\\n\\nText: '{text}'\\n\\n"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 result += "\\n".join([f"✅ {feature}" for feature in selected_features])
                 result += "\\n\\n🎬 PNG Avatar ready for animation and lip - sync!"
 
@@ -157,8 +163,8 @@ def demo_avatar_animation(text, avatar_image=None):
 
     # Fallback demo mode
     if not avatar_image:
-        return "❌ Please upload a PNG image to start avatar generation.\\n\\n💡 The system now supports PNG images for proper background removal \
-    and processing."
+        return "❌ Please upload a PNG image to start avatar generation.\\n\\n💡 The system now supports PNG images for proper background removal \"
+#     and processing."
 
     # Simulate processing
     time.sleep(2)
@@ -189,12 +195,13 @@ def demo_chat_response(message, history):
     time.sleep(1)
 
     responses = [
-        "That's an interesting question! Let me think about that...",
+        "That's an interesting question! Let me think about that...",'
         "I understand what you're asking. Here's my perspective...",
-        "Great point! I'd like to add that...",
+        "Great point! I'd like to add that...",'
         "Thanks for sharing that. In my experience...",
         "That reminds me of something important...",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     response = random.choice(responses) + f" (Demo response to: {message})"
     history.append([message, response])
@@ -211,10 +218,10 @@ def create_female_avatar_svg():
 
 
 async def generate_ai_female_model():
-    """
+    """"""
     Generate a production - ready AI female model avatar
     This function creates a production avatar without running the demo
-    """
+    """"""
     try:
         import base64
         import os
@@ -245,8 +252,10 @@ async def generate_ai_female_model():
                 "lip_sync": True,
                 "emotion_mapping": True,
                 "voice_cloning_ready": True,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         return json.dumps(response_data, indent=2), avatar_url
 
@@ -255,7 +264,8 @@ async def generate_ai_female_model():
             "success": False,
             "error": str(e),
             "message": "Failed to create production avatar",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return json.dumps(error_response, indent=2), create_female_avatar_svg()
 
 
@@ -276,12 +286,14 @@ def demo_generate_ai_female_model():
             "Applied advanced neural rendering techniques",
             "Optimized for real - time animation and lip - sync",
             "Enhanced with emotion recognition capabilities",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         selected_features = random.sample(model_features, 3)
         result = "🤖 AI Female Model Generated Successfully!\\n\\n" + "\\n".join(
             [f"✅ {feature}" for feature in selected_features]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         result += "\\n\\n🎭 Avatar ready for animation and interaction!"
 
         return result, create_female_avatar_svg()
@@ -300,7 +312,8 @@ def run_two_minute_test():
         "Checking audio - visual synchronization...",
         "Finalizing system optimization...",
         "Test completed successfully!",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     # Simulate 2 - minute test with progress updates
     for i, step in enumerate(test_steps):
@@ -309,14 +322,14 @@ def run_two_minute_test():
         time.sleep(2)  # Reduced to 2 seconds per step for faster demo
 
     # Return final result with avatar
-    yield "🎉 2 - Minute Test Completed!\\n\\nAll systems operational \
-    and ready for use.\\n\\n🎭 Working Avatar Generated!", "data:image / svg + xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzg3Q0VFQiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiMwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPldvcmtpbmcgQXZhdGFyPC90ZXh0PgogIDx0ZXh0IHg9IjIwMCIgeT0iMzIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiMwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlJlYWR5PC90ZXh0Pgo8L3N2Zz4="
+    yield "🎉 2 - Minute Test Completed!\\n\\nAll systems operational \"
+#     and ready for use.\\n\\n🎭 Working Avatar Generated!", "data:image / svg + xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzg3Q0VFQiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiMwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPldvcmtpbmcgQXZhdGFyPC90ZXh0PgogIDx0ZXh0IHg9IjIwMCIgeT0iMzIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiMwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlJlYWR5PC90ZXh0Pgo8L3N2Zz4="
 
 
 # Create the Production Avatar interface
 with gr.Blocks(title="Linly - Talker Production Avatar", theme=gr.themes.Soft()) as demo:
     gr.Markdown(
-        """
+        """"""
     # 🎭 Linly - Talker Production Avatar
 
     **Production - Ready AI Avatar Generator**
@@ -327,8 +340,9 @@ with gr.Blocks(title="Linly - Talker Production Avatar", theme=gr.themes.Soft())
     - Facial animation and lip - sync
     - Voice cloning capabilities
     - Production - optimized performance
-    """
-    )
+    """"""
+# BRACKET_SURGEON: disabled
+#     )
 
     with gr.Tab("💬 Chat Interface"):
         chatbot = gr.Chatbot(label="AI Conversation", height=400, type="messages")
@@ -349,12 +363,14 @@ with gr.Blocks(title="Linly - Talker Production Avatar", theme=gr.themes.Soft())
                     label="Text to Synthesize",
                     placeholder="Enter text to convert to speech...",
                     lines=3,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 voice_select = gr.Dropdown(
                     choices=["Default", "Female", "Male", "Child", "Elderly"],
                     value="Default",
                     label="Voice Style",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 tts_btn = gr.Button("Generate Speech", variant="primary")
 
             with gr.Column():
@@ -364,7 +380,7 @@ with gr.Blocks(title="Linly - Talker Production Avatar", theme=gr.themes.Soft())
 
     with gr.Tab("🎭 PNG Avatar Animation"):
         gr.Markdown(
-            """
+            """"""
         ### 🖼️ PNG Avatar Processing System
 
         **Upload a PNG image to create professional avatars with:**
@@ -374,8 +390,9 @@ with gr.Blocks(title="Linly - Talker Production Avatar", theme=gr.themes.Soft())
         - 🎭 Ready for animation and lip - sync
 
         **Supported formats:** PNG, JPEG, JPG, WEBP, BMP, TIFF
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         with gr.Row():
             with gr.Column():
@@ -383,46 +400,54 @@ with gr.Blocks(title="Linly - Talker Production Avatar", theme=gr.themes.Soft())
                     label="Text for Avatar to Speak",
                     placeholder="Enter the text you want the avatar to say...",
                     lines=3,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 avatar_image = gr.Image(
                     label="Upload PNG / Image for Avatar", type="filepath", height=300
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 with gr.Row():
                     style_select = gr.Dropdown(
                         choices=["realistic", "cartoon", "professional"],
                         value="realistic",
                         label="Processing Style",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     animate_btn = gr.Button(
                         "Process & Animate Avatar", variant="primary", size="lg"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             with gr.Column():
                 animation_output = gr.Textbox(
                     label="Processing & Animation Status", interactive=False, lines=12
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 gr.Markdown(
-                    """
+                    """"""
                 **Processing Steps:**
                     1. 📤 Upload your PNG / image
                 2. 🤖 AI removes background automatically
                 3. 🎨 Style enhancements applied
                 4. 📐 Optimized for animation
                 5. 🎭 Ready for lip - sync and speech
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
         animate_btn.click(
             lambda text, image, style: (
                 demo_avatar_animation(text, image)
                 if not style
                 else demo_avatar_animation(text, image)
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             [avatar_text, avatar_image, style_select],
             animation_output,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     with gr.Tab("🔊 Voice Cloning"):
         with gr.Row():
@@ -432,7 +457,8 @@ with gr.Blocks(title="Linly - Talker Production Avatar", theme=gr.themes.Soft())
                     label="Text to Synthesize",
                     placeholder="Enter text to speak in cloned voice...",
                     lines=2,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 clone_btn = gr.Button("Clone Voice", variant="primary")
 
             with gr.Column():
@@ -442,18 +468,20 @@ with gr.Blocks(title="Linly - Talker Production Avatar", theme=gr.themes.Soft())
 
     with gr.Tab("👩 AI Female Model"):
         gr.Markdown(
-            """
+            """"""
         ### 🤖 AI Female Model Generator
             Generate realistic AI female models with advanced neural rendering technology.
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         with gr.Row():
             with gr.Column():
                 gr.Markdown("**Model Generation**")
                 generate_model_btn = gr.Button(
                     "Generate AI Female Model", variant="primary", size="lg"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 model_output = gr.Textbox(label="Generation Status", interactive=False, lines=6)
                 model_avatar = gr.Image(label="Generated Avatar", height=300)
 
@@ -466,12 +494,13 @@ with gr.Blocks(title="Linly - Talker Production Avatar", theme=gr.themes.Soft())
         # Connect buttons to functions
         generate_model_btn.click(
             demo_generate_ai_female_model, outputs=[model_output, model_avatar]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         test_btn.click(run_two_minute_test, outputs=[test_output, test_avatar])
 
     with gr.Tab("ℹ️ About"):
         gr.Markdown(
-            """
+            """"""
         ## About Linly - Talker
 
         Linly - Talker is an advanced AI system that combines:
@@ -497,8 +526,9 @@ with gr.Blocks(title="Linly - Talker Production Avatar", theme=gr.themes.Soft())
 
         **Note:** This is a demonstration version. The full implementation requires
         downloading and configuring AI models which can be several GB in size.
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
 if __name__ == "__main__":
     print("🎭 Starting Linly - Talker Production Avatar Generator...")
@@ -514,4 +544,5 @@ if __name__ == "__main__":
         share=False,
         show_error=True,
         quiet=False,
-    )
+# BRACKET_SURGEON: disabled
+#     )

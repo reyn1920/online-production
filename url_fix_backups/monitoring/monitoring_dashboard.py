@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE AI Monitoring Dashboard
 Provides a web - based dashboard for monitoring system health, performance, and errors.
-"""
+""""""
 
 import json
 import os
@@ -29,7 +29,7 @@ performance_monitor = PerformanceMonitor()
 error_tracker = ErrorTracker()
 
 # HTML Template for the dashboard
-DASHBOARD_TEMPLATE = """
+DASHBOARD_TEMPLATE = """"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,46 +41,53 @@ DASHBOARD_TEMPLATE = """
             margin: 0;
             padding: 0;
             box - sizing: border - box;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         body {
             font - family: -apple - system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans - serif;
             background: #0f1419;
             color: #e6e6e6;
             line - height: 1.6;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .header {
             background: linear - gradient(135deg, #1a1f2e 0%, #2d3748 100%);
             padding: 1rem 2rem;
             border - bottom: 2px solid #4a5568;
             box - shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .header h1 {
             color: #00d4ff;
             font - size: 2rem;
             font - weight: 700;
             margin - bottom: 0.5rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .header .subtitle {
             color: #a0aec0;
             font - size: 1rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .container {
             max - width: 1400px;
             margin: 0 auto;
             padding: 2rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .grid {
             display: grid;
             grid - template - columns: repeat(auto - fit, minmax(300px, 1fr));
             gap: 1.5rem;
             margin - bottom: 2rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .card {
             background: #1a202c;
@@ -89,12 +96,14 @@ DASHBOARD_TEMPLATE = """
             padding: 1.5rem;
             box - shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s, box - shadow 0.2s;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .card:hover {
             transform: translateY(-2px);
             box - shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .card h3 {
             color: #00d4ff;
@@ -103,14 +112,16 @@ DASHBOARD_TEMPLATE = """
             display: flex;
             align - items: center;
             gap: 0.5rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .status - indicator {
             width: 12px;
             height: 12px;
             border - radius: 50%;
             display: inline - block;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .status - healthy { background: #48bb78; }
         .status - warning { background: #ed8936; }
@@ -123,22 +134,26 @@ DASHBOARD_TEMPLATE = """
             align - items: center;
             padding: 0.75rem 0;
             border - bottom: 1px solid #2d3748;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric:last - child {
             border - bottom: none;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric - label {
             color: #a0aec0;
             font - weight: 500;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric - value {
             color: #e6e6e6;
             font - weight: 600;
             font - size: 1.1rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .progress - bar {
             width: 100%;
@@ -147,12 +162,14 @@ DASHBOARD_TEMPLATE = """
             border - radius: 4px;
             overflow: hidden;
             margin - top: 0.5rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .progress - fill {
             height: 100%;
             transition: width 0.3s ease;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .progress - normal { background: #48bb78; }
         .progress - warning { background: #ed8936; }
@@ -164,23 +181,27 @@ DASHBOARD_TEMPLATE = """
             border - radius: 8px;
             padding: 1rem;
             margin - bottom: 0.75rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .alert - item.warning {
             background: #2d2416;
             border - color: #ed8936;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .alert - timestamp {
             color: #a0aec0;
             font - size: 0.875rem;
             margin - bottom: 0.25rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .alert - message {
             color: #e6e6e6;
             font - weight: 500;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .refresh - btn {
             background: #00d4ff;
@@ -192,23 +213,27 @@ DASHBOARD_TEMPLATE = """
             cursor: pointer;
             transition: background 0.2s;
             margin - bottom: 1rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .refresh - btn:hover {
             background: #0099cc;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .timestamp {
             color: #718096;
             font - size: 0.875rem;
             text - align: center;
             margin - top: 2rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .error - list {
             max - height: 300px;
             overflow - y: auto;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .error - item {
             background: #2d1b1b;
@@ -216,41 +241,50 @@ DASHBOARD_TEMPLATE = """
             padding: 0.75rem;
             margin - bottom: 0.5rem;
             border - radius: 0 8px 8px 0;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .error - level {
             color: #f56565;
             font - weight: 600;
             font - size: 0.875rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .error - message {
             color: #e6e6e6;
             margin - top: 0.25rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         @media (max - width: 768px) {
             .container {
                 padding: 1rem;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             .grid {
                 grid - template - columns: 1fr;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             .header {
                 padding: 1rem;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             .header h1 {
                 font - size: 1.5rem;
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
     </style>
     <script>
         function refreshDashboard() {
             location.reload();
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         // Auto - refresh every 30 seconds
         setInterval(refreshDashboard, 30000);
@@ -260,9 +294,11 @@ DASHBOARD_TEMPLATE = """
                 if (value >= 90) return 'progress - critical';
                 if (value >= 75) return 'progress - warning';
                 return 'progress - normal';
-            }
+# BRACKET_SURGEON: disabled
+#             }
             return 'progress - normal';
-        }
+# BRACKET_SURGEON: disabled
+#         }
     </script>
 </head>
 <body>
@@ -430,7 +466,7 @@ DASHBOARD_TEMPLATE = """
     </div>
 </body>
 </html>
-"""
+""""""
 
 
 def format_bytes(bytes_value: int) -> str:
@@ -479,7 +515,8 @@ def dashboard():
             uptime_formatted=uptime_formatted,
             current_time=current_time,
             format_bytes=format_bytes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         return (
@@ -488,10 +525,13 @@ def dashboard():
                     "error": "Dashboard error",
                     "message": str(e),
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
-            ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ),
             500,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @app.route("/api / health")
@@ -507,10 +547,13 @@ def api_health():
                     "status": "error",
                     "error": str(e),
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
-            ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ),
             500,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @app.route("/api / errors")
@@ -527,10 +570,13 @@ def api_errors():
                     "error": "Failed to get error summary",
                     "message": str(e),
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
-            ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ),
             500,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @app.route("/api / metrics")
@@ -545,8 +591,10 @@ def api_metrics():
                 "health": health_status,
                 "errors": error_summary,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         return (
             jsonify(
@@ -554,10 +602,13 @@ def api_metrics():
                     "error": "Failed to get metrics",
                     "message": str(e),
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
-            ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ),
             500,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @app.route("/api / alerts")
@@ -568,14 +619,15 @@ def api_alerts():
         with sqlite3.connect(error_tracker.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT rule_name, severity, message, timestamp
                 FROM alert_history
                 WHERE timestamp >= datetime('now', '-1 hour')
                 AND acknowledged = FALSE
                 ORDER BY timestamp DESC
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             alerts = [
                 {
@@ -583,17 +635,21 @@ def api_alerts():
                     "severity": row[1],
                     "message": row[2],
                     "timestamp": row[3],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for row in cursor.fetchall()
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
         return jsonify(
             {
                 "alerts": alerts,
                 "count": len(alerts),
                 "timestamp": datetime.now(timezone.utc).isoformat(),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         return (
@@ -602,10 +658,13 @@ def api_alerts():
                     "error": "Failed to get alerts",
                     "message": str(e),
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
-            ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ),
             500,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 def main():

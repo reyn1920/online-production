@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Research Agent Tools Module
 
 Implements comprehensive research capabilities including:
@@ -7,7 +7,7 @@ Implements comprehensive research capabilities including:
 - Competitor analysis (TubeBuddy/VidIQ emulation)
 - Market validation for digital products
 - YouTube channel analysis and niche opportunity detection
-"""
+""""""
 
 import asyncio
 import json
@@ -89,7 +89,7 @@ class NewsItem:
     source: str
     category: NewsCategory = NewsCategory.GENERAL
     sentiment_score: float = 0.0
-    keywords: List[str] = field(default_factory = list)
+    keywords: List[str] = field(default_factory = list):
     trend_strength: TrendStrength = TrendStrength.WEAK
     relevance_score: float = 0.0
 
@@ -107,7 +107,7 @@ class CompetitorChannel:
     upload_frequency: float  # videos per week
     average_views: float
     engagement_rate: float
-    niche_keywords: List[str] = field(default_factory = list)
+    niche_keywords: List[str] = field(default_factory = list):
     content_themes: List[str] = field(default_factory = list)
     opportunity_score: float = 0.0
     last_analyzed: datetime = field(default_factory = datetime.now)
@@ -125,7 +125,7 @@ class MarketOpportunity:
     trend_direction: str  # rising, stable, declining
     monetization_potential: float  # 0 - 1 score
     target_audience: str
-    content_gaps: List[str] = field(default_factory = list)
+    content_gaps: List[str] = field(default_factory = list):
     recommended_products: List[str] = field(default_factory = list)
     confidence_score: float = 0.0
 
@@ -153,8 +153,10 @@ class BreakingNewsWatcher:
                     "online business",
                     "SaaS",
                     "startup",
-                    ],
-                )
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 )
         self.logger = logging.getLogger(__name__)
 
 
@@ -164,32 +166,40 @@ class BreakingNewsWatcher:
             {
                 "url": "https://feeds.feedburner.com/TechCrunch",
                     "category": NewsCategory.TECHNOLOGY,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://rss.cnn.com/rss/edition.rss",
                     "category": NewsCategory.GENERAL,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.reuters.com/reuters/businessNews",
                     "category": NewsCategory.BUSINESS,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com/venturebeat/SZYF",
                     "category": NewsCategory.TECHNOLOGY,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com/Mashable",
                     "category": NewsCategory.TECHNOLOGY,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com/socialmediaexaminer",
                     "category": NewsCategory.SOCIAL_MEDIA,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com/MarketingLand",
                     "category": NewsCategory.MARKETING,
-                    },
-                ]
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ]
 
 
     async def monitor_feeds(self, duration_hours: int = 24) -> List[NewsItem]:
@@ -197,7 +207,8 @@ class BreakingNewsWatcher:
         if not feedparser:
             self.logger.error(
                 "feedparser not available. Install with: pip install feedparser"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return []
 
         end_time = datetime.now() + timedelta(hours = duration_hours)
@@ -261,7 +272,8 @@ class BreakingNewsWatcher:
                         published = pub_date,
                         source = feed.feed.get("title", feed_config["url"]),
                         category = feed_config.get("category", NewsCategory.GENERAL),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 news_items.append(news_item)
 
@@ -294,7 +306,8 @@ class BreakingNewsWatcher:
                 # Extract keywords
                 item.keywords = self._extract_keywords(
                     item.title + " " + item.description
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Calculate sentiment
                 if TextBlob:
@@ -342,7 +355,8 @@ class BreakingNewsWatcher:
                 NewsCategory.SOCIAL_MEDIA: 0.9,
                 NewsCategory.AI_ML: 1.0,
                 NewsCategory.GENERAL: 0.3,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         score += category_scores.get(item.category, 0.3)
 
@@ -380,7 +394,8 @@ class BreakingNewsWatcher:
         cutoff_time = datetime.now() - timedelta(hours = hours)
         recent_items = [
             item for item in self.news_cache.values() if item.published > cutoff_time
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Count keyword occurrences
         keyword_counts = {}
@@ -391,7 +406,8 @@ class BreakingNewsWatcher:
         # Sort by frequency
         return dict(sorted(keyword_counts.items(),
     key = lambda x: x[1],
-    reverse = True))
+# BRACKET_SURGEON: disabled
+#     reverse = True))
 
 
 class CompetitorAnalyzer:
@@ -417,7 +433,8 @@ class CompetitorAnalyzer:
             # Search for channels in the niche
             channel_ids = await self._search_channels_by_keywords(
                 niche_keywords, max_channels
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Analyze each channel
             analyzed_channels = []
@@ -431,7 +448,8 @@ class CompetitorAnalyzer:
 
             return sorted(
                 analyzed_channels, key = lambda x: x.opportunity_score, reverse = True
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Error analyzing niche: {e}")
@@ -449,7 +467,8 @@ class CompetitorAnalyzer:
             # Get YouTube API key from secure storage
             with SecretStore(
                 self.config.get("secrets_db", "data/secrets.sqlite")
-            ) as store:
+# BRACKET_SURGEON: disabled
+#             ) as store:
                 api_key = store.get_secret("YOUTUBE_API_KEY")
                 if not api_key:
                     self.logger.error("YouTube API key not configured in secret store")
@@ -465,7 +484,8 @@ class CompetitorAnalyzer:
             # Search for channels using each keyword
             for keyword in keywords[
                 :3
-            ]:  # Limit to first 3 keywords to avoid quota exhaustion
+# BRACKET_SURGEON: disabled
+#             ]:  # Limit to first 3 keywords to avoid quota exhaustion
                 try:
                     # Search for channels
                     search_response = requests.get(
@@ -477,9 +497,11 @@ class CompetitorAnalyzer:
                                 "maxResults": min(20, max_results),
                                 "order": "relevance",
                                 "key": api_key,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             timeout = 10,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                     if search_response.status_code == 200:
                         search_data = search_response.json()
@@ -496,7 +518,8 @@ class CompetitorAnalyzer:
                     else:
                         self.logger.warning(
                             f"YouTube search API error for keyword '{keyword}': {search_response.status_code}"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 except Exception as e:
                     self.logger.warning(f"Error searching for keyword '{keyword}': {e}")
@@ -510,7 +533,8 @@ class CompetitorAnalyzer:
             if not channel_ids:
                 self.logger.warning(
                     "No channels found through search, using fallback popular channels"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 fallback_channels = [
                     "UCBJycsmduvYEL83R_U4JriQ",  # Marques Brownlee (Tech)
                     "UCJ0 - OtVpF0wOKEqT2Z1HEtA",  # ElectroBOOM (Engineering)
@@ -522,7 +546,8 @@ class CompetitorAnalyzer:
                     "UCHnyfMqiRRG1u - 2MsSQLbXA",  # Veritasium (Science)
                     "UCsXVk37bltHxD1rDPwtNM8Q",  # Kurzgesagt (Science)
                     "UCR1IuLEqb6UEA_zQ81kwXfg",  # Real Engineering (Engineering)
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
                 return fallback_channels[: min(max_results, len(fallback_channels))]
 
             return list(channel_ids)[:max_results]
@@ -557,7 +582,8 @@ class CompetitorAnalyzer:
                         engagement_rate = channel_data["engagement_rate"],
                         niche_keywords = channel_data["keywords"],
                         content_themes = channel_data["themes"],
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 # Cache the result
                 self.channels_cache[channel_id] = competitor_channel
@@ -578,7 +604,8 @@ class CompetitorAnalyzer:
             # Get YouTube API key from secure storage
             with SecretStore(
                 self.config.get("secrets_db", "data/secrets.sqlite")
-            ) as store:
+# BRACKET_SURGEON: disabled
+#             ) as store:
                 api_key = store.get_secret("YOUTUBE_API_KEY")
                 if not api_key:
                     self.logger.error("YouTube API key not configured in secret store")
@@ -598,14 +625,17 @@ class CompetitorAnalyzer:
                     "part": "snippet,statistics,brandingSettings",
                         "id": channel_id,
                         "key": api_key,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     timeout = 10,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             if channel_response.status_code != 200:
                 self.logger.error(
                     f"YouTube API error for channel {channel_id}: {channel_response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return None
 
             channel_data = channel_response.json()
@@ -627,9 +657,11 @@ class CompetitorAnalyzer:
                         "order": "date",
                         "maxResults": 50,
                         "key": api_key,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     timeout = 10,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             upload_frequency = 0.0
             average_views = 0
@@ -652,9 +684,11 @@ class CompetitorAnalyzer:
                             "part": "statistics,snippet",
                                 "id": ",".join(video_ids),
                                 "key": api_key,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             timeout = 10,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                     if video_stats_response.status_code == 200:
                         video_stats = video_stats_response.json()
@@ -691,12 +725,14 @@ class CompetitorAnalyzer:
                                 total_views//len(video_details)
                                 if video_details
                                 else 0
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             engagement_rate = (
                                 total_engagement/len(video_details)
                                 if video_details
                                 else 0.0
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                     # Calculate upload frequency based on recent videos
                     if len(video_items) >= 2:
@@ -707,22 +743,28 @@ class CompetitorAnalyzer:
                             latest_date = datetime.fromisoformat(
                                 video_items[0]["snippet"]["publishedAt"].replace(
                                     "Z", "+00:00"
-                                )
-                            )
+# BRACKET_SURGEON: disabled
+#                                 )
+# BRACKET_SURGEON: disabled
+#                             )
                             oldest_date = datetime.fromisoformat(
                                 video_items[-1]["snippet"]["publishedAt"].replace(
                                     "Z", "+00:00"
-                                )
-                            )
+# BRACKET_SURGEON: disabled
+#                                 )
+# BRACKET_SURGEON: disabled
+#                             )
                             days_diff = (latest_date - oldest_date).days
                             if days_diff > 0:
                                 upload_frequency = (
                                     len(video_items) * 7
-                                )/days_diff  # videos per week
+# BRACKET_SURGEON: disabled
+#                                 )/days_diff  # videos per week
                         except Exception as e:
                             self.logger.warning(
                                 f"Error calculating upload frequency: {e}"
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             upload_frequency = 1.0
 
                     # Extract themes from channel description and video categories
@@ -730,14 +772,16 @@ class CompetitorAnalyzer:
                     if (
                         "tech" in channel_description
                         or "technology" in channel_description
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         themes.append("Technology")
                     if "review" in channel_description:
                         themes.append("Reviews")
                     if (
                         "education" in channel_description
                         or "tutorial" in channel_description
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         themes.append("Education")
                     if "gaming" in channel_description or "game" in channel_description:
                         themes.append("Gaming")
@@ -759,17 +803,20 @@ class CompetitorAnalyzer:
                     "video_count": int(statistics.get("videoCount", 0)),
                     "upload_frequency": max(
                     upload_frequency, 0.1
-                ),  # Minimum 0.1 videos per week
+# BRACKET_SURGEON: disabled
+#                 ),  # Minimum 0.1 videos per week
                 "average_views": average_views,
                     "engagement_rate": min(engagement_rate, 1.0),  # Cap at 100%
                 "keywords": keywords,
                     "themes": themes,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(
                 f"Error fetching YouTube data for channel {channel_id}: {e}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return None
 
 
@@ -800,7 +847,8 @@ class CompetitorAnalyzer:
             # Combine scores
             channel.opportunity_score = (
                 sub_score * 0.4 + engagement_score * 0.4 + frequency_score * 0.2
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
 
     def find_content_gaps(self, channels: List[CompetitorChannel]) -> List[str]:
@@ -823,7 +871,8 @@ class CompetitorAnalyzer:
                 "Educational Series",
                 "Case Studies",
                 "Interviews",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
         # Find gaps
         content_gaps = [theme for theme in potential_themes if theme not in all_themes]
@@ -841,7 +890,8 @@ class MarketValidator:
 
     async def validate_product_idea(
         self, product_concept: str, target_keywords: List[str]
-    ) -> MarketOpportunity:
+# BRACKET_SURGEON: disabled
+#     ) -> MarketOpportunity:
         """Validate a digital product idea"""
         try:
             # Analyze search volume and competition
@@ -850,17 +900,20 @@ class MarketValidator:
             # Assess market trends
             trend_data = await self._analyze_market_trends(
                 product_concept, target_keywords
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Evaluate monetization potential
             monetization_score = self._assess_monetization_potential(
                 product_concept, search_data
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Identify target audience
             target_audience = self._identify_target_audience(
                 product_concept, target_keywords
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Find content gaps
             content_gaps = await self._identify_content_gaps(target_keywords)
@@ -868,12 +921,14 @@ class MarketValidator:
             # Generate product recommendations
             recommended_products = self._generate_product_recommendations(
                 product_concept, search_data
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Calculate confidence score
             confidence_score = self._calculate_confidence_score(
                 search_data, trend_data, monetization_score
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             opportunity = MarketOpportunity(
                 niche = product_concept,
@@ -886,7 +941,8 @@ class MarketValidator:
                     content_gaps = content_gaps,
                     recommended_products = recommended_products,
                     confidence_score = confidence_score,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             return opportunity
 
@@ -902,7 +958,8 @@ class MarketValidator:
                     monetization_potential = 0.0,
                     target_audience="unknown",
                     confidence_score = 0.0,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
 
     async def _analyze_search_metrics(self, keywords: List[str]) -> Dict[str, Any]:
@@ -914,7 +971,8 @@ class MarketValidator:
             # Get Google Ads API credentials from secure storage
             with SecretStore(
                 self.config.get("secrets_db", "data/secrets.sqlite")
-            ) as store:
+# BRACKET_SURGEON: disabled
+#             ) as store:
                 api_key = store.get_secret("GOOGLE_ADS_API_KEY")
                 customer_id = store.get_secret("GOOGLE_ADS_CUSTOMER_ID")
                 developer_token = store.get_secret("GOOGLE_ADS_DEVELOPER_TOKEN")
@@ -922,7 +980,8 @@ class MarketValidator:
                 if not all([api_key, customer_id, developer_token]):
                     self.logger.error(
                         "Google Ads API credentials not configured in secret store"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     raise ValueError("Missing Google Ads API credentials")
 
             if not requests:
@@ -934,7 +993,8 @@ class MarketValidator:
                 "Authorization": f"Bearer {api_key}",
                     "developer - token": developer_token,
                     "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Prepare keyword ideas request
             keyword_ideas_request = {
@@ -944,16 +1004,22 @@ class MarketValidator:
                         "keywordSeed": {
                             "keywords": keywords[
                                 :10
-                            ]  # Limit to 10 keywords per request
-                        },
+# BRACKET_SURGEON: disabled
+#                             ]  # Limit to 10 keywords per request
+# BRACKET_SURGEON: disabled
+#                         },
                             "geoTargetConstants": [
                             "geoTargetConstants/2840"
-                        ],  # United States
+# BRACKET_SURGEON: disabled
+#                         ],  # United States
                         "language": "languageConstants/1000",  # English
                         "keywordPlanNetwork": "GOOGLE_SEARCH",
-                            }
-                },
-                    }
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Make API request to Google Ads
             response = requests.post(
@@ -961,15 +1027,18 @@ class MarketValidator:
                     headers = headers,
                     json = keyword_ideas_request,
                     timeout = 30,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             if response.status_code != 200:
                 self.logger.error(
                     f"Google Ads API error: {response.status_code} - {response.text}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 raise ValueError(
                     f"API request failed with status {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             data = response.json()
             results = data.get("results", [])
@@ -1000,7 +1069,8 @@ class MarketValidator:
                 sum(competition_scores)/len(competition_scores)
                 if competition_scores
                 else 0.5
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if avg_competition < 0.3:
                 competition_level = "low"
@@ -1011,14 +1081,16 @@ class MarketValidator:
 
             self.logger.info(
                 f"Retrieved search metrics for {len(keywords)} keywords: {total_volume} total volume"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "total_volume": total_volume,
                     "competition_level": competition_level,
                     "avg_competition_score": avg_competition,
                     "keyword_count": len(results),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Error analyzing search metrics: {e}")
@@ -1042,10 +1114,12 @@ class MarketValidator:
             except ImportError:
                 self.logger.error(
                     "pytrends library not available. Install with: pip install pytrends"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 raise ImportError(
                     "pytrends library required for Google Trends analysis"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Initialize pytrends
             pytrends = TrendReq(hl="en - US", tz = 360)
@@ -1060,7 +1134,8 @@ class MarketValidator:
             # Build payload for Google Trends
             pytrends.build_payload(
                 trend_keywords, cat = 0, timeframe="today 12 - m", geo="US", gprop=""
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Get interest over time data
             interest_over_time = pytrends.interest_over_time()
@@ -1068,7 +1143,8 @@ class MarketValidator:
             if interest_over_time.empty:
                 self.logger.warning(
                     f"No trend data available for keywords: {trend_keywords}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return {"direction": "stable", "confidence": "low"}
 
             # Calculate trend direction based on recent vs older data
@@ -1083,7 +1159,8 @@ class MarketValidator:
 
             recent_avg = (
                 recent_period.mean().mean()
-            )  # Average across all keywords and time
+# BRACKET_SURGEON: disabled
+#             )  # Average across all keywords and time
             older_avg = older_period.mean().mean()
 
             # Determine trend direction
@@ -1109,7 +1186,8 @@ class MarketValidator:
                 related_count = sum(
                     len(queries.get("top", [])) if queries.get("top") is not None else 0
                     for queries in related_queries.values()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Adjust confidence based on related query volume
                 if related_count > 50:
@@ -1124,7 +1202,8 @@ class MarketValidator:
 
             self.logger.info(
                 f"Trend analysis complete: {direction} trend with {confidence} confidence"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "direction": direction,
@@ -1132,7 +1211,8 @@ class MarketValidator:
                     "recent_avg": round(recent_avg, 2),
                     "older_avg": round(older_avg, 2),
                     "keywords_analyzed": len(trend_keywords),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Error analyzing market trends: {e}")
@@ -1146,23 +1226,27 @@ class MarketValidator:
                     "remote",
                     "machine learning",
                     "blockchain",
-                    ]
+# BRACKET_SURGEON: disabled
+#                     ]
             has_trending = any(
                 term in product_concept.lower()
                 or any(term in keyword.lower() for keyword in keywords)
                 for term in trending_terms
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "direction": "rising" if has_trending else "stable",
                     "confidence": "low",
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def _assess_monetization_potential(
         self, product_concept: str, search_data: Dict
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Assess the monetization potential of the product"""
         score = 0.0
 
@@ -1188,7 +1272,8 @@ class MarketValidator:
                 "platform",
                 "service",
                 "consulting",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
         if any(term in product_concept.lower() for term in high_value_terms):
             score += 0.4
 
@@ -1197,7 +1282,8 @@ class MarketValidator:
 
     def _identify_target_audience(
         self, product_concept: str, keywords: List[str]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Identify the target audience for the product"""
         # Simple audience identification based on keywords
         all_text = (product_concept + " " + " ".join(keywords)).lower()
@@ -1208,11 +1294,13 @@ class MarketValidator:
             return "Digital Marketers & Content Creators"
         elif any(
             term in all_text for term in ["developer", "programming", "code", "tech"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return "Developers & Tech Professionals"
         elif any(
             term in all_text for term in ["student", "learn", "education", "course"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return "Students & Learners"
         else:
             return "General Consumers"
@@ -1224,7 +1312,8 @@ class MarketValidator:
             if not requests or not BeautifulSoup:
                 self.logger.error(
                     "Required libraries not available for content gap analysis"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return ["Content analysis tools not available"]
 
             content_gaps = []
@@ -1242,14 +1331,15 @@ class MarketValidator:
                         "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,"
 """[PRESERVED-BROKEN-LINE] closing parenthesis ')' does not match opening parenthesis '{' on line 1241 (research_tools.py, line 1243)"""
 #     like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Note: In production, consider using Google Custom Search API instead
                     # This is a basic implementation for content gap identification
 
                     # Analyze common content types that might be missing
                     common_content_types = [
-                        f"Beginner's guide to {keyword}",
+                        f"Beginner's guide to {keyword}",'
                             f"Advanced {keyword} techniques",
                             f"{keyword} case studies",
                             f"{keyword} vs alternatives comparison",
@@ -1259,7 +1349,8 @@ class MarketValidator:
                             f"{keyword} ROI analysis",
                             f"{keyword} implementation checklist",
                             f"{keyword} common mistakes",
-                            ]
+# BRACKET_SURGEON: disabled
+#                             ]
 
                     # Simulate content gap detection based on keyword analysis
                     # In a full production system, this would:
@@ -1276,7 +1367,8 @@ class MarketValidator:
                     if (
                         "advanced" not in keyword_lower
                         and "expert" not in keyword_lower
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         content_gaps.append(f"Advanced {keyword} strategies")
 
                     if "case" not in keyword_lower and "example" not in keyword_lower:
@@ -1291,7 +1383,8 @@ class MarketValidator:
                 except Exception as e:
                     self.logger.warning(
                         f"Error analyzing content gaps for keyword '{keyword}': {e}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     continue
 
             # Remove duplicates and limit results
@@ -1304,7 +1397,8 @@ class MarketValidator:
                         "Advanced implementation guides",
                         "Industry - specific case studies",
                         "Tool comparison and reviews",
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
 
             # Limit to top 6 most relevant gaps
             return unique_gaps[:6]
@@ -1317,7 +1411,8 @@ class MarketValidator:
                     "Advanced technique guides",
                     "Practical implementation examples",
                     "Comparative analysis content",
-                    ]
+# BRACKET_SURGEON: disabled
+#                     ]
 
 
     def _generate_product_recommendations(
@@ -1330,10 +1425,12 @@ class MarketValidator:
         if search_data["total_volume"] > 5000 and search_data["competition_level"] in [
             "low",
                 "medium",
-                ]:
+# BRACKET_SURGEON: disabled
+#                 ]:
             recommendations.extend(
                 ["Online Course", "Digital Guide/Ebook", "Video Tutorial Series"]
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         if search_data["competition_level"] == "low":
             recommendations.extend(["SaaS Tool", "Mobile App", "Consulting Service"])
@@ -1352,7 +1449,8 @@ class MarketValidator:
 
     def _calculate_confidence_score(
         self, search_data: Dict, trend_data: Dict, monetization_score: float
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate overall confidence score for the opportunity"""
         score = 0.0
 
@@ -1395,7 +1493,8 @@ if __name__ == "__main__":
         try:
             news_items = await news_watcher.monitor_feeds(
                 duration_hours = 0.1
-            )  # 6 minutes
+# BRACKET_SURGEON: disabled
+#             )  # 6 minutes
             print(f"Found {len(news_items)} news items")
 
             if news_items:
@@ -1441,7 +1540,8 @@ if __name__ == "__main__":
 
             opportunity = await validator.validate_product_idea(
                 product_concept, keywords
-            )
+# BRACKET_SURGEON: disabled
+#             )
             print(f"Market opportunity for: {opportunity.niche}")
             print(f"Search volume: {opportunity.search_volume:,}")
             print(f"Competition: {opportunity.competition_level}")

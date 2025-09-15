@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Blender API Integration Demo
-Demonstrates how to access and use Blender's Python API from the existing system.
-"""
+Demonstrates how to access and use Blender's Python API from the existing system.'
+""""""
 
 import os
 import subprocess
@@ -17,7 +17,7 @@ from pipelines.blender_handoff import get_blender_path, validate_blender_install
 
 
 def test_blender_api_access():
-    """Test accessing Blender's Python API through the system integration."""
+    """Test accessing Blender's Python API through the system integration."""'
     print("=== Blender API Integration Test ===")
 
     # 1. Validate Blender installation
@@ -35,10 +35,10 @@ def test_blender_api_access():
 
     # 3. Test BlenderCompositor integration
     print("\n2. Testing BlenderCompositor integration...")
-    compositor = BlenderCompositor()
+    BlenderCompositor()
 
     # 4. Test basic Blender Python API access
-    test_script = """
+    test_script = """"""
 import bpy
 import sys
 
@@ -86,7 +86,7 @@ print(f"✓ Created test scene with cube and material")
 print(f"✓ Saved to: {blend_file}")
 print(f"✓ Scene objects: {len(bpy.data.objects)}")
 print(f"✓ Materials: {len(bpy.data.materials)}")
-"""
+""""""
 
     print("\n3. Running Blender API test script...")
     try:
@@ -124,25 +124,28 @@ def test_compositor_integration():
     print("\n=== BlenderCompositor Integration Test ===")
 
     try:
-        compositor = BlenderCompositor()
-        
+        BlenderCompositor()
+
         # Test basic compositor functionality
         test_config = {
             'scene_setup': {
                 'camera_position': [7, -7, 5],
                 'camera_rotation': [60, 0, 45],
                 'lighting': 'studio'
-            },
+# BRACKET_SURGEON: disabled
+#             },
             'render_settings': {
                 'resolution': [1920, 1080],
                 'samples': 64,
                 'engine': 'CYCLES'
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         print("✓ BlenderCompositor initialized")
         print(f"✓ Test configuration: {test_config}")
-        
+
         # This would normally create a composition
         # result = compositor.create_composition(test_config)
         print("✓ BlenderCompositor integration test passed")
@@ -156,24 +159,24 @@ def test_compositor_integration():
 def main():
     """Run all Blender integration tests."""
     print("Starting Blender API Integration Demo...")
-    
+
     success = True
-    
+
     # Test 1: Basic API access
     if not test_blender_api_access():
         success = False
-    
+
     # Test 2: Compositor integration
     if not test_compositor_integration():
         success = False
-    
+
     if success:
         print("\n🎉 All Blender integration tests passed!")
-        print("The system can successfully interface with Blender's Python API.")
+        print("The system can successfully interface with Blender's Python API.")'
     else:
         print("\n❌ Some Blender integration tests failed.")
         print("Check the error messages above for details.")
-    
+
     return success
 
 

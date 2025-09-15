@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI System Smoke Test Agent
 
 A comprehensive automated testing agent that implements the complete go - live checklist
 for verifying system integrity \
-    and operational readiness. This agent provides one - click
+#     and operational readiness. This agent provides one - click
 verification of all critical system components and workflows.
 
 Features:
@@ -15,7 +15,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0 - Go - Live Integration
-"""
+""""""
 
 import asyncio
 import json
@@ -111,7 +111,7 @@ class SmokeTestReport:
 
 
 class SystemSmokeTestAgent(BaseAgent):
-    """
+    """"""
     Advanced system smoke test agent implementing the complete go - live checklist.
 
     This agent provides comprehensive automated testing capabilities including:
@@ -119,7 +119,7 @@ class SystemSmokeTestAgent(BaseAgent):
     - Service health verification
     - End - to - end workflow testing
     - Real - time result streaming
-    """
+    """"""
 
     def __init__(self, agent_id: str = "system - smoke - test - agent"):
         super().__init__(agent_id)
@@ -167,7 +167,8 @@ class SystemSmokeTestAgent(BaseAgent):
         name: str,
         test_func: Callable,
         severity: TestSeverity = TestSeverity.CRITICAL,
-    ) -> TestResult:
+# BRACKET_SURGEON: disabled
+#     ) -> TestResult:
         """Execute a single test with timing and error handling."""
         start_time = time.time()
 
@@ -186,7 +187,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 duration_ms=duration_ms,
                 message=message,
                 details=details,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             duration_ms = int((time.time() - start_time) * 1000)
@@ -198,7 +200,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 duration_ms=duration_ms,
                 message=f"Test execution failed: {str(e)}",
                 details={"exception": str(e), "type": type(e).__name__},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         self._emit_test_result(result)
         return result
@@ -217,13 +220,15 @@ class SystemSmokeTestAgent(BaseAgent):
                 True,
                 f"Dashboard port correctly configured: {actual_port}",
                 {"port": actual_port},
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             return (
                 False,
                 f"Dashboard port misconfigured. Expected: {expected_port}, Actual: {actual_port}",
                 {"expected_port": expected_port, "actual_port": actual_port},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _test_secrets_availability(self) -> tuple[bool, str, Dict[str, Any]]:
         """Verify all required secrets are loaded and accessible."""
@@ -249,8 +254,10 @@ class SystemSmokeTestAgent(BaseAgent):
                 {
                     "available_secrets": available_secrets,
                     "total_count": len(available_secrets),
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
         else:
             return (
                 False,
@@ -258,8 +265,10 @@ class SystemSmokeTestAgent(BaseAgent):
                 {
                     "missing_secrets": missing_secrets,
                     "available_secrets": available_secrets,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
     def _test_disk_space_availability(self) -> tuple[bool, str, Dict[str, Any]]:
         """Verify at least 5GB of free disk space is available."""
@@ -283,8 +292,10 @@ class SystemSmokeTestAgent(BaseAgent):
                         "total_gb": round(total_gb, 2),
                         "used_gb": round(used_gb, 2),
                         "required_gb": required_gb,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return (
                     False,
@@ -293,8 +304,10 @@ class SystemSmokeTestAgent(BaseAgent):
                         "free_gb": round(free_gb, 2),
                         "required_gb": required_gb,
                         "deficit_gb": round(required_gb - free_gb, 2),
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return False, f"Failed to check disk space: {str(e)}", {"error": str(e)}
@@ -304,7 +317,8 @@ class SystemSmokeTestAgent(BaseAgent):
         try:
             result = subprocess.run(
                 ["ffmpeg", "-version"], capture_output=True, text=True, timeout=10
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode == 0:
                 # Extract version info from output
@@ -313,13 +327,15 @@ class SystemSmokeTestAgent(BaseAgent):
                     True,
                     f"FFmpeg is installed and accessible: {version_line}",
                     {"version_output": version_line, "return_code": result.returncode},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return (
                     False,
                     f"FFmpeg command failed with return code: {result.returncode}",
                     {"return_code": result.returncode, "stderr": result.stderr},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except subprocess.TimeoutExpired:
             return False, "FFmpeg command timed out", {"error": "timeout"}
@@ -357,13 +373,15 @@ class SystemSmokeTestAgent(BaseAgent):
                 True,
                 f"All {len(critical_dirs)} critical directories are writable",
                 {"test_results": test_results, "directories_tested": critical_dirs},
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             return (
                 False,
                 f"Write permission failed for {len(failed_dirs)} directories: {', '.join(failed_dirs)}",
                 {"test_results": test_results, "failed_directories": failed_dirs},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     # ========================================================================
     # LIVE SYSTEM HEALTH CHECKS
@@ -374,7 +392,8 @@ class SystemSmokeTestAgent(BaseAgent):
         try:
             response = requests.get(
                 f"{self.base_url}/api / health", timeout=self.health_check_timeout
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 try:
@@ -386,8 +405,10 @@ class SystemSmokeTestAgent(BaseAgent):
                             "status_code": response.status_code,
                             "response_time_ms": int(response.elapsed.total_seconds() * 1000),
                             "health_data": health_data,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
                 except json.JSONDecodeError:
                     return (
                         True,
@@ -395,8 +416,10 @@ class SystemSmokeTestAgent(BaseAgent):
                         {
                             "status_code": response.status_code,
                             "response_time_ms": int(response.elapsed.total_seconds() * 1000),
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
             else:
                 return (
                     False,
@@ -404,21 +427,25 @@ class SystemSmokeTestAgent(BaseAgent):
                     {
                         "status_code": response.status_code,
                         "response_text": response.text[:200],
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
         except ConnectionError:
             return (
                 False,
                 f"Cannot connect to dashboard at {self.base_url}",
                 {"url": f"{self.base_url}/api / health", "error": "connection_refused"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except Timeout:
             return (
                 False,
                 f"Dashboard health check timed out after {self.health_check_timeout}s",
                 {"timeout_seconds": self.health_check_timeout},
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except Exception as e:
             return False, f"Dashboard health check failed: {str(e)}", {"error": str(e)}
 
@@ -428,7 +455,8 @@ class SystemSmokeTestAgent(BaseAgent):
             response = requests.get(
                 f"{self.orchestrator_url}/api / health",
                 timeout=self.health_check_timeout,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 try:
@@ -440,8 +468,10 @@ class SystemSmokeTestAgent(BaseAgent):
                             "status_code": response.status_code,
                             "response_time_ms": int(response.elapsed.total_seconds() * 1000),
                             "health_data": health_data,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
                 except json.JSONDecodeError:
                     return (
                         True,
@@ -449,8 +479,10 @@ class SystemSmokeTestAgent(BaseAgent):
                         {
                             "status_code": response.status_code,
                             "response_time_ms": int(response.elapsed.total_seconds() * 1000),
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
             else:
                 return (
                     False,
@@ -458,8 +490,10 @@ class SystemSmokeTestAgent(BaseAgent):
                     {
                         "status_code": response.status_code,
                         "response_text": response.text[:200],
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
         except ConnectionError:
             return (
@@ -468,20 +502,24 @@ class SystemSmokeTestAgent(BaseAgent):
                 {
                     "url": f"{self.orchestrator_url}/api / health",
                     "error": "connection_refused",
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
         except Timeout:
             return (
                 False,
                 f"Orchestrator health check timed out after {self.health_check_timeout}s",
                 {"timeout_seconds": self.health_check_timeout},
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except Exception as e:
             return (
                 False,
                 f"Orchestrator health check failed: {str(e)}",
                 {"error": str(e)},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     # ========================================================================
     # END - TO - END WORKFLOW TESTING
@@ -521,8 +559,10 @@ class SystemSmokeTestAgent(BaseAgent):
                 "task_creation": task_creation_result[2],
                 "polling_result": polling_result[2],
                 "file_verification": file_verification_result[2],
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_test_video_task(self) -> tuple[bool, str, Dict[str, Any]]:
         """Create a test video creation task."""
@@ -532,14 +572,16 @@ class SystemSmokeTestAgent(BaseAgent):
             "duration": 30,
             "priority": "high",
             "test_mode": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             response = requests.post(
                 f"{self.base_url}/api / workflows / create - video",
                 json=test_payload,
                 timeout=30,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code in [200, 201]:
                 try:
@@ -554,8 +596,10 @@ class SystemSmokeTestAgent(BaseAgent):
                                 "task_id": task_id,
                                 "status_code": response.status_code,
                                 "response_data": response_data,
-                            },
-                        )
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         )
                     else:
                         return (
                             False,
@@ -563,8 +607,10 @@ class SystemSmokeTestAgent(BaseAgent):
                             {
                                 "status_code": response.status_code,
                                 "response_data": response_data,
-                            },
-                        )
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         )
 
                 except json.JSONDecodeError:
                     return (
@@ -573,8 +619,10 @@ class SystemSmokeTestAgent(BaseAgent):
                         {
                             "status_code": response.status_code,
                             "response_text": response.text[:200],
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
             else:
                 return (
                     False,
@@ -582,8 +630,10 @@ class SystemSmokeTestAgent(BaseAgent):
                     {
                         "status_code": response.status_code,
                         "response_text": response.text[:200],
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return False, f"Failed to create video task: {str(e)}", {"error": str(e)}
@@ -602,7 +652,8 @@ class SystemSmokeTestAgent(BaseAgent):
                     f"{self.base_url}/api / tasks",
                     params={"task_id": task_id},
                     timeout=10,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if response.status_code == 200:
                     try:
@@ -618,7 +669,8 @@ class SystemSmokeTestAgent(BaseAgent):
                                 False,
                                 "Invalid task data format received",
                                 {"response_data": tasks_data},
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                         current_status = task_data.get("status", "unknown")
                         last_status = current_status
@@ -634,8 +686,10 @@ class SystemSmokeTestAgent(BaseAgent):
                                     "poll_count": poll_count,
                                     "duration_ms": duration,
                                     "task_data": task_data,
-                                },
-                            )
+# BRACKET_SURGEON: disabled
+#                                 },
+# BRACKET_SURGEON: disabled
+#                             )
                         elif current_status == TaskStatus.FAILED:
                             return (
                                 False,
@@ -645,8 +699,10 @@ class SystemSmokeTestAgent(BaseAgent):
                                     "final_status": current_status,
                                     "poll_count": poll_count,
                                     "task_data": task_data,
-                                },
-                            )
+# BRACKET_SURGEON: disabled
+#                                 },
+# BRACKET_SURGEON: disabled
+#                             )
 
                         # Task still in progress, continue polling
                         time.sleep(self.task_poll_interval)
@@ -656,20 +712,23 @@ class SystemSmokeTestAgent(BaseAgent):
                             False,
                             "Task status endpoint returned invalid JSON",
                             {"status_code": response.status_code},
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 else:
                     return (
                         False,
                         f"Task status check failed with status {response.status_code}",
                         {"status_code": response.status_code},
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             except Exception as e:
                 return (
                     False,
                     f"Error polling task status: {str(e)}",
                     {"error": str(e), "poll_count": poll_count},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Timeout reached
         return (
@@ -680,8 +739,10 @@ class SystemSmokeTestAgent(BaseAgent):
                 "timeout_seconds": self.max_task_wait_time,
                 "poll_count": poll_count,
                 "last_status": last_status,
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
     def _verify_video_output_file(self, task_id: str) -> tuple[bool, str, Dict[str, Any]]:
         """Verify that the video output file exists and is valid."""
@@ -692,7 +753,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 False,
                 "Outputs directory does not exist",
                 {"outputs_dir": str(outputs_dir)},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Look for video files related to this task
         video_extensions = [".mp4", ".avi", ".mov", ".mkv"]
@@ -707,7 +769,8 @@ class SystemSmokeTestAgent(BaseAgent):
             all_videos = list(outputs_dir.glob(f"*{ext}"))
             recent_videos = [
                 f for f in all_videos if f.stat().st_mtime > (time.time() - 600)  # 10 minutes
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             found_files.extend(recent_videos)
 
         # Remove duplicates
@@ -721,8 +784,10 @@ class SystemSmokeTestAgent(BaseAgent):
                     "outputs_dir": str(outputs_dir),
                     "searched_extensions": video_extensions,
                     "task_id": task_id,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check the most recent file
         most_recent_file = max(found_files, key=lambda f: f.stat().st_mtime)
@@ -733,7 +798,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 False,
                 f"Video output file is empty: {most_recent_file.name}",
                 {"file_path": str(most_recent_file), "file_size": file_size},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return (
             True,
@@ -743,8 +809,10 @@ class SystemSmokeTestAgent(BaseAgent):
                 "file_size": file_size,
                 "file_count": len(found_files),
                 "all_found_files": [str(f) for f in found_files],
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
     # ========================================================================
     # MAIN SMOKE TEST EXECUTION
@@ -752,12 +820,12 @@ class SystemSmokeTestAgent(BaseAgent):
 
     @dashboard_action("Run Complete Smoke Test", "Execute comprehensive system smoke test protocol")
     async def run_complete_smoke_test(self) -> SmokeTestReport:
-        """
+        """"""
         Execute the complete system smoke test protocol.
 
         Returns:
             SmokeTestReport: Comprehensive test execution report
-        """
+        """"""
         test_run_id = f"smoke - test-{int(time.time())}"
         start_time = datetime.now()
         self.test_start_time = start_time
@@ -775,52 +843,61 @@ class SystemSmokeTestAgent(BaseAgent):
                 "Dashboard Port Configuration",
                 self._test_dashboard_port_configuration,
                 TestSeverity.CRITICAL,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 "secrets_check",
                 "Required Secrets Availability",
                 self._test_secrets_availability,
                 TestSeverity.CRITICAL,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 "disk_space",
                 "Disk Space Availability",
                 self._test_disk_space_availability,
                 TestSeverity.WARNING,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 "ffmpeg_install",
                 "FFmpeg Installation",
                 self._test_ffmpeg_installation,
                 TestSeverity.CRITICAL,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 "dir_permissions",
                 "Directory Write Permissions",
                 self._test_directory_permissions,
                 TestSeverity.CRITICAL,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             # Live system health checks
             (
                 "dashboard_health",
                 "Dashboard Health Endpoint",
                 self._test_dashboard_health_endpoint,
                 TestSeverity.CRITICAL,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 "orchestrator_health",
                 "Orchestrator Health Endpoint",
                 self._test_orchestrator_health_endpoint,
                 TestSeverity.WARNING,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             # End - to - end workflow testing
             (
                 "video_workflow",
                 "Complete Video Creation Workflow",
                 self._test_video_creation_workflow,
                 TestSeverity.CRITICAL,
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Execute all tests
         for test_id, test_name, test_func, severity in test_suite:
@@ -841,7 +918,8 @@ class SystemSmokeTestAgent(BaseAgent):
             1
             for r in test_results
             if r.status == TestStatus.FAILED and r.severity == TestSeverity.CRITICAL
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Determine overall status
         if critical_failures > 0:
@@ -862,8 +940,10 @@ class SystemSmokeTestAgent(BaseAgent):
                 "DASHBOARD_PORT": os.getenv("DASHBOARD_PORT"),
                 "ORCHESTRATOR_PORT": os.getenv("ORCHESTRATOR_PORT"),
                 "TRAE_MASTER_KEY": "***" if os.getenv("TRAE_MASTER_KEY") else None,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # Create final report
         report = SmokeTestReport(
@@ -879,37 +959,42 @@ class SystemSmokeTestAgent(BaseAgent):
             overall_status=overall_status,
             test_results=test_results,
             system_info=system_info,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.current_test_run = report
 
         # Log final results
         if overall_status == TestStatus.PASSED:
             self.logger.info(
-                f"✅ ALL TESTS PASSED. The TRAE.AI system is 100% live \
-    and fully operational."
-            )
+                f"✅ ALL TESTS PASSED. The TRAE.AI system is 100% live \"
+#     and fully operational."
+# BRACKET_SURGEON: disabled
+#             )
         else:
             self.logger.error(
                 f"❌ SMOKE TEST FAILED. {critical_failures} critical failures, {failed_tests} total failures."
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return report
 
     @dashboard_action(
         name="Get Test Summary",
-        description="Retrieve summary of recent smoke test results \
-    and system status",
+        description="Retrieve summary of recent smoke test results \"
+#     and system status",
         category="System Testing",
         requires_auth=False,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     def get_test_summary(self) -> Dict[str, Any]:
         """Get a summary of the current or last test run."""
         if not self.current_test_run:
             return {
                 "status": "no_test_run",
                 "message": "No smoke test has been executed yet",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         report = self.current_test_run
 
@@ -925,7 +1010,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 "failed_tests": report.failed_tests,
                 "skipped_tests": report.skipped_tests,
                 "critical_failures": report.critical_failures,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "test_results": [
                 {
                     "test_id": r.test_id,
@@ -934,10 +1020,13 @@ class SystemSmokeTestAgent(BaseAgent):
                     "severity": r.severity.value,
                     "duration_ms": r.duration_ms,
                     "message": r.message,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for r in report.test_results
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
     # ========================================================================
     # BASE AGENT IMPLEMENTATION
@@ -959,6 +1048,7 @@ class SystemSmokeTestAgent(BaseAgent):
 
     def _validate_rephrase_accuracy(
         self, original: str, rephrased: str, context: Dict[str, Any]
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrased task accuracy."""
         return "smoke test" in rephrased.lower() or "system test" in rephrased.lower()

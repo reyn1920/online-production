@@ -40,7 +40,8 @@ class Text2SemanticLightningModule(LightningModule):
             batch["semantic_ids"],
             batch["semantic_ids_len"],
             batch["bert_feature"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.manual_backward(loss)
         if batch_idx > 0 and batch_idx % 4 == 0:
             opt.step()
@@ -54,14 +55,16 @@ class Text2SemanticLightningModule(LightningModule):
             on_epoch=True,
             prog_bar=True,
             sync_dist=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.log(
             "lr",
             scheduler.get_last_lr()[0],
             on_epoch=True,
             prog_bar=True,
             sync_dist=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.log(
             f"top_{self.top_k}_acc",
             acc,
@@ -69,7 +72,8 @@ class Text2SemanticLightningModule(LightningModule):
             on_epoch=True,
             prog_bar=True,
             sync_dist=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def validation_step(self, batch: Dict, batch_idx: int):
         return
@@ -79,7 +83,8 @@ class Text2SemanticLightningModule(LightningModule):
         parameters_names = []
         parameters_names.append(
             [name_param_pair[0] for name_param_pair in self.model.named_parameters()]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         lm_opt = ScaledAdam(
             model_parameters,
             lr=0.01,
@@ -88,7 +93,8 @@ class Text2SemanticLightningModule(LightningModule):
             parameters_names=parameters_names,
             show_dominant_parameters=False,
             clipping_update_period=1000,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return {
             "optimizer": lm_opt,
@@ -100,6 +106,9 @@ class Text2SemanticLightningModule(LightningModule):
                     end_lr=self.config["optimizer"]["lr_end"],
                     warmup_steps=self.config["optimizer"]["warmup_steps"],
                     total_steps=self.config["optimizer"]["decay_steps"],
-                )
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 AI Benchmark Integration System
 Integrates with ChatGPT, Gemini, and Abacus AI for real - time quality validation
 Implements reference - quality benchmarks for correctness, clarity, and professionalism
-"""
+""""""
 
 import asyncio
 import json
@@ -70,7 +70,8 @@ class AIBenchmarkIntegration:
             BenchmarkProvider.CHATGPT: 0.4,
             BenchmarkProvider.GEMINI: 0.35,
             BenchmarkProvider.ABACUS: 0.25,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # API configurations
         self.openai_client = None
@@ -107,12 +108,14 @@ class AIBenchmarkIntegration:
                     return (
                         jsonify({"success": False, "error": "Content is required"}),
                         400,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Run benchmark validation
                 result = asyncio.run(
                     self._validate_with_providers(content, content_type, providers)
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return jsonify(
                     {
@@ -128,12 +131,16 @@ class AIBenchmarkIntegration:
                                 "professionalism": m.professionalism,
                                 "overall_score": m.overall_score,
                                 "response_time_ms": m.response_time_ms,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             for m in result.metrics
-                        ],
+# BRACKET_SURGEON: disabled
+#                         ],
                         "recommendations": result.recommendations,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 logger.error(f"Error validating content: {e}")
@@ -148,26 +155,32 @@ class AIBenchmarkIntegration:
                         "available": self.openai_client is not None,
                         "name": "ChatGPT (OpenAI)",
                         "weight": self.consensus_weight[BenchmarkProvider.CHATGPT],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "gemini": {
                         "available": bool(self.gemini_api_key),
                         "name": "Google Gemini",
                         "weight": self.consensus_weight[BenchmarkProvider.GEMINI],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "abacus": {
                         "available": bool(self.abacus_api_key),
                         "name": "Abacus AI",
                         "weight": self.consensus_weight[BenchmarkProvider.ABACUS],
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
                 return jsonify(
                     {
                         "success": True,
                         "providers": providers_status,
                         "quality_threshold": self.quality_threshold,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 logger.error(f"Error getting providers: {e}")
@@ -175,7 +188,8 @@ class AIBenchmarkIntegration:
 
     async def _validate_with_providers(
         self, content: str, content_type: str, providers: List[str]
-    ) -> BenchmarkResult:
+# BRACKET_SURGEON: disabled
+#     ) -> BenchmarkResult:
         """Validate content with multiple AI providers"""
         validation_id = f"val_{int(time.time() * 1000)}_{hash(content) % 10000}"
         tasks = []
@@ -213,11 +227,13 @@ class AIBenchmarkIntegration:
             passed_threshold=passed_threshold,
             recommendations=recommendations,
             validation_id=validation_id,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     async def _validate_with_provider(
         self, content: str, content_type: str, provider: BenchmarkProvider
-    ) -> QualityMetrics:
+# BRACKET_SURGEON: disabled
+#     ) -> QualityMetrics:
         """Validate content with a specific AI provider"""
         start_time = time.time()
 
@@ -248,7 +264,8 @@ class AIBenchmarkIntegration:
                 provider=provider.value,
                 timestamp=datetime.now(),
                 response_time_ms=int((time.time() - start_time) * 1000),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _validate_with_chatgpt(self, content: str, content_type: str) -> QualityMetrics:
         """Validate content using ChatGPT"""
@@ -264,13 +281,16 @@ class AIBenchmarkIntegration:
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are a quality assessment expert. Evaluate content based on correctness, clarity, \
-    and professionalism. Return scores as JSON.",
-                    },
+                        "content": "You are a quality assessment expert. Evaluate content based on correctness, clarity, \"
+#     and professionalism. Return scores as JSON.",
+# BRACKET_SURGEON: disabled
+#                     },
                     {"role": "user", "content": prompt},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 temperature=0.1,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             result_text = response.choices[0].message.content
             scores = self._parse_quality_scores(result_text)
@@ -283,7 +303,8 @@ class AIBenchmarkIntegration:
                 provider=BenchmarkProvider.CHATGPT.value,
                 timestamp=datetime.now(),
                 response_time_ms=0,  # Will be set by caller
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"ChatGPT validation error: {e}")
@@ -315,7 +336,8 @@ class AIBenchmarkIntegration:
                         provider=BenchmarkProvider.GEMINI.value,
                         timestamp=datetime.now(),
                         response_time_ms=0,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     raise Exception(f"Gemini API error: {response.status}")
 
@@ -335,7 +357,8 @@ class AIBenchmarkIntegration:
                 headers = {
                     "Authorization": f"Bearer {self.abacus_api_key}",
                     "Content-Type": "application/json",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 payload = {
                     "model": "quality-evaluator",
@@ -343,7 +366,8 @@ class AIBenchmarkIntegration:
                     "content": content,
                     "content_type": content_type,
                     "metrics": ["correctness", "clarity", "professionalism"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 async with session.post(url, json=payload, headers=headers) as response:
                     response_time_ms = int((time.time() - start_time) * 1000)
@@ -360,12 +384,14 @@ class AIBenchmarkIntegration:
                             provider=BenchmarkProvider.ABACUS.value,
                             timestamp=datetime.now(),
                             response_time_ms=response_time_ms,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                     else:
                         # Fallback to heuristic scoring if API fails
                         logger.warning(
                             f"Abacus API returned {response.status}, using fallback scoring"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         return self._fallback_abacus_scoring(content, response_time_ms)
 
         except Exception as e:
@@ -394,11 +420,12 @@ class AIBenchmarkIntegration:
             provider=BenchmarkProvider.ABACUS.value,
             timestamp=datetime.now(),
             response_time_ms=response_time_ms,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_validation_prompt(self, content: str, content_type: str) -> str:
         """Create validation prompt for AI providers"""
-        return f"""
+        return f""""""
 Please evaluate the following {content_type} content for quality based on these criteria:
 
 1. Correctness (0 - 100): Technical accuracy, factual correctness, logical consistency
@@ -415,8 +442,9 @@ Please respond with scores in this JSON format:
         "professionalism": <score>,
         "overall": <average_score>,
         "reasoning": "<brief explanation>"
-}}
-"""
+# BRACKET_SURGEON: disabled
+# }}
+""""""
 
     def _parse_quality_scores(self, response_text: str) -> Dict[str, float]:
         """Parse quality scores from AI response"""
@@ -434,7 +462,8 @@ Please respond with scores in this JSON format:
                     "clarity": float(scores.get("clarity", 0)),
                     "professionalism": float(scores.get("professionalism", 0)),
                     "overall": float(scores.get("overall", 0)),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except (json.JSONDecodeError, ValueError) as e:
             logger.warning(f"Failed to parse quality scores: {e}")
 
@@ -444,7 +473,8 @@ Please respond with scores in this JSON format:
             "clarity": 50.0,
             "professionalism": 50.0,
             "overall": 50.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _calculate_consensus_score(self, metrics: List[QualityMetrics]) -> float:
         """Calculate weighted consensus score from multiple providers"""
@@ -487,9 +517,10 @@ Please respond with scores in this JSON format:
 
         if avg_clarity < 70:
             recommendations.append(
-                "Enhance clarity with better structure \
-    and simpler language"
-            )
+                "Enhance clarity with better structure \"
+#     and simpler language"
+# BRACKET_SURGEON: disabled
+#             )
 
         if avg_professionalism < 70:
             recommendations.append("Adopt more professional tone and formatting")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Database Singleton Manager
 
 This module provides singleton instances of database managers to prevent
@@ -13,7 +13,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import logging
 import threading
@@ -30,7 +30,7 @@ class DatabaseSingleton:
     """Singleton manager for database instances"""
 
     _instance = None
-    _lock = threading.Lock()
+    _lock = threading.Lock():
     _hypocrisy_db_manager = None
     _hypocrisy_db_lock = threading.Lock()
 
@@ -52,11 +52,13 @@ class DatabaseSingleton:
                             self._hypocrisy_db_manager = HypocrisyDatabaseManager()
                             self.logger.info(
                                 "Hypocrisy database manager initialized successfully (singleton)"
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                         except Exception as e:
                             self.logger.error(
                                 f"Failed to initialize hypocrisy database manager: {e}"
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             return None
                     else:
                         self.logger.warning("HypocrisyDatabaseManager not available")

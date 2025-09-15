@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Configuration Manager
 Centralized management of API keys, secrets, and configurations for 100+ APIs
 
@@ -13,7 +13,7 @@ Features:
 
 Usage:
     python api_config_manager.py
-"""
+""""""
 
 import base64
 import json
@@ -117,7 +117,8 @@ class APIConfigManager:
                 length=32,
                 salt=salt,
                 iterations=100000,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
 
             with open(key_file, "wb") as f:
@@ -139,7 +140,8 @@ class APIConfigManager:
                 auto_deploy=True,
                 secret_prefix="DEV_",
                 backup_retention_days=7,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "staging": DeploymentEnvironment(
                 name="staging",
                 description="Staging environment for testing",
@@ -150,7 +152,8 @@ class APIConfigManager:
                 auto_deploy=False,
                 secret_prefix="STAGING_",
                 backup_retention_days=30,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "production": DeploymentEnvironment(
                 name="production",
                 description="Live production environment",
@@ -161,8 +164,10 @@ class APIConfigManager:
                 auto_deploy=False,
                 secret_prefix="PROD_",
                 backup_retention_days=90,
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         # Load custom environments if they exist
         env_config_file = self.config_dir / "environments.yaml"
@@ -191,7 +196,8 @@ class APIConfigManager:
                     current_value=os.getenv(api_info.get("env_var", f"{api_key.upper()}_API_KEY")),
                     is_configured=bool(
                         os.getenv(api_info.get("env_var", f"{api_key.upper()}_API_KEY"))
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     is_encrypted=False,
                     last_updated=datetime.now().isoformat(),
                     expires_at=None,
@@ -205,7 +211,8 @@ class APIConfigManager:
                     rate_limits=api_info.get("rate_limits", {}),
                     documentation_url=api_info.get("docs_url", ""),
                     health_check_url=api_info.get("health_url"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.api_configs[api_key] = config
 
         logger.info(f"Synced {len(self.api_configs)} API configurations")
@@ -376,13 +383,13 @@ class APIConfigManager:
         env_lines = []
 
         # Add header
-        env_lines.append(f"# API Configuration for {environment.upper()} environment")
-        env_lines.append(f"# Generated on {datetime.now().isoformat()}")
-        env_lines.append(f"# Environment: {env_config.description}")
+        env_lines.append(f"# API Configuration for {environment.upper()} environment")"
+        env_lines.append(f"# Generated on {datetime.now().isoformat()}")"
+        env_lines.append(f"# Environment: {env_config.description}")"
         env_lines.append("")
 
         # Add base configuration
-        env_lines.append("# Base Configuration")
+        env_lines.append("# Base Configuration")"
         env_lines.append(f"NODE_ENV={environment}")
         env_lines.append(f"API_BASE_URL={env_config.base_url}")
         env_lines.append(f"ENVIRONMENT={environment}")
@@ -397,7 +404,7 @@ class APIConfigManager:
 
         # Add APIs by phase
         for phase in sorted(phases.keys()):
-            env_lines.append(f"# Phase {phase} APIs")
+            env_lines.append(f"# Phase {phase} APIs")"
 
             for config in sorted(phases[phase], key=lambda x: x.api_name):
                 if environment in config.deployment_environments:
@@ -411,14 +418,15 @@ class APIConfigManager:
 
                         env_lines.append(f"{var_name}={api_key_value}")
                     else:
-                        env_lines.append(f"# {config.env_var}=  # Not configured")
+                        env_lines.append(f"# {config.env_var}=  # Not configured")"
 
                     # Add metadata as comments
                     env_lines.append(
-                        f"# {config.api_name} - {config.cost_tier} tier, {config.priority} priority"
-                    )
+                        f"# {config.api_name} - {config.cost_tier} tier, {config.priority} priority""
+# BRACKET_SURGEON: disabled
+#                     )
                     if config.documentation_url:
-                        env_lines.append(f"# Docs: {config.documentation_url}")
+                        env_lines.append(f"# Docs: {config.documentation_url}")"
 
             env_lines.append("")
 
@@ -436,13 +444,15 @@ class APIConfigManager:
             "deployed_apis": [],
             "skipped_apis": [],
             "errors": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Check if approval required
         if env_config.requires_approval and not dry_run:
             approval = input(
                 f"Deploy to {environment}? This is a {env_config.description}. (yes/no): "
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if approval.lower() != "yes":
                 result["success"] = False
                 result["errors"].append("Deployment cancelled by user")
@@ -493,12 +503,14 @@ class APIConfigManager:
             "new_value": new_value,
             "rotated_at": datetime.now().isoformat(),
             "rotated_by": os.getenv("USER", "unknown"),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         rotation_file = (
             self.backup_dir
             / f"{api_key}_rotation_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         with open(rotation_file, "w") as f:
             json.dump(backup_data, f, indent=2)
 
@@ -530,7 +542,8 @@ class APIConfigManager:
             "include_secrets": include_secrets,
             "environments": {k: asdict(v) for k, v in self.environments.items()},
             "configurations": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for api_key, config in self.api_configs.items():
             config_data = asdict(config)
@@ -576,18 +589,21 @@ class APIConfigManager:
                 "total": len(phase_configs),
                 "configured": sum(1 for c in phase_configs if c.is_configured),
                 "encrypted": sum(1 for c in phase_configs if c.is_encrypted),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Environment deployment status
         env_stats = {}
         for env_name in self.environments.keys():
             deployed_apis = [
                 c for c in self.api_configs.values() if env_name in c.deployment_environments
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             env_stats[env_name] = {
                 "total_apis": len(deployed_apis),
                 "configured_apis": sum(1 for c in deployed_apis if c.is_configured),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return {
             "summary": {
@@ -596,12 +612,15 @@ class APIConfigManager:
                 "encrypted_apis": encrypted_apis,
                 "configuration_rate": (
                     (configured_apis / total_apis * 100) if total_apis > 0 else 0
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "phase_breakdown": phase_stats,
             "environment_deployment": env_stats,
             "generated_at": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def interactive_menu(self):
         """Interactive configuration management menu"""

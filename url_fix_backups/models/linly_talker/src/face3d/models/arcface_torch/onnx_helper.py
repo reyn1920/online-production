@@ -119,7 +119,8 @@ class ArcFaceORT:
             return "input - size is inconsistant with onnx model input, %s vs %s" % (
                 input_size,
                 self.image_size,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         self.model_size_mb = os.path.getsize(self.model_file) / float(1024 * 1024)
         if self.model_size_mb > max_model_size_mb:
@@ -149,7 +150,8 @@ class ArcFaceORT:
                     node.name.startswith("Mul")
                     or node.name.startswith("_mul")
                     or node.name.startswith("Div")
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     find_mul = True
             if find_sub and find_mul:
                 print("find sub and mul")
@@ -177,7 +179,8 @@ class ArcFaceORT:
         if (
             batch_result_sum in [float("inf"), -float("inf")]
             or batch_result_sum != batch_result_sum
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             print(batch_result)
             print(batch_result_sum)
             return "batch result output contains NaN!"
@@ -200,15 +203,18 @@ class ArcFaceORT:
                 self.cost_ms,
                 self.input_mean,
                 self.input_std,
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
         return None
 
     def check_batch(self, img):
         if not isinstance(img, list):
             imgs = [
                 img,
-            ] * 32
+# BRACKET_SURGEON: disabled
+#             ] * 32
         if self.crop is not None:
             nimgs = []
             for img in imgs:
@@ -223,7 +229,8 @@ class ArcFaceORT:
             size=self.image_size,
             mean=(self.input_mean, self.input_mean, self.input_mean),
             swapRB=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         net_out = self.session.run(self.output_names, {self.input_name: blob})[0]
         return net_out
 
@@ -232,7 +239,8 @@ class ArcFaceORT:
             "model - size - mb": self.model_size_mb,
             "feature - dim": self.feat_dim,
             "infer": self.cost_ms,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def forward(self, imgs):
         if not isinstance(imgs, list):
@@ -252,7 +260,8 @@ class ArcFaceORT:
             input_size,
             (self.input_mean, self.input_mean, self.input_mean),
             swapRB=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         net_out = self.session.run(self.output_names, {self.input_name: blob})[0]
         return net_out
 
@@ -269,7 +278,8 @@ class ArcFaceORT:
             input_size,
             (self.input_mean, self.input_mean, self.input_mean),
             swapRB=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         costs = []
         for _ in range(50):
             ta = datetime.datetime.now()
@@ -288,7 +298,8 @@ if __name__ == "__main__":
     parser.add_argument("workdir", help="submitted work dir", type=str)
     parser.add_argument(
         "--track", help="track name, for different challenge", type=str, default="cfat"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     args = parser.parse_args()
     handler = ArcFaceORT(args.workdir)
     err = handler.check(args.track)

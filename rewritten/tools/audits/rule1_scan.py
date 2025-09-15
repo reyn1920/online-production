@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 Rule - 1 Scanner CLI Wrapper
 
 Command - line interface for the Rule - 1 content scanner.
 This script provides a simple way to scan directories for forbidden content.
-"""
+""""""
 
 import os
 import sys
@@ -19,7 +19,7 @@ try:
 
 except ImportError as e:
     print(f"Error importing Rule1DeepScanner: {e}")
-    print("Make sure you're running from the project root directory.")
+    print("Make sure you're running from the project root directory.")'
     sys.exit(1)
 
 

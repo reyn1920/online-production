@@ -38,7 +38,9 @@ parser.add_argument("--network", default="iresnet50", type = str, help="")
 parser.add_argument("--job", default="insightface", type = str, help="job name")
 parser.add_argument(
     "--target", default="IJBC", type = str, help="target, set to IJBC or IJBB"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 args = parser.parse_args()
 
 target = args.target
@@ -72,9 +74,13 @@ class Embedding(object):
                     [48.0252, 71.7366],
                     [33.5493, 92.3655],
                     [62.7299, 92.2041],
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 dtype = np.float32,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         src[:, 0] += 8.0
         self.src = src
         self.batch_size = batch_size
@@ -99,14 +105,18 @@ class Embedding(object):
         M = tform.params[0:2, :]
         img = cv2.warpAffine(
             rimg, M, (self.image_size[1], self.image_size[0]), borderValue = 0.0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img_flip = np.fliplr(img)
         img = np.transpose(img, (2, 0, 1))  # 3 * 112 * 112, RGB
         img_flip = np.transpose(img_flip, (2, 0, 1))
         input_blob = np.zeros(
             (2, 3, self.image_size[1], self.image_size[0]), dtype = np.uint8
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         input_blob[0] = img
         input_blob[1] = img_flip
         return input_blob
@@ -189,7 +199,9 @@ def get_image_feature(img_path, files_list, model_path, epoch, gpu_id):
             print("batch", batch)
             img_feats[batch * batch_size : batch * batch_size + batch_size][:] = (
                 embedding.forward_db(batch_data)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             batch += 1
         faceness_scores.append(name_lmk_score[-1])
 
@@ -233,7 +245,9 @@ def image2template_feature(img_feats = None, templates = None, medias = None):
         face_medias = medias[ind_t]
         unique_medias,
     unique_media_counts = np.unique(face_medias,
-    return_counts = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     return_counts = True)
         media_norm_feats = []
         for u, ct in zip(unique_medias, unique_media_counts):
             (ind_m,) = np.where(face_medias == u)
@@ -242,15 +256,21 @@ def image2template_feature(img_feats = None, templates = None, medias = None):
             else:  # image features from the same video will be aggregated into one feature
                 media_norm_feats += [
                     np.mean(face_norm_feats[ind_m], axis = 0, keepdims = True)
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         media_norm_feats = np.array(media_norm_feats)
         # media_norm_feats = media_norm_feats / np.sqrt(np.sum(media_norm_feats ** 2, -1,
-    keepdims = True))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     keepdims = True))
         template_feats[count_template] = np.sum(media_norm_feats, axis = 0)
         if count_template % 2000 == 0:
             print("Finish Calculating {} template features.".format(count_template))
     # template_norm_feats = template_feats / np.sqrt(np.sum(template_feats ** 2, -1,
-    keepdims = True))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     keepdims = True))
     template_norm_feats = sklearn.preprocessing.normalize(template_feats)
     # print(template_norm_feats.shape)
     return template_norm_feats, unique_templates
@@ -261,7 +281,8 @@ def image2template_feature(img_feats = None, templates = None, medias = None):
 def verification(template_norm_feats = None,
     unique_templates = None,
     p1 = None,
-    p2 = None):
+# BRACKET_SURGEON: disabled
+#     p2 = None):
     # ==========================================================
         #         Compute set - to - set Similarity Score.
     # ==========================================================
@@ -290,7 +311,8 @@ def verification(template_norm_feats = None,
 def verification2(template_norm_feats = None,
     unique_templates = None,
     p1 = None,
-    p2 = None):
+# BRACKET_SURGEON: disabled
+#     p2 = None):
     template2id = np.zeros((max(unique_templates) + 1, 1), dtype = int)
     for count_template, uqt in enumerate(unique_templates):
         template2id[uqt] = count_template
@@ -329,7 +351,9 @@ assert target == "IJBC" or target == "IJBB"
 start = timeit.default_timer()
 templates, medias = read_template_media_list(
     os.path.join("%s / meta" % image_path, "%s_face_tid_mid.txt" % target.lower())
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 stop = timeit.default_timer()
 print("Time: %.2f s. " % (stop - start))
 
@@ -344,7 +368,9 @@ print("Time: %.2f s. " % (stop - start))
 start = timeit.default_timer()
 p1, p2, label = read_template_pair_list(
     os.path.join("%s / meta" % image_path, "%s_template_pair_label.txt" % target.lower())
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 stop = timeit.default_timer()
 print("Time: %.2f s. " % (stop - start))
 
@@ -369,7 +395,9 @@ files_list = files
 # for i in range(rank_size):
 img_feats, faceness_scores = get_image_feature(
     img_path, files_list, model_path, 0, gpu_id
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 stop = timeit.default_timer()
 print("Time: %.2f s. " % (stop - start))
 print("Feature Shape: ({} , {}) .".format(img_feats.shape[0], img_feats.shape[1]))
@@ -385,7 +413,7 @@ start = timeit.default_timer()
 # ==========================================================
 # Norm feature before aggregation into template feature?
 # Feature norm from embedding network \
-    and faceness score are able to decrease weights for noise samples (not face).
+#     and faceness score are able to decrease weights for noise samples (not face).
 # ==========================================================
 # 1. FaceScore （Feature Norm）
 # 2. FaceScore （Detector）
@@ -397,7 +425,9 @@ if use_flip_test:
     img_input_feats = (
         img_feats[:, 0 : img_feats.shape[1] // 2]
         + img_feats[:, img_feats.shape[1] // 2 :]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 else:
     img_input_feats = img_feats[:, 0 : img_feats.shape[1] // 2]
 
@@ -407,7 +437,9 @@ else:
     # normalise features to remove norm information
     img_input_feats = img_input_feats / np.sqrt(
         np.sum(img_input_feats**2, -1, keepdims = True)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 if use_detector_score:
     print(img_input_feats.shape, faceness_scores.shape)
@@ -417,7 +449,9 @@ else:
 
 template_norm_feats, unique_templates = image2template_feature(
     img_input_feats, templates, medias
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 stop = timeit.default_timer()
 print("Time: %.2f s. " % (stop - start))
 
@@ -471,7 +505,9 @@ for method in methods:
             color = colours[method],
             lw = 1,
             label=("[%s (AUC = %0.4f %%)]" % (method.split("-")[-1], roc_auc * 100)),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     tpr_fpr_row = []
     tpr_fpr_row.append("%s-%s" % (method, target))
     for fpr_iter in np.arange(len(x_labels)):

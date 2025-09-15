@@ -23,13 +23,13 @@ warnings.filterwarnings("ignore")
 
 
 def split_coeff(coeffs):
-    """
+    """"""
     Return:
         coeffs_dict     -- a dict of torch.tensors
 
     Parameters:
         coeffs          -- torch.tensor, size (B, 256)
-    """
+    """"""
     id_coeffs = coeffs[:, :80]
     exp_coeffs = coeffs[:, 80:144]
     tex_coeffs = coeffs[:, 144:224]
@@ -43,7 +43,8 @@ def split_coeff(coeffs):
         "angle": angles,
         "gamma": gammas,
         "trans": translations,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 class CropAndExtract:
@@ -60,7 +61,8 @@ class CropAndExtract:
             checkpoint = torch.load(
                 sadtalker_path["path_of_net_recon_model"],
                 map_location=torch.device(device),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.net_recon.load_state_dict(checkpoint["net_recon"])
 
         self.net_recon.eval()
@@ -74,7 +76,8 @@ class CropAndExtract:
         crop_or_resize="crop",
         source_image_flag=False,
         pic_size=256,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         pic_name = os.path.splitext(os.path.split(input_path)[-1])[0]
 
         landmarks_path = os.path.join(save_dir, pic_name + "_landmarks.txt")
@@ -110,7 +113,8 @@ class CropAndExtract:
                 x_full_frames,
                 still=True if "ext" in crop_or_resize.lower() else False,
                 xsize=512,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             clx, cly, crx, cry = crop
             lx, ly, rx, ry = quad
             lx, ly, rx, ry = int(lx), int(ly), int(rx), int(ry)
@@ -121,7 +125,8 @@ class CropAndExtract:
                 x_full_frames,
                 still=True if "ext" in crop_or_resize.lower() else False,
                 xsize=512,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             clx, cly, crx, cry = crop
             lx, ly, rx, ry = quad
             lx, ly, rx, ry = int(lx), int(ly), int(rx), int(ry)
@@ -133,12 +138,14 @@ class CropAndExtract:
                 x_full_frames[0].shape[0],
                 0,
                 x_full_frames[0].shape[1],
-            )
+# BRACKET_SURGEON: disabled
+#             )
             crop_info = ((ox2 - ox1, oy2 - oy1), None, None)
 
         frames_pil = [
             Image.fromarray(cv2.resize(frame, (pic_size, pic_size))) for frame in x_full_frames
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         if len(frames_pil) == 0:
             print("No face is detected in the input file")
             return None, None
@@ -179,7 +186,8 @@ class CropAndExtract:
                     .permute(2, 0, 1)
                     .to(self.device)
                     .unsqueeze(0)
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 with torch.no_grad():
                     full_coeff = self.net_recon(im_t)
@@ -193,9 +201,11 @@ class CropAndExtract:
                         pred_coeff["angle"],
                         pred_coeff["trans"],
                         trans_params[2:][None],
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     1,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 video_coeffs.append(pred_coeff)
                 full_coeffs.append(full_coeff.cpu().numpy())
 
@@ -204,6 +214,7 @@ class CropAndExtract:
             savemat(
                 coeff_path,
                 {"coeff_3dmm": semantic_npy, "full_3dmm": np.array(full_coeffs)[0]},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return coeff_path, png_path, crop_info

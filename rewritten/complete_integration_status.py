@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Complete Integration Status Report
 Verifies all files are properly integrated in the production system
-"""
+""""""
 
 import os
 from collections import defaultdict
@@ -20,7 +20,8 @@ def get_file_stats():
         "__pycache__", ".git", "node_modules", "cache",
         "test-results", ".trae", "backups", "snapshots",
         ".pytest_cache"
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     for root, dirs, files in os.walk("."):
         # prune in-place so os.walk won't descend
@@ -45,7 +46,8 @@ def check_key_integrations():
         "schema.sql",
         "Dockerfile",
         "netlify.toml",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     present = []
     missing = []

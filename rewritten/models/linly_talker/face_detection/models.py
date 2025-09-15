@@ -25,7 +25,8 @@ class ConvBlock(nn.Module):
                 nn.BatchNorm2d(in_planes),
                 nn.ReLU(True),
                 nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=1, bias=False),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             self.downsample = None
 
@@ -158,22 +159,26 @@ class FAN(nn.Module):
             self.add_module(
                 "conv_last" + str(hg_module),
                 nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.add_module("bn_end" + str(hg_module), nn.BatchNorm2d(256))
             self.add_module(
                 "l" + str(hg_module),
                 nn.Conv2d(256, 68, kernel_size=1, stride=1, padding=0),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if hg_module < self.num_modules - 1:
                 self.add_module(
                     "bl" + str(hg_module),
                     nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.add_module(
                     "al" + str(hg_module),
                     nn.Conv2d(68, 256, kernel_size=1, stride=1, padding=0),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
     def forward(self, x):
         x = F.relu(self.bn1(self.conv1(x)), True)
@@ -193,7 +198,8 @@ class FAN(nn.Module):
             ll = F.relu(
                 self._modules["bn_end" + str(i)](self._modules["conv_last" + str(i)](ll)),
                 True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Predict heatmaps
             tmp_out = self._modules["l" + str(i)](ll)
@@ -240,9 +246,11 @@ class ResNetDepth(nn.Module):
                     kernel_size=1,
                     stride=stride,
                     bias=False,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.BatchNorm2d(planes * block.expansion),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         layers = []
         layers.append(block(self.inplanes, planes, stride, downsample))

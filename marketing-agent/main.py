@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Marketing Agent
 Comprehensive marketing automation and campaign management service
-"""
+""""""
 
 import logging
 import time
@@ -73,7 +73,8 @@ from sqlalchemy import (
     String,
     Text,
     create_engine,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
@@ -127,13 +128,14 @@ class Config(BaseSettings):
         env_file = ".env"
 
 
-config = Config()
+config = Config():
 
 # Logging setup
 logging.basicConfig(
     level=getattr(logging, config.LOG_LEVEL),
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = structlog.get_logger()
 console = Console()
 
@@ -303,7 +305,8 @@ class MarketingAnalytics(BaseModel):
 # Metrics
 api_request_counter = Counter(
     "marketing_api_requests_total", "Total API requests", ["endpoint", "method"]
-)
+# BRACKET_SURGEON: disabled
+# )
 api_request_duration = Histogram("marketing_api_request_duration_seconds", "API request duration")
 campaign_counter = Counter("marketing_campaigns_total", "Total campaigns", ["type", "status"])
 lead_counter = Counter("marketing_leads_total", "Total leads", ["source", "status"])
@@ -337,7 +340,8 @@ class SocialMediaManager:
                 auth = tweepy.OAuthHandler(config.TWITTER_API_KEY, config.TWITTER_API_SECRET)
                 auth.set_access_token(
                     config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_TOKEN_SECRET
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.twitter_api = tweepy.API(auth)
 
             # Facebook API
@@ -346,7 +350,8 @@ class SocialMediaManager:
                     config.FACEBOOK_APP_ID,
                     config.FACEBOOK_APP_SECRET,
                     config.FACEBOOK_ACCESS_TOKEN,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.facebook_api = FacebookAdsApi.get_default_api()
 
             # LinkedIn API
@@ -369,7 +374,8 @@ class SocialMediaManager:
                 "success": True,
                 "post_id": str(tweet.id),
                 "url": f"https://twitter.com/user/status/{tweet.id}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to post to Twitter: {e}")
@@ -401,7 +407,8 @@ class SocialMediaManager:
                 "success": True,
                 "post_id": post["id"],
                 "url": f"https://facebook.com/{page_id}/posts/{post['id']}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to post to Facebook: {e}")
@@ -420,7 +427,8 @@ class SocialMediaManager:
                 post_data["content"] = {
                     "content - url": media_urls[0],
                     "title": "Shared Content",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             response = self.linkedin_api.submit_share(post_data)
 
@@ -428,7 +436,8 @@ class SocialMediaManager:
                 "success": True,
                 "post_id": response.get("updateKey", "unknown"),
                 "url": response.get("updateUrl", "https://linkedin.com/feed"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to post to LinkedIn: {e}")
@@ -448,7 +457,8 @@ class SocialMediaManager:
                             "shares": metrics.get("retweet_count", 0),
                             "comments": metrics.get("reply_count", 0),
                             "views": metrics.get("impression_count", 0),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 except Exception as e:
                     logger.error(f"Failed to get Twitter metrics: {e}")
 
@@ -460,8 +470,10 @@ class SocialMediaManager:
                         params={
                             "metric": "post_impressions,post_engaged_users,post_clicks,post_reactions_like_total",
                             "access_token": config.FACEBOOK_ACCESS_TOKEN,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
                     if response.status_code == 200:
                         data = response.json().get("data", [])
                         metrics = {metric["name"]: metric["values"][0]["value"] for metric in data}
@@ -470,7 +482,8 @@ class SocialMediaManager:
                             "shares": metrics.get("post_clicks", 0),
                             "comments": metrics.get("post_engaged_users", 0),
                             "views": metrics.get("post_impressions", 0),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 except Exception as e:
                     logger.error(f"Failed to get Facebook metrics: {e}")
 
@@ -526,7 +539,8 @@ class EmailMarketingManager:
                         to_emails=recipient,
                         subject=subject,
                         html_content=content,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     response = self.sendgrid_client.send(message)
                     results.append(response.status_code == 202)
@@ -538,7 +552,8 @@ class EmailMarketingManager:
                     "sent_count": success_count,
                     "total_count": len(recipients),
                     "delivery_rate": (success_count / len(recipients) if recipients else 0),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             elif self.mailchimp_client:
                 # Use Mailchimp for bulk email campaigns
@@ -550,8 +565,10 @@ class EmailMarketingManager:
                             "subject_line": subject,
                             "from_name": "TRAE.AI",
                             "reply_to": "noreply@trae.ai",
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
                     campaign = self.mailchimp_client.campaigns.create(campaign_data)
                     campaign_id = campaign["id"]
@@ -568,7 +585,8 @@ class EmailMarketingManager:
                         "sent_count": len(recipients),
                         "total_count": len(recipients),
                         "delivery_rate": 1.0,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                 except Exception as e:
                     logger.error(f"Mailchimp campaign failed: {e}")
@@ -594,8 +612,10 @@ class EmailMarketingManager:
                         "bounce_rate": campaign_data.get("bounces", {}).get("bounce_rate", 0),
                         "unsubscribe_rate": campaign_data.get("unsubscribes", {}).get(
                             "unsubscribe_rate", 0
-                        ),
-                    }
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     }
                 except Exception as mc_error:
                     logger.warning(f"MailChimp metrics error: {mc_error}")
 
@@ -614,7 +634,8 @@ class EmailMarketingManager:
                 "click_rate": 0,
                 "bounce_rate": 0,
                 "unsubscribe_rate": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to get campaign metrics: {e}")
@@ -623,7 +644,8 @@ class EmailMarketingManager:
                 "click_rate": 0,
                 "bounce_rate": 0,
                 "unsubscribe_rate": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 # SEO Analyzer
@@ -650,7 +672,8 @@ class SEOAnalyzer:
                 keyword_densities[keyword] = {
                     "count": count,
                     "density": round(density, 2),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # SEO score calculation
             seo_score = min(
@@ -663,13 +686,18 @@ class SEOAnalyzer:
                             min(
                                 sum(kd["density"] for kd in keyword_densities.values()),
                                 10,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             * 5
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         + (min(word_count / 10, 40))
-                    ),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "seo_score": round(seo_score, 1),
@@ -678,7 +706,8 @@ class SEOAnalyzer:
                 "word_count": word_count,
                 "keyword_densities": keyword_densities,
                 "recommendations": self._generate_seo_recommendations(seo_score, keyword_densities),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"SEO analysis failed: {e}")
@@ -695,11 +724,13 @@ class SEOAnalyzer:
             if data["density"] < 1:
                 recommendations.append(
                     f"Increase density of keyword '{keyword}' (currently {data['density']}%)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif data["density"] > 3:
                 recommendations.append(
                     f"Reduce density of keyword '{keyword}' to avoid keyword stuffing"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return recommendations
 
@@ -731,7 +762,8 @@ class AnalyticsManager:
                     "bounce_rate": round(np.random.uniform(0.3, 0.7), 3),
                     "avg_session_duration": np.random.randint(120, 600),
                     "conversion_rate": round(np.random.uniform(0.01, 0.05), 3),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Implementation would use Google Analytics API
             return {
@@ -741,7 +773,8 @@ class AnalyticsManager:
                 "bounce_rate": 0,
                 "avg_session_duration": 0,
                 "conversion_rate": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to get website metrics: {e}")
@@ -772,7 +805,8 @@ class CampaignManager:
                 end_date=datetime.utcnow() + timedelta(days=campaign_data.duration_days),
                 objectives=campaign_data.objectives,
                 status="active",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             db.add(campaign)
             db.commit()
@@ -781,7 +815,8 @@ class CampaignManager:
             # Generate initial content calendar
             content_calendar = await self._generate_content_calendar(
                 campaign, campaign_data.duration_days
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             campaign.content_calendar = content_calendar
             db.commit()
@@ -813,8 +848,10 @@ class CampaignManager:
                             "platform": "twitter",
                             "content_type": "promotional",
                             "status": "planned",
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
         # Generate email campaigns
         if "email" in campaign.channels:
@@ -825,14 +862,17 @@ class CampaignManager:
                         "date": email_date.isoformat(),
                         "type": "newsletter",
                         "status": "planned",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return calendar
 
     async def publish_social_post(
         self, post_data: SocialMediaPostCreate, db: Session
-    ) -> SocialMediaPost:
+# BRACKET_SURGEON: disabled
+#     ) -> SocialMediaPost:
         """Publish social media post"""
         try:
             # Create post record
@@ -843,21 +883,25 @@ class CampaignManager:
                 media_urls=post_data.media_urls,
                 hashtags=post_data.hashtags,
                 scheduled_time=post_data.scheduled_time or datetime.utcnow(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Publish to platform
             if post_data.platform == "twitter":
                 result = await self.social_media.post_to_twitter(
                     post_data.content, post_data.media_urls
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif post_data.platform == "facebook":
                 result = await self.social_media.post_to_facebook(
                     post_data.content, post_data.media_urls
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif post_data.platform == "linkedin":
                 result = await self.social_media.post_to_linkedin(
                     post_data.content, post_data.media_urls
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 raise ValueError(f"Unsupported platform: {post_data.platform}")
 
@@ -880,7 +924,8 @@ class CampaignManager:
 
     async def send_email_campaign(
         self, email_data: EmailCampaignCreate, db: Session
-    ) -> EmailCampaign:
+# BRACKET_SURGEON: disabled
+#     ) -> EmailCampaign:
         """Send email campaign"""
         try:
             # Create email campaign record
@@ -891,12 +936,14 @@ class CampaignManager:
                 content=email_data.content,
                 recipient_list=email_data.recipient_list,
                 send_time=email_data.send_time or datetime.utcnow(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Send email
             result = await self.email_marketing.send_campaign(
                 email_data.subject, email_data.content, email_data.recipient_list
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result["success"]:
                 email_campaign.status = "sent"
@@ -927,7 +974,7 @@ class CampaignManager:
 
             # Calculate revenue and ROI
             campaigns = db.query(Campaign).all()
-            total_budget = sum(c.budget or 0 for c in campaigns)
+            sum(c.budget or 0 for c in campaigns)
             total_spent = sum(c.spent or 0 for c in campaigns)
 
             # Mock revenue calculation
@@ -939,25 +986,31 @@ class CampaignManager:
                 "social_media": {
                     "leads": np.random.randint(50, 200),
                     "revenue": np.random.uniform(1000, 5000),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "email": {
                     "leads": np.random.randint(30, 150),
                     "revenue": np.random.uniform(800, 4000),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "paid_ads": {
                     "leads": np.random.randint(20, 100),
                     "revenue": np.random.uniform(500, 3000),
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             top_channels = sorted(
                 channel_performance.items(), key=lambda x: x[1]["revenue"], reverse=True
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Recent activities
             recent_posts = (
                 db.query(SocialMediaPost).order_by(SocialMediaPost.created_at.desc()).limit(5).all()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             recent_activities = [
                 {
@@ -965,11 +1018,14 @@ class CampaignManager:
                     "platform": post.platform,
                     "content": (
                         post.content[:100] + "..." if len(post.content) > 100 else post.content
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "timestamp": post.created_at.isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for post in recent_posts
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             return MarketingAnalytics(
                 total_campaigns=total_campaigns,
@@ -983,11 +1039,14 @@ class CampaignManager:
                         "channel": ch,
                         "leads": data["leads"],
                         "revenue": round(data["revenue"], 2),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     for ch, data in top_channels
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 recent_activities=recent_activities,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Failed to get analytics: {e}")
@@ -1002,7 +1061,8 @@ app = FastAPI(
     title="TRAE.AI Marketing Agent",
     description="Comprehensive marketing automation and campaign management",
     version="1.0.0",
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # CORS middleware
 app.add_middleware(
@@ -1011,7 +1071,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 # Health check
@@ -1022,7 +1083,8 @@ async def health_check():
         "timestamp": datetime.utcnow().isoformat(),
         "service": "marketing - agent",
         "version": "1.0.0",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Metrics endpoint
@@ -1049,7 +1111,8 @@ async def create_campaign(campaign_data: CampaignCreate, db: Session = Depends(g
         spent=campaign.spent,
         performance_metrics=campaign.performance_metrics or {},
         created_at=campaign.created_at,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @app.get("/api/campaigns", response_model=List[CampaignResponse])
@@ -1070,9 +1133,11 @@ async def list_campaigns(db: Session = Depends(get_db)):
             spent=campaign.spent,
             performance_metrics=campaign.performance_metrics or {},
             created_at=campaign.created_at,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         for campaign in campaigns
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
 
 @app.get("/api/campaigns/{campaign_id}", response_model=CampaignResponse)
@@ -1094,7 +1159,8 @@ async def get_campaign(campaign_id: str, db: Session = Depends(get_db)):
         spent=campaign.spent,
         performance_metrics=campaign.performance_metrics or {},
         created_at=campaign.created_at,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 # Social media endpoints
@@ -1122,9 +1188,11 @@ async def list_social_posts(db: Session = Depends(get_db)):
             "status": post.status,
             "engagement_metrics": post.engagement_metrics,
             "created_at": post.created_at.isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         for post in posts
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
 
 # Email marketing endpoints
@@ -1153,9 +1221,11 @@ async def list_email_campaigns(db: Session = Depends(get_db)):
             "open_rate": campaign.open_rate,
             "click_rate": campaign.click_rate,
             "created_at": campaign.created_at.isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         for campaign in campaigns
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
 
 # Analytics endpoints
@@ -1185,14 +1255,16 @@ async def create_lead(lead_data: dict, db: Session = Depends(get_db)):
     lead = Lead(
         campaign_id=(
             uuid.UUID(lead_data.get("campaign_id")) if lead_data.get("campaign_id") else None
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         source=lead_data["source"],
         email=lead_data.get("email"),
         name=lead_data.get("name"),
         phone=lead_data.get("phone"),
         company=lead_data.get("company"),
         lead_score=lead_data.get("lead_score", 0),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     db.add(lead)
     db.commit()
@@ -1219,9 +1291,11 @@ async def list_leads(db: Session = Depends(get_db)):
             "lead_score": lead.lead_score,
             "status": lead.status,
             "created_at": lead.created_at.isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         for lead in leads
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
 
 # Affiliate marketing endpoints
@@ -1233,12 +1307,14 @@ async def create_affiliate_link(link_data: dict, db: Session = Depends(get_db)):
     affiliate_link = AffiliateLink(
         campaign_id=(
             uuid.UUID(link_data.get("campaign_id")) if link_data.get("campaign_id") else None
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         platform=link_data["platform"],
         product_name=link_data["product_name"],
         affiliate_url=link_data["affiliate_url"],
         commission_rate=link_data.get("commission_rate", 0.0),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     db.add(affiliate_link)
     db.commit()
@@ -1263,9 +1339,11 @@ async def list_affiliate_links(db: Session = Depends(get_db)):
             "conversions": link.conversions,
             "revenue": link.revenue,
             "created_at": link.created_at.isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         for link in links
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
 
 # Background tasks
@@ -1280,15 +1358,18 @@ async def update_engagement_metrics():
             .filter(
                 SocialMediaPost.status == "published",
                 SocialMediaPost.published_time > datetime.utcnow() - timedelta(days=7),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             .all()
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         for post in posts:
             if post.post_id:
                 metrics = await marketing_agent.social_media.get_engagement_metrics(
                     post.platform, post.post_id
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 post.engagement_metrics = metrics
 
         db.commit()
@@ -1311,9 +1392,11 @@ async def update_email_metrics():
             .filter(
                 EmailCampaign.status == "sent",
                 EmailCampaign.send_time > datetime.utcnow() - timedelta(days=30),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             .all()
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         for campaign in campaigns:
             metrics = await marketing_agent.email_marketing.get_campaign_metrics(str(campaign.id))
@@ -1343,7 +1426,8 @@ async def update_campaign_performance():
             # Calculate performance metrics
             posts = (
                 db.query(SocialMediaPost).filter(SocialMediaPost.campaign_id == campaign.id).all()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             emails = db.query(EmailCampaign).filter(EmailCampaign.campaign_id == campaign.id).all()
 
@@ -1353,11 +1437,13 @@ async def update_campaign_performance():
             total_engagement = sum(
                 sum(post.engagement_metrics.values()) if post.engagement_metrics else 0
                 for post in posts
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             avg_open_rate = (
                 np.mean([email.open_rate for email in emails if email.open_rate]) if emails else 0
-            )
+# BRACKET_SURGEON: disabled
+#             )
             lead_count = len(leads)
 
             campaign.performance_metrics = {
@@ -1367,7 +1453,8 @@ async def update_campaign_performance():
                 "avg_open_rate": round(avg_open_rate, 3),
                 "lead_count": lead_count,
                 "last_updated": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         db.commit()
 
@@ -1385,7 +1472,8 @@ async def http_exception_handler(request, exc):
     return JSONResponse(
         status_code=exc.status_code,
         content={"detail": exc.detail, "timestamp": datetime.utcnow().isoformat()},
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @app.exception_handler(Exception)
@@ -1397,8 +1485,10 @@ async def general_exception_handler(request, exc):
         content={
             "detail": "Internal server error",
             "timestamp": datetime.utcnow().isoformat(),
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 if __name__ == "__main__":
@@ -1421,4 +1511,5 @@ if __name__ == "__main__":
         port=8002,
         reload=config.ENVIRONMENT == "development",
         log_level=config.LOG_LEVEL.lower(),
-    )
+# BRACKET_SURGEON: disabled
+#     )

@@ -9,16 +9,16 @@ from util import util
 
 
 class BaseOptions:
-    """This class defines options used during both training and test time.
+    """This class defines options used during both training and test time."""
 
     It also implements several helper functions such as parsing, printing, \
-    and saving the options.
+#     and saving the options.
     It also gathers additional options defined in <modify_commandline_options> functions in both dataset class \
-    and model class.
-    """
+#     and model class.
+    """"""
 
     def __init__(self, cmd_line=None):
-        """Reset the class; indicates the class hasn't been initailized"""
+        """Reset the class; indicates the class hasn't been initailized"""'
         self.initialized = False
         self.cmd_line = None
         if cmd_line is not None:
@@ -31,33 +31,38 @@ class BaseOptions:
             "--name",
             type=str,
             default="face_recon",
-            help="name of the experiment. It decides where to store samples \
-    and models",
-        )
+            help="name of the experiment. It decides where to store samples \"
+#     and models",
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--gpu_ids",
             type=str,
             default="0",
             help="gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--checkpoints_dir",
             type=str,
             default="./checkpoints",
             help="models are saved here",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--vis_batch_nums",
             type=float,
             default=1,
             help="batch nums of images for visulization",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--eval_batch_nums",
             type=float,
             default=float("inf"),
             help="batch nums of images for evaluation",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--use_ddp",
             type=util.str2bool,
@@ -65,7 +70,8 @@ class BaseOptions:
             const=True,
             default=True,
             help="whether use distributed data parallel",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument("--ddp_port", type=str, default="12355", help="ddp port")
         parser.add_argument(
             "--display_per_batch",
@@ -74,7 +80,8 @@ class BaseOptions:
             const=True,
             default=True,
             help="whether use batch to show losses",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--add_image",
             type=util.str2bool,
@@ -82,18 +89,21 @@ class BaseOptions:
             const=True,
             default=True,
             help="whether add image to tensorboard",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--world_size",
             type=int,
             default=1,
             help="batch nums of images for evaluation",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # model parameters
         parser.add_argument(
             "--model", type=str, default="facerecon", help="chooses which model to use."
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # additional parameters
         parser.add_argument(
@@ -101,28 +111,31 @@ class BaseOptions:
             type=str,
             default="latest",
             help="which epoch to load? set to latest to use latest cached model",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--verbose",
             action="store_true",
             help="if specified, print more debugging information",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--suffix",
             default="",
             type=str,
             help="customized suffix: opt.name = opt.name + suffix: e.g., {model}_{netG}_size{load_size}",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.initialized = True
         return parser
 
     def gather_options(self):
-        """Initialize our parser with basic options(only once).
+        """Initialize our parser with basic options(only once)."""
         Add additional model - specific and dataset - specific options.
         These options are defined in the <modify_commandline_options> function
         in model and dataset classes.
-        """
+        """"""
         if not self.initialized:  # check if it has been initialized
             parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
             parser = self.initialize(parser)
@@ -159,11 +172,11 @@ class BaseOptions:
             return parser.parse_args(self.cmd_line)
 
     def print_options(self, opt):
-        """Print and save options
+        """Print and save options"""
 
         It will print both current options and default values(if different).
         It will save options into a text file/[checkpoints_dir]/opt.txt
-        """
+        """"""
         message = ""
         message += "----------------- Options ---------------\\n"
         for k, v in sorted(vars(opt).items()):
@@ -188,8 +201,8 @@ class BaseOptions:
             pass
 
     def parse(self):
-        """Parse our options, create checkpoints directory suffix, \
-    and set up gpu device."""
+        """Parse our options, create checkpoints directory suffix, \"""
+#     and set up gpu device.""""""
         opt = self.gather_options()
         opt.isTrain = self.isTrain  # train or test
 
@@ -227,7 +240,8 @@ class BaseOptions:
                 if opt.epoch == "latest":
                     epoch_counts = [
                         int(i.split(".")[0].split("_")[-1]) for i in model_pths if "latest" not in i
-                    ]
+# BRACKET_SURGEON: disabled
+#                     ]
                     if len(epoch_counts) != 0:
                         opt.epoch_count = max(epoch_counts) + 1
                 else:

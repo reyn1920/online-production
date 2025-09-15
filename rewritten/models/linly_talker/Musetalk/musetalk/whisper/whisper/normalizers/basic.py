@@ -21,14 +21,15 @@ ADDITIONAL_DIACRITICS = {
     "Þ": "th",
     "ł": "l",
     "Ł": "L",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def remove_symbols_and_diacritics(s: str, keep=""):
-    """
+    """"""
     Replace any other markers, symbols, and punctuations with a space,
         and drop any diacritics (category 'Mn' and some manual mappings)
-    """
+    """"""
     return "".join(
         (
             c
@@ -42,20 +43,25 @@ def remove_symbols_and_diacritics(s: str, keep=""):
                     else " "
                     if unicodedata.category(c)[0] in "MSP"
                     else c
-                )
-            )
-        )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
         for c in unicodedata.normalize("NFKD", s)
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def remove_symbols(s: str):
-    """
+    """"""
     Replace any other markers, symbols, punctuations with a space, keeping diacritics
-    """
+    """"""
     return "".join(
         " " if unicodedata.category(c)[0] in "MSP" else c for c in unicodedata.normalize("NFKC", s)
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 class BasicTextNormalizer:

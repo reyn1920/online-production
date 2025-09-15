@@ -43,7 +43,8 @@ splits = {
         "：",
         "—",
         "…",
-}
+# BRACKET_SURGEON: disabled
+# }
 if device == "cuda":
     gpu_name = torch.cuda.get_device_name(0)
     if (
@@ -53,7 +54,8 @@ if device == "cuda":
         or "1060" in gpu_name
         or "1070" in gpu_name
         or "1080" in gpu_name
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         is_half = False
 
 if device == "cpu":
@@ -62,10 +64,14 @@ if device == "cpu":
 dtype = torch.float16 if is_half is True else torch.float32
 bert_path = os.environ.get(
     "bert_path", "GPT_SoVITS/pretrained_models/chinese - roberta - wwm - ext - large"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 cnhubert_base_path = os.environ.get(
     "cnhubert_base_path", "GPT_SoVITS/pretrained_models/chinese - hubert - base"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 cnhubert.cnhubert_base_path = cnhubert_base_path
 
 tokenizer = AutoTokenizer.from_pretrained(bert_path)
@@ -95,7 +101,9 @@ def get_spepc(hps, filename):
             hps.data.hop_length,
             hps.data.win_length,
             center = False,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     return spec
 
 
@@ -162,7 +170,9 @@ def get_bert_inf(phones, word2ph, norm_text, language):
         bert = torch.zeros(
             (1024, len(phones)),
                 dtype = torch.float16 if is_half is True else torch.float32,
-                ).to(device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).to(device)
 
     return bert
 
@@ -392,7 +402,9 @@ class GPT_SoVITS:
                 self.hps.train.segment_size//self.hps.data.hop_length,
                 n_speakers = self.hps.data.n_speakers,
                 **self.hps.model,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         if "pretrained" not in sovits_path:
             del vq_model.enc_q
         if is_half is True:
@@ -412,10 +424,13 @@ class GPT_SoVITS:
             text_language,
             how_to_cut="不切",
             save_path="vits_res.wav",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         print(
             ref_wav_path, prompt_text, prompt_language, text, text_language, how_to_cut
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return self.get_tts_wav(
             ref_wav_path,
                 prompt_text,
@@ -424,7 +439,9 @@ class GPT_SoVITS:
                 text_language,
                 how_to_cut,
                 save_path,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def get_tts_wav(
@@ -436,7 +453,8 @@ class GPT_SoVITS:
             text_language,
             how_to_cut="不切",
             save_path="vits_res.wav",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         t0 = ttime()
         prompt_text = prompt_text.strip("\\n")
         if prompt_text[-1] not in splits:
@@ -449,7 +467,9 @@ class GPT_SoVITS:
         zero_wav = np.zeros(
             int(self.hps.data.sampling_rate * 0.3),
                 dtype = np.float16 if is_half is True else np.float32,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         with torch.no_grad():
             wav16k, sr = librosa.load(ref_wav_path, sr = 16000)
             if wav16k.shape[0] > 160000 or wav16k.shape[0] < 48000:
@@ -465,9 +485,13 @@ class GPT_SoVITS:
             wav16k = torch.cat([wav16k, zero_wav_torch])
             ssl_content = ssl_model.model(wav16k.unsqueeze(0))[
                 "last_hidden_state"
-            ].transpose(
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ].transpose(
                 1, 2
-            )  # .float()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # .float()
             codes = self.vq_model.extract_latent(ssl_content)
             prompt_semantic = codes[0, 0]
         t1 = ttime()
@@ -479,13 +503,16 @@ class GPT_SoVITS:
             "中英混合": "zh",  # 按中英混合识别####不变
             "日英混合": "ja",  # 按日英混合识别####不变
             "多语种混合": "auto",  # 多语种启动切分识别语种
-        }
+# BRACKET_SURGEON: disabled
+#         }
         prompt_language = dict_language[prompt_language]
         text_language = dict_language[text_language]
 
         phones1, word2ph1, norm_text1 = get_cleaned_text_fianl(
             prompt_text, prompt_language
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if how_to_cut == "凑四句一切":
             text = cut1(text)
@@ -503,7 +530,9 @@ class GPT_SoVITS:
         audio_opt = []
         bert1 = get_bert_final(
             phones1, word2ph1, norm_text1, prompt_language, device, text
-        ).to(dtype)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).to(dtype)
 
         for text in texts:
             # 解决输入目标文本的空行导致报错的问题
@@ -515,13 +544,17 @@ class GPT_SoVITS:
             phones2, word2ph2, norm_text2 = get_cleaned_text_fianl(text, text_language)
             bert2 = get_bert_final(
                 phones2, word2ph2, norm_text2, text_language, device, text
-            ).to(dtype)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).to(dtype)
 
             bert = torch.cat([bert1, bert2], 1)
 
             all_phoneme_ids = (
                 torch.LongTensor(phones1 + phones2).to(device).unsqueeze(0)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             bert = bert.to(device).unsqueeze(0)
             all_phoneme_len = torch.tensor([all_phoneme_ids.shape[-1]]).to(device)
             prompt = prompt_semantic.unsqueeze(0).to(device)
@@ -536,7 +569,9 @@ class GPT_SoVITS:
                         # prompt_phone_len = ph_offset,
                         top_k = self.config["inference"]["top_k"],
                         early_stop_num = self.hz * self.max_sec,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             t3 = ttime()
             # print(pred_semantic.shape,idx)
             pred_semantic = pred_semantic[:, -idx:].unsqueeze(
@@ -550,17 +585,22 @@ class GPT_SoVITS:
             # audio = vq_model.decode(pred_semantic,
     all_phoneme_ids,
     refer).detach().cpu().numpy()[0,
-    0]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     0]
             audio = (
                 self.vq_model.decode(
                     pred_semantic,
                         torch.LongTensor(phones2).to(device).unsqueeze(0),
                         refer,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 .detach()
                 .cpu()
                 .numpy()[0, 0]
-            )  ###试试重建不带上prompt部分
+# BRACKET_SURGEON: disabled
+#             )  ###试试重建不带上prompt部分
             max_audio = np.abs(audio).max()  # 简单防止16bit爆音
             if max_audio > 1:
                 audio/= max_audio
@@ -572,12 +612,16 @@ class GPT_SoVITS:
         # yield self.hps.data.sampling_rate, (np.concatenate(audio_opt,
     0) * 32768).astype(
             #     np.int16
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
         # )
         write(
             save_path,
                 self.hps.data.sampling_rate,
                 (np.concatenate(audio_opt, 0) * 32768).astype(np.int16),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         return save_path
 
 if __name__ == "__main__":
@@ -608,4 +652,6 @@ if __name__ == "__main__":
             text_language,
             how_to_cut,
             save_audio_file,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )

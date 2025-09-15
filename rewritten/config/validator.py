@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Configuration Validator
 
 Validates environment configuration before application startup.
@@ -8,7 +8,7 @@ Follows go - live security practices:
 - Checks API key formats
 - Ensures secure defaults
 - Provides clear error messages
-"""
+""""""
 
 import logging
 import os
@@ -53,103 +53,122 @@ class ConfigValidator:
                 "default": "8000",
                 "validator": self._validate_port,
                 "description": "Server port number",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "HOST": {
                 "required": False,
                 "default": "0.0.0.0",
                 "validator": self._validate_host,
                 "description": "Server host address",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "ENVIRONMENT": {
                 "required": False,
                 "default": "development",
                 "validator": self._validate_environment,
                 "description": "Application environment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Database Configuration
             "DATABASE_URL": {
                 "required": False,
                 "validator": self._validate_database_url,
                 "description": "Database connection string",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Security Configuration
             "SECRET_KEY": {
                 "required": True,
                 "validator": self._validate_secret_key,
                 "description": "Application secret key for security",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "JWT_SECRET": {
                 "required": False,
                 "validator": self._validate_jwt_secret,
                 "description": "JWT token signing secret",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Pet Care APIs (Optional)
             "EBIRD_API_TOKEN": {
                 "required": False,
                 "validator": self._validate_api_key,
                 "description": "eBird API token for bird observations",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "DOG_API_KEY": {
                 "required": False,
                 "validator": self._validate_api_key,
                 "description": "Dog API key for breed information",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "CAT_API_KEY": {
                 "required": False,
                 "validator": self._validate_api_key,
                 "description": "Cat API key for breed information",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "PETFINDER_KEY": {
                 "required": False,
                 "validator": self._validate_api_key,
                 "description": "Petfinder API key",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "PETFINDER_SECRET": {
                 "required": False,
                 "validator": self._validate_api_key,
                 "description": "Petfinder API secret",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Veterinary Services (Optional)
             "VETSTER_API_KEY": {
                 "required": False,
                 "validator": self._validate_api_key,
                 "description": "Vetster API key for online consultations",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "PAWP_API_KEY": {
                 "required": False,
                 "validator": self._validate_api_key,
                 "description": "Pawp API key for emergency vet chat",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "AIRVET_API_KEY": {
                 "required": False,
                 "validator": self._validate_api_key,
                 "description": "AirVet API key for virtual care",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "CALENDLY_TOKEN": {
                 "required": False,
                 "validator": self._validate_api_key,
                 "description": "Calendly token for appointment scheduling",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Feature Flags
             "ENABLE_PET_CARE_APIS": {
                 "required": False,
                 "default": "false",
                 "validator": self._validate_boolean,
                 "description": "Enable pet care API endpoints",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "ENABLE_AFFILIATE_PROCESSING": {
                 "required": False,
                 "default": "true",
                 "validator": self._validate_boolean,
                 "description": "Enable affiliate data processing",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "ENABLE_DEBUG_MODE": {
                 "required": False,
                 "default": "false",
                 "validator": self._validate_boolean,
                 "description": "Enable debug mode (should be false in production)",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _validate_port(self, value: str) -> Tuple[bool, str]:
         """Validate port number"""
@@ -187,7 +206,8 @@ class ConfigValidator:
             r"^mysql://.*",
             r"^sqlite:///.*",
             r"^mongodb://.*",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for pattern in db_patterns:
             if re.match(pattern, value, re.IGNORECASE):
@@ -226,7 +246,8 @@ class ConfigValidator:
             "placeholder",
             "example",
             "test - key",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         if value.lower() in placeholder_patterns:
             return False, "API key appears to be a placeholder value"
@@ -243,9 +264,10 @@ class ConfigValidator:
 
         return (
             False,
-            "Boolean value must be true/false, 1/0, yes/no, on/off, \
-    or enabled/disabled",
-        )
+            "Boolean value must be true/false, 1/0, yes/no, on/off, \"
+#     or enabled/disabled",
+# BRACKET_SURGEON: disabled
+#         )
 
     def validate_configuration(self) -> Dict[str, Any]:
         """Validate all configuration settings"""
@@ -267,7 +289,8 @@ class ConfigValidator:
                         level=ValidationLevel.ERROR,
                         message=f"Required configuration '{key}' is missing: {rules['description']}",
                         value_present=False,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     errors.append(result.message)
                 else:
                     # Use default if available
@@ -279,7 +302,8 @@ class ConfigValidator:
                             level=ValidationLevel.INFO,
                             message=f"Using default value for '{key}': {default_value}",
                             value_present=False,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         info.append(result.message)
                     else:
                         result = ValidationResult(
@@ -287,7 +311,8 @@ class ConfigValidator:
                             level=ValidationLevel.WARNING,
                             message=f"Optional configuration '{key}' not set: {rules['description']}",
                             value_present=False,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         warnings.append(result.message)
             else:
                 # Validate the value
@@ -302,19 +327,22 @@ class ConfigValidator:
                             message=f"'{key}': {validation_message}",
                             value_present=True,
                             value_valid=True,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         info.append(result.message)
                     else:
                         level = (
                             ValidationLevel.ERROR if rules["required"] else ValidationLevel.WARNING
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         result = ValidationResult(
                             key=key,
                             level=level,
                             message=f"'{key}' validation failed: {validation_message}",
                             value_present=True,
                             value_valid=False,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         if level == ValidationLevel.ERROR:
                             errors.append(result.message)
@@ -326,7 +354,8 @@ class ConfigValidator:
                         level=ValidationLevel.INFO,
                         message=f"'{key}' is set (no validation rule defined)",
                         value_present=True,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     info.append(result.message)
 
             self.results.append(result)
@@ -355,7 +384,8 @@ class ConfigValidator:
             "total_checks": len(self.results),
             "errors_count": len(errors),
             "warnings_count": len(warnings),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if validation_summary["valid"]:
             logger.info(f"✅ Configuration validation passed ({len(self.results)} checks)")
@@ -398,4 +428,5 @@ __all__ = [
     "ValidationResult",
     "ValidationLevel",
     "validate_startup_config",
-]
+# BRACKET_SURGEON: disabled
+# ]

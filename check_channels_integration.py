@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Check Channels Integration Status
 Verifies that all channels are properly integrated \
-    and accessible through the dashboard API
-"""
+#     and accessible through the dashboard API
+""""""
 
 
 import requests

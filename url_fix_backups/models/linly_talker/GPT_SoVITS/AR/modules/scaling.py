@@ -25,7 +25,7 @@ from torch import Tensor
 
 
 class DoubleSwishFunction(torch.autograd.Function):
-    """
+    """"""
       double_swish(x) = x * torch.sigmoid(x - 1)
     This is a definition, originally motivated by its close numerical
     similarity to swish(swish(x)), where swish(x) =  x * sigmoid(x).
@@ -33,12 +33,12 @@ class DoubleSwishFunction(torch.autograd.Function):
     Memory - efficient derivative computation:
      double_swish(x) = x * s, where s(x) = torch.sigmoid(x - 1)
      double_swish'(x) = d / dx double_swish(x) =  x * s'(x) + x' * s(x) = x * s'(x) + s(x).
-     Now, s'(x) = s(x) * (1 - s(x)).
+     Now, s'(x) = s(x) * (1 - s(x)).'
      double_swish'(x) =  x * s'(x) + s(x).
                       =  x * s(x) * (1 - s(x)) + s(x).
                      = double_swish(x) * (1 - s(x)) + s(x)
      ... so we just need to remember s(x) but not x itself.
-    """
+    """"""
 
     @staticmethod
 
@@ -59,13 +59,15 @@ class DoubleSwishFunction(torch.autograd.Function):
             # min \\simeq -0.043638.  Take floor as -0.043637 so it's a lower bund
             # max \\simeq 1.1990.   Take ceil to be 1.2 so it's an upper bound.
             # the combination of "+ torch.rand_like(deriv)" \
-    and casting to torch.uint8 (which
+#     and casting to torch.uint8 (which
             # floors), should be expectation - preserving.
             floor = -0.043637
             ceil = 1.2
             d_scaled = (deriv - floor) * (255.0 / (ceil - floor)) + torch.rand_like(
                 deriv
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if __name__ == "__main__":
                 # for self - testing only.
                 assert d_scaled.min() >= 0.0
@@ -92,9 +94,9 @@ class DoubleSwish(torch.nn.Module):
 
 
     def forward(self, x: Tensor) -> Tensor:
-        """Return double - swish activation function which is an approximation to Swish(Swish(x)),
+        """Return double - swish activation function which is an approximation to Swish(Swish(x)),"""
             that we approximate closely with x * sigmoid(x - 1).
-        """
+        """"""
         if torch.jit.is_scripting() or torch.jit.is_tracing():
             return x * torch.sigmoid(x - 1.0)
         return DoubleSwishFunction.apply(x)
@@ -110,7 +112,8 @@ class ActivationBalancerFunction(torch.autograd.Function):
             scale_factor: Tensor,
             sign_factor: Optional[Tensor],
             channel_dim: int,
-            ) -> Tensor:
+# BRACKET_SURGEON: disabled
+#             ) -> Tensor:
         if channel_dim < 0:
             channel_dim += x.ndim
         ctx.channel_dim = channel_dim
@@ -142,7 +145,9 @@ class ActivationBalancerFunction(torch.autograd.Function):
                 None,
                 None,
                 None,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
 def _compute_scale_factor(
@@ -152,7 +157,8 @@ def _compute_scale_factor(
         max_abs: float,
         gain_factor: float,
         max_factor: float,
-) -> Tensor:
+# BRACKET_SURGEON: disabled
+# ) -> Tensor:
     if channel_dim < 0:
         channel_dim += x.ndim
     sum_dims = [d for d in range(x.ndim) if d != channel_dim]
@@ -165,11 +171,15 @@ def _compute_scale_factor(
         # x_abs)_mean , min_abs.
         below_threshold = ((min_abs - x_abs_mean) * (gain_factor / min_abs)).clamp(
             min = 0, max = max_factor
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     above_threshold = ((x_abs_mean - max_abs) * (gain_factor / max_abs)).clamp(
         min = 0, max = max_factor
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     return below_threshold - above_threshold
 
@@ -181,7 +191,8 @@ def _compute_sign_factor(
         max_positive: float,
         gain_factor: float,
         max_factor: float,
-) -> Tensor:
+# BRACKET_SURGEON: disabled
+# ) -> Tensor:
     if channel_dim < 0:
         channel_dim += x.ndim
     sum_dims = [d for d in range(x.ndim) if d != channel_dim]
@@ -193,7 +204,9 @@ def _compute_sign_factor(
         # as large as max_factor.
         factor1 = (
             (min_positive - proportion_positive) * (gain_factor / min_positive)
-        ).clamp_(min = 0, max = max_factor)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).clamp_(min = 0, max = max_factor)
 
     if max_positive == 1.0:
         factor2 = 0.0
@@ -202,7 +215,9 @@ def _compute_sign_factor(
         # as large as -max_factor.
         factor2 = (
             (proportion_positive - max_positive) * (gain_factor / (1.0 - max_positive))
-        ).clamp_(min = 0, max = max_factor)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).clamp_(min = 0, max = max_factor)
     sign_factor = factor1 - factor2
     # require min_positive != 0 or max_positive != 1:
     assert not isinstance(sign_factor, float)
@@ -210,7 +225,7 @@ def _compute_sign_factor(
 
 
 class ActivationBalancer(torch.nn.Module):
-    """
+    """"""
     Modifies the backpropped derivatives of a function to try to encourage, for
         each channel, that it is positive at least a proportion `threshold` of the
     time.  It does this by multiplying negative derivative values by up to
@@ -249,7 +264,7 @@ class ActivationBalancer(torch.nn.Module):
              from doing it at the same time.  Early in training we may use
 
              higher probabilities than this; it will decay to this value.
-    """
+    """"""
 
 
     def __init__(
@@ -264,7 +279,8 @@ class ActivationBalancer(torch.nn.Module):
             min_abs: float = 0.2,
             max_abs: float = 100.0,
             min_prob: float = 0.1,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super(ActivationBalancer, self).__init__()
         self.num_channels = num_channels
         self.channel_dim = channel_dim
@@ -312,7 +328,9 @@ class ActivationBalancer(torch.nn.Module):
                         self.max_positive,
                         gain_factor = self.sign_gain_factor / prob,
                         max_factor = self.max_factor,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 sign_factor = None
 
@@ -323,27 +341,36 @@ class ActivationBalancer(torch.nn.Module):
                     max_abs = self.max_abs,
                     gain_factor = self.scale_gain_factor / prob,
                     max_factor = self.max_factor,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             return ActivationBalancerFunction.apply(
                 x,
                     scale_factor,
                     sign_factor,
                     self.channel_dim,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             return _no_op(x)
 
 
 def BalancedDoubleSwish(
     d_model, channel_dim=-1, max_abs = 10.0, min_prob = 0.25
-) -> nn.Sequential:
-    """
+# BRACKET_SURGEON: disabled
+# ) -> nn.Sequential:
+    """"""
     ActivationBalancer -> DoubleSwish
-    """
+    """"""
     balancer = ActivationBalancer(
         d_model, channel_dim = channel_dim, max_abs = max_abs, min_prob = min_prob
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return nn.Sequential(
         balancer,
             DoubleSwish(),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )

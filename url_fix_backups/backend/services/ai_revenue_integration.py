@@ -1,12 +1,12 @@
 #!/usr / bin / env python3
-"""
+""""""
 AI Revenue Integration Service
 
 Integrates AI platform costs \
-    and usage metrics with the existing revenue tracking system.
+#     and usage metrics with the existing revenue tracking system.
 Provides comprehensive cost analysis, ROI calculations, and budget management for
 ChatGPT, Gemini, and Abacus AI platforms.
-"""
+""""""
 
 import asyncio
 import json
@@ -80,22 +80,26 @@ class AIRevenueIntegration:
                 "cost_per_request": 0.002,
                 "monthly_budget": 50.0,
                 "revenue_multiplier": 15.0,  # Expected revenue per dollar spent
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "gemini": {
                 "name": "Gemini",
                 "url": "https://gemini.google.com / app",
                 "cost_per_request": 0.001,
                 "monthly_budget": 30.0,
                 "revenue_multiplier": 20.0,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "abacus": {
                 "name": "Abacus AI",
                 "url": "https://apps.abacus.ai / chatllm/?appId = 1024a18ebe",
                 "cost_per_request": 0.0015,
                 "monthly_budget": 40.0,
                 "revenue_multiplier": 18.0,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # Initialize budget alerts
         self.budget_alerts = []
@@ -114,8 +118,10 @@ class AIRevenueIntegration:
                     alert_triggered=False,
                     message=f"{config['name']} approaching monthly budget limit",
                     created_at=datetime.now(),
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             # ROI decline alert
             self.budget_alerts.append(
@@ -127,8 +133,10 @@ class AIRevenueIntegration:
                     alert_triggered=False,
                     message=f"{config['name']} ROI declining below threshold",
                     created_at=datetime.now(),
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def track_ai_usage(
         self, platform: str, requests_count: int = 1, revenue_generated: float = 0.0
@@ -145,7 +153,8 @@ class AIRevenueIntegration:
             if self.cost_tracker:
                 self.cost_tracker.track_api_usage(
                     api_name=f"ai_{platform}", requests_count=requests_count, cost=cost
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Update core AI integration if available
             if self.core_ai:
@@ -165,7 +174,8 @@ class AIRevenueIntegration:
                 "revenue_generated": revenue_generated,
                 "roi": roi,
                 "timestamp": datetime.now(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error tracking AI usage for {platform}: {e}")
@@ -216,7 +226,8 @@ class AIRevenueIntegration:
         try:
             self.logger.warning(
                 f"AI Budget Alert: {alert.message} - {alert.platform} - Current: {alert.current_value}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Here you could integrate with email notifications, Slack, etc.
             # For now, just log the alert
@@ -250,7 +261,8 @@ class AIRevenueIntegration:
                     ((revenue_generated - total_cost) / revenue_generated * 100)
                     if revenue_generated > 0
                     else 0
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 roi_percentage = (revenue_generated / total_cost * 100) if total_cost > 0 else 0
 
                 metrics[platform_key] = AIRevenueMetrics(
@@ -264,7 +276,8 @@ class AIRevenueIntegration:
                     revenue_generated=revenue_generated,
                     profit_margin=profit_margin,
                     last_updated=datetime.now(),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             return metrics
 
@@ -290,7 +303,8 @@ class AIRevenueIntegration:
                 "platform_breakdown": {k: asdict(v) for k, v in metrics.items()},
                 "cost_efficiency": total_cost / max(1, total_requests),
                 "last_updated": datetime.now(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error getting AI cost summary: {e}")
@@ -313,8 +327,10 @@ class AIRevenueIntegration:
                             "type": "budget_exceeded",
                             "message": f"{metric.platform} has exceeded monthly budget by ${metric.monthly_cost - config['monthly_budget']:.2f}",
                             "action": "Consider reducing usage or increasing budget",
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Check ROI efficiency
                 if metric.roi_percentage < 1000:  # Less than 10x ROI
@@ -324,13 +340,16 @@ class AIRevenueIntegration:
                             "type": "low_roi",
                             "message": f"{metric.platform} ROI is {metric.roi_percentage:.1f}%, below optimal threshold",
                             "action": "Review usage patterns and optimize prompts",
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Check cost efficiency
                 avg_cost_per_request = sum(m.cost_per_request for m in metrics.values()) / len(
                     metrics
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if metric.cost_per_request > avg_cost_per_request * 1.5:
                     recommendations.append(
                         {
@@ -338,19 +357,24 @@ class AIRevenueIntegration:
                             "type": "high_cost_per_request",
                             "message": f"{metric.platform} cost per request is above average",
                             "action": "Consider switching to more cost - effective platform for similar tasks",
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
             return {
                 "recommendations": recommendations,
                 "total_potential_savings": sum(
                     m.monthly_cost * 0.1 for m in metrics.values()
-                ),  # 10% potential savings
+# BRACKET_SURGEON: disabled
+#                 ),  # 10% potential savings
                 "optimization_score": len(
                     [r for r in recommendations if r["type"] != "budget_exceeded"]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "generated_at": datetime.now(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error optimizing AI spending: {e}")
@@ -372,15 +396,18 @@ class AIRevenueIntegration:
                     "total_ai_revenue": cost_summary.get("total_ai_revenue", 0),
                     "net_profit": cost_summary.get("net_profit", 0),
                     "roi_percentage": cost_summary.get("overall_roi", 0),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "platform_performance": metrics,
                 "cost_analysis": cost_summary,
                 "optimization_recommendations": optimization,
                 "budget_alerts": [
                     asdict(alert) for alert in self.budget_alerts if alert.alert_triggered
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "generated_at": datetime.now(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error exporting AI revenue report: {e}")
@@ -416,7 +443,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="AI Revenue Integration CLI")
     parser.add_argument(
         "--action", choices=["track", "summary", "optimize", "report"], required=True
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument("--platform", choices=["chatgpt", "gemini", "abacus"], help="AI platform")
     parser.add_argument("--requests", type=int, default=1, help="Number of requests")
     parser.add_argument("--revenue", type=float, default=0.0, help="Revenue generated")

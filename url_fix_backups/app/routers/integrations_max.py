@@ -100,7 +100,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "images_pixabay": {
         "name": "Pixabay",
         "category": "images",
@@ -110,7 +111,8 @@ DEFAULT_PROVIDERS = {
         "priority": 2,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "news_guardian": {
         "name": "Guardian",
         "category": "news",
@@ -120,7 +122,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "news_newsapi": {
         "name": "NewsAPI",
         "category": "news",
@@ -130,7 +133,8 @@ DEFAULT_PROVIDERS = {
         "priority": 2,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "geo_openstreet": {
         "name": "OpenStreetMap",
         "category": "geo",
@@ -140,7 +144,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": False,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "pets_catapi": {
         "name": "TheCatAPI",
         "category": "pets",
@@ -150,7 +155,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "pets_dogapi": {
         "name": "TheDogAPI",
         "category": "pets",
@@ -160,7 +166,8 @@ DEFAULT_PROVIDERS = {
         "priority": 2,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "weather_openmeteo": {
         "name": "Open - Meteo",
         "category": "weather",
@@ -170,7 +177,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": False,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "weather_openweather": {
         "name": "OpenWeather",
         "category": "weather",
@@ -180,7 +188,8 @@ DEFAULT_PROVIDERS = {
         "priority": 2,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "social_instagram": {
         "name": "Instagram",
         "category": "social",
@@ -191,7 +200,8 @@ DEFAULT_PROVIDERS = {
         "requires_key": True,
         "free_tier": False,
         "oauth_required": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "social_tiktok": {
         "name": "TikTok",
         "category": "social",
@@ -202,7 +212,8 @@ DEFAULT_PROVIDERS = {
         "requires_key": True,
         "free_tier": False,
         "oauth_required": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "ai_openai": {
         "name": "OpenAI",
         "category": "ai",
@@ -212,7 +223,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "email_sendgrid": {
         "name": "SendGrid",
         "category": "email",
@@ -222,8 +234,10 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": True,
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 # Default affiliates (all disabled)
 DEFAULT_AFFILIATES = {
@@ -232,50 +246,59 @@ DEFAULT_AFFILIATES = {
         "vertical": "general",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "tech_bestbuy": {
         "name": "Best Buy",
         "vertical": "tech",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "wellness_iherb": {
         "name": "iHerb",
         "vertical": "wellness",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "ai_openai_partner": {
         "name": "OpenAI Partner",
         "vertical": "ai",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "pets_chewy": {
         "name": "Chewy",
         "vertical": "pets",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "restricted_gambling": {
         "name": "Gambling Site",
         "vertical": "restricted",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "restricted_crypto": {
         "name": "Crypto Exchange",
         "vertical": "restricted",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "restricted_adult": {
         "name": "Adult Content",
         "vertical": "restricted",
         "affiliate_id": "",
         "enabled": False,
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 # Default policy (all restricted verticals disabled)
 DEFAULT_POLICY = {
@@ -284,7 +307,8 @@ DEFAULT_POLICY = {
     "crypto_enabled": False,
     "adult_enabled": False,
     "last_updated": datetime.now().isoformat(),
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # State loaders
 
@@ -401,8 +425,10 @@ async def list_providers():
                 "free_tier": provider.get("free_tier", False),
                 "requires_key": provider.get("requires_key", False),
                 "oauth_required": provider.get("oauth_required", False),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     return {"providers": sorted(result, key=lambda x: (x["category"], x["priority"]))}
 
@@ -427,7 +453,8 @@ async def add_provider(provider: ProviderIn):
         "priority": provider.priority,
         "requires_key": True,  # Assume new providers need keys
         "free_tier": False,  # Assume paid by default
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     if not save_json(PROVIDERS_FILE, registry):
         raise HTTPException(status_code=500, detail="Failed to save provider")
@@ -490,8 +517,10 @@ async def get_active_providers():
                         "id": provider_id,
                         "name": provider["name"],
                         "priority": provider.get("priority", 1),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
     # Sort by priority
     for category in active:
@@ -516,7 +545,8 @@ async def rotate_provider(provider_id: str):
         (pid, p)
         for pid, p in registry.items()
         if p["category"] == category and p.get("enabled", False)
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     if len(category_providers) <= 1:
         raise HTTPException(status_code=400, detail="No alternative providers available")
@@ -525,7 +555,8 @@ async def rotate_provider(provider_id: str):
     category_providers.sort(key=lambda x: x[1].get("priority", 1))
     current_index = next(
         (i for i, (pid, _) in enumerate(category_providers) if pid == provider_id), -1
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if current_index == -1:
         next_provider_id = category_providers[0][0]
@@ -537,7 +568,8 @@ async def rotate_provider(provider_id: str):
         "from": provider_id,
         "to": next_provider_id,
         "provider_name": registry[next_provider_id]["name"],
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.post("/providers/{provider_id}/report")
@@ -558,7 +590,8 @@ async def report_usage(provider_id: str, report: ReportIn):
             "last_success": None,
             "last_error": None,
             "avg_response_time": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     provider_metrics = metrics[provider_id]
     provider_metrics["total_requests"] += 1
@@ -575,7 +608,8 @@ async def report_usage(provider_id: str, report: ReportIn):
         # Auto - disable if too many recent errors
         if provider_metrics["recent_errors"] >= 5 and registry[provider_id].get(
             "auto_disable", False
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             registry[provider_id]["enabled"] = False
             save_json(PROVIDERS_FILE, registry)
 
@@ -597,7 +631,7 @@ async def report_usage(provider_id: str, report: ReportIn):
 
 @router.get("/test - call")
 async def test_call(provider_id: str):
-    """Test call to provider's documentation URL"""
+    """Test call to provider's documentation URL"""'
     registry = load_registry()
 
     if provider_id not in registry:
@@ -617,7 +651,8 @@ async def test_call(provider_id: str):
         await report_usage(
             provider_id,
             ReportIn(provider_id=provider_id, success=True, response_time_ms=response_time),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return {
             "provider_id": provider_id,
@@ -625,14 +660,16 @@ async def test_call(provider_id: str):
             "status": "healthy",
             "response_time_ms": response_time,
             "docs_url": docs_url,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         # Report failed test
         await report_usage(
             provider_id,
             ReportIn(provider_id=provider_id, success=False, error_message=str(e)),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return {
             "provider_id": provider_id,
@@ -640,7 +677,8 @@ async def test_call(provider_id: str):
             "status": "unhealthy",
             "error": str(e),
             "docs_url": docs_url,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Affiliate routes
@@ -670,8 +708,10 @@ async def list_affiliates():
                 "enabled": affiliate.get("enabled", False),
                 "status_color": status_color,
                 "affiliate_id": affiliate.get("affiliate_id", ""),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     return {"affiliates": sorted(result, key=lambda x: x["vertical"])}
 
@@ -692,7 +732,8 @@ async def add_affiliate(affiliate: AffiliateIn):
         "vertical": affiliate.vertical,
         "affiliate_id": affiliate.affiliate_id,
         "enabled": affiliate.enabled,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     if not save_json(AFFILIATES_FILE, affiliates):
         raise HTTPException(status_code=500, detail="Failed to save affiliate")
@@ -752,7 +793,8 @@ async def set_policy(policy_updates: Dict[str, Any]):
         "gambling_enabled",
         "crypto_enabled",
         "adult_enabled",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for field in allowed_fields:
         if field in policy_updates:
@@ -773,7 +815,8 @@ CHANNEL_MAP = {
     "pets": ["pets_chewy", "general_amazon"],
     "ai": ["ai_openai_partner", "tech_bestbuy"],
     "general": ["general_amazon"],
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 @router.get("/affiliates / suggestions/{channel}")
@@ -797,8 +840,10 @@ async def get_top_affiliates(channel: str):
                     "vertical": affiliate["vertical"],
                     "status_color": status_color,
                     "enabled": affiliate.get("enabled", False),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
     return {"channel": channel, "suggestions": suggestions}
 
@@ -809,7 +854,7 @@ async def get_top_affiliates(channel: str):
 @router.get("/admin", response_class=HTMLResponse)
 async def admin_ui():
     """Admin interface for managing integrations"""
-    return """
+    return """"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -927,8 +972,9 @@ async def admin_ui():
             <h3 > Add Provider Credentials</h3>
             <div class="form - group">
                 <input type="text" id="cred - provider - id" placeholder="Provider ID">
-                <input type="text" id="cred - key - name" placeholder="Key Name (e.g.,
-    api_key)">
+                <input type="text" id="cred - key - name" placeholder="Key Name (e.g.,"
+# BRACKET_SURGEON: disabled
+#     api_key)">"
                 <input type="password" id="cred - key - value" placeholder="Key Value">
                 <button class="btn - primary" onclick="addCredentials()">Add Credentials</button>
             </div>
@@ -950,13 +996,14 @@ async def admin_ui():
             loadAffiliates();
             loadPolicy();
             loadChannelAffiliates();
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         async function loadProviders() {
             try {
                 const response = await fetch('/integrations / providers');
                 const data = await response.json();
-                const tbody = document.querySelector('#providers - table tbody');
+                const tbody = document.querySelector('#providers - table tbody');'
                 tbody.innerHTML = '';
 
                 data.providers.forEach(provider => {
@@ -976,17 +1023,20 @@ async def admin_ui():
                         </td>
                     `;
                     tbody.appendChild(row);
-                });
+# BRACKET_SURGEON: disabled
+#                 });
             } catch (error) {
                 console.error('Error loading providers:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function loadAffiliates() {
             try {
                 const response = await fetch('/integrations / affiliates');
                 const data = await response.json();
-                const tbody = document.querySelector('#affiliates - table tbody');
+                const tbody = document.querySelector('#affiliates - table tbody');'
                 tbody.innerHTML = '';
 
                 data.affiliates.forEach(affiliate => {
@@ -1004,11 +1054,14 @@ async def admin_ui():
                         </td>
                     `;
                     tbody.appendChild(row);
-                });
+# BRACKET_SURGEON: disabled
+#                 });
             } catch (error) {
                 console.error('Error loading affiliates:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function loadPolicy() {
             try {
@@ -1021,8 +1074,10 @@ async def admin_ui():
                 document.getElementById('adult - enabled').checked = policy.adult_enabled;
             } catch (error) {
                 console.error('Error loading policy:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function loadChannelAffiliates() {
             const channel = document.getElementById('channel - select').value;
@@ -1032,7 +1087,7 @@ async def admin_ui():
                 const container = document.getElementById('channel - affiliates');
 
                 container.innerHTML = data.suggestions.map(affiliate => `
-                    <div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border - radius: 5px;">
+                    <div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border - radius: 5px;">"
                         <span class="status - light status-${affiliate.status_color}"></span>
                         <strong>${affiliate.name}</strong> (${affiliate.vertical})
                         <span style="margin - left: 10px; color: ${affiliate.enabled ? 'green' : 'red'};">
@@ -1042,35 +1097,45 @@ async def admin_ui():
                 `).join('');
             } catch (error) {
                 console.error('Error loading channel affiliates:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function toggleProvider(providerId, enabled) {
             try {
                 const response = await fetch(`/integrations / providers/${providerId}/enable?enabled=${enabled}`, {
                     method: 'POST'
-                });
+# BRACKET_SURGEON: disabled
+#                 });
                 if (response.ok) {
                     loadProviders();
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             } catch (error) {
                 console.error('Error toggling provider:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function toggleAffiliate(affiliateId, enabled) {
             try {
                 const response = await fetch(`/integrations / affiliates/${affiliateId}/enable?enabled=${enabled}`, {
                     method: 'POST'
-                });
+# BRACKET_SURGEON: disabled
+#                 });
                 if (response.ok) {
                     loadAffiliates();
                     loadChannelAffiliates();
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             } catch (error) {
                 console.error('Error toggling affiliate:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function rotateCategory(category) {
             // Find first enabled provider in category and rotate it
@@ -1082,19 +1147,24 @@ async def admin_ui():
                 if (categoryProviders.length > 0) {
                     const rotateResponse = await fetch(`/integrations / providers/${categoryProviders[0].id}/rotate`, {
                         method: 'POST'
-                    });
+# BRACKET_SURGEON: disabled
+#                     });
                     if (rotateResponse.ok) {
                         const result = await rotateResponse.json();
                         alert(`Rotated from ${result.from} to ${result.provider_name}`);
                         loadProviders();
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 } else {
                     alert(`No enabled providers in ${category} category`);
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             } catch (error) {
                 console.error('Error rotating category:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function addCredentials() {
             const providerId = document.getElementById('cred - provider - id').value;
@@ -1104,7 +1174,8 @@ async def admin_ui():
             if (!providerId || !keyName || !keyValue) {
                 alert('Please fill all credential fields');
                 return;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             try {
                 const response = await fetch(`/integrations / providers/${providerId}/credentials`, {
@@ -1114,8 +1185,10 @@ async def admin_ui():
                         provider_id: providerId,
                             key_name: keyName,
                             key_value: keyValue
-                    })
-                });
+# BRACKET_SURGEON: disabled
+#                     })
+# BRACKET_SURGEON: disabled
+#                 });
 
                 if (response.ok) {
                     alert('Credentials added successfully');
@@ -1123,21 +1196,26 @@ async def admin_ui():
                     document.getElementById('cred - key - name').value = '';
                     document.getElementById('cred - key - value').value = '';
                     loadProviders();
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             } catch (error) {
                 console.error('Error adding credentials:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function testProvider(providerId) {
             if (!providerId) {
                 providerId = document.getElementById('test - provider - id').value;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             if (!providerId) {
                 alert('Please enter a provider ID');
                 return;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             try {
                 const response = await fetch(`/integrations / test - call?provider_id=${providerId}`);
@@ -1147,14 +1225,17 @@ async def admin_ui():
                     alert(`✅ ${result.provider_name} is healthy (${result.response_time_ms}ms)`);
                 } else {
                     alert(`❌ ${result.provider_name} is unhealthy: ${result.error}`);
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 loadProviders();
             } catch (error) {
                 console.error('Error testing provider:', error);
                 alert('Error testing provider');
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function updatePolicy() {
             const policy = {
@@ -1162,25 +1243,30 @@ async def admin_ui():
                     gambling_enabled: document.getElementById('gambling - enabled').checked,
                     crypto_enabled: document.getElementById('crypto - enabled').checked,
                     adult_enabled: document.getElementById('adult - enabled').checked
-            };
+# BRACKET_SURGEON: disabled
+#             };
 
             try {
                 const response = await fetch('/integrations / policy', {
                     method: 'POST',
                         headers: { 'Content - Type': 'application / json' },
                         body: JSON.stringify(policy)
-                });
+# BRACKET_SURGEON: disabled
+#                 });
 
                 if (response.ok) {
                     alert('Policy updated successfully');
                     loadAffiliates(); // Reload to update status colors
                     loadChannelAffiliates();
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             } catch (error) {
                 console.error('Error updating policy:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
     </script>
 </body>
 </html>
-    """
+    """"""

@@ -84,7 +84,8 @@ arpa = {
     "OW0",
     "L",
     "SH",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def replace_phs(phs):

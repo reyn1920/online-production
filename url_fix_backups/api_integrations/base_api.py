@@ -49,10 +49,12 @@ class RateLimiter:
         self.daily_count = 0
         self.hour_start = datetime.now().replace(minute = 0,
     second = 0,
-    microsecond = 0)
+# BRACKET_SURGEON: disabled
+#     microsecond = 0)
         self.day_start = datetime.now().replace(
             hour = 0, minute = 0, second = 0, microsecond = 0
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
     async def acquire(self) -> bool:
@@ -65,14 +67,16 @@ class RateLimiter:
             self.hourly_count = 0
             self.hour_start = current_time.replace(minute = 0,
     second = 0,
-    microsecond = 0)
+# BRACKET_SURGEON: disabled
+#     microsecond = 0)
 
         # Reset daily counter
         if current_time >= self.day_start + timedelta(days = 1):
             self.daily_count = 0
             self.day_start = current_time.replace(
                 hour = 0, minute = 0, second = 0, microsecond = 0
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check daily and hourly limits
         if self.daily_count >= self.config.requests_per_day:
@@ -109,7 +113,8 @@ class BaseAPI(ABC):
         self.session: Optional[aiohttp.ClientSession] = None
         self.base_headers = {
             "User - Agent": "NicheDiscoveryEngine / 1.0 (Educational Research)"
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     async def __aenter__(self):
@@ -149,7 +154,8 @@ class BaseAPI(ABC):
                         url = url,
                         params = params,
                         json = data,
-                        headers = request_headers) as response:
+# BRACKET_SURGEON: disabled
+#                         headers = request_headers) as response:
 
                     # Handle rate limiting from server
                     if response.status == 429:
@@ -157,13 +163,15 @@ class BaseAPI(ABC):
                         if attempt < max_retries:
                             logger.warning(
                                 f"Rate limited by server, waiting {retry_after}s"
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             await asyncio.sleep(retry_after)
                             continue
                         else:
                             raise RateLimitError(
                                 "Server rate limit exceeded", retry_after
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                     # Handle other HTTP errors
                     if response.status >= 400:
@@ -177,7 +185,8 @@ class BaseAPI(ABC):
                     wait_time = 2**attempt  # Exponential backoff
                     logger.warning(
                         f"Request failed (attempt {attempt + 1}), retrying in {wait_time}s: {e}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     await asyncio.sleep(wait_time)
                     continue
                 else:

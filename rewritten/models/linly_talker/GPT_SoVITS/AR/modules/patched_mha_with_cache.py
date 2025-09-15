@@ -1,7 +1,9 @@
 from torch.nn.functional import *
 from torch.nn.functional import (_canonical_mask, _in_projection_packed,
 
-    _mha_shape_check, _none_or_dtype)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     _mha_shape_check, _none_or_dtype)
 
 # import torch
 # Tensor = torch.Tensor
@@ -36,7 +38,7 @@ def multi_head_attention_forward_patched(
         is_causal: bool = False,
         cache = None,
 ) -> Tuple[Tensor, Optional[Tensor]]:
-    r"""
+    r""""""
     Args:
         query, key, value: map a query and a set of key - value pairs to an output.
             See "Attention Is All You Need" for more details.
@@ -59,7 +61,7 @@ def multi_head_attention_forward_patched(
             *Setting needs_weights to `True`
             leads to a significant performance degradation.*
                 attn_mask: 2D \
-    or 3D mask that prevents attention to certain positions. A 2D mask will be broadcasted for all
+#     or 3D mask that prevents attention to certain positions. A 2D mask will be broadcasted for all
             the batches while a 3D mask allows to specify a different mask for the entries of each batch.
         is_causal: If specified, applies a causal mask as attention mask, and ignores
             attn_mask for computing scaled dot product attention.
@@ -71,10 +73,10 @@ def multi_head_attention_forward_patched(
                 compatibility.
         use_separate_proj_weight: the function accept the proj. weights for query, key,
             \
-    and value in different forms. If false, in_proj_weight will be used, which is
+#     and value in different forms. If false, in_proj_weight will be used, which is
             a combination of q_proj_weight, k_proj_weight, v_proj_weight.
         q_proj_weight, k_proj_weight, v_proj_weight, in_proj_bias: input projection weight \
-    and bias.
+#     and bias.
         static_k, static_v: static key and value used for attention operators.
         average_attn_weights: If true, indicates that the returned ``attn_weights`` should be averaged across heads.
             Otherwise, ``attn_weights`` are provided separately per head. Note that this flag only has an effect
@@ -83,25 +85,27 @@ def multi_head_attention_forward_patched(
     Shape:
         Inputs:
         - query: :math:`(L, E)` \
-    or :math:`(L, N, E)` where L is the target sequence length, N is the batch size, E is
+#     or :math:`(L, N, E)` where L is the target sequence length, N is the batch size, E is
           the embedding dimension.
         - key: :math:`(S, E)` \
-    or :math:`(S, N, E)`, where S is the source sequence length, N is the batch size, E is
+#     or :math:`(S, N, E)`, where S is the source sequence length, N is the batch size, E is
           the embedding dimension.
         - value: :math:`(S, E)` \
-    or :math:`(S, N, E)` where S is the source sequence length, N is the batch size, E is
+#     or :math:`(S, N, E)` where S is the source sequence length, N is the batch size, E is
           the embedding dimension.
         - key_padding_mask: :math:`(S)` \
-    or :math:`(N, S)` where N is the batch size, S is the source sequence length.
+#     or :math:`(N, S)` where N is the batch size, S is the source sequence length.
           If a FloatTensor is provided, it will be directly added to the value.
           If a BoolTensor is provided, the positions with the
           value of ``True`` will be ignored while the position with the value of ``False`` will be unchanged.
         - attn_mask: 2D mask :math:`(L,
-    S)` where L is the target sequence length,
+# BRACKET_SURGEON: disabled
+#     S)` where L is the target sequence length,
     S is the source sequence length.
           3D mask :math:`(N * num_heads,
     L,
-    S)` where N is the batch size,
+# BRACKET_SURGEON: disabled
+#     S)` where N is the batch size,
     L is the target sequence length,
               S is the source sequence length. attn_mask ensures that position i is allowed to attend the unmasked
           positions. If a BoolTensor is provided, positions with ``True``
@@ -109,31 +113,35 @@ def multi_head_attention_forward_patched(
               is provided, it will be added to the attention weight.
         - static_k: :math:`(N * num_heads,
     S,
-    E/num_heads)`,
+# BRACKET_SURGEON: disabled
+#     E/num_heads)`,
     where S is the source sequence length,
             N is the batch size, E is the embedding dimension. E/num_heads is the head dimension.
         - static_v: :math:`(N * num_heads,
     S,
-    E/num_heads)`,
+# BRACKET_SURGEON: disabled
+#     E/num_heads)`,
     where S is the source sequence length,
             N is the batch size, E is the embedding dimension. E/num_heads is the head dimension.
 
         Outputs:
         - attn_output: :math:`(L, E)` \
-    or :math:`(L, N, E)` where L is the target sequence length, N is the batch size,
+#     or :math:`(L, N, E)` where L is the target sequence length, N is the batch size,
             E is the embedding dimension.
         - attn_output_weights: Only returned when ``need_weights = True``. If ``average_attn_weights = True``, returns
           attention weights averaged across heads of shape :math:`(L,
-    S)` when input is unbatched or
+# BRACKET_SURGEON: disabled
+#     S)` when input is unbatched or
               :math:`(N,
     L,
-    S)`,
+# BRACKET_SURGEON: disabled
+#     S)`,
     where :math:`N` is the batch size, :math:`L` is the target sequence length,
     and
               :math:`S` is the source sequence length. If ``average_attn_weights = False``, returns attention weights per
           head of shape :math:`(num_heads, L, S)` when input is unbatched \
-    or :math:`(N, num_heads, L, S)`.
-    """
+#     or :math:`(N, num_heads, L, S)`.
+    """"""
     tens_ops = (
         query,
             key,
@@ -144,7 +152,9 @@ def multi_head_attention_forward_patched(
             bias_v,
             out_proj_weight,
             out_proj_bias,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     if has_torch_function(tens_ops):
         return handle_torch_function(
             multi_head_attention_forward,
@@ -175,11 +185,15 @@ def multi_head_attention_forward_patched(
                 static_v = static_v,
                 average_attn_weights = average_attn_weights,
                 cache = cache,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     is_batched = _mha_shape_check(
         query, key, value, key_padding_mask, attn_mask, num_heads
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # For unbatched input, we unsqueeze at the expected batch - dim to pretend that the input
     # is batched, run the computation and before returning squeeze the
@@ -202,14 +216,18 @@ def multi_head_attention_forward_patched(
             other_type = _none_or_dtype(attn_mask),
             other_name="attn_mask",
             target_type = query.dtype,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     if is_causal and attn_mask is None:
         raise RuntimeError(
             "Need attn_mask if specifying the is_causal hint. "
             "You may use the Transformer module method "
             "`generate_square_subsequent_mask` to create this mask."
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     if is_causal and key_padding_mask is None and not need_weights:
         # when we have a kpm or need weights, we need attn_mask
@@ -224,7 +242,9 @@ def multi_head_attention_forward_patched(
                 other_name="",
                 target_type = query.dtype,
                 check_other = False,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if key_padding_mask is not None:
             # We have the attn_mask, and use that to merge kpm into it.
@@ -247,8 +267,9 @@ def multi_head_attention_forward_patched(
         # allow MHA to have different embedding dimensions when separate projection weights are used
         assert (
             key.shape[:2] == value.shape[:2]
-        ), f"key's sequence \
-    and batch dims {key.shape[:2]} do not match value's {value.shape[:2]}"
+# BRACKET_SURGEON: disabled
+#         ), f"key's sequence \
+#     and batch dims {key.shape[:2]} do not match value's {value.shape[:2]}"
     else:
         assert (
             key.shape == value.shape
@@ -260,18 +281,22 @@ def multi_head_attention_forward_patched(
     if not use_separate_proj_weight:
         assert (
             in_proj_weight is not None
-        ), "use_separate_proj_weight is False but in_proj_weight is None"
+# BRACKET_SURGEON: disabled
+#         ), "use_separate_proj_weight is False but in_proj_weight is None"
         q, k, v = _in_projection_packed(query, key, value, in_proj_weight, in_proj_bias)
     else:
         assert (
             q_proj_weight is not None
-        ), "use_separate_proj_weight is True but q_proj_weight is None"
+# BRACKET_SURGEON: disabled
+#         ), "use_separate_proj_weight is True but q_proj_weight is None"
         assert (
             k_proj_weight is not None
-        ), "use_separate_proj_weight is True but k_proj_weight is None"
+# BRACKET_SURGEON: disabled
+#         ), "use_separate_proj_weight is True but k_proj_weight is None"
         assert (
             v_proj_weight is not None
-        ), "use_separate_proj_weight is True but v_proj_weight is None"
+# BRACKET_SURGEON: disabled
+#         ), "use_separate_proj_weight is True but v_proj_weight is None"
         if in_proj_bias is None:
             b_q = b_k = b_v = None
         else:
@@ -286,7 +311,9 @@ def multi_head_attention_forward_patched(
                 b_q,
                 b_k,
                 b_v,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
     if cache != None:
         if cache["first_infer"] == 1:
             cache["k"][cache["stage"]] = k
@@ -296,7 +323,8 @@ def multi_head_attention_forward_patched(
             # print(1,cache["k"].shape)
             cache["k"][cache["stage"]] = torch.cat(
                 [cache["k"][cache["stage"]], k], 0
-            )  ##本来时序是1，但是proj的时候可能transpose了所以时序到0维了
+# BRACKET_SURGEON: disabled
+#             )  ##本来时序是1，但是proj的时候可能transpose了所以时序到0维了
             cache["v"][cache["stage"]] = torch.cat([cache["v"][cache["stage"]], v], 0)
             # print(2, cache["k"].shape)
             src_len = cache["k"][cache["stage"]].shape[0]
@@ -316,7 +344,9 @@ def multi_head_attention_forward_patched(
             other_name="",
             target_type = q.dtype,
             check_other = False,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     if attn_mask is not None:
         # ensure attn_mask's dim is 3
@@ -325,18 +355,24 @@ def multi_head_attention_forward_patched(
             if attn_mask.shape != correct_2d_size:
                 raise RuntimeError(
                     f"The shape of the 2D attn_mask is {attn_mask.shape}, but should be {correct_2d_size}."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             attn_mask = attn_mask.unsqueeze(0)
         elif attn_mask.dim() == 3:
             correct_3d_size = (bsz * num_heads, tgt_len, src_len)
             if attn_mask.shape != correct_3d_size:
                 raise RuntimeError(
                     f"The shape of the 3D attn_mask is {attn_mask.shape}, but should be {correct_3d_size}."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         else:
             raise RuntimeError(
-                f"attn_mask's dimension {attn_mask.dim()} is not supported"
-            )
+                f"attn_mask's dimension {attn_mask.dim()} is not supported"'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # add bias along batch dimension (currently second)
     if bias_k is not None and bias_v is not None:
@@ -362,9 +398,10 @@ def multi_head_attention_forward_patched(
         # TODO finish disentangling control flow so we don't do in - projections when statics are passed
         assert (
             static_k.size(0) == bsz * num_heads
-        ),
-    f"expecting static_k.size(0) of {bsz * num_heads},
-    but got {static_k.size(0)}"
+# BRACKET_SURGEON: disabled
+#         ),
+    f"expecting static_k.size(0) of {bsz * num_heads},"
+    but got {static_k.size(0)}""
         assert (
             static_k.size(2) == head_dim
         ), f"expecting static_k.size(2) of {head_dim}, but got {static_k.size(2)}"
@@ -375,9 +412,10 @@ def multi_head_attention_forward_patched(
         # TODO finish disentangling control flow so we don't do in - projections when statics are passed
         assert (
             static_v.size(0) == bsz * num_heads
-        ),
-    f"expecting static_v.size(0) of {bsz * num_heads},
-    but got {static_v.size(0)}"
+# BRACKET_SURGEON: disabled
+#         ),
+    f"expecting static_v.size(0) of {bsz * num_heads},"
+    but got {static_v.size(0)}""
         assert (
             static_v.size(2) == head_dim
         ), f"expecting static_v.size(2) of {head_dim}, but got {static_v.size(2)}"
@@ -390,16 +428,24 @@ def multi_head_attention_forward_patched(
             [k,
     torch.zeros(zero_attn_shape,
     dtype = k.dtype,
-    device = k.device)],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     device = k.device)],
     dim = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         v = torch.cat(
             [v,
     torch.zeros(zero_attn_shape,
     dtype = v.dtype,
-    device = v.device)],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     device = v.device)],
     dim = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if attn_mask is not None:
             attn_mask = pad(attn_mask, (0, 1))
         if key_padding_mask is not None:
@@ -413,15 +459,19 @@ def multi_head_attention_forward_patched(
         assert key_padding_mask.shape == (
             bsz,
                 src_len,
-                ),
-    f"expecting key_padding_mask shape of {(bsz,
-    src_len)},
-    but got {key_padding_mask.shape}"
+# BRACKET_SURGEON: disabled
+#                 ),
+    f"expecting key_padding_mask shape of {(bsz,"
+# BRACKET_SURGEON: disabled
+#     src_len)},
+    but got {key_padding_mask.shape}""
         key_padding_mask = (
             key_padding_mask.view(bsz, 1, 1, src_len)
             .expand(-1, num_heads, -1, -1)
             .reshape(bsz * num_heads, 1, src_len)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if attn_mask is None:
             attn_mask = key_padding_mask
         else:
@@ -441,12 +491,15 @@ def multi_head_attention_forward_patched(
 
         assert not (
             is_causal and attn_mask is None
-        ), "FIXME: is_causal not implemented for need_weights"
+# BRACKET_SURGEON: disabled
+#         ), "FIXME: is_causal not implemented for need_weights"
 
         if attn_mask is not None:
             attn_output_weights = torch.baddbmm(
                 attn_mask, q_scaled, k.transpose(-2, -1)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             attn_output_weights = torch.bmm(q_scaled, k.transpose(-2, -1))
         attn_output_weights = softmax(attn_output_weights, dim=-1)
@@ -457,7 +510,9 @@ def multi_head_attention_forward_patched(
 
         attn_output = (
             attn_output.transpose(0, 1).contiguous().view(tgt_len * bsz, embed_dim)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         attn_output = linear(attn_output, out_proj_weight, out_proj_bias)
         attn_output = attn_output.view(tgt_len, bsz, attn_output.size(1))
 
@@ -487,10 +542,14 @@ def multi_head_attention_forward_patched(
 
         attn_output = scaled_dot_product_attention(
             q, k, v, attn_mask, dropout_p, is_causal
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         attn_output = (
             attn_output.permute(2, 0, 1, 3).contiguous().view(bsz * tgt_len, embed_dim)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         attn_output = linear(attn_output, out_proj_weight, out_proj_bias)
         attn_output = attn_output.view(tgt_len, bsz, attn_output.size(1))

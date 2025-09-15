@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Full Automation Pipeline - Complete AI CEO Business Automation System
 
 This pipeline orchestrates:
@@ -14,7 +14,7 @@ This pipeline orchestrates:
 
 Author: TRAEAI System
 Version: 2.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -40,7 +40,8 @@ try:
     from autonomous_decision_engine import (
         AutonomousDecisionEngine,
         DecisionRecommendation,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError as e:
     logging.warning(f"Some components not available: {e}")
 
@@ -49,7 +50,7 @@ logger = logging.getLogger(__name__)
 
 class PipelineStatus(Enum):
     """Pipeline execution status."""
-    
+
     INITIALIZING = "initializing"
     RUNNING = "running"
     PAUSED = "paused"
@@ -60,7 +61,7 @@ class PipelineStatus(Enum):
 
 class TaskPriority(Enum):
     """Task priority levels."""
-    
+
     CRITICAL = 1
     HIGH = 2
     MEDIUM = 3
@@ -71,7 +72,7 @@ class TaskPriority(Enum):
 @dataclass
 class PipelineTask:
     """Represents a task in the automation pipeline."""
-    
+
     id: str
     name: str
     description: str
@@ -95,7 +96,7 @@ class PipelineTask:
 @dataclass
 class PipelineMetrics:
     """Pipeline performance metrics."""
-    
+
     total_tasks_executed: int = 0
     successful_tasks: int = 0
     failed_tasks: int = 0
@@ -110,51 +111,51 @@ class PipelineMetrics:
 
 class FullAutomationPipeline:
     """Complete AI CEO automation pipeline orchestrator."""
-    
+
     def __init__(self, config_path: str = "pipeline_config.json"):
         self.config_path = config_path
         self.config = self._load_config()
-        
+
         # Pipeline state
         self.status = PipelineStatus.INITIALIZING
         self.start_time = datetime.now()
         self.metrics = PipelineMetrics(last_updated=datetime.now())
-        
+
         # Task management
         self.task_queue = queue.PriorityQueue()
         self.active_tasks: Dict[str, PipelineTask] = {}
         self.completed_tasks: List[PipelineTask] = []
         self.task_history: List[PipelineTask] = []
-        
+
         # Threading
         self.executor = ThreadPoolExecutor(max_workers=self.config.get("max_workers", 10))
         self.running = False
         self.pipeline_thread = None
-        
+
         # AI Components
         self.ai_ceo = None
         self.decision_engine = None
         self.automation_controller = None
         self.api_manager = None
-        
+
         # Agent management
         self.agents = {}
         self.agent_status = {}
-        
+
         # Performance tracking
         self.performance_history = []
         self.optimization_cycles = 0
-        
+
         # Database
         self.db_path = "pipeline.db"
         self._init_database()
-        
+
         # Signal handlers
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
-        
+
         logger.info("🚀 Full Automation Pipeline initialized")
-    
+
     def _load_config(self) -> Dict[str, Any]:
         """Load pipeline configuration."""
         try:
@@ -176,38 +177,46 @@ class FullAutomationPipeline:
                         "enabled": True,
                         "schedule": "*/15 * * * *",  # Every 15 minutes
                         "priority": "high",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "financial_agent": {
                         "enabled": True,
                         "schedule": "0 */6 * * *",  # Every 6 hours
                         "priority": "high",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "monetization_agent": {
                         "enabled": True,
                         "schedule": "*/30 * * * *",  # Every 30 minutes
                         "priority": "medium",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "stealth_automation_agent": {
                         "enabled": True,
                         "schedule": "*/5 * * * *",  # Every 5 minutes
                         "priority": "critical",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "content_agent": {
                         "enabled": True,
                         "schedule": "0 */2 * * *",  # Every 2 hours
                         "priority": "medium",
-                    },
-                },
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 },
                 "decision_engine": {
                     "enabled": True,
                     "analysis_interval": 1800,  # 30 minutes
                     "auto_execute_threshold": 0.9,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "api_discovery": {
                     "enabled": True,
                     "discovery_interval": 7200,  # 2 hours
                     "auto_integrate": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "monitoring": {
                     "enabled": True,
                     "alert_thresholds": {
@@ -215,25 +224,28 @@ class FullAutomationPipeline:
                         "response_time": 5.0,
                         "cpu_usage": 0.8,
                         "memory_usage": 0.8,
-                    },
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
             self._save_config(default_config)
             return default_config
-    
+
     def _save_config(self, config: Dict[str, Any]):
         """Save configuration to file."""
         with open(self.config_path, "w") as f:
             json.dump(config, f, indent=2, default=str)
-    
+
     def _init_database(self):
         """Initialize pipeline database."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         # Tasks table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS tasks (
                 id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
@@ -253,13 +265,15 @@ class FullAutomationPipeline:
                 status TEXT DEFAULT 'pending',
                 result TEXT,
                 error TEXT
-            )
-            """
-        )
-        
+# BRACKET_SURGEON: disabled
+#             )
+            """"""
+# BRACKET_SURGEON: disabled
+#         )
+
         # Metrics table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp TEXT,
@@ -272,13 +286,15 @@ class FullAutomationPipeline:
                 decisions_made INTEGER,
                 automation_efficiency REAL,
                 uptime_percentage REAL
-            )
-            """
-        )
-        
+# BRACKET_SURGEON: disabled
+#             )
+            """"""
+# BRACKET_SURGEON: disabled
+#         )
+
         # Performance history table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS performance_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp TEXT,
@@ -286,56 +302,58 @@ class FullAutomationPipeline:
                 execution_time REAL,
                 success BOOLEAN,
                 error_message TEXT
-            )
-            """
-        )
-        
+# BRACKET_SURGEON: disabled
+#             )
+            """"""
+# BRACKET_SURGEON: disabled
+#         )
+
         conn.commit()
         conn.close()
         logger.info("📊 Pipeline database initialized")
-    
+
     async def initialize_components(self):
         """Initialize all AI components and agents."""
         logger.info("🔧 Initializing AI components...")
-        
+
         try:
             # Initialize AI CEO Master Controller
             self.ai_ceo = AICEOMasterController()
             await self.ai_ceo.initialize()
-            
+
             # Initialize Decision Engine
             self.decision_engine = AutonomousDecisionEngine()
-            
+
             # Initialize Automation Controller
             self.automation_controller = AutomationController()
-            
+
             # Initialize API Manager
             self.api_manager = APIManager()
-            
+
             # Register all available agents
             await self._register_agents()
-            
+
             # Setup scheduled tasks
             self._setup_scheduled_tasks()
-            
+
             logger.info("✅ All AI components initialized successfully")
-            
+
         except Exception as e:
             logger.error(f"❌ Failed to initialize components: {e}")
             self.status = PipelineStatus.ERROR
             raise
-    
+
     async def _register_agents(self):
         """Register all available AI agents."""
         agent_configs = self.config.get("agent_configs", {})
-        
+
         for agent_name, config in agent_configs.items():
             if config.get("enabled", True):
                 try:
                     # Dynamic import of agent module
                     agent_module = __import__(agent_name)
                     agent_class = getattr(agent_module, agent_name.title().replace("_", ""))
-                    
+
                     self.agents[agent_name] = agent_class()
                     self.agent_status[agent_name] = {
                         "status": "ready",
@@ -343,24 +361,25 @@ class FullAutomationPipeline:
                         "success_rate": 1.0,
                         "total_executions": 0,
                         "average_response_time": 0.0,
-                    }
-                    
+# BRACKET_SURGEON: disabled
+#                     }
+
                     logger.info(f"📋 Registered agent: {agent_name}")
-                    
+
                 except ImportError:
                     logger.warning(f"⚠️ Agent {agent_name} not available")
                 except Exception as e:
                     logger.error(f"❌ Failed to register agent {agent_name}: {e}")
-    
+
     def _setup_scheduled_tasks(self):
         """Setup scheduled tasks for agents."""
         agent_configs = self.config.get("agent_configs", {})
-        
+
         for agent_name, config in agent_configs.items():
             if config.get("enabled", True) and "schedule" in config:
                 schedule_str = config["schedule"]
                 priority = TaskPriority[config.get("priority", "medium").upper()]
-                
+
                 # Create scheduled task
                 task = PipelineTask(
                     id=f"{agent_name}_scheduled_{uuid.uuid4().hex[:8]}",
@@ -372,16 +391,17 @@ class FullAutomationPipeline:
                     parameters={},
                     dependencies=[],
                     created_at=datetime.now(),
-                )
-                
+# BRACKET_SURGEON: disabled
+#                 )
+
                 # Schedule recurring execution
                 self._schedule_recurring_task(task, schedule_str)
-    
+
     def _schedule_recurring_task(self, task: PipelineTask, schedule_str: str):
         """Schedule a recurring task."""
         # Simple cron-like scheduling implementation
         # In production, use a proper cron library like APScheduler
-        
+
         def schedule_task():
             new_task = PipelineTask(
                 id=f"{task.agent_type}_scheduled_{uuid.uuid4().hex[:8]}",
@@ -393,9 +413,10 @@ class FullAutomationPipeline:
                 parameters=task.parameters.copy(),
                 dependencies=task.dependencies.copy(),
                 created_at=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.add_task(new_task)
-        
+
         # Basic schedule parsing
         # This is simplified - use APScheduler for production
         if "*/5" in schedule_str:  # Every 5 minutes
@@ -404,36 +425,36 @@ class FullAutomationPipeline:
             threading.Timer(900, schedule_task).start()
         elif "*/30" in schedule_str:  # Every 30 minutes
             threading.Timer(1800, schedule_task).start()
-        
+
         # Execute immediately for first time
         schedule_task()
-    
+
     def add_task(self, task: PipelineTask):
         """Add a task to the pipeline queue."""
         # Priority queue uses tuple (priority, task)
         self.task_queue.put((task.priority.value, task))
         logger.info(f"📝 Added task: {task.name} (Priority: {task.priority.name})")
-    
+
     async def start_pipeline(self):
         """Start the automation pipeline."""
         logger.info("🚀 Starting Full Automation Pipeline...")
-        
+
         # Initialize all components
         await self.initialize_components()
-        
+
         # Set status to running
         self.status = PipelineStatus.RUNNING
         self.running = True
-        
+
         # Start main pipeline loop
         self.pipeline_thread = threading.Thread(target=self._pipeline_loop, daemon=True)
         self.pipeline_thread.start()
-        
+
         # Start monitoring threads
         self._start_monitoring_threads()
-        
+
         logger.info("✅ Full Automation Pipeline started successfully")
-    
+
     def _pipeline_loop(self):
         """Main pipeline execution loop."""
         while self.running:
@@ -443,87 +464,88 @@ class FullAutomationPipeline:
                     priority, task = self.task_queue.get(timeout=1.0)
                 except queue.Empty:
                     continue
-                
+
                 # Execute task
                 asyncio.run(self._execute_task(task))
-                
+
             except Exception as e:
                 logger.error(f"❌ Pipeline loop error: {e}")
                 time.sleep(1)
-    
+
     async def _execute_task(self, task: PipelineTask):
         """Execute a pipeline task."""
         task.started_at = datetime.now()
         self.active_tasks[task.id] = task
-        
+
         logger.info(f"🔄 Executing task: {task.name}")
-        
+
         try:
             # Get the appropriate agent
             if task.agent_type in self.agents:
                 agent = self.agents[task.agent_type]
-                
+
                 # Execute the task function
                 if hasattr(agent, task.function_name):
                     func = getattr(agent, task.function_name)
-                    
+
                     # Execute with timeout
                     result = await asyncio.wait_for(
                         func(**task.parameters),
                         timeout=task.timeout
-                    )
-                    
+# BRACKET_SURGEON: disabled
+#                     )
+
                     task.result = result
                     task.status = "completed"
                     self.metrics.successful_tasks += 1
-                    
+
                     logger.info(f"✅ Task completed: {task.name}")
-                    
+
                 else:
                     raise AttributeError(f"Function {task.function_name} not found in agent {task.agent_type}")
             else:
                 raise ValueError(f"Agent {task.agent_type} not available")
-                
+
         except asyncio.TimeoutError:
             task.error = f"Task timed out after {task.timeout} seconds"
             task.status = "timeout"
             self.metrics.failed_tasks += 1
             logger.error(f"⏰ Task timed out: {task.name}")
-            
+
         except Exception as e:
             task.error = str(e)
             task.status = "failed"
             self.metrics.failed_tasks += 1
             logger.error(f"❌ Task failed: {task.name} - {e}")
-            
+
             # Retry logic
             if task.retry_count < task.max_retries:
                 task.retry_count += 1
                 task.status = "retrying"
                 logger.info(f"🔄 Retrying task: {task.name} (Attempt {task.retry_count}/{task.max_retries})")
-                
+
                 # Re-queue the task
                 self.task_queue.put((task.priority.value, task))
                 return
-        
+
         finally:
             task.completed_at = datetime.now()
             self.completed_tasks.append(task)
             self.task_history.append(task)
-            
+
             # Remove from active tasks
             if task.id in self.active_tasks:
                 del self.active_tasks[task.id]
-            
+
             # Update metrics
             self.metrics.total_tasks_executed += 1
-            
+
             # Save task to database
             await self._save_task(task)
-    
+
     def _start_monitoring_threads(self):
         """Start monitoring and optimization threads."""
-        
+
         # Health check thread
         def health_check_loop():
             while self.running:
@@ -533,9 +555,9 @@ class FullAutomationPipeline:
                         asyncio.run(self._trigger_self_healing(health_status))
                 except Exception as e:
                     logger.error(f"❌ Health check error: {e}")
-                
+
                 time.sleep(self.config.get("health_check_interval", 60))
-        
+
         # Metrics update thread
         def metrics_update_loop():
             while self.running:
@@ -544,9 +566,9 @@ class FullAutomationPipeline:
                     asyncio.run(self._save_metrics())
                 except Exception as e:
                     logger.error(f"❌ Metrics update error: {e}")
-                
+
                 time.sleep(self.config.get("metrics_update_interval", 300))
-        
+
         # Optimization thread
         def optimization_loop():
             while self.running:
@@ -555,153 +577,160 @@ class FullAutomationPipeline:
                         asyncio.run(self._optimize_pipeline())
                 except Exception as e:
                     logger.error(f"❌ Optimization error: {e}")
-                
+
                 time.sleep(self.config.get("optimization_interval", 3600))
-        
+
         # Start threads
         threading.Thread(target=health_check_loop, daemon=True).start()
         threading.Thread(target=metrics_update_loop, daemon=True).start()
         threading.Thread(target=optimization_loop, daemon=True).start()
-    
+
     def _check_system_health(self) -> Dict[str, Any]:
         """Check overall system health."""
         issues = []
-        
+
         # Check error rate
         if self.metrics.total_tasks_executed > 0:
             error_rate = self.metrics.failed_tasks / self.metrics.total_tasks_executed
             if error_rate > self.config.get("monitoring", {}).get("alert_thresholds", {}).get(
                 "error_rate", 0.1
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 issues.append(f"High error rate: {error_rate:.2%}")
-        
+
         # Check agent performance
         for agent_name, status in self.agent_status.items():
             if status["success_rate"] < 0.8:
                 issues.append(
                     f"Agent {agent_name} has low success rate: {status['success_rate']:.2%}"
-                )
-        
+# BRACKET_SURGEON: disabled
+#                 )
+
         # Check queue size
         if self.task_queue.qsize() > 100:
             issues.append(f"Task queue is large: {self.task_queue.qsize()} tasks")
-        
+
         return {
             "healthy": len(issues) == 0,
             "issues": issues,
             "timestamp": datetime.now().isoformat(),
-        }
-    
+# BRACKET_SURGEON: disabled
+#         }
+
     async def _trigger_self_healing(self, health_status: Dict[str, Any]):
         """Trigger self-healing mechanisms."""
         logger.info("🔧 Triggering self-healing mechanisms...")
-        
+
         for issue in health_status["issues"]:
             if "error rate" in issue:
                 # Reduce worker count to prevent overload
                 self.config["max_workers"] = max(1, self.config["max_workers"] - 1)
                 logger.info(f"🔧 Reduced max workers to {self.config['max_workers']}")
-            
+
             elif "success rate" in issue:
                 # Restart problematic agents
                 for agent_name in self.agent_status:
                     if self.agent_status[agent_name]["success_rate"] < 0.8:
                         await self._restart_agent(agent_name)
-            
+
             elif "queue" in issue:
                 # Increase worker count to handle backlog
                 if self.config["max_workers"] < 20:
                     self.config["max_workers"] += 2
                     logger.info(f"🔧 Increased max workers to {self.config['max_workers']}")
-    
+
     async def _restart_agent(self, agent_name: str):
         """Restart a problematic agent."""
         logger.info(f"🔄 Restarting agent: {agent_name}")
-        
+
         try:
             # Remove existing agent
             if agent_name in self.agents:
                 del self.agents[agent_name]
-            
+
             # Re-register agent
             await self._register_agents()
-            
+
             logger.info(f"✅ Agent restarted: {agent_name}")
-            
+
         except Exception as e:
             logger.error(f"❌ Failed to restart agent {agent_name}: {e}")
-    
+
     def _update_pipeline_metrics(self):
         """Update pipeline performance metrics."""
         # Calculate automation efficiency
         if self.metrics.total_tasks_executed > 0:
             self.metrics.automation_efficiency = (
                 self.metrics.successful_tasks / self.metrics.total_tasks_executed
-            )
-        
+# BRACKET_SURGEON: disabled
+#             )
+
         # Calculate uptime percentage
         uptime = (datetime.now() - self.start_time).total_seconds()
         total_time = uptime  # Simplified - in reality, track downtime
         self.metrics.uptime_percentage = (uptime / total_time) * 100 if total_time > 0 else 100
-        
+
         # Calculate average execution time
         if self.completed_tasks:
             execution_times = [
                 (t.completed_at - t.started_at).total_seconds()
                 for t in self.completed_tasks
                 if t.completed_at and t.started_at
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             if execution_times:
                 self.metrics.average_execution_time = sum(execution_times) / len(execution_times)
-        
+
         # Update timestamp
         self.metrics.last_updated = datetime.now()
-    
+
     async def _optimize_pipeline(self):
         """Optimize pipeline performance."""
         logger.info("⚡ Running pipeline optimization...")
-        
+
         self.optimization_cycles += 1
-        
+
         try:
             # Analyze performance patterns
             performance_data = await self._analyze_performance_patterns()
-            
+
             # Optimize task scheduling
             await self._optimize_task_scheduling(performance_data)
-            
+
             # Optimize resource allocation
             await self._optimize_resource_allocation(performance_data)
-            
+
             # Save updated configuration
             self._save_config(self.config)
-            
+
             logger.info(f"✅ Pipeline optimization completed (Cycle {self.optimization_cycles})")
-            
+
         except Exception as e:
             logger.error(f"❌ Pipeline optimization failed: {e}")
-    
+
     async def _analyze_performance_patterns(self) -> Dict[str, Any]:
         """Analyze performance patterns for optimization."""
         # Analyze agent performance
         agent_performance = {}
-        
+
         for agent_name, status in self.agent_status.items():
             agent_performance[agent_name] = {
                 "success_rate": status["success_rate"],
                 "average_response_time": status["average_response_time"],
                 "total_executions": status["total_executions"],
-            }
-        
+# BRACKET_SURGEON: disabled
+#             }
+
         # Analyze hourly performance patterns
         hourly_performance = {}  # Would analyze by hour of day
-        
+
         return {
             "agent_performance": agent_performance,
             "hourly_performance": hourly_performance,
             "overall_efficiency": self.metrics.automation_efficiency,
-        }
-    
+# BRACKET_SURGEON: disabled
+#         }
+
     async def _optimize_task_scheduling(self, performance_data: Dict[str, Any]):
         """Optimize task scheduling based on performance data."""
         # Optimize high-performing agents
@@ -711,37 +740,37 @@ class FullAutomationPipeline:
                 if agent_name in self.config["agent_configs"]:
                     # Could adjust schedule here
                     logger.info(f"📈 Optimizing schedule for high-performing agent: {agent_name}")
-    
+
     async def _optimize_resource_allocation(self, performance_data: Dict[str, Any]):
         """Optimize resource allocation based on performance."""
         # Adjust worker count based on queue size and performance
         queue_size = self.task_queue.qsize()
-        
+
         if queue_size > 50 and self.metrics.automation_efficiency > 0.8:
             # Increase workers if queue is large and performance is good
             self.config["max_workers"] = min(20, self.config["max_workers"] + 1)
             logger.info(f"📈 Increased max workers to {self.config['max_workers']}")
-        
+
         elif queue_size < 10 and self.config["max_workers"] > 5:
             # Decrease workers if queue is small
             self.config["max_workers"] = max(5, self.config["max_workers"] - 1)
             logger.info(f"📉 Decreased max workers to {self.config['max_workers']}")
-    
+
     async def _save_task(self, task: PipelineTask):
         """Save task to database."""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO tasks (
                     id, name, description, priority, agent_type, function_name,
                     parameters, dependencies, retry_count, max_retries, timeout,
                     scheduled_time, created_at, started_at, completed_at,
                     status, result, error
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                 (
                     task.id, task.name, task.description, task.priority.value,
                     task.agent_type, task.function_name,
@@ -753,29 +782,31 @@ class FullAutomationPipeline:
                     task.completed_at.isoformat() if task.completed_at else None,
                     task.status, json.dumps(task.result) if task.result else None,
                     task.error
-                )
-            )
-            
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
+
             conn.commit()
             conn.close()
-            
+
         except Exception as e:
             logger.error(f"❌ Failed to save task {task.id}: {e}")
-    
+
     async def _save_metrics(self):
         """Save metrics to database."""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute(
-                """
+                """"""
                 INSERT INTO metrics (
                     timestamp, total_tasks_executed, successful_tasks, failed_tasks,
                     average_execution_time, revenue_generated, cost_saved,
                     decisions_made, automation_efficiency, uptime_percentage
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                 (
                     datetime.now().isoformat(),
                     self.metrics.total_tasks_executed,
@@ -787,40 +818,42 @@ class FullAutomationPipeline:
                     self.metrics.decisions_made,
                     self.metrics.automation_efficiency,
                     self.metrics.uptime_percentage
-                )
-            )
-            
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
+
             conn.commit()
             conn.close()
-            
+
         except Exception as e:
             logger.error(f"❌ Failed to save metrics: {e}")
-    
+
     def _signal_handler(self, signum, frame):
         """Handle shutdown signals."""
         logger.info(f"🛑 Received signal {signum}, shutting down gracefully...")
         self.stop_pipeline()
-    
+
     def stop_pipeline(self):
         """Stop the automation pipeline gracefully."""
         logger.info("🛑 Stopping Full Automation Pipeline...")
-        
+
         self.running = False
         self.status = PipelineStatus.STOPPED
-        
+
         # Wait for active tasks to complete
         timeout = 30  # seconds
         start_time = time.time()
-        
+
         while self.active_tasks and (time.time() - start_time) < timeout:
             logger.info(f"⏳ Waiting for {len(self.active_tasks)} active tasks to complete...")
             time.sleep(1)
-        
+
         # Shutdown executor
         self.executor.shutdown(wait=True)
-        
+
         logger.info("✅ Full Automation Pipeline stopped")
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get current pipeline status."""
         return {
@@ -831,8 +864,9 @@ class FullAutomationPipeline:
             "queue_size": self.task_queue.qsize(),
             "agent_status": self.agent_status,
             "optimization_cycles": self.optimization_cycles,
-        }
-    
+# BRACKET_SURGEON: disabled
+#         }
+
     def get_performance_report(self) -> Dict[str, Any]:
         """Generate comprehensive performance report."""
         return {
@@ -844,55 +878,60 @@ class FullAutomationPipeline:
                 "success_rate": self.metrics.successful_tasks
                 / max(self.metrics.total_tasks_executed, 1),
                 "average_execution_time": self.metrics.average_execution_time,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "business_impact": {
                 "revenue_generated": self.metrics.revenue_generated,
                 "cost_saved": self.metrics.cost_saved,
                 "decisions_made": self.metrics.decisions_made,
                 "automation_efficiency": self.metrics.automation_efficiency,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "agent_performance": self.agent_status,
             "system_health": self._check_system_health(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def main():
     """Main function to run the full automation pipeline."""
-    
+
     import asyncio
-    
+
     # Setup logging
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[logging.FileHandler("pipeline.log"), logging.StreamHandler()],
-    )
-    
+# BRACKET_SURGEON: disabled
+#     )
+
     async def run_pipeline():
         pipeline = FullAutomationPipeline()
-        
+
         try:
             # Start the pipeline
             await pipeline.start_pipeline()
-            
+
             # Keep running until interrupted
             while pipeline.running:
                 await asyncio.sleep(1)
-                
+
                 # Log status periodically
                 if int(time.time()) % 300 == 0:
                     status = pipeline.get_status()
                     logger.info(
                         f"📊 Pipeline Status: {status['status']} | Tasks: {status['active_tasks']} active, {status['queue_size']} queued"
-                    )
-        
+# BRACKET_SURGEON: disabled
+#                     )
+
         except KeyboardInterrupt:
             logger.info("🛑 Keyboard interrupt received")
         except Exception as e:
             logger.error(f"❌ Pipeline error: {e}")
         finally:
             pipeline.stop_pipeline()
-    
+
     # Run the pipeline
     asyncio.run(run_pipeline())
 

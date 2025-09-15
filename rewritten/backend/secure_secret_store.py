@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Secure Secret Store
 Fully encrypted secret management system for sensitive information
 
@@ -8,7 +8,7 @@ System Constitution Adherence:
 - Zero - Cost Stack: Uses built - in Python cryptography libraries
 - Additive Evolution: Enhances security without breaking existing functionality
 - Secure Design: Military - grade encryption with multiple security layers
-"""
+""""""
 
 import base64
 import hashlib
@@ -118,7 +118,8 @@ class SecretStore:
         master_key: Optional[str] = None,
         auto_backup: bool = True,
         backup_interval: int = 3600,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         if not CRYPTO_AVAILABLE:
             raise ImportError("cryptography library is required for SecretStore")
 
@@ -178,7 +179,7 @@ class SecretStore:
         """Initialize encrypted database"""
         with sqlite3.connect(self.store_path) as conn:
             conn.executescript(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS secrets (
                     secret_id TEXT PRIMARY KEY,
                         name TEXT NOT NULL UNIQUE,
@@ -198,7 +199,8 @@ class SecretStore:
                         description TEXT,
                         rotation_interval INTEGER,
                         is_active BOOLEAN DEFAULT 1
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS access_log (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -208,7 +210,8 @@ class SecretStore:
                         client_info TEXT,
                         success BOOLEAN DEFAULT 1,
                         error_message TEXT
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS key_rotation_log (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -217,15 +220,17 @@ class SecretStore:
                         new_checksum TEXT,
                         rotation_reason TEXT,
                         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE INDEX IF NOT EXISTS idx_secrets_name ON secrets(name);
                 CREATE INDEX IF NOT EXISTS idx_secrets_type ON secrets(secret_type);
                 CREATE INDEX IF NOT EXISTS idx_secrets_access_level ON secrets(access_level);
                 CREATE INDEX IF NOT EXISTS idx_access_log_secret_id ON access_log(secret_id);
                 CREATE INDEX IF NOT EXISTS idx_access_log_timestamp ON access_log(timestamp);
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
     def _derive_key(self, salt: bytes, method: EncryptionMethod = EncryptionMethod.FERNET) -> bytes:
         """Derive encryption key from master key and salt"""
@@ -236,7 +241,8 @@ class SecretStore:
                 salt=salt,
                 iterations=100000,
                 backend=default_backend(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             # Use Scrypt for other methods (more secure but slower)
             kdf = Scrypt(
@@ -247,7 +253,8 @@ class SecretStore:
                 r=8,
                 p=1,
                 backend=default_backend(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return kdf.derive(self.master_key)
 
@@ -288,7 +295,8 @@ class SecretStore:
         salt: bytes,
         nonce: Optional[bytes],
         method: EncryptionMethod,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Decrypt a secret value"""
         key = self._derive_key(salt, method)
 
@@ -332,14 +340,16 @@ class SecretStore:
         action: str,
         success: bool = True,
         error_message: Optional[str] = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Log secret access for audit trail"""
         try:
             with sqlite3.connect(self.store_path) as conn:
                 conn.execute(
                     "INSERT INTO access_log (secret_id, action, timestamp, success, error_message) VALUES (?, ?, ?, ?, ?)",
                     (secret_id, action, datetime.now(), success, error_message),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         except Exception as e:
             logger.error(f"Failed to log access: {e}")
 
@@ -368,7 +378,8 @@ class SecretStore:
         tags: Optional[List[str]] = None,
         description: str = "",
         rotation_interval: Optional[int] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Store a secret securely"""
 
         with self._lock:
@@ -397,18 +408,19 @@ class SecretStore:
                     description=description,
                     rotation_interval=rotation_interval,
                     is_active=True,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Store in database
                 with self._database_transaction() as conn:
                     conn.execute(
-                        """
+                        """"""
                         INSERT INTO secrets (
                             secret_id, name, secret_type, access_level, encryption_method,
                                 encrypted_value, salt, nonce, checksum, created_at, updated_at,
                                 expires_at, tags, description, rotation_interval, is_active
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             secret_id,
                             name,
@@ -426,8 +438,10 @@ class SecretStore:
                             description,
                             rotation_interval,
                             True,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                 self._log_access(secret_id, "STORE", True)
                 logger.info(f"Secret '{name}' stored successfully with ID: {secret_id}")
@@ -461,10 +475,12 @@ class SecretStore:
                     if secret_access_level.value > access_level_required.value:
                         self._log_access(
                             row["secret_id"], "GET", False, "Insufficient access level"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         logger.warning(
                             f"Access denied for secret '{name}': insufficient access level"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         return None
 
                     # Check expiration
@@ -482,13 +498,15 @@ class SecretStore:
                         row["salt"],
                         row["nonce"],
                         encryption_method,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Update access statistics
                     conn.execute(
                         "UPDATE secrets SET access_count = access_count + 1, last_accessed = ? WHERE secret_id = ?",
                         (datetime.now(), row["secret_id"]),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     self._log_access(row["secret_id"], "GET", True)
                     return decrypted_value
@@ -524,11 +542,11 @@ class SecretStore:
 
                     # Update secret
                     conn.execute(
-                        """
+                        """"""
                         UPDATE secrets
                         SET encrypted_value = ?, salt = ?, nonce = ?, checksum = ?, updated_at = ?
                         WHERE secret_id = ?
-                    """,
+                    ""","""
                         (
                             encrypted_value,
                             salt,
@@ -536,8 +554,10 @@ class SecretStore:
                             new_checksum,
                             datetime.now(),
                             row["secret_id"],
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Log rotation
                     conn.execute(
@@ -548,8 +568,10 @@ class SecretStore:
                             new_checksum,
                             "Manual update",
                             datetime.now(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                     self._log_access(row["secret_id"], "UPDATE", True)
                     logger.info(f"Secret '{name}' updated successfully")
@@ -570,7 +592,8 @@ class SecretStore:
                     result = conn.execute(
                         "UPDATE secrets SET is_active = 0, updated_at = ? WHERE name = ? AND is_active = 1",
                         (datetime.now(), name),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if result.rowcount == 0:
                         self._log_access("unknown", "DELETE", False, f"Secret '{name}' not found")
@@ -624,7 +647,8 @@ class SecretStore:
                         "last_accessed": row["last_accessed"],
                         "tags": json.loads(row["tags"] or "[]"),
                         "description": row["description"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     secrets.append(secret_info)
 
                 return secrets
@@ -677,7 +701,8 @@ class SecretStore:
                         "timestamp": row["timestamp"],
                         "success": bool(row["success"]),
                         "error_message": row["error_message"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     log_entries.append(log_entry)
 
                 return log_entries
@@ -770,7 +795,8 @@ class SecretStore:
                     "store_path": self.store_path,
                     "auto_backup_enabled": self.auto_backup,
                     "backup_interval": self.backup_interval,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             logger.error(f"Failed to get statistics: {e}")
@@ -794,7 +820,8 @@ def store_api_key(name: str, api_key: str, description: str = "") -> str:
         secret_type=SecretType.API_KEY,
         access_level=AccessLevel.RESTRICTED,
         description=description,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def get_api_key(name: str) -> Optional[str]:
@@ -812,7 +839,8 @@ def store_database_url(name: str, url: str, description: str = "") -> str:
         secret_type=SecretType.DATABASE_URL,
         access_level=AccessLevel.CONFIDENTIAL,
         description=description,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def get_database_url(name: str) -> Optional[str]:
@@ -836,7 +864,8 @@ if __name__ == "__main__":
         secret_type=SecretType.API_KEY,
         access_level=AccessLevel.RESTRICTED,
         description="OpenAI API key for content generation",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     youtube_id = store.store_secret(
         name="youtube_api_key",
@@ -844,7 +873,8 @@ if __name__ == "__main__":
         secret_type=SecretType.API_KEY,
         access_level=AccessLevel.RESTRICTED,
         description="YouTube API key for video uploads",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Database URL
     db_id = store.store_secret(
@@ -853,7 +883,8 @@ if __name__ == "__main__":
         secret_type=SecretType.DATABASE_URL,
         access_level=AccessLevel.CONFIDENTIAL,
         description="Main database connection string",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # JWT secret
     jwt_id = store.store_secret(
@@ -862,7 +893,8 @@ if __name__ == "__main__":
         secret_type=SecretType.JWT_SECRET,
         access_level=AccessLevel.CONFIDENTIAL,
         description="JWT signing secret",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     print(f"Stored secrets with IDs: {openai_id}, {youtube_id}, {db_id}, {jwt_id}")
 
@@ -894,6 +926,7 @@ if __name__ == "__main__":
     for entry in log_entries:
         print(
             f"- {entry['timestamp']}: {entry['action']} - {'SUCCESS' if entry['success'] else 'FAILED'}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     print("\\nSecure secret store test completed successfully!")

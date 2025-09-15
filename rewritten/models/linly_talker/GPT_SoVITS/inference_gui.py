@@ -15,7 +15,8 @@ from PyQt5.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
     QWidget,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from tools.i18n.i18n import I18nAuto
 
@@ -25,7 +26,8 @@ from GPT_SoVITS.inference_webui import (
     change_gpt_weights,
     change_sovits_weights,
     get_tts_wav,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 class GPTSoVITSGUI(QMainWindow):
@@ -39,32 +41,38 @@ class GPTSoVITSGUI(QMainWindow):
         self.setGeometry(800, 450, 950, 850)
 
         self.setStyleSheet(
-            """
+            """"""
             QWidget {
                 background - color: #a3d3b1;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             QTabWidget::pane {
                 background - color: #a3d3b1;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             QTabWidget::tab - bar {
                 alignment: left;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             QTabBar::tab {
                 background: #8da4bf;
                 color: #ffffff;
                 padding: 8px;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             QTabBar::tab:selected {
                 background: #2a3f54;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             QLabel {
                 color: #000000;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             QPushButton {
                 background - color: #4CAF50;
@@ -72,20 +80,24 @@ class GPTSoVITSGUI(QMainWindow):
                 padding: 8px;
                 border: 1px solid #4CAF50;
                 border - radius: 4px;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             QPushButton:hover {
                 background - color: #45a049;
                 border: 1px solid #45a049;
                 box - shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
-            }
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             }
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         license_text = (
             "本软件以MIT协议开源, 作者不对软件具备任何控制力, 使用软件者、传播软件导出的声音者自负全责. "
             "如不认可该条款, 则不能使用或引用软件包内任何代码和文件. 详见根目录LICENSE."
-        )
+# BRACKET_SURGEON: disabled
+#         )
         license_label = QLabel(license_text)
         license_label.setWordWrap(True)
 
@@ -150,8 +162,10 @@ class GPTSoVITSGUI(QMainWindow):
                 self.ref_text_input,
                 self.target_text_input,
                 self.output_input,
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         self.synthesize_button = QPushButton("合成")
         self.synthesize_button.clicked.connect(self.synthesize)
@@ -332,7 +346,8 @@ class GPTSoVITSGUI(QMainWindow):
             prompt_language=language_combobox,
             text=target_text,
             text_language=language_combobox_02,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         result_list = list(synthesis_result)
 

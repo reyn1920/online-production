@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Security Scanner - Comprehensive security scanning and validation
 Provides automated security checks, vulnerability scanning, and compliance validation
-"""
+""""""
 
 import hashlib
 import json
@@ -69,43 +69,52 @@ class SecurityScanner:
                 "pattern": r'(?i)(api[_-]?key|apikey)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
                     "severity": "high",
                     "description": "Potential API key detected",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "aws_access_key": {
                 "pattern": r"AKIA[0 - 9A - Z]{16}",
                     "severity": "critical",
                     "description": "AWS Access Key ID detected",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "aws_secret_key": {
-                "pattern": r'(?i)aws[_-]?secret[_-]?access[_-]?key["\\']?\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9/+=]{40})["\\']?',
+                "pattern": r'(?i)aws[_-]?secret[_-]?access[_-]?key["\\']?\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9/+=]{40})["\\']?',"
                     "severity": "critical",
                     "description": "AWS Secret Access Key detected",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "github_token": {
                 "pattern": r"ghp_[a - zA - Z0 - 9]{36}",
                     "severity": "critical",
                     "description": "GitHub Personal Access Token detected",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "private_key": {
                 "pattern": r"-----BEGIN (RSA |DSA |EC |OPENSSH )?PRIVATE KEY-----",
                     "severity": "critical",
                     "description": "Private key detected",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "jwt_token": {
                 "pattern": r"eyJ[a - zA - Z0 - 9_\\-]*\\.[a - zA - Z0 - 9_\\-]*\\.[a - zA - Z0 - 9_\\-]*",
                     "severity": "medium",
                     "description": "JWT token detected",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "database_url": {
-                "pattern": r'(?i)(database[_-]?url|db[_-]?url)\\s*[=:]\\s*["\\']?(postgresql|mysql|mongodb)://[^\\s"\\'>]+["\\']?',
+                "pattern": r'(?i)(database[_-]?url|db[_-]?url)\\s*[=:]\\s*["\\']?(postgresql|mysql|mongodb)://[^\\s"\\'>]+["\\']?',"
                     "severity": "high",
                     "description": "Database connection string detected",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "password": {
-                "pattern": r'(?i)(password|passwd|pwd)\\s*[=:]\\s*["\\']([^"\\'>\\s]{8,})["\\']',
+                "pattern": r'(?i)(password|passwd|pwd)\\s*[=:]\\s*["\\']([^"\\'>\\s]{8,})["\\']',"
                     "severity": "medium",
                     "description": "Hardcoded password detected",
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Vulnerability patterns
         self.vulnerability_patterns = {
@@ -114,32 +123,38 @@ class SecurityScanner:
                     "severity": "high",
                     "description": "Potential SQL injection vulnerability",
                     "cwe_id": "CWE - 89",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "xss_vulnerability": {
                 "pattern": r"(?i)innerHTML\\s*=\\s*[^;]*\\+",
                     "severity": "medium",
                     "description": "Potential XSS vulnerability",
                     "cwe_id": "CWE - 79",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "path_traversal": {
                 "pattern": r"(?i)(open|read|write)\\s*\\([^)]*\\.\\.[\\\\/]",
                     "severity": "high",
                     "description": "Potential path traversal vulnerability",
                     "cwe_id": "CWE - 22",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "command_injection": {
                 "pattern": r"(?i)(exec|system|popen|subprocess)\\s*\\([^)]*\\+[^)]*\\)",
                     "severity": "critical",
                     "description": "Potential command injection vulnerability",
                     "cwe_id": "CWE - 78",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "insecure_random": {
                 "pattern": r"(?i)math\\.random\\(\\)|random\\.random\\(\\)",
                     "severity": "low",
                     "description": "Insecure random number generation",
                     "cwe_id": "CWE - 338",
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         # File extensions to scan
         self.scannable_extensions = {
@@ -169,7 +184,8 @@ class SecurityScanner:
                 ".env",
                 ".config",
                 ".ini",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Files to exclude from scanning
         self.excluded_patterns = {
@@ -189,7 +205,8 @@ class SecurityScanner:
                 r"\\.log$",
                 r"\\.min\\.(js|css)$",
                 r"\\.(jpg|jpeg|png|gif|bmp|ico|svg|pdf|zip|tar|gz|rar)$",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         logger.info(f"Security scanner initialized for {self.base_dir}")
 
@@ -214,7 +231,9 @@ class SecurityScanner:
                     for rule_id, rule_config in self.secret_patterns.items():
                         matches = re.finditer(
                             rule_config["pattern"], content, re.MULTILINE
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                         for match in matches:
                             line_number = content[: match.start()].count("\\n") + 1
@@ -236,7 +255,9 @@ class SecurityScanner:
                                     rule_id = rule_id,
                                     remediation = self._get_secret_remediation(rule_id),
                                     confidence="high",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                             findings.append(finding)
 
@@ -258,13 +279,18 @@ class SecurityScanner:
                     metadata={
                     "files_scanned": len(list(self._get_scannable_files(target))),
                         "patterns_checked": len(self.secret_patterns),
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.scan_history.append(result)
             logger.info(
                 f"Secrets scan completed: {len(findings)} findings in {duration:.2f}s"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return result
 
@@ -281,7 +307,9 @@ class SecurityScanner:
                     duration_seconds = duration,
                     status="failed",
                     metadata={"error": str(e)},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.scan_history.append(result)
             logger.error(f"Secrets scan failed: {e}")
@@ -309,7 +337,9 @@ class SecurityScanner:
                     for rule_id, rule_config in self.vulnerability_patterns.items():
                         matches = re.finditer(
                             rule_config["pattern"], content, re.MULTILINE
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                         for match in matches:
                             line_number = content[: match.start()].count("\\n") + 1
@@ -324,10 +354,13 @@ class SecurityScanner:
                                     rule_id = rule_id,
                                     remediation = self._get_vulnerability_remediation(
                                     rule_id
-                                ),
+# BRACKET_SURGEON: disabled
+#                                 ),
                                     confidence="medium",
                                     cwe_id = rule_config.get("cwe_id"),
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                             findings.append(finding)
 
@@ -349,13 +382,18 @@ class SecurityScanner:
                     metadata={
                     "files_scanned": len(list(self._get_scannable_files(target))),
                         "patterns_checked": len(self.vulnerability_patterns),
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.scan_history.append(result)
             logger.info(
                 f"Vulnerability scan completed: {len(findings)} findings in {duration:.2f}s"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return result
 
@@ -372,7 +410,9 @@ class SecurityScanner:
                     duration_seconds = duration,
                     status="failed",
                     metadata={"error": str(e)},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.scan_history.append(result)
             logger.error(f"Vulnerability scan failed: {e}")
@@ -413,7 +453,9 @@ class SecurityScanner:
                                 rule_id="world_writable",
                                 remediation="Remove world - write permissions: chmod o - w <file>",
                                 confidence="high",
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         findings.append(finding)
 
                     # Check for executable files that shouldn't be
@@ -423,7 +465,8 @@ class SecurityScanner:
                             ".json",
                             ".yaml",
                             ".yml",
-                            }:
+# BRACKET_SURGEON: disabled
+#                             }:
                         finding = SecurityFinding(
                             severity="low",
                                 category="permissions",
@@ -433,13 +476,16 @@ class SecurityScanner:
                                 rule_id="unnecessary_executable",
                                 remediation="Remove execute permissions: chmod -x <file>",
                                 confidence="medium",
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         findings.append(finding)
 
                     # Check for overly permissive script files
                     if file_path.suffix in {".sh", ".py", ".pl", ".rb"} and (
                         mode & 0o022
-                    ):  # Group / other writable
+# BRACKET_SURGEON: disabled
+#                     ):  # Group / other writable
                         finding = SecurityFinding(
                             severity="medium",
                                 category="permissions",
@@ -449,7 +495,9 @@ class SecurityScanner:
                                 rule_id="script_excessive_perms",
                                 remediation="Restrict permissions: chmod 755 <file>",
                                 confidence="high",
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         findings.append(finding)
 
                 except Exception as e:
@@ -469,13 +517,18 @@ class SecurityScanner:
                     status="completed",
                     metadata={
                     "files_scanned": len([f for f in target.rglob("*") if f.is_file()])
-                },
-                    )
+# BRACKET_SURGEON: disabled
+#                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.scan_history.append(result)
             logger.info(
                 f"Permissions scan completed: {len(findings)} findings in {duration:.2f}s"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return result
 
@@ -492,7 +545,9 @@ class SecurityScanner:
                     duration_seconds = duration,
                     status="failed",
                     metadata={"error": str(e)},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.scan_history.append(result)
             logger.error(f"Permissions scan failed: {e}")
@@ -510,18 +565,23 @@ class SecurityScanner:
             "secrets": self.scan_secrets(target_path),
                 "vulnerabilities": self.scan_vulnerabilities(target_path),
                 "permissions": self.scan_permissions(target_path),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Generate overall summary
         total_findings = sum(len(result.findings) for result in results.values())
         critical_findings = sum(
             len([f for f in result.findings if f.severity == "critical"])
             for result in results.values()
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         logger.info(
             f"Comprehensive scan completed: {total_findings} total findings, {critical_findings} critical"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return results
 
@@ -595,7 +655,8 @@ class SecurityScanner:
                 "xxxxxxxx",
                 "12345678",
                 "abcdefgh",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         matched_lower = matched_text.lower()
 
@@ -621,37 +682,41 @@ class SecurityScanner:
         """Get remediation advice for secret findings"""
         remediations = {
             "api_key": "Move API key to environment variable or secure secret store",
-                "aws_access_key": "Rotate AWS credentials immediately \
-    and use IAM roles or environment variables",
-                "aws_secret_key": "Rotate AWS credentials immediately \
-    and use IAM roles or environment variables",
-                "github_token": "Revoke GitHub token \
-    and use GitHub Actions secrets or environment variables",
-                "private_key": "Remove private key from code \
-    and use secure key management",
-                "jwt_token": "Remove JWT token from code \
-    and generate tokens dynamically",
-                "database_url": "Move database URL to environment variable \
-    or configuration file",
-                "password": "Remove hardcoded password \
-    and use secure authentication methods",
-                }
+                "aws_access_key": "Rotate AWS credentials immediately \"
+#     and use IAM roles or environment variables",
+                "aws_secret_key": "Rotate AWS credentials immediately \"
+#     and use IAM roles or environment variables",
+                "github_token": "Revoke GitHub token \"
+#     and use GitHub Actions secrets or environment variables",
+                "private_key": "Remove private key from code \"
+#     and use secure key management",
+                "jwt_token": "Remove JWT token from code \"
+#     and generate tokens dynamically",
+                "database_url": "Move database URL to environment variable \"
+#     or configuration file",
+                "password": "Remove hardcoded password \"
+#     and use secure authentication methods",
+# BRACKET_SURGEON: disabled
+#                 }
 
         return remediations.get(
             rule_id, "Remove sensitive data from code and use secure storage"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def _get_vulnerability_remediation(self, rule_id: str) -> str:
         """Get remediation advice for vulnerability findings"""
         remediations = {
             "sql_injection": "Use parameterized queries or prepared statements",
-                "xss_vulnerability": "Sanitize user input \
-    and use safe DOM manipulation methods",
+                "xss_vulnerability": "Sanitize user input \"
+#     and use safe DOM manipulation methods",
                 "path_traversal": "Validate and sanitize file paths, use allowlists",
                 "command_injection": "Avoid dynamic command construction, use safe APIs",
                 "insecure_random": "Use cryptographically secure random number generators",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return remediations.get(rule_id, "Review code for security best practices")
 
@@ -665,7 +730,8 @@ class SecurityScanner:
                 "medium": 0,
                 "low": 0,
                 "info": 0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         for finding in findings:
             if finding.severity in summary:
@@ -680,7 +746,8 @@ class SecurityScanner:
             export_data = {
                 "export_timestamp": datetime.now().isoformat(),
                     "scan_results": {},
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             for scan_type, result in results.items():
                 export_data["scan_results"][scan_type] = {
@@ -693,7 +760,8 @@ class SecurityScanner:
                         "duration_seconds": result.duration_seconds,
                         "status": result.status,
                         "metadata": result.metadata,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             output_file = Path(output_path)
             with open(output_file, "w", encoding="utf - 8") as f:
@@ -725,16 +793,22 @@ def main():
 
     parser = argparse.ArgumentParser(
         description="Security Scanner - Comprehensive security analysis"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--base - dir", default=".", help="Base directory to scan (default: current)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--scan - type",
             choices=["secrets", "vulnerabilities", "permissions", "all"],
             default="all",
             help="Type of scan to perform",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument("--target", help="Specific target path to scan")
     parser.add_argument("--output", help="Output file for results (JSON format)")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")

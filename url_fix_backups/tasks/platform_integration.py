@@ -31,7 +31,7 @@ class PlatformIntegrationTask(Task):
 def sync_inventory_across_platforms(
     self, business_id: str, product_mappings: Dict[str, Dict[str, str]]
 ) -> Dict[str, Any]:
-    """
+    """"""
     Synchronize inventory levels across all connected platforms
 
     Args:
@@ -40,7 +40,7 @@ def sync_inventory_across_platforms(
 
     Returns:
         Dict containing synchronization results
-    """
+    """"""
     try:
         logger.info(f"Syncing inventory for business {business_id}")
 
@@ -63,8 +63,10 @@ def sync_inventory_across_platforms(
                     level.get("quantity", 0)
                     for level in inventory_levels.values()
                     if isinstance(level, dict) and "quantity" in level
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
             # Update all platforms to master level
             update_results = {}
@@ -80,7 +82,8 @@ def sync_inventory_across_platforms(
                 "master_level": master_level,
                 "platform_levels": inventory_levels,
                 "update_results": update_results,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         logger.info(f"Inventory sync completed for business {business_id}")
         return {
@@ -88,7 +91,8 @@ def sync_inventory_across_platforms(
             "business_id": business_id,
             "sync_results": sync_results,
             "synced_at": datetime.utcnow().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         logger.error(f"Inventory sync failed: {str(e)}")
@@ -99,7 +103,7 @@ def sync_inventory_across_platforms(
 def process_webhook_notifications(
     self, platform: str, webhook_data: Dict[str, Any]
 ) -> Dict[str, Any]:
-    """
+    """"""
     Process incoming webhook notifications from platforms
 
     Args:
@@ -108,7 +112,7 @@ def process_webhook_notifications(
 
     Returns:
         Dict containing processing results
-    """
+    """"""
     try:
         logger.info(f"Processing webhook from {platform}")
 
@@ -128,7 +132,8 @@ def process_webhook_notifications(
             "refund_issued": handle_refund_issued,
             "inventory_updated": handle_inventory_updated,
             "product_updated": handle_product_updated,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         handler_func = handlers.get(event_type)
         if not handler_func:
@@ -144,7 +149,8 @@ def process_webhook_notifications(
             "event_type": event_type,
             "result": result,
             "processed_at": datetime.utcnow().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         logger.error(f"Webhook processing failed: {str(e)}")
@@ -153,7 +159,7 @@ def process_webhook_notifications(
 
 @celery_app.task(base=PlatformIntegrationTask, bind=True)
 def sync_customer_data(self, business_id: str, time_period: str = "24h") -> Dict[str, Any]:
-    """
+    """"""
     Synchronize customer data across all platforms
 
     Args:
@@ -162,7 +168,7 @@ def sync_customer_data(self, business_id: str, time_period: str = "24h") -> Dict
 
     Returns:
         Dict containing customer sync results
-    """
+    """"""
     try:
         logger.info(f"Syncing customer data for business {business_id}")
 
@@ -193,13 +199,15 @@ def sync_customer_data(self, business_id: str, time_period: str = "24h") -> Dict
             "business_id": business_id,
             "platforms_synced": len(
                 [p for p in platforms if "error" not in customer_data.get(p, {})]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "total_customers": len(merged_customers),
             "new_customers": update_result.get("new_customers", 0),
             "updated_customers": update_result.get("updated_customers", 0),
             "insights": insights,
             "synced_at": datetime.utcnow().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         logger.error(f"Customer data sync failed: {str(e)}")
@@ -210,7 +218,7 @@ def sync_customer_data(self, business_id: str, time_period: str = "24h") -> Dict
 def update_product_metadata(
     self, product_mappings: Dict[str, Dict[str, str]], metadata_updates: Dict[str, Any]
 ) -> Dict[str, Any]:
-    """
+    """"""
     Update product metadata across all platforms
 
     Args:
@@ -219,7 +227,7 @@ def update_product_metadata(
 
     Returns:
         Dict containing update results
-    """
+    """"""
     try:
         logger.info(f"Updating product metadata across platforms")
 
@@ -236,7 +244,8 @@ def update_product_metadata(
                     # Update product on platform
                     result = update_platform_product(
                         platform, platform_product_id, platform_metadata
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     product_results[platform] = result
 
                 except Exception as e:
@@ -250,7 +259,8 @@ def update_product_metadata(
             "status": "success",
             "update_results": update_results,
             "updated_at": datetime.utcnow().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         logger.error(f"Product metadata update failed: {str(e)}")
@@ -261,7 +271,7 @@ def update_product_metadata(
 def generate_cross_platform_analytics(
     self, business_id: str, date_range: Dict[str, str]
 ) -> Dict[str, Any]:
-    """
+    """"""
     Generate comprehensive analytics across all platforms
 
     Args:
@@ -270,7 +280,7 @@ def generate_cross_platform_analytics(
 
     Returns:
         Dict containing cross - platform analytics
-    """
+    """"""
     try:
         logger.info(f"Generating cross - platform analytics for business {business_id}")
 
@@ -303,13 +313,15 @@ def generate_cross_platform_analytics(
             "date_range": date_range,
             "platforms_included": [
                 p for p in platforms if "error" not in analytics_data.get(p, {})
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "metrics": aggregated_metrics,
             "insights": insights,
             "recommendations": recommendations,
             "visualizations": visualizations,
             "generated_at": datetime.utcnow().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         logger.error(f"Cross - platform analytics generation failed: {str(e)}")
@@ -327,7 +339,8 @@ def get_platform_inventory(platform: str, product_id: str) -> Dict[str, Any]:
         "gumroad": get_gumroad_inventory,
         "paddle": get_paddle_inventory,
         "sendowl": get_sendowl_inventory,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     getter_func = inventory_getters.get(platform)
     if not getter_func:
@@ -344,7 +357,8 @@ def update_platform_inventory(platform: str, product_id: str, quantity: int) -> 
         "gumroad": update_gumroad_inventory,
         "paddle": update_paddle_inventory,
         "sendowl": update_sendowl_inventory,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     updater_func = inventory_updaters.get(platform)
     if not updater_func:
@@ -364,7 +378,8 @@ def verify_webhook_signature(platform: str, webhook_data: Dict[str, Any]) -> boo
         "gumroad": verify_gumroad_webhook,
         "paddle": verify_paddle_webhook,
         "sendowl": verify_sendowl_webhook,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     verifier_func = verifiers.get(platform)
     if not verifier_func:
@@ -382,7 +397,8 @@ def extract_event_type(platform: str, webhook_data: Dict[str, Any]) -> str:
         "gumroad": lambda data: data.get("type", "unknown"),
         "paddle": lambda data: data.get("alert_name", "unknown"),
         "sendowl": lambda data: data.get("event", "unknown"),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     extractor_func = event_extractors.get(platform, lambda data: "unknown")
     return extractor_func(webhook_data)
@@ -409,7 +425,8 @@ def handle_order_created(platform: str, webhook_data: Dict[str, Any]) -> Dict[st
         "order_id": order_id,
         "platform": platform,
         "amount": order_data.get("total_amount"),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def handle_order_updated(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -423,7 +440,8 @@ def handle_order_updated(platform: str, webhook_data: Dict[str, Any]) -> Dict[st
         "action": "order_updated",
         "order_id": order_data.get("id"),
         "platform": platform,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def handle_order_cancelled(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -440,7 +458,8 @@ def handle_order_cancelled(platform: str, webhook_data: Dict[str, Any]) -> Dict[
         "action": "order_cancelled",
         "order_id": order_data.get("id"),
         "platform": platform,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def handle_payment_completed(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -458,7 +477,8 @@ def handle_payment_completed(platform: str, webhook_data: Dict[str, Any]) -> Dic
         "order_id": payment_data.get("order_id"),
         "amount": payment_data.get("amount"),
         "platform": platform,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def handle_payment_failed(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -475,7 +495,8 @@ def handle_payment_failed(platform: str, webhook_data: Dict[str, Any]) -> Dict[s
         "action": "payment_failed",
         "order_id": payment_data.get("order_id"),
         "platform": platform,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def handle_refund_issued(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -493,7 +514,8 @@ def handle_refund_issued(platform: str, webhook_data: Dict[str, Any]) -> Dict[st
         "order_id": refund_data.get("order_id"),
         "amount": refund_data.get("amount"),
         "platform": platform,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def handle_inventory_updated(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -508,7 +530,8 @@ def handle_inventory_updated(platform: str, webhook_data: Dict[str, Any]) -> Dic
         "product_id": inventory_data.get("product_id"),
         "new_quantity": inventory_data.get("quantity"),
         "platform": platform,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def handle_product_updated(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -522,7 +545,8 @@ def handle_product_updated(platform: str, webhook_data: Dict[str, Any]) -> Dict[
         "action": "product_updated",
         "product_id": product_data.get("id"),
         "platform": platform,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Customer data functions
@@ -536,7 +560,8 @@ def get_platform_customers(platform: str, time_period: str) -> Dict[str, Any]:
         "gumroad": get_gumroad_customers,
         "paddle": get_paddle_customers,
         "sendowl": get_sendowl_customers,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     getter_func = customer_getters.get(platform)
     if not getter_func:
@@ -582,7 +607,8 @@ def merge_customer_records(customer_data: Dict[str, Any]) -> List[Dict[str, Any]
                     "last_order_date": customer.get("last_order_date", ""),
                     "country": customer.get("country", ""),
                     "city": customer.get("city", ""),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 merged_customers.append(merged_customer)
                 email_map[email] = merged_customer
@@ -598,14 +624,16 @@ def update_customer_database(business_id: str, customers: List[Dict[str, Any]]) 
 
     new_customers = len(
         [c for c in customers if c.get("first_order_date") == c.get("last_order_date")]
-    )
+# BRACKET_SURGEON: disabled
+#     )
     updated_customers = len(customers) - new_customers
 
     return {
         "new_customers": new_customers,
         "updated_customers": updated_customers,
         "total_customers": len(customers),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def generate_customer_insights(customers: List[Dict[str, Any]]) -> List[str]:
@@ -624,7 +652,8 @@ def generate_customer_insights(customers: List[Dict[str, Any]]) -> List[str]:
         f"Multi - platform customers: {multi_platform_customers} ({multi_platform_customers / total_customers * 100:.1f}%)",
         f"Average orders per customer: {avg_orders:.1f}",
         f"Average customer lifetime value: ${avg_spent:.2f}",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     return insights
 
@@ -640,7 +669,8 @@ def get_platform_analytics(platform: str, date_range: Dict[str, str]) -> Dict[st
         "gumroad": get_gumroad_analytics,
         "paddle": get_paddle_analytics,
         "sendowl": get_sendowl_analytics,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     getter_func = analytics_getters.get(platform)
     if not getter_func:
@@ -660,7 +690,8 @@ def aggregate_platform_metrics(analytics_data: Dict[str, Any]) -> Dict[str, Any]
         "conversion_rate": 0,
         "average_order_value": 0,
         "platform_breakdown": {},
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     valid_platforms = 0
 
@@ -683,7 +714,8 @@ def aggregate_platform_metrics(analytics_data: Dict[str, Any]) -> Dict[str, Any]
             "customers": data.get("customers", 0),
             "views": data.get("views", 0),
             "conversion_rate": data.get("conversion_rate", 0),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     # Calculate derived metrics
     if aggregated["total_orders"] > 0:
@@ -708,17 +740,20 @@ def generate_analytics_insights(metrics: Dict[str, Any]) -> List[str]:
         # Platform performance
         platform_revenues = {
             p: data.get("revenue", 0) for p, data in metrics.get("platform_breakdown", {}).items()
-        }
+# BRACKET_SURGEON: disabled
+#         }
         top_platform = (
             max(platform_revenues, key=platform_revenues.get) if platform_revenues else None
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if top_platform:
             top_revenue = platform_revenues[top_platform]
             percentage = (top_revenue / total_revenue) * 100
             insights.append(
                 f"Top performing platform: {top_platform} (${top_revenue:,.2f}, {percentage:.1f}% of total)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     # Conversion insights
     conversion_rate = metrics.get("conversion_rate", 0)
@@ -731,7 +766,8 @@ def generate_analytics_insights(metrics: Dict[str, Any]) -> List[str]:
     if total_orders > 0:
         insights.append(
             f"Total orders: {total_orders:,} with average value of ${avg_order_value:.2f}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     return insights
 
@@ -746,23 +782,27 @@ def generate_analytics_recommendations(insights: List[str]) -> List[Dict[str, An
             "description": "Allocate more resources to your highest - revenue platform",
             "priority": "high",
             "expected_impact": "revenue increase of 10 - 15%",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "category": "conversion_optimization",
             "title": "Improve product listings",
-            "description": "Optimize product titles, descriptions, \
-    and images to increase conversion rates",
+            "description": "Optimize product titles, descriptions, \"
+#     and images to increase conversion rates",
             "priority": "medium",
             "expected_impact": "conversion rate increase of 5 - 10%",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "category": "pricing_strategy",
             "title": "Test price optimization",
             "description": "A / B test different price points to maximize revenue",
             "priority": "medium",
             "expected_impact": "revenue increase of 5 - 20%",
-        },
-    ]
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     ]
 
     return recommendations
 
@@ -776,23 +816,30 @@ def create_analytics_visualizations(metrics: Dict[str, Any]) -> Dict[str, Any]:
             "data": {
                 platform: data.get("revenue", 0)
                 for platform, data in metrics.get("platform_breakdown", {}).items()
-            },
-        },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         },
         "orders_by_platform": {
             "type": "bar_chart",
             "data": {
                 platform: data.get("orders", 0)
                 for platform, data in metrics.get("platform_breakdown", {}).items()
-            },
-        },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         },
         "conversion_rates": {
             "type": "line_chart",
             "data": {
                 platform: data.get("conversion_rate", 0) * 100
                 for platform, data in metrics.get("platform_breakdown", {}).items()
-            },
-        },
-    }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     }
 
     return visualizations
 
@@ -815,7 +862,8 @@ def get_gumroad_inventory(product_id: str) -> Dict[str, Any]:
     return {
         "quantity": 999,
         "status": "unlimited",
-    }  # Digital products typically unlimited
+# BRACKET_SURGEON: disabled
+#     }  # Digital products typically unlimited
 
 
 def update_gumroad_inventory(product_id: str, quantity: int) -> Dict[str, Any]:
@@ -875,7 +923,8 @@ def extract_order_data(platform: str, webhook_data: Dict[str, Any]) -> Dict[str,
         "id": "order_123",
         "total_amount": 29.99,
         "customer_email": "customer@example.com",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def extract_payment_data(platform: str, webhook_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -1000,7 +1049,8 @@ def get_etsy_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
         "customers": 38,
         "views": 1200,
         "conversion_rate": 0.0375,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def get_gumroad_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
@@ -1011,7 +1061,8 @@ def get_gumroad_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
         "customers": 25,
         "views": 800,
         "conversion_rate": 0.035,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def get_paddle_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
@@ -1022,7 +1073,8 @@ def get_paddle_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
         "customers": 29,
         "views": 950,
         "conversion_rate": 0.0337,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def get_sendowl_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
@@ -1033,7 +1085,8 @@ def get_sendowl_analytics(date_range: Dict[str, str]) -> Dict[str, Any]:
         "customers": 16,
         "views": 600,
         "conversion_rate": 0.03,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Metadata transformation functions
@@ -1047,7 +1100,8 @@ def transform_metadata_for_platform(platform: str, metadata: Dict[str, Any]) -> 
         "gumroad": transform_gumroad_metadata,
         "paddle": transform_paddle_metadata,
         "sendowl": transform_sendowl_metadata,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     transformer_func = transformers.get(platform, lambda x: x)
     return transformer_func(metadata)
@@ -1061,7 +1115,8 @@ def transform_etsy_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
         "tags": metadata.get("tags", [])[:13],  # Etsy tag limit
         "materials": metadata.get("materials", []),
         "price": metadata.get("price"),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def transform_gumroad_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
@@ -1071,7 +1126,8 @@ def transform_gumroad_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
         "description": metadata.get("description", ""),
         "price": metadata.get("price"),
         "tags": ",".join(metadata.get("tags", [])),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def transform_paddle_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
@@ -1080,7 +1136,8 @@ def transform_paddle_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
         "title": metadata.get("title", ""),
         "custom_message": metadata.get("description", ""),
         "prices": [f"USD:{metadata.get('price', 0)}"],
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def transform_sendowl_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
@@ -1091,8 +1148,10 @@ def transform_sendowl_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
             "description": metadata.get("description", ""),
             "price": metadata.get("price"),
             "tags": metadata.get("tags", []),
-        }
-    }
+# BRACKET_SURGEON: disabled
+#         }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def update_platform_product(
@@ -1105,7 +1164,8 @@ def update_platform_product(
         "gumroad": update_gumroad_product,
         "paddle": update_paddle_product,
         "sendowl": update_sendowl_product,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     updater_func = updaters.get(platform)
     if not updater_func:

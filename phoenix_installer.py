@@ -75,7 +75,7 @@ def main():
     print("Please add all required API keys and affiliate credentials.")
     run_command([sys.executable, SECRETS_CLI_PATH, "list"], check=False)  # Show existing keys
     print(
-        "\\nExample command to add a secret: python scripts/secrets_cli.py add SECRET_NAME 'your_secret_value'"
+        "\nExample command to add a secret: python scripts/secrets_cli.py add SECRET_NAME 'your_secret_value'"
     )
     input("Press Enter to continue after you have added all your secrets...")
 

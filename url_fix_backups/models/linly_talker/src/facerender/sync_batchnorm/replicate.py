@@ -17,7 +17,8 @@ __all__ = [
     "execute_replication_callbacks",
     "DataParallelWithCallback",
     "patch_replication_callback",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 
 class CallbackContext(object):
@@ -25,11 +26,12 @@ class CallbackContext(object):
 
 
 def execute_replication_callbacks(modules):
-    """
+    """"""
     Execute an replication callback `__data_parallel_replicate__` on each module created by original replication.
 
     The callback will be invoked with arguments `__data_parallel_replicate__(ctx,
-    copy_id)`
+# BRACKET_SURGEON: disabled
+#     copy_id)`
 
     Note that, as all modules are isomorphism, we assign each sub - module with a context
     (shared among multiple copies of this module on different devices).
@@ -37,7 +39,7 @@ def execute_replication_callbacks(modules):
 
     We guarantee that the callback on the master copy (the first copy) will be called ahead of calling the callback
     of any slave copies.
-    """
+    """"""
     master_copy = modules[0]
     nr_modules = len(list(master_copy.modules()))
     ctxs = [CallbackContext() for _ in range(nr_modules)]
@@ -49,19 +51,20 @@ def execute_replication_callbacks(modules):
 
 
 class DataParallelWithCallback(DataParallel):
-    """
+    """"""
     Data Parallel with a replication callback.
 
     An replication callback `__data_parallel_replicate__` of each module will be invoked after being created by
     original `replicate` function.
     The callback will be invoked with arguments `__data_parallel_replicate__(ctx,
-    copy_id)`
+# BRACKET_SURGEON: disabled
+#     copy_id)`
 
     Examples:
         > sync_bn = SynchronizedBatchNorm1d(10, eps = 1e-5, affine = False)
         > sync_bn = DataParallelWithCallback(sync_bn, device_ids=[0, 1])
         # sync_bn.__data_parallel_replicate__ will be invoked.
-    """
+    """"""
 
     def replicate(self, module, device_ids):
         modules = super(DataParallelWithCallback, self).replicate(module, device_ids)
@@ -70,7 +73,7 @@ class DataParallelWithCallback(DataParallel):
 
 
 def patch_replication_callback(data_parallel):
-    """
+    """"""
     Monkey - patch an existing `DataParallel` object. Add the replication callback.
     Useful when you have customized `DataParallel` implementation.
 
@@ -81,7 +84,7 @@ def patch_replication_callback(data_parallel):
         # this is equivalent to
         > sync_bn = SynchronizedBatchNorm1d(10, eps = 1e-5, affine = False)
         > sync_bn = DataParallelWithCallback(sync_bn, device_ids=[0, 1])
-    """
+    """"""
 
     assert isinstance(data_parallel, DataParallel)
 

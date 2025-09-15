@@ -69,7 +69,7 @@ def nms(dets, thresh):
 
 
 def encode(matched, priors, variances):
-    """Encode the variances from the priorbox layers into the ground truth boxes
+    """Encode the variances from the priorbox layers into the ground truth boxes"""
     we have matched (based on jaccard overlap) with the prior boxes.
     Args:
         matched: (tensor) Coords of ground truth for each prior in point - form
@@ -79,7 +79,7 @@ def encode(matched, priors, variances):
         variances: (list[float]) Variances of priorboxes
     Return:
         encoded boxes (tensor), Shape: [num_priors, 4]
-    """
+    """"""
 
     # dist b / t match center and prior's center
     g_cxcy = (matched[:, :2] + matched[:, 2:]) / 2 - priors[:, :2]
@@ -93,7 +93,7 @@ def encode(matched, priors, variances):
 
 
 def decode(loc, priors, variances):
-    """Decode locations from predictions using priors to undo
+    """Decode locations from predictions using priors to undo"""
     the encoding we did for offset regression at train time.
     Args:
         loc (tensor): location predictions for loc layers,
@@ -103,22 +103,24 @@ def decode(loc, priors, variances):
         variances: (list[float]) Variances of priorboxes
     Return:
         decoded bounding box predictions
-    """
+    """"""
 
     boxes = torch.cat(
         (
             priors[:, :2] + loc[:, :2] * variances[0] * priors[:, 2:],
             priors[:, 2:] * torch.exp(loc[:, 2:] * variances[1]),
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         1,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     boxes[:, :2] -= boxes[:, 2:] / 2
     boxes[:, 2:] += boxes[:, :2]
     return boxes
 
 
 def batch_decode(loc, priors, variances):
-    """Decode locations from predictions using priors to undo
+    """Decode locations from predictions using priors to undo"""
     the encoding we did for offset regression at train time.
     Args:
         loc (tensor): location predictions for loc layers,
@@ -128,15 +130,17 @@ def batch_decode(loc, priors, variances):
         variances: (list[float]) Variances of priorboxes
     Return:
         decoded bounding box predictions
-    """
+    """"""
 
     boxes = torch.cat(
         (
             priors[:, :, :2] + loc[:, :, :2] * variances[0] * priors[:, :, 2:],
             priors[:, :, 2:] * torch.exp(loc[:, :, 2:] * variances[1]),
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         2,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     boxes[:, :, :2] -= boxes[:, :, 2:] / 2
     boxes[:, :, 2:] += boxes[:, :, :2]
     return boxes

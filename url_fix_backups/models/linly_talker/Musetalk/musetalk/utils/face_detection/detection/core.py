@@ -8,13 +8,13 @@ from tqdm import tqdm
 
 
 class FaceDetector(object):
-    """An abstract class representing a face detector.
+    """An abstract class representing a face detector."""
 
     Any other face detection implementation must subclass it. All subclasses
     must implement ``detect_from_image``, that return a list of detected
     bounding boxes. Optionally, for speed considerations detect from path is
     recommended.
-    """
+    """"""
 
     def __init__(self, device, verbose):
         self.device = device
@@ -31,7 +31,7 @@ class FaceDetector(object):
             raise ValueError
 
     def detect_from_image(self, tensor_or_path):
-        """Detects faces in a given image.
+        """Detects faces in a given image."""
 
         This function detects the faces present in a provided BGR(usually)
         image. The input can be either the image itself or the path to it.
@@ -49,13 +49,14 @@ class FaceDetector(object):
             ...   detected_faces = detect_from_image(image)
             [A list of bounding boxes (x1, y1, x2, y2)]
 
-        """
+        """"""
         raise NotImplementedError
 
     def detect_from_directory(
         self, path, extensions=[".jpg", ".png"], recursive=False, show_progress_bar=True
-    ):
-        """Detects faces from all the images present in a given directory.
+# BRACKET_SURGEON: disabled
+#     ):
+        """Detects faces from all the images present in a given directory."""
 
         Arguments:
             path {string} -- a string containing a path that points to the folder containing the images
@@ -72,7 +73,7 @@ class FaceDetector(object):
         ...   detected_faces = detect_from_directory(directory)
         {A dictionary of [lists containing bounding boxes(x1, y1, x2, y2)]}
 
-        """
+        """"""
         if self.verbose:
             logger = logging.getLogger(__name__)
 
@@ -117,13 +118,13 @@ class FaceDetector(object):
 
     @staticmethod
     def tensor_or_path_to_ndarray(tensor_or_path, rgb=True):
-        """Convert path (represented as a string) or torch.tensor to a numpy.ndarray
+        """Convert path (represented as a string) or torch.tensor to a numpy.ndarray"""
 
         Arguments:
             tensor_or_path {numpy.ndarray, torch.tensor \
-    or string} -- path to the image, \
-    or the image itself
-        """
+#     or string} -- path to the image, \
+#     or the image itself
+        """"""
         if isinstance(tensor_or_path, str):
             return cv2.imread(tensor_or_path) if not rgb else cv2.imread(tensor_or_path)[..., ::-1]
         elif torch.is_tensor(tensor_or_path):
@@ -132,7 +133,8 @@ class FaceDetector(object):
                 tensor_or_path.cpu().numpy()[..., ::-1].copy()
                 if not rgb
                 else tensor_or_path.cpu().numpy()
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif isinstance(tensor_or_path, np.ndarray):
             return tensor_or_path[..., ::-1].copy() if not rgb else tensor_or_path
         else:

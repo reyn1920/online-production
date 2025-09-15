@@ -25,11 +25,14 @@ class WebSocketManager:
             "client_id": client_id or f"client_{len(self.active_connections)}",
                 "connected_at": datetime.now(),
                 "last_ping": datetime.now(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         logger.info(
-            f"WebSocket connected: {
-                self.connection_info[websocket]['client_id']}"
-        )
+            f"WebSocket connected: {"
+                self.connection_info[websocket]['client_id']}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Send welcome message
         await self.send_personal_message(
@@ -37,9 +40,12 @@ class WebSocketManager:
                 "type": "connection_established",
                     "client_id": self.connection_info[websocket]["client_id"],
                     "timestamp": datetime.now().isoformat(),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 websocket,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def disconnect(self, websocket: WebSocket):
@@ -47,7 +53,9 @@ class WebSocketManager:
         if websocket in self.active_connections:
             client_id = self.connection_info.get(websocket, {}).get(
                 "client_id", "unknown"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.active_connections.remove(websocket)
             if websocket in self.connection_info:
                 del self.connection_info[websocket]
@@ -92,14 +100,18 @@ class WebSocketManager:
         """Broadcast service status change"""
         await self.broadcast(
             {"type": "service_status", "service": service, "status": status}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     async def broadcast_system_alert(self, message: str, level: str = "info"):
         """Broadcast system alert"""
         await self.broadcast(
             {"type": "system_alert", "message": message, "level": level}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     async def broadcast_log_entry(self, log: dict):
@@ -119,7 +131,9 @@ class WebSocketManager:
         if message_type == "ping":
             await self.send_personal_message(
                 {"type": "pong", "timestamp": datetime.now().isoformat()}, websocket
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Update last ping time
             if websocket in self.connection_info:
@@ -133,7 +147,9 @@ class WebSocketManager:
 
             await self.send_personal_message(
                 {"type": "subscription_confirmed", "channels": channels}, websocket
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         elif message_type == "request_data":
             # Handle data requests
@@ -151,10 +167,13 @@ class WebSocketManager:
                         "api_calls_today": 1247,
                         "response_time": 145,
                         "error_rate": 0.02,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 await self.send_personal_message(
                     {"type": "metrics_update", "metrics": metrics}, websocket
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             elif data_type == "service_status":
                 # Mock service status - replace with actual service checking
@@ -162,30 +181,39 @@ class WebSocketManager:
                     "youtube_automation": {
                         "status": "active",
                             "last_run": datetime.now().isoformat(),
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "content_pipeline": {
                         "status": "active",
                             "last_run": datetime.now().isoformat(),
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "marketing_agent": {
                         "status": "active",
                             "last_run": datetime.now().isoformat(),
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "financial_tracking": {
                         "status": "active",
                             "last_run": datetime.now().isoformat(),
-                            },
-                        }
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         }
                 await self.send_personal_message(
                     {"type": "services_update", "services": services}, websocket
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             logger.error(f"Error handling data request: {e}")
             await self.send_personal_message(
                 {"type": "error", "message": "Failed to fetch requested data"},
                     websocket,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def get_connection_count(self) -> int:
@@ -201,9 +229,12 @@ class WebSocketManager:
                     "connected_at": info["connected_at"].isoformat(),
                     "last_ping": info["last_ping"].isoformat(),
                     "subscriptions": info.get("subscriptions", []),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             for info in self.connection_info.values()
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
 
     async def start_heartbeat(self):
@@ -215,8 +246,11 @@ class WebSocketManager:
                     {
                         "type": "heartbeat",
                             "active_connections": self.get_connection_count(),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 # Global WebSocket manager instance
 websocket_manager = WebSocketManager()
@@ -254,24 +288,31 @@ async def real_time_system_updates():
                     "active_processes": process_count,
                         "active_connections": websocket_manager.get_connection_count(),
                         "timestamp": datetime.now().isoformat(),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 await websocket_manager.broadcast_metrics_update(metrics)
 
                 # Check for system alerts based on real metrics
                 if cpu_percent > 80:
                     await websocket_manager.broadcast_system_alert(
                         f"High CPU usage detected: {cpu_percent:.1f}%", "warning"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 if memory.percent > 85:
                     await websocket_manager.broadcast_system_alert(
                         f"High memory usage detected: {memory.percent:.1f}%", "warning"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 if disk.percent > 90:
                     await websocket_manager.broadcast_system_alert(
                         f"Low disk space: {disk.percent:.1f}% used", "error"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 # Check log files for recent entries (if they exist)
                 log_file = Path("logs / app.log")
@@ -287,16 +328,20 @@ async def real_time_system_updates():
                                     and datetime.now().timestamp()
                                     - os.path.getmtime(log_file)
                                     < 30
-                                ):
+# BRACKET_SURGEON: disabled
+#                                 ):
                                     # If log was modified in last 30 seconds, broadcast it
                                     log_entry = {
                                         "timestamp": datetime.now().isoformat(),
                                             "level": "info",
                                             "message": recent_log,
-                                            }
+# BRACKET_SURGEON: disabled
+#                                             }
                                     await websocket_manager.broadcast_log_entry(
                                         log_entry
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                     except Exception as log_error:
                         logger.debug(f"Could not read log file: {log_error}")
 
@@ -307,5 +352,6 @@ async def real_time_system_updates():
                     "active_connections": websocket_manager.get_connection_count(),
                         "timestamp": datetime.now().isoformat(),
                         "status": "monitoring_limited",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 await websocket_manager.broadcast_metrics_update(basic_metrics)

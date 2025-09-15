@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Quick lint fix for deployment readiness
 Fixes specific issues preventing git commit
-"""
+""""""
 
 import os
 import re
@@ -40,7 +40,8 @@ def fix_bare_except(file_path):
         # Replace bare except with except Exception
         content = re.sub(
             r"except Exception:\\s*$", "except Exception:", content, flags=re.MULTILINE
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         with open(file_path, "w", encoding="utf - 8") as f:
             f.write(content)
@@ -80,7 +81,8 @@ def main():
         "utils / rule1_scanner.py",
         "verify_cloud_software_integration.py",
         "view_affiliate_credentials.py",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     project_root = Path.cwd()
     fixed_count = 0

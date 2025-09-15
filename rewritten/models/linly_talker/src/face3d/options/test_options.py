@@ -4,10 +4,10 @@ from .base_options import BaseOptions
 
 
 class TestOptions(BaseOptions):
-    """This class includes test options.
+    """This class includes test options."""
 
     It also includes shared options defined in BaseOptions.
-    """
+    """"""
 
     def initialize(self, parser):
         parser = BaseOptions.initialize(self, parser)  # define shared options
@@ -17,10 +17,12 @@ class TestOptions(BaseOptions):
             type=str,
             default=None,
             help="chooses how datasets are loaded. [None | flist]",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--img_folder", type=str, default="examples", help="folder for test images."
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Dropout and Batchnorm has different behavior during training and test.
         self.isTrain = False

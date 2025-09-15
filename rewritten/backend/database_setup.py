@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 Database Setup and Migration Module
 
 This module handles database schema migrations and ensures the database
 is in the correct state for the application to function properly.
-"""
+""""""
 
 import logging
 import os
@@ -29,12 +29,12 @@ def ensure_database_directory():
 
 
 def run_database_migration() -> bool:
-    """
+    """"""
     Run database migration to ensure all required tables exist with correct schema.
 
     Returns:
         bool: True if migration was successful, False otherwise
-    """
+    """"""
     try:
         ensure_database_directory()
         db_path = get_database_path()
@@ -46,7 +46,7 @@ def run_database_migration() -> bool:
 
             # Create news_intelligence table (the correct table name expected by the code)
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS news_intelligence (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         title TEXT NOT NULL,
@@ -62,17 +62,20 @@ def run_database_migration() -> bool:
                         task_name TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Check if news_articles table exists and migrate data if needed
             cursor.execute(
-                """
+                """"""
                 SELECT name FROM sqlite_master
                 WHERE type='table' AND name='news_articles'
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             if cursor.fetchone():
                 logger.info("Found existing news_articles table, migrating data...")
@@ -98,7 +101,8 @@ def run_database_migration() -> bool:
                     "task_name",
                     "created_at",
                     "updated_at",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 for col in target_columns:
                     if col in columns:
@@ -107,23 +111,26 @@ def run_database_migration() -> bool:
                 if common_columns:
                     columns_str = ", ".join(common_columns)
                     cursor.execute(
-                        f"""
+                        f""""""
                         INSERT OR IGNORE INTO news_intelligence ({columns_str})
                         SELECT {columns_str} FROM news_articles
-                    """
-                    )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                     )
 
                     migrated_count = cursor.rowcount
                     logger.info(
                         f"Migrated {migrated_count} records from news_articles to news_intelligence"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Rename the old table as backup
                 cursor.execute(
-                    """
+                    """"""
                     ALTER TABLE news_articles RENAME TO news_articles_backup
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 logger.info("Renamed news_articles table to news_articles_backup")
 
             # Ensure task_name column exists (add if missing)
@@ -132,37 +139,41 @@ def run_database_migration() -> bool:
 
             if "task_name" not in columns:
                 cursor.execute(
-                    """
+                    """"""
                     ALTER TABLE news_intelligence ADD COLUMN task_name TEXT
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 logger.info("Added task_name column to news_intelligence table")
 
             # Create indexes for better performance
             cursor.execute(
-                """
+                """"""
                 CREATE INDEX IF NOT EXISTS idx_news_intelligence_task_name
                 ON news_intelligence(task_name)
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             cursor.execute(
-                """
+                """"""
                 CREATE INDEX IF NOT EXISTS idx_news_intelligence_created_at
                 ON news_intelligence(created_at)
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             cursor.execute(
-                """
+                """"""
                 CREATE INDEX IF NOT EXISTS idx_news_intelligence_category
                 ON news_intelligence(category)
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create other required tables
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS agent_tasks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         agent_id TEXT NOT NULL,
@@ -171,25 +182,29 @@ def run_database_migration() -> bool:
                         status TEXT DEFAULT 'pending',
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS system_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         metric_name TEXT NOT NULL,
                         metric_value REAL,
                         metric_unit TEXT,
                         recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create system_health table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS system_health (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         timestamp TIMESTAMP NOT NULL,
@@ -201,9 +216,11 @@ def run_database_migration() -> bool:
                         error_count INTEGER NOT NULL,
                         uptime_seconds INTEGER NOT NULL,
                         health_score REAL NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Add status column to system_health table if missing
             cursor.execute("PRAGMA table_info(system_health)")
@@ -222,12 +239,12 @@ def run_database_migration() -> bool:
 
 
 def verify_database_schema() -> bool:
-    """
+    """"""
     Verify that the database schema is correct.
 
     Returns:
         bool: True if schema is correct, False otherwise
-    """
+    """"""
     try:
         db_path = get_database_path()
 
@@ -236,11 +253,12 @@ def verify_database_schema() -> bool:
 
             # Check if news_intelligence table exists
             cursor.execute(
-                """
+                """"""
                 SELECT name FROM sqlite_master
                 WHERE type='table' AND name='news_intelligence'
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             if not cursor.fetchone():
                 logger.error("news_intelligence table does not exist")
@@ -267,7 +285,8 @@ if __name__ == "__main__":
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     print("Running database migration...")
     success = run_database_migration()

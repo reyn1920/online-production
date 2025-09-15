@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Simplified AI Intelligent Router for Testing
 A lightweight version without heavy dependencies for initial testing.
-"""
+""""""
 
 import asyncio
 import json
@@ -50,7 +50,7 @@ class ServerMetrics:
     active_connections: int = 0
     total_requests: int = 0
     error_rate: float = 0.0
-    last_updated: datetime = field(default_factory=datetime.now)
+    last_updated: datetime = field(default_factory=datetime.now):
     health_status: str = "healthy"
     weight: float = 1.0
 
@@ -63,7 +63,7 @@ class RoutingDecision:
     strategy_used: str
     confidence_score: float
     reasoning: str
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=datetime.now):
     estimated_response_time: float = 0.0
     load_factor: float = 0.0
 
@@ -91,7 +91,8 @@ class SimpleAIIntelligentRouter:
         # Initialize server metrics
         self.server_metrics = {
             server_id: ServerMetrics(server_id=server_id) for server_id in self.servers
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Routing history and analytics
         self.routing_history: List[RoutingDecision] = []
@@ -103,7 +104,8 @@ class SimpleAIIntelligentRouter:
             "performance_predictions": {},
             "anomaly_alerts": [],
             "load_distribution_recommendations": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Performance tracking
         self.performance_stats = {
@@ -111,7 +113,8 @@ class SimpleAIIntelligentRouter:
             "average_response_time": 0.0,
             "success_rate": 100.0,
             "optimization_score": 85.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info("Simple AI Intelligent Router initialized")
 
@@ -132,7 +135,8 @@ class SimpleAIIntelligentRouter:
                 reasoning=f"Selected {selected_server} based on {self.current_strategy.value} strategy",
                 estimated_response_time=random.uniform(50, 200),
                 load_factor=random.uniform(0.1, 0.8),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Update metrics and history
             self._update_routing_metrics(decision)
@@ -153,7 +157,8 @@ class SimpleAIIntelligentRouter:
                 strategy_used="fallback_round_robin",
                 confidence_score=0.5,
                 reasoning=f"Fallback selection due to error: {str(e)}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _select_optimal_server(self, request_data: Dict[str, Any]) -> str:
         """Select the optimal server based on current strategy"""
@@ -165,7 +170,8 @@ class SimpleAIIntelligentRouter:
             min_connections = min(m.active_connections for m in self.server_metrics.values())
             candidates = [
                 s for s, m in self.server_metrics.items() if m.active_connections == min_connections
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             return random.choice(candidates)
 
         elif self.current_strategy == RoutingStrategy.AI_OPTIMIZED:
@@ -178,7 +184,8 @@ class SimpleAIIntelligentRouter:
                     + (1.0 - metrics.memory_usage / 100) * 0.2
                     + (1.0 / max(metrics.response_time, 1)) * 0.3
                     + (1.0 - metrics.error_rate) * 0.2
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 scores[server_id] = score
 
             return max(scores.keys(), key=lambda k: scores[k])
@@ -214,7 +221,8 @@ class SimpleAIIntelligentRouter:
                     peak_usage=random.uniform(0.3, 0.9),
                     pattern_type=random.choice(["normal", "peak", "low", "anomaly"]),
                     anomaly_score=random.uniform(0.0, 0.3),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 patterns.append(pattern)
 
             return patterns
@@ -236,9 +244,11 @@ class SimpleAIIntelligentRouter:
                     "Consider increasing server capacity during peak hours",
                     "Optimize caching strategy for better response times",
                     "Monitor server - 2 for potential performance issues",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Update AI insights
             self.ai_insights["optimization_suggestions"].append(optimization_result)
@@ -267,7 +277,8 @@ class SimpleAIIntelligentRouter:
             "average_confidence": avg_confidence,
             "server_distribution": server_distribution,
             "strategies_used": list(set(d.strategy_used for d in self.routing_history)),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_performance_stats(self) -> Dict[str, Any]:
         """Get current performance statistics"""
@@ -282,7 +293,8 @@ class SimpleAIIntelligentRouter:
         return {
             server: (metrics.active_connections / total_connections) * 100
             for server, metrics in self.server_metrics.items()
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _get_server_states(self) -> Dict[str, Dict[str, Any]]:
         """Get current state of all servers"""
@@ -296,7 +308,8 @@ class SimpleAIIntelligentRouter:
                 "response_time": metrics.response_time,
                 "total_requests": metrics.total_requests,
                 "error_rate": metrics.error_rate,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         return states
 
 
@@ -315,7 +328,8 @@ if __name__ == "__main__":
             decision = await router.route_request(request_data)
             print(
                 f"Request {i}: {decision.selected_server} (confidence: {decision.confidence_score:.2f})"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Test predictions
         patterns = await router.predict_traffic_patterns()

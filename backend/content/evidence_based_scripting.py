@@ -1,12 +1,22 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Evidence - Based Scripting Module for The Right Perspective
-
+""""""
 This module implements the evidence - based scripting requirement from the Protected Channel Protocol.
 It ensures that every Right Perspective video script is backed by verifiable facts, quotes, and
 counter - evidence from the right_perspective.db database.
+"""
+
+Evidence - Based Scripting Module for The Right Perspective
+
+
+
+""""""
 
 Part of the TRAE.AI Master Orchestrator Protected Channel System.
+
+
+
 """
 
 import json
@@ -19,15 +29,33 @@ from typing import Any, Dict, List, Optional, Tuple
 
 
 class EvidenceBasedScripting:
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
+   
+
+    
+   
+"""
     Evidence - based scripting engine for The Right Perspective channel.
+   """"""
+    
+   """
 
     This class enforces the requirement that every video script must be backed by
     verifiable facts, quotes, \
-    and counter - evidence from the right_perspective.db database.
-    """
+#     and counter - evidence from the right_perspective.db database.
+   
 
-
+    
+   
+"""
     def __init__(self, db_path: str = "./right_perspective.db"):
         self.db_path = Path(db_path)
         self.logger = logging.getLogger(__name__)
@@ -40,7 +68,9 @@ class EvidenceBasedScripting:
 
         self.logger.info(
             "Evidence - Based Scripting initialized for The Right Perspective (PROTECTED)"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
 
     def _validate_protected_channel(self):
@@ -52,15 +82,27 @@ class EvidenceBasedScripting:
                 "evidence_required": True,
                 "fact_checking_mandatory": True,
                 "source_verification": True,
-                }
+                 }
 
 
     def _init_evidence_database(self):
-        """Initialize connection to the evidence database."""
+        """
+Initialize connection to the evidence database.
+
+        
+"""
         try:
+        """"""
             if not self.db_path.exists():
                 self.logger.warning(f"Evidence database not found at {self.db_path}")
                 return
+        """
+
+        try:
+        
+
+       
+""""""
 
             # Test database connection
             conn = sqlite3.connect(str(self.db_path))
@@ -68,12 +110,24 @@ class EvidenceBasedScripting:
 
             # Verify evidence table exists
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT name FROM sqlite_master
                 WHERE type='table' AND name='evidence'
-            """
-            )
+            """"""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+            
+
+             
+            
+"""
+             )
+            """"""
             if not cursor.fetchone():
                 self.logger.error("Evidence table not found in database")
                 conn.close()
@@ -89,17 +143,35 @@ class EvidenceBasedScripting:
     async def generate_evidence_based_script(
         self, topic: str, script_template: str, requirements: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Generate a Right Perspective video script with mandatory evidence integration.
+       """
+
+        
+       
 
         Args:
             topic: The main topic/subject of the video
             script_template: Base script template to enhance with evidence
             requirements: Script requirements including tone, duration, etc.
+       
+""""""
 
+        Generate a Right Perspective video script with mandatory evidence integration.
+       
+
+        
+       
+"""
         Returns:
             Dict containing the evidence - enhanced script and supporting data
-        """
+       """"""
         try:
             self.logger.info(f"Generating evidence - based script for topic: {topic}")
 
@@ -110,14 +182,14 @@ class EvidenceBasedScripting:
                 not evidence_data["facts"]
                 and not evidence_data["quotes"]
                 and not evidence_data["statistics"]
-            ):
+#             ):
                 self.logger.warning(f"No evidence found for topic: {topic}")
                 return {
                     "success": False,
                         "error": "EVIDENCE_REQUIRED_BUT_NOT_FOUND",
                         "message": f"No verifiable evidence found in database for topic: {topic}",
                         "evidence_requirement": "MANDATORY_FOR_RIGHT_PERSPECTIVE",
-                        }
+                         }
 
             # Step 2: Analyze script template for evidence insertion points
             insertion_points = self._identify_evidence_insertion_points(script_template)
@@ -125,19 +197,23 @@ class EvidenceBasedScripting:
             # Step 3: Generate evidence - enhanced script
             enhanced_script = await self._integrate_evidence_into_script(
                 script_template, evidence_data, insertion_points, requirements
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Step 4: Validate evidence integration
             validation_result = self._validate_evidence_integration(
                 enhanced_script, evidence_data
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             if not validation_result["valid"]:
                 return {
                     "success": False,
                         "error": "EVIDENCE_INTEGRATION_FAILED",
                         "validation_issues": validation_result["issues"],
-                        }
+                         }
 
             # Step 5: Generate evidence report
             evidence_report = self._generate_evidence_report(evidence_data, topic)
@@ -153,10 +229,10 @@ class EvidenceBasedScripting:
                     "facts": len(evidence_data["facts"]),
                         "quotes": len(evidence_data["quotes"]),
                         "statistics": len(evidence_data["statistics"]),
-                        },
+                         },
                     "created_at": datetime.now().isoformat(),
                     "protection_level": "RIGHT_PERSPECTIVE_PROTECTED",
-                    }
+                     }
 
         except Exception as e:
             self.logger.error(f"Evidence - based script generation failed: {e}")
@@ -166,13 +242,39 @@ class EvidenceBasedScripting:
     async def _extract_topic_evidence(
         self, topic: str
     ) -> Dict[str, List[Dict[str, Any]]]:
-        """Extract all relevant evidence for a given topic from the database."""
+        """
+Extract all relevant evidence for a given topic from the database.
+
+        
+"""
         try:
+        """
+
             conn = sqlite3.connect(str(self.db_path))
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             cursor = conn.cursor()
+           
+""""""
 
             # Search for evidence related to the topic (case - insensitive,
-    partial matches)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     partial matches)
+           
+
+            
+           
+"""
+            cursor = conn.cursor()
+           """"""
             search_terms = self._generate_search_terms(topic)
 
             evidence_data = {"facts": [], "quotes": [], "statistics": []}
@@ -180,14 +282,19 @@ class EvidenceBasedScripting:
             for search_term in search_terms:
                 # Query evidence table
                 cursor.execute(
-                    """
+                    """"""
+
                     SELECT id, topic, content, source_url, content_type, date_added
                     FROM evidence
                     WHERE LOWER(topic) LIKE LOWER(?) OR LOWER(content) LIKE LOWER(?)
                     ORDER BY date_added DESC
-                """,
+                
+,
+"""
                     (f"%{search_term}%", f"%{search_term}%"),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
 
                 results = cursor.fetchall()
 
@@ -200,7 +307,7 @@ class EvidenceBasedScripting:
                             "content_type": row[4],
                             "date_added": row[5],
                             "search_term": search_term,
-                            }
+                             }
 
                     # Categorize by content type
                     content_type = row[4].lower() if row[4] else "fact"
@@ -219,7 +326,9 @@ class EvidenceBasedScripting:
             self.logger.info(
                 f"Extracted evidence: {len(evidence_data['facts'])} facts, "
                 f"{len(evidence_data['quotes'])} quotes, {len(evidence_data['statistics'])} statistics"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             return evidence_data
 
@@ -229,10 +338,33 @@ class EvidenceBasedScripting:
 
 
     def _generate_search_terms(self, topic: str) -> List[str]:
-        """Generate search terms from the main topic."""
-        # Basic keyword extraction and expansion
-        terms = [topic.lower()]
+        """
+Generate search terms from the main topic.
 
+       
+""""""
+
+        # Basic keyword extraction and expansion
+       
+
+        
+       
+""""""
+
+        
+       
+
+        terms = [topic.lower()]
+       
+""""""
+
+       
+
+        
+       
+"""
+        # Basic keyword extraction and expansion
+       """"""
         # Split topic into individual words
         words = re.findall(r"\\b\\w+\\b", topic.lower())
         terms.extend(words)
@@ -253,7 +385,7 @@ class EvidenceBasedScripting:
                 "of",
                 "with",
                 "by",
-                }
+                 }
         terms = [term for term in terms if term not in stop_words and len(term) > 2]
 
         return list(set(terms))  # Remove duplicates
@@ -262,12 +394,36 @@ class EvidenceBasedScripting:
     def _remove_duplicate_evidence(
         self, evidence_data: Dict[str, List[Dict[str, Any]]]
     ) -> Dict[str, List[Dict[str, Any]]]:
-        """Remove duplicate evidence items based on content similarity."""
+        """
+Remove duplicate evidence items based on content similarity.
+
+        
+"""
         for category in evidence_data:
+        """
+
             seen_content = set()
+        
+
+        for category in evidence_data:
+        
+""""""
+
+            
+           
+
             unique_items = []
+           
+""""""
 
             for item in evidence_data[category]:
+           
+
+            
+           
+"""
+            unique_items = []
+           """"""
                 content_key = item["content"].lower().strip()
                 if content_key not in seen_content:
                     seen_content.add(content_key)
@@ -281,19 +437,38 @@ class EvidenceBasedScripting:
     def _identify_evidence_insertion_points(
         self, script_template: str
     ) -> List[Dict[str, Any]]:
-        """Identify optimal points in the script to insert evidence."""
-        insertion_points = []
+        """
+Identify optimal points in the script to insert evidence.
 
+       
+""""""
+
+        insertion_points = []
+       
+
+        
+       
+"""
         # Look for common patterns where evidence should be inserted
+       """
+
+        
+       
+
+        insertion_points = []
+       
+""""""
         patterns = [
             (r"\\b(claim|claims|statement|statements)\\b", "fact_needed"),
                 (r"\\b(according to|sources say|reports indicate)\\b", "quote_needed"),
                 (
                 r"\\b(statistics show|data reveals|numbers indicate)\\b",
                     "statistic_needed",
-                    ),
+                     ),
                 (r"\\b(evidence shows|proof|research indicates)\\b", "evidence_needed"),
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ]
 
         for i, line in enumerate(script_template.split("\\n")):
             for pattern, evidence_type in patterns:
@@ -304,8 +479,10 @@ class EvidenceBasedScripting:
                                 "line_content": line,
                                 "evidence_type": evidence_type,
                                 "position": "after_line",
-                                }
-                    )
+                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
         return insertion_points
 
@@ -316,7 +493,7 @@ class EvidenceBasedScripting:
             evidence_data: Dict[str, List[Dict[str, Any]]],
             insertion_points: List[Dict[str, Any]],
             requirements: Dict[str, Any],
-            ) -> str:
+#             ) -> str:
         """Integrate evidence into the script template."""
         lines = script_template.split("\\n")
         enhanced_lines = []
@@ -347,16 +524,20 @@ class EvidenceBasedScripting:
                             if quote["source_url"]:
                                 enhanced_lines.append(
                                     f"[SOURCE: {quote['source_url']}]"
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                                 )
                             evidence_used["quotes"] += 1
 
                     elif "statistic" in evidence_type and evidence_data["statistics"]:
                         if evidence_used["statistics"] < len(
                             evidence_data["statistics"]
-                        ):
+#                         ):
                             stat = evidence_data["statistics"][
                                 evidence_used["statistics"]
-                            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                             ]
                             enhanced_lines.append(f"\\n[STATISTIC: {stat['content']}]")
                             if stat["source_url"]:
                                 enhanced_lines.append(f"[SOURCE: {stat['source_url']}]")
@@ -395,39 +576,49 @@ class EvidenceBasedScripting:
             "valid": True,
                 "issues": [],
                 "evidence_integration_score": 0.0,
-                }
+                 }
 
         # Check if evidence markers are present
         evidence_markers = ["[EVIDENCE:", "[QUOTE:", "[STATISTIC:", "[SOURCE:"]
         markers_found = sum(
             1 for marker in evidence_markers if marker in enhanced_script
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         if markers_found == 0:
             validation_result["valid"] = False
             validation_result["issues"].append(
                 "No evidence markers found in enhanced script"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         # Calculate evidence integration score
         total_evidence = (
             len(evidence_data["facts"])
             + len(evidence_data["quotes"])
             + len(evidence_data["statistics"])
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         if total_evidence > 0:
             validation_result["evidence_integration_score"] = min(
                 markers_found/total_evidence, 1.0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         # Check for minimum evidence requirements
         if (
             validation_result["evidence_integration_score"] < 0.3
-        ):  # At least 30% of evidence should be integrated
+#         ):  # At least 30% of evidence should be integrated
             validation_result["valid"] = False
             validation_result["issues"].append(
                 "Insufficient evidence integration (minimum 30% required)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         return validation_result
 
@@ -445,24 +636,41 @@ class EvidenceBasedScripting:
                     "total_evidence_items": len(evidence_data["facts"])
                 + len(evidence_data["quotes"])
                 + len(evidence_data["statistics"]),
-                    },
+                     },
                 "source_breakdown": self._analyze_evidence_sources(evidence_data),
                 "evidence_quality_score": self._calculate_evidence_quality_score(
                 evidence_data
-            ),
+             ),
                 "recommendations": self._generate_evidence_recommendations(evidence_data),
                 "generated_at": datetime.now().isoformat(),
-                }
+                 }
 
 
     def _analyze_evidence_sources(
         self, evidence_data: Dict[str, List[Dict[str, Any]]]
     ) -> Dict[str, Any]:
-        """Analyze the sources of evidence."""
-        sources = []
+        """
+Analyze the sources of evidence.
 
+       
+""""""
+
+        sources = []
+       
+
+        
+       
+"""
         for category in evidence_data:
             for item in evidence_data[category]:
+       """
+
+        
+       
+
+        sources = []
+       
+""""""
                 if item.get("source_url"):
                     sources.append(item["source_url"])
 
@@ -473,20 +681,36 @@ class EvidenceBasedScripting:
                 "unique_sources": len(unique_sources),
                 "source_diversity_score": len(unique_sources)/max(len(sources), 1),
                 "sources_with_urls": len([s for s in sources if s]),
-                }
+                 }
 
 
     def _calculate_evidence_quality_score(
         self, evidence_data: Dict[str, List[Dict[str, Any]]]
-    ) -> float:
-        """Calculate an overall quality score for the evidence."""
-        total_items = 0
-        quality_points = 0
+#     ) -> float:
+        """
+Calculate an overall quality score for the evidence.
 
+        total_items = 0
+       
+""""""
+
+        quality_points = 0
+       
+
+        
+       
+"""
         for category in evidence_data:
             for item in evidence_data[category]:
                 total_items += 1
+       """
 
+        
+       
+
+        quality_points = 0
+       
+""""""
                 # Points for having a source URL
                 if item.get("source_url"):
                     quality_points += 1
@@ -505,19 +729,41 @@ class EvidenceBasedScripting:
     def _generate_evidence_recommendations(
         self, evidence_data: Dict[str, List[Dict[str, Any]]]
     ) -> List[str]:
-        """Generate recommendations for improving evidence quality."""
-        recommendations = []
+        """
+Generate recommendations for improving evidence quality.
 
+       
+""""""
+
+        recommendations = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        recommendations = []
+       
+""""""
         total_evidence = (
             len(evidence_data["facts"])
             + len(evidence_data["quotes"])
             + len(evidence_data["statistics"])
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         if total_evidence < 3:
             recommendations.append(
                 "Consider adding more evidence to strengthen the script"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         if len(evidence_data["quotes"]) == 0:
             recommendations.append("Adding direct quotes would enhance credibility")
@@ -525,7 +771,9 @@ class EvidenceBasedScripting:
         if len(evidence_data["statistics"]) == 0:
             recommendations.append(
                 "Including statistics would provide stronger factual support"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         # Check for sources
         items_without_sources = 0
@@ -537,7 +785,9 @@ class EvidenceBasedScripting:
         if items_without_sources > 0:
             recommendations.append(
                 f"{items_without_sources} evidence items lack source URLs"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         return recommendations
 
@@ -548,30 +798,73 @@ class EvidenceBasedScripting:
             content: str,
             source_url: Optional[str] = None,
             content_type: str = "fact",
-            ) -> bool:
-        """Add new evidence to the database."""
+#             ) -> bool:
+        """
+Add new evidence to the database.
+
+        
+"""
         try:
+        """
+
             conn = sqlite3.connect(str(self.db_path))
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             cursor = conn.cursor()
+           
+""""""
 
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 INSERT INTO evidence (topic,
     content,
     source_url,
     content_type,
-    date_added)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     date_added)
                 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
-            """,
-                (topic, content, source_url, content_type),
-                    )
+            """
+,
 
+                (topic, content, source_url, content_type),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                    
+""""""
+
+                     )
+                    
+
+                     
+                    
+""""""
+
+            
+           
+
+            cursor = conn.cursor()
+           
+""""""
             conn.commit()
             conn.close()
 
             self.logger.info(
                 f"Added evidence to database: {content_type} for topic '{topic}'"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             return True
 
         except Exception as e:
@@ -580,20 +873,58 @@ class EvidenceBasedScripting:
 
 
     async def get_evidence_statistics(self) -> Dict[str, Any]:
-        """Get statistics about the evidence database."""
+        """
+Get statistics about the evidence database.
+
+        
+"""
         try:
+        """
+
             conn = sqlite3.connect(str(self.db_path))
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             cursor = conn.cursor()
+           
+""""""
 
             # Get total counts by type
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT content_type, COUNT(*)
                 FROM evidence
                 GROUP BY content_type
-            """
-            )
+            """"""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+            
+
+             
+            
+"""
+             )
+            """"""
+            
+           """
+
+            cursor = conn.cursor()
+           
+
+            
+           
+"""
             type_counts = dict(cursor.fetchall())
 
             # Get total count
@@ -602,13 +933,42 @@ class EvidenceBasedScripting:
 
             # Get recent additions
             cursor.execute(
-                """
+                """"""
+
                 SELECT COUNT(*) FROM evidence
                 WHERE date_added >= datetime('now', '-7 days')
-            """
-            )
-            recent_count = cursor.fetchone()[0]
+           
 
+            
+           
+"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+            """
+
+             
+            
+
+             )
+            
+""""""
+
+           
+
+            
+           
+"""
+            recent_count = cursor.fetchone()[0]
+           """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             conn.close()
 
             return {
@@ -616,7 +976,7 @@ class EvidenceBasedScripting:
                     "evidence_by_type": type_counts,
                     "recent_additions_7_days": recent_count,
                     "database_health": "healthy" if total_count > 0 else "empty",
-                    }
+                     }
 
         except Exception as e:
             self.logger.error(f"Failed to get evidence statistics: {e}")
@@ -632,11 +992,29 @@ if __name__ == "__main__":
         scripting = EvidenceBasedScripting()
 
         # Test script template
-        template = """
+        template = """"""
+
+       
+
+        
+       
+"""
         Welcome to The Right Perspective!
+       """
 
-        Today we're discussing political hypocrisy.
+        
+       
 
+        Today we're discussing political hypocrisy.'
+       
+""""""
+
+        Welcome to The Right Perspective!
+       
+
+        
+       
+"""
         According to sources, politicians often contradict themselves.
 
         Statistics show that public trust in government is declining.
@@ -644,13 +1022,14 @@ if __name__ == "__main__":
         The evidence shows a clear pattern of inconsistency.
 
         That's all for today's episode!
-        """
-
+       """"""
         result = await scripting.generate_evidence_based_script(
             topic="political hypocrisy",
                 script_template = template,
                 requirements={"tone": "satirical", "duration": 300},
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
         print(json.dumps(result, indent = 2))
 

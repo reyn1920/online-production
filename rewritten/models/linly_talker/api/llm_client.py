@@ -17,7 +17,8 @@ def change_model(model_name, gemini_apikey="", openai_apikey="", proxy_url=None)
         "gemini_apikey": gemini_apikey,
         "openai_apikey": openai_apikey,
         "proxy_url": proxy_url,
-    }
+# BRACKET_SURGEON: disabled
+#     }
     response = requests.post(CHANGE_MODEL_URL, params=params)
     if response.status_code == 200:
         print(f"模型更换成功: {response.json()}")
@@ -39,7 +40,8 @@ if __name__ == "__main__":
     models = [
         # "GPT4Free",
         "Qwen",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     # 循环更换模型并生成LLM回复
     for model_name in models:
@@ -53,6 +55,7 @@ if __name__ == "__main__":
             "gemini_apikey": "",
             "openai_apikey": os.getenv("OPENAI_API_KEY", ""),
             # "proxy_url": None
-        }
+# BRACKET_SURGEON: disabled
+#         }
         request_llm_response(payload)
         print("\\n" + "-" * 50 + "\\n")

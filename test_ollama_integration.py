@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
 Test script to verify Ollama + Trae.ai integration on MacBook Air M1.
 
 Steps:
 1. Ensure Ollama is running: `ollama serve`
 2. Ensure Trae.ai backend config points to http://localhost:11434
 3. Run this script: `python test_ollama_integration.py`
-"""
+""""""
 
 import json
 
@@ -35,7 +35,8 @@ def test_ollama_generate():
     payload = {
         "model": "codellama",  # change this if you pulled another model
         "prompt": "Find the bug in this Python code:\\n\\nfor i in range(5)\\n    print(i)",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     try:
         with requests.post(url, json=payload, stream=True, timeout=30) as resp:

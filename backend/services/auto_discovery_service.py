@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Auto Discovery Service
-
+""""""
 Automatically researches and adds new APIs when marketing channels are added.
 Integrates web search, API discovery, and cost tracking services.
+"""""""""
+
+Auto Discovery Service
+
+
+
 """
 
 import json
@@ -23,7 +29,9 @@ from .web_search_service import APICandidate, WebSearchService
 
 @dataclass
 class ChannelProfile:
-    """Profile for a marketing channel with discovery preferences."""
+    """
+Profile for a marketing channel with discovery preferences.
+
 
     name: str
     category: str
@@ -32,21 +40,35 @@ class ChannelProfile:
     preferred_pricing: str  # 'free', 'freemium', 'paid'
     auto_discovery_enabled: bool
     last_discovery_run: Optional[datetime] = None
+   
+""""""
+
     discovery_frequency_days: int = 7
+   
 
-
+    
+   
+"""
 @dataclass
 class DiscoveryResult:
-    """Result of an auto - discovery operation."""
+    """
+Result of an auto - discovery operation.
+
 
     channel: str
     discovered_apis: List[APICandidate]
     recommended_apis: List[APICandidate]
     cost_analysis: Dict[str, Any]
     discovery_timestamp: datetime
+   
+""""""
+
     next_discovery_date: datetime
+   
 
-
+    
+   
+"""
 class AutoDiscoveryService:
     """Service for automatically discovering and managing APIs for channels."""
 
@@ -72,7 +94,7 @@ class AutoDiscoveryService:
                 preferred_pricing="freemium",
                 auto_discovery_enabled=True,
                 discovery_frequency_days=14,
-            ),
+             ),
             "tiktok": ChannelProfile(
                 name="TikTok",
                 category="short_video",
@@ -81,7 +103,7 @@ class AutoDiscoveryService:
                 preferred_pricing="free",
                 auto_discovery_enabled=True,
                 discovery_frequency_days=7,
-            ),
+             ),
             "instagram": ChannelProfile(
                 name="Instagram",
                 category="social_media",
@@ -90,7 +112,7 @@ class AutoDiscoveryService:
                 preferred_pricing="freemium",
                 auto_discovery_enabled=True,
                 discovery_frequency_days=10,
-            ),
+             ),
             "email": ChannelProfile(
                 name="Email Marketing",
                 category="email",
@@ -99,7 +121,7 @@ class AutoDiscoveryService:
                 preferred_pricing="freemium",
                 auto_discovery_enabled=True,
                 discovery_frequency_days=30,
-            ),
+             ),
             "sms": ChannelProfile(
                 name="SMS Marketing",
                 category="messaging",
@@ -108,18 +130,29 @@ class AutoDiscoveryService:
                 preferred_pricing="freemium",
                 auto_discovery_enabled=True,
                 discovery_frequency_days=21,
-            ),
-        }
+             ),
+         }
 
     def _init_database(self):
-        """Initialize the auto - discovery database."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Initialize the auto - discovery database.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 # Channel profiles table
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     CREATE TABLE IF NOT EXISTS channel_profiles (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             name TEXT UNIQUE NOT NULL,
@@ -132,13 +165,29 @@ class AutoDiscoveryService:
                             discovery_frequency_days INTEGER NOT NULL,
                             created_at TEXT NOT NULL,
                             updated_at TEXT NOT NULL
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+                
+""""""
+
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
                 """
-                )
+
+                 
+                
 
                 # Discovery history table
                 cursor.execute(
-                    """
+                   
+""""""
                     CREATE TABLE IF NOT EXISTS discovery_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             channel TEXT NOT NULL,
@@ -148,13 +197,36 @@ class AutoDiscoveryService:
                             total_cost_estimate REAL,
                             discovery_data TEXT NOT NULL,
                             created_at TEXT NOT NULL
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+                """"""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 # API recommendations table
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     CREATE TABLE IF NOT EXISTS api_recommendations (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             channel TEXT NOT NULL,
@@ -166,23 +238,59 @@ class AutoDiscoveryService:
                             status TEXT DEFAULT 'pending',
                             created_at TEXT NOT NULL,
                             updated_at TEXT NOT NULL
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+                
+""""""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
                 conn.commit()
                 self.logger.info("Auto - discovery database initialized")
+                """
 
+                 
+                
+
+                 )
+                
+""""""
         except Exception as e:
             self.logger.error(f"Error initializing database: {e}")
 
     def add_channel(
         self, channel_name: str, custom_profile: Optional[ChannelProfile] = None
-    ) -> bool:
-        """Add a new channel and automatically discover APIs for it."""
+#     ) -> bool:
+        """
+Add a new channel and automatically discover APIs for it.
+
         try:
+           
+""""""
+
             # Use custom profile or default
+           
+
+            
+           
+"""
             if custom_profile:
+           """
+
+            
+           
+
+            # Use custom profile or default
+           
+""""""
                 profile = custom_profile
             else:
                 profile = self.default_profiles.get(
@@ -194,8 +302,10 @@ class AutoDiscoveryService:
                         budget_limit=25.0,
                         preferred_pricing="freemium",
                         auto_discovery_enabled=True,
-                    ),
-                )
+                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
             # Save profile to database
             self._save_channel_profile(profile)
@@ -204,13 +314,17 @@ class AutoDiscoveryService:
             if profile.auto_discovery_enabled:
                 self.logger.info(
                     f"Running initial API discovery for new channel: {channel_name}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 discovery_result = self.discover_apis_for_channel(channel_name)
 
                 if discovery_result:
                     self.logger.info(
                         f"Discovered {len(discovery_result.discovered_apis)} APIs for {channel_name}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
                     return True
 
             return True
@@ -220,10 +334,28 @@ class AutoDiscoveryService:
             return False
 
     def discover_apis_for_channel(self, channel_name: str) -> Optional[DiscoveryResult]:
-        """Discover APIs for a specific channel."""
+        """
+Discover APIs for a specific channel.
+
         try:
+           
+""""""
+
             # Get channel profile
+           
+
+            
+           
+"""
             profile = self._get_channel_profile(channel_name)
+           """
+
+            
+           
+
+            # Get channel profile
+           
+""""""
             if not profile:
                 self.logger.error(f"No profile found for channel: {channel_name}")
                 return None
@@ -233,7 +365,9 @@ class AutoDiscoveryService:
             # Step 1: Web search for APIs
             discovered_apis = self.web_search.search_apis_for_channel(
                 channel_name.lower(), max_results=15
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Step 2: Use API discovery service for additional candidates
             additional_apis = self.api_discovery.discover_channel_apis(channel_name)
@@ -257,7 +391,9 @@ class AutoDiscoveryService:
                 discovery_timestamp=datetime.now(),
                 next_discovery_date=datetime.now()
                 + timedelta(days=profile.discovery_frequency_days),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Step 6: Save results
             self._save_discovery_result(discovery_result)
@@ -269,7 +405,9 @@ class AutoDiscoveryService:
 
             self.logger.info(
                 f"Discovery completed for {channel_name}: {len(recommended_apis)} recommended APIs"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             return discovery_result
 
         except Exception as e:
@@ -277,16 +415,35 @@ class AutoDiscoveryService:
             return None
 
     def run_scheduled_discovery(self) -> Dict[str, DiscoveryResult]:
-        """Run discovery for all channels that are due for updates."""
-        results = {}
+        """
+Run discovery for all channels that are due for updates.
 
+       
+""""""
+
+        results = {}
+       
+
+        
+       
+"""
         try:
             # Get all channels due for discovery
+       """
+
+        
+       
+
+        results = {}
+       
+""""""
             due_channels = self._get_channels_due_for_discovery()
 
             self.logger.info(
                 f"Running scheduled discovery for {len(due_channels)} channels"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             for channel_name in due_channels:
                 result = self.discover_apis_for_channel(channel_name)
@@ -300,11 +457,28 @@ class AutoDiscoveryService:
             return results
 
     def _deduplicate_apis(self, apis: List[APICandidate]) -> List[APICandidate]:
-        """Remove duplicate APIs from the list."""
-        seen = set()
-        unique_apis = []
+        """
+Remove duplicate APIs from the list.
 
+        seen = set()
+       
+""""""
+
+        unique_apis = []
+       
+
+        
+       
+"""
         for api in apis:
+       """
+
+        
+       
+
+        unique_apis = []
+       
+""""""
             key = f"{api.provider.lower()}_{api.name.lower()}"
             if key not in seen:
                 seen.add(key)
@@ -315,16 +489,33 @@ class AutoDiscoveryService:
     def _filter_and_rank_apis(
         self, apis: List[APICandidate], profile: ChannelProfile
     ) -> List[APICandidate]:
-        """Filter and rank APIs based on channel preferences."""
-        filtered_apis = []
+        """
+Filter and rank APIs based on channel preferences.
 
+       
+""""""
+
+        filtered_apis = []
+       
+
+        
+       
+"""
         for api in apis:
             # Filter by pricing preference
+       """
+
+        
+       
+
+        filtered_apis = []
+       
+""""""
             if profile.preferred_pricing == "free" and api.pricing_model != "free":
                 continue
             elif (
                 profile.preferred_pricing == "freemium" and api.pricing_model == "paid"
-            ):
+#             ):
                 continue
 
             # Calculate preference score
@@ -340,11 +531,28 @@ class AutoDiscoveryService:
 
     def _calculate_preference_score(
         self, api: APICandidate, profile: ChannelProfile
-    ) -> float:
-        """Calculate how well an API matches channel preferences."""
-        score = 0.5  # Base score
+#     ) -> float:
+        """
+Calculate how well an API matches channel preferences.
 
+       
+""""""
+
+        score = 0.5  # Base score
+       
+
+        
+       
+"""
         # Check for priority features
+       """
+
+        
+       
+
+        score = 0.5  # Base score
+       
+""""""
         matching_features = set(api.features) & set(profile.priority_features)
         if matching_features:
             score += 0.3 * (len(matching_features) / len(profile.priority_features))
@@ -354,11 +562,13 @@ class AutoDiscoveryService:
             "free": {"free": 0.3, "freemium": 0.1, "paid": 0.0},
             "freemium": {"free": 0.3, "freemium": 0.2, "paid": 0.1},
             "paid": {"free": 0.2, "freemium": 0.2, "paid": 0.2},
-        }
+         }
 
         score += pricing_scores.get(profile.preferred_pricing, {}).get(
             api.pricing_model, 0.0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         return min(1.0, score)
 
@@ -369,18 +579,18 @@ class AutoDiscoveryService:
         analysis = {
             "total_free_apis": len(
                 [api for api in apis if api.pricing_model == "free"]
-            ),
+             ),
             "total_freemium_apis": len(
                 [api for api in apis if api.pricing_model == "freemium"]
-            ),
+             ),
             "total_paid_apis": len(
                 [api for api in apis if api.pricing_model == "paid"]
-            ),
+             ),
             "estimated_monthly_cost": 0.0,
             "within_budget": True,
             "budget_limit": budget_limit,
             "cost_breakdown": [],
-        }
+         }
 
         # Estimate costs (simplified)
         for api in apis:
@@ -391,7 +601,9 @@ class AutoDiscoveryService:
 
                 cost_match = re.search(
                     r"\\$([0 - 9,]+(?:\\.[0 - 9]{2})?)", api.cost_estimate or ""
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 if cost_match:
                     cost = float(cost_match.group(1).replace(",", ""))
                     analysis["estimated_monthly_cost"] += cost
@@ -400,29 +612,46 @@ class AutoDiscoveryService:
                             "api": api.name,
                             "cost": cost,
                             "pricing_model": api.pricing_model,
-                        }
-                    )
+                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
         analysis["within_budget"] = analysis["estimated_monthly_cost"] <= budget_limit
 
         return analysis
 
     def _save_channel_profile(self, profile: ChannelProfile):
-        """Save channel profile to database."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Save channel profile to database.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 now = datetime.now().isoformat()
 
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     INSERT OR REPLACE INTO channel_profiles
                     (name, category, priority_features, budget_limit, preferred_pricing,
                         auto_discovery_enabled, last_discovery_run, discovery_frequency_days,
-                         created_at, updated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          created_at, updated_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+""","""
+
                     (
                         profile.name,
                         profile.category,
@@ -431,30 +660,65 @@ class AutoDiscoveryService:
                         profile.preferred_pricing,
                         profile.auto_discovery_enabled,
                         (
+                           
+
+                            
+                           
+"""
                             profile.last_discovery_run.isoformat()
+                           """
+
+                            
+                           
+
                             if profile.last_discovery_run
                             else None
-                        ),
+                         ),
                         profile.discovery_frequency_days,
                         now,
                         now,
-                    ),
-                )
+                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+""""""
 
+                 )
+                
+
+                 
+                
+""""""
+
+                            
+                           
+
+                            profile.last_discovery_run.isoformat()
+                           
+""""""
                 conn.commit()
 
         except Exception as e:
             self.logger.error(f"Error saving channel profile: {e}")
 
     def _get_channel_profile(self, channel_name: str) -> Optional[ChannelProfile]:
-        """Get channel profile from database."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Get channel profile from database.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 cursor.execute(
                     "SELECT * FROM channel_profiles WHERE name = ?", (channel_name,)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
                 row = cursor.fetchone()
                 if row:
@@ -467,9 +731,11 @@ class AutoDiscoveryService:
                         auto_discovery_enabled=bool(row[6]),
                         last_discovery_run=(
                             datetime.fromisoformat(row[7]) if row[7] else None
-                        ),
+                         ),
                         discovery_frequency_days=row[8],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
                 return None
 
@@ -478,18 +744,32 @@ class AutoDiscoveryService:
             return None
 
     def _save_discovery_result(self, result: DiscoveryResult):
-        """Save discovery result to database."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Save discovery result to database.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     INSERT INTO discovery_history
                     (channel, discovery_timestamp, apis_discovered, apis_recommended,
-                        total_cost_estimate, discovery_data, created_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         total_cost_estimate, discovery_data, created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+""","""
                     (
                         result.channel,
                         result.discovery_timestamp.isoformat(),
@@ -498,8 +778,10 @@ class AutoDiscoveryService:
                         result.cost_analysis.get("estimated_monthly_cost", 0.0),
                         json.dumps(asdict(result), default=str),
                         datetime.now().isoformat(),
-                    ),
-                )
+                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
                 conn.commit()
 
@@ -507,21 +789,35 @@ class AutoDiscoveryService:
             self.logger.error(f"Error saving discovery result: {e}")
 
     def _save_api_recommendations(self, result: DiscoveryResult):
-        """Save API recommendations to database."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Save API recommendations to database.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 now = datetime.now().isoformat()
 
                 for api in result.recommended_apis[:5]:  # Save top 5 recommendations
                     cursor.execute(
-                        """
+                       """
+
+                        
+                       
+
                         INSERT OR REPLACE INTO api_recommendations
                         (channel, api_name, provider, pricing_model, quality_score,
-                            recommendation_reason, status, created_at, updated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             recommendation_reason, status, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    
+""","""
                         (
                             result.channel,
                             api.name,
@@ -532,8 +828,10 @@ class AutoDiscoveryService:
                             "pending",
                             now,
                             now,
-                        ),
-                    )
+                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
                 conn.commit()
 
@@ -541,21 +839,41 @@ class AutoDiscoveryService:
             self.logger.error(f"Error saving API recommendations: {e}")
 
     def _get_channels_due_for_discovery(self) -> List[str]:
-        """Get channels that are due for discovery updates."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Get channels that are due for discovery updates.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 now = datetime.now()
 
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     SELECT name, last_discovery_run, discovery_frequency_days
                     FROM channel_profiles
                     WHERE auto_discovery_enabled = 1
-                """
-                )
+                
+""""""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
                 due_channels = []
 
                 for row in cursor.fetchall():
@@ -578,22 +896,42 @@ class AutoDiscoveryService:
             return []
 
     def get_channel_recommendations(self, channel_name: str) -> List[Dict[str, Any]]:
-        """Get API recommendations for a channel."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Get API recommendations for a channel.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     SELECT api_name, provider, pricing_model, quality_score,
                         recommendation_reason, status, created_at
                     FROM api_recommendations
                     WHERE channel = ?
                     ORDER BY quality_score DESC
-                """,
-                    (channel_name,),
-                )
+                
+""","""
 
+                    (channel_name,),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
                 recommendations = []
                 for row in cursor.fetchall():
                     recommendations.append(
@@ -605,8 +943,10 @@ class AutoDiscoveryService:
                             "recommendation_reason": row[4],
                             "status": row[5],
                             "created_at": row[6],
-                        }
-                    )
+                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
                 return recommendations
 
@@ -615,11 +955,18 @@ class AutoDiscoveryService:
             return []
 
     def get_discovery_stats(self) -> Dict[str, Any]:
-        """Get overall discovery statistics."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Get overall discovery statistics.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 # Total channels
                 cursor.execute("SELECT COUNT(*) FROM channel_profiles")
                 total_channels = cursor.fetchone()[0]
@@ -627,7 +974,9 @@ class AutoDiscoveryService:
                 # Active channels
                 cursor.execute(
                     "SELECT COUNT(*) FROM channel_profiles WHERE auto_discovery_enabled = 1"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 active_channels = cursor.fetchone()[0]
 
                 # Total discoveries
@@ -640,13 +989,42 @@ class AutoDiscoveryService:
 
                 # Recent activity
                 cursor.execute(
-                    """
+                    """"""
+
                     SELECT COUNT(*) FROM discovery_history
                     WHERE created_at > datetime('now', '-7 days')
-                """
-                )
-                recent_discoveries = cursor.fetchone()[0]
+               
 
+                
+               
+"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                """
+
+                 
+                
+
+                 )
+                
+""""""
+
+               
+
+                
+               
+"""
+                recent_discoveries = cursor.fetchone()[0]
+               """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 return {
                     "total_channels": total_channels,
                     "active_channels": active_channels,
@@ -655,8 +1033,8 @@ class AutoDiscoveryService:
                     "recent_discoveries": recent_discoveries,
                     "discovery_rate": (
                         recent_discoveries / 7 if recent_discoveries > 0 else 0
-                    ),
-                }
+                     ),
+                 }
 
         except Exception as e:
             self.logger.error(f"Error getting discovery stats: {e}")
@@ -673,14 +1051,18 @@ if __name__ == "__main__":
         "--action",
         choices=["add - channel", "discover", "scheduled", "stats", "recommendations"],
         required=True,
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+     )
     parser.add_argument("--channel", help="Channel name")
     parser.add_argument("--budget", type=float, help="Budget limit for channel")
     parser.add_argument(
         "--pricing",
         choices=["free", "freemium", "paid"],
         help="Preferred pricing model",
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+     )
 
     args = parser.parse_args()
 
@@ -697,12 +1079,16 @@ if __name__ == "__main__":
                 budget_limit=args.budget or 25.0,
                 preferred_pricing=args.pricing or "freemium",
                 auto_discovery_enabled=True,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         success = service.add_channel(args.channel, profile)
         print(
             f"Channel '{args.channel}' {'added successfully' if success else 'failed to add'}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
     elif args.action == "discover" and args.channel:
         result = service.discover_apis_for_channel(args.channel)
@@ -711,18 +1097,24 @@ if __name__ == "__main__":
             print(f"Discovered APIs: {len(result.discovered_apis)}")
             print(f"Recommended APIs: {len(result.recommended_apis)}")
             print(
-                f"Estimated Monthly Cost: ${result.cost_analysis.get('estimated_monthly_cost',
-    0):.2f}"
-            )
+                f"Estimated Monthly Cost: ${result.cost_analysis.get('estimated_monthly_cost',"
+#     0):.2f}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             print(
                 f"Within Budget: {result.cost_analysis.get('within_budget', 'Unknown')}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             print("\\nTop Recommendations:")
             for api in result.recommended_apis[:3]:
                 print(
                     f"  {api.name} ({api.provider}) - {api.pricing_model} - Score: {api.quality_score:.2f}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
     elif args.action == "scheduled":
         results = service.run_scheduled_discovery()
@@ -742,7 +1134,9 @@ if __name__ == "__main__":
         for rec in recommendations:
             print(
                 f"  {rec['api_name']} ({rec['provider']}) - {rec['pricing_model']} - Score: {rec['quality_score']:.2f}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
     else:
         parser.print_help()

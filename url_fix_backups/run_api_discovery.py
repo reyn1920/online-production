@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 API Discovery Integration Runner
 
 Comprehensive script that:
@@ -8,7 +8,7 @@ Comprehensive script that:
 - Updates the API management table
 - Provides detailed reporting
 - Manages free API detection and integration
-"""
+""""""
 
 import asyncio
 import json
@@ -24,7 +24,9 @@ from typing import Dict, List, Any
 logging.basicConfig(
     level = logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 # Import our API discovery components
@@ -75,8 +77,12 @@ class APIDiscoveryRunner:
                     APICategory.DATA_SCIENCE,
                     APICategory.BUSINESS,
                     APICategory.UTILITIES
-                ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Initialize discovery engine
             self.discovery_engine = APIDiscoveryEngine(config)
@@ -131,7 +137,8 @@ class APIDiscoveryRunner:
                 "integration_results": integration_results,
                 "reports": reports,
                 "timestamp": datetime.now().isoformat()
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.logger.info(f"✅ API discovery completed in {end_time - start_time:.2f} seconds")
             return final_results
@@ -142,14 +149,17 @@ class APIDiscoveryRunner:
                 "success": False,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat()
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _discover_by_channels(self) -> Dict[str, Any]:
         """Discover APIs for specific marketing channels"""
         channels = [
             "youtube", "tiktok", "instagram", "twitter",
             "affiliate", "email", "analytics", "content"
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         channel_results = {}
 
@@ -163,18 +173,23 @@ class APIDiscoveryRunner:
                     free_candidates = [
                         api for api in candidates
                         if api.cost_model in ['free', 'freemium']
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
                     channel_results[channel] = {
                         "total_found": len(candidates),
                         "free_apis": len(free_candidates),
                         "candidates": free_candidates
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     self.logger.info(
                         f"✅ {channel}: {len(free_candidates)} free APIs found "
                         f"(out of {len(candidates)} total)"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 except Exception as e:
                     self.logger.error(f"❌ Failed to discover APIs for {channel}: {e}")
@@ -183,7 +198,8 @@ class APIDiscoveryRunner:
                         "total_found": 0,
                         "free_apis": 0,
                         "candidates": []
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         return channel_results
 
@@ -193,7 +209,8 @@ class APIDiscoveryRunner:
             "total_integrated": 0,
             "by_channel": {},
             "errors": []
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Get all discovered APIs from the engine
@@ -227,13 +244,15 @@ class APIDiscoveryRunner:
         """Save API to the master database"""
         with sqlite3.connect(self.db_path) as conn:
             # Insert into api_discovery_tasks table
-            conn.execute("""
+            conn.execute(""""""
                 INSERT OR REPLACE INTO api_discovery_tasks (
                     task_name, task_type, target_capability, search_parameters,
                     capability_gap, search_keywords, priority, status,
                     assigned_agent, progress_notes, apis_found, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, ("""
                 f"Discovered: {api.name}",
                 "api_integration",
                 api.category.value,
@@ -241,7 +260,8 @@ class APIDiscoveryRunner:
                     "base_url": api.base_url,
                     "auth_type": api.auth_type.value,
                     "is_free": api.is_free
-                }),
+# BRACKET_SURGEON: disabled
+#                 }),
                 "Free API integration",
                 json.dumps([api.name, api.category.value]),
                 5,  # Medium priority
@@ -251,18 +271,22 @@ class APIDiscoveryRunner:
                 1,
                 datetime.now().isoformat(),
                 datetime.now().isoformat()
-            ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ))
 
             # Insert into api_suggestions table
-            conn.execute("""
+            conn.execute(""""""
                 INSERT OR REPLACE INTO api_suggestions (
                     api_name, provider, category, description, signup_url,
                     documentation_url, pricing_model, free_tier_limits,
                     integration_complexity, estimated_setup_time, quality_score,
                     use_cases, required_credentials, rate_limits, status,
                     discovery_source, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, ("""
                 api.name,
                 "Auto - discovered",
                 api.category.value,
@@ -281,7 +305,9 @@ class APIDiscoveryRunner:
                 "api_discovery_engine",
                 datetime.now().isoformat(),
                 datetime.now().isoformat()
-            ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ))
 
             conn.commit()
 
@@ -290,35 +316,43 @@ class APIDiscoveryRunner:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 # Update system_config with discovery status
-                conn.execute("""
+                conn.execute(""""""
                     INSERT OR REPLACE INTO system_config (key,
     value,
     description,
-    updated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     updated_at)
                     VALUES (?, ?, ?, ?)
-                """, (
+                """, ("""
                     "last_api_discovery",
                     datetime.now().isoformat(),
                     "Last successful API discovery run",
                     datetime.now().isoformat()
-                ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ))
 
                 # Count total discovered APIs
                 cursor = conn.execute("SELECT COUNT(*) FROM api_suggestions WHERE status = 'discovered'")
                 total_apis = cursor.fetchone()[0]
 
-                conn.execute("""
+                conn.execute(""""""
                     INSERT OR REPLACE INTO system_config (key,
     value,
     description,
-    updated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     updated_at)
                     VALUES (?, ?, ?, ?)
-                """, (
+                """, ("""
                     "total_discovered_apis",
                     str(total_apis),
                     "Total number of discovered APIs",
                     datetime.now().isoformat()
-                ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ))
 
                 conn.commit()
 
@@ -332,7 +366,7 @@ class APIDiscoveryRunner:
                 conn.row_factory = sqlite3.Row
 
                 # Get API statistics
-                cursor = conn.execute("""
+                cursor = conn.execute(""""""
                     SELECT
                         category,
                         COUNT(*) as count,
@@ -341,36 +375,44 @@ class APIDiscoveryRunner:
                     WHERE status = 'discovered'
                     GROUP BY category
                     ORDER BY count DESC
-                """)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 """)"""
 
                 category_stats = [dict(row) for row in cursor.fetchall()]
 
                 # Get free APIs count
-                cursor = conn.execute("""
+                cursor = conn.execute(""""""
                     SELECT COUNT(*) as free_count
                     FROM api_suggestions
                     WHERE pricing_model = 'free' AND status = 'discovered'
-                """)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 """)"""
 
                 free_count = cursor.fetchone()[0]
 
                 # Get total APIs count
-                cursor = conn.execute("""
+                cursor = conn.execute(""""""
                     SELECT COUNT(*) as total_count
                     FROM api_suggestions
                     WHERE status = 'discovered'
-                """)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 """)"""
 
                 total_count = cursor.fetchone()[0]
 
                 # Get recent discoveries
-                cursor = conn.execute("""
+                cursor = conn.execute(""""""
                     SELECT api_name, category, quality_score, created_at
                     FROM api_suggestions
                     WHERE status = 'discovered'
                     ORDER BY created_at DESC
                     LIMIT 10
-                """)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 """)"""
 
                 recent_discoveries = [dict(row) for row in cursor.fetchall()]
 
@@ -379,10 +421,12 @@ class APIDiscoveryRunner:
                         "total_apis": total_count,
                         "free_apis": free_count,
                         "free_percentage": (free_count / total_count * 100) if total_count > 0 else 0
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "by_category": category_stats,
                     "recent_discoveries": recent_discoveries
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             self.logger.error(f"Failed to generate reports: {e}")
@@ -432,9 +476,11 @@ class APIDiscoveryRunner:
             summary = results["reports"]["summary"]
             print(f"\\n📊 SUMMARY:")
             print(f"   • Total APIs in database: {summary.get('total_apis', 0)}")
-            print(f"   • Free APIs: {summary.get('free_apis',
+            print(f"   • Free APIs: {summary.get('free_apis',"
     0)} ({summary.get('free_percentage',
-    0):.1f}%)")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     0):.1f}%)")
 
         print("\\n✅ API discovery completed successfully!")
         print("="*60)

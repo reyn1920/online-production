@@ -1,13 +1,23 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Safe Mode Manager - Environment Snapshot and Rollback System
-
+""""""
 This module implements a safe mode system that creates snapshots of the Python
 virtual environment and Git commits before applying any automated repairs.
 It provides automatic rollback capabilities if repairs fail.
+"""
+
+Safe Mode Manager - Environment Snapshot and Rollback System
+
+
+
+""""""
 
 Author: TRAE.AI System
 Version: 1.0.0
+
+
+
 """
 
 import hashlib
@@ -27,7 +37,9 @@ from typing import Any, Dict, List, Optional
 
 @dataclass
 class EnvironmentSnapshot:
-    """Represents a snapshot of the system environment."""
+    """
+Represents a snapshot of the system environment.
+
 
     snapshot_id: str
     timestamp: datetime
@@ -36,21 +48,35 @@ class EnvironmentSnapshot:
     requirements_hash: str
     system_state: Dict[str, Any]
     description: str
+   
+""""""
+
     is_valid: bool = True
+   
 
-
+    
+   
+"""
 @dataclass
 class RollbackResult:
-    """Result of a rollback operation."""
+    """
+Result of a rollback operation.
+
 
     success: bool
     snapshot_id: str
     restored_commit: str
     restored_venv: bool
     error_message: Optional[str] = None
+   
+""""""
+
     duration: Optional[float] = None
+   
 
-
+    
+   
+"""
 class SafeModeManager:
     """Manages environment snapshots and rollback operations."""
 
@@ -66,16 +92,42 @@ class SafeModeManager:
         self._init_safe_mode()
 
     def _init_safe_mode(self):
-        """Initialize safe mode directories and database tables."""
+        """
+Initialize safe mode directories and database tables.
+
         try:
             # Create snapshots directory
-            self.snapshots_dir.mkdir(exist_ok=True)
+           
+""""""
 
+            self.snapshots_dir.mkdir(exist_ok=True)
+           
+
+            
+           
+"""
             # Initialize database table for snapshots
+            """
+
             with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
+
+            self.snapshots_dir.mkdir(exist_ok=True)
+           
+
+            
+           
+"""
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     CREATE TABLE IF NOT EXISTS environment_snapshots (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             snapshot_id TEXT NOT NULL UNIQUE,
@@ -87,12 +139,24 @@ class SafeModeManager:
                             description TEXT NOT NULL,
                             is_valid BOOLEAN DEFAULT 1,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
+                     )
+                
+""""""
+
+                
+
+                 
+                
+"""
+                 )
                 """
-                )
+
+                 
+                
 
                 cursor.execute(
-                    """
+                   
+""""""
                     CREATE TABLE IF NOT EXISTS rollback_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             snapshot_id TEXT NOT NULL,
@@ -103,10 +167,25 @@ class SafeModeManager:
                             error_message TEXT,
                             duration_seconds REAL,
                             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+                     )
+                """"""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 conn.commit()
 
             self.logger.info("Safe Mode Manager initialized successfully")
@@ -118,13 +197,36 @@ class SafeModeManager:
     def create_snapshot(
         self, description: str = "Pre - repair snapshot"
     ) -> Optional[EnvironmentSnapshot]:
-        """Create a complete environment snapshot before repairs."""
+        """
+Create a complete environment snapshot before repairs.
+
+        
+"""
         try:
+        """
+
             snapshot_id = self._generate_snapshot_id()
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             timestamp = datetime.now()
-
+           
+""""""
             self.logger.info(f"Creating environment snapshot: {snapshot_id}")
+           """
 
+            
+           
+
+            timestamp = datetime.now()
+           
+""""""
             # 1. Create Git commit for current state
             git_commit = self._create_git_snapshot(snapshot_id, description)
             if not git_commit:
@@ -152,7 +254,7 @@ class SafeModeManager:
                 requirements_hash=requirements_hash,
                 system_state=system_state,
                 description=description,
-            )
+             )
 
             # 6. Store snapshot in database
             self._store_snapshot(snapshot)
@@ -169,13 +271,29 @@ class SafeModeManager:
 
     def rollback_to_snapshot(
         self, snapshot_id: str, reason: str = "Automated rollback"
-    ) -> RollbackResult:
-        """Rollback system to a previous snapshot."""
-        start_time = datetime.now()
+#     ) -> RollbackResult:
+        """
+Rollback system to a previous snapshot.
 
+       
+""""""
+
+        start_time = datetime.now()
+       
+
+        
+       
+"""
         try:
             self.logger.info(f"Starting rollback to snapshot: {snapshot_id}")
+       """
 
+        
+       
+
+        start_time = datetime.now()
+       
+""""""
             # 1. Retrieve snapshot from database
             snapshot = self._get_snapshot(snapshot_id)
             if not snapshot:
@@ -185,7 +303,7 @@ class SafeModeManager:
                     restored_commit="",
                     restored_venv=False,
                     error_message="Snapshot not found",
-                )
+                 )
 
             # 2. Rollback Git to snapshot commit
             git_success = self._rollback_git(snapshot.git_commit_hash)
@@ -205,7 +323,7 @@ class SafeModeManager:
                 restored_commit=snapshot.git_commit_hash if git_success else "",
                 restored_venv=venv_success,
                 duration=duration,
-            )
+             )
 
             if not success:
                 result.error_message = "Rollback partially failed - manual intervention required"
@@ -229,7 +347,7 @@ class SafeModeManager:
                 restored_venv=False,
                 error_message=str(e),
                 duration=duration,
-            )
+             )
 
             self._log_rollback_attempt(result, reason)
             self.logger.error(f"Rollback exception: {e}")
@@ -249,12 +367,12 @@ class SafeModeManager:
 
             # Create commit
             commit_message = f"Safe Mode Snapshot: {snapshot_id} - {description}"
-            result = subprocess.run(
+            subprocess.run(
                 ["git", "commit", "-m", commit_message],
                 cwd=self.project_root,
                 capture_output=True,
                 text=True,
-            )
+             )
 
             # Get current commit hash
             hash_result = subprocess.run(
@@ -263,7 +381,7 @@ class SafeModeManager:
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+             )
 
             return hash_result.stdout.strip()
 
@@ -272,10 +390,21 @@ class SafeModeManager:
             return None
 
     def _backup_virtual_environment(self, snapshot_id: str) -> Optional[str]:
-        """Create backup of virtual environment."""
-        try:
-            backup_path = self.snapshots_dir / f"{snapshot_id}_venv.tar.gz"
+        """
+Create backup of virtual environment.
 
+        
+"""
+        try:
+        """
+            backup_path = self.snapshots_dir / f"{snapshot_id}_venv.tar.gz"
+        """
+
+        try:
+        
+
+       
+""""""
             with tarfile.open(backup_path, "w:gz") as tar:
                 tar.add(self.venv_path, arcname="venv")
 
@@ -286,9 +415,17 @@ class SafeModeManager:
             return None
 
     def _calculate_requirements_hash(self) -> str:
-        """Calculate hash of current requirements."""
+        """
+Calculate hash of current requirements.
+
+        
+"""
         try:
+        """
             requirements_files = ["requirements.txt", "requirements_creative.txt"]
+        """
+        try:
+        """
             combined_content = ""
 
             for req_file in requirements_files:
@@ -304,8 +441,13 @@ class SafeModeManager:
             return "unknown"
 
     def _capture_system_state(self) -> Dict[str, Any]:
-        """Capture current system state."""
+        """
+Capture current system state.
+
+        
+"""
         try:
+        """"""
             return {
                 "python_version": sys.version,
                 "python_executable": sys.executable,
@@ -315,36 +457,62 @@ class SafeModeManager:
                 "system_info": {
                     "platform": sys.platform,
                     "architecture": sys.maxsize > 2**32 and "64bit" or "32bit",
-                },
-            }
+                 },
+             }
         except Exception as e:
             self.logger.error(f"System state capture failed: {e}")
+        """
+
+        try:
+        
+
+       
+""""""
+
             return {}
 
     def _get_installed_packages(self) -> List[str]:
-        """Get list of installed Python packages."""
+        """
+        Get list of installed Python packages.
+        """"""
         try:
+        """
             result = subprocess.run(
                 [sys.executable, "-m", "pip", "freeze"],
+        """
+        try:
+        """
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+             )
             return result.stdout.strip().split("\\n")
         except Exception:
             return []
 
     def _store_snapshot(self, snapshot: EnvironmentSnapshot):
-        """Store snapshot metadata in database."""
+        """
+Store snapshot metadata in database.
+
+        
+"""
         with sqlite3.connect(self.db_path) as conn:
+        """
+
             cursor = conn.cursor()
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 INSERT INTO environment_snapshots
                 (snapshot_id, git_commit_hash, venv_backup_path, requirements_hash,
-                    system_state, description, timestamp)
+#                     system_state, description, timestamp)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+            """
+,
+
                 (
                     snapshot.snapshot_id,
                     snapshot.git_commit_hash,
@@ -353,20 +521,51 @@ class SafeModeManager:
                     json.dumps(snapshot.system_state),
                     snapshot.description,
                     snapshot.timestamp,
-                ),
-            )
+                 ),
+             )
+           
+""""""
+
             conn.commit()
+           
+
+            
+           
+""""""
+
+        with sqlite3.connect(self.db_path) as conn:
+        
+
+       
+""""""
 
     def _get_snapshot(self, snapshot_id: str) -> Optional[EnvironmentSnapshot]:
-        """Retrieve snapshot from database."""
+        
+Retrieve snapshot from database.
+"""
         try:
             with sqlite3.connect(self.db_path) as conn:
+               """
+
+                
+               
+
                 conn.row_factory = sqlite3.Row
+               
+""""""
                 cursor = conn.cursor()
                 cursor.execute(
                     "SELECT * FROM environment_snapshots WHERE snapshot_id = ?",
                     (snapshot_id,),
-                )
+                 )
+               """
+
+                
+               
+
+                conn.row_factory = sqlite3.Row
+               
+""""""
                 row = cursor.fetchone()
 
                 if row:
@@ -379,7 +578,7 @@ class SafeModeManager:
                         system_state=json.loads(row["system_state"]),
                         description=row["description"],
                         is_valid=bool(row["is_valid"]),
-                    )
+                     )
                 return None
         except Exception as e:
             self.logger.error(f"Failed to retrieve snapshot: {e}")
@@ -392,19 +591,43 @@ class SafeModeManager:
                 ["git", "reset", "--hard", commit_hash],
                 cwd=self.project_root,
                 check=True,
-            )
+             )
             return True
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Git rollback failed: {e}")
             return False
 
     def _restore_virtual_environment(self, backup_path: str) -> bool:
-        """Restore virtual environment from backup."""
-        try:
-            # Remove current venv
-            if self.venv_path.exists():
-                shutil.rmtree(self.venv_path)
+        """
+Restore virtual environment from backup.
 
+        try:
+           
+""""""
+
+            # Remove current venv
+           
+
+            
+           
+"""
+            if self.venv_path.exists():
+               """
+
+                
+               
+
+                shutil.rmtree(self.venv_path)
+               
+""""""
+
+           
+
+            
+           
+"""
+            # Remove current venv
+           """"""
             # Extract backup
             with tarfile.open(backup_path, "r:gz") as tar:
                 tar.extractall(self.project_root)
@@ -415,16 +638,34 @@ class SafeModeManager:
             return False
 
     def _verify_system_integrity(self, snapshot: EnvironmentSnapshot) -> bool:
-        """Verify system integrity after rollback."""
+        """
+Verify system integrity after rollback.
+
         try:
+           
+""""""
+
             # Check if Git commit matches
+           
+
+            
+           
+"""
             result = subprocess.run(
                 ["git", "rev - parse", "HEAD"],
+           """
+
+            
+           
+
+            # Check if Git commit matches
+           
+""""""
                 cwd=self.project_root,
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+             )
 
             current_commit = result.stdout.strip()
             if current_commit != snapshot.git_commit_hash:
@@ -443,17 +684,27 @@ class SafeModeManager:
             return False
 
     def _log_rollback_attempt(self, result: RollbackResult, reason: str):
-        """Log rollback attempt to database."""
+        """
+Log rollback attempt to database.
+
         try:
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT INTO rollback_history
                     (snapshot_id, rollback_reason, success, restored_commit,
-                        restored_venv, error_message, duration_seconds)
+#                         restored_venv, error_message, duration_seconds)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         result.snapshot_id,
                         reason,
@@ -462,27 +713,79 @@ class SafeModeManager:
                         result.restored_venv,
                         result.error_message,
                         result.duration,
-                    ),
-                )
+                     ),
+                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to log rollback attempt: {e}")
+            """
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
 
     def _cleanup_old_snapshots(self):
-        """Remove old snapshots to maintain storage limits."""
+        """
+        Remove old snapshots to maintain storage limits.
+        """
         try:
+            """
+
             with sqlite3.connect(self.db_path) as conn:
+            
+
+               
+""""""
+
                 cursor = conn.cursor()
+               
+
+                
+               
+""""""
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
 
                 # Get snapshots ordered by creation date
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT snapshot_id, venv_backup_path FROM environment_snapshots
                     ORDER BY created_at DESC
-                """
-                )
-                snapshots = cursor.fetchall()
+                """"""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                
+               """
+
+                snapshots = cursor.fetchall()
+               
+
+                
+               
+""""""
+
+                 
+                
+
+                 )
+                
+""""""
                 # Remove excess snapshots
                 if len(snapshots) > self.max_snapshots:
                     for snapshot_id, venv_backup_path in snapshots[self.max_snapshots :]:
@@ -495,7 +798,7 @@ class SafeModeManager:
                         cursor.execute(
                             "DELETE FROM environment_snapshots WHERE snapshot_id = ?",
                             (snapshot_id,),
-                        )
+                         )
 
                 conn.commit()
 
@@ -503,19 +806,49 @@ class SafeModeManager:
             self.logger.error(f"Snapshot cleanup failed: {e}")
 
     def get_available_snapshots(self) -> List[EnvironmentSnapshot]:
-        """Get list of available snapshots."""
+        """
+Get list of available snapshots.
+
         try:
             with sqlite3.connect(self.db_path) as conn:
+               
+""""""
+
                 conn.row_factory = sqlite3.Row
+               
+
+                
+               
+"""
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     SELECT * FROM environment_snapshots
                     WHERE is_valid = 1
                     ORDER BY created_at DESC
-                """
-                )
+                
+""""""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                
+               """
+
+                conn.row_factory = sqlite3.Row
+               
+
+                
+               
+"""
                 snapshots = []
                 for row in cursor.fetchall():
                     snapshots.append(
@@ -528,8 +861,8 @@ class SafeModeManager:
                             system_state=json.loads(row["system_state"]),
                             description=row["description"],
                             is_valid=bool(row["is_valid"]),
-                        )
-                    )
+                         )
+                     )
 
                 return snapshots
 
@@ -548,7 +881,7 @@ if __name__ == "__main__":
         "venv_path": "./venv",
         "project_root": ".",
         "max_snapshots": 5,
-    }
+     }
 
     manager = SafeModeManager(config)
 

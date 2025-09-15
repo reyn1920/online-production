@@ -1,7 +1,7 @@
-"""
+""""""
 pip install -U g4f[all]
 https://github.com / xtekky / gpt4free
-"""
+""""""
 
 from g4f.client import Client
 
@@ -11,14 +11,15 @@ class GPT4FREE:
         self.client = Client()
         self.prefix_prompt = prefix_prompt
         self.history = []
-        """
+        """"""
         response = client.chat.completions.create(
             model="gpt - 3.5 - turbo",
                 messages=[{"role": "user", "content": "Hello"}],
                 ...
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(response.choices[0].message.content)
-        """
+        """"""
 
     def generate(self, question, system_prompt="You are a helpful assistant."):
         self.history += [{"role": "user", "content": self.prefix_prompt + question}]
@@ -28,8 +29,10 @@ class GPT4FREE:
                 [{"role": "system", "content": system_prompt}]
                 if system_prompt
                 else [] + self.history
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         answer = response.choices[0].message.content
         if "sorry" in answer.lower():

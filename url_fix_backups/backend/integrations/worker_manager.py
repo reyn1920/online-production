@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Distributed Worker Manager
 
 This module provides utilities for managing Celery workers across different machines
@@ -15,7 +15,7 @@ Features:
 
 Author: AI Assistant
 Date: 2024
-"""
+""""""
 
 import json
 import logging
@@ -62,12 +62,12 @@ class WorkerManager:
 
 
     def __init__(self, dps: DistributedProcessingSystem):
-        """
+        """"""
         Initialize the worker manager.
 
         Args:
             dps: Distributed processing system instance
-        """
+        """"""
         self.dps = dps
         self.workers: Dict[str, WorkerProcess] = {}
         self.monitoring_thread: Optional[threading.Thread] = None
@@ -84,7 +84,7 @@ class WorkerManager:
 
 
     def start_worker(self, queue_names: List[str], concurrency: int = None) -> str:
-        """Start a new Celery worker.
+        """Start a new Celery worker."""
 
         Args:
             queue_names: List of queue names for this worker
@@ -92,12 +92,14 @@ class WorkerManager:
 
         Returns:
             Worker ID
-        """
+        """"""
         if concurrency is None:
             concurrency = min(
                 self.machine_capabilities.cpu_cores,
                     self.machine_capabilities.max_concurrent_tasks,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         worker_id = f"worker_{self.platform}_{int(time.time())}"
 
@@ -115,7 +117,9 @@ class WorkerManager:
                     text = True,
                     bufsize = 1,
                     universal_newlines = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Create worker process record
             worker_process = WorkerProcess(
@@ -126,7 +130,9 @@ class WorkerManager:
                     status="starting",
                     queue_names = queue_names,
                     concurrency = concurrency,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.workers[worker_id] = worker_process
 
@@ -147,7 +153,7 @@ class WorkerManager:
     def _build_worker_command(:
         self, worker_id: str, queue_names: List[str], concurrency: int
     ) -> List[str]:
-        """Build Celery worker command.
+        """Build Celery worker command."""
 
         Args:
             worker_id: Unique worker identifier
@@ -156,7 +162,7 @@ class WorkerManager:
 
         Returns:
             Command as list of strings
-        """
+        """"""
         command = [
             self.python_executable,
                 "-m",
@@ -175,7 +181,9 @@ class WorkerManager:
                 "--without - gossip",
                 "--without - mingle",
                 "--without - heartbeat",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Platform - specific optimizations
         if self.platform == "darwin":  # macOS
@@ -189,7 +197,7 @@ class WorkerManager:
 
 
     def stop_worker(self, worker_id: str, timeout: int = 30) -> bool:
-        """Stop a specific worker.
+        """Stop a specific worker."""
 
         Args:
             worker_id: ID of worker to stop
@@ -197,7 +205,7 @@ class WorkerManager:
 
         Returns:
             True if worker stopped successfully
-        """
+        """"""
         if worker_id not in self.workers:
             logging.getLogger(__name__).warning(f"Worker {worker_id} not found")
         return False
@@ -213,7 +221,9 @@ class WorkerManager:
                     ["taskkill", "/PID", str(worker.process_id), "/T"],
                         timeout = timeout,
                         check = False,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 # Unix - like systems
                 os.kill(worker.process_id, signal.SIGTERM)
@@ -242,14 +252,14 @@ class WorkerManager:
 
 
     def stop_all_workers(self, timeout: int = 30) -> Dict[str, bool]:
-        """Stop all managed workers.
+        """Stop all managed workers."""
 
         Args:
             timeout: Timeout in seconds for each worker
 
         Returns:
             Dictionary mapping worker IDs to success status
-        """
+        """"""
         results = {}
 
         for worker_id in list(self.workers.keys()):
@@ -264,14 +274,14 @@ class WorkerManager:
 
 
     def restart_worker(self, worker_id: str) -> bool:
-        """Restart a specific worker.
+        """Restart a specific worker."""
 
         Args:
             worker_id: ID of worker to restart
 
         Returns:
             True if restart successful
-        """
+        """"""
         if worker_id not in self.workers:
             logging.getLogger(__name__).warning(f"Worker {worker_id} not found")
         return False
@@ -282,12 +292,15 @@ class WorkerManager:
         if worker.restart_count >= worker.max_restarts:
             logging.getLogger(__name__).error(
                 f"Worker {worker_id} exceeded max restarts ({worker.max_restarts})"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             worker.status = "failed"
         return False
 
         # Stop the worker
         if not self.stop_worker(worker_id):
+            pass
         return False
 
         # Wait a moment
@@ -322,7 +335,9 @@ class WorkerManager:
         self.shutdown_event.clear()
         self.monitoring_thread = threading.Thread(
             target = self._monitor_workers, daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.monitoring_thread.start()
 
         logging.getLogger(__name__).info("Worker monitoring started")
@@ -340,7 +355,9 @@ class WorkerManager:
                         if worker.status in ["running", "starting"]:
                             logging.getLogger(__name__).warning(
                                 f"Worker {worker_id} process died unexpectedly"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             worker.status = "failed"
 
                             # Attempt restart if within limits
@@ -350,7 +367,9 @@ class WorkerManager:
                             else:
                                 logging.getLogger(__name__).error(
                                     f"Worker {worker_id} exceeded restart limit"
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                     # Update worker status based on heartbeat
                     elif worker.status == "starting":
@@ -358,7 +377,9 @@ class WorkerManager:
                         if current_time - worker.started_at > timedelta(minutes = 2):
                             worker.status = (
                                 "running"  # Assume it's running if process exists
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Update heartbeat
                     worker.last_heartbeat = current_time
@@ -372,20 +393,22 @@ class WorkerManager:
 
 
     def _is_process_running(self, pid: int) -> bool:
-        """Check if a process is running.
+        """Check if a process is running."""
 
         Args:
             pid: Process ID to check
 
         Returns:
             True if process is running
-        """
+        """"""
         try:
             if self.platform == "win32":
                 # Windows
                 result = subprocess.run(
                     ["tasklist", "/FI", f"PID eq {pid}"], capture_output = True, text = True
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except Exception as e:
             pass
         return str(pid) in result.stdout
@@ -394,25 +417,29 @@ class WorkerManager:
                 os.kill(pid, 0)  # Send signal 0 to check if process exists
         return True
         except (OSError, subprocess.SubprocessError):
+            pass
         return False
 
 
     def get_worker_status(self) -> Dict[str, Any]:
-        """Get status of all managed workers.
+        """Get status of all managed workers."""
 
         Returns:
             Worker status information
-        """
+        """"""
         status = {
             "total_workers": len(self.workers),
             "running_workers": len(
                 [w for w in self.workers.values() if w.status == "running"]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "failed_workers": len(
                 [w for w in self.workers.values() if w.status == "failed"]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "workers": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for worker in self.workers.values():
             worker_info = {
@@ -425,22 +452,24 @@ class WorkerManager:
             "restart_count": worker.restart_count,
             "last_heartbeat": (
                     worker.last_heartbeat.isoformat() if worker.last_heartbeat else None
-                ),
-        }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#         }
             status["workers"].append(worker_info)
 
         return status
 
 
     def auto_scale_workers(self, target_queues: Dict[str, int]) -> Dict[str, str]:
-        """Automatically scale workers based on queue requirements.
+        """Automatically scale workers based on queue requirements."""
 
         Args:
             target_queues: Dictionary mapping queue names to desired worker counts
 
         Returns:
             Dictionary with scaling actions taken
-        """
+        """"""
         actions = {}
 
         # Count current workers per queue
@@ -462,7 +491,9 @@ class WorkerManager:
                         worker_id = self.start_worker([queue_name])
                         actions[f"scale_up_{queue_name}"] = (
                             f"Started worker {worker_id}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     except Exception as e:
                         actions[f"scale_up_error_{queue_name}"] = str(e)
 
@@ -476,14 +507,17 @@ class WorkerManager:
                         worker.status == "running"
                         and queue_name in worker.queue_names
                         and len(workers_to_stop) < excess
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         workers_to_stop.append(worker.worker_id)
 
                 for worker_id in workers_to_stop:
                     if self.stop_worker(worker_id):
                         actions[f"scale_down_{queue_name}"] = (
                             f"Stopped worker {worker_id}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         return actions
 
@@ -500,11 +534,15 @@ def main():
         "action",
             choices=["start", "stop", "restart", "status", "monitor"],
             help="Action to perform",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument("--worker - id", help="Specific worker ID (for stop / restart)")
     parser.add_argument(
         "--queues", nargs="+", default=["general"], help="Queue names for new workers"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--concurrency", type = int, help="Worker concurrency")
     parser.add_argument("--broker - url", help="Celery broker URL")
 
@@ -524,13 +562,17 @@ def main():
                 success = manager.stop_worker(args.worker_id)
                 print(
                     f"Stop worker {args.worker_id}: {'Success' if success else 'Failed'}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 results = manager.stop_all_workers()
                 for worker_id, success in results.items():
                     print(
                         f"Stop worker {worker_id}: {'Success' if success else 'Failed'}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         elif args.action == "restart":
             if not args.worker_id:
@@ -539,7 +581,9 @@ def main():
             success = manager.restart_worker(args.worker_id)
             print(
                 f"Restart worker {args.worker_id}: {'Success' if success else 'Failed'}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         elif args.action == "status":
             status = manager.get_worker_status()
@@ -554,7 +598,9 @@ def main():
                     status = manager.get_worker_status()
                     print(
                         f"Workers: {status['running_workers']}/{status['total_workers']} running"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             except KeyboardInterrupt:
                 print("\\nStopping monitoring...")
                 manager.stop_all_workers()

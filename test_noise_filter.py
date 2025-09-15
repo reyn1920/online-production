@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 Test script for the RegexNoiseFilter implementation.
-"""
+""""""
 
 import os
 import sys
@@ -13,9 +13,9 @@ from utils.logger import get_logger, setup_logging
 
 
 def test_noise_filter():
-    """
+    """"""
     Test the regex noise filter functionality.
-    """
+    """"""
     print("Testing RegexNoiseFilter...")
 
     # Setup logging with noise filter enabled
@@ -26,7 +26,8 @@ def test_noise_filter():
         noise_drop_patterns=[r".*heartbeat.*", r".*ping.*pong.*"],
         noise_reduce_patterns=[r".*database.*query.*"],
         noise_reduce_frequency=3,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     logger = get_logger("test")
 
@@ -50,7 +51,8 @@ def test_noise_filter():
         drop_patterns=[r".*test.*drop.*"],
         reduce_patterns=[r".*test.*reduce.*"],
         reduce_frequency=2,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     for i in range(6):
         logger.info(f"Test drop message {i} - should be dropped")

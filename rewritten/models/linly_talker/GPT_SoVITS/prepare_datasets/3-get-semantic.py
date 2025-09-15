@@ -58,7 +58,9 @@ if os.path.exists(semantic_path) is False:
             hps.train.segment_size//hps.data.hop_length,
             n_speakers = hps.data.n_speakers,
             **hps.model
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     if is_half is True:
         vq_model = vq_model.half().to(device)
     else:
@@ -67,13 +69,19 @@ if os.path.exists(semantic_path) is False:
     # utils.load_checkpoint(utils.latest_checkpoint_path(hps.s2_ckpt_dir, "G_*.pth"),
     vq_model,
     None,
-    True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     True)
     # utils.load_checkpoint(pretrained_s2G, vq_model, None, True)
     print(
         vq_model.load_state_dict(
             torch.load(pretrained_s2G, map_location="cpu")["weight"], strict = False
-        )
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
     def name2go(wav_name, lines):

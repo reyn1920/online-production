@@ -1,7 +1,7 @@
-"""
+""""""
 Adapted from https://github.com/cavalleria/cavaface.pytorch/blob/master/backbone/mobilefacenet.py
 Original author cavalleria
-"""
+""""""
 
 import torch
 import torch.nn as nn
@@ -25,10 +25,12 @@ class ConvBlock(Module):
                 stride=stride,
                 padding=padding,
                 bias=False,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             BatchNorm2d(num_features=out_c),
             PReLU(num_parameters=out_c),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, x):
         return self.layers(x)
@@ -40,7 +42,8 @@ class LinearBlock(Module):
         self.layers = nn.Sequential(
             Conv2d(in_c, out_c, kernel, stride, padding, groups=groups, bias=False),
             BatchNorm2d(num_features=out_c),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, x):
         return self.layers(x)
@@ -56,7 +59,8 @@ class DepthWise(Module):
         stride=(2, 2),
         padding=(1, 1),
         groups=1,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(DepthWise, self).__init__()
         self.residual = residual
         self.layers = nn.Sequential(
@@ -68,9 +72,11 @@ class DepthWise(Module):
                 kernel=kernel,
                 padding=padding,
                 stride=stride,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             LinearBlock(groups, out_c, kernel=(1, 1), padding=(0, 0), stride=(1, 1)),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, x):
         short_cut = None
@@ -104,7 +110,8 @@ class GDC(Module):
             Flatten(),
             Linear(512, embedding_size, bias=False),
             BatchNorm1d(embedding_size),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, x):
         return self.layers(x)
@@ -124,7 +131,8 @@ class MobileFaceNet(Module):
                 stride=(1, 1),
                 padding=(1, 1),
                 groups=64,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             DepthWise(
                 64 * scale,
                 64 * scale,
@@ -132,7 +140,8 @@ class MobileFaceNet(Module):
                 stride=(2, 2),
                 padding=(1, 1),
                 groups=128,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             Residual(
                 64 * scale,
                 num_block=4,
@@ -140,7 +149,8 @@ class MobileFaceNet(Module):
                 kernel=(3, 3),
                 stride=(1, 1),
                 padding=(1, 1),
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             DepthWise(
                 64 * scale,
                 128 * scale,
@@ -148,7 +158,8 @@ class MobileFaceNet(Module):
                 stride=(2, 2),
                 padding=(1, 1),
                 groups=256,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             Residual(
                 128 * scale,
                 num_block=6,
@@ -156,7 +167,8 @@ class MobileFaceNet(Module):
                 kernel=(3, 3),
                 stride=(1, 1),
                 padding=(1, 1),
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             DepthWise(
                 128 * scale,
                 128 * scale,
@@ -164,7 +176,8 @@ class MobileFaceNet(Module):
                 stride=(2, 2),
                 padding=(1, 1),
                 groups=512,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             Residual(
                 128 * scale,
                 num_block=2,
@@ -172,8 +185,10 @@ class MobileFaceNet(Module):
                 kernel=(3, 3),
                 stride=(1, 1),
                 padding=(1, 1),
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
         self.conv_sep = ConvBlock(128 * scale, 512, kernel=(1, 1), stride=(1, 1), padding=(0, 0))
         self.features = GDC(num_features)
         self._initialize_weights()

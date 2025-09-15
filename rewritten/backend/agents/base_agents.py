@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Base Agentic Framework
 
 This module defines the foundational base classes for the TRAE.AI agentic system.
@@ -14,7 +14,7 @@ Base Classes:
 Author: TRAE.AI System
 Version: 1.0.0
 Date: 2024
-"""
+""""""
 
 import abc
 import asyncio
@@ -33,7 +33,8 @@ from backend.agents.base44_agent_protocol import (
     Base44AgentProtocol,
     ConfirmationLevel,
     TaskContext,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from backend.integrations.ollama_integration import OllamaIntegration
 
@@ -79,21 +80,21 @@ class AgentCapability(Enum):
 
 
 class BaseAgent(Base44AgentProtocol):
-    """
+    """"""
     Abstract base class for all TRAE.AI agents.
 
     This class provides the foundational structure and common functionality
     that all agents in the TRAE.AI system must implement.
-    """
+    """"""
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
-        """
+        """"""
         Initialize the base agent.
 
         Args:
             agent_id: Unique identifier for the agent
             name: Human - readable name for the agent
-        """
+        """"""
         self.agent_id = agent_id or str(uuid.uuid4())
         self.name = name or self.__class__.__name__
         self.status = AgentStatus.IDLE
@@ -105,7 +106,8 @@ class BaseAgent(Base44AgentProtocol):
             "tasks_failed": 0,
             "average_execution_time": 0.0,
             "success_rate": 0.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Initialize logger and secret store
         self.logger = get_logger(f"agent.{self.name.lower()}")
@@ -114,7 +116,8 @@ class BaseAgent(Base44AgentProtocol):
         # Initialize configuration system
         self.config_path = os.path.join(
             os.path.dirname(os.path.dirname(__file__)), "config", "state.json"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self._config_cache = None
         self._config_last_loaded = None
 
@@ -123,12 +126,12 @@ class BaseAgent(Base44AgentProtocol):
     @property
     @abc.abstractmethod
     def capabilities(self) -> List[AgentCapability]:
-        """
+        """"""
         Return the list of capabilities this agent possesses.
 
         Returns:
             List of AgentCapability enums
-        """
+        """"""
         pass
 
     @property
@@ -138,11 +141,12 @@ class BaseAgent(Base44AgentProtocol):
             AgentStatus.IDLE,
             AgentStatus.COMPLETED,
             AgentStatus.FAILED,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     @property
     def uptime(self) -> float:
-        """Get the agent's uptime in seconds."""
+        """Get the agent's uptime in seconds."""'
         return (datetime.now() - self.created_at).total_seconds()
 
     def _load_configuration(self) -> Dict[str, Any]:
@@ -187,8 +191,10 @@ class BaseAgent(Base44AgentProtocol):
                 "monetization": {"enabled": False},
                 "syndication": {"enabled": False},
                 "autonomous_directives": {"enabled": False},
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def is_action_allowed(self, action_type: str, specific_action: str = None) -> bool:
         """Check if a specific action is allowed based on current configuration."""
@@ -221,7 +227,8 @@ class BaseAgent(Base44AgentProtocol):
             "autonomous": "autonomous_directives",
             "content_creation": "autonomous_directives",
             "marketing": "autonomous_directives",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         toggle_key = action_toggle_map.get(action_type)
         if toggle_key and toggle_key in toggles:
@@ -233,13 +240,13 @@ class BaseAgent(Base44AgentProtocol):
         return True
 
     def update_status(self, status: AgentStatus, message: Optional[str] = None):
-        """
-        Update the agent's status.
+        """"""
+        Update the agent's status.'
 
         Args:
             status: New status for the agent
             message: Optional status message
-        """
+        """"""
         old_status = self.status
         self.status = status
         self.last_activity = datetime.now()
@@ -256,8 +263,9 @@ class BaseAgent(Base44AgentProtocol):
         success: bool,
         execution_time: float,
         details: Optional[Dict] = None,
-    ):
-        """
+# BRACKET_SURGEON: disabled
+#     ):
+        """"""
         Record the completion of a task for performance tracking.
 
         Args:
@@ -265,14 +273,15 @@ class BaseAgent(Base44AgentProtocol):
             success: Whether the task was completed successfully
             execution_time: Time taken to execute the task in seconds
             details: Optional additional details about the task
-        """
+        """"""
         task_record = {
             "task_id": task_id,
             "success": success,
             "execution_time": execution_time,
             "timestamp": datetime.now().isoformat(),
             "details": details or {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.task_history.append(task_record)
 
@@ -284,10 +293,12 @@ class BaseAgent(Base44AgentProtocol):
 
         total_tasks = (
             self.performance_metrics["tasks_completed"] + self.performance_metrics["tasks_failed"]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.performance_metrics["success_rate"] = (
             self.performance_metrics["tasks_completed"] / total_tasks if total_tasks > 0 else 0.0
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Update average execution time
         if len(self.task_history) > 0:
@@ -297,12 +308,12 @@ class BaseAgent(Base44AgentProtocol):
         self.logger.info(f"Task {task_id} recorded: success={success}, time={execution_time:.2f}s")
 
     def get_performance_summary(self) -> Dict[str, Any]:
-        """
-        Get a summary of the agent's performance metrics.
+        """"""
+        Get a summary of the agent's performance metrics.'
 
         Returns:
             Dictionary containing performance statistics
-        """
+        """"""
         return {
             "agent_id": self.agent_id,
             "agent_name": self.name,
@@ -311,10 +322,11 @@ class BaseAgent(Base44AgentProtocol):
             "capabilities": [cap.value for cap in self.capabilities],
             "performance_metrics": self.performance_metrics.copy(),
             "recent_tasks": self.task_history[-10:] if self.task_history else [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Process a task using the Base44 Agent Protocol.
 
         Args:
@@ -322,7 +334,7 @@ class BaseAgent(Base44AgentProtocol):
 
         Returns:
             Dictionary containing task results
-        """
+        """"""
         # Create task context for Base44 protocol
         task_context = TaskContext(
             task_id=task.get("id", str(uuid.uuid4())),
@@ -331,7 +343,8 @@ class BaseAgent(Base44AgentProtocol):
             requires_confirmation=task.get("requires_confirmation", False),
             confirmation_level=task.get("confirmation_level", ConfirmationLevel.NONE),
             metadata=task.get("metadata", {}),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Use Base44 protocol to process the task
         return await self.process_task_with_protocol(task, task_context)
@@ -340,7 +353,7 @@ class BaseAgent(Base44AgentProtocol):
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
     ) -> Dict[str, Any]:
-        """
+        """"""
         Execute task with monitoring (Base44 protocol requirement).
 
         Args:
@@ -349,12 +362,12 @@ class BaseAgent(Base44AgentProtocol):
 
         Returns:
             Task execution result
-        """
+        """"""
         pass
 
     @abc.abstractmethod
     async def _rephrase_task(self, task: Dict[str, Any], context: TaskContext) -> str:
-        """
+        """"""
         Rephrase task for confirmation (Base44 protocol requirement).
 
         Args:
@@ -363,14 +376,15 @@ class BaseAgent(Base44AgentProtocol):
 
         Returns:
             Rephrased task description
-        """
+        """"""
         pass
 
     @abc.abstractmethod
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
-    ) -> bool:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
+        """"""
         Validate rephrase accuracy (Base44 protocol requirement).
 
         Args:
@@ -380,7 +394,7 @@ class BaseAgent(Base44AgentProtocol):
 
         Returns:
             True if rephrase is accurate
-        """
+        """"""
         pass
 
     def __str__(self) -> str:
@@ -391,20 +405,21 @@ class BaseAgent(Base44AgentProtocol):
 
 
 class PlannerAgent(BaseAgent):
-    """
+    """"""
     PlannerAgent implements the OODA loop (Observe,
     Orient,
     Decide,
-    Act) strategic doctrine.
+# BRACKET_SURGEON: disabled
+#     Act) strategic doctrine.
 
-    This agent serves as the system's brain, using the OODA loop methodology to:
+    This agent serves as the system's brain, using the OODA loop methodology to:'
     - Observe: Gather data from ResearchAgent and system state
     - Orient: Analyze and synthesize information to understand the situation
     - Decide: Formulate strategic plans and tactical decisions
     - Act: Populate task_queue with specific jobs for other agents
 
     The OODA loop enables rapid, adaptive decision - making in dynamic environments.
-    """
+    """"""
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "PlannerAgent")
@@ -412,7 +427,8 @@ class PlannerAgent(BaseAgent):
             "default": "sequential",
             "parallel_threshold": 3,
             "priority_weighting": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Sovereign Engine Workflow Automation
         self.workflow_automation = {
@@ -427,19 +443,24 @@ class PlannerAgent(BaseAgent):
                             "type": "SEND_EMAIL",
                             "template": "welcome_email_1",
                             "delay_hours": 0,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         {
                             "type": "SEND_EMAIL",
                             "template": "follow_up_1",
                             "delay_hours": 48,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         {
                             "type": "SEND_EMAIL",
                             "template": "affiliate_offer",
                             "delay_hours": 120,
-                        },
-                    ],
-                },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
                 "product_click_followup": {
                     "enabled": True,
                     "trigger": "affiliate_link_click",
@@ -448,11 +469,16 @@ class PlannerAgent(BaseAgent):
                             "type": "SEND_EMAIL",
                             "template": "product_guide",
                             "delay_hours": 2,
-                        }
-                    ],
-                },
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # RSS Intelligence Integration
         self.rss_intelligence = {
@@ -461,7 +487,8 @@ class PlannerAgent(BaseAgent):
             "content_opportunities": [],
             "last_intelligence_update": None,
             "intelligence_refresh_interval": 1800,  # 30 minutes
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Dynamic Content Scheduling
         self.content_scheduling = {
@@ -472,8 +499,10 @@ class PlannerAgent(BaseAgent):
                 "high_momentum_boost": 2.0,
                 "trending_topic_priority": "high",
                 "min_trend_score": 0.7,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # OODA Loop state management
         self.ooda_state = {
@@ -486,7 +515,8 @@ class PlannerAgent(BaseAgent):
             "observation_history": [],
             "decisions": [],
             "actions_taken": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Strategic context
         self.strategic_context = {
@@ -496,7 +526,8 @@ class PlannerAgent(BaseAgent):
             "performance_metrics": {},
             "risk_assessment": {},
             "opportunity_matrix": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Planning templates and frameworks
         self.planning_frameworks = {
@@ -504,7 +535,8 @@ class PlannerAgent(BaseAgent):
             "marketing_campaign": self._create_marketing_campaign_template(),
             "research_agenda": self._create_research_agenda_template(),
             "quality_assurance": self._create_qa_template(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Active plans and history
         self.active_plans: Dict[str, Dict[str, Any]] = {}
@@ -521,7 +553,8 @@ class PlannerAgent(BaseAgent):
                 "max_concurrent_requests": 3,
                 "cache_enabled": True,
                 "cache_ttl": 1800,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             self.ollama = OllamaIntegration(ollama_config)
         except Exception as e:
             logger.warning(f"Failed to initialize Ollama integration: {e}")
@@ -534,7 +567,7 @@ class PlannerAgent(BaseAgent):
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
     ) -> Dict[str, Any]:
-        """
+        """"""
         Execute planning task with monitoring.
 
         Args:
@@ -543,7 +576,7 @@ class PlannerAgent(BaseAgent):
 
         Returns:
             Dictionary containing the execution plan
-        """
+        """"""
         start_time = time.time()
 
         # Check if autonomous planning is allowed
@@ -554,7 +587,8 @@ class PlannerAgent(BaseAgent):
                 "planning_time": 0,
                 "agent_id": self.agent_id,
                 "task_id": context.task_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         try:
             self.update_status(AgentStatus.PLANNING, f"Planning task {context.task_id}")
@@ -579,12 +613,14 @@ class PlannerAgent(BaseAgent):
                     "validation": validation_result,
                     "planning_time": timer.elapsed_time,
                     "agent_id": self.agent_id,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 self.update_status(
                     AgentStatus.COMPLETED,
                     f"Planning completed for task {context.task_id}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.record_task_completion(context.task_id, True, time.time() - start_time, result)
 
                 return result
@@ -595,18 +631,20 @@ class PlannerAgent(BaseAgent):
                 "error": str(e),
                 "planning_time": time.time() - start_time,
                 "agent_id": self.agent_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.logger.error(f"Planning failed for task {context.task_id}: {e}")
             self.update_status(AgentStatus.FAILED, f"Planning failed: {e}")
             self.record_task_completion(
                 context.task_id, False, time.time() - start_time, error_result
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return error_result
 
     async def _rephrase_task(self, task: Dict[str, Any], context: TaskContext) -> str:
-        """
+        """"""
         Rephrase planning task for confirmation.
 
         Args:
@@ -615,7 +653,7 @@ class PlannerAgent(BaseAgent):
 
         Returns:
             Rephrased task description
-        """
+        """"""
         requirements = task.get("requirements", {})
         task_type = task.get("type", "planning")
 
@@ -639,8 +677,9 @@ class PlannerAgent(BaseAgent):
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
-    ) -> bool:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
+        """"""
         Validate rephrase accuracy for planning tasks.
 
         Args:
@@ -650,7 +689,7 @@ class PlannerAgent(BaseAgent):
 
         Returns:
             True if rephrase is accurate
-        """
+        """"""
         # Check if key elements from original task are present in rephrased version
         requirements = original_task.get("requirements", {})
 
@@ -669,7 +708,8 @@ class PlannerAgent(BaseAgent):
             # Check if channel is mentioned if present
             requirements.get("channel", "") == ""
             or requirements["channel"].lower() in rephrased.lower(),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Return True if at least 75% of checks pass
         return sum(accuracy_checks) >= len(accuracy_checks) * 0.75
@@ -677,7 +717,7 @@ class PlannerAgent(BaseAgent):
     async def _create_execution_plan(
         self, requirements: Dict[str, Any], priority: TaskPriority
     ) -> Dict[str, Any]:
-        """
+        """"""
         Create an execution plan based on requirements.
 
         Args:
@@ -686,7 +726,7 @@ class PlannerAgent(BaseAgent):
 
         Returns:
             Execution plan dictionary
-        """
+        """"""
         # Placeholder implementation - to be expanded based on specific requirements
         plan = {
             "id": str(uuid.uuid4()),
@@ -698,7 +738,8 @@ class PlannerAgent(BaseAgent):
             "required_agents": [],
             "dependencies": [],
             "resources": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Analyze requirements and create steps
         task_type = requirements.get("type", "generic")
@@ -708,10 +749,12 @@ class PlannerAgent(BaseAgent):
         if (
             target_channel == "The Right Perspective"
             or requirements.get("protected_channel") == "The Right Perspective"
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.logger.info(
                 "PROTECTED CHANNEL: Activating locked workflow for The Right Perspective"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             plan = await self._create_protected_right_perspective_plan(requirements, priority)
             return plan
 
@@ -722,20 +765,24 @@ class PlannerAgent(BaseAgent):
                     "action": "research_topic",
                     "agent": "ResearchAgent",
                     "duration": 300,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 2,
                     "action": "create_content",
                     "agent": "ContentAgent",
                     "duration": 600,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 3,
                     "action": "quality_check",
                     "agent": "QAAgent",
                     "duration": 180,
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
             plan["required_agents"] = ["ResearchAgent", "ContentAgent", "QAAgent"]
             plan["estimated_duration"] = 1080
 
@@ -747,33 +794,39 @@ class PlannerAgent(BaseAgent):
                     "action": "research_topic",
                     "agent": "ResearchAgent",
                     "duration": 300,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 2,
                     "action": "create_product",
                     "agent": "ContentAgent",
                     "duration": 1200,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 3,
                     "action": "quality_check",
                     "agent": "QAAgent",
                     "duration": 180,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 4,
                     "action": "generate_marketing_package",
                     "agent": "MarketingAgent",
                     "duration": 600,
                     "marketing_type": "ecommerce_marketing",
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
             plan["required_agents"] = [
                 "ResearchAgent",
                 "ContentAgent",
                 "QAAgent",
                 "MarketingAgent",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             plan["estimated_duration"] = 2280
             plan["monetization_enabled"] = True
             plan["auto_marketing"] = True
@@ -785,20 +838,24 @@ class PlannerAgent(BaseAgent):
                     "action": "system_check",
                     "agent": "SystemAgent",
                     "duration": 120,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 2,
                     "action": "perform_maintenance",
                     "agent": "SystemAgent",
                     "duration": 300,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 3,
                     "action": "verify_system",
                     "agent": "SystemAgent",
                     "duration": 60,
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
             plan["required_agents"] = ["SystemAgent"]
             plan["estimated_duration"] = 480
 
@@ -810,20 +867,24 @@ class PlannerAgent(BaseAgent):
                     "action": "analyze_task",
                     "agent": "SystemAgent",
                     "duration": 60,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 2,
                     "action": "execute_task",
                     "agent": "ExecutorAgent",
                     "duration": 300,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 3,
                     "action": "audit_result",
                     "agent": "AuditorAgent",
                     "duration": 120,
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
             plan["required_agents"] = ["SystemAgent", "ExecutorAgent", "AuditorAgent"]
             plan["estimated_duration"] = 480
 
@@ -833,7 +894,7 @@ class PlannerAgent(BaseAgent):
     async def _create_protected_right_perspective_plan(
         self, requirements: Dict[str, Any], priority: TaskPriority
     ) -> Dict[str, Any]:
-        """
+        """"""
         PROTECTED CHANNEL PROTOCOL: Create locked execution plan for The Right Perspective.
 
         This method enforces the specific workflow sequence:
@@ -842,14 +903,15 @@ class PlannerAgent(BaseAgent):
         3. humor_style_db.py (inject unique tone and style)
 
         This workflow is LOCKED and cannot be modified by system agents.
-        """
+        """"""
         self.logger.warning("PROTECTED CHANNEL: Creating locked workflow for The Right Perspective")
 
         # Validate protected channel status
         if not await self._validate_right_perspective_protection():
             raise RuntimeError(
                 "PROTECTED CHANNEL VIOLATION: The Right Perspective protection compromised"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         plan = {
             "id": str(uuid.uuid4()),
@@ -867,23 +929,25 @@ class PlannerAgent(BaseAgent):
                     "agent": "ResearchAgent",
                     "tool": "breaking_news_watcher.py",
                     "duration": 300,
-                    "description": "Monitor breaking news \
-    and identify content opportunities",
+                    "description": "Monitor breaking news \"
+#     and identify content opportunities",
                     "protected": True,
                     "required": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 2,
                     "action": "gather_evidence_receipts",
                     "agent": "ResearchAgent",
                     "tool": "right_perspective.db:evidence",
                     "duration": 240,
-                    "description": "Collect factual evidence \
-    and receipts from database",
+                    "description": "Collect factual evidence \"
+#     and receipts from database",
                     "protected": True,
                     "required": True,
                     "validation": "evidence_required",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 3,
                     "action": "generate_humor_style_content",
@@ -894,7 +958,8 @@ class PlannerAgent(BaseAgent):
                     "protected": True,
                     "required": True,
                     "persona_lock": "The Right Perspective Host",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 4,
                     "action": "protected_quality_check",
@@ -906,45 +971,53 @@ class PlannerAgent(BaseAgent):
                         "tone_consistency",
                         "evidence_integration",
                         "humor_style_compliance",
-                    ],
-                },
-            ],
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ],
             "required_agents": ["ResearchAgent", "ContentAgent", "QAAgent"],
             "estimated_duration": 1140,
             "dependencies": [
                 {"from_step": 1, "to_step": 2, "type": "sequential"},
                 {"from_step": 2, "to_step": 3, "type": "sequential"},
                 {"from_step": 3, "to_step": 4, "type": "sequential"},
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "resources": [
                 "breaking_news_watcher.py",
                 "right_perspective.db",
                 "humor_style_db.py",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "protection_rules": {
                 "workflow_modification": "PROHIBITED",
                 "step_reordering": "PROHIBITED",
                 "agent_substitution": "PROHIBITED",
                 "persona_modification": "PROHIBITED",
                 "cross_promotion": "PROHIBITED",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "validation_checkpoints": [
                 {"step": 2, "requirement": "evidence_data_present"},
                 {"step": 3, "requirement": "humor_style_applied"},
                 {"step": 4, "requirement": "tone_consistency_verified"},
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         self.logger.info("PROTECTED CHANNEL: Locked workflow created for The Right Perspective")
         return plan
 
     async def _validate_right_perspective_protection(self) -> bool:
-        """
+        """"""
         Validate that The Right Perspective channel maintains its protected status.
 
         Returns:
             True if protection is intact, False if compromised
-        """
+        """"""
         try:
             import sqlite3
             from pathlib import Path
@@ -960,25 +1033,29 @@ class PlannerAgent(BaseAgent):
                 # Check channel protection
                 cursor.execute(
                     "SELECT notes FROM channels WHERE channel_name = 'The Right Perspective'"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 result = cursor.fetchone()
 
                 if not result or "PROTECTED CHANNEL" not in result[0]:
                     self.logger.error(
                         "PROTECTION BREACH: The Right Perspective channel protection compromised"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return False
 
                 # Check persona protection
                 cursor.execute(
                     "SELECT writing_style_description FROM author_personas WHERE channel_name = 'The Right Perspective'"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 result = cursor.fetchone()
 
                 if not result or "PROTECTED READ - ONLY PERSONA" not in result[0]:
                     self.logger.error(
                         "PROTECTION BREACH: The Right Perspective persona protection compromised"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return False
 
                 self.logger.info("PROTECTED CHANNEL: The Right Perspective protection validated")
@@ -987,7 +1064,8 @@ class PlannerAgent(BaseAgent):
         except Exception as e:
             self.logger.error(
                 f"PROTECTION ERROR: Failed to validate The Right Perspective protection: {e}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
     def _observe_for_planning(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
@@ -998,7 +1076,8 @@ class PlannerAgent(BaseAgent):
             "resource_availability": self._assess_resource_availability(),
             "current_workload": len(self.active_plans),
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return observations
 
     def _orient_planning_context(
@@ -1011,7 +1090,8 @@ class PlannerAgent(BaseAgent):
             "strategic_alignment": self._check_strategic_alignment(requirements),
             "risk_factors": self._identify_risks(requirements, observations),
             "opportunities": self._identify_opportunities(requirements, observations),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return orientation
 
     def _decide_plan_structure(
@@ -1028,20 +1108,24 @@ class PlannerAgent(BaseAgent):
                     "action": "research_topic",
                     "agent": "ResearchAgent",
                     "duration": 300,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 2,
                     "action": "create_content",
                     "agent": "ContentAgent",
                     "duration": 600,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 3,
                     "action": "quality_check",
                     "agent": "QAAgent",
                     "duration": 180,
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
             duration = 1080
         elif task_type == "system_maintenance":
             tasks = [
@@ -1050,20 +1134,24 @@ class PlannerAgent(BaseAgent):
                     "action": "system_check",
                     "agent": "SystemAgent",
                     "duration": 120,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 2,
                     "action": "perform_maintenance",
                     "agent": "SystemAgent",
                     "duration": 300,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 3,
                     "action": "verify_system",
                     "agent": "SystemAgent",
                     "duration": 60,
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
             duration = 480
         else:
             tasks = [
@@ -1072,20 +1160,24 @@ class PlannerAgent(BaseAgent):
                     "action": "analyze_task",
                     "agent": "SystemAgent",
                     "duration": 60,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 2,
                     "action": "execute_task",
                     "agent": "ExecutorAgent",
                     "duration": 300,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "id": 3,
                     "action": "audit_result",
                     "agent": "AuditorAgent",
                     "duration": 120,
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
             duration = 480
 
         decisions = {
@@ -1093,7 +1185,8 @@ class PlannerAgent(BaseAgent):
             "dependencies": self._calculate_dependencies(tasks),
             "duration": duration,
             "execution_strategy": "sequential" if complexity == "high" else "parallel",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return decisions
 
     def _get_system_state(self) -> Dict[str, Any]:
@@ -1137,7 +1230,8 @@ class PlannerAgent(BaseAgent):
                 "disk_free_gb": round(disk_free_gb, 2),
                 "cpu_count": psutil.cpu_count(),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.warning(f"Failed to get system state: {e}")
             # Fallback to basic info
@@ -1148,7 +1242,8 @@ class PlannerAgent(BaseAgent):
                 "available_resources": "medium",
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _assess_resource_availability(self) -> Dict[str, Any]:
         """Assess available resources for planning."""
@@ -1213,9 +1308,11 @@ class PlannerAgent(BaseAgent):
                 "can_accept_new_tasks": active_tasks < max_concurrent,
                 "resource_score": self._calculate_resource_score(
                     cpu_percent, memory.percent, (disk.used / disk.total) * 100
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.warning(f"Failed to assess resource availability: {e}")
             # Fallback assessment
@@ -1228,11 +1325,13 @@ class PlannerAgent(BaseAgent):
                 "resource_score": 0.7,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _calculate_resource_score(
         self, cpu_percent: float, memory_percent: float, disk_percent: float
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate overall resource availability score (0.0 to 1.0)."""
         # Invert percentages so higher availability = higher score
         cpu_score = max(0, (100 - cpu_percent) / 100)
@@ -1265,7 +1364,8 @@ class PlannerAgent(BaseAgent):
             "aligned": True,
             "strategic_value": "medium",
             "business_impact": "positive",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _identify_risks(
         self, requirements: Dict[str, Any], observations: Dict[str, Any]
@@ -1278,8 +1378,10 @@ class PlannerAgent(BaseAgent):
                     "type": "time_pressure",
                     "severity": "high",
                     "mitigation": "allocate_additional_resources",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
         return risks
 
     def _identify_opportunities(
@@ -1293,8 +1395,10 @@ class PlannerAgent(BaseAgent):
                     "type": "parallel_execution",
                     "benefit": "faster_completion",
                     "feasibility": "high",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
         return opportunities
 
     def _calculate_dependencies(self, tasks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -1311,7 +1415,8 @@ class PlannerAgent(BaseAgent):
             "phases": ["research", "creation", "review", "publication"],
             "default_duration": 2400,  # 40 minutes
             "required_agents": ["ResearchAgent", "ContentAgent", "QAAgent"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _create_marketing_campaign_template(self) -> Dict[str, Any]:
         """Create marketing campaign planning template."""
@@ -1324,8 +1429,10 @@ class PlannerAgent(BaseAgent):
                 "ContentAgent",
                 "MarketingAgent",
                 "AnalyticsAgent",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
     def _create_research_agenda_template(self) -> Dict[str, Any]:
         """Create research agenda planning template."""
@@ -1336,10 +1443,12 @@ class PlannerAgent(BaseAgent):
                 "data_gathering",
                 "analysis",
                 "reporting",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "default_duration": 3600,  # 1 hour
             "required_agents": ["ResearchAgent", "AnalyticsAgent"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _create_qa_template(self) -> Dict[str, Any]:
         """Create quality assurance planning template."""
@@ -1348,7 +1457,8 @@ class PlannerAgent(BaseAgent):
             "phases": ["preparation", "testing", "validation", "reporting"],
             "default_duration": 1800,  # 30 minutes
             "required_agents": ["QAAgent", "AuditorAgent"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def create_plan(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
         """Create an execution plan based on requirements using OODA loop methodology."""
@@ -1372,8 +1482,10 @@ class PlannerAgent(BaseAgent):
                 "observations": observations,
                 "orientation": orientation,
                 "decisions": decisions,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add to active plans
         self.active_plans[plan_id] = plan
@@ -1383,14 +1495,16 @@ class PlannerAgent(BaseAgent):
                 "plan_id": plan_id,
                 "timestamp": datetime.now().isoformat(),
                 "ooda_cycle": self.ooda_state["cycle_count"],
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         self.logger.info(f"Created OODA - based plan {plan_id} with {len(plan['tasks'])} tasks")
         return plan
 
     def execute_ooda_cycle(self, task_queue_manager) -> Dict[str, Any]:
-        """
+        """"""
         Execute a complete OODA loop cycle.
 
         Args:
@@ -1398,7 +1512,7 @@ class PlannerAgent(BaseAgent):
 
         Returns:
             Dictionary containing cycle results
-        """
+        """"""
         cycle_start = datetime.now()
         self.ooda_state["cycle_count"] += 1
 
@@ -1430,11 +1544,13 @@ class PlannerAgent(BaseAgent):
                 "decisions_made": len(decisions),
                 "actions_taken": len(actions),
                 "status": "completed",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.logger.info(
                 f"OODA cycle {self.ooda_state['cycle_count']} completed in {cycle_result['duration']:.2f}s"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return cycle_result
 
         except Exception as e:
@@ -1443,12 +1559,13 @@ class PlannerAgent(BaseAgent):
                 "cycle_id": self.ooda_state["cycle_count"],
                 "status": "failed",
                 "error": str(e),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _observe_system_state(self, task_queue_manager) -> Dict[str, Any]:
-        """
+        """"""
         OODA Loop - Observe: Gather comprehensive system data.
-        """
+        """"""
         observations = {
             "timestamp": datetime.now().isoformat(),
             "observation_id": str(uuid.uuid4()),
@@ -1458,7 +1575,8 @@ class PlannerAgent(BaseAgent):
             "market_conditions": self._observe_market_conditions(),
             "content_performance": self._observe_content_performance(),
             "resource_utilization": self._observe_resource_utilization(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Update OODA state with observations
         self.ooda_state["last_observation"] = observations
@@ -1471,9 +1589,9 @@ class PlannerAgent(BaseAgent):
         return observations
 
     def _orient_strategic_context(self, observations: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         OODA Loop - Orient: Analyze observations and update strategic context.
-        """
+        """"""
         orientation = {
             "situation_assessment": self._assess_current_situation(observations),
             "trend_analysis": self._analyze_trends(observations),
@@ -1481,24 +1599,27 @@ class PlannerAgent(BaseAgent):
             "threat_assessment": self._assess_threats(observations),
             "resource_optimization": self._optimize_resource_allocation(observations),
             "performance_gaps": self._identify_performance_gaps(observations),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Update strategic context
         self.strategic_context.update(
             {
                 "last_updated": datetime.now().isoformat(),
                 "orientation_data": orientation,
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         return orientation
 
     def _decide_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
-        """
+        """"""
         OODA Loop - Decide: Make strategic decisions based on orientation.
-        """
+        """"""
         decision_id = str(uuid.uuid4())
         decisions = []
 
@@ -1532,7 +1653,8 @@ class PlannerAgent(BaseAgent):
             "timestamp": datetime.now().isoformat(),
             "decisions_count": len(decisions),
             "decision_types": list(set([d.get("type", "unknown") for d in decisions])),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Maintain decision history (last 5 decisions)
         if "decision_history" not in self.ooda_state:
@@ -1546,9 +1668,9 @@ class PlannerAgent(BaseAgent):
     def _act_on_decisions(
         self, decisions: List[Dict[str, Any]], task_queue_manager
     ) -> List[Dict[str, Any]]:
-        """
+        """"""
         OODA Loop - Act: Execute decisions by creating tasks in the queue.
-        """
+        """"""
         actions_taken = []
 
         for decision in decisions:
@@ -1559,7 +1681,8 @@ class PlannerAgent(BaseAgent):
                     payload=decision["payload"],
                     assigned_agent=decision.get("assigned_agent"),
                     scheduled_at=decision.get("scheduled_at"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 actions_taken.append(
                     {
@@ -1568,21 +1691,26 @@ class PlannerAgent(BaseAgent):
                         "action_type": decision["task_type"],
                         "status": "created",
                         "timestamp": datetime.now().isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 self.logger.error(
                     f"Failed to create task for decision {decision.get('id')}: {str(e)}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 actions_taken.append(
                     {
                         "decision_id": decision.get("id"),
                         "status": "failed",
                         "error": str(e),
                         "timestamp": datetime.now().isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return actions_taken
 
@@ -1600,9 +1728,11 @@ class PlannerAgent(BaseAgent):
                 "in_progress_count": len(in_progress_tasks),
                 "completed_today": len(
                     [t for t in completed_tasks if self._is_today(t.get("completed_at"))]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "queue_health": "healthy" if len(pending_tasks) < 20 else "congested",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {"error": str(e), "status": "unavailable"}
 
@@ -1613,7 +1743,8 @@ class PlannerAgent(BaseAgent):
             "average_task_completion_time": 300,  # 5 minutes
             "success_rate": 0.95,
             "bottlenecks": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _observe_system_metrics(self) -> Dict[str, Any]:
         """Observe system performance metrics."""
@@ -1622,7 +1753,8 @@ class PlannerAgent(BaseAgent):
             "memory_usage": 0.4,
             "disk_usage": 0.3,
             "network_latency": 50,  # ms
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _observe_market_conditions(self) -> Dict[str, Any]:
         """Observe market and competitive conditions including RSS intelligence."""
@@ -1632,12 +1764,14 @@ class PlannerAgent(BaseAgent):
         return {
             "trending_topics": rss_intelligence.get(
                 "trending_topics", ["AI", "automation", "productivity"]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "topic_momentum": rss_intelligence.get("topic_momentum", {}),
             "content_opportunities": rss_intelligence.get("content_opportunities", []),
             "competitor_activity": "moderate",
             "market_sentiment": "positive",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _observe_content_performance(self) -> Dict[str, Any]:
         """Observe content performance metrics."""
@@ -1645,7 +1779,8 @@ class PlannerAgent(BaseAgent):
             "recent_engagement": 0.8,
             "content_quality_score": 0.9,
             "publication_frequency": "optimal",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _observe_resource_utilization(self) -> Dict[str, Any]:
         """Observe resource utilization."""
@@ -1653,7 +1788,8 @@ class PlannerAgent(BaseAgent):
             "compute_resources": "available",
             "storage_capacity": "sufficient",
             "api_quotas": "within_limits",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _assess_current_situation(self, observations: Dict[str, Any]) -> Dict[str, Any]:
         """Assess the current operational situation."""
@@ -1670,7 +1806,8 @@ class PlannerAgent(BaseAgent):
             "overall_status": situation,
             "priority_areas": ["task_queue_management", "resource_optimization"],
             "immediate_actions_needed": situation != "normal",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _analyze_trends(self, observations: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze trends from observations."""
@@ -1678,7 +1815,8 @@ class PlannerAgent(BaseAgent):
             "task_completion_trend": "stable",
             "resource_usage_trend": "increasing",
             "content_performance_trend": "improving",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _identify_strategic_opportunities(
         self, observations: Dict[str, Any]
@@ -1694,8 +1832,10 @@ class PlannerAgent(BaseAgent):
                     "description": "Create AI - focused content",
                     "priority": "high",
                     "estimated_impact": "high",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return opportunities
 
@@ -1711,8 +1851,10 @@ class PlannerAgent(BaseAgent):
                     "description": "Task queue congestion",
                     "severity": "medium",
                     "mitigation": "increase_processing_capacity",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return threats
 
@@ -1722,7 +1864,8 @@ class PlannerAgent(BaseAgent):
             "recommended_adjustments": [],
             "priority_reallocation": "content_creation",
             "efficiency_improvements": ["parallel_processing"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _identify_performance_gaps(self, observations: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Identify performance gaps."""
@@ -1736,8 +1879,10 @@ class PlannerAgent(BaseAgent):
                     "current_performance": agent_performance.get("success_rate"),
                     "target_performance": 0.95,
                     "improvement_actions": ["error_handling_enhancement"],
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return gaps
 
@@ -1758,10 +1903,13 @@ class PlannerAgent(BaseAgent):
                         "action": "monitor_breaking_news",
                         "focus_sectors": orientation.get("target_markets", []),
                         "alert_threshold": 0.8,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "assigned_agent": "ResearchAgent",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Competitor analysis
         last_competitor_scan = observations.get("last_competitor_analysis")
@@ -1775,10 +1923,13 @@ class PlannerAgent(BaseAgent):
                         "action": "analyze_competitors",
                         "competitors": orientation.get("key_competitors", []),
                         "analysis_depth": "comprehensive",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "assigned_agent": "ResearchAgent",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return decisions
 
@@ -1800,10 +1951,13 @@ class PlannerAgent(BaseAgent):
                         "action": "automate_affiliate_signups",
                         "platforms": pending_signups,
                         "stealth_level": "high",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "assigned_agent": "WebAutomationAgent",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Content tool automation
         if observations.get("content_backlog", 0) > 10:
@@ -1816,10 +1970,13 @@ class PlannerAgent(BaseAgent):
                         "action": "automate_content_tools",
                         "tools": ["spechelo_pro", "thumbnail_blaster"],
                         "batch_size": 5,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "assigned_agent": "WebAutomationAgent",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return decisions
 
@@ -1842,7 +1999,8 @@ class PlannerAgent(BaseAgent):
                         # Reject political topics for neutral channels
                         logger.info(
                             f"Political topic '{topic}' rejected for neutral channel '{target_channel}'"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         continue
 
                 decisions.append(
@@ -1856,28 +2014,31 @@ class PlannerAgent(BaseAgent):
                             "target_audience": "general",
                             "content_type": "article",
                             "channel": target_channel,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         "assigned_agent": "ContentAgent",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return decisions
 
     def _vet_topic_for_political_content(self, topic: str) -> bool:
-        """Vet a topic for political content using Ollama LLM.
+        """Vet a topic for political content using Ollama LLM."""
 
         Args:
             topic: The topic to analyze
 
         Returns:
             bool: True if topic contains political content, False otherwise
-        """
+        """"""
         if not self.ollama or not topic:
             return False
 
         try:
             # Political neutrality vetting prompt
-            vetting_prompt = f"""
+            vetting_prompt = f""""""
 Analyze the following topic for political content. A topic is considered political if it:
 - Discusses political parties, candidates, or elections
 - Takes partisan stances on policy issues
@@ -1887,12 +2048,13 @@ Analyze the following topic for political content. A topic is considered politic
 Topic: "{topic}"
 
 Respond with only "POLITICAL" if the topic contains political content, \
-    or "NEUTRAL" if it does not.
-"""
+#     or "NEUTRAL" if it does not.
+""""""
 
             response = self.ollama.query(
                 prompt=vetting_prompt, model="llama2:7b", max_tokens=10, temperature=0.1
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response and response.content:
                 result = response.content.strip().upper()
@@ -1917,7 +2079,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 "liberal",
                 "partisan",
                 "policy debate",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             topic_lower = topic.lower()
             return any(keyword in topic_lower for keyword in political_keywords)
 
@@ -1943,10 +2106,13 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "action": "optimize_campaigns",
                         "focus_areas": market_conditions.get("trending_topics", []),
                         "budget_allocation": "increase",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "assigned_agent": "MarketingAgent",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Twitter promotion for new content
         if content_performance.get("new_videos_count", 0) > 0:
@@ -1959,10 +2125,13 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "action": "twitter_promotion",
                         "promotion_type": "youtube_upload",
                         "content_count": content_performance.get("new_videos_count", 0),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "assigned_agent": "MarketingAgent",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Twitter engagement for community building
         trending_topics = market_conditions.get("trending_topics", [])
@@ -1977,10 +2146,13 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "engagement_type": "topic_monitoring",
                         "topics": trending_topics[:3],  # Focus on top 3 trending topics
                         "engagement_goal": "community_building",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "assigned_agent": "MarketingAgent",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Daily Twitter engagement cycle
         current_hour = datetime.now().hour
@@ -1995,12 +2167,16 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "engagement_type": "conversation_search",
                         "search_keywords": market_conditions.get(
                             "trending_topics", ["AI", "automation", "productivity"]
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "engagement_goal": "thought_leadership",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "assigned_agent": "MarketingAgent",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return decisions
 
@@ -2022,10 +2198,13 @@ Respond with only "POLITICAL" if the topic contains political content, \
                             "action": "optimize_performance",
                             "target_area": "task_queue",
                             "optimization_type": threat.get("mitigation"),
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         "assigned_agent": "SystemAgent",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return decisions
 
@@ -2047,10 +2226,13 @@ Respond with only "POLITICAL" if the topic contains political content, \
                             "action": "quality_audit",
                             "focus_area": gap.get("area"),
                             "target_improvement": gap.get("target_performance"),
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         "assigned_agent": "QAAgent",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return decisions
 
@@ -2077,7 +2259,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 self.rss_intelligence["last_intelligence_update"] is None
                 or current_time - self.rss_intelligence["last_intelligence_update"]
                 > self.rss_intelligence["intelligence_refresh_interval"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 # Use singleton RSS intelligence engine to prevent redundant loading
                 if not hasattr(self, "_rss_engine_singleton"):
                     self._rss_engine_singleton = BreakingNewsWatcher()
@@ -2089,7 +2272,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 # Get latest intelligence briefing
                 intelligence_briefing = rss_engine.get_intelligence_briefing(
                     "general", max_articles=5
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Calculate topic momentum
                 topic_momentum = self._calculate_topic_momentum(trending_topics)
@@ -2097,7 +2281,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 # Identify content opportunities
                 content_opportunities = self._identify_content_opportunities(
                     trending_topics, topic_momentum
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Update cached intelligence
                 self.rss_intelligence.update(
@@ -2107,8 +2292,10 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "content_opportunities": content_opportunities,
                         "intelligence_briefing": intelligence_briefing,
                         "last_intelligence_update": current_time,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return self.rss_intelligence
 
@@ -2119,7 +2306,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 "topic_momentum": {},
                 "content_opportunities": [],
                 "intelligence_briefing": None,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _calculate_topic_momentum(self, trending_topics: List[Dict[str, Any]]) -> Dict[str, float]:
         """Calculate momentum scores for trending topics."""
@@ -2155,7 +2343,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                     "content_type": "video",
                     "suggested_angle": self._suggest_content_angle(keyword),
                     "urgency": "immediate" if momentum_score > 0.9 else "scheduled",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 opportunities.append(opportunity)
 
         # Sort by momentum score (highest first)
@@ -2172,7 +2361,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
             "productivity": "Productivity hacks that actually work",
             "technology": "Latest tech trends you need to know",
             "business": "Business strategies for modern entrepreneurs",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for keyword, angle in angle_map.items():
             if keyword.lower() in topic.lower():
@@ -2203,7 +2393,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                     "source": "rss_intelligence",
                     "momentum_score": opportunity["momentum_score"],
                     "deadline": "within_24_hours",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 # Add to schedule
                 if "urgent_content" not in dynamic_schedule:
@@ -2215,8 +2406,10 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "type": "urgent_content_added",
                         "topic": opportunity["topic"],
                         "reason": f"High momentum detected (score: {opportunity['momentum_score']:.2f})",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Store adjustments for tracking
         self.content_scheduling["dynamic_adjustments"] = adjustments
@@ -2226,10 +2419,11 @@ Respond with only "POLITICAL" if the topic contains political content, \
             "adjustments": adjustments,
             "intelligence_source": "rss_feeds",
             "last_updated": time.time(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _validate_plan(self, plan: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Validate an execution plan.
 
         Args:
@@ -2237,7 +2431,7 @@ Respond with only "POLITICAL" if the topic contains political content, \
 
         Returns:
             Validation result dictionary
-        """
+        """"""
         errors = []
         warnings = []
 
@@ -2271,7 +2465,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
             "errors": errors,
             "warnings": warnings,
             "validated_at": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     # Sovereign Engine Workflow Automation Methods
 
@@ -2282,7 +2477,7 @@ Respond with only "POLITICAL" if the topic contains political content, \
         event_data: Dict[str, Any],
         task_queue_manager,
     ) -> Dict[str, Any]:
-        """
+        """"""
         Handle contact events and trigger appropriate workflow automation.
 
         Args:
@@ -2293,7 +2488,7 @@ Respond with only "POLITICAL" if the topic contains political content, \
 
         Returns:
             Dictionary containing automation results
-        """
+        """"""
         try:
             automation_results = []
 
@@ -2301,21 +2496,24 @@ Respond with only "POLITICAL" if the topic contains political content, \
             if event_type == "NEW_SUBSCRIBER":
                 result = await self._trigger_new_subscriber_workflow(
                     contact_id, event_data, task_queue_manager
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 automation_results.append(result)
 
             # Handle behavioral triggers
             elif event_type in ["LINK_CLICK", "EMAIL_OPEN", "WEBSITE_VISIT"]:
                 result = await self._process_behavioral_trigger(
                     event_type, contact_id, event_data, task_queue_manager
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 automation_results.append(result)
 
             # Handle affiliate link clicks
             elif event_type == "AFFILIATE_LINK_CLICK":
                 result = await self._trigger_product_followup_workflow(
                     contact_id, event_data, task_queue_manager
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 automation_results.append(result)
 
             return {
@@ -2324,29 +2522,33 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 "contact_id": contact_id,
                 "automations_triggered": len(automation_results),
                 "results": automation_results,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(
                 f"Error handling contact event {event_type} for contact {contact_id}: {str(e)}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return {
                 "success": False,
                 "error": str(e),
                 "event_type": event_type,
                 "contact_id": contact_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _trigger_new_subscriber_workflow(
         self, contact_id: str, event_data: Dict[str, Any], task_queue_manager
     ) -> Dict[str, Any]:
-        """
+        """"""
         Trigger the new subscriber welcome sequence.
-        """
+        """"""
         try:
             workflow_config = self.workflow_automation["automation_rules"][
                 "new_subscriber_sequence"
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             if not workflow_config.get("enabled", False):
                 return {"success": False, "reason": "New subscriber workflow disabled"}
@@ -2369,7 +2571,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                     "scheduled_time": scheduled_time.isoformat(),
                     "priority": "MEDIUM",
                     "agent_type": "MarketingAgent",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 task_id = task_queue_manager.add_task(
                     task_type="MARKETING",
@@ -2377,7 +2580,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                     priority="MEDIUM",
                     agent_id=None,
                     agent_type="MarketingAgent",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 tasks_created.append(
                     {
@@ -2385,8 +2589,10 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "type": task_config["type"],
                         "template": task_config["template"],
                         "scheduled_time": scheduled_time.isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Store workflow in active workflows
             workflow_id = str(uuid.uuid4())
@@ -2396,14 +2602,16 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 "created_at": current_time.isoformat(),
                 "tasks": tasks_created,
                 "status": "active",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return {
                 "success": True,
                 "workflow_id": workflow_id,
                 "tasks_created": len(tasks_created),
                 "tasks": tasks_created,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error triggering new subscriber workflow: {str(e)}")
@@ -2412,9 +2620,9 @@ Respond with only "POLITICAL" if the topic contains political content, \
     async def _trigger_product_followup_workflow(
         self, contact_id: str, event_data: Dict[str, Any], task_queue_manager
     ) -> Dict[str, Any]:
-        """
+        """"""
         Trigger product - specific follow - up workflow based on affiliate link clicks.
-        """
+        """"""
         try:
             workflow_config = self.workflow_automation["automation_rules"]["product_click_followup"]
 
@@ -2422,7 +2630,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 return {
                     "success": False,
                     "reason": "Product followup workflow disabled",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Extract product information from event data
             product_info = event_data.get("product_info", {})
@@ -2448,7 +2657,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                     "scheduled_time": scheduled_time.isoformat(),
                     "priority": "HIGH",
                     "agent_type": "MarketingAgent",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 task_id = task_queue_manager.add_task(
                     task_type="MARKETING",
@@ -2456,7 +2666,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                     priority="HIGH",
                     agent_id=None,
                     agent_type="MarketingAgent",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 tasks_created.append(
                     {
@@ -2464,8 +2675,10 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "type": task_config["type"],
                         "template": task_config["template"],
                         "scheduled_time": scheduled_time.isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Store workflow in active workflows
             workflow_id = str(uuid.uuid4())
@@ -2476,14 +2689,16 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 "created_at": current_time.isoformat(),
                 "tasks": tasks_created,
                 "status": "active",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return {
                 "success": True,
                 "workflow_id": workflow_id,
                 "tasks_created": len(tasks_created),
                 "tasks": tasks_created,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error triggering product followup workflow: {str(e)}")
@@ -2496,9 +2711,9 @@ Respond with only "POLITICAL" if the topic contains political content, \
         event_data: Dict[str, Any],
         task_queue_manager,
     ) -> Dict[str, Any]:
-        """
+        """"""
         Process behavioral triggers and create dynamic follow - up tasks.
-        """
+        """"""
         try:
             # Check for existing behavioral patterns
             contact_behavior = await self._analyze_contact_behavior(contact_id)
@@ -2506,7 +2721,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
             # Determine appropriate follow - up actions based on behavior
             follow_up_actions = self._determine_behavioral_followup(
                 event_type, contact_behavior, event_data
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             tasks_created = []
             current_time = datetime.now()
@@ -2528,7 +2744,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                     "scheduled_time": scheduled_time.isoformat(),
                     "priority": action.get("priority", "MEDIUM"),
                     "agent_type": "MarketingAgent",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 task_id = task_queue_manager.add_task(
                     task_type="MARKETING",
@@ -2536,7 +2753,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                     priority=action.get("priority", "MEDIUM"),
                     agent_id=None,
                     agent_type="MarketingAgent",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 tasks_created.append(
                     {
@@ -2544,24 +2762,27 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "type": action["type"],
                         "template": action["template"],
                         "scheduled_time": scheduled_time.isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return {
                 "success": True,
                 "trigger_event": event_type,
                 "tasks_created": len(tasks_created),
                 "tasks": tasks_created,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error processing behavioral trigger: {str(e)}")
             return {"success": False, "error": str(e)}
 
     async def _analyze_contact_behavior(self, contact_id: str) -> Dict[str, Any]:
-        """
+        """"""
         Analyze contact behavior patterns from the contact_events table.
-        """
+        """"""
         try:
             import sqlite3
 
@@ -2570,15 +2791,16 @@ Respond with only "POLITICAL" if the topic contains political content, \
 
                 # Get recent contact events
                 cursor.execute(
-                    """
+                    """"""
                     SELECT event_type, event_data, created_at
                     FROM contact_events
                     WHERE contact_id = ?
                     ORDER BY created_at DESC
                     LIMIT 50
-                """,
+                ""","""
                     (contact_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 events = cursor.fetchall()
 
@@ -2592,7 +2814,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                     "last_activity": None,
                     "preferred_topics": [],
                     "activity_pattern": "unknown",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 if events:
                     behavior_analysis["last_activity"] = events[0][2]
@@ -2611,10 +2834,12 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         behavior_analysis["email_opens"]
                         + behavior_analysis["link_clicks"]
                         + behavior_analysis["website_visits"]
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     behavior_analysis["engagement_score"] = min(
                         total_interactions / 10.0, 1.0
-                    )  # Normalize to 0 - 1
+# BRACKET_SURGEON: disabled
+#                     )  # Normalize to 0 - 1
 
                     # Determine activity pattern
                     if behavior_analysis["engagement_score"] > 0.7:
@@ -2633,7 +2858,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 "engagement_score": 0,
                 "activity_pattern": "unknown",
                 "error": str(e),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _determine_behavioral_followup(
         self,
@@ -2641,9 +2867,9 @@ Respond with only "POLITICAL" if the topic contains political content, \
         behavior_analysis: Dict[str, Any],
         event_data: Dict[str, Any],
     ) -> List[Dict[str, Any]]:
-        """
+        """"""
         Determine appropriate follow - up actions based on behavioral analysis.
-        """
+        """"""
         follow_up_actions = []
         engagement_score = behavior_analysis.get("engagement_score", 0)
         activity_pattern = behavior_analysis.get("activity_pattern", "unknown")
@@ -2657,8 +2883,10 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "template": "premium_content_offer",
                         "delay_hours": 4,
                         "priority": "HIGH",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
             elif event_type == "LINK_CLICK":
                 follow_up_actions.append(
                     {
@@ -2666,8 +2894,10 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "template": "exclusive_offer",
                         "delay_hours": 2,
                         "priority": "HIGH",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Moderate engagement users get nurturing content
         elif activity_pattern == "moderately_engaged":
@@ -2678,8 +2908,10 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "template": "educational_content",
                         "delay_hours": 24,
                         "priority": "MEDIUM",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Low engagement users get re - engagement campaigns
         elif activity_pattern == "low_engagement":
@@ -2690,15 +2922,17 @@ Respond with only "POLITICAL" if the topic contains political content, \
                         "template": "reengagement_campaign",
                         "delay_hours": 12,
                         "priority": "MEDIUM",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return follow_up_actions
 
     async def monitor_workflow_automation(self, task_queue_manager) -> Dict[str, Any]:
-        """
+        """"""
         Monitor and manage active workflow automations.
-        """
+        """"""
         try:
             # Check for new contact events that need processing
             new_events = await self._check_for_new_contact_events()
@@ -2710,7 +2944,8 @@ Respond with only "POLITICAL" if the topic contains political content, \
                     event["contact_id"],
                     event["event_data"],
                     task_queue_manager,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 automation_results.append(result)
 
             # Clean up completed workflows
@@ -2721,16 +2956,17 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 "events_processed": len(new_events),
                 "active_workflows": len(self.workflow_automation["active_workflows"]),
                 "automation_results": automation_results,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error monitoring workflow automation: {str(e)}")
             return {"success": False, "error": str(e)}
 
     async def _check_for_new_contact_events(self) -> List[Dict[str, Any]]:
-        """
-        Check for new contact events that haven't been processed for automation.
-        """
+        """"""
+        Check for new contact events that haven't been processed for automation.'
+        """"""
         try:
             import sqlite3
 
@@ -2739,14 +2975,15 @@ Respond with only "POLITICAL" if the topic contains political content, \
 
                 # Get unprocessed events (events without automation_processed flag)
                 cursor.execute(
-                    """
+                    """"""
                     SELECT id, contact_id, event_type, event_data, created_at
                     FROM contact_events
                     WHERE automation_processed IS NULL OR automation_processed = 0
                     ORDER BY created_at ASC
                     LIMIT 100
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 events = cursor.fetchall()
 
@@ -2755,13 +2992,14 @@ Respond with only "POLITICAL" if the topic contains political content, \
                 if event_ids:
                     placeholders = ",".join(["?" for _ in event_ids])
                     cursor.execute(
-                        f"""
+                        f""""""
                         UPDATE contact_events
                         SET automation_processed = 1
                         WHERE id IN ({placeholders})
-                    """,
+                    ""","""
                         event_ids,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     conn.commit()
 
                 # Convert to dictionaries
@@ -2779,8 +3017,10 @@ Respond with only "POLITICAL" if the topic contains political content, \
                             "event_type": event[2],
                             "event_data": event_data,
                             "created_at": event[4],
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
                 return processed_events
 
@@ -2789,9 +3029,9 @@ Respond with only "POLITICAL" if the topic contains political content, \
             return []
 
     async def _cleanup_completed_workflows(self):
-        """
+        """"""
         Clean up completed or expired workflows.
-        """
+        """"""
         try:
             current_time = datetime.now()
             workflows_to_remove = []
@@ -2817,12 +3057,12 @@ Respond with only "POLITICAL" if the topic contains political content, \
 
 
 class ExecutorAgent(BaseAgent):
-    """
+    """"""
     ExecutorAgent handles task execution and implementation.
 
     This agent takes execution plans from PlannerAgent and carries out
     the actual work required to complete tasks using all integrated tools.
-    """
+    """"""
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "ExecutorAgent")
@@ -2844,7 +3084,8 @@ class ExecutorAgent(BaseAgent):
                 CrossPromotionManager,
                 DayOneBlitzStrategy,
                 RelentlessOptimizationLoop,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Research Tools
 
@@ -2852,7 +3093,8 @@ class ExecutorAgent(BaseAgent):
                 BreakingNewsWatcher,
                 CompetitorAnalyzer,
                 MarketValidator,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Web Automation Tools
 
@@ -2862,7 +3104,8 @@ class ExecutorAgent(BaseAgent):
                 StealthOperations,
                 ThumbnailBlaster,
                 WebAutomationAgent,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             from backend.content.ai_inpainting import AIInpainting
             from backend.content.ai_video_editor import AIVideoEditor
@@ -2897,7 +3140,8 @@ class ExecutorAgent(BaseAgent):
                 "thumbnail_blaster": ThumbnailBlaster(StealthOperations()),
                 "affiliate_signup": AffiliateSignupAutomator(StealthOperations()),
                 "web_automation": WebAutomationAgent(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.logger.info(f"Initialized {len(self.tools)} tools for ExecutorAgent")
 
@@ -2912,12 +3156,13 @@ class ExecutorAgent(BaseAgent):
             AgentCapability.CONTENT_CREATION,
             AgentCapability.RESEARCH,
             AgentCapability.MARKETING,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
     ) -> Dict[str, Any]:
-        """
+        """"""
         Execute task with comprehensive monitoring and error handling.
 
         Args:
@@ -2926,7 +3171,7 @@ class ExecutorAgent(BaseAgent):
 
         Returns:
             Dictionary containing execution results
-        """
+        """"""
         start_time = time.time()
         task_id = task.get("id", str(uuid.uuid4()))
 
@@ -2938,7 +3183,8 @@ class ExecutorAgent(BaseAgent):
                 "execution_time": 0,
                 "agent_id": self.agent_id,
                 "task_id": task_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         try:
             self.update_status(AgentStatus.EXECUTING, f"Executing task {task_id}")
@@ -2963,7 +3209,8 @@ class ExecutorAgent(BaseAgent):
                     "execution_result": execution_result,
                     "execution_time": timer.elapsed_time,
                     "agent_id": self.agent_id,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 self.update_status(AgentStatus.COMPLETED, f"Execution completed for task {task_id}")
                 self.record_task_completion(task_id, True, time.time() - start_time, result)
@@ -2976,7 +3223,8 @@ class ExecutorAgent(BaseAgent):
                 "error": str(e),
                 "execution_time": time.time() - start_time,
                 "agent_id": self.agent_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.logger.error(f"Execution failed for task {task_id}: {e}")
             self.update_status(AgentStatus.FAILED, f"Execution failed: {e}")
@@ -2989,7 +3237,7 @@ class ExecutorAgent(BaseAgent):
                 self.current_tasks.remove(task_id)
 
     async def _rephrase_task(self, task: Dict[str, Any], context: TaskContext) -> str:
-        """
+        """"""
         Rephrase execution task for clarity and confirmation.
 
         Args:
@@ -2998,27 +3246,28 @@ class ExecutorAgent(BaseAgent):
 
         Returns:
             Rephrased task description
-        """
+        """"""
         task_type = task.get("type", "unknown")
         plan = task.get("plan", {})
         steps = plan.get("steps", [])
 
         if task_type == "content_creation":
-            return f"I will execute a content creation workflow with {len(steps)} steps, including script generation, video production, \
-    and automated publishing."
+            return f"I will execute a content creation workflow with {len(steps)} steps, including script generation, video production, \"
+#     and automated publishing."
         elif task_type == "marketing_campaign":
-            return f"I will launch a marketing campaign with {len(steps)} automated steps, including landing page creation, email sequences, \
-    and social media promotion."
+            return f"I will launch a marketing campaign with {len(steps)} automated steps, including landing page creation, email sequences, \"
+#     and social media promotion."
         elif task_type == "research_analysis":
-            return f"I will conduct research analysis with {len(steps)} steps, including data collection, trend analysis, \
-    and report generation."
+            return f"I will conduct research analysis with {len(steps)} steps, including data collection, trend analysis, \"
+#     and report generation."
         else:
             return f"I will execute a {task_type} task with {len(steps)} automated steps as defined in the execution plan."
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
-    ) -> bool:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
+        """"""
         Validate that the rephrased task accurately represents the original.
 
         Args:
@@ -3028,7 +3277,7 @@ class ExecutorAgent(BaseAgent):
 
         Returns:
             True if rephrase is accurate, False otherwise
-        """
+        """"""
         task_type = original_task.get("type", "unknown")
         plan = original_task.get("plan", {})
         steps = plan.get("steps", [])
@@ -3038,7 +3287,8 @@ class ExecutorAgent(BaseAgent):
             task_type.lower() in rephrased.lower(),
             str(len(steps)) in rephrased,
             "steps" in rephrased.lower() or "workflow" in rephrased.lower(),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Additional specific checks based on task type
         if task_type == "content_creation":
@@ -3046,29 +3296,35 @@ class ExecutorAgent(BaseAgent):
                 any(
                     keyword in rephrased.lower()
                     for keyword in ["content", "script", "video", "production"]
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
         elif task_type == "marketing_campaign":
             accuracy_checks.append(
                 any(
                     keyword in rephrased.lower()
                     for keyword in ["marketing", "campaign", "promotion", "email"]
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
         elif task_type == "research_analysis":
             accuracy_checks.append(
                 any(
                     keyword in rephrased.lower()
                     for keyword in ["research", "analysis", "data", "report"]
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Require at least 80% accuracy
         accuracy_score = sum(accuracy_checks) / len(accuracy_checks)
         return accuracy_score >= 0.8
 
     async def _execute_plan(self, plan: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Execute a plan by running its steps.
 
         Args:
@@ -3076,7 +3332,7 @@ class ExecutorAgent(BaseAgent):
 
         Returns:
             Execution result dictionary
-        """
+        """"""
         steps = plan.get("steps", [])
         step_results = []
 
@@ -3101,15 +3357,18 @@ class ExecutorAgent(BaseAgent):
                     "success": step_result.get("success", True),
                     "duration": step_duration,
                     "result": step_result,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
             # Day One Monetization: Auto - trigger marketing after content creation
             if (
                 step_result.get("success", True)
                 and "content" in action.lower()
                 and ("create" in action.lower() or "generate" in action.lower())
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 await self._trigger_marketing_automation(plan, step, step_result)
 
             # If step failed, stop execution
@@ -3123,10 +3382,11 @@ class ExecutorAgent(BaseAgent):
             "total_steps": len(steps),
             "step_results": step_results,
             "overall_success": all(result["success"] for result in step_results),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _execute_step(self, step: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Execute a single step using integrated tools.
 
         Args:
@@ -3134,7 +3394,7 @@ class ExecutorAgent(BaseAgent):
 
         Returns:
             Step execution result
-        """
+        """"""
         action = step.get("action")
         tool_name = step.get("tool")
         parameters = step.get("parameters", {})
@@ -3154,7 +3414,8 @@ class ExecutorAgent(BaseAgent):
                 "tool": tool_name,
                 "message": f"Successfully executed {action}",
                 "data": result,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Step execution failed for {action}: {str(e)}")
@@ -3164,7 +3425,8 @@ class ExecutorAgent(BaseAgent):
                 "tool": tool_name,
                 "error": str(e),
                 "data": {},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _execute_tool_action(
         self, tool, action: str, parameters: Dict[str, Any]
@@ -3222,12 +3484,14 @@ class ExecutorAgent(BaseAgent):
                             await method(parameters)
                             if asyncio.iscoroutinefunction(method)
                             else method(parameters)
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 return {
                     "message": f"Action {action} executed on {tool.__class__.__name__}",
                     "parameters": parameters,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             raise Exception(f"Tool execution failed: {str(e)}")
@@ -3235,7 +3499,7 @@ class ExecutorAgent(BaseAgent):
     async def _execute_generic_action(
         self, action: str, parameters: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Execute generic actions that don't require specific tools."""
+        """Execute generic actions that don't require specific tools."""'
         # Simulate work for generic actions
         await asyncio.sleep(0.1)
 
@@ -3243,15 +3507,17 @@ class ExecutorAgent(BaseAgent):
             "message": f"Generic action {action} completed",
             "parameters": parameters,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _trigger_marketing_automation(
         self,
         plan: Dict[str, Any],
         completed_step: Dict[str, Any],
         step_result: Dict[str, Any],
-    ):
-        """
+# BRACKET_SURGEON: disabled
+#     ):
+        """"""
         Trigger automatic marketing task creation after content creation completion.
         Implements the Day One Monetization workflow.
 
@@ -3259,7 +3525,7 @@ class ExecutorAgent(BaseAgent):
             plan: The execution plan containing the completed step
             completed_step: The step that just completed successfully
             step_result: The result of the completed step
-        """
+        """"""
         try:
             # Import here to avoid circular imports
 
@@ -3267,18 +3533,21 @@ class ExecutorAgent(BaseAgent):
                 TaskPriority,
                 TaskQueueManager,
                 TaskType,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Extract product information from the completed step
             product_info = {
                 "product_name": completed_step.get("parameters", {}).get(
                     "title", "New Digital Product"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "product_type": completed_step.get("parameters", {}).get("type", "digital_product"),
                 "content_path": step_result.get("data", {}).get("output_path", ""),
                 "plan_id": plan.get("id"),
                 "step_id": completed_step.get("id"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Create marketing task payload
             marketing_payload = {
@@ -3288,7 +3557,8 @@ class ExecutorAgent(BaseAgent):
                 "automation_trigger": "day_one_monetization",
                 "source_plan": plan.get("id"),
                 "source_step": completed_step.get("id"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Initialize task queue manager
             task_manager = TaskQueueManager()
@@ -3303,25 +3573,28 @@ class ExecutorAgent(BaseAgent):
                     "automation_type": "day_one_monetization",
                     "triggered_by": f"content_creation_{completed_step.get('id')}",
                     "product_name": product_info["product_name"],
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             self.logger.info(
                 f"Day One Monetization: Created marketing task {marketing_task_id} for product '{product_info['product_name']}'"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Failed to trigger marketing automation: {str(e)}")
             # Don't fail the main execution if marketing automation fails
 
     async def _simulate_work(self, duration: float):
-        """
+        """"""
         Simulate realistic work execution with progress tracking \
-    and resource monitoring.
+#     and resource monitoring.
 
         Args:
             duration: Duration to simulate work in seconds
-        """
+        """"""
 
         import asyncio
         import random
@@ -3356,7 +3629,8 @@ class ExecutorAgent(BaseAgent):
             self.metrics["last_work_duration"] = actual_duration
             self.metrics["work_efficiency"] = (
                 duration / actual_duration if actual_duration > 0 else 1.0
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             if hasattr(self, "logger"):
@@ -3365,12 +3639,12 @@ class ExecutorAgent(BaseAgent):
 
 
 class AuditorAgent(BaseAgent):
-    """
+    """"""
     AuditorAgent performs quality assurance and compliance checking.
 
     This agent reviews completed tasks, ensures they meet quality standards,
         and verifies compliance with system rules and regulations.
-    """
+    """"""
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id, name or "AuditorAgent")
@@ -3379,7 +3653,8 @@ class AuditorAgent(BaseAgent):
             "compliance_checks": True,
             "performance_validation": True,
             "security_scan": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.audit_history: List[Dict[str, Any]] = []
 
     @property
@@ -3389,7 +3664,7 @@ class AuditorAgent(BaseAgent):
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
     ) -> Dict[str, Any]:
-        """
+        """"""
         Execute audit task with comprehensive monitoring and Base44 protocol compliance.
 
         Args:
@@ -3398,7 +3673,7 @@ class AuditorAgent(BaseAgent):
 
         Returns:
             Dictionary containing audit results
-        """
+        """"""
         start_time = time.time()
         task_id = task.get("id", str(uuid.uuid4()))
 
@@ -3410,7 +3685,8 @@ class AuditorAgent(BaseAgent):
                 "audit_time": 0,
                 "agent_id": self.agent_id,
                 "task_id": task_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         try:
             self.update_status(AgentStatus.AUDITING, f"Auditing task {task_id}")
@@ -3433,8 +3709,10 @@ class AuditorAgent(BaseAgent):
                     "context": {
                         "mode": context.mode.value,
                         "confirmation_level": context.confirmation_level.value,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
                 self.audit_history.append(audit_record)
 
                 result = {
@@ -3443,7 +3721,8 @@ class AuditorAgent(BaseAgent):
                     "audit_time": timer.elapsed_time,
                     "agent_id": self.agent_id,
                     "protocol_compliance": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 self.update_status(AgentStatus.COMPLETED, f"Audit completed for task {task_id}")
                 self.record_task_completion(task_id, True, time.time() - start_time, result)
@@ -3457,7 +3736,8 @@ class AuditorAgent(BaseAgent):
                 "audit_time": time.time() - start_time,
                 "agent_id": self.agent_id,
                 "protocol_compliance": False,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.logger.error(f"Audit failed for task {task_id}: {e}")
             self.update_status(AgentStatus.FAILED, f"Audit failed: {e}")
@@ -3466,7 +3746,7 @@ class AuditorAgent(BaseAgent):
             return error_result
 
     async def _rephrase_task(self, task: Dict[str, Any], context: TaskContext) -> str:
-        """
+        """"""
         Rephrase audit task for confirmation using Base44 protocol.
 
         Args:
@@ -3475,31 +3755,32 @@ class AuditorAgent(BaseAgent):
 
         Returns:
             Human - readable rephrased task description
-        """
+        """"""
         task_type = task.get("type", "audit")
         audit_target = task.get("audit_target", {})
         target_type = audit_target.get("type", "unknown")
 
         if task_type == "quality_audit":
-            return f"Perform comprehensive quality audit on {target_type} to ensure compliance with quality standards \
-    and identify improvement opportunities."
+            return f"Perform comprehensive quality audit on {target_type} to ensure compliance with quality standards \"
+#     and identify improvement opportunities."
         elif task_type == "security_audit":
-            return f"Conduct security audit on {target_type} to identify vulnerabilities, assess risk levels, \
-    and recommend security enhancements."
+            return f"Conduct security audit on {target_type} to identify vulnerabilities, assess risk levels, \"
+#     and recommend security enhancements."
         elif task_type == "performance_audit":
-            return f"Execute performance audit on {target_type} to analyze efficiency metrics, identify bottlenecks, \
-    and suggest optimizations."
+            return f"Execute performance audit on {target_type} to analyze efficiency metrics, identify bottlenecks, \"
+#     and suggest optimizations."
         elif task_type == "compliance_audit":
-            return f"Run compliance audit on {target_type} to verify adherence to regulatory requirements \
-    and internal policies."
+            return f"Run compliance audit on {target_type} to verify adherence to regulatory requirements \"
+#     and internal policies."
         else:
-            return f"Execute comprehensive audit on {target_type} covering quality, security, performance, \
-    and compliance aspects."
+            return f"Execute comprehensive audit on {target_type} covering quality, security, performance, \"
+#     and compliance aspects."
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
-    ) -> bool:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
+        """"""
         Validate that the rephrased task accurately represents the original audit task.
 
         Args:
@@ -3509,7 +3790,7 @@ class AuditorAgent(BaseAgent):
 
         Returns:
             True if rephrase is accurate, False otherwise
-        """
+        """"""
         # Extract key elements from original task
         task_type = original_task.get("type", "audit").lower()
         audit_target = original_task.get("audit_target", {})
@@ -3528,8 +3809,10 @@ class AuditorAgent(BaseAgent):
                 "compliance",
                 "comprehensive",
                 "audit",
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         # Verify target type is mentioned
         target_mentioned = target_type in rephrased_lower or "unknown" in rephrased_lower
@@ -3545,8 +3828,10 @@ class AuditorAgent(BaseAgent):
                 "analyze",
                 "assess",
                 "identify",
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         # Calculate accuracy score
         accuracy_score = sum([audit_type_mentioned, target_mentioned, action_mentioned]) / 3.0
@@ -3554,7 +3839,7 @@ class AuditorAgent(BaseAgent):
         return accuracy_score >= 0.7  # 70% accuracy threshold
 
     async def _perform_audit(self, audit_target: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Perform a comprehensive audit of the target.
 
         Args:
@@ -3562,7 +3847,7 @@ class AuditorAgent(BaseAgent):
 
         Returns:
             Audit result dictionary
-        """
+        """"""
         audit_results = {
             "overall_score": 0.0,
             "quality_score": 0.0,
@@ -3572,7 +3857,8 @@ class AuditorAgent(BaseAgent):
             "issues": [],
             "recommendations": [],
             "passed": False,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Quality audit
         quality_result = await self._audit_quality(audit_target)
@@ -3600,13 +3886,15 @@ class AuditorAgent(BaseAgent):
             audit_results["compliance_score"],
             audit_results["performance_score"],
             audit_results["security_score"],
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         audit_results["overall_score"] = sum(scores) / len(scores)
 
         # Determine if audit passed
         audit_results["passed"] = (
             audit_results["overall_score"] >= self.audit_criteria["quality_threshold"]
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Generate recommendations
         if not audit_results["passed"]:
@@ -3614,7 +3902,8 @@ class AuditorAgent(BaseAgent):
 
         self.logger.info(
             f"Audit completed with overall score: {audit_results['overall_score']:.2f}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return audit_results
 
     async def _audit_quality(self, target: Dict[str, Any]) -> Dict[str, Any]:
@@ -3647,7 +3936,8 @@ class AuditorAgent(BaseAgent):
             if expected_time > 0 and execution_time > expected_time * 3:
                 issues.append(
                     f"Execution time ({execution_time}s) significantly exceeds estimate ({expected_time}s)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 quality_score -= 0.1
 
             # Validate output quality metrics
@@ -3679,9 +3969,12 @@ class AuditorAgent(BaseAgent):
                         min(1.0, expected_time / max(1, execution_time))
                         if expected_time > 0
                         else 1.0
-                    ),
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Quality audit failed: {str(e)}")
@@ -3754,9 +4047,12 @@ class AuditorAgent(BaseAgent):
                         "approved"
                         if target.get("approved_by")
                         else ("pending" if target.get("requires_approval") else "not_required")
-                    ),
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Compliance audit failed: {str(e)}")
@@ -3764,7 +4060,8 @@ class AuditorAgent(BaseAgent):
                 "score": 0.0,
                 "issues": [f"Audit error: {str(e)}"],
                 "compliance_checks": {},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _audit_performance(self, target: Dict[str, Any]) -> Dict[str, Any]:
         """Perform performance audit of task execution."""
@@ -3781,12 +4078,14 @@ class AuditorAgent(BaseAgent):
                 if time_ratio > 2.0:
                     issues.append(
                         f"Execution time ({execution_time}s) significantly exceeded estimate ({estimated_time}s)"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     performance_score -= 0.3
                 elif time_ratio > 1.5:
                     issues.append(
                         f"Execution time ({execution_time}s) moderately exceeded estimate ({estimated_time}s)"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     performance_score -= 0.1
 
             # Check resource utilization
@@ -3810,7 +4109,8 @@ class AuditorAgent(BaseAgent):
             if quality_metrics and execution_time > 0:
                 avg_quality = (
                     sum(quality_metrics.values()) / len(quality_metrics) if quality_metrics else 0
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 efficiency_ratio = avg_quality / (execution_time / 60)  # Quality per minute
 
                 if efficiency_ratio < 0.1:
@@ -3849,12 +4149,15 @@ class AuditorAgent(BaseAgent):
                         min(1.0, estimated_time / max(1, execution_time))
                         if estimated_time > 0
                         else 1.0
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "resource_efficiency": (1.0 - (cpu_usage / 100) * 0.5 if cpu_usage else 1.0),
                     "retry_rate": retry_count,
                     "bottleneck_count": len(bottlenecks),
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Performance audit failed: {str(e)}")
@@ -3862,7 +4165,8 @@ class AuditorAgent(BaseAgent):
                 "score": 0.0,
                 "issues": [f"Audit error: {str(e)}"],
                 "performance_metrics": {},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _audit_security(self, target: Dict[str, Any]) -> Dict[str, Any]:
         """Perform comprehensive security audit."""
@@ -3948,19 +4252,25 @@ class AuditorAgent(BaseAgent):
                 "security_checks": {
                     "authentication_status": (
                         "authenticated" if target.get("authenticated_user") else "anonymous"
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "encryption_status": (
                         "encrypted" if target.get("encrypted") else "unencrypted"
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "external_calls_secure": all(
                         call.get("url", "").startswith("https://") for call in external_calls
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "audit_trail_enabled": target.get("access_logged", False),
                     "sensitive_data_protected": not any(
                         self._contains_sensitive_data(v) for v in outputs.values()
-                    ),
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Security audit failed: {str(e)}")
@@ -3968,7 +4278,8 @@ class AuditorAgent(BaseAgent):
                 "score": 0.0,
                 "issues": [f"Audit error: {str(e)}"],
                 "security_checks": {},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _generate_recommendations(self, audit_results: Dict[str, Any]) -> List[str]:
         """Generate recommendations based on audit results."""
@@ -3986,7 +4297,7 @@ class AuditorAgent(BaseAgent):
         return recommendations
 
     def get_audit_history(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """
+        """"""
         Get recent audit history.
 
         Args:
@@ -3994,7 +4305,7 @@ class AuditorAgent(BaseAgent):
 
         Returns:
             List of recent audit records
-        """
+        """"""
         return self.audit_history[-limit:] if self.audit_history else []
 
     def _get_required_fields_for_task_type(self, task_type: str) -> List[str]:
@@ -4007,10 +4318,12 @@ class AuditorAgent(BaseAgent):
                 "system_component",
                 "maintenance_type",
                 "completion_status",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "quality_assurance": ["test_cases", "test_results", "pass_criteria"],
             "planning": ["objectives", "timeline", "resources", "deliverables"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return field_requirements.get(task_type, ["id", "type", "status", "created_at"])
 
     def _validate_output_format(self, output_key: str, output_value: Any) -> Dict[str, Any]:
@@ -4061,7 +4374,8 @@ class AuditorAgent(BaseAgent):
             r"\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b",  # Email addresses
             r"\\b(?:password|pwd|pass|secret|key|token)\\s*[:=]\\s*\\S+\\b",  # Passwords/keys
             r"\\b(?:api[_-]?key|access[_-]?token|auth[_-]?token)\\s*[:=]\\s*\\S+\\b",  # API keys
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         import re
 
@@ -4082,8 +4396,9 @@ class AuditorAgent(BaseAgent):
             r"javascript:",  # JavaScript URLs
             r"on\\w+\\s*=",  # Event handlers
             r"\\b(union|select|insert|update|delete|drop|create|alter)\\b",  # SQL keywords
-            r"['\";]",  # SQL injection characters
-        ]
+            r"['\";]",  # SQL injection characters'
+# BRACKET_SURGEON: disabled
+#         ]
 
         for pattern in dangerous_patterns:
             if re.search(pattern, input_value, re.IGNORECASE):
@@ -4126,8 +4441,9 @@ class AuditorAgent(BaseAgent):
             r"\[\[.*?\]\]",  # Template expressions
             r"\{\{.*?\}\}",  # Template expressions
             r"<%.*?%>",  # Server-side includes
-            r"<!--#.*?-->",  # Server-side includes
-        ]
+            r"<!--#.*?-->",  # Server-side includes"
+# BRACKET_SURGEON: disabled
+#         ]
 
         for pattern in dangerous_patterns:
             if re.search(pattern, input_value, re.IGNORECASE):
@@ -4142,12 +4458,13 @@ class AuditorAgent(BaseAgent):
 
         # Look for unparameterized queries with user input
         risky_patterns = [
-            r"'\\s*\\+\\s*",  # String concatenation
-            r'"\\s*\\+\\s*',  # String concatenation
+            r"'\\s*\\+\\s*",  # String concatenation'
+            r'"\\s*\\+\\s*',  # String concatenation"
             r"\\$\\{.*?\\}",  # Template literals
             r"%s.*%s",  # Python string formatting
             r"\\?.*\\?",  # Suspicious parameter patterns
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         import re
 
@@ -4163,7 +4480,7 @@ class AuditorAgent(BaseAgent):
         operation_type = operation.get("type", "")
 
         # Check for directory traversal
-        if "../" in path or "..\\\\" in path:
+        if "../" in path or "..\\\\" in path:"
             return False
 
         # Check for access to sensitive system files
@@ -4176,7 +4493,8 @@ class AuditorAgent(BaseAgent):
             "/proc/",
             "/sys/",
             "/dev/",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for sensitive_path in sensitive_paths:
             if path.startswith(sensitive_path):
@@ -4190,7 +4508,8 @@ class AuditorAgent(BaseAgent):
                 "/usr/bin/",
                 "/usr/sbin/",
                 "C:\\\\Program Files",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             for sys_dir in system_dirs:
                 if path.startswith(sys_dir):
                     return False
@@ -4205,11 +4524,12 @@ class AuditorAgent(BaseAgent):
         xss_patterns = [
             r"<script[^>]*>.*?</script>",
             r"javascript:",
-            r'on\w+\s*=\s*["\'][^"\'>]*["\']',
+            r'on\w+\s*=\s*["\'][^"\'>]*["\']',"
             r"<iframe[^>]*>.*?</iframe>",
             r"<object[^>]*>.*?</object>",
             r"<embed[^>]*>.*?</embed>",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for pattern in xss_patterns:
             if re.search(pattern, html_content, re.IGNORECASE | re.DOTALL):

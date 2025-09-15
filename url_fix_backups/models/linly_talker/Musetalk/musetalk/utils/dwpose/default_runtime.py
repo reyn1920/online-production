@@ -14,29 +14,34 @@ default_hooks = dict(
         out_dir="badcase",
         metric_type="loss",
         badcase_thr=5,
-    ),
-)
+# BRACKET_SURGEON: disabled
+#     ),
+# BRACKET_SURGEON: disabled
+# )
 
 # custom hooks
 custom_hooks = [
     # Synchronize model buffers such as running_mean and running_var in BN
     # at the end of each epoch
     dict(type="SyncBuffersHook")
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 # multi - processing backend
 env_cfg = dict(
     cudnn_benchmark=False,
     mp_cfg=dict(mp_start_method="fork", opencv_num_threads=0),
     dist_cfg=dict(backend="nccl"),
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # visualizer
 vis_backends = [
     dict(type="LocalVisBackend"),
     # dict(type='TensorboardVisBackend'),
     # dict(type='WandbVisBackend'),
-]
+# BRACKET_SURGEON: disabled
+# ]
 visualizer = dict(type="PoseLocalVisualizer", vis_backends=vis_backends, name="visualizer")
 
 # logger

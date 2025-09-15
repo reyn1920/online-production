@@ -12,7 +12,8 @@ def check_twitter_credentials():
             "TWITTER_API_SECRET",
             "TWITTER_ACCESS_TOKEN",
             "TWITTER_ACCESS_TOKEN_SECRET",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         print("\\n🐦 Twitter / X Credentials Status:")
         print("=" * 40)

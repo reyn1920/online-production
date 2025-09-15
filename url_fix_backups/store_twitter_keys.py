@@ -1,7 +1,7 @@
 #!/usr / bin / env python3
-"""
+""""""
 Script to store Twitter API credentials in the SecretStore
-"""
+""""""
 
 from backend.secret_store import SecretStore
 
@@ -20,9 +20,10 @@ def store_twitter_credentials():
 
         print("✅ Twitter keys stored successfully")
         print(
-            "Note: Replace 'your - real - api - key - here' \
-    and 'your - real - api - secret' with actual credentials"
-        )
+            "Note: Replace 'your - real - api - key - here' \"
+#     and 'your - real - api - secret' with actual credentials"
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         print(f"❌ Error storing Twitter keys: {e}")

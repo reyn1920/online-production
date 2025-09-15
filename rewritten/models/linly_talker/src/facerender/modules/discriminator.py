@@ -3,15 +3,16 @@ from torch import nn
 
 
 class DownBlock2d(nn.Module):
-    """
+    """"""
     Simple block for processing video (encoder).
-    """
+    """"""
 
     def __init__(self, in_features, out_features, norm=False, kernel_size=4, pool=False, sn=False):
         super(DownBlock2d, self).__init__()
         self.conv = nn.Conv2d(
             in_channels=in_features, out_channels=out_features, kernel_size=kernel_size
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if sn:
             self.conv = nn.utils.spectral_norm(self.conv)
@@ -34,13 +35,14 @@ class DownBlock2d(nn.Module):
 
 
 class Discriminator(nn.Module):
-    """
+    """"""
     Discriminator similar to Pix2Pix
-    """
+    """"""
 
     def __init__(
         self, num_channels=3, block_expansion=64, num_blocks=4, max_features=512, sn=False, **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(Discriminator, self).__init__()
 
         down_blocks = []
@@ -53,8 +55,10 @@ class Discriminator(nn.Module):
                     kernel_size=4,
                     pool=(i != num_blocks - 1),
                     sn=sn,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         self.down_blocks = nn.ModuleList(down_blocks)
         self.conv = nn.Conv2d(self.down_blocks[-1].conv.out_channels, out_channels=1, kernel_size=1)
@@ -74,9 +78,9 @@ class Discriminator(nn.Module):
 
 
 class MultiScaleDiscriminator(nn.Module):
-    """
+    """"""
     Multi - scale (scale) discriminator
-    """
+    """"""
 
     def __init__(self, scales=(), **kwargs):
         super(MultiScaleDiscriminator, self).__init__()

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Enterprise Security Framework
 Implements JWT authentication, RBAC authorization, input validation, and secrets management
 Designed for scalable channel system (100+ channels) with full functionality preservation
-"""
+""""""
 
 import jwt
 import bcrypt
@@ -80,7 +80,8 @@ class SecurityConfig:
 
     jwt_secret_key: str = field(
         default_factory=lambda: os.getenv("JWT_SECRET_KEY", secrets.token_urlsafe(32))
-    )
+# BRACKET_SURGEON: disabled
+#     )
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
@@ -140,7 +141,7 @@ class InputValidator:
             raise ValueError("Input must be a string")
 
         # Remove potentially dangerous characters
-        sanitized = re.sub(r'[<>"\'\/\\]', "", input_str)
+        sanitized = re.sub(r'[<>"\'\/\\]', "", input_str)"
 
         # Limit length
         if len(sanitized) > max_length:
@@ -244,7 +245,8 @@ class RBACManager:
                 Permission.MANAGE_USERS,
                 Permission.AI_GENERATION,
                 Permission.VIEW_REVENUE,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             UserRole.CHANNEL_MANAGER: [
                 Permission.CREATE_CHANNEL,
                 Permission.MODIFY_CHANNEL,
@@ -254,32 +256,38 @@ class RBACManager:
                 Permission.PUBLISH_CONTENT,
                 Permission.VIEW_ANALYTICS,
                 Permission.AI_GENERATION,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             UserRole.CONTENT_CREATOR: [
                 Permission.VIEW_CHANNEL,
                 Permission.CREATE_CONTENT,
                 Permission.EDIT_CONTENT,
                 Permission.AI_GENERATION,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             UserRole.MARKETING_SPECIALIST: [
                 Permission.VIEW_CHANNEL,
                 Permission.VIEW_ANALYTICS,
                 Permission.EXPORT_DATA,
                 Permission.MANAGE_CAMPAIGNS,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             UserRole.ANALYST: [
                 Permission.VIEW_CHANNEL,
                 Permission.VIEW_ANALYTICS,
                 Permission.EXPORT_DATA,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             UserRole.API_USER: [
                 Permission.API_ACCESS,
                 Permission.VIEW_CHANNEL,
                 Permission.CREATE_CONTENT,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             UserRole.VIEWER: [Permission.VIEW_CHANNEL],
             UserRole.GUEST: [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def assign_role(self, user_id: str, role: UserRole) -> None:
         """Assign a role to a user"""
@@ -297,7 +305,8 @@ class RBACManager:
 
     def grant_channel_access(
         self, user_id: str, channel_id: str, permissions: List[Permission]
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Grant specific permissions to a user for a channel"""
         if user_id not in self.channel_permissions:
             self.channel_permissions[user_id] = {}
@@ -306,7 +315,8 @@ class RBACManager:
 
     def check_permission(
         self, user_id: str, permission: Permission, channel_id: str = None
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Check if user has specific permission"""
         # Check role-based permissions
         user_roles = self.user_roles.get(user_id, [])
@@ -349,7 +359,8 @@ class JWTManager:
 
     def create_access_token(
         self, user_id: str, username: str, channel_access: List[str] = None
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Create JWT access token"""
         user_roles = self.rbac_manager.user_roles.get(user_id, [])
         user_permissions = self.rbac_manager.get_user_permissions(user_id)
@@ -363,7 +374,8 @@ class JWTManager:
             "exp": datetime.utcnow() + timedelta(minutes=self.config.access_token_expire_minutes),
             "iat": datetime.utcnow(),
             "jti": secrets.token_urlsafe(16),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         token = jwt.encode(payload, self.config.jwt_secret_key, algorithm=self.config.jwt_algorithm)
         logger.info(f"Access token created for user {username}")
@@ -377,7 +389,8 @@ class JWTManager:
             "exp": datetime.utcnow() + timedelta(days=self.config.refresh_token_expire_days),
             "iat": datetime.utcnow(),
             "jti": secrets.token_urlsafe(16),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         token = jwt.encode(payload, self.config.jwt_secret_key, algorithm=self.config.jwt_algorithm)
         return token
@@ -389,7 +402,8 @@ class JWTManager:
                 token,
                 self.config.jwt_secret_key,
                 algorithms=[self.config.jwt_algorithm],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Check if token is revoked
             if payload.get("jti") in self.revoked_tokens:
@@ -410,7 +424,8 @@ class JWTManager:
                 token,
                 self.config.jwt_secret_key,
                 algorithms=[self.config.jwt_algorithm],
-            )
+# BRACKET_SURGEON: disabled
+#             )
             jti = payload.get("jti")
             if jti:
                 self.revoked_tokens.add(jti)
@@ -450,7 +465,8 @@ class AuthenticationManager:
             raise HTTPException(
                 status_code=423,
                 detail="Account temporarily locked due to too many failed attempts",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # In production, retrieve user from database
         # For demo, using mock user data
@@ -460,8 +476,10 @@ class AuthenticationManager:
                 "username": "admin",
                 "password_hash": self.hash_password("Admin123!"),
                 "roles": [UserRole.SUPER_ADMIN],
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         user = mock_users.get(username)
         if not user or not self.verify_password(credentials.password, user["password_hash"]):
@@ -523,7 +541,8 @@ class AuthenticationManager:
                 # Extract user from request context
                 request = kwargs.get("request") or (
                     args[0] if args and hasattr(args[0], "state") else None
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if not request or not hasattr(request.state, "user"):
                     raise HTTPException(status_code=401, detail="Authentication required")
 
@@ -555,7 +574,8 @@ async def auth_middleware(request: Request, call_next):
         "/health",
         "/login",
         "/register",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     if request.url.path in public_paths:
         response = await call_next(request)
         return response
@@ -588,7 +608,8 @@ def setup_demo_data():
         ("creator", UserRole.CONTENT_CREATOR),
         ("marketer", UserRole.MARKETING_SPECIALIST),
         ("analyst", UserRole.ANALYST),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for username, role in demo_users:
         user_id = f"user_{username}"
@@ -606,8 +627,10 @@ def setup_demo_data():
                     Permission.CREATE_CONTENT,
                     Permission.EDIT_CONTENT,
                     Permission.PUBLISH_CONTENT,
-                ],
-            )
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             )
 
     logger.info("Demo data setup completed")
 
@@ -624,13 +647,15 @@ if __name__ == "__main__":
             user["user_id"],
             user["username"],
             [f"channel_{i:03d}" for i in range(1, 5)],  # Access to first 4 channels
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Authentication successful. Token: {token[:50]}...")
 
         # Test permission checking
         has_permission = auth_manager.rbac_manager.check_permission(
             user["user_id"], Permission.CREATE_CHANNEL
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"User has CREATE_CHANNEL permission: {has_permission}")
 
     except Exception as e:

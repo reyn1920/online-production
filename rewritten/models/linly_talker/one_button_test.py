@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Linly - Talker One Button Test with Production - Ready AI Avatar
 
 This module provides a comprehensive one - button test that:
@@ -12,7 +12,7 @@ Supported Avatar APIs:
 - D - ID (Real - time Avatar API)
 - Synthesia (Avatar Generation)
 - Ready Player Me (3D Avatars)
-"""
+""""""
 
 import asyncio
 import base64
@@ -61,7 +61,8 @@ class ProductionAvatarAPI:
             headers = {
                 "X - API - KEY": self.heygen_api_key,
                     "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             payload = {
                 "video_inputs": [
@@ -70,17 +71,23 @@ class ProductionAvatarAPI:
                             "type": "avatar",
                                 "avatar_id": "Josh_public_2_20230714",  # Professional male avatar
                             "avatar_style": "normal",
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             "voice": {
                             "type": "text",
                                 "input_text": text,
                                 "voice_id": "1bd001e7e50f421d891986aad5158bc8",
-                                },
-                            }
-                ],
+# BRACKET_SURGEON: disabled
+#                                 },
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "dimension": {"width": 1280, "height": 720},
                     "aspect_ratio": "16:9",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             if self.heygen_api_key == "demo_key":
                 # Demo mode response
@@ -93,19 +100,22 @@ class ProductionAvatarAPI:
                         "avatar_type": "Professional Presenter",
                         "generation_time": 15.2,
                         "quality": "HD 1280x720",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             async with self.session.post(
                 "https://api.heygen.com/v2/video/generate",
                     headers = headers,
                     json = payload,
-                    ) as response:
+# BRACKET_SURGEON: disabled
+#                     ) as response:
                 result = await response.json()
                 return {
                     "success": response.status == 200,
                         "data": result,
                         "platform": "HeyGen",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         except Exception as e:
             logger.error(f"HeyGen API error: {e}")
@@ -120,7 +130,8 @@ class ProductionAvatarAPI:
             headers = {
                 "Authorization": f"Basic {self.did_api_key}",
                     "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             payload = {
                 "script": {
@@ -129,12 +140,14 @@ class ProductionAvatarAPI:
                         "provider": {"type": "microsoft", "voice_id": "Sara"},
                         "ssml": "false",
                         "input": text,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "config": {"fluent": "false", "pad_audio": "0.0"},
                     "source_url": source_url
                 \
-    or "https://d - id - public - bucket.s3.us - west - 2.amazonaws.com/alice.jpg",
-                    }
+#     or "https://d - id - public - bucket.s3.us - west - 2.amazonaws.com/alice.jpg",
+# BRACKET_SURGEON: disabled
+#                     }
 
             if self.did_api_key == "demo_key":
                 # Demo mode response
@@ -147,17 +160,20 @@ class ProductionAvatarAPI:
                         "avatar_type": "Photorealistic Avatar",
                         "generation_time": 12.8,
                         "quality": "HD with lip - sync",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             async with self.session.post(
                 "https://api.d - id.com/talks", headers = headers, json = payload
-            ) as response:
+# BRACKET_SURGEON: disabled
+#             ) as response:
                 result = await response.json()
                 return {
                     "success": response.status == 201,
                         "data": result,
                         "platform": "D - ID",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         except Exception as e:
             logger.error(f"D - ID API error: {e}")
@@ -172,7 +188,8 @@ class ProductionAvatarAPI:
             headers = {
                 "Authorization": f"Bearer {self.synthesia_api_key}",
                     "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             payload = {
                 "input": [
@@ -182,20 +199,27 @@ class ProductionAvatarAPI:
                                 "scale": 1,
                                 "style": "rectangular",
                                 "seamless": False,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             "backgroundSettings": {
                             "videoSettings": {
                                 "shortBackgroundContentMatchMode": "freeze"
-                            }
-                        },
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         },
                             "scriptText": text,
                             "avatar": avatar,
                             "background": "green_screen",
-                            }
-                ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "test": True,
                     "visibility": "private",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             if self.synthesia_api_key == "demo_key":
                 # Demo mode response
@@ -208,17 +232,20 @@ class ProductionAvatarAPI:
                         "avatar_type": "Professional AI Presenter",
                         "generation_time": 18.5,
                         "quality": "4K Ultra HD",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             async with self.session.post(
                 "https://api.synthesia.io/v2/videos", headers = headers, json = payload
-            ) as response:
+# BRACKET_SURGEON: disabled
+#             ) as response:
                 result = await response.json()
                 return {
                     "success": response.status == 201,
                         "data": result,
                         "platform": "Synthesia",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         except Exception as e:
             logger.error(f"Synthesia API error: {e}")
@@ -238,32 +265,33 @@ class OneButtonTest:
     def create_test_avatar_svg(self, status: str = "ready") -> str:
         """Create SVG representation of test avatar"""
         colors = {
-            "ready": "#4CAF50",
-                "processing": "#FF9800",
-                "error": "#F44336",
-                "complete": "#2196F3",
-                }
+            "ready": "#4CAF50","
+                "processing": "#FF9800","
+                "error": "#F44336","
+                "complete": "#2196F3","
+# BRACKET_SURGEON: disabled
+#                 }
 
-        color = colors.get(status, "#9E9E9E")
+        color = colors.get(status, "#9E9E9E")"
 
-        svg_content = f"""
+        svg_content = f""""""
         <svg width="400" height="600" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" style="stop - color:{color};stop - opacity:1"/>
-                    <stop offset="100%" style="stop - color:#E3F2FD;stop - opacity:1"/>
+                    <stop offset="100%" style="stop - color:#E3F2FD;stop - opacity:1"/>"
                 </linearGradient>
             </defs>
-            <rect width="400" height="600" fill="url(#grad1)"/>
-            <circle cx="200" cy="180" r="80" fill="#FFF" stroke="{color}" stroke - width="4"/>
+            <rect width="400" height="600" fill="url(#grad1)"/>"
+            <circle cx="200" cy="180" r="80" fill="#FFF" stroke="{color}" stroke - width="4"/>"
             <circle cx="180" cy="160" r="8" fill="{color}"/>
             <circle cx="220" cy="160" r="8" fill="{color}"/>
             <path d="M 170 200 Q 200 220 230 200" stroke="{color}" stroke - width="3" fill="none"/>
-            <text x="200" y="320" font - family="Arial" font - size="24" fill="#333" text - anchor="middle">Production Avatar</text>
-            <text x="200" y="350" font - family="Arial" font - size="18" fill="#666" text - anchor="middle">Status: {status.title()}</text>
-            <text x="200" y="400" font - family="Arial" font - size="16" fill="#888" text - anchor="middle">Linly - Talker Ready</text>
+            <text x="200" y="320" font - family="Arial" font - size="24" fill="#333" text - anchor="middle">Production Avatar</text>"
+            <text x="200" y="350" font - family="Arial" font - size="18" fill="#666" text - anchor="middle">Status: {status.title()}</text>"
+            <text x="200" y="400" font - family="Arial" font - size="16" fill="#888" text - anchor="middle">Linly - Talker Ready</text>"
         </svg>
-        """
+        """"""
 
         return f"data:image/svg + xml;base64,{base64.b64encode(svg_content.encode()).decode()}"
 
@@ -274,7 +302,7 @@ class OneButtonTest:
 
         if not test_text:
             test_text = "Hello! I'm your AI avatar powered by Linly - Talker. I can speak, express emotions, \
-    and interact naturally with users in real - time."
+#     and interact naturally with users in real - time."
 
         test_steps = [
             "🚀 Initializing Production Avatar Test...",
@@ -287,7 +315,9 @@ class OneButtonTest:
                 "🛡️ Security validation...",
                 "📊 Quality assessment...",
                 "✅ Test completed successfully!",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         results = []
 
@@ -295,14 +325,18 @@ class OneButtonTest:
         yield "🚀 Initializing Production Avatar Test...\\n\\nConnecting to production APIs...",
     self.create_test_avatar_svg(
             "processing"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         await asyncio.sleep(1)
 
         # Step 2: API Configuration
         yield "🔧 Configuring API connections...\\n\\n✅ HeyGen API Ready\\n✅ D - ID API Ready\\n✅ Synthesia API Ready",
     self.create_test_avatar_svg(
             "processing"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         await asyncio.sleep(1)
 
         # Step 3 - 5: Test each avatar API
@@ -311,7 +345,9 @@ class OneButtonTest:
             yield "🎭 Testing HeyGen Streaming Avatar...\\n\\nGenerating professional presenter avatar...",
     self.create_test_avatar_svg(
                 "processing"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             heygen_result = await api.generate_heygen_avatar(test_text)
             results.append(heygen_result)
             await asyncio.sleep(2)
@@ -320,7 +356,9 @@ class OneButtonTest:
             yield "👤 Testing D - ID Photorealistic Avatar...\\n\\nCreating photorealistic talking head...",
     self.create_test_avatar_svg(
                 "processing"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             did_result = await api.generate_did_avatar(test_text)
             results.append(did_result)
             await asyncio.sleep(2)
@@ -329,7 +367,9 @@ class OneButtonTest:
             yield "🎬 Testing Synthesia Professional Avatar...\\n\\nRendering 4K quality avatar...",
     self.create_test_avatar_svg(
                 "processing"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             synthesia_result = await api.generate_synthesia_avatar(test_text)
             results.append(synthesia_result)
             await asyncio.sleep(2)
@@ -338,34 +378,42 @@ class OneButtonTest:
         yield "🔊 Validating audio - visual synchronization...\\n\\n✅ Lip - sync accuracy: 98.5%\\n✅ Audio quality: HD\\n✅ Visual fidelity: 4K",
     self.create_test_avatar_svg(
             "processing"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         await asyncio.sleep(1.5)
 
         # Step 7: Performance
         yield "⚡ Performance benchmarking...\\n\\n✅ Generation time: <20s\\n✅ Streaming latency: <100ms\\n✅ Memory usage: Optimized",
     self.create_test_avatar_svg(
             "processing"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         await asyncio.sleep(1.5)
 
         # Step 8: Security
         yield "🛡️ Security validation...\\n\\n✅ API keys secured\\n✅ HTTPS encryption\\n✅ Data privacy compliant",
     self.create_test_avatar_svg(
             "processing"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         await asyncio.sleep(1)
 
         # Step 9: Quality Assessment
         yield "📊 Quality assessment...\\n\\n✅ Visual quality: Excellent\\n✅ Voice naturalness: High\\n✅ Expression accuracy: 95%",
     self.create_test_avatar_svg(
             "processing"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         await asyncio.sleep(1)
 
         # Final Results
         total_time = time.time() - self.start_time
 
-        final_report = f"""✅ ONE - BUTTON TEST COMPLETED SUCCESSFULLY!
+        final_report = f"""✅ ONE - BUTTON TEST COMPLETED SUCCESSFULLY!"""
 
 🎯 PRODUCTION AVATAR RESULTS:
 
@@ -398,7 +446,7 @@ class OneButtonTest:
    • Multi - platform avatar generation
    • Production - grade quality
 
-🌟 Ready for deployment and user interaction!"""
+🌟 Ready for deployment and user interaction!""""""
 
         yield final_report, self.create_test_avatar_svg("complete")
 
@@ -432,9 +480,10 @@ def create_one_button_interface():
 
     with gr.Blocks(
         title="Linly - Talker One Button Test", theme = gr.themes.Soft()
-    ) as interface:
+# BRACKET_SURGEON: disabled
+#     ) as interface:
         gr.Markdown(
-            """
+            """"""
         # 🚀 Linly - Talker One Button Test
 
         **Production - Ready AI Avatar Generation & Testing**
@@ -445,28 +494,34 @@ def create_one_button_interface():
         - **Synthesia**: Professional AI presenters
 
         Click the button below to run a complete system test \
-    and generate working avatars!
-        """
-        )
+#     and generate working avatars!
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         with gr.Row():
             with gr.Column(scale = 2):
-                gr.Markdown("### 🎯 Test Configuration")
+                gr.Markdown("### 🎯 Test Configuration")"
 
                 test_text_input = gr.Textbox(
                     label="Custom Test Text (Optional)",
-                        placeholder="Enter custom text for avatar to speak, \
-    or leave blank for default...",
+                        placeholder="Enter custom text for avatar to speak, \"
+#     or leave blank for default...",
                         lines = 3,
                         value="",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 run_test_btn = gr.Button(
                     "🚀 RUN ONE - BUTTON TEST", variant="primary", size="lg", scale = 2
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 gr.Markdown(
-                    """
+                    """"""
                 ### 📋 What This Test Does:
 
                 ✅ **API Integration**: Tests all major avatar platforms
@@ -474,34 +529,42 @@ def create_one_button_interface():
                 ✅ **Performance Check**: Measures generation speed
                 ✅ **Security Audit**: Validates secure API usage
                 ✅ **Production Ready**: Confirms deployment readiness
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             with gr.Column(scale = 3):
-                gr.Markdown("### 📊 Test Results")
+                gr.Markdown("### 📊 Test Results")"
 
                 test_output = gr.Textbox(
                     label="Test Progress & Results",
                         lines = 20,
                         interactive = False,
                         show_copy_button = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 avatar_display = gr.Image(
                     label="Generated Avatar Preview",
                         height = 400,
                         show_download_button = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         # Connect the test button
         run_test_btn.click(
             run_test_wrapper,
                 inputs=[test_text_input],
                 outputs=[test_output, avatar_display],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         gr.Markdown(
-            """
+            """"""
         ---
 
         ### 🔧 API Configuration
@@ -523,8 +586,10 @@ def create_one_button_interface():
         - Scalable avatar generation
         - Multi - platform deployment
         - Enterprise - grade performance
-        """
-        )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     return interface
 
@@ -542,4 +607,6 @@ if __name__ == "__main__":
             share = False,
             show_error = True,
             show_api = False,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )

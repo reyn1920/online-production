@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 RouteLL API Integration Example
 Demonstrates complete integration with monitoring, rate limiting, \
-    and intelligent routing
-"""
+#     and intelligent routing
+""""""
 
 import asyncio
 import json
@@ -26,21 +26,22 @@ from routing.model_router import ModelRouter, TaskType
 
 
 class RouteLL_IntegratedClient:
-    """
+    """"""
     Complete RouteLL integration with all features:
     - Intelligent model routing
     - Credit monitoring and optimization
     - Rate limiting
     - Usage analytics
     - Error handling and fallbacks
-    """
+    """"""
 
     def __init__(self, api_key: str = None, config_path: str = None):
         # Initialize components
         self.config_path = (
             config_path
             or "/Users / thomasbrianreynolds / online production / config / routellm_config.json"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.config = self._load_config()
 
         # Core API client
@@ -73,7 +74,8 @@ class RouteLL_IntegratedClient:
             "web_ai_requests": 0,
             "avatar_generations": 0,
             "start_time": time.time(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         print("🚀 RouteLL Integrated Client initialized")
         print(f"💳 Credit monitoring: {'✅ Enabled' if self.monitor else '❌ Disabled'}")
@@ -90,7 +92,7 @@ class RouteLL_IntegratedClient:
             return {}
 
     async def chat_completion(self, messages: List[Dict], **kwargs) -> APIResponse:
-        """
+        """"""
         Enhanced chat completion with full integration and fallback support
 
         Args:
@@ -99,7 +101,7 @@ class RouteLL_IntegratedClient:
 
         Returns:
             RouteLL_Response with enhanced metadata
-        """
+        """"""
         request_start = time.time()
 
         try:
@@ -122,14 +124,16 @@ class RouteLL_IntegratedClient:
                 # Try to optimize the request
                 optimized_params = self.optimizer.optimize_request(
                     messages, {"cost": 0.8, "quality": 0.2}
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 kwargs.update(optimized_params)
                 print(f"🔧 Request optimized for cost savings")
 
             # Step 3: Intelligent model routing
             routing_result = self.router.route_request(
                 messages, preferences=kwargs.get("preferences")
-            )
+# BRACKET_SURGEON: disabled
+#             )
             selected_model = routing_result["routing_decision"]["selected_model"]
             optimized_params = routing_result["optimized_params"]
 
@@ -140,7 +144,8 @@ class RouteLL_IntegratedClient:
             print(f"🎯 Routed to model: {selected_model} ({routing_result['model_info']['tier']})")
             print(
                 f"💰 Estimated cost / token: ${routing_result['model_info']['cost_per_token']:.4f}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Step 4: Make the API request
             response = await self.client.chat_completion(messages, **final_params)
@@ -155,7 +160,8 @@ class RouteLL_IntegratedClient:
             if response.success:
                 self.router.record_request_outcome(
                     selected_model, task_type, True, request_time, quality_rating=0.85
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.session_stats["successful_requests"] += 1
             else:
                 # Try fallback on RouteLL failure
@@ -174,7 +180,8 @@ class RouteLL_IntegratedClient:
                 self.session_stats["total_cost"] += (
                     response.usage.get("total_tokens", 0)
                     * routing_result["model_info"]["cost_per_token"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Step 8: Enhanced response with routing metadata
             if response.success:
@@ -184,8 +191,10 @@ class RouteLL_IntegratedClient:
                     "optimized_params": final_params,
                     "cost_savings": self._calculate_cost_savings(
                         kwargs, final_params, routing_result
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
             return response
 
@@ -207,11 +216,13 @@ class RouteLL_IntegratedClient:
                 usage=None,
                 model=kwargs.get("model", "unknown"),
                 response_time=time.time() - request_start,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _calculate_cost_savings(
         self, original_params: Dict, optimized_params: Dict, routing_result: Dict
-    ) -> Dict:
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
         """Calculate potential cost savings from optimization"""
         # This is a simplified calculation - in practice you'd need more sophisticated cost modeling
         original_model_cost = 0.01  # Assume premium model cost
@@ -231,7 +242,8 @@ class RouteLL_IntegratedClient:
             "estimated_optimized_cost": optimized_cost,
             "estimated_savings": savings,
             "savings_percentage": savings_percentage,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def stream_completion(self, messages: List[Dict], **kwargs) -> AsyncIterator[str]:
         """Stream completion with full integration"""
@@ -245,7 +257,8 @@ class RouteLL_IntegratedClient:
             **kwargs,
             "model": selected_model,
             "stream": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         print(f"🎯 Streaming from model: {selected_model}")
 
@@ -262,16 +275,19 @@ class RouteLL_IntegratedClient:
                 self.session_stats["requests_made"] / (session_duration / 60)
                 if session_duration > 0
                 else 0
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "success_rate": (
                 (
                     self.session_stats["successful_requests"]
                     / self.session_stats["requests_made"]
                     * 100
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if self.session_stats["requests_made"] > 0
                 else 0
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "total_requests": self.session_stats["requests_made"],
             "successful_requests": self.session_stats["successful_requests"],
             "failed_requests": self.session_stats["failed_requests"],
@@ -281,8 +297,10 @@ class RouteLL_IntegratedClient:
                 self.session_stats["total_cost"] / self.session_stats["requests_made"]
                 if self.session_stats["requests_made"] > 0
                 else 0
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add routing analytics
         routing_analytics = self.router.get_routing_analytics()
@@ -293,12 +311,13 @@ class RouteLL_IntegratedClient:
             "current_window_requests": len(self.rate_limiter.request_history),
             "can_make_request": self.rate_limiter.can_make_request(),
             "wait_time_seconds": self.rate_limiter.can_make_request()[2],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return analytics
 
     async def _try_fallback(self, messages: List[Dict], **kwargs) -> Optional[APIResponse]:
-        """
+        """"""
         Try to use fallback API when RouteLL fails or credits are exhausted
 
         Args:
@@ -307,7 +326,7 @@ class RouteLL_IntegratedClient:
 
         Returns:
             APIResponse from fallback or None if fallback fails
-        """
+        """"""
         try:
             print("🔄 Attempting fallback API request...")
 
@@ -325,7 +344,8 @@ class RouteLL_IntegratedClient:
                     data={
                         "content": fallback_response.content,
                         "usage": fallback_response.usage,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     error=None,
                     credits_used=0,  # Fallback APIs are free
                     response_time_ms=int(fallback_response.response_time * 1000),
@@ -333,7 +353,8 @@ class RouteLL_IntegratedClient:
                     timestamp=datetime.now(),
                     provider=fallback_response.provider,
                     fallback_used=True,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 print(f"❌ Fallback failed: {fallback_response.error}")
                 return None
@@ -348,7 +369,8 @@ class RouteLL_IntegratedClient:
             "timestamp": datetime.now().isoformat(),
             "overall_status": "healthy",
             "components": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Check API connectivity
@@ -357,12 +379,14 @@ class RouteLL_IntegratedClient:
                 "status": "healthy" if api_status.success else "unhealthy",
                 "response_time": api_status.response_time,
                 "details": (api_status.content if api_status.success else api_status.error),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             health_status["components"]["api"] = {
                 "status": "unhealthy",
                 "error": str(e),
-            }
+# BRACKET_SURGEON: disabled
+#             }
             health_status["overall_status"] = "degraded"
 
         try:
@@ -372,26 +396,30 @@ class RouteLL_IntegratedClient:
                 "status": ("healthy" if credit_status.remaining_credits > 100 else "warning"),
                 "remaining_credits": credit_status.remaining_credits,
                 "daily_usage": credit_status.daily_usage,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             health_status["components"]["credits"] = {
                 "status": "unknown",
                 "error": str(e),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Check rate limiting
         health_status["components"]["rate_limiting"] = {
             "status": "healthy",
             "can_make_request": self.rate_limiter.can_make_request(),
             "current_usage": len(self.rate_limiter.request_history),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Check model router
         health_status["components"]["model_router"] = {
             "status": "healthy",
             "available_models": len(self.router.models),
             "routing_decisions_made": len(self.router.routing_history),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return health_status
 
@@ -400,8 +428,9 @@ class RouteLL_IntegratedClient:
         description: str,
         style: str = "realistic",
         platform: WebAIPlatform = WebAIPlatform.CHATGPT,
-    ) -> Dict:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
+        """"""
         Generate avatar using web AI platforms
 
         Args:
@@ -411,7 +440,7 @@ class RouteLL_IntegratedClient:
 
         Returns:
             Dictionary with avatar generation results
-        """
+        """"""
         try:
             print(f"🎨 Generating avatar: {description} (style: {style})")
 
@@ -420,18 +449,22 @@ class RouteLL_IntegratedClient:
                 {
                     "role": "system",
                     "content": "You are an expert at creating detailed prompts for AI image generation. Create optimized prompts that produce high - quality avatar images.",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "role": "user",
-                    "content": f"Create a detailed prompt for generating a {style} avatar with this description: {description}. Include specific details about lighting, composition, \
-    and quality modifiers that work well with AI image generators like DALL - E, Midjourney, or Stable Diffusion.",
-                },
-            ]
+                    "content": f"Create a detailed prompt for generating a {style} avatar with this description: {description}. Include specific details about lighting, composition, \"
+#     and quality modifiers that work well with AI image generators like DALL - E, Midjourney, or Stable Diffusion.",
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
 
             # Generate optimized prompt using web AI
             response = await self.web_ai_client.chat_completion(
                 messages=messages, platform=platform
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.session_stats["web_ai_requests"] += 1
 
@@ -447,7 +480,8 @@ class RouteLL_IntegratedClient:
                     "platform_used": platform.value,
                     "response_time": response.response_time,
                     "timestamp": datetime.now(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 print(f"❌ Avatar generation failed: {response.error}")
                 return {
@@ -455,7 +489,8 @@ class RouteLL_IntegratedClient:
                     "error": response.error,
                     "platform_used": platform.value,
                     "timestamp": datetime.now(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             print(f"❌ Avatar generation exception: {e}")
@@ -463,8 +498,9 @@ class RouteLL_IntegratedClient:
 
     async def multi_platform_avatar_generation(
         self, description: str, style: str = "realistic"
-    ) -> Dict:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
+        """"""
         Generate avatar prompts using multiple platforms for comparison
 
         Args:
@@ -473,7 +509,7 @@ class RouteLL_IntegratedClient:
 
         Returns:
             Dictionary with results from multiple platforms
-        """
+        """"""
         print(f"🔄 Multi - platform avatar generation: {description}")
 
         platforms = [WebAIPlatform.CHATGPT, WebAIPlatform.GEMINI, WebAIPlatform.CLAUDE]
@@ -492,14 +528,16 @@ class RouteLL_IntegratedClient:
                     "success": False,
                     "error": str(e),
                     "platform_used": platform.value,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return {
             "description": description,
             "style": style,
             "platform_results": results,
             "timestamp": datetime.now(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Example usage and testing
@@ -542,12 +580,15 @@ async def main():
         {
             "role": "user",
             "content": "Write a Python function to calculate the factorial of a number",
-        }
-    ]
+# BRACKET_SURGEON: disabled
+#         }
+# BRACKET_SURGEON: disabled
+#     ]
 
     response = await client.chat_completion(
         code_messages, preferences={"quality": 0.7, "cost": 0.3}
-    )
+# BRACKET_SURGEON: disabled
+#     )
     if response.success:
         print(f"   ✅ Code generated successfully")
         print(f"   🎯 Model used: {response.model}")
@@ -577,11 +618,12 @@ async def main():
     # Test 6: Avatar generation
     print("\\n6️⃣ Avatar Generation:")
     avatar_result = await client.generate_avatar(
-        description="A professional software developer with glasses \
-    and a friendly smile",
+        description="A professional software developer with glasses \"
+#     and a friendly smile",
         style="realistic",
         platform=WebAIPlatform.CHATGPT,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if avatar_result["success"]:
         print(f"   ✅ Avatar prompt generated")
@@ -594,13 +636,15 @@ async def main():
     print("\\n7️⃣ Multi - Platform Avatar Generation:")
     multi_result = await client.multi_platform_avatar_generation(
         description="A futuristic AI assistant avatar", style="digital art"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     for platform, result in multi_result["platform_results"].items():
         status = "✅" if result["success"] else "❌"
         print(
             f"   {status} {platform}: {'Success' if result['success'] else result.get('error', 'Failed')}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     # Test 8: Model suggestions
     print("\\n8️⃣ Model Suggestions:")
@@ -608,7 +652,8 @@ async def main():
         "Help me debug this complex algorithm",
         "Write a poem about technology",
         "Solve this math equation: 2x^2 + 5x - 3 = 0",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for task in suggestions:
         suggestion = client.router.suggest_model_for_task(task)

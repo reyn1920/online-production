@@ -47,12 +47,15 @@ def _system_stats() -> Dict[str, Any]:
                 "used": vm["used"],
                 "available": vm["available"],
                 "percent": vm["percent"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
             if isinstance(vm, dict)
             else None
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         "disk": ({"total": du.total, "used": du.used, "free": du.free} if du else None),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def _db_inventory() -> Dict[str, Any]:
@@ -70,8 +73,10 @@ def _db_inventory() -> Dict[str, Any]:
                         "modified": datetime.fromtimestamp(
                             st.st_mtime, tz=timezone.utc
                         ).isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
             except FileNotFoundError:
                 continue
             except Exception:
@@ -80,7 +85,8 @@ def _db_inventory() -> Dict[str, Any]:
         "count": len(found),
         # cap to keep payload light
         "databases": sorted(found, key=lambda x: x["path"])[:20],
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def _latest_backup() -> Optional[Dict[str, Any]]:
@@ -98,7 +104,8 @@ def _latest_backup() -> Optional[Dict[str, Any]]:
                     "path": os.path.relpath(p),
                     "st_mtime": st.st_mtime,
                     "size_bytes": st.st_size,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception:
             continue
     if not best:
@@ -124,14 +131,15 @@ def _version_info() -> Dict[str, Any]:
         "commit": os.getenv("TRAE_COMMIT", "unknown"),
         "build_time": os.getenv("TRAE_BUILD_TIME", "unknown"),
         "pid": os.getpid(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def _agent_snapshot() -> Dict[str, Any]:
-    """
+    """"""
     Best - effort: if orchestrator exports a snapshot provider, use it.
     Else return None fields; UI can handle absence gracefully.
-    """
+    """"""
     snap = None
     provider = current_app.config.get("AGENT_SNAPSHOT_PROVIDER")
     if callable(provider):
@@ -142,7 +150,8 @@ def _agent_snapshot() -> Dict[str, Any]:
     total = _safe(lambda: len(snap.get("agents", [])))
     active = _safe(
         lambda: sum(1 for a in snap.get("agents", []) if a.get("status") in {"busy", "processing"})
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return {"total": total, "active": active, "agents": snap.get("agents")}
 
 
@@ -157,7 +166,8 @@ def metrics_route():
         "agents": _agent_snapshot(),
         # Optional: very light error count by tailing run.log (best - effort)
         "errors": _safe(lambda: _tail_error_count(), default=None),
-    }
+# BRACKET_SURGEON: disabled
+#     }
     return jsonify(payload), 200
 
 

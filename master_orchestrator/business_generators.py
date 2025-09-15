@@ -51,7 +51,8 @@ class BaseBusinessGenerator(ABC):
     @abstractmethod
     async def generate_product_spec(
         self, niche: str, trend_data: Dict[str, Any]
-    ) -> ProductSpec:
+# BRACKET_SURGEON: disabled
+#     ) -> ProductSpec:
         """Generate product specification based on niche and trends"""
         pass
 
@@ -67,7 +68,8 @@ class BaseBusinessGenerator(ABC):
 
     async def create_and_deploy(
         self, niche: str, trend_data: Dict[str, Any] = None
-    ) -> GeneratedProduct:
+# BRACKET_SURGEON: disabled
+#     ) -> GeneratedProduct:
         """Complete product creation and deployment pipeline"""
         start_time = datetime.now()
 
@@ -85,7 +87,9 @@ class BaseBusinessGenerator(ABC):
                 platform_data={},
                 status=GenerationStatus.GENERATING,
                 created_at=start_time,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Upload to platform
             platform_result = await self.upload_to_platform(product)
@@ -98,7 +102,9 @@ class BaseBusinessGenerator(ABC):
             self.generation_history.append(product)
             logger.info(
                 f"Successfully created {self.business_type} product: {spec.title}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return product
 
@@ -111,7 +117,9 @@ class BaseBusinessGenerator(ABC):
                 status=GenerationStatus.FAILED,
                 created_at=start_time,
                 generation_time=(datetime.now() - start_time).total_seconds(),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return product
 
 
@@ -129,18 +137,23 @@ class AIInteriorDesignerGenerator(BaseBusinessGenerator):
             "farmhouse",
             "contemporary",
             "traditional",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
     async def generate_product_spec(
         self, niche: str, trend_data: Dict[str, Any]
-    ) -> ProductSpec:
+# BRACKET_SURGEON: disabled
+#     ) -> ProductSpec:
         style = random.choice(self.design_styles)
         room_type = random.choice(
             ["living room", "bedroom", "kitchen", "bathroom", "office"]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         title = f"{style.title()} {room_type.title()} Design Package - {niche.title()} Theme"
-        description = f"""
+        description = f""""""
 Transform your {room_type} with our AI - generated {style} design package!
 
 This comprehensive digital package includes:
@@ -153,7 +166,7 @@ This comprehensive digital package includes:
 Perfect for {niche} enthusiasts who want professional interior design at an affordable price.
 
 Instant download - Commercial use allowed!
-        """.strip()
+        """.strip()"""
 
         tags = [
             "interior design",
@@ -165,7 +178,9 @@ Instant download - Commercial use allowed!
             "room makeover",
             "design guide",
             "AI generated",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         return ProductSpec(
             title=title,
@@ -179,8 +194,11 @@ Instant download - Commercial use allowed!
                 "room_type": room_type,
                 "niche": niche,
                 "includes": ["layouts", "color_guide", "furniture_list", "style_guide"],
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     async def create_content(self, spec: ProductSpec) -> Dict[str, Any]:
         # Simulate AI content generation
@@ -189,31 +207,38 @@ Instant download - Commercial use allowed!
         content = {
             "room_layouts": [f"layout_{i + 1}.png" for i in range(5)],
             "color_palette": {
-                "primary": "#2C3E50",
-                "secondary": "#ECF0F1",
-                "accent": "#E74C3C",
-                "neutral": "#BDC3C7",
-            },
+                "primary": "#2C3E50","
+                "secondary": "#ECF0F1","
+                "accent": "#E74C3C","
+                "neutral": "#BDC3C7","
+# BRACKET_SURGEON: disabled
+#             },
             "furniture_recommendations": [
                 {
                     "item": "Sofa",
                     "style": spec.metadata["style"],
                     "price_range": "$800 - 1200",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "item": "Coffee Table",
                     "style": spec.metadata["style"],
                     "price_range": "$200 - 400",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "item": "Lighting",
                     "style": spec.metadata["style"],
                     "price_range": "$150 - 300",
-                },
-            ],
+# BRACKET_SURGEON: disabled
+#                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "style_guide_pdf": "style_guide.pdf",
             "shopping_list": "shopping_list.pdf",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return content
 
@@ -227,11 +252,12 @@ Instant download - Commercial use allowed!
             "url": f"https://etsy.com/listing/{random.randint(100000, 999999)}",
             "status": "active",
             "upload_time": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 class ChildrenStorybookGenerator(BaseBusinessGenerator):
-    """Generates personalized children's storybooks for SendOwl"""
+    """Generates personalized children's storybooks for SendOwl"""'
 
     def __init__(self):
         super().__init__("children_storybook", "sendowl")
@@ -246,17 +272,20 @@ class ChildrenStorybookGenerator(BaseBusinessGenerator):
             "kindness",
             "nature",
             "dreams",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
     async def generate_product_spec(
         self, niche: str, trend_data: Dict[str, Any]
-    ) -> ProductSpec:
+# BRACKET_SURGEON: disabled
+#     ) -> ProductSpec:
         theme = random.choice(self.story_themes)
         age_group = random.choice(["3 - 5 years", "6 - 8 years", "9 - 12 years"])
 
         title = f"Personalized {theme.title()} Storybook - {niche.title()} Edition"
-        description = f"""
-Create magical memories with our personalized children's storybook!
+        description = f""""""
+Create magical memories with our personalized children's storybook!'
 
 Features:
 • Customizable character names and appearance
@@ -267,11 +296,11 @@ Features:
 
 Special {niche} theme makes this story unique and engaging!
 
-Personalization form included - we'll create your custom book within 24 hours!
-        """.strip()
+Personalization form included - we'll create your custom book within 24 hours!'
+        """.strip()"""
 
         tags = [
-            "children's book",
+            "children's book",'
             "personalized",
             theme,
             niche,
@@ -280,7 +309,9 @@ Personalization form included - we'll create your custom book within 24 hours!
             "bedtime story",
             "digital book",
             age_group.replace(" ", ""),
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         return ProductSpec(
             title=title,
@@ -298,9 +329,14 @@ Personalization form included - we'll create your custom book within 24 hours!
                     "character_name",
                     "character_appearance",
                     "setting",
-                ],
-            },
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     async def create_content(self, spec: ProductSpec) -> Dict[str, Any]:
         await asyncio.sleep(3)  # Simulate AI story generation
@@ -309,15 +345,19 @@ Personalization form included - we'll create your custom book within 24 hours!
             "story_template": f"Once upon a time, in the world of {spec.metadata['niche']}...",
             "illustrations": [
                 f"page_{i + 1}_illustration.png" for i in range(spec.metadata["pages"])
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "personalization_form": "personalization_form.html",
             "coloring_pages": [f"coloring_page_{i + 1}.pdf" for i in range(3)],
             "story_outline": {
                 "beginning": "Character introduction in niche setting",
                 "middle": f"Adventure involving {spec.metadata['theme']}",
                 "end": "Resolution and lesson learned",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         return content
 
@@ -327,11 +367,13 @@ Personalization form included - we'll create your custom book within 24 hours!
         return {
             "platform": "sendowl",
             "product_id": f"so_{hashlib.md5(product.spec.title.encode()).hexdigest()[:8]}",
-            "checkout_url": f"https://sendowl.com/checkout/{random.randint(100000,
-    999999)}",
+            "checkout_url": f"https://sendowl.com/checkout/{random.randint(100000,"
+# BRACKET_SURGEON: disabled
+#     999999)}","
             "status": "active",
             "upload_time": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 class BrandIdentityKitGenerator(BaseBusinessGenerator):
@@ -350,15 +392,18 @@ class BrandIdentityKitGenerator(BaseBusinessGenerator):
             "bold",
             "organic",
             "tech",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
     async def generate_product_spec(
         self, niche: str, trend_data: Dict[str, Any]
-    ) -> ProductSpec:
+# BRACKET_SURGEON: disabled
+#     ) -> ProductSpec:
         style = random.choice(self.brand_styles)
 
         title = f"Complete {style.title()} Brand Identity Kit - {niche.title()} Business Package"
-        description = f"""
+        description = f""""""
 Launch your {niche} business with a professional brand identity!
 
 This comprehensive kit includes:
@@ -375,7 +420,7 @@ Perfect for {niche} entrepreneurs and small businesses.
 All files provided in AI, PSD, PNG, and PDF formats.
 
 Commercial license included!
-        """.strip()
+        """.strip()"""
 
         tags = [
             "brand identity",
@@ -386,7 +431,9 @@ Commercial license included!
             "startup kit",
             "brand guidelines",
             "commercial license",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         return ProductSpec(
             title=title,
@@ -406,10 +453,15 @@ Commercial license included!
                     "social_media",
                     "style_guide",
                     "mockups",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                 "file_formats": ["AI", "PSD", "PNG", "PDF", "SVG"],
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     async def create_content(self, spec: ProductSpec) -> Dict[str, Any]:
         await asyncio.sleep(4)  # Simulate comprehensive design generation
@@ -421,32 +473,39 @@ Commercial license included!
                 "logo_icon.ai",
                 "logo_horizontal.ai",
                 "logo_vertical.ai",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "color_palette": {
-                "primary": "#1A237E",
-                "secondary": "#3F51B5",
-                "accent": "#FF5722",
-                "neutral_dark": "#263238",
-                "neutral_light": "#ECEFF1",
-            },
+                "primary": "#1A237E","
+                "secondary": "#3F51B5","
+                "accent": "#FF5722","
+                "neutral_dark": "#263238","
+                "neutral_light": "#ECEFF1","
+# BRACKET_SURGEON: disabled
+#             },
             "typography": {
                 "primary_font": "Montserrat",
                 "secondary_font": "Open Sans",
                 "accent_font": "Playfair Display",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "templates": {
                 "business_cards": [f"business_card_{i + 1}.psd" for i in range(10)],
                 "letterhead": "letterhead_template.psd",
                 "invoice": "invoice_template.psd",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "social_media": {
                 "instagram_post": "instagram_template.psd",
                 "facebook_cover": "facebook_cover.psd",
                 "linkedin_banner": "linkedin_banner.psd",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "style_guide": "brand_style_guide.pdf",
             "mockups": ["website_mockup.psd", "mobile_mockup.psd"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return content
 
@@ -456,11 +515,13 @@ Commercial license included!
         return {
             "platform": "paddle",
             "product_id": f"pd_{hashlib.md5(product.spec.title.encode()).hexdigest()[:8]}",
-            "checkout_url": f"https://checkout.paddle.com/{random.randint(100000,
-    999999)}",
+            "checkout_url": f"https://checkout.paddle.com/{random.randint(100000,"
+# BRACKET_SURGEON: disabled
+#     999999)}","
             "status": "active",
             "upload_time": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 class DigitalArtPackGenerator(BaseBusinessGenerator):
@@ -479,16 +540,19 @@ class DigitalArtPackGenerator(BaseBusinessGenerator):
             "botanical",
             "minimalist",
             "decorative",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
     async def generate_product_spec(
         self, niche: str, trend_data: Dict[str, Any]
-    ) -> ProductSpec:
+# BRACKET_SURGEON: disabled
+#     ) -> ProductSpec:
         style = random.choice(self.art_styles)
         pack_size = random.choice([10, 15, 20, 25])
 
         title = f"{style.title()} {niche.title()} Digital Art Pack - {pack_size} High - Res Graphics"
-        description = f"""
+        description = f""""""
 Beautiful {style} digital art collection perfect for {niche} projects!
 
 What you get:
@@ -506,7 +570,7 @@ Perfect for:
 • Craft projects
 
 Instant download after purchase!
-        """.strip()
+        """.strip()"""
 
         tags = [
             "digital art",
@@ -518,7 +582,9 @@ Instant download after purchase!
             "clip art",
             "design elements",
             "instant download",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         return ProductSpec(
             title=title,
@@ -534,8 +600,11 @@ Instant download after purchase!
                 "resolution": "300 DPI",
                 "formats": ["PNG", "JPEG"],
                 "commercial_use": True,
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     async def create_content(self, spec: ProductSpec) -> Dict[str, Any]:
         await asyncio.sleep(2)
@@ -544,14 +613,19 @@ Instant download after purchase!
         content = {
             "graphics_png": [
                 f"{spec.metadata['niche']}_{i + 1}.png" for i in range(pack_size)
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "graphics_jpg": [
                 f"{spec.metadata['niche']}_{i + 1}.jpg" for i in range(pack_size)
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "bonus_brushes": f"{spec.metadata['style']}_brushes.abr",
             "license_file": "commercial_license.pdf",
             "preview_sheet": "preview_all_graphics.jpg",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return content
 
@@ -564,7 +638,8 @@ Instant download after purchase!
             "url": f"https://etsy.com/listing/{random.randint(100000, 999999)}",
             "status": "active",
             "upload_time": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 class BusinessModelFactory:
@@ -576,7 +651,8 @@ class BusinessModelFactory:
         "brand_identity_kit": BrandIdentityKitGenerator,
         "digital_art_pack": DigitalArtPackGenerator,
         # Add more generators as they're implemented
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     @classmethod
     def create_generator(cls, business_type: str) -> BaseBusinessGenerator:
@@ -604,7 +680,8 @@ class BusinessModelFactory:
             "business_type": temp_generator.business_type,
             "platform": temp_generator.platform,
             "description": generator_class.__doc__ or "No description available",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Example usage and testing

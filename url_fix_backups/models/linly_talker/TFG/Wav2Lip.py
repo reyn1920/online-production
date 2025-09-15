@@ -41,7 +41,9 @@ class Wav2Lip:
         else:
             checkpoint = torch.load(
                 checkpoint_path, map_location = lambda storage, loc: storage
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         s = checkpoint["state_dict"]
         new_s = {}
         for k, v in s.items():
@@ -70,7 +72,8 @@ class Wav2Lip:
             resize_factor = 1,
             rotate = False,
             crop=[-1, -1, -1, -1],
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         os.makedirs("results", exist_ok = True)
         os.makedirs("temp", exist_ok = True)
 
@@ -99,8 +102,11 @@ class Wav2Lip:
                             (
                             frame.shape[1] // resize_factor,
                                 frame.shape[0] // resize_factor,
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 if rotate:
                     frame = cv2.rotate(frame, cv2.cv2.ROTATE_90_CLOCKWISE)
@@ -120,7 +126,9 @@ class Wav2Lip:
             print("Extracting raw audio...")
             command = "ffmpeg -y -i {} -strict -2 {}".format(
                 audio_file, "temp / temp.wav"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             subprocess.call(command, shell = True)
             audio_file = "temp / temp.wav"
@@ -131,9 +139,11 @@ class Wav2Lip:
 
         if np.isnan(mel.reshape(-1)).sum() > 0:
             raise ValueError(
-                "Mel contains nan! Using a TTS voice? Add a small epsilon noise to the wav file \
-    and try again"
-            )
+                "Mel contains nan! Using a TTS voice? Add a small epsilon noise to the wav file \"
+#     and try again"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         mel_chunks = []
         mel_idx_multiplier = 80.0 / self.fps
@@ -155,7 +165,8 @@ class Wav2Lip:
 
         for i, (img_batch, mel_batch, frames, coords) in enumerate(
             tqdm(gen, total = int(np.ceil(float(len(mel_chunks))/batch_size)))
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             if i == 0:
                 frame_h, frame_w = full_frames[0].shape[:-1]
                 out = cv2.VideoWriter(
@@ -163,14 +174,20 @@ class Wav2Lip:
                         cv2.VideoWriter_fourcc(*"DIVX"),
                         self.fps,
                         (frame_w, frame_h),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to(
                 self.device
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             mel_batch = torch.FloatTensor(np.transpose(mel_batch, (0, 3, 1, 2))).to(
                 self.device
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             with torch.no_grad():
                 pred = self.model(mel_batch, img_batch)
@@ -190,7 +207,9 @@ class Wav2Lip:
             import imageio
             from src.utils.face_enhancer import (enhancer_generator_with_len,
 
-                enhancer_list)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 enhancer_list)
 
             enhancer = "gfpgan"
             background_enhancer = None
@@ -203,26 +222,38 @@ class Wav2Lip:
             try:
                 enhanced_images_gen_with_len = enhancer_generator_with_len(
                     full_video_path, method = enhancer, bg_upsampler = background_enhancer
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 imageio.mimsave(
                     enhanced_path, enhanced_images_gen_with_len, fps = float(self.fps)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             except Exception:
                 enhanced_images_gen_with_len = enhancer_list(
                     full_video_path, method = enhancer, bg_upsampler = background_enhancer
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 imageio.mimsave(
                     enhanced_path, enhanced_images_gen_with_len, fps = float(self.fps)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             command = "ffmpeg -y -i {} -i {} -strict -2 -q:v 1 {}".format(
                 audio_file, enhanced_path, "results / example_answer.mp4"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             subprocess.call(command, shell = platform.system() != "Windows")
         else:
             command = "ffmpeg -y -i {} -i {} -strict -2 -q:v 1 {}".format(
                 audio_file, "temp / result.avi", "results / example_answer.mp4"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             subprocess.call(command, shell = platform.system() != "Windows")
         return "results / example_answer.mp4"
 
@@ -234,7 +265,8 @@ class Wav2Lip:
             if not self.static:
                 face_det_results = self.face_detect(
                     frames
-                )  # BGR2RGB for CNN face detection
+# BRACKET_SURGEON: disabled
+#                 )  # BGR2RGB for CNN face detection
             else:
                 face_det_results = self.face_detect([frames[0]])
         else:
@@ -264,7 +296,9 @@ class Wav2Lip:
                 mel_batch = np.reshape(
                     mel_batch,
                         [len(mel_batch), mel_batch.shape[1], mel_batch.shape[2], 1],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 yield img_batch, mel_batch, frame_batch, coords_batch
                 img_batch, mel_batch, frame_batch, coords_batch = [], [], [], []
@@ -278,7 +312,9 @@ class Wav2Lip:
             img_batch = np.concatenate((img_masked, img_batch), axis = 3) / 255.0
             mel_batch = np.reshape(
                 mel_batch, [len(mel_batch), mel_batch.shape[1], mel_batch.shape[2], 1]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             yield img_batch, mel_batch, frame_batch, coords_batch
 
@@ -287,11 +323,15 @@ class Wav2Lip:
         try:
             detector = face_detection.FaceAlignment(
                 face_detection.LandmarksType.TWO_D, flip_input = False, device = self.device
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except Exception:
             detector = face_detection.FaceAlignment(
                 face_detection.LandmarksType._2D, flip_input = False, device = self.device
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         batch_size = self.face_det_batch_size
 
@@ -299,26 +339,37 @@ class Wav2Lip:
             predictions = []
             try:
                 for i in tqdm(range(0, len(images), batch_size)):
+                    pass
                     # img_batch = torch.tensor(np.array(images[i:i + batch_size]),
-    device = self.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     device = self.device)
                     # img_batch = img_batch.permute(0, 3, 1, 2)
                     # print(img_batch.shape, type(img_batch))
                     # predictions.extend(detector.get_landmarks_from_batch(img_batch))
                     predictions.extend(
                         detector.get_detections_for_batch(
                             np.array(images[i : i + batch_size])
-                        )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             except Exception as e:
                 print("Error in face detection: {}".format(e))
                 if batch_size == 1:
                     raise RuntimeError(
                         "Image too big to run face detection on GPU. Please use the resize_factor argument"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 batch_size //= 2
                 print(
                     "Recovering from OOM error; New batch size: {}".format(batch_size)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 continue
             break
 
@@ -328,10 +379,13 @@ class Wav2Lip:
             if rect is None:
                 cv2.imwrite(
                     "temp / faulty_frame.jpg", image
-                )  # check this frame where the face was not detected.
+# BRACKET_SURGEON: disabled
+#                 )  # check this frame where the face was not detected.
                 raise ValueError(
                     "Face not detected! Ensure the video contains a face in all the frames."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             y1 = max(0, rect[1] - pady1)
             y2 = min(image.shape[0], rect[3] + pady2)
@@ -346,7 +400,9 @@ class Wav2Lip:
         results = [
             [image[y1:y2, x1:x2], (y1, y2, x1, x2)]
             for image, (x1, y1, x2, y2) in zip(images, boxes)
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         del detector
             return results
@@ -367,16 +423,22 @@ if __name__ == "__main__":
     # wav2lip.predict('/home / dengkaijun / workdirs / Linly - Talker / TFG / results / test.mp4',
     os.path.join(current_dir,'answer.wav'),
     batch_size = 2,
-    enhance = False)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     enhance = False)
     wav2lip.predict(
         os.path.join(current_dir, "inputs / example.png"),
             os.path.join(current_dir, "answer.wav"),
             batch_size = 2,
             enhance = False,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     wav2lip.predict(
         os.path.join(current_dir, "inputs / example.png"),
             os.path.join(current_dir, "answer.wav"),
             batch_size = 2,
             enhance = True,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )

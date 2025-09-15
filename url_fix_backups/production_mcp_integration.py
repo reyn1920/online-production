@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Production MCP Puppeteer Integration for Trae AI
 Actually calls the MCP Puppeteer server to interact with AI websites.
-"""
+""""""
 
 import asyncio
 import json
@@ -52,12 +52,12 @@ class ProductionMCPIntegration:
     """Production - ready MCP Puppeteer integration for AI services"""
 
     def __init__(self, mcp_caller: Optional[Callable] = None):
-        """
+        """"""
         Initialize the MCP integration
 
         Args:
             mcp_caller: Function to call MCP server (for dependency injection)
-        """
+        """"""
         self.mcp_caller = mcp_caller or self._simulate_mcp_call
 
         self.ai_services = {
@@ -68,9 +68,11 @@ class ProductionMCPIntegration:
                     "input": 'textarea[placeholder*="Type your message"], .chat - input, textarea.message - input, [contenteditable="true"]',
                     "submit": 'button[type="submit"], .send - button, .submit - btn',
                     "response": ".message - content, .response - text, .assistant - message, .output",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "wait_times": {"navigation": 5, "input_fill": 2, "response_wait": 10},
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "gemini": {
                 "name": "Google Gemini",
                 "url": "https://gemini.google.com / app",
@@ -78,20 +80,25 @@ class ProductionMCPIntegration:
                     "input": 'div[contenteditable="true"], .ProseMirror, rich - textarea',
                     "submit": 'button[aria - label*="Send"], button[data - testid="send - button"]',
                     "response": '[data - message - author - role="assistant"], .model - response',
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "wait_times": {"navigation": 6, "input_fill": 2, "response_wait": 12},
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "chatgpt": {
                 "name": "ChatGPT",
                 "url": "https://chatgpt.com/",
                 "selectors": {
-                    "input": "#prompt - textarea, .ProseMirror",
+                    "input": "#prompt - textarea, .ProseMirror","
                     "submit": 'button[data - testid="send - button"]',
                     "response": '[data - message - author - role="assistant"] .markdown',
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "wait_times": {"navigation": 4, "input_fill": 1, "response_wait": 8},
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         self.sessions = []
         self.browser_config = {
@@ -101,19 +108,23 @@ class ProductionMCPIntegration:
                 "--disable - setuid - sandbox",
                 "--disable - blink - features = AutomationControlled",
                 "--user - agent = Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _simulate_mcp_call(
         self, server_name: str, tool_name: str, args: Dict[str, Any]
-    ) -> MCPCall:
+# BRACKET_SURGEON: disabled
+#     ) -> MCPCall:
         """Simulate MCP calls for demonstration purposes"""
         call = MCPCall(
             server_name=server_name,
             tool_name=tool_name,
             args=args,
             timestamp=time.time(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         try:
             logger.info(f"MCP Call: {tool_name} with args: {json.dumps(args, indent = 2)}")
@@ -167,19 +178,21 @@ class ProductionMCPIntegration:
         if "sqlite" in query.lower() or "database" in query.lower() or "error" in query.lower():
             responses = {
                 "abacus": "I've analyzed your SQLite error. The column 'search_keywords' doesn't exist in your table schema. Here's the fix: ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT; Use database migrations for schema changes \
-    and add proper error handling.",
-                "gemini": "This SQLite error occurs when database schema \
-    and application code are out of sync. Add the missing column with: ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT DEFAULT '[]'; Then implement proper database migrations.",
-                "chatgpt": "I can help fix this SQLite error. The 'search_keywords' column doesn't exist. Quick fix: ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT; For long - term, implement a migration system with proper error handling.",
-            }
+#     and add proper error handling.",
+                "gemini": "This SQLite error occurs when database schema \"
+#     and application code are out of sync. Add the missing column with: ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT DEFAULT '[]'; Then implement proper database migrations.",
+                "chatgpt": "I can help fix this SQLite error. The 'search_keywords' column doesn't exist. Quick fix: ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT; For long - term, implement a migration system with proper error handling.",'
+# BRACKET_SURGEON: disabled
+#             }
             return responses.get(service, "AI analysis completed successfully.")
 
         # Handle other types of queries
         responses = {
-            "abacus": f"Abacus AI analyzed: {query[:50]}... Here's a comprehensive solution with data - driven insights.",
+            "abacus": f"Abacus AI analyzed: {query[:50]}... Here's a comprehensive solution with data - driven insights.",'
             "gemini": f"Google Gemini analyzed: {query[:50]}... Based on advanced AI reasoning, here are the findings.",
-            "chatgpt": f"ChatGPT processed: {query[:50]}... Here's a detailed response with step - by - step guidance.",
-        }
+            "chatgpt": f"ChatGPT processed: {query[:50]}... Here's a detailed response with step - by - step guidance.",'
+# BRACKET_SURGEON: disabled
+#         }
 
         return responses.get(service, "AI analysis completed successfully.")
 
@@ -197,7 +210,8 @@ class ProductionMCPIntegration:
                 timestamp=time.time(),
                 success=False,
                 error=f"Unknown service: {service}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         service_config = self.ai_services[service]
         session_start = time.time()
@@ -216,8 +230,10 @@ class ProductionMCPIntegration:
                     "url": service_config["url"],
                     "launchOptions": self.browser_config,
                     "allowDangerous": True,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
             mcp_calls.append(nav_call)
 
             if not nav_call.success:
@@ -233,7 +249,8 @@ class ProductionMCPIntegration:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_screenshot",
                 {"name": initial_screenshot, "width": 1400, "height": 900},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             mcp_calls.append(screenshot_call)
             if screenshot_call.success:
                 screenshots.append(initial_screenshot)
@@ -244,7 +261,8 @@ class ProductionMCPIntegration:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_fill",
                 {"selector": service_config["selectors"]["input"], "value": query},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             mcp_calls.append(fill_call)
 
             if not fill_call.success:
@@ -258,7 +276,8 @@ class ProductionMCPIntegration:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": service_config["selectors"]["submit"]},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             mcp_calls.append(click_call)
 
             if not click_call.success:
@@ -267,7 +286,8 @@ class ProductionMCPIntegration:
             # Step 5: Wait for AI response
             logger.info(
                 f"Step 5: Waiting for AI response ({service_config['wait_times']['response_wait']}s)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             await asyncio.sleep(service_config["wait_times"]["response_wait"])
 
             # Step 6: Take response screenshot
@@ -277,7 +297,8 @@ class ProductionMCPIntegration:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_screenshot",
                 {"name": response_screenshot, "width": 1400, "height": 900},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             mcp_calls.append(response_screenshot_call)
             if response_screenshot_call.success:
                 screenshots.append(response_screenshot)
@@ -288,14 +309,15 @@ class ProductionMCPIntegration:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_evaluate",
                 {
-                    "script": f"""
+                    "script": f""""""
                     // Extract AI response using multiple selectors
                     const selectors = [
                         "{service_config['selectors']['response']}",
                             ".message", ".response", ".chat - message",
                             "[data - message - author - role='assistant']",
                             ".markdown", ".model - response", ".answer"
-                    ];
+# BRACKET_SURGEON: disabled
+#                     ];
 
                     let responseText = "";
                     for (const selector of selectors) {{
@@ -306,15 +328,20 @@ class ProductionMCPIntegration:
                             responseText = lastElement.innerText || lastElement.textContent;
                             if (responseText && responseText.trim().length > 10) {{
                                 break;
-                            }}
-                        }}
-                    }}
+# BRACKET_SURGEON: disabled
+#                             }}
+# BRACKET_SURGEON: disabled
+#                         }}
+# BRACKET_SURGEON: disabled
+#                     }}
 
                     return responseText || "No response extracted";
-                    """,
+                    ""","""
                     "context": {"service": service, "query": query},
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
             mcp_calls.append(extract_call)
 
             final_response = ""
@@ -324,7 +351,8 @@ class ProductionMCPIntegration:
                 # Fallback to simulated response
                 final_response = self._generate_realistic_ai_response(
                     {"service": service, "query": query}
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             session = AIServiceSession(
                 service=service,
@@ -337,7 +365,8 @@ class ProductionMCPIntegration:
                 timestamp=session_start,
                 success=True,
                 total_duration=time.time() - session_start,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.sessions.append(session)
             logger.info(f"Successfully completed interaction with {service_config['name']}")
@@ -358,7 +387,8 @@ class ProductionMCPIntegration:
                 success=False,
                 total_duration=time.time() - session_start,
                 error=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.sessions.append(session)
             return session
@@ -370,7 +400,7 @@ class ProductionMCPIntegration:
         if services is None:
             services = list(self.ai_services.keys())
 
-        debugging_query = f"""I need help debugging this error:
+        debugging_query = f"""I need help debugging this error:"""
 
 **Error Message:**
 {error_message}
@@ -384,7 +414,7 @@ class ProductionMCPIntegration:
 3. Prevention strategies to avoid similar issues
 4. Best practices for handling this type of error
 
-Please provide a comprehensive analysis and solution."""
+Please provide a comprehensive analysis and solution.""""""
 
         logger.info(f"Starting multi - service debugging with {len(services)} services")
 
@@ -410,7 +440,8 @@ Please provide a comprehensive analysis and solution."""
                     timestamp=time.time(),
                     success=False,
                     error=str(session),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 results[service] = session
 
@@ -418,7 +449,8 @@ Please provide a comprehensive analysis and solution."""
 
     def generate_comprehensive_report(
         self, sessions: Dict[str, AIServiceSession], error_message: str
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate a comprehensive debugging report from multiple AI service sessions"""
         report = f"🔍 **Comprehensive AI Debugging Report**\\n"
         report += f"**Error:** {error_message}\\n"
@@ -429,7 +461,7 @@ Please provide a comprehensive analysis and solution."""
         failed_sessions = {k: v for k, v in sessions.items() if not v.success}
 
         # Executive Summary
-        report += f"## 📊 Executive Summary\\n\\n"
+        report += f"## 📊 Executive Summary\\n\\n""
         report += f"- **Services Queried:** {len(sessions)}\\n"
         report += f"- **Successful Analyses:** {len(successful_sessions)}\\n"
         report += f"- **Failed Queries:** {len(failed_sessions)}\\n"
@@ -438,10 +470,10 @@ Please provide a comprehensive analysis and solution."""
 
         # Successful AI Analyses
         if successful_sessions:
-            report += f"## ✅ AI Service Analyses\\n\\n"
+            report += f"## ✅ AI Service Analyses\\n\\n""
 
             for service, session in successful_sessions.items():
-                report += f"### {session.service_name}\\n"
+                report += f"### {session.service_name}\\n""
                 report += f"**URL:** {session.url}\\n"
                 report += f"**Duration:** {session.total_duration:.2f}s\\n"
                 report += f"**Screenshots:** {', '.join(session.screenshots)}\\n"
@@ -453,7 +485,7 @@ Please provide a comprehensive analysis and solution."""
 
         # Failed Queries
         if failed_sessions:
-            report += f"## ❌ Failed Queries\\n\\n"
+            report += f"## ❌ Failed Queries\\n\\n""
 
             for service, session in failed_sessions.items():
                 report += f"**{session.service_name}:** {session.error}\\n"
@@ -473,7 +505,8 @@ Please provide a comprehensive analysis and solution."""
                 "total_sessions": len(self.sessions),
                 "services_configured": list(self.ai_services.keys()),
                 "browser_config": self.browser_config,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "ai_services": self.ai_services,
             "sessions": [
                 {
@@ -496,13 +529,18 @@ Please provide a comprehensive analysis and solution."""
                             "success": call.success,
                             "result": call.result,
                             "error": call.error,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         for call in session.mcp_calls
-                    ],
-                }
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
                 for session in self.sessions
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         with open(filename, "w", encoding="utf - 8") as f:
             json.dump(export_data, f, indent=2, ensure_ascii=False)
@@ -526,12 +564,13 @@ async def production_demo():
     print("\\n🔍 Multi - Service AI Debugging Session")
 
     error_message = "sqlite3.OperationalError: no such column: search_keywords"
-    code_context = """
+    code_context = """"""
 # Database query that failed:
 cursor.execute(
     "SELECT task_id, search_keywords FROM api_discovery_tasks WHERE search_keywords LIKE ?",
         ('%python%',)
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Full error traceback:
 # File "research_tools.py", line 245, in search_tasks
@@ -544,18 +583,20 @@ cursor.execute(
 #     task_name TEXT NOT NULL,
 #     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 # );
-    """
+    """"""
 
     print("\\n🌐 Launching browsers and querying AI services...")
     print(
-        "This demonstrates real MCP calls to control browsers \
-    and interact with AI websites."
-    )
+        "This demonstrates real MCP calls to control browsers \"
+#     and interact with AI websites."
+# BRACKET_SURGEON: disabled
+#     )
 
     # Debug with all available AI services
     sessions = await mcp_integration.multi_service_debugging(
         error_message, code_context, services=["abacus", "gemini", "chatgpt"]
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Generate comprehensive report
     print("\\n📋 Generating comprehensive debugging report...")
@@ -572,7 +613,8 @@ cursor.execute(
     total_calls = sum(len(s.mcp_calls) for s in sessions.values())
     successful_calls = sum(
         sum(1 for call in s.mcp_calls if call.success) for s in sessions.values()
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     print(f"- Total MCP calls made: {total_calls}")
     print(f"- Successful MCP calls: {successful_calls}")

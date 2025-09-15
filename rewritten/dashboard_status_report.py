@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Dashboard Status Report
 Final comprehensive report on dashboard functionality and resolution
-"""
+""""""
 
 from datetime import datetime
 
@@ -46,7 +46,8 @@ def generate_dashboard_report():
         ("/dashboard/api/metrics", "System Metrics"),
         ("/dashboard/api/services", "Service Status"),
         ("/dashboard/api/system - info", "System Information"),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for endpoint, description in api_endpoints:
         try:
@@ -63,7 +64,8 @@ def generate_dashboard_report():
                     services = data.get("services", {})
                     active_services = sum(
                         1 for s in services.values() if s.get("status") == "active"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     print(f"   Active Services: {active_services}/{len(services)}")
             else:
                 print(f"❌ {description}: HTTP {response.status_code}")
@@ -127,9 +129,10 @@ def generate_dashboard_report():
     print("ISSUE: Dashboard reported as 'not working'")
     print("DIAGNOSIS: Dashboard is actually fully operational")
     print(
-        "ROOT CAUSE: User may have been accessing wrong URL \
-    or expecting different behavior"
-    )
+        "ROOT CAUSE: User may have been accessing wrong URL \"
+#     or expecting different behavior"
+# BRACKET_SURGEON: disabled
+#     )
     print("SOLUTION: Dashboard is accessible at http://localhost:8000/dashboard/")
     print("STATUS: ✅ RESOLVED - Dashboard is working correctly")
     print()

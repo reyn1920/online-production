@@ -26,10 +26,12 @@ def main():
                     tts.SUPPORTED_VOICE,
                     label="Voice to be used",
                     value="zh - CN - XiaoxiaoNeural",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 with gr.Accordion(
                     "Advanced Settings", open=True, visible=True
-                ) as parameter_article:
+# BRACKET_SURGEON: disabled
+#                 ) as parameter_article:
                     rate = gr.Slider(minimum=-100, maximum=100, value=0, step=1.0, label="Rate")
                     volume = gr.Slider(minimum=0, maximum=100, value=100, step=1, label="Volume")
                     pitch = gr.Slider(minimum=-100, maximum=100, value=0, step=1, label="Pitch")
@@ -43,21 +45,25 @@ def main():
             generateAudio,
             inputs=[text, voice, rate, volume, pitch],
             outputs=[video, audio],
-        )
-        gr.Markdown("## Text Examples")
+# BRACKET_SURGEON: disabled
+#         )
+        gr.Markdown("## Text Examples")"
         gr.Examples(
             examples=[
                 ["大家好，很高兴认识你们！", "zh - CN - XiaoxiaoNeural"],
                 [
                     "みなさん、こんにちは！お会いできて嬉しいです！",
                     "ja - JP - NanamiNeural",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 ["hello, Nice to meet you!", "en - US - RogerNeural"],
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             fn=generateAudio,
             inputs=[text, voice],
             outputs=[video, audio],
-        )
+# BRACKET_SURGEON: disabled
+#         )
     return demo
 
 

@@ -16,7 +16,8 @@ except ImportError:
 _gridtype_to_id = {
     "hash": 0,
         "tiled": 1,
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 class _grid_encode(Function):
@@ -34,7 +35,8 @@ class _grid_encode(Function):
             calc_grad_inputs = False,
             gridtype = 0,
             align_corners = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         # inputs: [B, D], float in [0, 1]
         # embeddings: [sO, C], float
         # offsets: [L + 1], int
@@ -47,11 +49,14 @@ class _grid_encode(Function):
         C = embeddings.shape[1]  # embedding dim for each level
         S = np.log2(
             per_level_scale
-        )  # resolution multiplier at each level, apply log2 for later CUDA exp2f
+# BRACKET_SURGEON: disabled
+#         )  # resolution multiplier at each level, apply log2 for later CUDA exp2f
         H = base_resolution  # base resolution
 
         # manually handle autocast (only use half precision embeddings,
-    inputs must be float for enough precision)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     inputs must be float for enough precision)
         # if C % 2 != 0, force float, since half for atomicAdd is very slow.
         if torch.is_autocast_enabled() and C % 2 == 0:
             embeddings = embeddings.to(torch.half)
@@ -62,7 +67,9 @@ class _grid_encode(Function):
         if calc_grad_inputs:
             dy_dx = torch.empty(
                 B, L * D * C, device = inputs.device, dtype = embeddings.dtype
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             dy_dx = None
 
@@ -80,7 +87,9 @@ class _grid_encode(Function):
                 dy_dx,
                 gridtype,
                 align_corners,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # permute back to [B, L * C]
         outputs = outputs.permute(1, 0, 2).reshape(B, L * C)
@@ -128,7 +137,9 @@ class _grid_encode(Function):
                 grad_inputs,
                 gridtype,
                 align_corners,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if dy_dx is not None:
             grad_inputs = grad_inputs.to(inputs.dtype)
@@ -152,21 +163,26 @@ class GridEncoder(nn.Module):
             desired_resolution = None,
             gridtype="hash",
             align_corners = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__()
 
         # the finest resolution desired at the last level, if provided, overridee per_level_scale
         if desired_resolution is not None:
             per_level_scale = np.exp2(
                 np.log2(desired_resolution / base_resolution) / (num_levels - 1)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.input_dim = input_dim  # coord dims, 2 or 3
         self.num_levels = num_levels  # num levels, each level multiply resolution by 2
         self.level_dim = level_dim  # encode channels per level
         self.per_level_scale = (
             per_level_scale  # multiply resolution by this scale at each level.
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.log2_hashmap_size = log2_hashmap_size
         self.base_resolution = base_resolution
         self.output_dim = num_levels * level_dim
@@ -183,7 +199,8 @@ class GridEncoder(nn.Module):
             params_in_level = min(
                 self.max_params,
                     (resolution if align_corners else resolution + 1) ** input_dim,
-                    )  # limit max number
+# BRACKET_SURGEON: disabled
+#                     )  # limit max number
             params_in_level = int(np.ceil(params_in_level / 8) * 8)  # make divisible
             offsets.append(offset)
             offset += params_in_level
@@ -219,7 +236,9 @@ class GridEncoder(nn.Module):
     inputs.shape,
     inputs.dtype,
     inputs.min().item(),
-    inputs.max().item())
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     inputs.max().item())
 
         prefix_shape = list(inputs.shape[:-1])
         inputs = inputs.view(-1, self.input_dim)
@@ -233,13 +252,17 @@ class GridEncoder(nn.Module):
                 inputs.requires_grad,
                 self.gridtype_id,
                 self.align_corners,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         outputs = outputs.view(prefix_shape + [self.output_dim])
 
         # print('outputs',
     outputs.shape,
     outputs.dtype,
     outputs.min().item(),
-    outputs.max().item())
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     outputs.max().item())
 
         return outputs

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Model Context Protocol (MCP) Implementation
 
 Provides standardized AI model communication and context sharing
@@ -17,7 +17,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -154,7 +154,8 @@ class MCPMessage:
             params=data.get("params"),
             result=data.get("result"),
             error=data.get("error"),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @dataclass
@@ -221,10 +222,10 @@ class MCPServerInfo:
 
 
 class MCPServer:
-    """
-    Model Context Protocol (MCP) Server implementation.
+    """"""
+    Model Context Protocol (MCP) Server implementation.:
     Provides standardized AI model communication and context sharing.
-    """
+    """"""
 
     def __init__(
         self,
@@ -233,7 +234,8 @@ class MCPServer:
         host: str = "localhost",
         port: int = 8765,
         capabilities: Optional[List[MCPCapability]] = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.logger = setup_logger(f"mcp_server_{name}")
 
         # Server configuration
@@ -244,7 +246,8 @@ class MCPServer:
             or [MCPCapability.TOOLS, MCPCapability.RESOURCES, MCPCapability.CONTEXT],
             description=f"TRAE.AI MCP Server - {name}",
             author="TRAE.AI System",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.host = host
         self.port = port
@@ -274,7 +277,8 @@ class MCPServer:
             MCPMessageType.SET_CONTEXT.value: self._handle_set_context,
             MCPMessageType.UPDATE_CONTEXT.value: self._handle_update_context,
             MCPMessageType.CLEAR_CONTEXT.value: self._handle_clear_context,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Server state
         self.running = False
@@ -385,8 +389,10 @@ class MCPServer:
                     error={
                         "code": -32601,
                         "message": f"Method not found: {message.method}",
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
                 await self._send_message(client_id, error_response)
 
         except json.JSONDecodeError as e:
@@ -398,7 +404,8 @@ class MCPServer:
             error_response = MCPMessage(
                 id=getattr(message, "id", None) if "message" in locals() else None,
                 error={"code": -32603, "message": "Internal error"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             await self._send_message(client_id, error_response)
 
     async def _send_message(self, client_id: str, message: MCPMessage):
@@ -436,16 +443,20 @@ class MCPServer:
                     "version": self.info.version,
                     "description": self.info.description,
                     "author": self.info.author,
-                },
-            },
-        )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
     async def _handle_ping(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle ping request."""
         return MCPMessage(
             id=message.id,
             result={"pong": True, "timestamp": datetime.now().isoformat()},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     async def _handle_list_tools(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle list tools request."""
@@ -458,8 +469,10 @@ class MCPServer:
                     "inputSchema": tool.inputSchema,
                     "outputSchema": tool.outputSchema,
                     "metadata": tool.metadata,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return MCPMessage(id=message.id, result={"tools": tools_list})
 
@@ -473,7 +486,8 @@ class MCPServer:
             return MCPMessage(
                 id=message.id,
                 error={"code": -32602, "message": f"Tool not found: {tool_name}"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         tool = self.tools[tool_name]
 
@@ -490,12 +504,14 @@ class MCPServer:
                     # Run in executor for blocking functions
                     result = await asyncio.get_event_loop().run_in_executor(
                         self.executor, lambda: tool.handler(**arguments)
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
             else:
                 result = {
                     "message": f"Tool {tool_name} executed",
                     "arguments": arguments,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             return MCPMessage(
                 id=message.id,
@@ -504,17 +520,22 @@ class MCPServer:
                         {
                             "type": "text",
                             "text": (json.dumps(result) if not isinstance(result, str) else result),
-                        }
-                    ]
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Error calling tool {tool_name}: {e}")
             return MCPMessage(
                 id=message.id,
                 error={"code": -32603, "message": f"Tool execution failed: {str(e)}"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _handle_list_resources(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle list resources request."""
@@ -528,8 +549,10 @@ class MCPServer:
                     "mimeType": resource.mimeType,
                     "resourceType": resource.resourceType.value,
                     "metadata": resource.metadata,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return MCPMessage(id=message.id, result={"resources": resources_list})
 
@@ -542,7 +565,8 @@ class MCPServer:
             return MCPMessage(
                 id=message.id,
                 error={"code": -32602, "message": f"Resource not found: {uri}"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         resource = self.resources[uri]
 
@@ -554,10 +578,14 @@ class MCPServer:
                         "uri": resource.uri,
                         "mimeType": resource.mimeType,
                         "text": str(resource.content) if resource.content else "",
-                    }
-                ]
-            },
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
     async def _handle_list_prompts(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle list prompts request."""
@@ -569,8 +597,10 @@ class MCPServer:
                     "description": prompt.description,
                     "arguments": prompt.arguments,
                     "metadata": prompt.metadata,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return MCPMessage(id=message.id, result={"prompts": prompts_list})
 
@@ -584,7 +614,8 @@ class MCPServer:
             return MCPMessage(
                 id=message.id,
                 error={"code": -32602, "message": f"Prompt not found: {prompt_name}"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         prompt = self.prompts[prompt_name]
 
@@ -601,10 +632,14 @@ class MCPServer:
                     {
                         "role": "user",
                         "content": {"type": "text", "text": rendered_template},
-                    }
-                ],
-            },
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
     async def _handle_get_context(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle get context request."""
@@ -615,7 +650,8 @@ class MCPServer:
             return MCPMessage(
                 id=message.id,
                 error={"code": -32602, "message": f"Context not found: {context_id}"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         context = self.contexts[context_id]
 
@@ -625,7 +661,8 @@ class MCPServer:
             return MCPMessage(
                 id=message.id,
                 error={"code": -32602, "message": f"Context expired: {context_id}"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return MCPMessage(
             id=message.id,
@@ -637,9 +674,12 @@ class MCPServer:
                     "created_at": context.created_at.isoformat(),
                     "updated_at": context.updated_at.isoformat(),
                     "metadata": context.metadata,
-                }
-            },
-        )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
     async def _handle_set_context(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle set context request."""
@@ -662,7 +702,8 @@ class MCPServer:
             updated_at=datetime.now(),
             expires_at=expires_at,
             metadata=metadata,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.contexts[context_id] = context
 
@@ -678,7 +719,8 @@ class MCPServer:
             return MCPMessage(
                 id=message.id,
                 error={"code": -32602, "message": f"Context not found: {context_id}"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         context = self.contexts[context_id]
 
@@ -704,8 +746,10 @@ class MCPServer:
                     error={
                         "code": -32602,
                         "message": f"Context not found: {context_id}",
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
         else:
             # Clear all contexts
             cleared_count = len(self.contexts)
@@ -714,10 +758,10 @@ class MCPServer:
 
 
 class MCPClient:
-    """
-    Model Context Protocol (MCP) Client implementation.
+    """"""
+    Model Context Protocol (MCP) Client implementation.:
     Connects to MCP servers and provides standardized communication.
-    """
+    """"""
 
     def __init__(self, name: str = "TRAE.AI MCP Client"):
         self.logger = setup_logger("mcp_client")
@@ -750,14 +794,17 @@ class MCPClient:
                     "protocolVersion": "2024 - 11 - 05",
                     "capabilities": {},
                     "clientInfo": {"name": self.name, "version": "1.0.0"},
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             if init_response and "result" in init_response:
                 self.server_info = init_response["result"]
                 self.logger.info(
                     f"Connected to MCP server: {self.server_info.get('serverInfo', {}).get('name', 'Unknown')}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return True
 
             return False
@@ -813,7 +860,8 @@ class MCPClient:
         """Call a tool on the server."""
         response = await self.send_request(
             "tools/call", {"name": name, "arguments": arguments or {}}
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if response and "result" in response:
             return response["result"]
         return None
@@ -841,7 +889,8 @@ class MCPClient:
 
     async def set_context(
         self, context_id: str, name: str, data: Dict, expires_in: Optional[int] = None
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Set context on the server."""
         params = {"id": context_id, "name": name, "data": data}
         if expires_in:
@@ -862,8 +911,10 @@ if __name__ == "__main__":
                 MCPCapability.TOOLS,
                 MCPCapability.RESOURCES,
                 MCPCapability.CONTEXT,
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
         # Register a sample tool
 
@@ -877,10 +928,13 @@ if __name__ == "__main__":
                 inputSchema={
                     "type": "object",
                     "properties": {"message": {"type": "string"}},
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 handler=sample_tool,
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Register a sample resource
         server.register_resource(
@@ -891,8 +945,10 @@ if __name__ == "__main__":
                 mimeType="application/json",
                 resourceType=MCPResourceType.JSON,
                 content={"key": "value", "timestamp": datetime.now().isoformat()},
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
 
         print("MCP Server configured with sample tools and resources")
         print(f"Server info: {server.info.name} v{server.info.version}")
@@ -903,9 +959,10 @@ if __name__ == "__main__":
         # Start server (would run indefinitely in real usage)
         print("\\nTo start the server, run: await server.start()")
         print(
-            "To connect a client, use: client = MCPClient() \
-    and await client.connect('ws://localhost:8765')"
-        )
+            "To connect a client, use: client = MCPClient() \"
+#     and await client.connect('ws://localhost:8765')"
+# BRACKET_SURGEON: disabled
+#         )
 
     # Run test
     asyncio.run(test_mcp_protocol())

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Base44 Agent Protocol Implementation
 
 This module implements the formal agentic protocol from the base44_agent_handbook.pdf,
@@ -12,7 +12,7 @@ including:
 Author: TRAE.AI System
 Version: 1.0.0
 Date: 2024
-"""
+""""""
 
 import abc
 import logging
@@ -68,12 +68,12 @@ class FailsafeResult:
 
 
 class Base44AgentProtocol(abc.ABC):
-    """
+    """"""
     Base44 Agent Protocol Implementation
 
     This class implements the formal agentic protocol from base44_agent_handbook.pdf,
         providing structured agent behavior with built - in safety mechanisms.
-    """
+    """"""
 
     def __init__(self, agent_id: str, protocol_config: Optional[Dict[str, Any]] = None):
         self.agent_id = agent_id
@@ -92,8 +92,10 @@ class Base44AgentProtocol(abc.ABC):
                 "failed_confirmations": 0,
                 "mode_switches": 0,
                 "failsafe_activations": 0,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         self.logger.info(f"Base44 Agent Protocol initialized for {agent_id}")
 
@@ -105,32 +107,38 @@ class Base44AgentProtocol(abc.ABC):
                 "default_confirmation_level": ConfirmationLevel.MEDIUM,
                 "timeout_seconds": 30,
                 "max_rephrase_attempts": 3,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "mode_switching": {
                 "enabled": True,
                 "auto_switch_threshold": 0.7,
                 "mode_lock_duration": 300,  # 5 minutes
                 "hybrid_mode_default": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "failsafe": {
                 "enabled": True,
                 "risk_threshold": 0.8,
                 "auto_recovery": True,
                 "escalation_enabled": True,
                 "validation_steps": 3,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "protected_channels": {
                 "the_right_perspective": {
                     "enhanced_validation": True,
                     "required_confirmation": ConfirmationLevel.HIGH,
                     "mandatory_evidence_check": True,
                     "humor_style_validation": True,
-                }
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def process_with_protocol(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Process a task using the full Base44 protocol.
 
         Args:
@@ -138,7 +146,7 @@ class Base44AgentProtocol(abc.ABC):
 
         Returns:
             Protocol - validated task result
-        """
+        """"""
         task_id = task.get("id", f"task_{int(time.time())}")
 
         try:
@@ -155,7 +163,8 @@ class Base44AgentProtocol(abc.ABC):
                         "error": "Task confirmation failed",
                         "protocol_step": "rephrase_and_respond",
                         "details": confirmation_result,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Step 3: Determine and switch to appropriate mode
             optimal_mode = await self._determine_optimal_mode(task, context)
@@ -182,7 +191,8 @@ class Base44AgentProtocol(abc.ABC):
                 "protocol_context": context,
                 "mode_used": self.current_mode.value,
                 "agent_id": self.agent_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Protocol execution failed for task {task_id}: {str(e)}")
@@ -196,7 +206,8 @@ class Base44AgentProtocol(abc.ABC):
                 "protocol_step": "execution",
                 "failsafe_recovery": recovery_result,
                 "agent_id": self.agent_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         finally:
             # Clean up task context
@@ -204,7 +215,7 @@ class Base44AgentProtocol(abc.ABC):
                 del self.protocol_state["active_tasks"][task_id]
 
     async def _analyze_task_context(self, task: Dict[str, Any]) -> TaskContext:
-        """
+        """"""
         Analyze task to determine appropriate protocol context.
 
         Args:
@@ -212,7 +223,7 @@ class Base44AgentProtocol(abc.ABC):
 
         Returns:
             TaskContext with protocol requirements
-        """
+        """"""
         task_type = task.get("type", "unknown")
         requirements = task.get("requirements", {})
 
@@ -240,8 +251,10 @@ class Base44AgentProtocol(abc.ABC):
                     "enhanced_validation": True,
                     "evidence_required": True,
                     "humor_style_check": True,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return TaskContext(
             task_id=task.get("id", f"task_{int(time.time())}"),
@@ -255,13 +268,15 @@ class Base44AgentProtocol(abc.ABC):
                 "created_at": datetime.now().isoformat(),
                 "task_type": task_type,
                 "agent_id": self.agent_id,
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
     async def _execute_rephrase_and_respond(
         self, task: Dict[str, Any], context: TaskContext
     ) -> Dict[str, Any]:
-        """
+        """"""
         Execute the Rephrase - and - Respond confirmation protocol.
 
         Args:
@@ -270,7 +285,7 @@ class Base44AgentProtocol(abc.ABC):
 
         Returns:
             Confirmation result
-        """
+        """"""
         if context.confirmation_level == ConfirmationLevel.NONE:
             return {"confirmed": True, "method": "none_required"}
 
@@ -291,7 +306,8 @@ class Base44AgentProtocol(abc.ABC):
                     "rephrased_task": rephrased_task,
                     "validation_score": validation_score,
                     "confirmation_level": context.confirmation_level.name,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 self.protocol_state["performance_metrics"]["failed_confirmations"] += 1
                 return {
@@ -300,7 +316,8 @@ class Base44AgentProtocol(abc.ABC):
                     "error": "Rephrase validation failed",
                     "validation_score": validation_score,
                     "threshold": threshold,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             self.logger.error(f"Rephrase - and - Respond failed: {str(e)}")
@@ -308,12 +325,14 @@ class Base44AgentProtocol(abc.ABC):
                 "confirmed": False,
                 "method": "rephrase_validation",
                 "error": str(e),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _determine_optimal_mode(
         self, task: Dict[str, Any], context: TaskContext
-    ) -> AgentMode:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> AgentMode:
+        """"""
         Determine the optimal agent mode for the task.
 
         Args:
@@ -322,7 +341,7 @@ class Base44AgentProtocol(abc.ABC):
 
         Returns:
             Optimal AgentMode
-        """
+        """"""
         task_type = task.get("type", "").lower()
         requirements = task.get("requirements", {})
 
@@ -336,8 +355,10 @@ class Base44AgentProtocol(abc.ABC):
                 "gather",
                 "find",
                 "search",
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         needs_implementation = any(
             keyword in str(task).lower()
@@ -348,8 +369,10 @@ class Base44AgentProtocol(abc.ABC):
                 "generate",
                 "execute",
                 "deploy",
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         # Mode determination logic
         if needs_research and not needs_implementation:
@@ -363,17 +386,18 @@ class Base44AgentProtocol(abc.ABC):
             return AgentMode.HYBRID
 
     async def _switch_agent_mode(self, target_mode: AgentMode, context: TaskContext):
-        """
+        """"""
         Switch agent to the target operational mode.
 
         Args:
             target_mode: Target AgentMode
             context: Task context
-        """
+        """"""
         if self.current_mode != target_mode:
             self.logger.info(
                 f"Switching from {self.current_mode.value} to {target_mode.value} mode"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Record mode switch
             self.protocol_state["mode_history"].append(
@@ -383,8 +407,10 @@ class Base44AgentProtocol(abc.ABC):
                     "timestamp": datetime.now().isoformat(),
                     "task_id": context.task_id,
                     "reason": "optimal_mode_determination",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
             # Update current mode
             self.current_mode = target_mode
@@ -395,8 +421,9 @@ class Base44AgentProtocol(abc.ABC):
 
     async def _execute_failsafe_validation(
         self, task: Dict[str, Any], context: TaskContext
-    ) -> FailsafeResult:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> FailsafeResult:
+        """"""
         Execute comprehensive failsafe validation.
 
         Args:
@@ -405,7 +432,7 @@ class Base44AgentProtocol(abc.ABC):
 
         Returns:
             FailsafeResult with safety assessment
-        """
+        """"""
         risk_factors = []
         mitigation_actions = []
         confidence_score = 1.0
@@ -452,7 +479,8 @@ class Base44AgentProtocol(abc.ABC):
                 mitigation_actions=mitigation_actions,
                 confidence_score=confidence_score,
                 recommendations=self._generate_safety_recommendations(risk_factors),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Failsafe validation error: {str(e)}")
@@ -462,7 +490,8 @@ class Base44AgentProtocol(abc.ABC):
                 mitigation_actions=["manual_review_required"],
                 confidence_score=0.0,
                 recommendations=["Immediate manual intervention required"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     # Abstract methods that must be implemented by concrete agents
     @abc.abstractmethod
@@ -480,7 +509,8 @@ class Base44AgentProtocol(abc.ABC):
     @abc.abstractmethod
     async def _validate_rephrase_accuracy(
         self, original: Dict[str, Any], rephrased: Dict[str, Any]
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Validate the accuracy of the rephrased task."""
         pass
 
@@ -514,7 +544,8 @@ class Base44AgentProtocol(abc.ABC):
             "critical",
             "sensitive",
             "private",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         task_str = str(task).lower()
         risk_count = sum(1 for indicator in risk_indicators if indicator in task_str)
@@ -532,7 +563,8 @@ class Base44AgentProtocol(abc.ABC):
 
     def _determine_confirmation_level(
         self, task: Dict[str, Any], risk_level: str
-    ) -> ConfirmationLevel:
+# BRACKET_SURGEON: disabled
+#     ) -> ConfirmationLevel:
         """Determine required confirmation level."""
         if risk_level == "high":
             return ConfirmationLevel.HIGH
@@ -549,7 +581,8 @@ class Base44AgentProtocol(abc.ABC):
             "the_right_perspective",
             "political",
             "news",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         return any(keyword in task_str for keyword in protected_keywords)
 
     async def _validate_protected_channel_requirements(
@@ -573,7 +606,8 @@ class Base44AgentProtocol(abc.ABC):
             "valid": len(violations) == 0,
             "violations": violations,
             "required_actions": required_actions,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _check_resource_availability(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Check if sufficient resources are available for task execution."""
@@ -587,7 +621,8 @@ class Base44AgentProtocol(abc.ABC):
             "all_available": True,
             "missing_dependencies": [],
             "available_dependencies": dependencies,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _generate_safety_recommendations(self, risk_factors: List[str]) -> List[str]:
         """Generate safety recommendations based on identified risk factors."""
@@ -612,23 +647,28 @@ class Base44AgentProtocol(abc.ABC):
                 "research_enabled": True,
                 "execution_limited": True,
                 "validation_enhanced": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             AgentMode.CODER: {
                 "research_limited": True,
                 "execution_enabled": True,
                 "code_validation": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             AgentMode.HYBRID: {
                 "research_enabled": True,
                 "execution_enabled": True,
                 "balanced_approach": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             AgentMode.FAILSAFE: {
                 "all_operations_limited": True,
                 "validation_maximum": True,
                 "manual_approval_required": True,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         config = mode_configs.get(mode, {})
         self.logger.info(f"Configured settings for {mode.value} mode: {config}")
@@ -667,7 +707,8 @@ class Base44AgentProtocol(abc.ABC):
         """Handle failsafe trigger with appropriate recovery actions."""
         self.logger.warning(
             f"Failsafe triggered for task {context.task_id}: {failsafe_result.risk_factors}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Switch to failsafe mode
         await self._switch_agent_mode(AgentMode.FAILSAFE, context)
@@ -681,7 +722,8 @@ class Base44AgentProtocol(abc.ABC):
             "confidence_score": failsafe_result.confidence_score,
             "recommendations": failsafe_result.recommendations,
             "requires_manual_review": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _execute_failsafe_recovery(self, task: Dict[str, Any], error: str) -> Dict[str, Any]:
         """Execute failsafe recovery procedures."""
@@ -690,14 +732,16 @@ class Base44AgentProtocol(abc.ABC):
             "preserved_task_state",
             "initiated_rollback_procedures",
             "notified_monitoring_systems",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         return {
             "recovery_initiated": True,
             "actions_taken": recovery_actions,
             "error_logged": True,
             "manual_intervention_required": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _update_protocol_metrics(self, outcome: str, context: TaskContext):
         """Update protocol performance metrics."""
@@ -724,5 +768,7 @@ class Base44AgentProtocol(abc.ABC):
                 self.protocol_state["mode_history"][-1]
                 if self.protocol_state["mode_history"]
                 else None
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }

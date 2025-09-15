@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Comprehensive Monitoring System for TRAE.AI Production
 Detects stuck processes, initialization loops, and connection failures
-"""
+""""""
 
 import asyncio
 import json
@@ -25,7 +25,9 @@ logging.basicConfig(
     level = logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[logging.FileHandler("monitoring.log"), logging.StreamHandler()],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -43,7 +45,8 @@ class ProcessMonitor:
 
     def detect_initialization_loop(
         self, process_name: str, log_patterns: List[str]
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Detect if a process is stuck in an initialization loop"""
         try:
             # Check for repeated initialization messages in logs
@@ -64,17 +67,22 @@ class ProcessMonitor:
                         while (
                             self.process_history[process_name]
                             and self.process_history[process_name][0] < cutoff_time
-                        ):
+# BRACKET_SURGEON: disabled
+#                         ):
                             self.process_history[process_name].popleft()
 
                         # Check for loop pattern (multiple restarts in short time)
                         if len(self.process_history[process_name]) >= 3:
                             logger.warning(
                                 f"🔄 Initialization loop detected for {process_name}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             logger.warning(
                                 f"Process restarted {len(self.process_history[process_name])} times in {self.loop_detection_window}s"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             return True
 
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
@@ -95,7 +103,9 @@ class ProcessMonitor:
                     if process_name in " ".join(proc.info["cmdline"] or []):
                         logger.info(
                             f"🔪 Killing stuck process: {process_name} (PID: {proc.info['pid']})"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         proc.kill()
                         killed = True
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
@@ -114,7 +124,8 @@ class ServiceHealthMonitor:
         self.services = {
             "main_api": {"url": "http://localhost:8000 / health", "timeout": 5},
         "minimal_server": {"url": "http://localhost:8000 / health", "timeout": 3},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.health_history = defaultdict(list)
 
 
@@ -133,7 +144,8 @@ class ServiceHealthMonitor:
                         "status_code": response.status_code,
                         "response_time": response.elapsed.total_seconds(),
                         "timestamp": datetime.now().isoformat(),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 if healthy:
                     try:
@@ -149,7 +161,8 @@ class ServiceHealthMonitor:
                     "healthy": False,
                     "error": str(e),
                     "timestamp": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def check_all_services(self) -> Dict[str, Any]:
@@ -167,7 +180,9 @@ class ServiceHealthMonitor:
             if len(self.health_history[service_name]) > 100:
                 self.health_history[service_name] = self.health_history[service_name][
                     -100:
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         return results
 
@@ -183,7 +198,8 @@ class SelfHealingSystem:
             "restart_minimal_server": self._restart_minimal_server,
                 "kill_stuck_main_server": self._kill_stuck_main_server,
                 "start_emergency_server": self._start_emergency_server,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.last_healing_action = {}
         self.healing_cooldown = 60  # 1 minute between healing actions
 
@@ -201,7 +217,9 @@ class SelfHealingSystem:
             subprocess.Popen(
                 ["python3", "minimal_server.py"],
                     cwd="/Users / thomasbrianreynolds / online production",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             logger.info("✅ Minimal server restart initiated")
             return True
@@ -236,7 +254,9 @@ class SelfHealingSystem:
             subprocess.Popen(
                 ["python3", "minimal_server.py"],
                     cwd="/Users / thomasbrianreynolds / online production",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             logger.info("✅ Emergency server started")
             return True
@@ -254,7 +274,8 @@ class SelfHealingSystem:
                 "actions_taken": [],
                 "issues_detected": [],
                 "service_status": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Check service health
         service_results = await self.health_monitor.check_all_services()
@@ -263,14 +284,16 @@ class SelfHealingSystem:
         # Check for initialization loops
         if self.process_monitor.detect_initialization_loop(
             "main.py", ["Agent", "initialized"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             healing_report["issues_detected"].append("initialization_loop_main_py")
 
             # Apply healing if cooldown has passed
             if (
                 current_time - self.last_healing_action.get("kill_stuck_main_server", 0)
                 > self.healing_cooldown
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
                 if self._kill_stuck_main_server():
                     healing_report["actions_taken"].append("killed_stuck_main_server")
@@ -279,7 +302,9 @@ class SelfHealingSystem:
         # Check if no services are healthy
         all_unhealthy = all(
             not result.get("healthy", False) for result in service_results.values()
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if all_unhealthy:
             healing_report["issues_detected"].append("all_services_unhealthy")
@@ -288,7 +313,8 @@ class SelfHealingSystem:
             if (
                 current_time - self.last_healing_action.get("start_emergency_server", 0)
                 > self.healing_cooldown
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
                 if self._start_emergency_server():
                     healing_report["actions_taken"].append("started_emergency_server")
@@ -319,8 +345,10 @@ class MonitoringSystem:
 
                 # Log significant events
                 if report["issues_detected"] or report["actions_taken"]:
-                    logger.info(f"📊 Monitoring Report: {json.dumps(report,
-    indent = 2)}")
+                    logger.info(f"📊 Monitoring Report: {json.dumps(report,"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     indent = 2)}")
 
                 # Save report to file
                 with open("monitoring_reports.jsonl", "a") as f:

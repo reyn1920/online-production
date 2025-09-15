@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Distributed Processing Configuration
-
+""""""
 Centralized configuration management for the distributed processing system.
 Handles environment - specific settings, worker configurations, and security.
+"""""""""
+
+Distributed Processing Configuration
+
+
+
 """
 
 import os
@@ -85,29 +91,40 @@ class MonitoringConfig:
 
 
 class DistributedConfig:
-    """Main configuration class for distributed processing"""
+    """
+Main configuration class for distributed processing
+
 
     def __init__(self, config_file: Optional[str] = None):
         self.config_file = config_file or self._get_default_config_path()
         self._load_config()
 
     def _get_default_config_path(self) -> str:
-        """Get default configuration file path"""
+        
+"""Get default configuration file path"""
         base_dir = Path(__file__).parent.parent.parent
         return str(base_dir / "config" / "distributed.yaml")
 
     def _load_config(self):
-        """Load configuration from file and environment"""
+        """
+Load configuration from file and environment
+
         # Default configuration
+        
+"""
         self.broker = BrokerConfig(
+        """
             type=os.getenv("CELERY_BROKER_TYPE", "redis"),
+        """
+        self.broker = BrokerConfig(
+        """
             host=os.getenv("CELERY_BROKER_HOST", "localhost"),
             port=int(os.getenv("CELERY_BROKER_PORT", "6379")),
             username=os.getenv("CELERY_BROKER_USERNAME"),
             password=os.getenv("CELERY_BROKER_PASSWORD"),
             database=int(os.getenv("CELERY_BROKER_DB", "0")),
             ssl=os.getenv("CELERY_BROKER_SSL", "false").lower() == "true",
-        )
+         )
 
         self.security = SecurityConfig(
             enable_auth=os.getenv("ENABLE_AUTH", "true").lower() == "true",
@@ -115,15 +132,15 @@ class DistributedConfig:
             token_expiry=int(os.getenv("TOKEN_EXPIRY", "3600")),
             allowed_hosts=(
                 os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else []
-            ),
-        )
+             ),
+         )
 
         self.monitoring = MonitoringConfig(
             enable_prometheus=os.getenv("ENABLE_PROMETHEUS", "true").lower() == "true",
             prometheus_port=int(os.getenv("PROMETHEUS_PORT", "9090")),
             log_level=os.getenv("LOG_LEVEL", "INFO"),
             log_format=os.getenv("LOG_FORMAT", "json"),
-        )
+         )
 
         # Load from YAML file if exists
         if os.path.exists(self.config_file):
@@ -163,11 +180,28 @@ class DistributedConfig:
             print(f"Warning: Could not load config file {self.config_file}: {e}")
 
     def _detect_worker_config(self) -> WorkerConfig:
-        """Auto - detect worker configuration based on system"""
-        system = platform.system().lower()
-        machine = platform.machine().lower()
+        """
+Auto - detect worker configuration based on system
 
+        system = platform.system().lower()
+       
+""""""
+
+        machine = platform.machine().lower()
+       
+
+        
+       
+"""
         # Detect capabilities based on system
+       """
+
+        
+       
+
+        machine = platform.machine().lower()
+       
+""""""
         capabilities = ["general"]
 
         if system == "darwin":
@@ -190,7 +224,7 @@ class DistributedConfig:
                 "max_cpu_percent": 80,
                 "max_memory_gb": max(1, memory_gb * 0.7),
                 "max_disk_usage_gb": 10,
-            }
+             }
 
             max_workers = max(1, cpu_count - 1)
 
@@ -199,7 +233,7 @@ class DistributedConfig:
                 "max_cpu_percent": 80,
                 "max_memory_gb": 4,
                 "max_disk_usage_gb": 10,
-            }
+             }
             max_workers = 2
 
         return WorkerConfig(
@@ -208,7 +242,7 @@ class DistributedConfig:
             max_workers=max_workers,
             capabilities=capabilities,
             resource_limits=resource_limits,
-        )
+         )
 
     def get_celery_config(self) -> Dict[str, Any]:
         """Generate Celery configuration dictionary"""
@@ -225,44 +259,79 @@ class DistributedConfig:
             "task_routes": self._generate_task_routes(),
             "worker_send_task_events": True,
             "task_send_sent_event": True,
-        }
+         }
 
     def _generate_task_routes(self) -> Dict[str, Dict[str, str]]:
-        """Generate task routing configuration"""
-        routes = {}
+        """
+Generate task routing configuration
 
+       
+""""""
+
+        routes = {}
+       
+
+        
+       
+"""
         # Route tasks based on capabilities
+       """
+
+        
+       
+
+        routes = {}
+       
+""""""
         if "video_editing" in self.worker.capabilities:
             routes.update(
                 {
                     "video_tasks.*": {"queue": "video_processing"},
                     "davinci_resolve.*": {"queue": "video_processing"},
                     "obs.*": {"queue": "video_processing"},
-                }
-            )
+                 }
+             )
 
         if "audio_processing" in self.worker.capabilities:
             routes.update(
                 {
                     "audio_tasks.*": {"queue": "audio_processing"},
                     "audacity.*": {"queue": "audio_processing"},
-                }
-            )
+                 }
+             )
 
         if "image_processing" in self.worker.capabilities:
             routes.update(
                 {
                     "image_tasks.*": {"queue": "image_processing"},
                     "gimp.*": {"queue": "image_processing"},
-                }
-            )
+                 }
+             )
 
         return routes
 
     def save_config(self, file_path: Optional[str] = None):
-        """Save current configuration to YAML file"""
-        file_path = file_path or self.config_file
+        """
+Save current configuration to YAML file
 
+       
+""""""
+
+        file_path = file_path or self.config_file
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        file_path = file_path or self.config_file
+       
+""""""
         config_data = {
             "broker": {
                 "type": self.broker.type,
@@ -270,7 +339,7 @@ class DistributedConfig:
                 "port": self.broker.port,
                 "database": self.broker.database,
                 "ssl": self.broker.ssl,
-            },
+             },
             "worker": {
                 "name": self.worker.name,
                 "platform": self.worker.platform,
@@ -278,19 +347,19 @@ class DistributedConfig:
                 "capabilities": self.worker.capabilities,
                 "resource_limits": self.worker.resource_limits,
                 "queues": self.worker.queues,
-            },
+             },
             "security": {
                 "enable_auth": self.security.enable_auth,
                 "token_expiry": self.security.token_expiry,
                 "allowed_hosts": self.security.allowed_hosts,
-            },
+             },
             "monitoring": {
                 "enable_prometheus": self.monitoring.enable_prometheus,
                 "prometheus_port": self.monitoring.prometheus_port,
                 "log_level": self.monitoring.log_level,
                 "log_format": self.monitoring.log_format,
-            },
-        }
+             },
+         }
 
         # Ensure directory exists
         os.makedirs(os.path.dirname(file_path), exist_ok=True)

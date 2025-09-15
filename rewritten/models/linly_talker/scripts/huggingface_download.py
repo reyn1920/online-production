@@ -9,4 +9,5 @@ snapshot_download(
     local_dir="Kedreamix/Linly - Talker",
     local_dir_use_symlinks=False,
     #   proxies={"https": "http://localhost:7890"}
-)
+# BRACKET_SURGEON: disabled
+# )

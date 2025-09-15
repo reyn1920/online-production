@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI YouTube Integration Module
-
+""""""
 Provides secure YouTube API integration with authentication, video upload,
 analytics, and comprehensive error handling for automated content management.
+"""
+
+TRAE.AI YouTube Integration Module
+
+
+
+""""""
+
 
 Features:
+
+
+
 - OAuth 2.0 authentication with secure credential management
 - Video upload with metadata and thumbnail support
 - Channel analytics and performance tracking
@@ -14,6 +25,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import os
@@ -101,7 +113,9 @@ class VideoMetadata:
 
 @dataclass
 class UploadResult:
-    """Result from video upload operation."""
+    """
+Result from video upload operation.
+
 
     status: str
     video_id: Optional[str] = None
@@ -109,12 +123,20 @@ class UploadResult:
     upload_time: Optional[str] = None
     privacy_status: Optional[str] = None
     error: Optional[str] = None
+   
+""""""
+
     processing_status: Optional[str] = None
+   
 
-
+    
+   
+"""
 @dataclass
 class ChannelAnalytics:
-    """YouTube channel analytics data."""
+    """
+YouTube channel analytics data.
+
 
     subscriber_count: int
     view_count: int
@@ -126,15 +148,34 @@ class ChannelAnalytics:
     likes: int
     dislikes: int
     shares: int
+   
+""""""
+
     comments: int
+   
 
-
+    
+   
+"""
 class YouTubeIntegration:
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
     Comprehensive YouTube API integration with secure authentication,
         video upload, and analytics capabilities.
-    """
+   
 
+    
+   
+""""""
+    
+   """
     def __init__(self, secrets_db_path: str = "data/secrets.sqlite"):
         self.logger = setup_logger("youtube_integration")
         self.secret_store = SecretStore(secrets_db_path)
@@ -143,7 +184,7 @@ class YouTubeIntegration:
         if not all([Credentials, build, HttpError, MediaFileUpload]):
             self.logger.warning(
                 "Google API dependencies not available. YouTube integration will be limited."
-            )
+             )
             self.service = None
             self.credentials = {}
             return
@@ -163,7 +204,7 @@ class YouTubeIntegration:
         self.session = requests.Session()
         retry_strategy = Retry(
             total=3, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504]
-        )
+         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self.session.mount("http://", adapter)
         self.session.mount("https://", adapter)
@@ -171,17 +212,28 @@ class YouTubeIntegration:
         self.logger.info("YouTube integration initialized successfully")
 
     def _load_credentials(self) -> Dict[str, str]:
-        """Load YouTube API credentials from secure storage."""
+        """
+Load YouTube API credentials from secure storage.
+
         try:
+            
+"""
             with self.secret_store as store:
+            """
                 credentials = {
                     "api_key": store.get_secret("YOUTUBE_API_KEY"),
                     "client_id": store.get_secret("YOUTUBE_CLIENT_ID"),
                     "client_secret": store.get_secret("YOUTUBE_CLIENT_SECRET"),
                     "refresh_token": store.get_secret("YOUTUBE_REFRESH_TOKEN"),
                     "access_token": store.get_secret("YOUTUBE_ACCESS_TOKEN"),
-                }
+                 }
+            """
 
+            with self.secret_store as store:
+            
+
+           
+""""""
                 missing_creds = [k for k, v in credentials.items() if not v]
                 if missing_creds:
                     self.logger.warning(f"Missing YouTube credentials: {missing_creds}")
@@ -193,10 +245,22 @@ class YouTubeIntegration:
             return {}
 
     def _initialize_service(self) -> bool:
-        """Initialize YouTube service with OAuth authentication."""
+        """
+Initialize YouTube service with OAuth authentication.
+
+        
+"""
         try:
+        """"""
             if not self.credentials.get("access_token"):
                 self.logger.warning("No access token available, service not initialized")
+        """
+
+        try:
+        
+
+       
+""""""
                 return False
 
             # Verify token validity
@@ -213,7 +277,7 @@ class YouTubeIntegration:
                 token_uri="https://oauth2.googleapis.com/token",
                 client_id=self.credentials.get("client_id"),
                 client_secret=self.credentials.get("client_secret"),
-            )
+             )
 
             # Build the YouTube service
             self.youtube_service = build("youtube", "v3", credentials=creds)
@@ -225,19 +289,30 @@ class YouTubeIntegration:
             return False
 
     def _verify_access_token(self) -> bool:
-        """Verify if the current access token is valid."""
+        """
+Verify if the current access token is valid.
+
+        
+"""
         try:
+        """
             headers = {
                 "Authorization": f'Bearer {self.credentials["access_token"]}',
                 "Accept": "application/json",
-            }
+             }
+        """
 
+        try:
+        
+
+       
+""""""
             response = self.session.get(
                 f"{self.base_url}/channels",
                 headers=headers,
                 params={"part": "id", "mine": "true"},
                 timeout=10,
-            )
+             )
 
             return response.status_code == 200
 
@@ -246,10 +321,22 @@ class YouTubeIntegration:
             return False
 
     def _refresh_access_token(self) -> bool:
-        """Refresh the access token using the refresh token."""
+        """
+Refresh the access token using the refresh token.
+
+        
+"""
         try:
+        """"""
             if not self.credentials.get("refresh_token"):
                 self.logger.error("No refresh token available")
+        """
+
+        try:
+        
+
+       
+""""""
                 return False
 
             data = {
@@ -257,7 +344,7 @@ class YouTubeIntegration:
                 "client_secret": self.credentials["client_secret"],
                 "refresh_token": self.credentials["refresh_token"],
                 "grant_type": "refresh_token",
-            }
+             }
 
             response = self.session.post(self.oauth_url, data=data, timeout=10)
 
@@ -281,13 +368,25 @@ class YouTubeIntegration:
             return False
 
     def upload_video(self, video_path: str, metadata: VideoMetadata) -> Dict[str, Any]:
-        """Upload video to YouTube with real API integration using MediaFileUpload."""
+        """
+Upload video to YouTube with real API integration using MediaFileUpload.
+
+        
+"""
         try:
+        """"""
             if not all([Credentials, build, HttpError, MediaFileUpload]):
+        """
+
+        try:
+        
+
+       
+""""""
                 return {
                     "status": "failed",
                     "error": "Google API dependencies not available",
-                }
+                 }
 
             if not self.youtube_service:
                 return {"status": "failed", "error": "YouTube service not initialized"}
@@ -304,35 +403,35 @@ class YouTubeIntegration:
                     "categoryId": metadata.category_id,
                     "defaultLanguage": metadata.default_language,
                     "defaultAudioLanguage": metadata.default_audio_language,
-                },
+                 },
                 "status": {
                     "privacyStatus": metadata.privacy_status,
                     "selfDeclaredMadeForKids": False,
-                },
-            }
+                 },
+             }
 
             # Add scheduled publish time if provided
             if (
                 metadata.scheduled_publish_time
                 and metadata.privacy_status == VideoPrivacy.SCHEDULED.value
-            ):
+#             ):
                 body["status"]["publishAt"] = metadata.scheduled_publish_time.isoformat() + "Z"
 
             # Create MediaFileUpload object
             media = MediaFileUpload(
                 video_path, chunksize=-1, resumable=True  # Upload in a single request
-            )
+             )
 
             if not os.path.exists(video_path):
                 return {
                     "status": "failed",
                     "error": f"Video file not found at {video_path}",
-                }
+                 }
             media = MediaFileUpload(video_path, chunksize=-1, resumable=True)
 
             request = self.youtube_service.videos().insert(
                 part=",".join(body.keys()), body=body, media_body=media
-            )
+             )
 
             response = request.execute()
 
@@ -346,21 +445,38 @@ class YouTubeIntegration:
                 "title": response["snippet"]["title"],
                 "upload_time": datetime.now().isoformat(),
                 "privacy_status": response["status"]["privacyStatus"],
-            }
+             }
         except Exception as e:
             return {"status": "upload_failed", "error": str(e)}
 
     def _resumable_upload(self, video_path: str, metadata: Dict[str, Any]) -> Dict[str, Any]:
-        """Perform resumable upload for large video files."""
+        """
+Perform resumable upload for large video files.
+
         try:
+           
+""""""
+
             # Step 1: Initiate resumable upload
+           
+
+            
+           
+"""
             headers = {
                 "Authorization": f'Bearer {self.credentials["access_token"]}',
                 "Content - Type": "application/json",
                 "X - Upload - Content - Type": "video/*",
                 "X - Upload - Content - Length": str(os.path.getsize(video_path)),
-            }
+             }
+           """
 
+            
+           
+
+            # Step 1: Initiate resumable upload
+           
+""""""
             params = {"uploadType": "resumable", "part": "snippet,status"}
 
             response = self.session.post(
@@ -369,7 +485,7 @@ class YouTubeIntegration:
                 params=params,
                 json=metadata,
                 timeout=30,
-            )
+             )
 
             if response.status_code != 200:
                 raise Exception(f"Upload initiation failed: {response.status_code}")
@@ -391,14 +507,14 @@ class YouTubeIntegration:
                     headers = {
                         "Content - Range": f"bytes {uploaded}-{chunk_end}/{file_size}",
                         "Content - Type": "video/*",
-                    }
+                     }
 
                     response = self.session.put(
                         upload_url,
                         headers=headers,
                         data=chunk_data,
                         timeout=300,  # 5 minutes for chunk upload
-                    )
+                     )
 
                     if response.status_code == 200:
                         # Upload complete
@@ -407,7 +523,7 @@ class YouTubeIntegration:
                             "status": "uploaded",
                             "video_id": result["id"],
                             "processing_status": result.get("status", {}).get("uploadStatus"),
-                        }
+                         }
                     elif response.status_code == 308:
                         # Continue upload
                         uploaded = chunk_end + 1
@@ -422,10 +538,22 @@ class YouTubeIntegration:
             return {"status": "failed", "error": str(e)}
 
     def _upload_thumbnail(self, video_id: str, thumbnail_path: str) -> bool:
-        """Upload custom thumbnail for a video using Google API client."""
+        """
+Upload custom thumbnail for a video using Google API client.
+
+        
+"""
         try:
+        """"""
             if not os.path.exists(thumbnail_path):
                 self.logger.error(f"Thumbnail file not found: {thumbnail_path}")
+        """
+
+        try:
+        
+
+       
+""""""
                 return False
 
             # Create MediaFileUpload for thumbnail
@@ -434,7 +562,7 @@ class YouTubeIntegration:
             # Upload thumbnail using YouTube API
             request = self.youtube_service.thumbnails().set(videoId=video_id, media_body=media)
 
-            response = request.execute()
+            request.execute()
 
             self.logger.info(f"Thumbnail uploaded successfully for video {video_id}")
             return True
@@ -449,16 +577,28 @@ class YouTubeIntegration:
     def get_channel_analytics(
         self, start_date: datetime, end_date: datetime
     ) -> Optional[ChannelAnalytics]:
-        """Fetch channel analytics for a date range."""
+        """
+Fetch channel analytics for a date range.
+
+        
+"""
         try:
+        """"""
             if not self.youtube_service:
                 self.logger.error("YouTube service not initialized")
+        """
+
+        try:
+        
+
+       
+""""""
                 return None
 
             headers = {
                 "Authorization": f'Bearer {self.credentials["access_token"]}',
                 "Accept": "application/json",
-            }
+             }
 
             # Get channel statistics
             response = self.session.get(
@@ -466,7 +606,7 @@ class YouTubeIntegration:
                 headers=headers,
                 params={"part": "statistics", "mine": "true"},
                 timeout=10,
-            )
+             )
 
             if response.status_code != 200:
                 raise Exception(f"Analytics request failed: {response.status_code}")
@@ -492,20 +632,31 @@ class YouTubeIntegration:
                 dislikes=analytics_data.get("dislikes", 0),
                 shares=analytics_data.get("shares", 0),
                 comments=analytics_data.get("comments", 0),
-            )
+             )
 
         except Exception as e:
             self.logger.error(f"Failed to fetch channel analytics: {e}")
             return None
 
     def _fetch_analytics_data(self, start_date: datetime, end_date: datetime) -> Dict[str, Any]:
-        """Fetch detailed analytics data from YouTube Analytics API."""
+        """
+Fetch detailed analytics data from YouTube Analytics API.
+
+        
+"""
         try:
+        """
             headers = {
                 "Authorization": f'Bearer {self.credentials["access_token"]}',
                 "Accept": "application/json",
-            }
+             }
+        """
 
+        try:
+        
+
+       
+""""""
             # Format dates for API
             start_str = start_date.strftime("%Y-%m-%d")
             end_str = end_date.strftime("%Y-%m-%d")
@@ -520,9 +671,9 @@ class YouTubeIntegration:
                     "endDate": end_str,
                     "metrics": "estimatedMinutesWatched,averageViewDuration,subscribersGained,subscribersLost,likes,dislikes,shares,comments",
                     "dimensions": "day",
-                },
+                 },
                 timeout=10,
-            )
+             )
 
             if response.status_code == 200:
                 data = response.json()
@@ -540,7 +691,7 @@ class YouTubeIntegration:
                         "dislikes": sum(row[6] for row in rows if len(row) > 6),
                         "shares": sum(row[7] for row in rows if len(row) > 7),
                         "comments": sum(row[8] for row in rows if len(row) > 8),
-                    }
+                     }
                     return totals
 
             # Return empty data if API call fails or no data available
@@ -553,7 +704,7 @@ class YouTubeIntegration:
                 "dislikes": 0,
                 "shares": 0,
                 "comments": 0,
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Failed to fetch analytics data: {e}")
@@ -566,25 +717,36 @@ class YouTubeIntegration:
                 "dislikes": 0,
                 "shares": 0,
                 "comments": 0,
-            }
+             }
 
     def get_video_details(self, video_id: str) -> Optional[Dict[str, Any]]:
-        """Get detailed information about a specific video."""
+        """
+Get detailed information about a specific video.
+
+        
+"""
         try:
+        """
             headers = {
                 "Authorization": f'Bearer {self.credentials["access_token"]}',
                 "Accept": "application/json",
-            }
+             }
+        """
 
+        try:
+        
+
+       
+""""""
             response = self.session.get(
                 f"{self.base_url}/videos",
                 headers=headers,
                 params={
                     "part": "snippet,statistics,status,contentDetails",
                     "id": video_id,
-                },
+                 },
                 timeout=10,
-            )
+             )
 
             if response.status_code == 200:
                 data = response.json()
@@ -598,16 +760,28 @@ class YouTubeIntegration:
             return None
 
     def update_video_metadata(self, video_id: str, metadata: VideoMetadata) -> bool:
-        """Update metadata for an existing video."""
+        """
+Update metadata for an existing video.
+
+        
+"""
         try:
+        """"""
             if not self.youtube_service:
                 self.logger.error("YouTube service not initialized")
+        """
+
+        try:
+        
+
+       
+""""""
                 return False
 
             headers = {
                 "Authorization": f'Bearer {self.credentials["access_token"]}',
                 "Content - Type": "application/json",
-            }
+             }
 
             update_data = {
                 "id": video_id,
@@ -616,9 +790,9 @@ class YouTubeIntegration:
                     "description": metadata.description,
                     "tags": metadata.tags,
                     "categoryId": metadata.category_id,
-                },
+                 },
                 "status": {"privacyStatus": metadata.privacy_status},
-            }
+             }
 
             response = self.session.put(
                 f"{self.base_url}/videos",
@@ -626,7 +800,7 @@ class YouTubeIntegration:
                 params={"part": "snippet,status"},
                 json=update_data,
                 timeout=30,
-            )
+             )
 
             if response.status_code == 200:
                 self.logger.info(f"Video metadata updated successfully: {video_id}")
@@ -640,10 +814,22 @@ class YouTubeIntegration:
             return False
 
     def delete_video(self, video_id: str) -> bool:
-        """Delete a video from YouTube."""
+        """
+Delete a video from YouTube.
+
+        
+"""
         try:
+        """"""
             if not self.youtube_service:
                 self.logger.error("YouTube service not initialized")
+        """
+
+        try:
+        
+
+       
+""""""
                 return False
 
             headers = {"Authorization": f'Bearer {self.credentials["access_token"]}'}
@@ -653,7 +839,7 @@ class YouTubeIntegration:
                 headers=headers,
                 params={"id": video_id},
                 timeout=30,
-            )
+             )
 
             if response.status_code == 204:
                 self.logger.info(f"Video deleted successfully: {video_id}")
@@ -667,16 +853,27 @@ class YouTubeIntegration:
             return False
 
     def search_videos(self, query: str, max_results: int = 25) -> List[Dict[str, Any]]:
-        """Search for videos on YouTube."""
+        """
+Search for videos on YouTube.
+
+        
+"""
         try:
+        """
             params = {
                 "part": "snippet",
                 "q": query,
                 "type": "video",
                 "maxResults": max_results,
                 "key": self.credentials.get("api_key"),
-            }
+             }
+        """
 
+        try:
+        
+
+       
+""""""
             response = self.session.get(f"{self.base_url}/search", params=params, timeout=10)
 
             if response.status_code == 200:
@@ -693,7 +890,9 @@ class YouTubeIntegration:
     def get_video_comments(
         self, video_id: str, max_results: int = 100, order: str = "time"
     ) -> List[Dict[str, Any]]:
-        """Fetch comments for a specific video.
+        """
+Fetch comments for a specific video.
+
 
         Args:
             video_id: YouTube video ID
@@ -702,10 +901,30 @@ class YouTubeIntegration:
 
         Returns:
             List of comment data dictionaries
-        """
+       
+""""""
+
+       
+
+        
+       
+"""
         comments = []
+       """
+
+        
+       
 
         try:
+       
+""""""
+
+        comments = []
+       
+
+        
+       
+"""
             if not self.youtube_service:
                 self.logger.error("YouTube service not initialized")
                 return comments
@@ -717,7 +936,7 @@ class YouTubeIntegration:
                 maxResults=min(max_results, 100),  # API limit is 100
                 order=order,
                 textFormat="plainText",
-            )
+             )
 
             response = request.execute()
 
@@ -726,7 +945,7 @@ class YouTubeIntegration:
                     "id": item["id"],
                     "snippet": item["snippet"],
                     "replies": item.get("replies", {}).get("comments", []),
-                }
+                 }
                 comments.append(comment_data)
 
             # Handle pagination if more results needed
@@ -738,7 +957,7 @@ class YouTubeIntegration:
                     order=order,
                     textFormat="plainText",
                     pageToken=response["nextPageToken"],
-                )
+                 )
 
                 response = request.execute()
 
@@ -747,7 +966,7 @@ class YouTubeIntegration:
                         "id": item["id"],
                         "snippet": item["snippet"],
                         "replies": item.get("replies", {}).get("comments", []),
-                    }
+                     }
                     comments.append(comment_data)
 
             self.logger.info(f"Fetched {len(comments)} comments for video {video_id}")
@@ -761,7 +980,9 @@ class YouTubeIntegration:
             return comments
 
     def post_comment_reply(self, parent_comment_id: str, reply_text: str) -> Dict[str, Any]:
-        """Post a reply to a comment.
+        """
+Post a reply to a comment.
+
 
         Args:
             parent_comment_id: ID of the parent comment to reply to
@@ -769,9 +990,23 @@ class YouTubeIntegration:
 
         Returns:
             Dictionary with status and comment details
-        """
+       
+""""""
+
+        
+
         try:
+        
+""""""
+
+        
+       
+
             if not self.youtube_service:
+        
+"""
+        try:
+        """"""
                 return {"status": "failed", "error": "YouTube service not initialized"}
 
             if not reply_text.strip():
@@ -793,7 +1028,7 @@ class YouTubeIntegration:
                 "text": response["snippet"]["textOriginal"],
                 "published_at": response["snippet"]["publishedAt"],
                 "parent_id": parent_comment_id,
-            }
+             }
 
         except HttpError as e:
             error_details = e.content.decode("utf - 8") if hasattr(e, "content") else str(e)
@@ -804,7 +1039,9 @@ class YouTubeIntegration:
             return {"status": "failed", "error": str(e)}
 
     def post_video_comment(self, video_id: str, comment_text: str) -> Dict[str, Any]:
-        """Post a top - level comment on a video.
+        """
+Post a top - level comment on a video.
+
 
         Args:
             video_id: YouTube video ID
@@ -812,9 +1049,23 @@ class YouTubeIntegration:
 
         Returns:
             Dictionary with status and comment details
-        """
+       
+""""""
+
+        
+
         try:
+        
+""""""
+
+        
+       
+
             if not self.youtube_service:
+        
+"""
+        try:
+        """"""
                 return {"status": "failed", "error": "YouTube service not initialized"}
 
             if not comment_text.strip():
@@ -825,13 +1076,13 @@ class YouTubeIntegration:
                 "snippet": {
                     "videoId": video_id,
                     "topLevelComment": {"snippet": {"textOriginal": comment_text}},
-                }
-            }
+                 }
+             }
 
             # Post the comment
             request = self.youtube_service.commentThreads().insert(
                 part="snippet", body=comment_thread_body
-            )
+             )
 
             response = request.execute()
 
@@ -846,7 +1097,7 @@ class YouTubeIntegration:
                 "text": top_level_comment["snippet"]["textOriginal"],
                 "published_at": top_level_comment["snippet"]["publishedAt"],
                 "video_id": video_id,
-            }
+             }
 
         except HttpError as e:
             error_details = e.content.decode("utf - 8") if hasattr(e, "content") else str(e)
@@ -857,16 +1108,32 @@ class YouTubeIntegration:
             return {"status": "failed", "error": str(e)}
 
     def like_comment(self, comment_id: str) -> Dict[str, Any]:
-        """Like a comment.
+        """
+Like a comment.
+
 
         Args:
             comment_id: ID of the comment to like
 
         Returns:
             Dictionary with status
-        """
+       
+""""""
+
+        
+
         try:
+        
+""""""
+
+        
+       
+
             if not self.youtube_service:
+        
+"""
+        try:
+        """"""
                 return {"status": "failed", "error": "YouTube service not initialized"}
 
             # Set rating to 'like'
@@ -887,17 +1154,39 @@ class YouTubeIntegration:
             return {"status": "failed", "error": str(e)}
 
     def get_channel_comments(self, max_results: int = 100) -> List[Dict[str, Any]]:
-        """Get recent comments across all channel videos.
+        """
+Get recent comments across all channel videos.
+
 
         Args:
             max_results: Maximum number of comments to fetch
 
         Returns:
             List of comment data dictionaries
-        """
+       
+""""""
+
+       
+
+        
+       
+"""
         comments = []
+       """
+
+        
+       
 
         try:
+       
+""""""
+
+        comments = []
+       
+
+        
+       
+"""
             if not self.youtube_service:
                 self.logger.error("YouTube service not initialized")
                 return comments
@@ -920,7 +1209,7 @@ class YouTubeIntegration:
                 part="contentDetails",
                 playlistId=uploads_playlist_id,
                 maxResults=10,  # Check last 10 videos
-            )
+             )
 
             playlist_response = playlist_request.execute()
 
@@ -938,7 +1227,7 @@ class YouTubeIntegration:
             comments.sort(
                 key=lambda x: x["snippet"]["topLevelComment"]["snippet"]["publishedAt"],
                 reverse=True,
-            )
+             )
 
             return comments[:max_results]
 
@@ -949,8 +1238,13 @@ class YouTubeIntegration:
     def get_trending_videos(
         self, region_code: str = "US", category_id: str = "0"
     ) -> List[Dict[str, Any]]:
-        """Get trending videos for a specific region and category."""
+        """
+Get trending videos for a specific region and category.
+
+        
+"""
         try:
+        """
             params = {
                 "part": "snippet,statistics",
                 "chart": "mostPopular",
@@ -958,8 +1252,14 @@ class YouTubeIntegration:
                 "videoCategoryId": category_id,
                 "maxResults": 50,
                 "key": self.credentials.get("api_key"),
-            }
+             }
+        """
 
+        try:
+        
+
+       
+""""""
             response = self.session.get(f"{self.base_url}/videos", params=params, timeout=10)
 
             if response.status_code == 200:

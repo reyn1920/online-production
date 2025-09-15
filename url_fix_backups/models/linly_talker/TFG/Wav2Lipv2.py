@@ -1,6 +1,6 @@
-"""
+""""""
 ultralytics
-"""
+""""""
 
 import sys
 
@@ -39,7 +39,9 @@ from src.torchalign import FacialLandmarkDetector
 
 from src.utils.utils import (decompose_tfm, img_warp, img_warp_back_inv_m,
 
-    laplacianSmooth, metrix_M)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     laplacianSmooth, metrix_M)
 
 torch.manual_seed(1234)
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -52,7 +54,9 @@ def _load(checkpoint_path):
     else:
         checkpoint = torch.load(
             checkpoint_path, map_location = lambda storage, loc: storage
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     return checkpoint
 
 
@@ -87,14 +91,17 @@ class Wav2Lipv2:
             pads=[0, 0, 0, 0],
             audio_smooth = True,
             rotate = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.face_det = YOLO(f"{pretrained_model_dir}/yolov8n - face / yolov8n - face.pt")
 
         lmk_net = FacialLandmarkDetector(
             f"{pretrained_model_dir}/wflw / hrnet18_256x256_p1/"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         lmk_net = lmk_net.to(self.device)
         self.lmk_net = lmk_net.eval()
 
@@ -158,8 +165,12 @@ class Wav2Lipv2:
         landmark = (
             self.lmk_net(img_pil,
     bbox = bbox_tensor,
-    device = self.device).cpu().numpy()
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     device = self.device).cpu().numpy()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return landmark
 
 
@@ -176,7 +187,9 @@ class Wav2Lipv2:
         # (B, 80, 16) -> (B, 80, 16, 1)
         mel_batch = np.reshape(
             mel_batch, [len(mel_batch), mel_batch.shape[1], mel_batch.shape[2], 1]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return img_batch, mel_batch
 
 
@@ -200,8 +213,11 @@ class Wav2Lipv2:
                             (
                             frame.shape[1] // self.resize_factor,
                                 frame.shape[0] // self.resize_factor,
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 if self.rotate:
                     frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
@@ -220,7 +236,8 @@ class Wav2Lipv2:
                     max_frame_num > 0
                     and len(full_frames) >= max_frame_num
                     or self.static
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     video_stream.release()
                     break
 
@@ -253,7 +270,8 @@ class Wav2Lipv2:
                 "frame_h": frame_h,
                 "frame_w": frame_w,
                 "frame_info_list": frame_info_list,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return avatar
 
     @torch.no_grad()
@@ -273,7 +291,9 @@ class Wav2Lipv2:
 
         align_bbox = self.abox_smoother.smooth(np.reshape(align_bbox, (-1, 2))).reshape(
             -1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # 重新warp 图片，保持scale 不变
         w, h = 256, 256
@@ -282,7 +302,9 @@ class Wav2Lipv2:
         m = rt
         align_frame = cv2.warpAffine(
             frame, m, (math.ceil(w / s_x), math.ceil(h / s_y)), flags = cv2.INTER_CUBIC
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         inv_m = cv2.invertAffineTransform(m)
 
         face = copy.deepcopy(align_frame)
@@ -312,7 +334,8 @@ class Wav2Lipv2:
                 "align_frame": align_frame,
                 "m": m,
                 "inv_m": inv_m,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def get_input_imginfo_by_index(self, idx, avatar):
@@ -348,7 +371,8 @@ class Wav2Lipv2:
 
     def run(
         self, video_path, audio_path, batch_size = 4, enhance = False, outfile = None, fps = 25
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         if outfile is None:
             key = str(uuid.uuid4().hex)
             outfile = "results / result_voice_{}.mp4".format(key)
@@ -357,7 +381,9 @@ class Wav2Lipv2:
             fps
             if video_path.split(".")[1] in ["jpg", "png", "jpeg"]
             else get_video_fps(video_path)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.fps = fps
 
         temp_audio_file = tempfile.NamedTemporaryFile(suffix=".wav")
@@ -366,7 +392,9 @@ class Wav2Lipv2:
             print("Extracting raw audio...")
             command = "ffmpeg -y -i {} -strict -2 {}".format(
                 audio_path, temp_audio_file.name
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             subprocess.call(command, shell = True)
             wav_path = temp_audio_file.name
         else:
@@ -391,7 +419,9 @@ class Wav2Lipv2:
                 cv2.VideoWriter_fourcc(*"mp4v"),
                 fps,
                 (frame_w, frame_h),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         batch_data = defaultdict(list)
 
@@ -418,35 +448,51 @@ class Wav2Lipv2:
                 if self.audio_smooth:
                     mel_batch.insert(
                         0, self.get_input_mel_by_index(max(0, i - infer_size), wav_mel)
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     mel_batch.append(
                         self.get_input_mel_by_index(
                             min(i + 1, gen_frame_num - 1), wav_mel
-                        )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 img_batch, mel_batch = self.prepare_batch(
                     img_batch, mel_batch, img_size
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # pytorch 推理
                 start_model = time.time()
                 img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to(
                     device
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 mel_batch = torch.FloatTensor(np.transpose(mel_batch, (0, 3, 1, 2))).to(
                     device
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 with torch.no_grad():
                     if self.audio_smooth:
                         audio_embedding = self.model.audio_forward(
                             mel_batch, a_alpha = 1.25
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         audio_embedding = (
                             0.2 * audio_embedding[:-2]
                             + 0.6 * audio_embedding[1:-1]
                             + 0.2 * audio_embedding[2:]
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         pred = self.model.inference(audio_embedding, img_batch)
                     else:
                         pred = self.model(mel_batch, img_batch, a_alpha = 1.25)
@@ -457,7 +503,8 @@ class Wav2Lipv2:
 
                 for p, f, c, af, inv_m in zip(
                     pred, frames, coords, align_frames, inv_ms
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     y1, y2, x1, x2 = c
                     p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
                     af[y1:y2, x1:x2] = p
@@ -478,7 +525,9 @@ class Wav2Lipv2:
             import imageio
             from src.utils.face_enhancer import (enhancer_generator_with_len,
 
-                enhancer_list)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 enhancer_list)
 
             enhancer = "gfpgan"
             background_enhancer = None
@@ -491,25 +540,37 @@ class Wav2Lipv2:
             try:
                 enhanced_images_gen_with_len = enhancer_generator_with_len(
                     full_video_path, method = enhancer, bg_upsampler = background_enhancer
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 imageio.mimsave(
                     enhanced_path, enhanced_images_gen_with_len, fps = float(self.fps)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception:
                 enhanced_images_gen_with_len = enhancer_list(
                     full_video_path, method = enhancer, bg_upsampler = background_enhancer
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 imageio.mimsave(
                     enhanced_path, enhanced_images_gen_with_len, fps = float(self.fps)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             command = 'ffmpeg -y -i "{}" -i "{}" -strict -2 -q:v 1 "{}"'.format(
                 wav_path, enhanced_path, outfile
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             subprocess.call(command, shell = platform.system() != "Windows")
         else:
             command = 'ffmpeg -y -i "{}" -i "{}" -strict -2 -q:v 1 "{}"'.format(
                 wav_path, temp_face_file.name, outfile
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             subprocess.call(command, shell = platform.system() != "Windows")
 
         temp_face_file.close()
@@ -523,8 +584,12 @@ if __name__ == "__main__":
 
     # wav2lipv2.run(os.path.join(current_dir,'inputs / example.png'),
     os.path.join(current_dir,'answer.wav'),
-    batch_size = 16)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     batch_size = 16)
     # wav2lipv2.run(os.path.join(current_dir,'inputs / example.png'),
     os.path.join(current_dir,'answer.wav'),
     batch_size = 16,
-    enhance = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     enhance = True)

@@ -13,7 +13,7 @@ from .specialized_agents import (
     QAAgent,
     ResearchAgent,
     SystemAgent,
-)
+ )
 
 __all__ = [
     "PlannerAgent",
@@ -24,7 +24,7 @@ __all__ = [
     "ContentAgent",
     "MarketingAgent",
     "QAAgent",
-]
+ ]
 
 __version__ = "1.0.0"
 __author__ = "TRAE.AI System"

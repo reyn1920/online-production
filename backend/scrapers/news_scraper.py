@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 News Scraper for The Right Perspective
 Scrapes conservative and mainstream news sources for content analysis
-"""
+
+""""""
 
 import json
 import logging
@@ -20,7 +24,9 @@ from bs4 import BeautifulSoup
 # Configure logging
 logging.basicConfig(
     level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+ )
 logger = logging.getLogger(__name__)
 
 
@@ -32,10 +38,12 @@ class NewsScraperForRightPerspective:
         self.session = requests.Session()
         self.session.headers.update(
             {
-                "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
-    like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-            }
-        )
+                "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,"
+#     like Gecko) Chrome/91.0.4472.124 Safari/537.36""
+             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         # News sources configuration for The Right Perspective research
         self.news_sources = {
@@ -45,53 +53,53 @@ class NewsScraperForRightPerspective:
                         "sections": ["/politics", "/opinion", "/media"],
                         "article_selector": "article h2 a, .title a",
                         "content_selector": ".article - body p, .speakable p",
-                        },
+                         },
                     "drudge_report": {
                     "base_url": "https://www.drudgereport.com",
                         "sections": [""],
                         "article_selector": 'a[href*="http"]',
                         "content_selector": "p",
-                        },
+                         },
                     "babylon_bee": {
                     "base_url": "https://babylonbee.com",
                         "sections": ["/politics", "/news"],
                         "article_selector": ".bb - article - title a",
                         "content_selector": ".bb - article - content p",
-                        },
+                         },
                     "daily_wire": {
                     "base_url": "https://www.dailywire.com",
                         "sections": ["/news/politics", "/news"],
                         "article_selector": ".field - title a",
                         "content_selector": ".field - body p",
-                        },
+                         },
                     "breitbart": {
                     "base_url": "https://www.breitbart.com",
                         "sections": ["/politics", "/big - government"],
                         "article_selector": "h2 a, .title a",
                         "content_selector": ".entry - content p",
-                        },
-                    },
+                         },
+                     },
                 "mainstream": {
                 "cnn": {
                     "base_url": "https://www.cnn.com",
                         "sections": ["/politics"],
                         "article_selector": ".container__headline a",
                         "content_selector": ".zn - body__paragraph",
-                        },
+                         },
                     "msnbc": {
                     "base_url": "https://www.msnbc.com",
                         "sections": ["/politics"],
                         "article_selector": ".tease - card__headline a",
                         "content_selector": ".articleBody p",
-                        },
+                         },
                     "washington_post": {
                     "base_url": "https://www.washingtonpost.com",
                         "sections": ["/politics"],
                         "article_selector": ".headline a",
                         "content_selector": ".article - body p",
-                        },
-                    },
-                }
+                         },
+                     },
+                 }
 
         # Keywords for The Right Perspective content identification
         self.target_keywords = [
@@ -121,18 +129,33 @@ class NewsScraperForRightPerspective:
                 "lies",
                 "double standard",
                 "mainstream media bias",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ]
 
         self.init_database()
 
 
     def init_database(self):
-        """Initialize database tables for scraped news articles"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Initialize database tables for scraped news articles
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS scraped_articles (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     title TEXT NOT NULL,
@@ -146,10 +169,30 @@ class NewsScraperForRightPerspective:
                     scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     published_at TIMESTAMP,
                     right_perspective_potential BOOLEAN DEFAULT FALSE
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
+        
+""""""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+        
+
+         
+        
+"""
+         )
+        """"""
+        
+       """
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         conn.commit()
         conn.close()
         logger.info("Database initialized for news scraping")
@@ -167,7 +210,9 @@ class NewsScraperForRightPerspective:
                 "double standard",
                 "lies",
                 "fake news",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ]
         for keyword in high_value_keywords:
             if keyword in text:
                 score += 3.0
@@ -187,11 +232,24 @@ class NewsScraperForRightPerspective:
 
 
     def scrape_article_content(self, url: str, content_selector: str) -> Optional[str]:
-        """Scrape full article content from URL"""
-        try:
-            response = self.session.get(url, timeout = 10)
-            response.raise_for_status()
+        """
+Scrape full article content from URL
 
+        
+"""
+        try:
+        """
+
+            response = self.session.get(url, timeout = 10)
+           
+
+            
+           
+"""
+            response.raise_for_status()
+           """"""
+        try:
+        """"""
             soup = BeautifulSoup(response.content, "html.parser")
 
             # Try multiple selectors
@@ -201,14 +259,16 @@ class NewsScraperForRightPerspective:
                     ".content p",
                     ".article p",
                     ".post - content p",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
 
             for selector in selectors:
                 paragraphs = soup.select(selector)
                 if paragraphs:
                     content = " ".join(
                         [p.get_text().strip() for p in paragraphs[:10]]
-                    )  # First 10 paragraphs
+#                     )  # First 10 paragraphs
                     if len(content) > 100:  # Minimum content length
                         return content
 
@@ -260,13 +320,17 @@ class NewsScraperForRightPerspective:
                             # Scrape full content
                             content = self.scrape_article_content(
                                 article_url, source_config["content_selector"]
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                             )
 
                             if content:
                                 # Recalculate score with full content
                                 relevance_score = self.calculate_relevance_score(
                                     title, content
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                                 )
 
                                 articles.append(
                                     {
@@ -278,8 +342,10 @@ class NewsScraperForRightPerspective:
                                             "relevance_score": relevance_score,
                                             "right_perspective_potential": relevance_score
                                         >= 3.0,
-                                            }
-                                )
+                                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                                 )
 
                         # Rate limiting
                         time.sleep(random.uniform(1, 3))
@@ -296,15 +362,38 @@ class NewsScraperForRightPerspective:
 
 
     def save_articles(self, articles: List[Dict]):
-        """Save scraped articles to database"""
+        """
+Save scraped articles to database
+
         conn = sqlite3.connect(self.db_path)
+       
+""""""
+
         cursor = conn.cursor()
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        cursor = conn.cursor()
+       
+""""""
 
         saved_count = 0
         for article in articles:
             try:
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT OR IGNORE INTO scraped_articles
                     (title,
     url,
@@ -312,9 +401,11 @@ class NewsScraperForRightPerspective:
     source_type,
     content,
     relevance_score,
-    right_perspective_potential)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     right_perspective_potential)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         article["title"],
                             article["url"],
@@ -323,8 +414,10 @@ class NewsScraperForRightPerspective:
                             article["content"],
                             article["relevance_score"],
                             article["right_perspective_potential"],
-                            ),
-                        )
+                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
 
                 if cursor.rowcount > 0:
                     saved_count += 1
@@ -370,21 +463,52 @@ class NewsScraperForRightPerspective:
 
 
     def get_high_potential_articles(self, limit: int = 50) -> List[Dict]:
-        """Get articles with high potential for The Right Perspective content"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Get articles with high potential for The Right Perspective content
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         cursor.execute(
-            """
+           """
+
+            
+           
+
             SELECT title, url, source, source_type, content, relevance_score, scraped_at
             FROM scraped_articles
             WHERE right_perspective_potential = TRUE
             ORDER BY relevance_score DESC, scraped_at DESC
             LIMIT ?
-        """,
-            (limit,),
-                )
+        
+""","""
 
+            (limit,),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
+        
+       """
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         articles = []
         for row in cursor.fetchall():
             articles.append(
@@ -396,41 +520,93 @@ class NewsScraperForRightPerspective:
                         "content": row[4][:500] + "..." if len(row[4]) > 500 else row[4],
                         "relevance_score": row[5],
                         "scraped_at": row[6],
-                        }
-            )
+                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         conn.close()
         return articles
 
 
     def generate_content_summary(self) -> Dict:
-        """Generate summary of scraped content for The Right Perspective"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Generate summary of scraped content for The Right Perspective
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         # Get statistics
         cursor.execute("SELECT COUNT(*) FROM scraped_articles")
+       """
+
+        
+       
+
+        cursor = conn.cursor()
+       
+""""""
         total_articles = cursor.fetchone()[0]
 
         cursor.execute(
             "SELECT COUNT(*) FROM scraped_articles WHERE right_perspective_potential = TRUE"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         high_potential = cursor.fetchone()[0]
 
         cursor.execute(
             "SELECT source_type, COUNT(*) FROM scraped_articles GROUP BY source_type"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         by_source_type = dict(cursor.fetchall())
 
         cursor.execute(
-            """
+            """"""
+
             SELECT source, COUNT(*) FROM scraped_articles
             WHERE right_perspective_potential = TRUE
             GROUP BY source ORDER BY COUNT(*) DESC
-        """
-        )
-        top_sources = cursor.fetchall()
+       
 
+        
+       
+"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+        """
+
+         
+        
+
+         )
+        
+""""""
+
+       
+
+        
+       
+"""
+        top_sources = cursor.fetchall()
+       """"""
+         
+        """
+
+         )
+        
+
+         
+        
+"""
         conn.close()
 
         return {
@@ -442,16 +618,32 @@ class NewsScraperForRightPerspective:
                 round((high_potential/total_articles * 100), 2)
                 if total_articles > 0
                 else 0
-            ),
-                }
+             ),
+                 }
 
 
 def main():
-    """Main function for The Right Perspective news scraping"""
+    """
+Main function for The Right Perspective news scraping
+
+   
+""""""
+
     scraper = NewsScraperForRightPerspective()
+   
 
+    
+   
+"""
     print("🔍 Starting news scraping for The Right Perspective...")
+   """
 
+    
+   
+
+    scraper = NewsScraperForRightPerspective()
+   
+""""""
     # Scrape all sources
     results = scraper.scrape_all_sources()
 
@@ -467,7 +659,9 @@ def main():
     for i, article in enumerate(high_potential, 1):
         print(
             f"{i}. [{article['source']}] {article['title']} (Score: {article['relevance_score']})"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         print(f"   URL: {article['url']}")
         print(f"   Preview: {article['content'][:100]}...\\n")
 
@@ -477,7 +671,9 @@ def main():
     print(f"Total articles scraped: {summary['total_articles']}")
     print(
         f"High - potential articles: {summary['high_potential_articles']} ({summary['potential_percentage']}%)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+     )
     print(f"By source type: {summary['by_source_type']}")
     print(f"Top sources for content: {summary['top_sources_for_content']}")
 

@@ -15,7 +15,8 @@ class Qwen2:
             mode="offline",
             model_path="Qwen/Qwen1.5 - 0.5B - Chat",
             prefix_prompt="""请用少于25个字回答以下问题\\n\\n""",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """暂时不写api版本,与Linly - api相类似,感兴趣可以实现一下"""
         self.url = "http://ip:port"  # local server: http://ip:port
         self.headers = {"Content - Type": "application/json"}
@@ -29,7 +30,9 @@ class Qwen2:
     def init_model(self, path="Qwen/Qwen2 - 0.5B"):
         model = AutoModelForCausalLM.from_pretrained(
             path, device_map="auto", torch_dtype="auto", trust_remote_code = True
-        ).eval()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).eval()
         tokenizer = AutoTokenizer.from_pretrained(path, trust_remote_code = True)
 
         return model, tokenizer
@@ -39,32 +42,47 @@ class Qwen2:
         device = "cuda" if torch.cuda.is_available() else "cpu"
         if self.mode != "api":
             try:
+                pass
                 # response,
     self.history = self.model.chat(self.tokenizer,
     self.data["question"],
     history = self.history,
-    system = system_prompt)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     system = system_prompt)
                 messages = [
                     {"role": "system", "content": system_prompt},
                         {"role": "user", "content": self.prefix_prompt + question},
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
                 text = self.tokenizer.apply_chat_template(
                     messages, tokenize = False, add_generation_prompt = True
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 model_inputs = self.tokenizer([text], return_tensors="pt").to(device)
                 generated_ids = self.model.generate(
                     model_inputs.input_ids, max_new_tokens = 512
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 generated_ids = [
                     output_ids[len(input_ids) :]
                     for input_ids, output_ids in zip(
                         model_inputs.input_ids, generated_ids
-                    )
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
                 response = self.tokenizer.batch_decode(
                     generated_ids, skip_special_tokens = True
-                )[0]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )[0]
                 # print(self.history)
                 return response
             except Exception as e:

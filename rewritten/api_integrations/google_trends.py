@@ -21,7 +21,8 @@ class GoogleTrendsAPI(BaseAPI):
             requests_per_hour=100,
             requests_per_day=1000,
             burst_limit=3,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         super().__init__(rate_config)
         self.hl = hl  # Language
         self.tz = tz  # Timezone offset
@@ -35,7 +36,8 @@ class GoogleTrendsAPI(BaseAPI):
                 loop = asyncio.get_event_loop()
                 self.pytrends = await loop.run_in_executor(
                     None, lambda: TrendReq(hl=self.hl, tz=self.tz, timeout=(10, 25))
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 raise APIError(f"Failed to initialize Google Trends client: {e}")
 
@@ -59,7 +61,8 @@ class GoogleTrendsAPI(BaseAPI):
             "hourly_limit": self.rate_limiter.config.requests_per_hour,
             "hourly_used": self.rate_limiter.hourly_count,
             "tokens_available": int(self.rate_limiter.tokens),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def get_interest_over_time(
         self,
@@ -80,8 +83,10 @@ class GoogleTrendsAPI(BaseAPI):
                 None,
                 lambda: self.pytrends.build_payload(
                     keywords, cat=category, timeframe=timeframe, geo=geo
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             # Get interest over time data
             interest_df = await loop.run_in_executor(None, self.pytrends.interest_over_time)
@@ -104,7 +109,8 @@ class GoogleTrendsAPI(BaseAPI):
                 "timeframe": timeframe,
                 "geo": geo,
                 "category": category,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to get interest over time: {e}")
@@ -118,7 +124,8 @@ class GoogleTrendsAPI(BaseAPI):
             loop = asyncio.get_event_loop()
             trending_df = await loop.run_in_executor(
                 None, lambda: self.pytrends.trending_searches(pn=pn)
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if trending_df.empty:
                 return []
@@ -147,7 +154,8 @@ class GoogleTrendsAPI(BaseAPI):
             await loop.run_in_executor(
                 None,
                 lambda: self.pytrends.build_payload(keywords, timeframe=timeframe, geo=geo),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Get related topics
             related_topics = await loop.run_in_executor(None, self.pytrends.related_topics)
@@ -162,29 +170,35 @@ class GoogleTrendsAPI(BaseAPI):
                     if (
                         "rising" in related_topics[keyword]
                         and related_topics[keyword]["rising"] is not None
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         rising_df = related_topics[keyword]["rising"]
                         keyword_topics["rising"] = [
                             {
                                 "topic": row["topic_title"],
                                 "value": (row["value"] if pd.notna(row["value"]) else "Breakout"),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             for _, row in rising_df.iterrows()
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
 
                     # Process top topics
                     if (
                         "top" in related_topics[keyword]
                         and related_topics[keyword]["top"] is not None
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         top_df = related_topics[keyword]["top"]
                         keyword_topics["top"] = [
                             {
                                 "topic": row["topic_title"],
                                 "value": (int(row["value"]) if pd.notna(row["value"]) else 0),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             for _, row in top_df.iterrows()
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
 
                     result["related_topics"][keyword] = keyword_topics
 
@@ -207,7 +221,8 @@ class GoogleTrendsAPI(BaseAPI):
             await loop.run_in_executor(
                 None,
                 lambda: self.pytrends.build_payload(keywords, timeframe=timeframe, geo=geo),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Get related queries
             related_queries = await loop.run_in_executor(None, self.pytrends.related_queries)
@@ -222,29 +237,35 @@ class GoogleTrendsAPI(BaseAPI):
                     if (
                         "rising" in related_queries[keyword]
                         and related_queries[keyword]["rising"] is not None
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         rising_df = related_queries[keyword]["rising"]
                         keyword_queries["rising"] = [
                             {
                                 "query": row["query"],
                                 "value": (row["value"] if pd.notna(row["value"]) else "Breakout"),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             for _, row in rising_df.iterrows()
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
 
                     # Process top queries
                     if (
                         "top" in related_queries[keyword]
                         and related_queries[keyword]["top"] is not None
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         top_df = related_queries[keyword]["top"]
                         keyword_queries["top"] = [
                             {
                                 "query": row["query"],
                                 "value": (int(row["value"]) if pd.notna(row["value"]) else 0),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             for _, row in top_df.iterrows()
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
 
                     result["related_queries"][keyword] = keyword_queries
 
@@ -265,7 +286,8 @@ class GoogleTrendsAPI(BaseAPI):
 
             interest_data, topics_data, queries_data = await asyncio.gather(
                 interest_task, topics_task, queries_task
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Calculate trend metrics
             trend_metrics = self._calculate_trend_metrics(interest_data["data"], keywords)
@@ -278,7 +300,8 @@ class GoogleTrendsAPI(BaseAPI):
                 "related_queries": queries_data,
                 "trend_metrics": trend_metrics,
                 "analysis_timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to analyze keyword trends: {e}")
@@ -288,7 +311,8 @@ class GoogleTrendsAPI(BaseAPI):
         if not data or len(data) < 2:
             return {
                 keyword: {"velocity": 0, "momentum": 0, "peak_value": 0} for keyword in keywords
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         metrics = {}
 
@@ -319,6 +343,7 @@ class GoogleTrendsAPI(BaseAPI):
                 "peak_value": max(values),
                 "current_value": values[-1] if values else 0,
                 "average_value": round(sum(values) / len(values), 2),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return metrics

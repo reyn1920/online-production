@@ -1,8 +1,8 @@
-"""
+""""""
 根据现有HuggingFace的LLM的调用方式写一个模板
 注意一下是否调用方式类似，如果不类似，需要修改里面的推理代码
 支持：Qwen，ChatLLM等
-"""
+""""""
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -13,7 +13,8 @@ class ChatGLM:
         mode="offline",
         model_path="THUDM / chatglm3 - 6b",
         prefix_prompt="""请用少于25个字回答以下问题\\n\\n""",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.mode = mode
         self.model, self.tokenizer = self.init_model(model_path)
         self.history = None
@@ -34,7 +35,8 @@ class ChatGLM:
                 # 如果使用，查看对应的方法是否类似，这里是问答的重要部份，这里正确，基本就正确了
                 response, self.history = self.model.chat(
                     self.tokenizer, self.prefix_prompt + prompt, history=self.history
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return response
             except Exception as e:
                 print(e)

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""
+""""""
 Automated Author - Long - Form Content Generation System
 
 This module implements an advanced writing system for creating books \
-    and digital products
+#     and digital products
 using "Ghostwriter Persona" and "Checkpointed Writing" protocols. It supports
 resumable writing sessions, persona - based writing styles, \
-    and structured content generation.
+#     and structured content generation.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import hashlib
 import json
@@ -89,7 +89,7 @@ class GhostwriterPersona:
 
     def to_prompt(self) -> str:
         """Convert persona to a system prompt."""
-        return f"""
+        return f""""""
 You are {self.name}, a {self.persona_type.value} ghostwriter with the following characteristics:
 
 Writing Style: {self.writing_style}
@@ -109,7 +109,7 @@ Patterns to Avoid:
 {chr(10).join(f'- {pattern}' for pattern in self.avoid_patterns)}
 
 Maintain this persona consistently throughout all writing.
-"""
+""""""
 
 
 @dataclass
@@ -122,7 +122,7 @@ class Chapter:
     content: str = ""
     word_count: int = 0
     status: str = "pending"  # pending, in_progress, completed, reviewed
-    research_notes: List[str] = field(default_factory=list)
+    research_notes: List[str] = field(default_factory=list):
     key_points: List[str] = field(default_factory=list)
     estimated_length: int = 0
     actual_length: int = 0
@@ -139,7 +139,7 @@ class WritingProject:
     target_word_count: int
     persona: GhostwriterPersona
     outline: str
-    chapters: List[Chapter] = field(default_factory=list)
+    chapters: List[Chapter] = field(default_factory=list):
     research_data: Dict[str, Any] = field(default_factory=dict)
     style_guide: Dict[str, str] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
@@ -179,7 +179,8 @@ class OllamaClient:
         system_prompt: Optional[str] = None,
         temperature: float = 0.7,
         max_tokens: int = 4000,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate text using Ollama API."""
         try:
             payload = {
@@ -187,7 +188,8 @@ class OllamaClient:
                 "prompt": prompt,
                 "stream": False,
                 "options": {"temperature": temperature, "num_predict": max_tokens},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             if system_prompt:
                 payload["system"] = system_prompt
@@ -196,7 +198,8 @@ class OllamaClient:
                 f"{self.base_url}/api/generate",
                 json=payload,
                 timeout=180,  # Longer timeout for long - form content
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response.raise_for_status()
 
             result = response.json()
@@ -218,7 +221,8 @@ class AutomatedAuthor:
         ollama_url: str = "http://localhost:11434",
         ollama_model: str = "llama3.2",
         checkpoint_dir: str = "./checkpoints",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.ollama = OllamaClient(ollama_url, ollama_model)
         self.checkpoint_dir = Path(checkpoint_dir)
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -241,25 +245,30 @@ class AutomatedAuthor:
                     "Research methodology",
                     "Critical analysis",
                     "Theoretical frameworks",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 voice_characteristics=[
                     "Uses evidence - based arguments",
                     "Employs academic terminology appropriately",
                     "Structures arguments logically",
                     "References credible sources",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 example_phrases=[
                     "The empirical evidence suggests that...",
                     "According to recent research...",
                     "This phenomenon can be understood through the lens of...",
                     "The implications of this finding are significant because...",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 avoid_patterns=[
                     "Overly casual language",
                     "Unsupported claims",
                     "Personal anecdotes without context",
-                ],
-            ),
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             ),
             "business": GhostwriterPersona(
                 name="Marcus Sterling",
                 persona_type=PersonaType.BUSINESS,
@@ -272,25 +281,30 @@ class AutomatedAuthor:
                     "Leadership",
                     "Market analysis",
                     "Operations",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 voice_characteristics=[
                     "Focuses on ROI and business value",
                     "Uses data to support arguments",
                     "Provides actionable recommendations",
                     "Speaks to business outcomes",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 example_phrases=[
                     "The bottom line is...",
                     "This strategy will drive...",
                     "Market data indicates...",
                     "The competitive advantage lies in...",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 avoid_patterns=[
                     "Overly technical jargon",
                     "Theoretical concepts without practical application",
                     "Vague recommendations",
-                ],
-            ),
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             ),
             "creative": GhostwriterPersona(
                 name="Luna Blackwood",
                 persona_type=PersonaType.CREATIVE,
@@ -302,25 +316,30 @@ class AutomatedAuthor:
                     "Storytelling",
                     "Creative expression",
                     "Emotional engagement",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 voice_characteristics=[
                     "Uses vivid imagery and metaphors",
                     "Creates emotional connections",
                     "Employs narrative techniques",
                     "Balances creativity with clarity",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 example_phrases=[
                     "Imagine a world where...",
                     "Picture this scenario...",
                     "The story unfolds like...",
                     "This reminds me of...",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 avoid_patterns=[
                     "Overly dry or technical language",
                     "Lack of emotional resonance",
                     "Monotonous sentence structure",
-                ],
-            ),
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             ),
             "technical": GhostwriterPersona(
                 name="Dr. Samuel Chen",
                 persona_type=PersonaType.TECHNICAL,
@@ -333,26 +352,32 @@ class AutomatedAuthor:
                     "Engineering",
                     "Systems design",
                     "Problem - solving",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 voice_characteristics=[
                     "Explains complex concepts clearly",
                     "Uses examples and analogies",
                     "Provides step - by - step instructions",
                     "Focuses on practical implementation",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 example_phrases=[
-                    "Let's break this down step by step...",
+                    "Let's break this down step by step...",'
                     "The key principle here is...",
                     "To implement this, you would...",
                     "This works because...",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 avoid_patterns=[
                     "Overly complex explanations",
                     "Assumptions about prior knowledge",
                     "Lack of practical examples",
-                ],
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     def create_project(
         self,
@@ -363,7 +388,8 @@ class AutomatedAuthor:
         persona_name: str,
         topic: str,
         key_themes: List[str],
-    ) -> WritingProject:
+# BRACKET_SURGEON: disabled
+#     ) -> WritingProject:
         """Create a new writing project."""
         self.logger.info(f"Creating new project: {title}")
 
@@ -375,7 +401,8 @@ class AutomatedAuthor:
         # Generate initial outline
         outline = self._generate_outline(
             topic, key_themes, content_type, target_word_count, persona
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         project = WritingProject(
             title=title,
@@ -389,8 +416,10 @@ class AutomatedAuthor:
                 "key_themes": key_themes,
                 "created_by": "AutomatedAuthor",
                 "version": "1.0.0",
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         # Create chapters from outline
         project.chapters = self._create_chapters_from_outline(outline, target_word_count)
@@ -407,13 +436,14 @@ class AutomatedAuthor:
         content_type: ContentType,
         target_word_count: int,
         persona: GhostwriterPersona,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate a detailed outline for the content."""
         self.logger.info("Generating content outline")
 
         system_prompt = persona.to_prompt()
 
-        prompt = f"""
+        prompt = f""""""
 Create a detailed outline for a {content_type.value} on the topic: "{topic}"
 
 Key Themes to Cover:
@@ -427,13 +457,13 @@ Create a comprehensive outline that:
 2. Covers all key themes thoroughly
 3. Is appropriate for the target word count
 4. Includes chapter/section titles and brief descriptions
-5. Maintains your persona's expertise and style
+5. Maintains your persona's expertise and style'
 6. Provides clear learning objectives or value propositions
 
 Format the outline with clear headings and subheadings.
 
 Outline:
-"""
+""""""
 
         return self.ollama.generate(prompt, system_prompt, temperature=0.6)
 
@@ -447,12 +477,13 @@ Outline:
 
         estimated_words_per_chapter = target_word_count // max(
             1,
-            len([l for l in lines if l.strip().startswith(("Chapter", "Section", "#"))]),
-        )
+            len([l for l in lines if l.strip().startswith(("Chapter", "Section", "#"))]),"
+# BRACKET_SURGEON: disabled
+#         )
 
         for line in lines:
             line = line.strip()
-            if line.startswith(("Chapter", "Section", "#")) and ":" in line:
+            if line.startswith(("Chapter", "Section", "#")) and ":" in line:"
                 if current_chapter:
                     chapters.append(current_chapter)
 
@@ -463,7 +494,8 @@ Outline:
                     title=title,
                     outline=line,
                     estimated_length=estimated_words_per_chapter,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif current_chapter and line:
                 current_chapter.outline += f"\\n{line}"
 
@@ -478,20 +510,24 @@ Outline:
                     title="Introduction",
                     outline="Introduction to the topic",
                     estimated_length=target_word_count // 3,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 Chapter(
                     number=2,
                     title="Main Content",
                     outline="Core content and analysis",
                     estimated_length=target_word_count // 3,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 Chapter(
                     number=3,
                     title="Conclusion",
                     outline="Summary and final thoughts",
                     estimated_length=target_word_count // 3,
-                ),
-            ]
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ]
 
         return chapters
 
@@ -500,7 +536,8 @@ Outline:
         project: WritingProject,
         chapter_number: int,
         research_context: Optional[str] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Write a specific chapter using the ghostwriter persona."""
         if chapter_number > len(project.chapters):
             raise ValueError(f"Chapter {chapter_number} does not exist")
@@ -517,23 +554,23 @@ Outline:
         if chapter_number > 1:
             prev_chapters = [c for c in project.chapters[: chapter_number - 1] if c.content]
             if prev_chapters:
-                previous_context = f"""
+                previous_context = f""""""
 Previous chapters context:
 {chr(10).join(f'Chapter {c.number}: {c.title}' for c in prev_chapters)}
 
 Maintain consistency with the established tone and content.
-"""
+""""""
 
         research_section = ""
         if research_context:
-            research_section = f"""
+            research_section = f""""""
 Research Context:
 {research_context}
 
 Incorporate relevant research findings naturally into the content.
-"""
+""""""
 
-        prompt = f"""
+        prompt = f""""""
 Write Chapter {chapter.number}: "{chapter.title}" for the {project.content_type.value} titled "{project.title}"
 
 Chapter Outline:
@@ -559,7 +596,7 @@ Write engaging, high - quality content that:
 7. Uses proper formatting and structure
 
 Chapter Content:
-"""
+""""""
 
         content = self.ollama.generate(prompt, system_prompt, temperature=0.7, max_tokens=6000)
 
@@ -580,7 +617,8 @@ Chapter Content:
 
     def write_complete_project(
         self, project: WritingProject, research_data: Optional[Dict[str, str]] = None
-    ) -> WritingProject:
+# BRACKET_SURGEON: disabled
+#     ) -> WritingProject:
         """Write the complete project chapter by chapter."""
         self.logger.info(f"Starting complete project writing: {project.title}")
 
@@ -615,7 +653,8 @@ Chapter Content:
 
         project.progress_percentage = (
             (completed_chapters / total_chapters) * 100 if total_chapters > 0 else 0
-        )
+# BRACKET_SURGEON: disabled
+#         )
         project.total_word_count = sum(c.word_count for c in project.chapters)
 
     def _save_checkpoint(self, project: WritingProject) -> None:
@@ -623,13 +662,15 @@ Chapter Content:
         try:
             project_id = hashlib.md5(f"{project.title}_{project.created_at}".encode()).hexdigest()[
                 :8
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             # Create checkpoint data
             checkpoint_data = {
                 "project": asdict(project),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Calculate content hash
             content_str = json.dumps(checkpoint_data, sort_keys=True, default=str)
@@ -645,7 +686,8 @@ Chapter Content:
                 word_count=project.total_word_count,
                 progress_data=checkpoint_data,
                 recovery_data=pickle.dumps(project),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             checkpoint_file = self.checkpoint_dir / f"{project_id}_{content_hash}.checkpoint"
             with open(checkpoint_file, "wb") as f:
@@ -661,7 +703,8 @@ Chapter Content:
 
     def load_checkpoint(
         self, project_id: str, checkpoint_hash: Optional[str] = None
-    ) -> WritingProject:
+# BRACKET_SURGEON: disabled
+#     ) -> WritingProject:
         """Load a project from checkpoint."""
         try:
             if checkpoint_hash:
@@ -687,7 +730,8 @@ Chapter Content:
 
     def export_project(
         self, project: WritingProject, output_path: str, format_type: str = "markdown"
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Export the completed project to various formats."""
         try:
             output_dir = Path(output_path).parent
@@ -711,19 +755,20 @@ Chapter Content:
     def _export_markdown(self, project: WritingProject, output_path: str) -> None:
         """Export project as Markdown."""
         with open(output_path, "w", encoding="utf - 8") as f:
-            f.write(f"# {project.title}\\n\\n")
+            f.write(f"# {project.title}\\n\\n")"
             f.write(f"**Content Type:** {project.content_type.value}\\n")
             f.write(f"**Target Audience:** {project.target_audience}\\n")
             f.write(f"**Word Count:** {project.total_word_count:,}\\n")
             f.write(
                 f"**Generated by:** {project.persona.name} ({project.persona.persona_type.value})\\n\\n"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
-            f.write("## Outline\\n\\n")
+            f.write("## Outline\\n\\n")"
             f.write(f"{project.outline}\\n\\n")
 
             for chapter in project.chapters:
-                f.write(f"## Chapter {chapter.number}: {chapter.title}\\n\\n")
+                f.write(f"## Chapter {chapter.number}: {chapter.title}\\n\\n")"
                 if chapter.content:
                     f.write(f"{chapter.content}\\n\\n")
                 else:
@@ -770,8 +815,10 @@ if __name__ == "__main__":
                 "Popular algorithms and techniques",
                 "Real - world applications",
                 "Best practices and implementation",
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
         print(f"Project created: {project.title}")
         print(f"Chapters: {len(project.chapters)}")

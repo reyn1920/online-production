@@ -9,12 +9,12 @@ from torch.nn.parameter import Parameter
 
 
 class PartialFC(Module):
-    """
+    """"""
     Author: {Xiang An, Yang Xiao, XuHan Zhu} in DeepGlint,
         Partial FC: Training 10 Million Identities on a Single Machine
     See the original paper:
     https://arxiv.org/abs/2010.05222
-    """
+    """"""
 
     @torch.no_grad()
 
@@ -31,8 +31,9 @@ class PartialFC(Module):
             sample_rate = 1.0,
             embedding_size = 512,
             prefix="./",
-            ):
-        """
+# BRACKET_SURGEON: disabled
+#             ):
+        """"""
         rank: int
             Unique process(GPU) ID from 0 to world_size - 1.
         local_rank: int
@@ -52,12 +53,12 @@ class PartialFC(Module):
         sample_rate: float
             The partial fc sampling rate, when the number of classes increases to more than 2 millions, Sampling
             can greatly speed up training, \
-    and reduce a lot of GPU memory, default is 1.0.
+#     and reduce a lot of GPU memory, default is 1.0.
         embedding_size: int
             The feature dimension, default is 512.
         prefix: str
             Path for save checkpoint, default is './'.
-        """
+        """"""
         super(PartialFC, self).__init__()
         #
         self.num_classes: int = num_classes
@@ -72,18 +73,26 @@ class PartialFC(Module):
         self.prefix: str = prefix
         self.num_local: int = num_classes//world_size + int(
             rank < num_classes % world_size
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.class_start: int = num_classes//world_size * rank + min(
             rank, num_classes % world_size
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.num_sample: int = int(self.sample_rate * self.num_local)
 
         self.weight_name = os.path.join(
             self.prefix, "rank_{}_softmax_weight.pt".format(self.rank)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.weight_mom_name = os.path.join(
             self.prefix, "rank_{}_softmax_weight_mom.pt".format(self.rank)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if resume:
             try:
@@ -92,21 +101,26 @@ class PartialFC(Module):
                 if (
                     self.weight.shape[0] != self.num_local
                     or self.weight_mom.shape[0] != self.num_local
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     raise IndexError
                         logging.info("softmax weight resume successfully!")
                 logging.info("softmax weight mom resume successfully!")
             except (FileNotFoundError, KeyError, IndexError):
                 self.weight = torch.normal(
                     0, 0.01, (self.num_local, self.embedding_size), device = self.device
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.weight_mom: torch.Tensor = torch.zeros_like(self.weight)
                 logging.info("softmax weight init!")
                 logging.info("softmax weight mom init!")
         else:
             self.weight = torch.normal(
                 0, 0.01, (self.num_local, self.embedding_size), device = self.device
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.weight_mom: torch.Tensor = torch.zeros_like(self.weight)
             logging.info("softmax weight init successfully!")
             logging.info("softmax weight mom init successfully!")
@@ -130,17 +144,19 @@ class PartialFC(Module):
 
 
     def sample(self, total_label):
-        """
+        """"""
         Sample all positive class centers in each rank, \
-    and random select neg class centers to filling a fixed
+#     and random select neg class centers to filling a fixed
         `num_sample`.
 
         total_label: tensor
             Label after all gather, which cross all GPUs.
-        """
+        """"""
         index_positive = (self.class_start <= total_label) & (
             total_label < self.class_start + self.num_local
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         total_label[~index_positive] = -1
         total_label[index_positive] -= self.class_start
         if int(self.sample_rate) != 1:
@@ -155,7 +171,9 @@ class PartialFC(Module):
             self.index = index
             total_label[index_positive] = torch.searchsorted(
                 index, total_label[index_positive]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.sub_weight = Parameter(self.weight[index])
             self.sub_weight_mom = self.weight_mom[index]
 
@@ -176,20 +194,22 @@ class PartialFC(Module):
 
 
     def prepare(self, label, optimizer):
-        """
+        """"""
         get sampled class centers for cal softmax.
 
         label: tensor
             Label tensor on each rank.
         optimizer: opt
             Optimizer for partial fc, which need to get weight mom.
-        """
+        """"""
         with torch.cuda.stream(self.stream):
             total_label = torch.zeros(
                 size=[self.batch_size * self.world_size],
                     device = self.device,
                     dtype = torch.long,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             dist.all_gather(list(total_label.chunk(self.world_size, dim = 0)), label)
             self.sample(total_label)
             optimizer.state.pop(optimizer.param_groups[-1]["params"][0], None)
@@ -200,7 +220,7 @@ class PartialFC(Module):
 
 
     def forward_backward(self, label, features, optimizer):
-        """
+        """"""
         Partial fc forward and backward with model parallel
 
         label: tensor
@@ -216,15 +236,19 @@ class PartialFC(Module):
             The gradient of features.
         loss_v: tensor
             Loss value for cross entropy.
-        """
+        """"""
         total_label, norm_weight = self.prepare(label, optimizer)
         total_features = torch.zeros(
             size=[self.batch_size * self.world_size, self.embedding_size],
                 device = self.device,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         dist.all_gather(
             list(total_features.chunk(self.world_size, dim = 0)), features.data
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         total_features.requires_grad = True
 
         logits = self.forward(total_features, norm_weight)
@@ -247,7 +271,9 @@ class PartialFC(Module):
             index = torch.where(total_label != -1)[0]
             one_hot = torch.zeros(
                 size=[index.size()[0], grad.size()[1]], device = grad.device
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             one_hot.scatter_(1, total_label[index, None], 1)
 
             # calculate loss
@@ -267,7 +293,9 @@ class PartialFC(Module):
         # feature gradient all - reduce
         dist.reduce_scatter(
             x_grad, list(total_features.grad.chunk(self.world_size, dim = 0))
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         x_grad = x_grad * self.world_size
         # backward backbone
         return x_grad, loss_v

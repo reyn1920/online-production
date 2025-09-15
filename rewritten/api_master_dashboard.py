@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Master Dashboard
 Unified interface for managing 100+ APIs
 
@@ -12,7 +12,7 @@ Features:
 
 Usage:
     python api_master_dashboard.py
-"""
+""""""
 
 import json
 import os
@@ -31,7 +31,8 @@ except ImportError:
     print(
         "⚠️  Required modules not found. Make sure api_registration_automation.py "
         "and api_testing_suite.py are in the same directory."
-    )
+# BRACKET_SURGEON: disabled
+#     )
     sys.exit(1)
 
 
@@ -86,7 +87,8 @@ class APIMasterDashboard:
                 "monthly_costs": {},
                 "rate_limits": {},
                 "last_updated": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def save_usage(self):
         """Save API usage tracking"""
@@ -107,7 +109,8 @@ class APIMasterDashboard:
                 cost_tier=api_info["cost"],
                 phase=api_info["phase"],
                 priority=api_info["priority"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
         self.save_status()
 
     def update_api_status(self, api_key: str, test_result: APITestResult):
@@ -129,7 +132,8 @@ class APIMasterDashboard:
         tested_count = sum(1 for status in self.api_status.values() if status.last_tested)
         working_count = sum(
             1 for status in self.api_status.values() if status.test_status == "success"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Phase statistics
         phase_stats = {}
@@ -140,7 +144,8 @@ class APIMasterDashboard:
                 "registered": sum(1 for s in phase_apis if s.registered),
                 "has_key": sum(1 for s in phase_apis if s.has_key),
                 "working": sum(1 for s in phase_apis if s.test_status == "success"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Cost statistics
         cost_stats = {}
@@ -150,7 +155,8 @@ class APIMasterDashboard:
                 "total": len(cost_apis),
                 "registered": sum(1 for s in cost_apis if s.registered),
                 "working": sum(1 for s in cost_apis if s.test_status == "success"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return {
             "total_apis": total_apis,
@@ -162,7 +168,8 @@ class APIMasterDashboard:
             "success_rate": (working_count / tested_count * 100) if tested_count > 0 else 0,
             "phase_stats": phase_stats,
             "cost_stats": cost_stats,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def display_dashboard(self):
         """Display the main dashboard"""
@@ -194,7 +201,8 @@ class APIMasterDashboard:
         # Recent test results
         recent_tests = [
             (k, v) for k, v in self.api_status.items() if v.last_tested and v.test_status
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         recent_tests.sort(key=lambda x: x[1].last_tested or "", reverse=True)
 
         if recent_tests:
@@ -290,7 +298,8 @@ class APIMasterDashboard:
             (k, v)
             for k, v in self.api_status.items()
             if v.has_key and (phase is None or v.phase == phase)
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         if not apis_to_test:
             print("❌ No APIs available for testing")
@@ -362,28 +371,28 @@ class APIMasterDashboard:
         print(f"\n📄 Generating environment template: {template_file}")
 
         with open(template_file, "w") as f:
-            f.write("# API Master Dashboard - Environment Variables Template\n")
-            f.write(f"# Generated on {datetime.now().isoformat()}\n\n")
+            f.write("# API Master Dashboard - Environment Variables Template\n")"
+            f.write(f"# Generated on {datetime.now().isoformat()}\n\n")"
 
             # Group by phase
             for phase in [1, 2, 3, 4]:
                 phase_apis = [(k, v) for k, v in self.api_status.items() if v.phase == phase]
 
                 if phase_apis:
-                    f.write(f"# Phase {phase} APIs\n")
+                    f.write(f"# Phase {phase} APIs\n")"
                     for api_key, status in sorted(phase_apis):
                         api_info = API_REGISTRY.get(api_key, {})
                         env_var = api_info.get("env_var", f"{api_key.upper()}_API_KEY")
 
-                        f.write(f"# {status.name} ({status.cost_tier})\n")
+                        f.write(f"# {status.name} ({status.cost_tier})\n")"
                         if status.has_key:
                             f.write(f"{env_var}=your_api_key_here\n")
                         else:
-                            f.write(f"# {env_var}=your_api_key_here\n")
+                            f.write(f"# {env_var}=your_api_key_here\n")"
                         f.write("\n")
 
             # Additional configuration
-            f.write("# Usage Tracking (Optional)\n")
+            f.write("# Usage Tracking (Optional)\n")"
             f.write("API_USAGE_TRACKING=true\n")
             f.write("API_RATE_LIMIT_ALERTS=true\n")
             f.write("API_COST_MONITORING=true\n")
@@ -393,18 +402,19 @@ class APIMasterDashboard:
         # Also create example file
         example_file = ".env.example"
         with open(example_file, "w") as f:
-            f.write("# Copy this file to .env and add your actual API keys\n")
-            f.write("# Never commit .env to version control!\n\n")
+            f.write("# Copy this file to .env and add your actual API keys\n")"
+            f.write("# Never commit .env to version control!\n\n")"
 
             for phase in [1, 2, 3, 4]:
                 phase_apis = [
                     (k, v)
                     for k, v in self.api_status.items()
                     if v.phase == phase and v.cost_tier == "FREE"
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 if phase_apis:
-                    f.write(f"# Phase {phase} - Free APIs (Start here!)\n")
+                    f.write(f"# Phase {phase} - Free APIs (Start here!)\n")"
                     for api_key, status in sorted(phase_apis):
                         api_info = API_REGISTRY.get(api_key, {})
                         env_var = api_info.get("env_var", f"{api_key.upper()}_API_KEY")
@@ -423,7 +433,8 @@ class APIMasterDashboard:
                 # Get testable APIs
                 testable_apis = [
                     k for k, v in self.api_status.items() if v.has_key and v.registered
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 if testable_apis:
                     import random

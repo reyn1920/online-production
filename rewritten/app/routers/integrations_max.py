@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 Integrations Max Router - API integrations and affiliate management
-"""
+""""""
 
 import json
 import os
@@ -104,7 +104,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "images_pixabay": {
         "name": "Pixabay",
         "category": "images",
@@ -114,7 +115,8 @@ DEFAULT_PROVIDERS = {
         "priority": 2,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "news_guardian": {
         "name": "Guardian",
         "category": "news",
@@ -124,7 +126,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "news_newsapi": {
         "name": "NewsAPI",
         "category": "news",
@@ -134,7 +137,8 @@ DEFAULT_PROVIDERS = {
         "priority": 2,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "geo_openstreet": {
         "name": "OpenStreetMap",
         "category": "geo",
@@ -144,7 +148,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": False,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "pets_catapi": {
         "name": "TheCatAPI",
         "category": "pets",
@@ -154,7 +159,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "pets_dogapi": {
         "name": "TheDogAPI",
         "category": "pets",
@@ -164,7 +170,8 @@ DEFAULT_PROVIDERS = {
         "priority": 2,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "weather_openmeteo": {
         "name": "Open-Meteo",
         "category": "weather",
@@ -174,7 +181,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": False,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "weather_openweather": {
         "name": "OpenWeather",
         "category": "weather",
@@ -184,7 +192,8 @@ DEFAULT_PROVIDERS = {
         "priority": 2,
         "requires_key": True,
         "free_tier": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "social_instagram": {
         "name": "Instagram",
         "category": "social",
@@ -195,7 +204,8 @@ DEFAULT_PROVIDERS = {
         "requires_key": True,
         "free_tier": False,
         "oauth_required": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "social_tiktok": {
         "name": "TikTok",
         "category": "social",
@@ -206,7 +216,8 @@ DEFAULT_PROVIDERS = {
         "requires_key": True,
         "free_tier": False,
         "oauth_required": True,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "ai_openai": {
         "name": "OpenAI",
         "category": "ai",
@@ -216,7 +227,8 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "email_sendgrid": {
         "name": "SendGrid",
         "category": "email",
@@ -226,8 +238,10 @@ DEFAULT_PROVIDERS = {
         "priority": 1,
         "requires_key": True,
         "free_tier": True,
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 # Default affiliates
 DEFAULT_AFFILIATES = {
@@ -236,32 +250,38 @@ DEFAULT_AFFILIATES = {
         "vertical": "general",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "tech_bestbuy": {
         "name": "Best Buy",
         "vertical": "tech",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "wellness_iherb": {
         "name": "iHerb",
         "vertical": "wellness",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "ai_openai_partner": {
         "name": "OpenAI Partner",
         "vertical": "ai",
         "affiliate_id": "",
         "enabled": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "pets_chewy": {
         "name": "Chewy",
         "vertical": "pets",
         "affiliate_id": "",
         "enabled": False,
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 # Default policy
 DEFAULT_POLICY = {
@@ -270,7 +290,8 @@ DEFAULT_POLICY = {
     "crypto_enabled": False,
     "adult_enabled": False,
     "last_updated": datetime.now().isoformat(),
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # Helper functions
 
@@ -366,8 +387,10 @@ async def list_providers():
                 "requires_key": provider.get("requires_key", False),
                 "free_tier": provider.get("free_tier", False),
                 "status_color": get_provider_status_color(provider_id, provider),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     return {"providers": result}
 
@@ -390,14 +413,16 @@ async def add_provider(provider: ProviderIn):
         "priority": provider.priority,
         "requires_key": True,
         "free_tier": False,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     save_json(PROVIDERS_FILE, providers)
 
     return {
         "message": "Provider added successfully",
         "provider_id": provider_id,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.post("/providers/{provider_id}/enable")
@@ -427,7 +452,8 @@ async def upsert_credentials(provider_id: str, credential: CredentialIn):
         "key_name": credential.key_name,
         "key_value": credential.key_value,
         "updated_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     save_json(KEYS_FILE, keys)
 
@@ -452,8 +478,10 @@ async def get_active_providers():
                     "category": provider.get("category", "unknown"),
                     "has_credentials": has_key,
                     "status_color": get_provider_status_color(provider_id, provider),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
     return {"active_providers": active}
 
@@ -471,7 +499,8 @@ async def rotate_provider(provider_id: str):
         (pid, p)
         for pid, p in providers.items()
         if p.get("category") == category and p.get("enabled", False)
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     if len(category_providers) <= 1:
         return {"message": "No alternative providers available"}
@@ -482,7 +511,8 @@ async def rotate_provider(provider_id: str):
     # Find current provider index
     current_index = next(
         (i for i, (pid, _) in enumerate(category_providers) if pid == provider_id), 0
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Get next provider
     next_index = (current_index + 1) % len(category_providers)
@@ -493,7 +523,8 @@ async def rotate_provider(provider_id: str):
         "current_provider": provider_id,
         "next_provider": next_provider_id,
         "next_provider_name": next_provider.get("name", next_provider_id),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.post("/providers/{provider_id}/report")
@@ -508,7 +539,8 @@ async def report_usage(provider_id: str, report: ReportIn):
             "error_count": 0,
             "avg_response_time": 0,
             "last_used": None,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     provider_metrics = metrics[provider_id]
     provider_metrics["total_calls"] += 1
@@ -524,12 +556,14 @@ async def report_usage(provider_id: str, report: ReportIn):
         total_calls = provider_metrics["total_calls"]
         provider_metrics["avg_response_time"] = (
             current_avg * (total_calls - 1) + report.response_time_ms
-        ) / total_calls
+# BRACKET_SURGEON: disabled
+#         ) / total_calls
 
     # Calculate success rate
     provider_metrics["success_rate"] = (
         provider_metrics["success_count"] / provider_metrics["total_calls"] * 100
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     save_json(METRICS_FILE, metrics)
 
@@ -610,8 +644,10 @@ async def list_affiliates():
                 "enabled": affiliate.get("enabled", False),
                 "has_affiliate_id": bool(affiliate.get("affiliate_id", "").strip()),
                 "status_color": get_affiliate_status_color(affiliate_id, affiliate),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     return {"affiliates": result}
 
@@ -630,14 +666,16 @@ async def add_affiliate(affiliate: AffiliateIn):
         "vertical": affiliate.vertical,
         "affiliate_id": affiliate.affiliate_id,
         "enabled": affiliate.enabled,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     save_json(AFFILIATES_FILE, affiliates)
 
     return {
         "message": "Affiliate added successfully",
         "affiliate_key": affiliate_key,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.post("/affiliates/{affiliate_key}/enable")
@@ -687,7 +725,8 @@ async def set_policy(policy_updates: Dict[str, Any]):
         "gambling_enabled",
         "crypto_enabled",
         "adult_enabled",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for field in allowed_fields:
         if field in policy_updates:
@@ -707,7 +746,8 @@ CHANNEL_MAP = {
     "pets": ["pets_chewy", "general_amazon"],
     "ai": ["ai_openai_partner", "tech_bestbuy"],
     "general": ["general_amazon"],
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 @router.get("/affiliates/suggestions/{channel}")
@@ -736,8 +776,10 @@ async def get_top_affiliates(channel: str):
                     "enabled": affiliate.get("enabled", False),
                     "has_affiliate_id": bool(affiliate.get("affiliate_id", "").strip()),
                     "status_color": get_affiliate_status_color(key, affiliate),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
     return {"suggestions": suggestions}
 
@@ -745,7 +787,7 @@ async def get_top_affiliates(channel: str):
 @router.get("/admin", response_class=HTMLResponse)
 async def admin_ui():
     """Admin interface for integrations"""
-    return """
+    return """"""
     <!DOCTYPE html>
     <html>
     <head>
@@ -764,28 +806,28 @@ async def admin_ui():
     </head>
     <body>
         <h1>Integrations Admin Panel</h1>
-        
+
         <div class="section">
             <h2>API Providers</h2>
             <div id="providers"></div>
         </div>
-        
+
         <div class="section">
             <h2>Affiliate Programs</h2>
             <div id="affiliates"></div>
         </div>
-        
+
         <div class="section">
             <h2>Content Policy</h2>
             <div id="policy"></div>
         </div>
-        
+
         <script>
             async function loadProviders() {
                 const response = await fetch('/integrations/providers');
                 const data = await response.json();
                 const container = document.getElementById('providers');
-                
+
                 container.innerHTML = data.providers.map(p => `
                     <div class="provider">
                         <strong>${p.name}</strong> (${p.category})
@@ -798,13 +840,14 @@ async def admin_ui():
                         <button onclick="testProvider('${p.id}')">Test</button>
                     </div>
                 `).join('');
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             async function loadAffiliates() {
                 const response = await fetch('/integrations/affiliates');
                 const data = await response.json();
                 const container = document.getElementById('affiliates');
-                
+
                 container.innerHTML = data.affiliates.map(a => `
                     <div class="affiliate">
                         <strong>${a.name}</strong> (${a.vertical})
@@ -816,16 +859,17 @@ async def admin_ui():
                         </button>
                     </div>
                 `).join('');
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             async function loadPolicy() {
                 const response = await fetch('/integrations/policy');
                 const data = await response.json();
                 const container = document.getElementById('policy');
-                
+
                 container.innerHTML = `
                     <label>
-                        <input type="checkbox" ${data.restricted_verticals_enabled ? 'checked' : ''} 
+                        <input type="checkbox" ${data.restricted_verticals_enabled ? 'checked' : ''}
                                onchange="updatePolicy('restricted_verticals_enabled', this.checked)">
                         Enable Restricted Verticals
                     </label><br>
@@ -846,41 +890,49 @@ async def admin_ui():
                     </label><br>
                     <small>Last updated: ${data.last_updated}</small>
                 `;
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             async function toggleProvider(id, enabled) {
                 await fetch(`/integrations/providers/${id}/enable`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({enabled})
-                });
+# BRACKET_SURGEON: disabled
+#                 });
                 loadProviders();
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             async function toggleAffiliate(id, enabled) {
                 await fetch(`/integrations/affiliates/${id}/enable`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({enabled})
-                });
+# BRACKET_SURGEON: disabled
+#                 });
                 loadAffiliates();
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             async function testProvider(id) {
                 const response = await fetch(`/integrations/test-call?provider_id=${id}`);
                 const data = await response.json();
                 alert(`Test result: ${data.status}\n${data.message || JSON.stringify(data.data)}`);
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             async function updatePolicy(field, value) {
                 await fetch('/integrations/policy', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({[field]: value})
-                });
+# BRACKET_SURGEON: disabled
+#                 });
                 loadPolicy();
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             // Load initial data
             loadProviders();
             loadAffiliates();
@@ -888,4 +940,4 @@ async def admin_ui():
         </script>
     </body>
     </html>
-    """
+    """"""

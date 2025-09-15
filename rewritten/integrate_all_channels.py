@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Integrate All Channels Script
 Integrates all channels from channels.json into the Universal Channel Protocol
-"""
+""""""
 
 import json
 import sys
@@ -11,7 +11,8 @@ from backend.content.universal_channel_protocol import (
     ChannelType,
     ContentFirewallLevel,
     get_protocol,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 def load_channels_config():
@@ -31,7 +32,8 @@ def map_category_to_channel_type(category):
         "technology": ChannelType.TECH,
         "health_wellness": ChannelType.WELLNESS,
         "ai_education": ChannelType.EDUCATION,
-    }
+# BRACKET_SURGEON: disabled
+#     }
     return mapping.get(category, ChannelType.ENTERTAINMENT)
 
 
@@ -48,12 +50,15 @@ def create_persona_config(channel_data):
         "voice_characteristics": {
             "voice": channel_data.get("voice", "Default"),
             "tone": "professional",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         "content_preferences": {
             "length": channel_data.get("target_length", "10 - 15 minutes"),
             "schedule": channel_data.get("posting_schedule", "daily"),
-        },
-    }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def get_rss_feeds_for_category(category):
@@ -63,23 +68,28 @@ def get_rss_feeds_for_category(category):
             "https://feeds.foxnews.com/foxnews/politics",
             "https://www.breitbart.com/feed/",
             "https://dailycaller.com/feed/",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "technology": [
             "https://techcrunch.com/feed/",
             "https://www.theverge.com/rss/index.xml",
             "https://arstechnica.com/feed/",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "health_wellness": [
             "https://www.healthline.com/rss",
             "https://www.medicalnewstoday.com/rss",
             "https://www.webmd.com/rss/rss.aspx?RSSSource = RSS_PUBLIC",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "ai_education": [
             "https://ai.googleblog.com/feeds/posts/default",
             "https://openai.com/blog/rss/",
             "https://www.technologyreview.com/feed/",
-        ],
-    }
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     }
     return feeds.get(category, [])
 
 
@@ -128,7 +138,8 @@ def integrate_all_channels():
                 ContentFirewallLevel.STRICT
                 if channel_data.get("category") == "politics"
                 else ContentFirewallLevel.STANDARD
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create channel in protocol
             channel_config = protocol.create_channel(
@@ -138,7 +149,8 @@ def integrate_all_channels():
                 persona_config=persona_config,
                 rss_feeds=rss_feeds,
                 firewall_level=firewall_level,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             print(f"  ✅ Successfully integrated: {channel_name}")
             print(f"     - Channel ID: {channel_id}")

@@ -7,7 +7,7 @@ from src.cost_time import calculate_time
 
 os.environ["GRADIO_TEMP_DIR"] = "./temp"
 
-description = """<p style="text - align: center; font - weight: bold;">
+description = """<p style="text - align: center; font - weight: bold;">"""
     <span style="font - size: 28px;">Linly 智能对话系统 (Linly - Talker)</span>
     <br>
     <span style="font - size: 18px;" id="paper - info">
@@ -19,7 +19,7 @@ description = """<p style="text - align: center; font - weight: bold;">
     <br>
     <span > Linly - Talker 是一款智能 AI 对话系统，结合了大型语言模型 (LLMs) 与视觉模型，是一种新颖的人工智能交互方式。</span>
 </p>
-"""
+""""""
 
 # 设定默认参数值，可修改
 # source_image = r'example.png'
@@ -52,7 +52,8 @@ def TTS_response(
     male,
     tts_method="PaddleTTS",
     save_path="answer.wav",
-):
+# BRACKET_SURGEON: disabled
+# ):
     print(text, voice, rate, volume, pitch, am, voc, lang, male, tts_method, save_path)
     if tts_method == "Edge - TTS":
         try:
@@ -91,7 +92,8 @@ def Talker_response(source_image, source_video, method="SadTalker", driven_audio
             length_of_audio,
             blink_every,
             fps=20,
-        )
+# BRACKET_SURGEON: disabled
+#         )
     elif method == "Wav2Lip":
         video = wav2lip.predict(source_image, driven_audio, batch_size)
     elif method == "NeRFTalk":
@@ -117,14 +119,16 @@ def main():
                 with gr.Tabs():
                     input_audio = gr.Audio(
                         sources=["upload", "microphone"], type="filepath", label="语音"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     input_text = gr.Textbox(label="Input Text", lines=3)
                     with gr.Column():
                         tts_method = gr.Radio(
                             ["Edge - TTS", "PaddleTTS"],
                             label="Text To Speech Method (Edge - TTS利用微软的TTS，PaddleSpeech是离线的TTS，不过第一次运行会自动下载模型)",
                             value="Edge - TTS",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 with gr.Tabs("TTS Method"):
                     # with gr.Accordion("Advanced Settings(高级设置语音参数) ", open = False):
@@ -133,11 +137,13 @@ def main():
                             edgetts.SUPPORTED_VOICE,
                             value="zh - CN - XiaoxiaoNeural",
                             label="Voice",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         rate = gr.Slider(minimum=-100, maximum=100, value=0, step=1.0, label="Rate")
                         volume = gr.Slider(
                             minimum=0, maximum=100, value=100, step=1, label="Volume"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         pitch = gr.Slider(minimum=-100, maximum=100, value=0, step=1, label="Pitch")
                     with gr.Tab("PaddleTTS"):
                         am = gr.Dropdown(["FastSpeech2"], label="声学模型选择", value="FastSpeech2")
@@ -151,7 +157,8 @@ def main():
                             value=2,
                             step=1,
                             label="Talker Batch size",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 button_text = gr.Button("语音生成")
                 button_text.click(
                     fn=TTS_response,
@@ -166,9 +173,11 @@ def main():
                         lang,
                         male,
                         tts_method,
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     outputs=[input_audio],
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             with gr.Column(variant="panel"):
                 with gr.Tabs():
@@ -177,55 +186,67 @@ def main():
                             choices=["SadTalker", "Wav2Lip", "NeRFTalk"],
                             value="SadTalker",
                             label="模型选择",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         gen_video = gr.Video(
                             label="Generated video",
                             format="mp4",
                             scale=1,
                             autoplay=True,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 video_button = gr.Button("提交", variant="primary")
 
             video_button.click(
                 fn=Talker_response,
                 inputs=[source_image, source_video, method, input_audio, batch_size],
                 outputs=[gen_video],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         with gr.Row():
             examples = [
                 [
                     "examples / source_image / full_body_2.png",
                     "应对压力最有效的方法是什么？",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 [
                     "examples / source_image / full_body_1.png",
                     "如何进行时间管理？",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 [
                     "examples / source_image / full3.png",
                     "为什么有些人选择使用纸质地图或寻求方向，而不是依赖GPS设备或智能手机应用程序？",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 [
                     "examples / source_image / full4.jpeg",
                     "近日，苹果公司起诉高通公司，状告其未按照相关合约进行合作，高通方面尚未回应。这句话中“其”指的是谁？",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 [
                     "examples / source_image / art_13.png",
                     "三年级同学种树80颗，四、五年级种的棵树比三年级种的2倍多14棵，三个年级共种树多少棵?",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 [
                     "examples / source_image / art_5.png",
                     "撰写一篇交响乐音乐会评论，讨论乐团的表演和观众的整体体验。",
-                ],
-            ]
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             ]
             gr.Examples(
                 examples=examples,
                 inputs=[
                     source_image,
                     input_text,
-                ],
-            )
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             )
     return inference
 
 
@@ -283,4 +304,5 @@ if __name__ == "__main__":
         ssl_keyfile=ssl_keyfile,
         ssl_verify=False,
         debug=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )

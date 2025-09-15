@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Production Startup Script for TRAE.AI
 Loads production environment and starts the application with all services
-"""
+""""""
 
 import os
 import sys

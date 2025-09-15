@@ -10,7 +10,8 @@ def get_encoder(
     desired_resolution=2048,
     align_corners=False,
     **kwargs
-):
+# BRACKET_SURGEON: disabled
+# ):
     if encoding == "None":
         return lambda x, **kwargs: x, input_dim
 
@@ -36,7 +37,8 @@ def get_encoder(
             desired_resolution=desired_resolution,
             gridtype="hash",
             align_corners=align_corners,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     elif encoding == "tiledgrid":
         from gridencoder import GridEncoder
@@ -50,7 +52,8 @@ def get_encoder(
             desired_resolution=desired_resolution,
             gridtype="tiled",
             align_corners=align_corners,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     elif encoding == "ash":
         from ashencoder import AshEncoder
@@ -60,11 +63,13 @@ def get_encoder(
             output_dim=16,
             log2_hashmap_size=log2_hashmap_size,
             resolution=desired_resolution,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     else:
         raise NotImplementedError(
             "Unknown encoding mode, choose from [None, frequency, spherical_harmonics, hashgrid, tiledgrid]"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     return encoder, encoder.output_dim

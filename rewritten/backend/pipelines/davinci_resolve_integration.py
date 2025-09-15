@@ -78,7 +78,8 @@ class DaVinciResolveIntegration:
             "/opt/resolve/bin/resolve",
             "C:\\\\Program Files\\\\Blackmagic Design\\\\DaVinci Resolve\\\\Resolve.exe",
             "C:\\\\Program Files (x86)\\\\Blackmagic Design\\\\DaVinci Resolve\\\\Resolve.exe",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for path in possible_paths:
             if os.path.exists(path):
@@ -106,19 +107,22 @@ class DaVinciResolveIntegration:
                     "version": version,
                     "api_available": True,
                     "installation_path": self.resolve_path,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {
                     "ok": False,
                     "error": "Could not connect to DaVinci Resolve API",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except ImportError:
             return {
                 "ok": False,
                 "error": "DaVinci Resolve API not available",
                 "suggestion": "Install DaVinci Resolve and enable scripting",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {"ok": False, "error": f"API validation failed: {str(e)}"}
 
@@ -144,7 +148,8 @@ class DaVinciResolveIntegration:
                 return {
                     "ok": False,
                     "error": f"Failed to create project: {project_config.name}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Set project settings
             project.SetSetting("timelineResolution", project_config.timeline_resolution)
@@ -158,7 +163,8 @@ class DaVinciResolveIntegration:
             # Create timeline
             timeline_result = await self._create_timeline_from_assets(
                 project, blender_assets, project_config
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "ok": True,
@@ -166,7 +172,8 @@ class DaVinciResolveIntegration:
                 "project_id": project.GetUniqueId(),
                 "imported_assets": import_results,
                 "timeline": timeline_result,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Project creation failed: {e}")
@@ -194,7 +201,8 @@ class DaVinciResolveIntegration:
             if "voice_audio" in cloud_assets:
                 voice_result = await self._integrate_voice_audio(
                     media_pool, cloud_assets["voice_audio"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 integration_results["voice_audio"] = voice_result
 
             # Integrate Captionizer subtitles
@@ -206,28 +214,32 @@ class DaVinciResolveIntegration:
             if "thumbnails" in cloud_assets:
                 thumbnail_result = await self._integrate_thumbnails(
                     media_pool, cloud_assets["thumbnails"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 integration_results["thumbnails"] = thumbnail_result
 
             # Integrate background music
             if "background_music" in cloud_assets:
                 music_result = await self._integrate_background_music(
                     media_pool, cloud_assets["background_music"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 integration_results["background_music"] = music_result
 
             # Integrate Lingo Blaster translations
             if "translations" in cloud_assets:
                 translation_result = await self._integrate_translations(
                     project, cloud_assets["translations"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 integration_results["translations"] = translation_result
 
             return {
                 "ok": True,
                 "project_name": project_name,
                 "integrations": integration_results,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Cloud software integration failed: {e}")
@@ -269,7 +281,8 @@ class DaVinciResolveIntegration:
                     "template_applied": template_name,
                     "clips_processed": len(applied_clips),
                     "clip_names": applied_clips,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"ok": False, "error": "No timeline found in project"}
 
@@ -299,7 +312,8 @@ class DaVinciResolveIntegration:
             export_format = export_config.get("format", "mp4_h264")
             output_path = export_config.get(
                 "output_path", str(self.projects_dir / f"{project_name}_export")
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             render_settings = self._get_render_settings(export_format)
             render_settings["TargetDir"] = str(Path(output_path).parent)
@@ -320,7 +334,8 @@ class DaVinciResolveIntegration:
                     "output_path": output_path,
                     "format": export_format,
                     "status": "rendering",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"ok": False, "error": "Failed to create render job"}
 
@@ -341,8 +356,10 @@ class DaVinciResolveIntegration:
                         file_path=str(video_file),
                         asset_type="video",
                         metadata={"source": "blender_render"},
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Scan for audio files
         for audio_ext in [".wav", ".mp3", ".aac", ".flac"]:
@@ -352,8 +369,10 @@ class DaVinciResolveIntegration:
                         file_path=str(audio_file),
                         asset_type="audio",
                         metadata={"source": "blender_audio"},
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Scan for image sequences
         for img_ext in [".png", ".jpg", ".exr", ".tiff"]:
@@ -363,8 +382,10 @@ class DaVinciResolveIntegration:
                         file_path=str(img_file),
                         asset_type="image",
                         metadata={"source": "blender_render"},
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return assets
 
@@ -392,8 +413,10 @@ class DaVinciResolveIntegration:
                             "file_path": asset.file_path,
                             "asset_type": asset.asset_type,
                             "clips": [clip.GetName() for clip in imported_clips],
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     failed_imports.append(asset.file_path)
 
@@ -405,7 +428,8 @@ class DaVinciResolveIntegration:
             "imported": imported_assets,
             "failed": failed_imports,
             "total_imported": len(imported_assets),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _create_timeline_from_assets(
         self, project, assets: List[MediaAsset], config: ResolveProjectConfig
@@ -438,7 +462,8 @@ class DaVinciResolveIntegration:
                 "timeline_name": timeline_name,
                 "video_clips": len(video_assets),
                 "audio_clips": len(audio_assets),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Timeline creation failed: {e}")
@@ -458,7 +483,8 @@ class DaVinciResolveIntegration:
                 "success": True,
                 "clips_imported": len(imported_clips) if imported_clips else 0,
                 "folder": "Voice_Audio",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -483,7 +509,8 @@ class DaVinciResolveIntegration:
                 "success": True,
                 "captions_added": captions_added,
                 "track_index": subtitle_track_index,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -502,7 +529,8 @@ class DaVinciResolveIntegration:
                 "success": True,
                 "thumbnails_imported": len(imported_clips) if imported_clips else 0,
                 "folder": "Thumbnails",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -521,7 +549,8 @@ class DaVinciResolveIntegration:
                 "success": True,
                 "music_imported": len(imported_clips) if imported_clips else 0,
                 "folder": "Background_Music",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -543,7 +572,8 @@ class DaVinciResolveIntegration:
                 "success": True,
                 "languages": list(translations.keys()),
                 "timelines_created": timelines_created,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -559,8 +589,10 @@ class DaVinciResolveIntegration:
                 "gain": [0, 0, 0, 0],
                 "contrast": 1.0,
                 "saturation": 1.0,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         template_path.write_text(json.dumps(template_data, indent=2))
 
@@ -575,7 +607,8 @@ class DaVinciResolveIntegration:
                 "AudioCodec": "aac",
                 "AudioBitDepth": "16",
                 "AudioSampleRate": "48000",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "mp4_h265": {
                 "SelectAllFrames": True,
                 "VideoFormat": "mp4",
@@ -584,7 +617,8 @@ class DaVinciResolveIntegration:
                 "AudioCodec": "aac",
                 "AudioBitDepth": "16",
                 "AudioSampleRate": "48000",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "mov_prores": {
                 "SelectAllFrames": True,
                 "VideoFormat": "mov",
@@ -592,8 +626,10 @@ class DaVinciResolveIntegration:
                 "AudioCodec": "LinearPCM",
                 "AudioBitDepth": "24",
                 "AudioSampleRate": "48000",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         return settings_map.get(export_format, settings_map["mp4_h264"])
 

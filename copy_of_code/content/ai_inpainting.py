@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 AI Inpainting - Dynamic Avatar Clothing and Appearance Modification
 
 This module implements AI - powered inpainting using local Stable Diffusion models
@@ -9,7 +9,7 @@ integration with the content pipeline.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import logging
 import shutil
@@ -130,7 +130,8 @@ class StableDiffusionEngine:
                 from diffusers import (
                     DPMSolverMultistepScheduler,
                     StableDiffusionInpaintPipeline,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 self.logger.info(f"PyTorch available: {torch.__version__}")
 
@@ -147,12 +148,14 @@ class StableDiffusionEngine:
                     torch_dtype=(torch.float16 if self.device == "cuda" else torch.float32),
                     safety_checker=None,  # Disable for local use
                     requires_safety_checker=False,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Use DPM solver for faster inference
                 self.pipe.scheduler = DPMSolverMultistepScheduler.from_config(
                     self.pipe.scheduler.config
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 self.pipe = self.pipe.to(self.device)
 
@@ -208,10 +211,12 @@ class StableDiffusionEngine:
                         torch.Generator(device=self.device).manual_seed(config.seed)
                         if config.seed
                         else None
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     num_images_per_prompt=config.batch_size,
                     negative_prompt=config.negative_prompt,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             return result.images
 
@@ -263,7 +268,8 @@ class MaskGenerator:
         try:
             self.face_cascade = cv2.CascadeClassifier(
                 cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except Exception:
             self.face_cascade = None
 
@@ -272,7 +278,8 @@ class MaskGenerator:
         image: Image.Image,
         mode: MaskMode,
         region: Optional[Tuple[int, int, int, int]] = None,
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate mask based on the specified mode."""
         try:
             if mode == MaskMode.AUTO_CLOTHING:
@@ -384,7 +391,8 @@ class MaskGenerator:
 
     def _generate_region_mask(
         self, image: Image.Image, region: Tuple[int, int, int, int]
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate mask for custom region."""
         mask = Image.new("L", image.size, 0)
         draw = ImageDraw.Draw(mask)
@@ -443,7 +451,8 @@ class AIInpainting:
         self.sd_engine = StableDiffusionEngine(
             model_path=self.config.model_path,
             device="cuda" if self.config.use_gpu else "cpu",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.fallback_engine = FallbackEngine()
         self.mask_generator = MaskGenerator()
 
@@ -462,7 +471,8 @@ class AIInpainting:
         output_path: Optional[str] = None,
         job_id: Optional[str] = None,
         config: Optional[InpaintingConfig] = None,
-    ) -> InpaintingJob:
+# BRACKET_SURGEON: disabled
+#     ) -> InpaintingJob:
         """Create a new inpainting job."""
         if job_id is None:
             job_id = f"inpaint_{int(time.time())}_{len(self.active_jobs)}"
@@ -491,8 +501,10 @@ class AIInpainting:
             metadata={
                 "created_at": datetime.now().isoformat(),
                 "source_image_info": self._get_image_info(source_image),
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Inpainting job created: {job_id}")
@@ -533,10 +545,12 @@ class AIInpainting:
             if job.config.model in [
                 InpaintingModel.STABLE_DIFFUSION_INPAINT,
                 InpaintingModel.STABLE_DIFFUSION_XL_INPAINT,
-            ]:
+# BRACKET_SURGEON: disabled
+#             ]:
                 generated_images = self.sd_engine.generate_inpainting(
                     source_image, mask_image, job.prompt, job.config
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 job.progress = 80.0
 
             # Fallback if primary method fails
@@ -544,7 +558,8 @@ class AIInpainting:
                 self.logger.warning(f"Primary engine failed, using fallback for job {job_id}")
                 generated_images = self.fallback_engine.generate_inpainting(
                     source_image, mask_image, job.prompt, job.config
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 job.progress = 80.0
 
             if generated_images:
@@ -557,7 +572,8 @@ class AIInpainting:
                         base_path = Path(job.output_path)
                         save_path = str(
                             base_path.parent / f"{base_path.stem}_{i}{base_path.suffix}"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                     img.save(save_path)
                     saved_paths.append(save_path)
@@ -594,7 +610,8 @@ class AIInpainting:
                     "height": img.height,
                     "format": img.format,
                     "mode": img.mode,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception:
             return {}
 
@@ -646,14 +663,16 @@ class AIInpainting:
             quality=InpaintingQuality.HIGH,
             steps=30,
             guidance_scale=8.0,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         job = self.create_inpainting_job(
             source_image=avatar_image,
             prompt=f"wearing {clothing_prompt}, high quality, detailed",
             output_path=output_path,
             config=config,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if self.process_job(job.job_id):
             return job.generated_images[0] if job.generated_images else None
@@ -671,14 +690,16 @@ class AIInpainting:
             quality=InpaintingQuality.HIGH,
             steps=25,
             guidance_scale=7.0,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         job = self.create_inpainting_job(
             source_image=avatar_image,
             prompt=f"{background_prompt}, high quality, detailed background",
             output_path=output_path,
             config=config,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if self.process_job(job.job_id):
             return job.generated_images[0] if job.generated_images else None
@@ -697,7 +718,8 @@ if __name__ == "__main__":
         steps=20,
         guidance_scale=7.5,
         batch_size=1,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     inpainter = AIInpainting(config)
 
@@ -708,7 +730,8 @@ if __name__ == "__main__":
             avatar_image="./assets/avatar.jpg",
             clothing_prompt="elegant business suit",
             output_path="./output/avatar_business_suit.png",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if result:
             print(f"Avatar clothing changed: {result}")
@@ -720,7 +743,8 @@ if __name__ == "__main__":
             avatar_image="./assets/avatar.jpg",
             background_prompt="modern office environment",
             output_path="./output/avatar_office_bg.png",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if result:
             print(f"Avatar background changed: {result}")

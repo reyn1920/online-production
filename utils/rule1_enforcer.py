@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Rule - 1 Compliance Tools for TRAE.AI System
 
 This module provides comprehensive compliance scanning and enforcement
@@ -17,7 +17,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -76,21 +76,21 @@ class ScanResult:
 
 
 class Rule1DeepScanner:
-    """
+    """"""
     Deep semantic scanner for Rule - 1 compliance.
 
     This class performs comprehensive analysis of content to detect
     potential violations of Rule - 1 guidelines, including context - aware
     forbidden term detection and semantic analysis.
-    """
+    """"""
 
     def __init__(self, config_path: Optional[str] = None):
-        """
+        """"""
         Initialize the Rule - 1 Deep Scanner.
 
         Args:
             config_path (str, optional): Path to configuration file
-        """
+        """"""
         self.logger = logging.getLogger(__name__)
         self.config = self._load_config(config_path)
         self.forbidden_terms = self._load_forbidden_terms()
@@ -106,7 +106,8 @@ class Rule1DeepScanner:
             "enable_semantic_analysis": True,
             "enable_context_analysis": True,
             "max_violations_per_scan": 100,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if config_path and Path(config_path).exists():
             try:
@@ -133,10 +134,12 @@ class Rule1DeepScanner:
                     "sexism",
                     "homophobia",
                     "xenophobia",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "severity": ViolationSeverity.HIGH,
                 "context_required": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Violence and harmful content
             "violence": {
                 "terms": [
@@ -148,10 +151,12 @@ class Rule1DeepScanner:
                     "threat",
                     "intimidation",
                     "harassment",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "severity": ViolationSeverity.HIGH,
                 "context_required": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Misinformation indicators
             "misinformation": {
                 "terms": [
@@ -162,10 +167,12 @@ class Rule1DeepScanner:
                     "false claim",
                     "misleading",
                     "unverified",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "severity": ViolationSeverity.MEDIUM,
                 "context_required": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Spam and manipulation
             "spam": {
                 "terms": [
@@ -176,10 +183,12 @@ class Rule1DeepScanner:
                     "guaranteed",
                     "free money",
                     "get rich quick",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "severity": ViolationSeverity.LOW,
                 "context_required": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Adult content
             "adult_content": {
                 "terms": [
@@ -190,11 +199,14 @@ class Rule1DeepScanner:
                     "sexual",
                     "pornographic",
                     "erotic",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "severity": ViolationSeverity.MEDIUM,
                 "context_required": True,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         return forbidden_terms
 
@@ -205,7 +217,8 @@ class Rule1DeepScanner:
             "question": [r"\\?\\s*$", r"^(what|how|why|when|where|who)\\s+"],
             "educational": [r"learn\\s + about", r"understand\\s+", r"explain\\s+"],
             "reporting": [r"report\\s + on", r"news\\s + about", r"according\\s + to"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _load_whitelist_terms(self) -> Set[str]:
         """Load whitelisted terms that should not trigger violations"""
@@ -222,12 +235,14 @@ class Rule1DeepScanner:
             "mental health",
             "well - being",
             "community guidelines",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def scan_content(
         self, content: str, content_type: ContentType, content_id: str = None
-    ) -> ScanResult:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> ScanResult:
+        """"""
         Perform comprehensive scan of content for Rule - 1 compliance.
 
         Args:
@@ -237,7 +252,7 @@ class Rule1DeepScanner:
 
         Returns:
             ScanResult: Complete scan results
-        """
+        """"""
         if not content_id:
             content_id = f"scan_{datetime.now().timestamp()}"
 
@@ -265,8 +280,10 @@ class Rule1DeepScanner:
                 "scan_config": self.config,
                 "total_violations_found": len(violations),
                 "violations_after_filter": len(filtered_violations),
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
     def _scan_forbidden_terms(self, content: str) -> List[ViolationResult]:
         """Scan for forbidden terms"""
@@ -289,7 +306,8 @@ class Rule1DeepScanner:
                         context=context,
                         position=(start, end),
                         confidence=0.9,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     violations.append(violation)
 
@@ -309,8 +327,10 @@ class Rule1DeepScanner:
                     message="Excessive use of capital letters detected",
                     context=content[:100],
                     confidence=0.8,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check for excessive punctuation
         punct_pattern = r"[!]{3,}|[?]{3,}|[.]{4,}"
@@ -323,8 +343,10 @@ class Rule1DeepScanner:
                     context=self._extract_context(content, match.start(), match.end()),
                     position=(match.start(), match.end()),
                     confidence=0.7,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         return violations
 
@@ -353,8 +375,10 @@ class Rule1DeepScanner:
                         message="Highly repetitive content detected (potential spam)",
                         context=content[:100],
                         confidence=0.6,
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return violations
 
@@ -402,20 +426,20 @@ class Rule1DeepScanner:
 
 
 class Rule1Enforcer:
-    """
+    """"""
     Rule - 1 enforcement system for automated compliance actions.
 
     This class takes scan results and applies appropriate enforcement
     actions based on violation severity and organizational policies.
-    """
+    """"""
 
     def __init__(self, db_path: str = "data/compliance.sqlite"):
-        """
+        """"""
         Initialize the Rule - 1 Enforcer.
 
         Args:
             db_path (str): Path to compliance database
-        """
+        """"""
         self.logger = logging.getLogger(__name__)
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -426,7 +450,7 @@ class Rule1Enforcer:
         """Initialize compliance tracking database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS compliance_scans (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         content_id TEXT NOT NULL,
@@ -435,12 +459,14 @@ class Rule1Enforcer:
                         violation_count INTEGER NOT NULL,
                         scan_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         metadata TEXT
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS violations (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         scan_id INTEGER NOT NULL,
@@ -452,12 +478,14 @@ class Rule1Enforcer:
                         position_end INTEGER,
                         confidence REAL,
                         FOREIGN KEY (scan_id) REFERENCES compliance_scans (id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS enforcement_actions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         scan_id INTEGER NOT NULL,
@@ -465,9 +493,11 @@ class Rule1Enforcer:
                         action_details TEXT,
                         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (scan_id) REFERENCES compliance_scans (id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -478,7 +508,7 @@ class Rule1Enforcer:
         content_id: str = None,
         auto_fix: bool = False,
     ) -> Dict[str, Any]:
-        """
+        """"""
         Enforce Rule - 1 compliance on content.
 
         Args:
@@ -489,7 +519,7 @@ class Rule1Enforcer:
 
         Returns:
             Dict: Enforcement result with actions taken
-        """
+        """"""
         # Perform scan
         scan_result = self.scanner.scan_content(content, content_type, content_id)
 
@@ -507,7 +537,8 @@ class Rule1Enforcer:
             "actions_taken": [],
             "modified_content": content,
             "recommendations": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for action in actions:
             result = self._apply_action(action, content, scan_result, auto_fix)
@@ -525,31 +556,34 @@ class Rule1Enforcer:
         """Store scan result in database"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
-                """
+                """"""
                 INSERT INTO compliance_scans
                 (content_id, content_type, is_compliant, violation_count, metadata)
                 VALUES (?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     scan_result.content_id,
                     scan_result.content_type.value,
                     scan_result.is_compliant,
                     len(scan_result.violations),
                     json.dumps(scan_result.metadata),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             scan_id = cursor.lastrowid
 
             # Store individual violations
             for violation in scan_result.violations:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO violations
                     (scan_id, violation_type, severity, message, context,
-                        position_start, position_end, confidence)
+# BRACKET_SURGEON: disabled
+#                         position_start, position_end, confidence)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         scan_id,
                         violation.violation_type,
@@ -559,8 +593,10 @@ class Rule1Enforcer:
                         violation.position[0] if violation.position else None,
                         violation.position[1] if violation.position else None,
                         violation.confidence,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
             conn.commit()
             return scan_id
@@ -575,13 +611,16 @@ class Rule1Enforcer:
         # Group violations by severity
         critical_violations = [
             v for v in scan_result.violations if v.severity == ViolationSeverity.CRITICAL
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         high_violations = [
             v for v in scan_result.violations if v.severity == ViolationSeverity.HIGH
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         medium_violations = [
             v for v in scan_result.violations if v.severity == ViolationSeverity.MEDIUM
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         low_violations = [v for v in scan_result.violations if v.severity == ViolationSeverity.LOW]
 
         # Critical violations - block content
@@ -591,8 +630,10 @@ class Rule1Enforcer:
                     "type": "block_content",
                     "reason": "Critical Rule - 1 violations detected",
                     "violations": critical_violations,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # High violations - require review
         elif high_violations:
@@ -601,8 +642,10 @@ class Rule1Enforcer:
                     "type": "require_review",
                     "reason": "High severity Rule - 1 violations detected",
                     "violations": high_violations,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Medium violations - flag for review
         elif medium_violations:
@@ -611,8 +654,10 @@ class Rule1Enforcer:
                     "type": "flag_for_review",
                     "reason": "Medium severity Rule - 1 violations detected",
                     "violations": medium_violations,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Low violations - suggest improvements
         if low_violations:
@@ -621,8 +666,10 @@ class Rule1Enforcer:
                     "type": "suggest_improvements",
                     "reason": "Minor Rule - 1 violations detected",
                     "violations": low_violations,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return actions
 
@@ -701,14 +748,16 @@ class Rule1Enforcer:
         with sqlite3.connect(self.db_path) as conn:
             for action in actions:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO enforcement_actions (scan_id,
     action_type,
-    action_details)
+# BRACKET_SURGEON: disabled
+#     action_details)
                     VALUES (?, ?, ?)
-                """,
+                ""","""
                     (scan_id, action["action"], json.dumps(action)),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             conn.commit()
 
     def get_compliance_report(self, days: int = 30) -> Dict[str, Any]:
@@ -718,21 +767,22 @@ class Rule1Enforcer:
 
             # Get scan statistics
             scan_stats = conn.execute(
-                """
+                """"""
                 SELECT
                     COUNT(*) as total_scans,
                         SUM(CASE WHEN is_compliant THEN 1 ELSE 0 END) as compliant_scans,
                         AVG(violation_count) as avg_violations
                 FROM compliance_scans
                 WHERE scan_timestamp >= datetime('now', '-{} days')
-            """.format(
+            """.format("""
                     days
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             ).fetchone()
 
             # Get violation breakdown
             violation_stats = conn.execute(
-                """
+                """"""
                 SELECT
                     violation_type,
                         severity,
@@ -742,14 +792,15 @@ class Rule1Enforcer:
                 WHERE s.scan_timestamp >= datetime('now', '-{} days')
                 GROUP BY violation_type, severity
                 ORDER BY count DESC
-            """.format(
+            """.format("""
                     days
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             ).fetchall()
 
             # Get enforcement actions
             action_stats = conn.execute(
-                """
+                """"""
                 SELECT
                     action_type,
                         COUNT(*) as count
@@ -758,9 +809,10 @@ class Rule1Enforcer:
                 WHERE s.scan_timestamp >= datetime('now', '-{} days')
                 GROUP BY action_type
                 ORDER BY count DESC
-            """.format(
+            """.format("""
                     days
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             ).fetchall()
 
         return {
@@ -772,8 +824,10 @@ class Rule1Enforcer:
                 scan_stats["compliant_scans"] / max(scan_stats["total_scans"], 1) * 100
                 if scan_stats and scan_stats["total_scans"] > 0
                 else 0
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
 
 if __name__ == "__main__":
@@ -790,12 +844,15 @@ if __name__ == "__main__":
         (
             "Educational content about preventing hate speech in communities.",
             ContentType.TEXT,
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         (
             "This content contains some questionable terms but in an educational context.",
             ContentType.TEXT,
-        ),
-    ]
+# BRACKET_SURGEON: disabled
+#         ),
+# BRACKET_SURGEON: disabled
+#     ]
 
     with tempfile.TemporaryDirectory() as temp_dir:
         db_path = os.path.join(temp_dir, "test_compliance.sqlite")
@@ -814,7 +871,8 @@ if __name__ == "__main__":
                 content_type=content_type,
                 content_id=f"test_{i + 1}",
                 auto_fix=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             print(f"Compliant: {result['is_compliant']}")
             print(f"Violations: {result['violation_count']}")

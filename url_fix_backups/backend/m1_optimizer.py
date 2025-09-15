@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI MacBook Air M1 Performance Optimizer
 
 Intelligent task serialization and dynamic resource throttling specifically
@@ -17,7 +17,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -106,7 +106,7 @@ class OptimizationTask:
     gpu_required: bool
     neural_engine_required: bool
     callback: Callable
-    args: tuple = field(default_factory = tuple)
+    args: tuple = field(default_factory = tuple):
     kwargs: dict = field(default_factory = dict)
     created_at: datetime = field(default_factory = datetime.now)
     started_at: Optional[datetime] = None
@@ -148,11 +148,15 @@ class M1PerformanceOptimizer:
         self.performance_executor = ThreadPoolExecutor(
             max_workers = self._get_performance_core_count(),
     thread_name_prefix="M1 - Perf"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.efficiency_executor = ThreadPoolExecutor(
             max_workers = self._get_efficiency_core_count(),
     thread_name_prefix="M1 - Eff"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         logger.info(f"M1 Optimizer initialized - M1 System: {self.is_m1}")
         logger.info(f"Max concurrent tasks: {self.max_concurrent_tasks}")
@@ -171,7 +175,8 @@ class M1PerformanceOptimizer:
             "adaptive_throttling": True,
                 "neural_engine_optimization": True,
                 "gpu_task_scheduling": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _detect_m1_system(self) -> bool:
@@ -185,7 +190,9 @@ class M1PerformanceOptimizer:
                 ["sysctl", "-n", "machdep.cpu.brand_string"],
                     capture_output = True,
                     text = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             cpu_brand = result.stdout.strip()
             is_apple_silicon = "Apple" in cpu_brand
@@ -267,8 +274,11 @@ class M1PerformanceOptimizer:
                     1
                     for t in self.active_tasks.values()
                     if t.priority == TaskPriority.LOW
-                ),
-                    )
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             logger.error(f"Failed to collect system metrics: {e}")
@@ -287,7 +297,9 @@ class M1PerformanceOptimizer:
                     neural_engine_usage = 0.0,
                     active_tasks = 0,
                     background_tasks = 0,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _get_performance_cores_usage(self) -> float:
@@ -307,11 +319,15 @@ class M1PerformanceOptimizer:
                         "100",
                         "--samplers",
                         "cpu_power",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     capture_output = True,
                     text = True,
                     timeout = 2,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Parse performance core usage from output
             # This is a simplified implementation
@@ -345,7 +361,9 @@ class M1PerformanceOptimizer:
             # Use powermetrics to get thermal state
             result = subprocess.run(
                 ["pmset", "-g", "therm"], capture_output = True, text = True, timeout = 2
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             output = result.stdout.lower()
             if "critical" in output:
@@ -413,7 +431,9 @@ class M1PerformanceOptimizer:
                     capture_output = True,
                     text = True,
                     timeout = 2,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # This is a simplified implementation
             # Real implementation would parse ioreg output
@@ -446,7 +466,8 @@ class M1PerformanceOptimizer:
             neural_engine_required: bool = False,
             *args,
             **kwargs,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Add a task to the optimization queue."""
 
         task_id = f"task_{int(time.time() * 1000)}_{len(self.task_queue)}"
@@ -464,7 +485,9 @@ class M1PerformanceOptimizer:
                 callback = callback,
                 args = args,
                 kwargs = kwargs,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         with self.task_lock:
             # Insert task based on priority
@@ -493,13 +516,17 @@ class M1PerformanceOptimizer:
         # Start monitoring thread
         self.monitor_thread = threading.Thread(
             target = self._monitoring_loop, name="M1 - Monitor", daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.monitor_thread.start()
 
         # Start scheduler thread
         self.scheduler_thread = threading.Thread(
             target = self._scheduler_loop, name="M1 - Scheduler", daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.scheduler_thread.start()
 
         logger.info("M1 Optimization system started")
@@ -538,8 +565,11 @@ class M1PerformanceOptimizer:
                         "timestamp": metrics.timestamp,
                             "thermal_state": metrics.thermal_state,
                             "cpu_percent": metrics.cpu_percent,
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Adaptive throttling based on conditions
                 if self.config["adaptive_throttling"]:
@@ -595,20 +625,25 @@ class M1PerformanceOptimizer:
                 if self._can_execute_task(task, current_metrics):
                     return (
                         self.task_queue.popleft() if i == 0 else self.task_queue.pop(i)
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return None
 
 
     def _can_execute_task(
         self, task: OptimizationTask, metrics: M1SystemMetrics
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Check if a task can be executed given current system state."""
         # Check memory requirements
         available_memory = (
             (100 - metrics.memory_percent)
             * psutil.virtual_memory().total/(100 * 1024**2)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if task.memory_requirement > available_memory:
             return False
 
@@ -624,7 +659,8 @@ class M1PerformanceOptimizer:
         if (
             task.priority == TaskPriority.LOW
             and metrics.background_tasks >= self.config["background_task_limit"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return False
 
         return True
@@ -644,7 +680,9 @@ class M1PerformanceOptimizer:
 
         logger.info(
             f"Executing task {task.id}: {task.name} on {executor._thread_name_prefix} cores"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def _choose_executor(self, task: OptimizationTask) -> ThreadPoolExecutor:
@@ -652,15 +690,20 @@ class M1PerformanceOptimizer:
         if task.core_preference == CoreType.PERFORMANCE:
             return self.performance_executor
                 elif task.core_preference == CoreType.EFFICIENCY:
+                    pass
             return self.efficiency_executor
                 else:
+                    pass
             # Auto - choose based on task characteristics
             if task.cpu_intensive or task.priority in [
                 TaskPriority.URGENT,
                     TaskPriority.HIGH,
-                    ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]:
                 return self.performance_executor
                     else:
+                        pass
                 return self.efficiency_executor
 
 
@@ -717,14 +760,16 @@ class M1PerformanceOptimizer:
             metrics.thermal_state == "critical"
             or metrics.memory_pressure == "critical"
             or metrics.cpu_percent > 95
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.current_throttle_level = min(5, self.current_throttle_level + 1)
 
         elif (
             metrics.thermal_state == "serious"
             or metrics.memory_pressure == "warn"
             or metrics.cpu_percent > 85
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.current_throttle_level = min(4, self.current_throttle_level + 1)
 
         # Decrease throttle if system is stable
@@ -732,7 +777,8 @@ class M1PerformanceOptimizer:
             metrics.thermal_state == "nominal"
             and metrics.memory_pressure == "normal"
             and metrics.cpu_percent < 60
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.current_throttle_level = max(0, self.current_throttle_level - 1)
 
         # Apply throttle changes
@@ -740,7 +786,9 @@ class M1PerformanceOptimizer:
             self._apply_throttle_level()
             logger.info(
                 f"Throttle level changed: {old_level} -> {self.current_throttle_level}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _apply_throttle_level(self):
@@ -753,7 +801,9 @@ class M1PerformanceOptimizer:
         logger.debug(
             f"Applied throttle level {self.current_throttle_level}: "
             f"max_concurrent_tasks = {self.max_concurrent_tasks}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def _log_performance_summary(self, metrics: M1SystemMetrics):
@@ -766,7 +816,9 @@ class M1PerformanceOptimizer:
             f"Thermal: {metrics.thermal_state}, "
             f"Tasks: {metrics.active_tasks}/{self.max_concurrent_tasks}, "
             f"Throttle: {self.current_throttle_level}/5"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def get_performance_report(self) -> Dict[str, Any]:
@@ -789,7 +841,8 @@ class M1PerformanceOptimizer:
                 "is_m1": self.is_m1,
                     "performance_cores": self._get_performance_core_count(),
                     "efficiency_cores": self._get_efficiency_core_count(),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "current_metrics": {
                 "cpu_percent": latest_metrics.cpu_percent,
                     "performance_cores_usage": latest_metrics.performance_cores_usage,
@@ -798,25 +851,30 @@ class M1PerformanceOptimizer:
                     "memory_pressure": latest_metrics.memory_pressure,
                     "thermal_state": latest_metrics.thermal_state,
                     "energy_impact": latest_metrics.energy_impact,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "averages_5min": {
                 "cpu_percent": avg_cpu,
                     "memory_percent": avg_memory,
                     "energy_impact": avg_energy,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "task_management": {
                 "active_tasks": len(self.active_tasks),
                     "queued_tasks": len(self.task_queue),
                     "completed_tasks": len(self.completed_tasks),
                     "max_concurrent_tasks": self.max_concurrent_tasks,
                     "current_throttle_level": self.current_throttle_level,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "optimization_status": {
                 "running": self.running,
                     "energy_mode": self.energy_mode,
                     "adaptive_throttling": self.config["adaptive_throttling"],
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 # Global optimizer instance
 _optimizer_instance = None
@@ -847,7 +905,9 @@ def optimize_for_m1(func: Callable) -> Callable:
                 core_preference = CoreType.AUTO,
                 *args,
                 **kwargs,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Wait for completion (simplified - in real use, this would be async)
         while task_id in optimizer.active_tasks:
@@ -899,7 +959,9 @@ if __name__ == "__main__":
             core_preference = CoreType.PERFORMANCE,
             cpu_intensive = True,
             args=(3,),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     optimizer.add_task(
         "Memory Task 1",
@@ -908,7 +970,9 @@ if __name__ == "__main__":
             core_preference = CoreType.EFFICIENCY,
             memory_requirement = 200,
             args=(150,),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Run for a while
     try:

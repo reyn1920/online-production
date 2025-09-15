@@ -68,7 +68,9 @@ class DataLoaderX(DataLoader):
             for k in range(len(self.batch)):
                 self.batch[k] = self.batch[k].to(
                     device = self.local_rank, non_blocking = True
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def __next__(self):
@@ -91,8 +93,12 @@ class MXFaceDataset(Dataset):
                     transforms.RandomHorizontalFlip(),
                     transforms.ToTensor(),
                     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.root_dir = root_dir
         self.local_rank = local_rank
         path_imgrec = os.path.join(root_dir, "train.rec")

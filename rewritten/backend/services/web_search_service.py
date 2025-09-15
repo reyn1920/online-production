@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""
+""""""
 Web Search Service
 
 Integrates web search capabilities to automatically discover \
-    and evaluate APIs for marketing channels.
+#     and evaluate APIs for marketing channels.
 Uses multiple search strategies to find the best free and paid API options.
-"""
+""""""
 
 import json
 import logging
@@ -66,38 +66,51 @@ class WebSearchService:
                     "YouTube data API competitors",
                     "video platform APIs free tier",
                     "YouTube analytics API alternatives",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "tiktok": [
                 "TikTok API alternatives free",
                     "short video platform APIs",
                     "TikTok marketing API competitors",
                     "social media video APIs",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "instagram": [
                 "Instagram API alternatives",
                     "Instagram marketing API free",
                     "social media photo APIs",
                     "Instagram analytics alternatives",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "email": [
                 "email marketing API free tier",
                     "transactional email API alternatives",
                     "bulk email service APIs",
                     "newsletter API providers",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "sms": [
                 "SMS API free tier providers",
                     "text messaging API alternatives",
                     "bulk SMS service APIs",
                     "notification SMS APIs",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "ai_content": [
                 "AI content generation API free",
                     "text generation API alternatives",
                     "GPT API competitors free tier",
                     "content writing API services",
-                    ],
-        }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#         }
 
         # API quality indicators
         self.quality_indicators = {
@@ -112,7 +125,9 @@ class WebSearchService:
                     "reliable uptime",
                     "fast response",
                     "easy integration",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "negative": [
                 "expensive",
                     "limited free",
@@ -122,8 +137,11 @@ class WebSearchService:
                     "complex setup",
                     "deprecated",
                     "shutting down",
-                    ],
-        }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def search_apis_for_channel(
@@ -133,7 +151,9 @@ class WebSearchService:
         try:
             search_queries = self.api_search_patterns.get(
                 channel, [f"{channel} API free alternatives"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             all_candidates = []
 
             for query in search_queries:
@@ -171,32 +191,41 @@ class WebSearchService:
             "url": "https://developers.google.com/youtube/v3",
             "snippet": "YouTube Data API v3 provides free access to YouTube data with 10,000 units per day quota.",
             "api_indicators": ["free tier", "quota limits", "official API"],
-        },
+# BRACKET_SURGEON: disabled
+#         },
                     {
             "title": "Invidious API - Open Source YouTube Alternative",
             "url": "https://docs.invidious.io/api/",
-            "snippet": "Open source alternative to YouTube API with no rate limits \
-    or API keys required.",
+            "snippet": "Open source alternative to YouTube API with no rate limits \"
+#     or API keys required.",
             "api_indicators": ["open source", "no limits", "free"],
-        },
-                    ],
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "email marketing API free tier": [
                 {
             "title": "Mailgun Free Tier - 5000 emails/month",
             "url": "https://www.mailgun.com/pricing/",
-            "snippet": "Mailgun offers 5,000 free emails per month with full API access \
-    and analytics.",
+            "snippet": "Mailgun offers 5,000 free emails per month with full API access \"
+#     and analytics.",
             "api_indicators": ["free tier", "5000 emails", "full API"],
-        },
+# BRACKET_SURGEON: disabled
+#         },
                     {
             "title": "SendGrid Free Plan - 100 emails/day",
             "url": "https://sendgrid.com/pricing/",
-            "snippet": "SendGrid provides 100 free emails per day with comprehensive API \
-    and SMTP access.",
+            "snippet": "SendGrid provides 100 free emails per day with comprehensive API \"
+#     and SMTP access.",
             "api_indicators": ["free plan", "100 daily", "SMTP"],
-        },
-                    ],
-        }
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#         }
 
         results = []
         mock_data = mock_results.get(query, [])
@@ -208,7 +237,9 @@ class WebSearchService:
                     snippet = item["snippet"],
                     relevance_score = 0.8,
                     api_indicators = item["api_indicators"],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             results.append(result)
 
         return results
@@ -227,7 +258,9 @@ class WebSearchService:
                 provider = self._extract_provider(result.url)
                 pricing_model = self._determine_pricing_model(
                     result.snippet, result.api_indicators
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 features = self._extract_features(result.snippet)
                 rate_limits = self._extract_rate_limits(result.snippet)
 
@@ -244,7 +277,9 @@ class WebSearchService:
                         cost_estimate = self._estimate_cost(result.snippet),
                         quality_score = self._calculate_quality_score(result),
                         discovered_at = datetime.now(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 candidates.append(candidate)
 
@@ -261,7 +296,9 @@ class WebSearchService:
             r"\\s*-\\s*(API|Free|Tier|Plan|Pricing).*$", "",
     title,
     flags = re.IGNORECASE
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         name = re.sub(r"\\s*(API|Service)\\s*$", "", name, flags = re.IGNORECASE)
         return name.strip()
 
@@ -304,7 +341,8 @@ class WebSearchService:
             "sdk": r"sdk|library|wrapper",
             "rest_api": r"rest|http|json",
             "graphql": r"graphql|graph.?ql",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for feature, pattern in feature_patterns.items():
             if re.search(pattern, snippet, re.IGNORECASE):
@@ -320,11 +358,14 @@ class WebSearchService:
             r"(\\d+[,\\d]*?)\\s*(requests?|calls?|emails?)\\s * per\\s*(day|month|hour|minute)",
                 r"(\\d+[,\\d]*?)\\s*(units?)\\s * per\\s*(day|month)",
                 r"quota\\s * of\\s*(\\d+[,\\d]*?)",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for pattern in patterns:
             match = re.search(pattern, snippet, re.IGNORECASE)
             if match:
+                pass
         return match.group(0)
 
         return None
@@ -347,11 +388,14 @@ class WebSearchService:
         price_patterns = [
             r"\\$([0 - 9,]+(?:\\.[0 - 9]{2})?)\\s*(?:per|/)?\\s*(month|year|request)",
                 r"([0 - 9,]+)\\s * free\\s*(emails?|requests?|calls?)",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for pattern in price_patterns:
             match = re.search(pattern, snippet, re.IGNORECASE)
             if match:
+                pass
         return match.group(0)
 
         return None
@@ -365,11 +409,13 @@ class WebSearchService:
         for indicator in result.api_indicators:
             if any(
                 pos in indicator.lower() for pos in self.quality_indicators["positive"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 score += 0.1
             if any(
                 neg in indicator.lower() for neg in self.quality_indicators["negative"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 score -= 0.2
 
         # Boost for official APIs
@@ -385,7 +431,9 @@ class WebSearchService:
                 "mailgun",
                 "sendgrid",
                 "twilio",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         if any(provider in result.url.lower() for provider in well_known):
             score += 0.15
 
@@ -418,7 +466,9 @@ class WebSearchService:
             # Prioritize free > freemium > paid
             pricing_score = {"free": 3, "freemium": 2, "paid": 1}[
                 candidate.pricing_model
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             # Combine quality score with pricing preference
         return (pricing_score, candidate.quality_score)
@@ -433,7 +483,9 @@ class WebSearchService:
                 f"new {category} API services",
                 f"trending {category} tools API",
                 f"popular {category} integrations",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         all_candidates = []
 
@@ -466,14 +518,19 @@ class WebSearchService:
                     "Good documentation with examples",
                         "Reliable uptime and fast responses",
                         "Clear pricing structure",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
             "concerns": [
                     "Limited community tutorials",
                         "Rate limits could be higher",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
         except Exception as e:
             pass
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return evaluation
 
@@ -489,13 +546,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Web Search Service CLI")
     parser.add_argument(
         "--action", choices=["search", "trending", "evaluate"], required = True
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--channel", help="Marketing channel to search APIs for")
     parser.add_argument("--category", help="Category for trending search")
     parser.add_argument("--api - url", help="API URL to evaluate")
     parser.add_argument(
         "--max - results", type = int, default = 10, help="Maximum results to return"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     args = parser.parse_args()
 
@@ -519,7 +580,9 @@ if __name__ == "__main__":
         for candidate in candidates[:5]:
             print(
                 f"  {candidate.name} - {candidate.pricing_model} - Score: {candidate.quality_score:.2f}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     elif args.action == "evaluate" and args.api_url:
         evaluation = service.evaluate_api_quality(args.api_url)

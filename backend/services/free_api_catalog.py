@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 Free API Catalog Service
 Comprehensive catalog of 100+ free APIs with intelligent routing and advanced features
-"""
+
+""""""
+
 
 import aiohttp
 import logging
@@ -18,7 +23,9 @@ logger = logging.getLogger(__name__)
 
 
 class APICategory(Enum):
-    """API categories for organization"""
+    
+API categories for organization
+"""
 
     AI_ML = "ai_ml"
     CONTENT = "content"
@@ -44,7 +51,9 @@ class APICategory(Enum):
 
 @dataclass
 class FreeAPI:
-    """Free API configuration"""
+    """
+Free API configuration
+
 
     name: str
     base_url: str
@@ -58,11 +67,19 @@ class FreeAPI:
     quality_score: int = 5  # 1-10 scale
     reliability_score: int = 5  # 1-10 scale
     features: List[str] = None
+   
+""""""
+
     examples: Dict[str, Any] = None
+   
 
-
+    
+   
+"""
 class FreeAPICatalog:
-    """Comprehensive catalog of 100+ free APIs"""
+    """
+Comprehensive catalog of 100+ free APIs
+
 
     def __init__(self):
         self.apis = self._initialize_api_catalog()
@@ -70,11 +87,20 @@ class FreeAPICatalog:
         self.performance_cache = {}
 
     def _initialize_api_catalog(self) -> Dict[str, FreeAPI]:
-        """Initialize comprehensive catalog of free APIs"""
+        
+"""Initialize comprehensive catalog of free APIs""""""
         apis = {}
-
+       """"""
         # AI & Machine Learning APIs (15+)
         apis["huggingface"] = FreeAPI(
+       """
+
+        
+       
+
+        apis = {}
+       
+""""""
             name="Hugging Face Inference API",
             base_url="https://api-inference.huggingface.co",
             category=APICategory.AI_ML,
@@ -87,14 +113,14 @@ class FreeAPICatalog:
                 "question_answering": "/models/deepset/roberta-base-squad2",
                 "image_classification": "/models/google/vit-base-patch16-224",
                 "object_detection": "/models/facebook/detr-resnet-50",
-            },
+             },
             rate_limit=1000,
             requires_key=True,
             key_signup_url="https://huggingface.co/settings/tokens",
             quality_score=9,
             reliability_score=9,
             features=["text_generation", "nlp", "computer_vision", "audio_processing"],
-        )
+         )
 
         apis["openai_compatible"] = FreeAPI(
             name="OpenAI Compatible APIs",
@@ -105,12 +131,12 @@ class FreeAPICatalog:
                 "chat_completions": "/v1/chat/completions",
                 "completions": "/v1/completions",
                 "embeddings": "/v1/embeddings",
-            },
+             },
             rate_limit=60,
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+         )
 
         apis["replicate"] = FreeAPI(
             name="Replicate API",
@@ -122,7 +148,7 @@ class FreeAPICatalog:
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+         )
 
         # Content & Media APIs (20+)
         apis["unsplash"] = FreeAPI(
@@ -135,12 +161,12 @@ class FreeAPICatalog:
                 "search": "/search/photos",
                 "random": "/photos/random",
                 "collections": "/collections",
-            },
+             },
             rate_limit=50,
             requires_key=True,
             quality_score=9,
             reliability_score=9,
-        )
+         )
 
         apis["pixabay"] = FreeAPI(
             name="Pixabay API",
@@ -152,7 +178,7 @@ class FreeAPICatalog:
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+         )
 
         apis["pexels"] = FreeAPI(
             name="Pexels API",
@@ -163,12 +189,12 @@ class FreeAPICatalog:
                 "search": "/v1/search",
                 "curated": "/v1/curated",
                 "videos": "/videos/search",
-            },
+             },
             rate_limit=200,
             requires_key=True,
             quality_score=9,
             reliability_score=9,
-        )
+         )
 
         apis["lorem_picsum"] = FreeAPI(
             name="Lorem Picsum",
@@ -179,12 +205,12 @@ class FreeAPICatalog:
                 "random": "/{width}/{height}",
                 "specific": "/id/{id}/{width}/{height}",
                 "list": "/v2/list",
-            },
+             },
             rate_limit=None,
             requires_key=False,
             quality_score=7,
             reliability_score=9,
-        )
+         )
 
         # News & Information APIs (10+)
         apis["newsapi"] = FreeAPI(
@@ -196,12 +222,12 @@ class FreeAPICatalog:
                 "top_headlines": "/v2/top-headlines",
                 "everything": "/v2/everything",
                 "sources": "/v2/sources",
-            },
+             },
             rate_limit=1000,
             requires_key=True,
             quality_score=9,
             reliability_score=8,
-        )
+         )
 
         apis["guardian"] = FreeAPI(
             name="The Guardian API",
@@ -213,7 +239,7 @@ class FreeAPICatalog:
             requires_key=True,
             quality_score=8,
             reliability_score=9,
-        )
+         )
 
         # Weather APIs (5+)
         apis["openweather"] = FreeAPI(
@@ -225,12 +251,12 @@ class FreeAPICatalog:
                 "current": "/data/2.5/weather",
                 "forecast": "/data/2.5/forecast",
                 "onecall": "/data/3.0/onecall",
-            },
+             },
             rate_limit=60,
             requires_key=True,
             quality_score=9,
             reliability_score=9,
-        )
+         )
 
         apis["weatherapi"] = FreeAPI(
             name="WeatherAPI",
@@ -241,12 +267,12 @@ class FreeAPICatalog:
                 "current": "/v1/current.json",
                 "forecast": "/v1/forecast.json",
                 "history": "/v1/history.json",
-            },
+             },
             rate_limit=100,
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+         )
 
         # Finance APIs (8+)
         apis["alpha_vantage"] = FreeAPI(
@@ -258,12 +284,12 @@ class FreeAPICatalog:
                 "quote": "/query?function=GLOBAL_QUOTE",
                 "intraday": "/query?function=TIME_SERIES_INTRADAY",
                 "daily": "/query?function=TIME_SERIES_DAILY",
-            },
+             },
             rate_limit=5,
             requires_key=True,
             quality_score=8,
             reliability_score=7,
-        )
+         )
 
         apis["coinapi"] = FreeAPI(
             name="CoinAPI",
@@ -274,12 +300,12 @@ class FreeAPICatalog:
                 "assets": "/v1/assets",
                 "rates": "/v1/exchangerate/{asset_id_base}/{asset_id_quote}",
                 "ohlcv": "/v1/ohlcv/{symbol_id}/history",
-            },
+             },
             rate_limit=100,
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+         )
 
         # Utilities & Tools APIs (15+)
         apis["httpbin"] = FreeAPI(
@@ -294,12 +320,12 @@ class FreeAPICatalog:
                 "delete": "/delete",
                 "status": "/status/{code}",
                 "delay": "/delay/{delay}",
-            },
+             },
             rate_limit=None,
             requires_key=False,
             quality_score=9,
             reliability_score=9,
-        )
+         )
 
         apis["qrserver"] = FreeAPI(
             name="QR Server",
@@ -311,7 +337,7 @@ class FreeAPICatalog:
             requires_key=False,
             quality_score=8,
             reliability_score=9,
-        )
+         )
 
         apis["ipapi"] = FreeAPI(
             name="IP-API",
@@ -323,7 +349,7 @@ class FreeAPICatalog:
             requires_key=False,
             quality_score=8,
             reliability_score=8,
-        )
+         )
 
         # Translation APIs (5+)
         apis["mymemory"] = FreeAPI(
@@ -336,7 +362,7 @@ class FreeAPICatalog:
             requires_key=False,
             quality_score=7,
             reliability_score=8,
-        )
+         )
 
         apis["libretranslate"] = FreeAPI(
             name="LibreTranslate",
@@ -347,12 +373,12 @@ class FreeAPICatalog:
                 "translate": "/translate",
                 "languages": "/languages",
                 "detect": "/detect",
-            },
+             },
             rate_limit=None,
             requires_key=False,
             quality_score=7,
             reliability_score=7,
-        )
+         )
 
         # Entertainment APIs (10+)
         apis["tvmaze"] = FreeAPI(
@@ -364,12 +390,12 @@ class FreeAPICatalog:
                 "search": "/search/shows",
                 "show": "/shows/{id}",
                 "episodes": "/shows/{id}/episodes",
-            },
+             },
             rate_limit=20,
             requires_key=False,
             quality_score=8,
             reliability_score=9,
-        )
+         )
 
         apis["omdb"] = FreeAPI(
             name="OMDb API",
@@ -380,12 +406,12 @@ class FreeAPICatalog:
                 "search": "/",
                 "by_id": "/?i={imdb_id}",
                 "by_title": "/?t={title}",
-            },
+             },
             rate_limit=1000,
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+         )
 
         # Social & Communication APIs (8+)
         apis["jsonplaceholder"] = FreeAPI(
@@ -399,12 +425,12 @@ class FreeAPICatalog:
                 "users": "/users",
                 "albums": "/albums",
                 "photos": "/photos",
-            },
+             },
             rate_limit=None,
             requires_key=False,
             quality_score=9,
             reliability_score=9,
-        )
+         )
 
         # Data & Analytics APIs (10+)
         apis["worldbank"] = FreeAPI(
@@ -416,12 +442,12 @@ class FreeAPICatalog:
                 "countries": "/v2/country",
                 "indicators": "/v2/indicator",
                 "data": "/v2/country/{country}/indicator/{indicator}",
-            },
+             },
             rate_limit=None,
             requires_key=False,
             quality_score=8,
             reliability_score=9,
-        )
+         )
 
         apis["restcountries"] = FreeAPI(
             name="REST Countries",
@@ -432,12 +458,12 @@ class FreeAPICatalog:
                 "all": "/v3.1/all",
                 "name": "/v3.1/name/{name}",
                 "code": "/v3.1/alpha/{code}",
-            },
+             },
             rate_limit=None,
             requires_key=False,
             quality_score=9,
             reliability_score=9,
-        )
+         )
 
         # Add more APIs to reach 100+...
         # This is a condensed version showing the structure
@@ -445,24 +471,77 @@ class FreeAPICatalog:
         return apis
 
     def get_apis_by_category(self, category: APICategory) -> List[FreeAPI]:
-        """Get all APIs in a specific category"""
+        """
+Get all APIs in a specific category
+
+        
+"""
+        return [api for api in self.apis.values() if api.category == category]
+        """"""
+        """
+
+
         return [api for api in self.apis.values() if api.category == category]
 
+        
+
+       
+""""""
+
     def get_top_quality_apis(self, limit: int = 20) -> List[FreeAPI]:
-        """Get highest quality APIs"""
+        
+Get highest quality APIs
+"""
         sorted_apis = sorted(
             self.apis.values(),
             key=lambda x: (x.quality_score, x.reliability_score),
             reverse=True,
-        )
+         )
+        """
+
+        return sorted_apis[:limit]
+        
+
+       
+""""""
+
+        
+
+
         return sorted_apis[:limit]
 
+        
+""""""
+
+        
+       
+
     def search_apis(self, query: str, category: Optional[APICategory] = None) -> List[FreeAPI]:
-        """Search APIs by name, description, or features"""
+        
+"""Search APIs by name, description, or features"""
+
         query_lower = query.lower()
+       
+
+        
+       
+"""
         results = []
+       """
+
+        
+       
 
         for api in self.apis.values():
+       
+""""""
+
+        results = []
+       
+
+        
+       
+"""
             if category and api.category != category:
                 continue
 
@@ -471,31 +550,56 @@ class FreeAPICatalog:
                 or query_lower in api.description.lower()
                 or (
                     api.features and any(query_lower in feature.lower() for feature in api.features)
-                )
-            ):
+                 )
+#             ):
                 results.append(api)
 
         return sorted(results, key=lambda x: x.quality_score, reverse=True)
 
     def get_api_alternatives(self, api_name: str) -> List[FreeAPI]:
-        """Get alternative APIs in the same category"""
+        """
+Get alternative APIs in the same category
+
         if api_name not in self.apis:
+            
+"""
             return []
+            """"""
+            """
+
+
+            return []
+
+            
 
         target_api = self.apis[api_name]
         alternatives = [
             api
             for api in self.apis.values()
             if api.category == target_api.category and api.name != target_api.name
-        ]
+         ]
 
         return sorted(alternatives, key=lambda x: x.quality_score, reverse=True)
 
     def get_comprehensive_solution(self, requirements: List[str]) -> Dict[str, List[FreeAPI]]:
-        """Get comprehensive API solution for multiple requirements"""
+        
+"""Get comprehensive API solution for multiple requirements""""""
         solution = {}
+       """
+
+        
+       
 
         for requirement in requirements:
+       
+""""""
+
+        solution = {}
+       
+
+        
+       
+"""
             matching_apis = self.search_apis(requirement)
             if matching_apis:
                 solution[requirement] = matching_apis[:3]  # Top 3 for each requirement
@@ -512,8 +616,8 @@ class FreeAPICatalog:
                 "avg_reliability": 0,
                 "free_apis": 0,
                 "categories": set(),
-            },
-        }
+             },
+         }
 
         total_quality = 0
         total_reliability = 0
@@ -530,8 +634,8 @@ class FreeAPICatalog:
                         "rate_limit": api.rate_limit,
                         "requires_key": api.requires_key,
                         "features": api.features or [],
-                    }
-                )
+                     }
+                 )
 
                 total_quality += api.quality_score
                 total_reliability += api.reliability_score
@@ -558,8 +662,8 @@ class FreeAPICatalog:
             "reliability_stats": {
                 "avg_reliability": 0,
                 "highly_reliable": 0,  # 8+ score
-            },
-        }
+             },
+         }
 
         category_counts = {}
         total_reliability = 0
@@ -591,14 +695,16 @@ class FreeAPICatalog:
         stats["by_category"] = category_counts
         stats["top_categories"] = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[
             :5
-        ]
+         ]
         stats["reliability_stats"]["avg_reliability"] = total_reliability / len(self.apis)
 
         return stats
 
 
 class FreeAPIRouter:
-    """Intelligent routing for free APIs with fallback and load balancing"""
+    """
+Intelligent routing for free APIs with fallback and load balancing
+
 
     def __init__(self, catalog: FreeAPICatalog):
         self.catalog = catalog
@@ -620,10 +726,26 @@ class FreeAPIRouter:
         data: Dict[str, Any] = None,
         preferred_apis: List[str] = None,
     ) -> Dict[str, Any]:
-        """Make intelligent API request with automatic fallback"""
+        
+"""Make intelligent API request with automatic fallback""""""
         # Find suitable APIs
-        suitable_apis = self.catalog.search_apis(requirement)
+       """"""
+        
+       """
 
+        suitable_apis = self.catalog.search_apis(requirement)
+       
+
+        
+       
+""""""
+
+        
+       
+
+        # Find suitable APIs
+       
+""""""
         if preferred_apis:
             # Prioritize preferred APIs
             preferred = [api for api in suitable_apis if api.name in preferred_apis]
@@ -649,11 +771,28 @@ class FreeAPIRouter:
         return {"success": False, "error": "All suitable APIs failed"}
 
     async def _make_api_request(self, api: FreeAPI, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Make request to specific API"""
-        start_time = time.time()
+        """
+Make request to specific API
 
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         try:
             # This is a simplified example - actual implementation would vary by API
+       """
+
+        
+       
+
+        start_time = time.time()
+       
+""""""
             headers = api.headers or {}
             if api.requires_key:
                 # In production, get from environment variables
@@ -673,14 +812,14 @@ class FreeAPIRouter:
                         "data": result,
                         "api_used": api.name,
                         "response_time": response_time,
-                    }
+                     }
                 else:
                     return {
                         "success": False,
                         "error": f"HTTP {response.status}",
                         "api_used": api.name,
                         "response_time": response_time,
-                    }
+                     }
 
         except Exception as e:
             return {
@@ -688,17 +827,51 @@ class FreeAPIRouter:
                 "error": str(e),
                 "api_used": api.name,
                 "response_time": time.time() - start_time,
-            }
+             }
 
     def _get_api_key(self, api_name: str) -> str:
-        """Get API key from environment (placeholder)"""
+        """
+Get API key from environment (placeholder)
+
+       
+""""""
+
         # In production, this would get from secure environment variables
+       
+
+        
+       
+"""
         return f"demo_key_for_{api_name}"
+       """
+
+        
+       
+
+        # In production, this would get from secure environment variables
+       
+""""""
 
     def _select_endpoint(self, api: FreeAPI, data: Dict[str, Any]) -> str:
-        """Select appropriate endpoint based on request data"""
+        
+Select appropriate endpoint based on request data
+""""""
+
+        
+       
+
         # Simplified endpoint selection logic
+       
+""""""
         if "search" in data or "query" in data:
+       """
+
+        
+       
+
+        # Simplified endpoint selection logic
+       
+""""""
             return api.endpoints.get("search", list(api.endpoints.values())[0])
         return list(api.endpoints.values())[0]
 
@@ -710,7 +883,7 @@ class FreeAPIRouter:
                 "failure_count": 0,
                 "avg_response_time": 0,
                 "total_response_time": 0,
-            }
+             }
 
         metrics = self.performance_metrics[api_name]
         metrics["success_count"] += 1
@@ -725,7 +898,7 @@ class FreeAPIRouter:
                 "failure_count": 0,
                 "avg_response_time": 0,
                 "total_response_time": 0,
-            }
+             }
 
         self.performance_metrics[api_name]["failure_count"] += 1
         logger.warning(f"API {api_name} failed: {error}")
@@ -735,10 +908,10 @@ class FreeAPIRouter:
         report = {
             "total_requests": sum(
                 m["success_count"] + m["failure_count"] for m in self.performance_metrics.values()
-            ),
+             ),
             "success_rate": 0,
             "api_performance": [],
-        }
+         }
 
         total_success = sum(m["success_count"] for m in self.performance_metrics.values())
         total_requests = report["total_requests"]
@@ -752,7 +925,7 @@ class FreeAPIRouter:
                 (metrics["success_count"] / total_api_requests * 100)
                 if total_api_requests > 0
                 else 0
-            )
+             )
 
             report["api_performance"].append(
                 {
@@ -760,8 +933,8 @@ class FreeAPIRouter:
                     "success_rate": api_success_rate,
                     "avg_response_time": metrics["avg_response_time"],
                     "total_requests": total_api_requests,
-                }
-            )
+                 }
+             )
 
         # Sort by success rate
         report["api_performance"].sort(key=lambda x: x["success_rate"], reverse=True)
@@ -771,19 +944,22 @@ class FreeAPIRouter:
 
 # Advanced Features
 class FreeAPIOrchestrator:
-    """Orchestrate multiple APIs for complex workflows"""
+    """
+Orchestrate multiple APIs for complex workflows
+
 
     def __init__(self, catalog: FreeAPICatalog):
         self.catalog = catalog
         self.workflows = {}
 
     def create_workflow(self, name: str, steps: List[Dict[str, Any]]) -> bool:
-        """Create a multi-API workflow"""
+        
+"""Create a multi-API workflow"""
         self.workflows[name] = {
             "steps": steps,
             "created_at": datetime.now(),
             "execution_count": 0,
-        }
+         }
         return True
 
     async def execute_workflow(self, name: str, input_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -799,22 +975,22 @@ class FreeAPIOrchestrator:
             for i, step in enumerate(workflow["steps"]):
                 step_result = await router.smart_request(
                     step["requirement"], current_data, step.get("preferred_apis", [])
-                )
+                 )
 
                 results.append(
                     {
                         "step": i + 1,
                         "requirement": step["requirement"],
                         "result": step_result,
-                    }
-                )
+                     }
+                 )
 
                 if not step_result["success"]:
                     return {
                         "success": False,
                         "error": f'Step {i + 1} failed: {step_result.get("error")}',
                         "partial_results": results,
-                    }
+                     }
 
                 # Pass data to next step if specified
                 if step.get("pass_data_to_next"):
@@ -827,26 +1003,75 @@ class FreeAPIOrchestrator:
             "workflow_name": name,
             "results": results,
             "execution_time": datetime.now(),
-        }
+         }
 
 
 # Convenience functions
 def get_free_api_catalog() -> FreeAPICatalog:
-    """Get initialized free API catalog"""
+    """
+Get initialized free API catalog
+
+    
+"""
+    return FreeAPICatalog()
+    """"""
+    """
+
+
     return FreeAPICatalog()
 
+    
+
+   
+""""""
 
 def find_best_apis_for_task(task_description: str, limit: int = 5) -> List[FreeAPI]:
-    """Find best free APIs for a specific task"""
+    
+Find best free APIs for a specific task
+"""
     catalog = get_free_api_catalog()
+    """
+
+    return catalog.search_apis(task_description)[:limit]
+    
+
+   
+""""""
+
+    
+
+
     return catalog.search_apis(task_description)[:limit]
 
+    
+""""""
+
+    
+   
 
 def compare_with_paid_services(requirement: str) -> Dict[str, Any]:
-    """Compare free API solutions with paid alternatives"""
-    catalog = get_free_api_catalog()
-    free_options = catalog.search_apis(requirement)
+    
+"""Compare free API solutions with paid alternatives"""
 
+    catalog = get_free_api_catalog()
+   
+
+    
+   
+"""
+    free_options = catalog.search_apis(requirement)
+   """"""
+
+    
+
+   """
+
+    free_options = catalog.search_apis(requirement)
+   
+
+    
+   
+"""
     return {
         "requirement": requirement,
         "free_options_count": len(free_options),
@@ -856,18 +1081,18 @@ def compare_with_paid_services(requirement: str) -> Dict[str, Any]:
                 "quality_score": api.quality_score,
                 "features": api.features or [],
                 "rate_limit": api.rate_limit,
-            }
+             }
             for api in free_options[:5]
-        ],
+         ],
         "advantages_over_paid": [
             "No subscription costs",
             "Multiple fallback options",
             "Community-driven development",
             "Transparent usage limits",
             "Easy integration and testing",
-        ],
+         ],
         "total_catalog_size": len(catalog.apis),
-    }
+     }
 
 
 if __name__ == "__main__":

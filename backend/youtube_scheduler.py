@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI YouTube Scheduling System
-
+""""""
 Intelligent video scheduling system that optimizes upload timing based on:
 - Audience analytics and engagement patterns
 - Competitor analysis and market timing
@@ -9,8 +9,19 @@ Intelligent video scheduling system that optimizes upload timing based on:
 - Content type and performance correlation
 - Seasonal trends and events
 - A/B testing for optimal timing
+"""
+
+TRAE.AI YouTube Scheduling System
+
+
+
+""""""
+
 
 Features:
+
+
+
 - AI - powered optimal timing prediction
 - Multi - timezone audience optimization
 - Automated queue management
@@ -21,6 +32,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import asyncio
@@ -101,23 +113,34 @@ class ContentType(Enum):
 
 
 class AudienceInsight:
-    """Audience analytics data for scheduling optimization."""
+    """
+Audience analytics data for scheduling optimization.
+
 
     timezone: str
-    peak_hours: List[int]  # Hours of day (0 - 23)
+    peak_hours: List[int]: # Hours of day (0 - 23)
     peak_days: List[int]  # Days of week (0 - 6, Monday = 0)
     audience_percentage: float  # Percentage of total audience
     engagement_rate: float
     avg_session_duration: float
     device_preferences: Dict[str, float]  # mobile, desktop, tv
     age_demographics: Dict[str, float]
-    last_updated: datetime
+   
+""""""
 
+    last_updated: datetime
+   
+
+    
+   
+"""
 @dataclass
 
 
 class ScheduledVideo:
-    """Scheduled video data structure."""
+    """
+Scheduled video data structure.
+
 
     id: str
     channel_id: str
@@ -137,13 +160,22 @@ class ScheduledVideo:
     retry_count: int
     metadata: Dict[str, Any]
     created_at: datetime
-    updated_at: datetime
+   
+""""""
 
+    updated_at: datetime
+   
+
+    
+   
+"""
 @dataclass
 
 
 class ScheduleOptimization:
-    """Schedule optimization results."""
+    """
+Schedule optimization results.
+
 
     original_time: datetime
     optimized_time: datetime
@@ -151,19 +183,37 @@ class ScheduleOptimization:
     audience_reach_increase: float
     engagement_boost: float
     reasoning: List[str]
-    alternative_times: List[Tuple[datetime, float]]  # (time, score)
+    alternative_times: List[Tuple[datetime, float]]: # (time, score)
     timezone_breakdown: Dict[str, float]
     competitor_analysis: Dict[str, Any]
+   
+""""""
+
     optimization_timestamp: datetime
+   
 
-
+    
+   
+"""
 class YouTubeScheduler:
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
     Advanced YouTube video scheduling system with AI - powered optimization.
     Handles intelligent timing, queue management, and performance optimization.
-    """
+   
 
-
+    
+   
+""""""
+    
+   """
     def __init__(self, config_path: str = "config/scheduler_config.json"):
         self.logger = setup_logger("youtube_scheduler")
         self.config_path = config_path
@@ -201,16 +251,30 @@ class YouTubeScheduler:
                 "Asia/Kolkata",
                 "Australia/Sydney",
                 "America/Sao_Paulo",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ]
 
         self.logger.info("YouTube Scheduler initialized")
 
 
     def _load_config(self) -> Dict[str, Any]:
-        """Load scheduler configuration."""
+        """
+Load scheduler configuration.
+
+        
+"""
         try:
+        """"""
             if os.path.exists(self.config_path):
                 with open(self.config_path, "r") as f:
+        """
+
+        try:
+        
+
+       
+""""""
                     return json.load(f)
         except Exception as e:
             self.logger.error(f"Error loading scheduler config: {e}")
@@ -225,36 +289,49 @@ class YouTubeScheduler:
             "timezone_weight": 0.4,
             "engagement_weight": 0.3,
             "competition_weight": 0.3,
-        },
+         },
             "scheduling": {
             "auto_schedule": True,
             "buffer_minutes": 15,
             "retry_attempts": 3,
             "batch_size": 10,
             "queue_check_interval": 300,  # 5 minutes
-            },
+             },
             "analytics": {
             "track_performance": True,
             "update_interval_hours": 6,
             "min_data_points": 10,
             "learning_enabled": True,
-        },
+         },
             "notifications": {
             "enabled": True,
             "webhook_url": None,
             "email_alerts": False,
-        },
-        }
+         },
+         }
 
 
     def _init_database(self):
-        """Initialize scheduler database."""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
+        """
+Initialize scheduler database.
 
+       
+""""""
+
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
+       
+
+        
+       
+"""
         with sqlite3.connect(self.db_path) as conn:
             # Scheduled videos table
             conn.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS scheduled_videos (
                     id TEXT PRIMARY KEY,
                         channel_id TEXT,
@@ -275,13 +352,37 @@ class YouTubeScheduler:
                         metadata TEXT,
                         created_at TIMESTAMP,
                         updated_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
+            
+""""""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+            
+
+             
+            
+"""
+             )
+            """"""
+        
+       """
+
+        os.makedirs(os.path.dirname(self.db_path), exist_ok = True)
+       
+
+        
+       
+"""
             # Audience insights table
             conn.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS audience_insights (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         channel_id TEXT,
@@ -294,13 +395,29 @@ class YouTubeScheduler:
                         device_preferences TEXT,
                         age_demographics TEXT,
                         last_updated TIMESTAMP
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
+            
+""""""
+
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
             # Performance history table
             conn.execute(
-                """
+               
+""""""
                 CREATE TABLE IF NOT EXISTS performance_history (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         video_id TEXT,
@@ -318,13 +435,36 @@ class YouTubeScheduler:
                         traffic_sources TEXT,
                         demographics TEXT,
                         recorded_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
+            """"""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+            
+
+             
+            
+"""
+             )
+            """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             # Schedule optimizations table
             conn.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS schedule_optimizations (
                     id TEXT PRIMARY KEY,
                         video_id TEXT,
@@ -338,24 +478,66 @@ class YouTubeScheduler:
                         timezone_breakdown TEXT,
                         competitor_analysis TEXT,
                         optimization_timestamp TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
+            
+""""""
+
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+            
+
+             
+            
+"""
+             )
+            """"""
+
+            
+
+           """
 
             conn.commit()
+           
 
+            
+           
+""""""
+
+             
+            
+
+             )
+            
+""""""
 
     def _init_ml_models(self):
-        """Initialize machine learning models for optimization."""
+        """
+        Initialize machine learning models for optimization.
+        """
         try:
             # Initialize timing optimization model
             self.timing_model = LinearRegression()
+           """
+
+            
+           
+
             self.timing_scaler = StandardScaler()
+           
+""""""
 
             # Initialize engagement prediction model
             self.engagement_model = LinearRegression()
             self.engagement_scaler = StandardScaler()
+           
 
+            
+           
+"""
+            self.timing_scaler = StandardScaler()
+           """"""
             # Load existing model data if available
             self._load_model_data()
 
@@ -368,12 +550,14 @@ class YouTubeScheduler:
             video_data: Dict[str, Any],
             preferred_time: Optional[datetime] = None,
             priority: SchedulePriority = SchedulePriority.MEDIUM,
-            ) -> ScheduledVideo:
+#             ) -> ScheduledVideo:
         """Schedule a video for optimal upload timing."""
         try:
             self.logger.info(
                 f"Scheduling video: {video_data.get('title', 'Unknown')[:50]}..."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Create scheduled video object
             scheduled_video = ScheduledVideo(
@@ -396,7 +580,9 @@ class YouTubeScheduler:
                     metadata = video_data.get("metadata", {}),
                     created_at = datetime.now(),
                     updated_at = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
             # Optimize scheduling time
             optimization = await self._optimize_schedule_time(scheduled_video)
@@ -405,7 +591,9 @@ class YouTubeScheduler:
                 scheduled_video.optimal_score = optimization.optimization_score
                 scheduled_video.estimated_views = int(
                     optimization.audience_reach_increase * 1000
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 scheduled_video.estimated_engagement = optimization.engagement_boost
 
             # Add to queue
@@ -416,7 +604,9 @@ class YouTubeScheduler:
 
             self.logger.info(
                 f"Video scheduled for {scheduled_video.scheduled_time} with score {scheduled_video.optimal_score:.1f}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
         except Exception as e:
             pass
         return scheduled_video
@@ -439,14 +629,18 @@ class YouTubeScheduler:
             # Generate candidate times
             candidate_times = self._generate_candidate_times(
                 video.scheduled_time, video.priority, video.content_type
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Score each candidate time
             scored_times = []
             for candidate_time in candidate_times:
                 score = await self._score_schedule_time(
                     candidate_time, video, audience_insights
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 scored_times.append((candidate_time, score))
 
             # Sort by score and select best
@@ -456,17 +650,21 @@ class YouTubeScheduler:
             # Calculate improvements
             original_score = await self._score_schedule_time(
                 video.scheduled_time, video, audience_insights
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             audience_reach_increase = (best_score - original_score) * 10  # Scale factor
                 engagement_boost = (
                 audience_reach_increase * 0.8
-            )  # Engagement correlates with reach
+#             )  # Engagement correlates with reach
 
             # Generate reasoning
             reasoning = self._generate_optimization_reasoning(
                 video.scheduled_time, best_time, audience_insights, video.content_type
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Create optimization result
             optimization = ScheduleOptimization(
@@ -479,10 +677,12 @@ class YouTubeScheduler:
                     alternative_times = scored_times[1:6],  # Top 5 alternatives
                 timezone_breakdown = self._calculate_timezone_breakdown(
                     best_time, audience_insights
-                ),
+                 ),
                     competitor_analysis={},  # Would be populated with competitor data
                 optimization_timestamp = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
             # Store optimization
             await self._store_optimization(optimization, video.id)
@@ -502,11 +702,28 @@ class YouTubeScheduler:
         priority: SchedulePriority,
         content_type: ContentType,
     ) -> List[datetime]:
-        """Generate candidate scheduling times based on various factors."""
-        candidates = []
-        base_time = preferred_time
+        """
+Generate candidate scheduling times based on various factors.
 
+        candidates = []
+       
+""""""
+
+        base_time = preferred_time
+       
+
+        
+       
+"""
         # Priority - based time windows
+       """
+
+        
+       
+
+        base_time = preferred_time
+       
+""""""
         if priority == SchedulePriority.BREAKING_NEWS:
             # Immediate to 2 hours
             for minutes in [0, 30, 60, 120]:
@@ -531,7 +748,9 @@ class YouTubeScheduler:
                 for hour in optimal_hours:
                     candidate_time = day_base.replace(
                         hour = hour, minute = 0, second = 0, microsecond = 0
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
                     if candidate_time > datetime.now():
                         candidates.append(candidate_time)
 
@@ -543,8 +762,18 @@ class YouTubeScheduler:
 
 
     def _get_content_type_optimal_hours(self, content_type: ContentType) -> List[int]:
-        """Get optimal hours for different content types."""
+        """
+Get optimal hours for different content types.
+
+       
+""""""
+
         # Based on general YouTube analytics patterns
+       
+
+        
+       
+"""
         optimal_hours = {
             ContentType.TUTORIAL: [10, 14, 16, 20],  # Learning times
             ContentType.NEWS: [7, 12, 18, 21],  # News consumption times
@@ -554,7 +783,25 @@ class YouTubeScheduler:
             ContentType.SHORT_FORM: [12, 17, 19, 21],  # Quick consumption
             ContentType.LIVE_STREAM: [19, 20, 21],  # Prime time
             ContentType.PROMOTIONAL: [10, 14, 18],  # Business hours
-        }
+        """
+
+         
+        
+
+         }
+        
+""""""
+
+       
+
+        
+       
+"""
+        # Based on general YouTube analytics patterns
+       """
+
+        
+       
 
         return optimal_hours.get(content_type, [10, 14, 18, 20])  # Default hours
 
@@ -564,32 +811,61 @@ class YouTubeScheduler:
             schedule_time: datetime,
             video: ScheduledVideo,
             audience_insights: List[AudienceInsight],
-            ) -> float:
-        """Score a potential schedule time based on multiple factors."""
-        try:
-            total_score = 0.0
+#             ) -> float:
+        
+"""Score a potential schedule time based on multiple factors."""
 
+        
+
+        try:
+        
+""""""
+
+            
+           
+
+            total_score = 0.0
+           
+""""""
+
+        
+
+        try:
+        
+""""""
+        
+       """
             # Timezone optimization score
             timezone_score = self._calculate_timezone_score(
                 schedule_time, audience_insights
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             total_score += (
                 timezone_score * self.config["optimization"]["timezone_weight"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Engagement prediction score
             engagement_score = self._predict_engagement_score(schedule_time, video)
             total_score += (
                 engagement_score * self.config["optimization"]["engagement_weight"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Competition avoidance score
             competition_score = await self._calculate_competition_score(
                 schedule_time, video.channel_id
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             total_score += (
                 competition_score * self.config["optimization"]["competition_weight"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Day of week and time of day factors
             day_score = self._calculate_day_score(schedule_time, video.content_type)
@@ -598,7 +874,9 @@ class YouTubeScheduler:
             # Avoid scheduling conflicts
             conflict_penalty = await self._calculate_conflict_penalty(
                 schedule_time, video.channel_id
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             total_score -= conflict_penalty
 
         except Exception as e:
@@ -612,11 +890,21 @@ class YouTubeScheduler:
 
     def _calculate_timezone_score(
         self, schedule_time: datetime, audience_insights: List[AudienceInsight]
-    ) -> float:
-        """Calculate score based on timezone optimization."""
+#     ) -> float:
+        """
+Calculate score based on timezone optimization.
+
         if not audience_insights:
+            pass
+        
+"""
+        return 50.0
+        """"""
+        """
+
         return 50.0
 
+        """
         total_score = 0.0
         total_weight = 0.0
 
@@ -644,7 +932,9 @@ class YouTubeScheduler:
             except Exception as e:
                 self.logger.error(
                     f"Error calculating timezone score for {insight.timezone}: {e}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 continue
 
         return total_score/total_weight if total_weight > 0 else 50.0
@@ -652,15 +942,40 @@ class YouTubeScheduler:
 
     def _predict_engagement_score(
         self, schedule_time: datetime, video: ScheduledVideo
-    ) -> float:
-        """Predict engagement score using ML model."""
+#     ) -> float:
+        """
+Predict engagement score using ML model.
+
+        
+"""
         try:
+        """"""
             if self.engagement_model is None:
+                pass
         except Exception as e:
             pass
+        """
+
+        try:
+        
+
+       
+""""""
+
+        
+
         return 50.0  # Default if no model
+        
+""""""
+
+        
+       
 
             # Extract features for prediction
+        
+"""
+        return 50.0  # Default if no model
+        """
             features = self._extract_time_features(schedule_time, video)
 
             # Scale features
@@ -680,7 +995,9 @@ class YouTubeScheduler:
     def _extract_time_features(
         self, schedule_time: datetime, video: ScheduledVideo
     ) -> List[float]:
-        """Extract features for ML model prediction."""
+        """
+Extract features for ML model prediction.
+
         features = [
             schedule_time.hour,  # Hour of day
             schedule_time.weekday(),  # Day of week
@@ -691,75 +1008,190 @@ class YouTubeScheduler:
             len(video.tags),  # Number of tags
             video.content_type.value.__hash__() % 100,  # Content type (hashed)
             video.priority.value.__hash__() % 100,  # Priority (hashed)
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+        
+""""""
+
+         ]
+        
+
+         
+        
+""""""
+
+
+         
+
+        
+
+         ]
+        
+""""""
 
         return features
 
 
     async def _calculate_competition_score(
         self, schedule_time: datetime, channel_id: str
-    ) -> float:
-        """Calculate score based on competitor posting patterns."""
+#     ) -> float:
+        
+Calculate score based on competitor posting patterns.
+"""
         try:
             # In production, this would analyze competitor posting times
-            # For now, return a simplified score
+           """
 
+            
+           
+
+            # For now, return a simplified score
+           
+""""""
+
+           
+
+
+            
+
+           
+"""
             # Avoid peak competition hours (simplified)
+           """"""
+            
+           """
+
+            # For now, return a simplified score
+           
+
+            
+           
+"""
             hour = schedule_time.hour
             if hour in [12, 18, 20]:  # High competition hours
+                pass
         except Exception as e:
             pass
         return 30.0
             elif hour in [10, 14, 16, 22]:  # Medium competition
+                pass
         return 70.0
             else:  # Low competition
-        return 90.0
+                pass
+        """
 
+        return 90.0
+        
+
+       
+""""""
         except Exception as e:
             self.logger.error(f"Error calculating competition score: {e}")
+        """
+
+        return 90.0
+        
+
+       
+""""""
+
         return 50.0
 
 
     def _calculate_day_score(
         self, schedule_time: datetime, content_type: ContentType
-    ) -> float:
-        """Calculate score based on day of week and content type."""
+#     ) -> float:
+        
+Calculate score based on day of week and content type.
+""""""
+
+        
+       
+
         day_of_week = schedule_time.weekday()  # 0 = Monday, 6 = Sunday
+       
+""""""
 
         # General patterns (would be refined with actual data)
+       
+
+        
+       
+"""
+        day_of_week = schedule_time.weekday()  # 0 = Monday, 6 = Sunday
+       """
+
+        
+       
+
         if content_type in [ContentType.EDUCATIONAL, ContentType.TUTORIAL]:
+            pass
             # Better on weekdays
         return 80.0 if day_of_week < 5 else 40.0
         elif content_type == ContentType.ENTERTAINMENT:
+            pass
             # Better on weekends
         return 90.0 if day_of_week >= 5 else 60.0
         elif content_type == ContentType.NEWS:
+            pass
             # Consistent throughout week
         return 70.0
         else:
+            pass
         return 60.0  # Default
 
 
     async def _calculate_conflict_penalty(
         self, schedule_time: datetime, channel_id: str
-    ) -> float:
-        """Calculate penalty for scheduling conflicts."""
+#     ) -> float:
+        
+"""Calculate penalty for scheduling conflicts."""
+
         try:
+           
+
+            
+           
+"""
             # Check for videos scheduled within minimum gap
+           """"""
             min_gap_hours = self.config["optimization"]["min_gap_hours"]
+           """
+
+            
+           
+
+            # Check for videos scheduled within minimum gap
+           
+""""""
 
             # Query database for nearby scheduled videos
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT COUNT(*) FROM scheduled_videos
                     WHERE channel_id = ?
                     AND status IN ('queued', 'scheduled')
                     AND ABS(julianday(scheduled_time) - julianday(?)) * 24 < ?
-                """,
-                    (channel_id, schedule_time.isoformat(), min_gap_hours),
-                        )
+                """
+,
 
+                    (channel_id, schedule_time.isoformat(), min_gap_hours),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                        
+""""""
+
+                         )
+                        
+
+                         
+                        
+"""
                 conflict_count = cursor.fetchone()[0]
 
             # Return penalty based on conflicts
@@ -795,23 +1227,39 @@ class YouTubeScheduler:
 
 
     async def _get_ready_videos(self) -> List[ScheduledVideo]:
-        """Get videos ready for upload."""
+        """
+Get videos ready for upload.
+
+        
+"""
         try:
+        """
+
             current_time = datetime.now()
+        
+
+        try:
+        
+"""
             buffer_minutes = self.config["scheduling"]["buffer_minutes"]
             upload_time = current_time + timedelta(minutes = buffer_minutes)
 
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
-                    """
+                    """"""
+
                     SELECT * FROM scheduled_videos
                     WHERE status = 'scheduled'
                     AND scheduled_time <= ?
                     ORDER BY priority DESC, scheduled_time ASC
                     LIMIT ?
-                """,
+                
+,
+"""
                     (upload_time.isoformat(), self.config["scheduling"]["batch_size"]),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
 
                 rows = cursor.fetchall()
                 columns = [desc[0] for desc in cursor.description]
@@ -849,25 +1297,31 @@ class YouTubeScheduler:
             "privacy_status": "public",
         except Exception as e:
             pass
-        }
+         }
 
             # Upload using YouTube integration
             result = await self.youtube_integration.upload_video(
                 video_path = video.video_path,
                     metadata = metadata,
                     thumbnail_path = video.thumbnail_path,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
             if result and result.get("success"):
                 video.status = ScheduleStatus.PUBLISHED
                 video.metadata["youtube_id"] = result.get("video_id")
                 self.logger.info(
                     f"Video uploaded successfully: {result.get('video_id')}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
             else:
                 raise Exception(
                     f"Upload failed: {result.get('error', 'Unknown error')}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
             await self._update_video_status(video)
 
@@ -877,26 +1331,47 @@ class YouTubeScheduler:
 
 
     async def _handle_upload_failure(self, video: ScheduledVideo):
-        """Handle video upload failure."""
-        try:
-            video.retry_count += 1
-            max_retries = self.config["scheduling"]["retry_attempts"]
+        """
+Handle video upload failure.
 
+        try:
+           
+""""""
+
+            video.retry_count += 1
+           
+
+            
+           
+"""
+            max_retries = self.config["scheduling"]["retry_attempts"]
+           """
+
+            
+           
+
+            video.retry_count += 1
+           
+""""""
             if video.retry_count < max_retries:
                 # Reschedule for retry
                 video.status = ScheduleStatus.SCHEDULED
                 video.scheduled_time = datetime.now() + timedelta(
                     minutes = 30
-                )  # Retry in 30 minutes
+#                 )  # Retry in 30 minutes
                 self.logger.info(
                     f"Rescheduling video for retry {video.retry_count}/{max_retries}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
             else:
                 # Mark as failed
                 video.status = ScheduleStatus.FAILED
                 self.logger.error(
                     f"Video failed after {max_retries} attempts: {video.title}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
             await self._update_video_status(video)
 
@@ -912,11 +1387,29 @@ class YouTubeScheduler:
 
 
     async def _get_audience_insights(self, channel_id: str) -> List[AudienceInsight]:
-        """Get audience insights for channel."""
+        """
+Get audience insights for channel.
+
         # Implementation would query database and YouTube Analytics API
+       
+""""""
+
         # For now, return sample data
+       
+
+        
+       
+"""
         return [
             AudienceInsight(
+       """
+
+        
+       
+
+        # For now, return sample data
+       
+""""""
                 timezone="US/Eastern",
                     peak_hours=[10, 14, 18, 20],
                     peak_days=[1, 2, 3, 4],  # Tue - Fri
@@ -926,8 +1419,12 @@ class YouTubeScheduler:
                     device_preferences={"mobile": 0.6, "desktop": 0.3, "tv": 0.1},
                     age_demographics={"18 - 24": 0.3, "25 - 34": 0.4, "35 - 44": 0.2, "45+": 0.1},
                     last_updated = datetime.now(),
-                    )
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         ]
 
 
     def _generate_optimization_reasoning(
@@ -937,18 +1434,40 @@ class YouTubeScheduler:
         audience_insights: List[AudienceInsight],
         content_type: ContentType,
             ) -> List[str]:
-        """Generate human - readable optimization reasoning."""
-        reasoning = []
+        """
+Generate human - readable optimization reasoning.
 
+       
+""""""
+
+        reasoning = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        reasoning = []
+       
+""""""
         time_diff = optimized_time - original_time
         if time_diff.total_seconds() > 0:
             reasoning.append(
                 f"Moved {time_diff.total_seconds()/3600:.1f} hours later for better audience reach"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
         elif time_diff.total_seconds() < 0:
             reasoning.append(
                 f"Moved {abs(time_diff.total_seconds())/3600:.1f} hours earlier to avoid competition"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         # Add audience - based reasoning
         if audience_insights:
@@ -956,12 +1475,16 @@ class YouTubeScheduler:
             local_time = optimized_time.astimezone(pytz.timezone(primary_tz))
             reasoning.append(
                 f"Optimized for {primary_tz} audience at {local_time.strftime('%I:%M %p')}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         # Add content - type reasoning
         reasoning.append(
             f"Scheduled during optimal hours for {content_type.value} content"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         return reasoning
 
@@ -969,11 +1492,28 @@ class YouTubeScheduler:
     def _calculate_timezone_breakdown(
         self, schedule_time: datetime, audience_insights: List[AudienceInsight]
     ) -> Dict[str, float]:
-        """Calculate audience reach breakdown by timezone."""
-        breakdown = {}
+        """
+Calculate audience reach breakdown by timezone.
 
+       
+""""""
+
+        breakdown = {}
+       
+
+        
+       
+"""
         for insight in audience_insights:
             try:
+       """
+
+        
+       
+
+        breakdown = {}
+       
+""""""
                 tz = pytz.timezone(insight.timezone)
                 local_time = schedule_time.astimezone(tz)
 
@@ -992,18 +1532,42 @@ class YouTubeScheduler:
 
 
     async def _add_to_queue(self, video: ScheduledVideo):
-        """Add video to scheduling queue."""
+        """
+Add video to scheduling queue.
+
         video.status = ScheduleStatus.SCHEDULED
         self.schedule_queue.append(video)
-        self.schedule_queue.sort(key = lambda v: (v.priority.value, v.scheduled_time))
+       
+""""""
 
+        self.schedule_queue.sort(key = lambda v: (v.priority.value, v.scheduled_time))
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        self.schedule_queue.sort(key = lambda v: (v.priority.value, v.scheduled_time))
+       
+""""""
 
     async def _store_scheduled_video(self, video: ScheduledVideo):
-        """Store scheduled video in database."""
+        
+Store scheduled video in database.
+"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                   """
+
+                    
+                   
+
                     INSERT OR REPLACE INTO scheduled_videos
                     (id,
     channel_id,
@@ -1014,9 +1578,12 @@ class YouTubeScheduler:
     thumbnail_path,
                         content_type, priority, scheduled_time, optimal_score, target_timezones,
                          estimated_views, estimated_engagement, status, retry_count, metadata,
-                         created_at, updated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          created_at, updated_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+""","""
                     (
                         video.id,
                             video.channel_id,
@@ -1037,8 +1604,10 @@ class YouTubeScheduler:
                             json.dumps(video.metadata),
                             video.created_at.isoformat(),
                             video.updated_at.isoformat(),
-                            ),
-                        )
+                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing scheduled video: {e}")
@@ -1046,42 +1615,77 @@ class YouTubeScheduler:
 
     async def _store_optimization(
         self, optimization: ScheduleOptimization, video_id: str
-    ):
-        """Store optimization results in database."""
-        # Implementation would store optimization data
-        pass
+#     ):
+        """
+Store optimization results in database.
 
+        # Implementation would store optimization data
+       
+""""""
+
+        pass
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        pass
+       
+""""""
 
     async def _update_video_status(self, video: ScheduledVideo):
-        """Update video status in database."""
+        
+Update video status in database.
+"""
         try:
             video.updated_at = datetime.now()
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                   """
+
+                    
+                   
+
                     UPDATE scheduled_videos
                     SET status = ?, retry_count = ?, metadata = ?, updated_at = ?
                     WHERE id = ?
-                """,
+                
+""","""
                     (
                         video.status.value,
                             video.retry_count,
                             json.dumps(video.metadata),
                             video.updated_at.isoformat(),
                             video.id,
-                            ),
-                        )
+                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error updating video status: {e}")
 
 
     async def _update_queue_status(self):
-        """Update overall queue status."""
+        """
+Update overall queue status.
+
         # Implementation would update queue metrics
+       
+""""""
+
         pass
+       
 
-
+        
+       
+"""
     def _row_to_scheduled_video(self, row_data: Dict[str, Any]) -> ScheduledVideo:
         """Convert database row to ScheduledVideo object."""
         return ScheduledVideo(
@@ -1100,7 +1704,7 @@ class YouTubeScheduler:
                 json.loads(row_data["target_timezones"])
                 if row_data["target_timezones"]
                 else []
-            ),
+             ),
                 estimated_views = row_data["estimated_views"],
                 estimated_engagement = row_data["estimated_engagement"],
                 status = ScheduleStatus(row_data["status"]),
@@ -1108,37 +1712,121 @@ class YouTubeScheduler:
                 metadata = json.loads(row_data["metadata"]) if row_data["metadata"] else {},
                 created_at = datetime.fromisoformat(row_data["created_at"]),
                 updated_at = datetime.fromisoformat(row_data["updated_at"]),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
 
     def _load_model_data(self):
-        """Load existing ML model data."""
+        """
+Load existing ML model data.
+
         # Implementation would load trained models from disk
+       
+""""""
+
         pass
+       
 
-
+        
+       
+"""
     def get_schedule_status(self) -> Dict[str, Any]:
-        """Get current scheduling status and metrics."""
+        """
+Get current scheduling status and metrics.
+
         try:
             with sqlite3.connect(self.db_path) as conn:
+               
+""""""
+
                 # Count videos by status
+               
+
+                
+               
+"""
                 cursor = conn.execute(
-                    """
+                   """
+
+                    
+                   
+
                     SELECT status, COUNT(*) FROM scheduled_videos
                     GROUP BY status
-                """
-                )
+                
+""""""
+
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                
+               """
+
+                # Count videos by status
+               
+
+                
+               
+""""""
+
+                
+               
+
                 status_counts = dict(cursor.fetchall())
+               
+""""""
 
                 # Get upcoming videos
+               
+
+                
+               
+"""
+                status_counts = dict(cursor.fetchall())
+               """
+
+                
+               
+
                 cursor = conn.execute(
-                    """
+                   
+""""""
                     SELECT COUNT(*) FROM scheduled_videos
                     WHERE status = 'scheduled' AND scheduled_time > datetime('now')
-                """
-                )
-                upcoming_count = cursor.fetchone()[0]
+                """"""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                
+               """
+
+                upcoming_count = cursor.fetchone()[0]
+               
+
+                
+               
+""""""
+
+                 
+                
+
+                 )
+                
+""""""
         except Exception as e:
             pass
         return {
@@ -1146,7 +1834,7 @@ class YouTubeScheduler:
             "status_counts": status_counts,
             "upcoming_videos": upcoming_count,
             "config": self.config,
-        }
+         }
         except Exception as e:
             self.logger.error(f"Error getting schedule status: {e}")
         return {"error": str(e)}
@@ -1155,10 +1843,21 @@ class YouTubeScheduler:
 
 
 def create_youtube_scheduler() -> YouTubeScheduler:
-    """Create and return YouTube scheduler instance."""
-    return YouTubeScheduler()
+    """
+Create and return YouTube scheduler instance.
 
+    
+"""
+    return YouTubeScheduler()
+    """"""
 # CLI interface for testing
+    """
+
+    return YouTubeScheduler()
+    
+
+   
+""""""
 if __name__ == "__main__":
 
     import argparse
@@ -1178,7 +1877,7 @@ if __name__ == "__main__":
             "description": f"Video about {args.schedule}",
             "tags": ["tutorial", "guide"],
             "content_type": "educational",
-        }
+         }
         result = asyncio.run(scheduler.schedule_video(video_data))
         print(f"Scheduled: {result.title} for {result.scheduled_time}")
 

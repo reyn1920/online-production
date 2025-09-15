@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Simple TRAE.AI System Verification Test
 This test performs basic checks \
-    and creates sample output files to verify the system is operational.
-"""
+#     and creates sample output files to verify the system is operational.
+""""""
 
 import json
 import logging
@@ -31,7 +31,8 @@ class SimpleTraeAIVerification:
             "passed": passed,
             "details": details,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.results.append(result)
         status = "PASS" if passed else "FAIL"
         logger.info(f"[{status}] {test_name}: {details}")
@@ -144,16 +145,19 @@ class SimpleTraeAIVerification:
                 "passed_tests": passed_tests,
                 "failed_tests": total_tests - passed_tests,
                 "success_rate": f"{success_rate:.1f}%",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "test_results": self.results,
             "output_files": {
                 "sample_video": str(self.output_dir / "sample_video.mp4"),
                 "sample_pdf": str(self.output_dir / "sample_lead_magnet.pdf"),
                 "video_info": str(self.output_dir / "sample_video.txt"),
                 "pdf_info": str(self.output_dir / "sample_lead_magnet.txt"),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "system_status": "OPERATIONAL" if success_rate >= 50 else "NEEDS_ATTENTION",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         with open(report_path, "w") as f:
             json.dump(report, f, indent=2)

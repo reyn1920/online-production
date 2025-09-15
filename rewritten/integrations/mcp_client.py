@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 MCP Client for Puppeteer Integration
 Wrapper for communicating with MCP Puppeteer server
-"""
+""""""
 
 import asyncio
 import json
@@ -26,7 +26,8 @@ class MCPClient:
             "puppeteer_select",
             "puppeteer_hover",
             "puppeteer_evaluate",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def _setup_logging(self) -> logging.Logger:
         """Setup logging"""
@@ -42,7 +43,7 @@ class MCPClient:
         return logger
 
     async def call_tool(self, tool_name: str, args: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Call MCP Puppeteer tool
 
         Args:
@@ -51,11 +52,12 @@ class MCPClient:
 
         Returns:
             Tool execution result
-        """
+        """"""
         if tool_name not in self.available_tools:
             raise ValueError(
                 f"Tool {tool_name} not available. Available tools: {self.available_tools}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         try:
             self.logger.info(f"Calling MCP tool: {tool_name}")
@@ -81,7 +83,8 @@ class MCPClient:
                 "success": False,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _simulate_navigate(self, args: Dict) -> Dict:
         """Simulate navigation (placeholder)"""
@@ -96,7 +99,8 @@ class MCPClient:
             "url": url,
             "title": f"Page Title for {url}",
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _simulate_screenshot(self, args: Dict) -> Dict:
         """Simulate screenshot (placeholder)"""
@@ -111,7 +115,8 @@ class MCPClient:
             "name": name,
             "path": f"/tmp/{name}.png",
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _simulate_click(self, args: Dict) -> Dict:
         """Simulate click (placeholder)"""
@@ -126,7 +131,8 @@ class MCPClient:
             "selector": selector,
             "clicked": True,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _simulate_fill(self, args: Dict) -> Dict:
         """Simulate fill (placeholder)"""
@@ -143,7 +149,8 @@ class MCPClient:
             "value": value,
             "filled": True,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _simulate_evaluate(self, args: Dict) -> Dict:
         """Simulate JavaScript evaluation (placeholder)"""
@@ -166,7 +173,8 @@ class MCPClient:
             "script": script,
             "result": result,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def health_check(self) -> Dict:
         """Check MCP server health"""
@@ -180,7 +188,8 @@ class MCPClient:
                 "available_tools": self.available_tools,
                 "test_result": result,
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {
@@ -188,7 +197,8 @@ class MCPClient:
                 "server": self.server_name,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def get_available_tools(self) -> list:
         """Get list of available Puppeteer tools"""
@@ -208,7 +218,8 @@ class RealMCPClient(MCPClient):
         if tool_name not in self.available_tools:
             raise ValueError(
                 f"Tool {tool_name} not available. Available tools: {self.available_tools}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         try:
             self.logger.info(f"Calling real MCP tool: {tool_name}")
@@ -218,13 +229,15 @@ class RealMCPClient(MCPClient):
                 server_name="mcp.config.usrlocalmcp.Puppeteer",
                 tool_name=tool_name,
                 args=args,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "success": True,
                 "result": result,
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Real MCP tool call failed: {e}")
@@ -232,7 +245,8 @@ class RealMCPClient(MCPClient):
                 "success": False,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 if __name__ == "__main__":
@@ -248,13 +262,15 @@ if __name__ == "__main__":
         # Test navigation
         nav_result = await client.call_tool(
             "puppeteer_navigate", {"url": "https://chat.openai.com"}
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Navigation: {json.dumps(nav_result, indent = 2)}")
 
         # Test screenshot
         screenshot_result = await client.call_tool(
             "puppeteer_screenshot", {"name": "test_screenshot"}
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Screenshot: {json.dumps(screenshot_result, indent = 2)}")
 
     asyncio.run(test_mcp_client())

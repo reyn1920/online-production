@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 Sublime Text Automation Integration
 
 This script demonstrates how Sublime Text can be integrated into the existing
 automation workflow for the TRAE.AI platform.
-"""
+""""""
 
 import json
 import logging
@@ -34,7 +34,8 @@ class SublimeAutomationIntegrator:
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             logger.info(f"Sublime Text detected: {result.stdout.strip()}")
             return True
         except (subprocess.CalledProcessError, FileNotFoundError) as e:
@@ -42,7 +43,7 @@ class SublimeAutomationIntegrator:
             return False
 
     def format_code_files(self, file_patterns: List[str] = None) -> Dict[str, bool]:
-        """Format code files using Sublime Text's built - in formatting."""
+        """Format code files using Sublime Text's built - in formatting."""'
         if file_patterns is None:
             file_patterns = ["*.py", "*.js", "*.ts", "*.json", "*.md"]
 
@@ -60,9 +61,11 @@ class SublimeAutomationIntegrator:
                             "reindent",
                             "--wait",
                             str(file_path),
-                        ],
+# BRACKET_SURGEON: disabled
+#                         ],
                         check=True,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     results[str(file_path)] = True
                     logger.info(f"Formatted: {file_path}")
                 except subprocess.CalledProcessError as e:
@@ -85,29 +88,37 @@ class SublimeAutomationIntegrator:
                         "models / linly_talker",
                         "cache",
                         "test_outputs",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "file_exclude_patterns": ["*.pyc", "*.log", "*.pid", "*.sqlite"],
-                }
-            ],
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ],
             "settings": {
                 "tab_size": 4,
                 "translate_tabs_to_spaces": True,
                 "trim_trailing_white_space_on_save": True,
                 "ensure_newline_at_eof_on_save": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "build_systems": [
                 {
                     "name": "TRAE AI - Run Tests",
                     "cmd": ["python", "-m", "pytest", "tests/"],
                     "working_dir": str(self.project_root),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "name": "TRAE AI - Start Development Server",
                     "cmd": ["python", "main.py"],
                     "working_dir": str(self.project_root),
-                },
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         project_file = self.project_root / f"{project_name}.sublime - project"
 
@@ -136,14 +147,15 @@ class SublimeAutomationIntegrator:
             "pre_commit_format": f"{self.subl_path} --command reindent --wait",
             "batch_format": f"find . -name '*.py' -exec {self.subl_path} --command reindent --wait {{}} \\;",
             "project_setup": f"{self.subl_path} --project TRAE_AI_Project.sublime - project",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info("Generated CI / CD integration commands")
         return integration_commands
 
     def create_automation_workflow(self) -> str:
         """Create a GitHub Actions workflow that includes Sublime Text automation."""
-        workflow_content = """name: Sublime Text Integration Workflow
+        workflow_content = """name: Sublime Text Integration Workflow"""
 
 on:
   push:
@@ -177,7 +189,7 @@ jobs:
         else
           echo "Code is properly formatted"
         fi
-"""
+""""""
 
         workflow_file = self.project_root / ".github / workflows / sublime - integration.yml"
         workflow_file.parent.mkdir(parents=True, exist_ok=True)

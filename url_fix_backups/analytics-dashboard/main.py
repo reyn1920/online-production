@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Analytics Dashboard Service
 Comprehensive business intelligence and data visualization platform
-"""
+""""""
 
 import asyncio
 import json
@@ -43,7 +43,8 @@ from sqlalchemy import (
     String,
     Text,
     create_engine,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
@@ -67,19 +68,23 @@ celery_app = Celery(
     "analytics",
     broker=os.getenv("CELERY_BROKER", "redis://localhost:6379 / 0"),
     backend=os.getenv("CELERY_BACKEND", "redis://localhost:6379 / 0"),
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Metrics
 analytics_requests = Counter(
     "analytics_requests_total", "Total analytics requests", ["endpoint", "status"]
-)
+# BRACKET_SURGEON: disabled
+# )
 data_processing_time = Histogram(
     "data_processing_seconds", "Time spent processing data", ["operation"]
-)
+# BRACKET_SURGEON: disabled
+# )
 active_dashboards = Gauge("active_dashboards", "Number of active dashboards")
 data_points_processed = Counter(
     "data_points_processed_total", "Total data points processed", ["source"]
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Database Models
 
@@ -322,7 +327,8 @@ class DataProcessor:
                 "forecast": [],
                 "confidence_intervals": [],
                 "error": "Insufficient data",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         try:
             # Prepare time series data
@@ -337,7 +343,8 @@ class DataProcessor:
                 "forecast": forecast.tolist(),
                 "confidence_intervals": [],  # Would calculate actual CIs
                 "model_type": "exponential_smoothing",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             logger.error(f"Forecasting error: {e}")
             return {"forecast": [], "error": str(e)}
@@ -398,7 +405,8 @@ class VisualizationEngine:
             "unit": unit,
             "color": color,
             "percentage_of_target": (value / target * 100) if target else None,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def create_gauge_chart(
         self, value: float, title: str, min_val: float = 0, max_val: float = 100
@@ -416,15 +424,20 @@ class VisualizationEngine:
                     "steps": [
                         {"range": [0, max_val * 0.5], "color": "lightgray"},
                         {"range": [max_val * 0.5, max_val * 0.8], "color": "gray"},
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "threshold": {
                         "line": {"color": "red", "width": 4},
                         "thickness": 0.75,
                         "value": max_val * 0.9,
-                    },
-                },
-            )
-        )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
         return json.loads(fig.to_json())
 
 
@@ -454,7 +467,8 @@ class AlertManager:
                 self.db.query(MetricDefinition)
                 .filter(MetricDefinition.id == alert.metric_id)
                 .first()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not metric:
                 return False
@@ -492,7 +506,8 @@ class AlertManager:
             "severity": alert.severity,
             "triggered_at": alert.last_triggered.isoformat(),
             "notification_result": notification_result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _send_notifications(self, alert: Alert) -> Dict[str, Any]:
         """Send alert notifications"""
@@ -530,7 +545,8 @@ class ReportGenerator:
             "generated_at": datetime.utcnow().isoformat(),
             "widgets": [],
             "summary": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Process each widget
         for widget in dashboard.widgets:
@@ -558,7 +574,8 @@ class ReportGenerator:
                 "title": widget.get("title", ""),
                 "chart_data": {},  # Would generate actual chart
                 "insights": [],
-            }
+# BRACKET_SURGEON: disabled
+#             }
         elif widget_type == "kpi":
             # Generate KPI data
             return {
@@ -567,7 +584,8 @@ class ReportGenerator:
                 "value": 0,  # Would calculate actual value
                 "target": widget.get("target"),
                 "trend": "up",  # Would calculate trend
-            }
+# BRACKET_SURGEON: disabled
+#             }
         else:
             return widget
 
@@ -580,12 +598,14 @@ class ReportGenerator:
                 "Revenue increased by 15% this month",
                 "Customer acquisition cost decreased by 8%",
                 "Conversion rate improved to 3.2%",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _generate_html_report(self, report_data: Dict[str, Any]) -> Dict[str, Any]:
         """Generate HTML report"""
-        html_content = f"""
+        html_content = f""""""
         <html>
         <head><title>{report_data['title']}</title></head>
         <body>
@@ -594,7 +614,7 @@ class ReportGenerator:
             <!-- Report content would be generated here -->
         </body>
         </html>
-        """
+        """"""
 
         return {"format": "html", "content": html_content, "size": len(html_content)}
 
@@ -622,19 +642,22 @@ async def lifespan(app: FastAPI):
         refresh_data_sources,
         CronTrigger(minute=0),  # Every hour
         id="refresh_data_sources",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     scheduler.add_job(
         check_alerts_task,
         CronTrigger(minute="*/5"),  # Every 5 minutes
         id="check_alerts",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     scheduler.add_job(
         generate_scheduled_reports,
         CronTrigger(hour=0, minute=0),  # Daily at midnight
         id="generate_reports",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     yield
 
@@ -645,11 +668,12 @@ async def lifespan(app: FastAPI):
 # FastAPI app
 app = FastAPI(
     title="Analytics Dashboard Service",
-    description="Comprehensive business intelligence \
-    and data visualization platform",
+    description="Comprehensive business intelligence \"
+#     and data visualization platform",
     version="1.0.0",
     lifespan=lifespan,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 app.add_middleware(
     CORSMiddleware,
@@ -657,7 +681,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -709,7 +734,8 @@ async def get_dashboard(dashboard_id: str, db: Session = Depends(get_db)):
 @app.put("/api / dashboards/{dashboard_id}")
 async def update_dashboard(
     dashboard_id: str, dashboard_data: DashboardCreate, db: Session = Depends(get_db)
-):
+# BRACKET_SURGEON: disabled
+# ):
     dashboard = db.query(Dashboard).filter(Dashboard.id == dashboard_id).first()
     if not dashboard:
         raise HTTPException(status_code=404, detail="Dashboard not found")
@@ -749,7 +775,8 @@ async def get_source_data(source_id: str, query: str = None, db: Session = Depen
             "data": data.to_dict(orient="records"),
             "columns": data.columns.tolist(),
             "row_count": len(data),
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -787,7 +814,8 @@ async def get_metric_value(metric_id: str, db: Session = Depends(get_db)):
             "value": value,
             "unit": metric.unit,
             "calculated_at": datetime.utcnow().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -805,10 +833,12 @@ async def execute_analytics_query(query: AnalyticsQuery, db: Session = Depends(g
                 {"date": "2024 - 01 - 01", "revenue": 10000, "users": 500},
                 {"date": "2024 - 01 - 02", "revenue": 12000, "users": 600},
                 {"date": "2024 - 01 - 03", "revenue": 11000, "users": 550},
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "total_rows": 3,
             "execution_time_ms": 150,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         analytics_requests.labels(endpoint="query", status="success").inc()
         return result
@@ -838,21 +868,24 @@ async def create_chart(chart_config: Dict[str, Any], db: Session = Depends(get_d
                 chart_config.get("x_column", data.columns[0]),
                 chart_config.get("y_column", data.columns[1]),
                 chart_config.get("title", ""),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif chart_type == "bar":
             chart = visualization_engine.create_bar_chart(
                 data,
                 chart_config.get("x_column", data.columns[0]),
                 chart_config.get("y_column", data.columns[1]),
                 chart_config.get("title", ""),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif chart_type == "pie":
             chart = visualization_engine.create_pie_chart(
                 data,
                 chart_config.get("values_column", data.columns[1]),
                 chart_config.get("names_column", data.columns[0]),
                 chart_config.get("title", ""),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             raise HTTPException(status_code=400, detail=f"Unsupported chart type: {chart_type}")
 
@@ -884,7 +917,8 @@ async def create_kpi(kpi_config: Dict[str, Any], db: Session = Depends(get_db)):
             kpi_config.get("title", metric.name),
             metric.target_value,
             metric.unit,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return kpi
 
@@ -937,7 +971,8 @@ async def check_alerts_now(db: Session = Depends(get_db)):
     return {
         "checked_at": datetime.utcnow().isoformat(),
         "triggered_alerts": triggered_alerts,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Reports Management
@@ -970,7 +1005,8 @@ async def generate_report_now(report_id: str, db: Session = Depends(get_db)):
     try:
         generated_report = await report_generator.generate_dashboard_report(
             report.dashboard_id, report.format
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Update report timestamp
         report.last_generated = datetime.utcnow()
@@ -996,7 +1032,8 @@ async def view_dashboard(request: Request, dashboard_id: str, db: Session = Depe
 
     return templates.TemplateResponse(
         "dashboard_view.html", {"request": request, "dashboard": dashboard}
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 # Background Tasks
@@ -1012,7 +1049,8 @@ async def refresh_data_sources():
             # Check if refresh is due
             if source.last_refresh is None or datetime.utcnow() - source.last_refresh > timedelta(
                 seconds=source.refresh_interval
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 # Refresh data source
                 source.last_refresh = datetime.utcnow()
                 db.commit()
@@ -1053,9 +1091,11 @@ async def generate_scheduled_reports():
                 Report.report_type == "scheduled",
                 Report.status == "active",
                 Report.next_generation <= now,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             .all()
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         report_generator = ReportGenerator(db)
 
@@ -1063,7 +1103,8 @@ async def generate_scheduled_reports():
             try:
                 generated_report = await report_generator.generate_dashboard_report(
                     report.dashboard_id, report.format
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 report.last_generated = now
                 # Calculate next generation time based on schedule

@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 API Discovery Routes
 Backend endpoints for API discovery and management
-"""
+
+""""""
 
 import asyncio
 import json
@@ -56,9 +60,20 @@ def require_auth(f):
 @api_discovery_bp.route("/discover - apis", methods=["POST"])
 @require_auth
 def discover_apis():
-    """Discover APIs for specified channel(s)"""
+    """
+Discover APIs for specified channel(s)
+
+    
+"""
     try:
+    """
+
         data = request.get_json() or {}
+    
+
+    try:
+    
+"""
         channel = data.get("channel", "all")
 
         if not APIDiscoveryService:
@@ -67,10 +82,10 @@ def discover_apis():
                     {
                         "error": "API Discovery Service not available",
                         "apis": get_mock_apis(channel),
-                    }
-                ),
+                     }
+                 ),
                 200,
-            )
+             )
 
         # Run the async discovery service
         loop = asyncio.new_event_loop()
@@ -103,9 +118,9 @@ def discover_apis():
                                 "score": api.score,
                                 "discovered_at": api.discovered_at,
                                 "channel": api.channel,
-                            }
+                             }
                             for api in apis
-                        ]
+                         ]
 
                     return serialized_results
 
@@ -116,8 +131,8 @@ def discover_apis():
                     "success": True,
                     "apis": results,
                     "timestamp": datetime.now().isoformat(),
-                }
-            )
+                 }
+             )
 
         finally:
             loop.close()
@@ -127,15 +142,27 @@ def discover_apis():
         return (
             jsonify({"error": str(e), "apis": get_mock_apis(channel)}),
             200,
-        )  # Return mock data instead of error
+#         )  # Return mock data instead of error
 
 
 @api_discovery_bp.route("/free - apis", methods=["GET"])
 @require_auth
 def get_free_apis():
-    """Get all free and freemium APIs"""
+    """
+Get all free and freemium APIs
+
+    
+"""
     try:
+    """"""
         if not APIDiscoveryService:
+    """
+
+    try:
+    
+
+   
+""""""
             return jsonify({"success": True, "apis": get_mock_free_apis()})
 
         # Get from database
@@ -144,13 +171,23 @@ def get_free_apis():
         with sqlite3.connect(db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
-                """
+                """"""
+
                 SELECT * FROM discovered_apis
                 WHERE cost_model IN ('free', 'freemium')
                 ORDER BY score DESC, name ASC
-            """
-            )
+           
 
+            
+           
+""""""
+
+             
+            
+
+             )
+            
+""""""
             apis = []
             for row in cursor.fetchall():
                 api_dict = dict(row)
@@ -175,10 +212,21 @@ def get_free_apis():
 @api_discovery_bp.route("/channel - apis/<channel>", methods=["GET"])
 @require_auth
 def get_channel_apis(channel):
-    """Get APIs for a specific channel"""
-    try:
-        limit = request.args.get("limit", 10, type=int)
+    """
+Get APIs for a specific channel
 
+    
+"""
+    try:
+    """
+        limit = request.args.get("limit", 10, type=int)
+    """
+
+    try:
+    
+
+   
+""""""
         if not APIDiscoveryService:
             return jsonify({"success": True, "apis": get_mock_channel_apis(channel, limit)})
 
@@ -188,15 +236,24 @@ def get_channel_apis(channel):
         with sqlite3.connect(db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
-                """
+                """"""
+
                 SELECT * FROM discovered_apis
                 WHERE channel = ?
                 ORDER BY score DESC, cost_model = 'free' DESC
                 LIMIT ?
-            """,
+            
+,
+"""
                 (channel, limit),
-            )
+            """
 
+             
+            
+
+             )
+            
+""""""
             apis = []
             for row in cursor.fetchall():
                 api_dict = dict(row)
@@ -218,17 +275,28 @@ def get_channel_apis(channel):
                 "success": True,
                 "channel": channel,
                 "apis": get_mock_channel_apis(channel, 5),
-            }
-        )
+             }
+         )
 
 
 @api_discovery_bp.route("/api - stats", methods=["GET"])
 @require_auth
 def get_api_stats():
-    """Get API discovery statistics"""
-    try:
-        db_path = os.path.join(os.path.dirname(__file__), "..", "..", "intelligence.db")
+    """
+Get API discovery statistics
 
+    
+"""
+    try:
+    """
+        db_path = os.path.join(os.path.dirname(__file__), "..", "..", "intelligence.db")
+    """
+
+    try:
+    
+
+   
+""""""
         with sqlite3.connect(db_path) as conn:
             # Total APIs
             total_cursor = conn.execute("SELECT COUNT(*) as count FROM discovered_apis")
@@ -236,34 +304,112 @@ def get_api_stats():
 
             # Free APIs
             free_cursor = conn.execute(
-                """
+                """"""
+
                 SELECT COUNT(*) as count FROM discovered_apis
                 WHERE cost_model IN ('free', 'freemium')
-            """
-            )
-            free_apis = free_cursor.fetchone()[0]
+           
 
+            
+           
+""""""
+
+             
+            
+
+             )
+            
+""""""
+
+           
+
+            
+           
+"""
+            free_apis = free_cursor.fetchone()[0]
+           """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             # Average score
             avg_cursor = conn.execute("SELECT AVG(score) as avg_score FROM discovered_apis")
             avg_score = avg_cursor.fetchone()[0] or 0.0
 
             # Channels with APIs
             channels_cursor = conn.execute(
-                """
-                SELECT COUNT(DISTINCT channel) as count FROM discovered_apis
-            """
-            )
-            channels_count = channels_cursor.fetchone()[0]
+                """"""
 
+                SELECT COUNT(DISTINCT channel) as count FROM discovered_apis
+           
+
+            
+           
+""""""
+
+             
+            
+
+             )
+            
+""""""
+
+           
+
+            
+           
+"""
+            channels_count = channels_cursor.fetchone()[0]
+           """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             # Recent discoveries
             recent_cursor = conn.execute(
-                """
+               """
+
+                
+               
+
                 SELECT COUNT(*) as count FROM discovered_apis
                 WHERE date(discovered_at) = date('now')
-            """
-            )
-            recent_discoveries = recent_cursor.fetchone()[0]
+            
+""""""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+            
+           """
+
+            recent_discoveries = recent_cursor.fetchone()[0]
+           
+
+            
+           
+""""""
+
+             
+            
+
+             )
+            
+""""""
         return jsonify(
             {
                 "success": True,
@@ -273,9 +419,9 @@ def get_api_stats():
                     "avg_score": round(avg_score, 1),
                     "channels_count": channels_count,
                     "recent_discoveries": recent_discoveries,
-                },
-            }
-        )
+                 },
+             }
+         )
 
     except Exception as e:
         logger.error(f"Error in get_api_stats: {e}")
@@ -288,31 +434,51 @@ def get_api_stats():
                     "avg_score": 0.0,
                     "channels_count": 8,
                     "recent_discoveries": 0,
-                },
-            }
-        )
+                 },
+             }
+         )
 
 
 @api_discovery_bp.route("/search - history", methods=["GET"])
 @require_auth
 def get_search_history():
-    """Get API search history"""
-    try:
-        limit = request.args.get("limit", 20, type=int)
+    """
+Get API search history
 
+    
+"""
+    try:
+    """
+        limit = request.args.get("limit", 20, type=int)
+    """
+
+    try:
+    
+
+   
+""""""
         db_path = os.path.join(os.path.dirname(__file__), "..", "..", "intelligence.db")
 
         with sqlite3.connect(db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
-                """
+                """"""
+
                 SELECT * FROM api_search_history
                 ORDER BY search_date DESC
                 LIMIT ?
-            """,
+            
+,
+"""
                 (limit,),
-            )
+            """
 
+             
+            
+
+             )
+            
+""""""
             history = [dict(row) for row in cursor.fetchall()]
 
         return jsonify({"success": True, "history": history})
@@ -335,20 +501,20 @@ def get_mock_apis(channel):
                 "signup_url": "https://console.cloud.google.com/",
                 "category": "social",
                 "cost_model": "free",
-                "description": "Access YouTube data including videos, channels, playlists, \
-    and more",
+                "description": "Access YouTube data including videos, channels, playlists, \"
+#     and more",
                 "features": [
                     "video analytics",
                     "channel data",
                     "playlist management",
                     "search",
-                ],
+                 ],
                 "rate_limits": "10,000 requests per day",
                 "documentation_url": "https://developers.google.com/youtube/v3",
                 "score": 8.5,
                 "discovered_at": datetime.now().isoformat(),
                 "channel": "youtube",
-            },
+             },
             {
                 "name": "YouTube Analytics API",
                 "url": "https://developers.google.com/youtube/analytics",
@@ -362,8 +528,8 @@ def get_mock_apis(channel):
                 "score": 8.0,
                 "discovered_at": datetime.now().isoformat(),
                 "channel": "youtube",
-            },
-        ],
+             },
+         ],
         "email": [
             {
                 "name": "SendGrid API",
@@ -377,14 +543,14 @@ def get_mock_apis(channel):
                     "marketing campaigns",
                     "analytics",
                     "templates",
-                ],
+                 ],
                 "rate_limits": "100 emails/day free",
                 "documentation_url": "https://sendgrid.com/docs/",
                 "score": 7.8,
                 "discovered_at": datetime.now().isoformat(),
                 "channel": "email",
-            }
-        ],
+             }
+         ],
         "affiliate": [
             {
                 "name": "Amazon Associates API",
@@ -399,9 +565,9 @@ def get_mock_apis(channel):
                 "score": 9.0,
                 "discovered_at": datetime.now().isoformat(),
                 "channel": "affiliate",
-            }
-        ],
-    }
+             }
+         ],
+     }
 
     if channel == "all":
         return mock_data
@@ -425,7 +591,7 @@ def get_mock_free_apis():
             "score": 8.5,
             "discovered_at": datetime.now().isoformat(),
             "channel": "youtube",
-        },
+         },
         {
             "name": "Twitter API v2",
             "url": "https://developer.twitter.com/en/docs/twitter - api",
@@ -439,7 +605,7 @@ def get_mock_free_apis():
             "score": 7.5,
             "discovered_at": datetime.now().isoformat(),
             "channel": "twitter",
-        },
+         },
         {
             "name": "Amazon Associates API",
             "url": "https://webservices.amazon.com/paapi5/documentation/",
@@ -453,8 +619,8 @@ def get_mock_free_apis():
             "score": 9.0,
             "discovered_at": datetime.now().isoformat(),
             "channel": "affiliate",
-        },
-    ]
+         },
+     ]
 
 
 def get_mock_channel_apis(channel, limit):

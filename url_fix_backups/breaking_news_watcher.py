@@ -1,11 +1,11 @@
 #!/usr / bin / env python3
-"""
+""""""
 Breaking News Watcher - Core RSS Intelligence Engine
 
 This module serves as the central RSS intelligence system that continuously
 parses RSS feeds, extracts key information, and provides real - time intelligence
 to the Research, Planner, and Content agents.
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -69,7 +69,8 @@ class RSSIntelligenceEngine:
         self,
             db_path: str = "right_perspective.db",
             config_path: str = "rss_feeds_example.json",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.db_path = db_path
         self.config_path = config_path
         self.secret_store = SecretStore()
@@ -93,7 +94,9 @@ class RSSIntelligenceEngine:
         except FileNotFoundError:
             logger.warning(
                 f"RSS config file {self.config_path} not found, using empty feed list"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return []
         except json.JSONDecodeError as e:
             logger.error(f"Error parsing RSS config: {e}")
@@ -107,7 +110,7 @@ class RSSIntelligenceEngine:
 
         # News articles table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS news_articles (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     hash_id TEXT UNIQUE NOT NULL,
@@ -122,13 +125,17 @@ class RSSIntelligenceEngine:
                     sentiment_score REAL,
                     readability_score REAL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Trend analysis table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS trend_analysis (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     keyword TEXT NOT NULL,
@@ -140,13 +147,17 @@ class RSSIntelligenceEngine:
                     related_articles TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Hypocrisy tracker table - matches master schema
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS hypocrisy_tracker (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     subject_name TEXT NOT NULL,
@@ -177,13 +188,17 @@ class RSSIntelligenceEngine:
                     reviewed_at TIMESTAMP,
                     content_used BOOLEAN DEFAULT FALSE,
                     content_used_at TIMESTAMP
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Intelligence briefings table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS intelligence_briefings (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     topic TEXT NOT NULL,
@@ -191,9 +206,13 @@ class RSSIntelligenceEngine:
                     relevance_score REAL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     expires_at TIMESTAMP
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         conn.commit()
         conn.close()
@@ -241,7 +260,8 @@ class RSSIntelligenceEngine:
                 "would",
                 "could",
                 "should",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Extract words (3+ characters, alphanumeric)
         words = re.findall(r"\\b[a - zA - Z]{3,}\\b", text.lower())
@@ -275,7 +295,9 @@ class RSSIntelligenceEngine:
                 "victory",
                 "breakthrough",
                 "achievement",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         negative_words = [
             "bad",
                 "terrible",
@@ -289,7 +311,9 @@ class RSSIntelligenceEngine:
                 "disaster",
                 "scandal",
                 "controversy",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         words = text.lower().split()
         positive_count = sum(1 for word in words if word in positive_words)
@@ -307,9 +331,11 @@ class RSSIntelligenceEngine:
         """Fetch and extract article content from URL."""
         try:
             headers = {
-                "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,
-    like Gecko) Chrome / 91.0.4472.124 Safari / 537.36"
-            }
+                "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,"
+# BRACKET_SURGEON: disabled
+#     like Gecko) Chrome / 91.0.4472.124 Safari / 537.36""
+# BRACKET_SURGEON: disabled
+#             }
             response = requests.get(url, headers = headers, timeout = 10)
             response.raise_for_status()
 
@@ -328,7 +354,9 @@ class RSSIntelligenceEngine:
                     ".content",
                     "main",
                     ".main - content",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             content = ""
             for selector in content_selectors:
@@ -373,7 +401,9 @@ class RSSIntelligenceEngine:
                     # Generate article hash for deduplication
                     hash_id = self._generate_article_hash(
                         entry.title, entry.link, published
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Check if article already exists
                     if self._article_exists(hash_id):
@@ -404,7 +434,9 @@ class RSSIntelligenceEngine:
                             sentiment_score = sentiment,
                             readability_score = readability,
                             hash_id = hash_id,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     articles.append(article)
 
@@ -417,7 +449,9 @@ class RSSIntelligenceEngine:
         except Exception as e:
             logger.error(
                 f"Error parsing feed {feed_config.get('name', 'Unknown')}: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return articles
 
@@ -441,12 +475,14 @@ class RSSIntelligenceEngine:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT OR IGNORE INTO news_articles
                 (hash_id, title, url, content, published, source, category,
-                    keywords, entities, sentiment_score, readability_score)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     keywords, entities, sentiment_score, readability_score)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     article.hash_id,
                         article.title,
@@ -459,8 +495,11 @@ class RSSIntelligenceEngine:
                         json.dumps(article.entities),
                         article.sentiment_score,
                         article.readability_score,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
             conn.close()
@@ -490,7 +529,9 @@ class RSSIntelligenceEngine:
             cursor.execute(
                 "SELECT frequency, sources, related_articles FROM trend_analysis WHERE keyword = ?",
                     (keyword,),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             result = cursor.fetchone()
 
             if result:
@@ -506,26 +547,29 @@ class RSSIntelligenceEngine:
                 trend_score = self._calculate_trend_score(keyword, new_frequency)
 
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE trend_analysis
                     SET frequency = ?, trend_score = ?, last_seen = CURRENT_TIMESTAMP,
                         sources = ?, related_articles = ?, updated_at = CURRENT_TIMESTAMP
                     WHERE keyword = ?
-                """,
+                ""","""
                     (
                         new_frequency,
                             trend_score,
                             json.dumps(list(set(all_sources))),
                             json.dumps(list(set(all_articles))),
                             keyword,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 # Create new trend
                 trend_score = self._calculate_trend_score(keyword, len(sources))
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO trend_analysis
                     (keyword,
     frequency,
@@ -533,17 +577,22 @@ class RSSIntelligenceEngine:
     first_seen,
     last_seen,
     sources,
-    related_articles)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     related_articles)
                     VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?)
-                """,
+                ""","""
                     (
                         keyword,
                             len(sources),
                             trend_score,
                             json.dumps(sources),
                             json.dumps(keyword_articles[keyword]),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         conn.commit()
         conn.close()
@@ -560,7 +609,9 @@ class RSSIntelligenceEngine:
 
         cursor.execute(
             "SELECT last_seen FROM trend_analysis WHERE keyword = ?", (keyword,)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         result = cursor.fetchone()
 
         if result:
@@ -579,15 +630,17 @@ class RSSIntelligenceEngine:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             SELECT keyword, frequency, trend_score, first_seen, last_seen, sources, related_articles
             FROM trend_analysis
             WHERE frequency >= ? AND last_seen > datetime('now', '-24 hours')
             ORDER BY trend_score DESC, frequency DESC
             LIMIT ?
-        """,
+        ""","""
             (self.min_trend_frequency, limit),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         trends = []
         for row in cursor.fetchall():
@@ -599,7 +652,8 @@ class RSSIntelligenceEngine:
                     last_seen,
                     sources,
                     related_articles,
-                    ) = row
+# BRACKET_SURGEON: disabled
+#                     ) = row
 
             trend = TrendData(
                 keyword = keyword,
@@ -609,7 +663,9 @@ class RSSIntelligenceEngine:
                     last_seen = datetime.fromisoformat(last_seen),
                     sources = json.loads(sources),
                     related_articles = json.loads(related_articles),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             trends.append(trend)
 
         conn.close()
@@ -623,16 +679,18 @@ class RSSIntelligenceEngine:
 
         # Search for articles related to the topic
         cursor.execute(
-            """
+            """"""
             SELECT title, url, content, published, source, sentiment_score
             FROM news_articles
             WHERE (title LIKE ? OR content LIKE ? OR keywords LIKE ?)
             AND published > datetime('now', '-48 hours')
             ORDER BY published DESC
             LIMIT ?
-        """,
+        ""","""
             (f"%{topic}%", f"%{topic}%", f"%{topic}%", max_articles),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         articles = cursor.fetchall()
 
@@ -640,7 +698,9 @@ class RSSIntelligenceEngine:
         cursor.execute(
             "SELECT frequency, trend_score FROM trend_analysis WHERE keyword LIKE ?",
                 (f"%{topic}%",),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         trend_data = cursor.fetchone()
 
         conn.close()
@@ -657,22 +717,29 @@ class RSSIntelligenceEngine:
                         article[2][:200] + "..."
                         if len(article[2]) > 200
                         else article[2]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "published": article[3],
                         "source": article[4],
                         "sentiment": article[5],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for article in articles
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
                 "trend_data": (
                 {
                     "frequency": trend_data[0] if trend_data else 0,
                         "trend_score": trend_data[1] if trend_data else 0.0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 if trend_data
                 else None
-            ),
-                }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         return briefing
 
@@ -686,26 +753,30 @@ class RSSIntelligenceEngine:
 
         # Get recent articles from the last 24 hours
         cursor.execute(
-            """
+            """"""
             SELECT title, url, content, published, source, sentiment_score
             FROM news_articles
             WHERE published > datetime('now', '-24 hours')
             ORDER BY published DESC
             LIMIT 10
-        """
-        )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         articles = cursor.fetchall()
 
         # Get trending topics
         cursor.execute(
-            """
+            """"""
             SELECT keyword, frequency, trend_score
             FROM trend_analysis
             ORDER BY trend_score DESC
             LIMIT 5
-        """
-        )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         trending = cursor.fetchall()
         conn.close()
@@ -722,18 +793,25 @@ class RSSIntelligenceEngine:
                         article[2][:200] + "..."
                         if len(article[2]) > 200
                         else article[2]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "published": article[3],
                         "source": article[4],
                         "sentiment": article[5],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for article in articles
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
                 "trending_topics": [
                 {"keyword": trend[0], "frequency": trend[1], "trend_score": trend[2]}
                 for trend in trending
-            ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def run_continuous_monitoring(self, interval_minutes: int = 30):
@@ -741,7 +819,9 @@ class RSSIntelligenceEngine:
         self.running = True
         logger.info(
             f"Starting continuous RSS monitoring (interval: {interval_minutes} minutes)"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         while self.running:
             try:
@@ -800,6 +880,8 @@ if __name__ == "__main__":
         for trend in trends:
             print(
                 f"- {trend.keyword}: {trend.frequency} mentions (score: {trend.trend_score:.2f})"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     else:
         print("No new articles found")

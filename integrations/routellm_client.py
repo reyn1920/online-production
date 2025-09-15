@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 RouteLL API Client for Trae AI Integration
 Provides comprehensive API wrapper with credit monitoring and optimization
-"""
+""""""
 
 import json
 import logging
@@ -69,7 +69,8 @@ class RouteLL_Client:
             daily_usage=0,
             hourly_usage=0,
             last_updated=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.status = RouteLL_Status.ACTIVE
         self.logger = self._setup_logging()
         self._setup_session()
@@ -108,15 +109,18 @@ class RouteLL_Client:
         if not self.api_key:
             raise ValueError(
                 f"API key not found in environment variable: {self.config['api_settings']['api_key_env']}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         self.session.headers.update(
             {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content - Type": "application/json",
                 "User - Agent": "Trae - AI - RouteLL - Client/1.0.0",
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         self.session.timeout = self.config["api_settings"]["timeout_seconds"]
 
@@ -130,7 +134,8 @@ class RouteLL_Client:
             # Calculate warning level
             usage_percentage = (
                 self.credit_usage.used_credits / self.credit_usage.total_credits
-            ) * 100
+# BRACKET_SURGEON: disabled
+#             ) * 100
 
             if usage_percentage >= 95:
                 self.credit_usage.warning_level = "critical"
@@ -143,12 +148,14 @@ class RouteLL_Client:
                 if self.status in [
                     RouteLL_Status.CREDITS_LOW,
                     RouteLL_Status.CREDITS_EXHAUSTED,
-                ]:
+# BRACKET_SURGEON: disabled
+#                 ]:
                     self.status = RouteLL_Status.ACTIVE
 
             self.logger.info(
                 f"Credit check: {self.credit_usage.remaining_credits} remaining ({usage_percentage:.1f}% used)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return self.credit_usage
 
         except Exception as e:
@@ -191,13 +198,15 @@ class RouteLL_Client:
         if self.credit_usage.daily_usage + estimated_cost > daily_limit:
             self.logger.warning(
                 f"Daily usage limit would be exceeded: {self.credit_usage.daily_usage + estimated_cost} > {daily_limit}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
         if self.credit_usage.hourly_usage + estimated_cost > hourly_limit:
             self.logger.warning(
                 f"Hourly usage limit would be exceeded: {self.credit_usage.hourly_usage + estimated_cost} > {hourly_limit}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
         return True
@@ -230,7 +239,8 @@ class RouteLL_Client:
                 response_time_ms=0,
                 model_used=model,
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Prepare request payload
         payload = {"model": model, "messages": messages, "stream": stream, **kwargs}
@@ -261,11 +271,13 @@ class RouteLL_Client:
                 response_time_ms=int((time.time() - start_time) * 1000),
                 model_used=model,
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _handle_regular_response(
         self, url: str, payload: Dict, estimated_cost: int, start_time: float
-    ) -> APIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> APIResponse:
         """Handle non - streaming API response"""
         response = self.session.post(url, json=payload)
         response_time_ms = int((time.time() - start_time) * 1000)
@@ -274,7 +286,8 @@ class RouteLL_Client:
             self._update_credit_usage(estimated_cost)
             self.logger.info(
                 f"Successful request: {estimated_cost} credits used, {response_time_ms}ms"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return APIResponse(
                 success=True,
@@ -284,7 +297,8 @@ class RouteLL_Client:
                 response_time_ms=response_time_ms,
                 model_used=payload["model"],
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             error_msg = f"API error {response.status_code}: {response.text}"
             self.logger.error(error_msg)
@@ -297,7 +311,8 @@ class RouteLL_Client:
                 response_time_ms=response_time_ms,
                 model_used=payload["model"],
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _handle_streaming_response(
         self, url: str, payload: Dict, estimated_cost: int, start_time: float
@@ -317,7 +332,8 @@ class RouteLL_Client:
                     response_time_ms=int((time.time() - start_time) * 1000),
                     model_used=payload["model"],
                     timestamp=datetime.now(),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return
 
             # Update credits once for streaming request
@@ -342,7 +358,8 @@ class RouteLL_Client:
                                 response_time_ms=int((time.time() - start_time) * 1000),
                                 model_used=payload["model"],
                                 timestamp=datetime.now(),
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             credits_reported = True
                         except json.JSONDecodeError:
                             continue
@@ -357,7 +374,8 @@ class RouteLL_Client:
                 response_time_ms=int((time.time() - start_time) * 1000),
                 model_used=payload["model"],
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def get_status(self) -> Dict:
         """Get current client status and metrics"""
@@ -371,14 +389,17 @@ class RouteLL_Client:
                 "hourly_usage": self.credit_usage.hourly_usage,
                 "warning_level": self.credit_usage.warning_level,
                 "last_updated": self.credit_usage.last_updated.isoformat(),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "api_health": self._check_api_health(),
             "configuration": {
                 "model": self.config["api_settings"]["default_model"],
                 "base_url": self.base_url,
                 "monitoring_enabled": self.config["monitoring"]["enabled"],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _check_api_health(self) -> Dict:
         """Check API health status"""
@@ -411,12 +432,14 @@ class RouteLL_Client:
         return {
             "current_usage_percentage": (
                 self.credit_usage.used_credits / self.credit_usage.total_credits
-            )
+# BRACKET_SURGEON: disabled
+#             )
             * 100,
             "recommendations": recommendations,
             "unlimited_models": unlimited_models,
             "estimated_days_remaining": self._estimate_days_remaining(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _estimate_days_remaining(self) -> float:
         """Estimate days remaining based on current usage pattern"""

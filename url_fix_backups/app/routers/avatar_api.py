@@ -37,7 +37,8 @@ class AvatarGenerationRequest(BaseModel):
             "transparency": True,
             "border_style": "none",
             "texture": "smooth",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 class ImageProcessRequest(BaseModel):
@@ -63,9 +64,9 @@ class ChannelAvatarRequest(BaseModel):
 
 
 async def generate_avatar(request: AvatarGenerationRequest):
-    """
+    """"""
     Generate a new avatar using golden ratio principles
-    """
+    """"""
     try:
         # Generate the avatar
         result = avatar_generator.generate_avatar(
@@ -73,7 +74,9 @@ async def generate_avatar(request: AvatarGenerationRequest):
                 color_scheme = request.color_scheme,
                 size = request.size,
                 **request.customizations,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if not result["success"]:
             raise HTTPException(status_code = 400, detail = result["error"])
@@ -94,23 +97,28 @@ async def generate_avatar(request: AvatarGenerationRequest):
                     "style": request.style,
                     "color_scheme": request.color_scheme,
                     "size": request.size,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except Exception as e:
         raise HTTPException(
             status_code = 500,
-                detail = f"Avatar generation failed: {
-                str(e)}",
-                    )
+                detail = f"Avatar generation failed: {"
+                str(e)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 @router.post("/process - upload")
 
 
 async def process_uploaded_image(request: ImageProcessRequest):
-    """
+    """"""
     Process an uploaded image by removing background and enhancing transparency
-    """
+    """"""
     try:
         # Decode base64 image
         if request.image_data.startswith("data:image"):
@@ -125,7 +133,9 @@ async def process_uploaded_image(request: ImageProcessRequest):
         # Remove background
         processed_result = background_remover.remove_background(
             image, enhance_transparency = request.enhance
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if not processed_result["success"]:
             raise HTTPException(status_code = 400, detail = processed_result["error"])
@@ -136,7 +146,9 @@ async def process_uploaded_image(request: ImageProcessRequest):
         if request.target_size:
             processed_image = processed_image.resize(
                 (request.target_size, request.target_size), Image.Resampling.LANCZOS
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Convert back to base64
         img_buffer = io.BytesIO()
@@ -154,23 +166,28 @@ async def process_uploaded_image(request: ImageProcessRequest):
                     "processed_size": processed_image.size,
                     "has_transparency": processed_image.mode in ("RGBA", "LA"),
                     "metadata": processed_result.get("metadata", {}),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except Exception as e:
         raise HTTPException(
             status_code = 500,
-                detail = f"Image processing failed: {
-                str(e)}",
-                    )
+                detail = f"Image processing failed: {"
+                str(e)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 @router.post("/save")
 
 
 async def save_avatar_to_channel(request: AvatarSaveRequest):
-    """
+    """"""
     Save an avatar to a specific channel
-    """
+    """"""
     try:
         # Decode base64 image
         if request.image_data.startswith("data:image"):
@@ -187,7 +204,9 @@ async def save_avatar_to_channel(request: AvatarSaveRequest):
                 image = image,
                 is_default = request.make_default,
                 metadata = request.metadata or {},
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if not result["success"]:
             raise HTTPException(status_code = 400, detail = result["error"])
@@ -199,20 +218,25 @@ async def save_avatar_to_channel(request: AvatarSaveRequest):
                     "file_path": result["file_path"],
                     "is_default": request.make_default,
                     "message": "Avatar saved successfully",
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except Exception as e:
         raise HTTPException(status_code = 500,
-    detail = f"Failed to save avatar: {str(e)}")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail = f"Failed to save avatar: {str(e)}")
 
 @router.get("/channel/{channel_id}")
 
 
 async def get_channel_avatar(channel_id: int):
-    """
+    """"""
     Get the current avatar for a channel, generating one if none exists
-    """
+    """"""
     try:
         result = channel_manager.get_or_create_avatar(channel_id)
 
@@ -238,30 +262,37 @@ async def get_channel_avatar(channel_id: int):
                     "is_default": result.get("is_default", False),
                     "was_generated": result.get("was_generated", False),
                     "metadata": result.get("metadata", {}),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except Exception as e:
         raise HTTPException(
             status_code = 500,
-                detail = f"Failed to get channel avatar: {
-                str(e)}",
-                    )
+                detail = f"Failed to get channel avatar: {"
+                str(e)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 @router.post("/channel / generate")
 
 
 async def generate_channel_avatar(request: ChannelAvatarRequest):
-    """
+    """"""
     Generate a new avatar for a specific channel
-    """
+    """"""
     try:
         result = channel_manager.generate_avatar_for_channel(
             channel_id = request.channel_id,
                 style = request.style,
                 color_scheme = request.color_scheme,
                 force_regenerate = request.force_regenerate,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if not result["success"]:
             raise HTTPException(status_code = 400, detail = result["error"])
@@ -283,38 +314,45 @@ async def generate_channel_avatar(request: ChannelAvatarRequest):
                     "style": request.style,
                     "color_scheme": request.color_scheme,
                     "metadata": result.get("metadata", {}),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except Exception as e:
         raise HTTPException(
             status_code = 500,
-                detail = f"Failed to generate channel avatar: {
-                str(e)}",
-                    )
+                detail = f"Failed to generate channel avatar: {"
+                str(e)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 @router.get("/channels")
 
 
 async def get_all_channels():
-    """
+    """"""
     Get all available channels
-    """
+    """"""
     try:
         channels = channel_manager.get_all_channels()
         return JSONResponse(channels)
 
     except Exception as e:
         raise HTTPException(status_code = 500,
-    detail = f"Failed to get channels: {str(e)}")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail = f"Failed to get channels: {str(e)}")
 
 @router.get("/channel/{channel_id}/avatars")
 
 
 async def get_channel_avatars(channel_id: int):
-    """
+    """"""
     Get all avatars for a specific channel
-    """
+    """"""
     try:
         avatars = channel_manager.get_channel_avatars(channel_id)
 
@@ -329,7 +367,9 @@ async def get_channel_avatars(channel_id: int):
 
                         base64_image = base64.b64encode(img_buffer.getvalue()).decode(
                             "utf - 8"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         avatar["image_data"] = f"data:image / png;base64,{base64_image}"
                 except Exception as img_error:
                     print(f"Error loading avatar image: {img_error}")
@@ -340,17 +380,19 @@ async def get_channel_avatars(channel_id: int):
     except Exception as e:
         raise HTTPException(
             status_code = 500,
-                detail = f"Failed to get channel avatars: {
-                str(e)}",
-                    )
+                detail = f"Failed to get channel avatars: {"
+                str(e)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 @router.delete("/avatar/{avatar_id}")
 
 
 async def delete_avatar(avatar_id: int):
-    """
+    """"""
     Delete a specific avatar
-    """
+    """"""
     try:
         result = channel_manager.delete_avatar(avatar_id)
 
@@ -362,17 +404,19 @@ async def delete_avatar(avatar_id: int):
     except Exception as e:
         raise HTTPException(
             status_code = 500,
-                detail = f"Failed to delete avatar: {
-                str(e)}",
-                    )
+                detail = f"Failed to delete avatar: {"
+                str(e)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 @router.get("/styles")
 
 
 async def get_available_styles():
-    """
+    """"""
     Get all available avatar styles
-    """
+    """"""
     return JSONResponse(
         {
             "styles": [
@@ -380,75 +424,94 @@ async def get_available_styles():
                     "id": "geometric",
                         "name": "Geometric",
                         "description": "Clean geometric shapes with golden ratio proportions",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": "organic",
                         "name": "Organic",
                         "description": "Natural, flowing forms inspired by nature",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": "professional",
                         "name": "Professional",
                         "description": "Clean, business - appropriate designs",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": "artistic",
                         "name": "Artistic",
                         "description": "Creative and expressive designs",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": "minimal",
                         "name": "Minimal",
                         "description": "Simple, clean designs with maximum impact",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": "golden_ratio",
                         "name": "Golden Ratio",
                         "description": "Pure mathematical beauty based on golden ratio",
-                        },
-                    ],
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "color_schemes": [
                 {
                     "id": "monochrome",
                         "name": "Monochrome",
                         "description": "Single color with variations",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": "complementary",
                         "name": "Complementary",
                         "description": "Opposite colors on the color wheel",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": "triadic",
                         "name": "Triadic",
                         "description": "Three evenly spaced colors",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": "warm",
                         "name": "Warm",
                         "description": "Warm colors like reds, oranges, yellows",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": "cool",
                         "name": "Cool",
                         "description": "Cool colors like blues, greens, purples",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": "vibrant",
                         "name": "Vibrant",
                         "description": "Bright, energetic colors",
-                        },
-                    ],
-                }
-    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 @router.get("/health")
 
 
 async def health_check():
-    """
+    """"""
     Health check endpoint
-    """
+    """"""
     return JSONResponse(
         {
             "status": "healthy",
@@ -456,6 +519,10 @@ async def health_check():
                 "avatar_generator": "ready",
                     "background_remover": "ready",
                     "channel_manager": "ready",
-                    },
-                }
-    )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )

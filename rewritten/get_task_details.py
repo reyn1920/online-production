@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 Get complete details of the strategic project task.
-"""
+""""""
 
 import json
 import os

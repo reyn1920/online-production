@@ -9,7 +9,8 @@ from .base_monetization import (
     Product,
     ProductCreationError,
     ProductResponse,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,8 @@ class EtsyAPI(BaseMonetizationAPI):
             api_key=api_key,
             base_url="https://openapi.etsy.com / v3",
             rate_limit=10,  # Etsy allows 10 requests per second
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.shop_id = shop_id
         self.access_token = access_token
 
@@ -31,7 +33,8 @@ class EtsyAPI(BaseMonetizationAPI):
         headers = {
             "x - api - key": self.api_key,
             "Content - Type": "application / json",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if self.access_token:
             headers["Authorization"] = f"Bearer {self.access_token}"
@@ -57,7 +60,8 @@ class EtsyAPI(BaseMonetizationAPI):
                 "materials": ["digital"],
                 "shipping_template_id": None,  # Digital products don't need shipping
                 "is_digital": True,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Add category if provided
             if product.category:
@@ -67,7 +71,8 @@ class EtsyAPI(BaseMonetizationAPI):
                 "POST",
                 f"/application / shops/{self.shop_id}/listings",
                 data=listing_data,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             listing = response.json()
 
@@ -84,7 +89,8 @@ class EtsyAPI(BaseMonetizationAPI):
                 product_id=str(listing["listing_id"]),
                 product_url=listing.get("url"),
                 platform_data=listing,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Failed to create Etsy listing: {e}")
@@ -98,13 +104,15 @@ class EtsyAPI(BaseMonetizationAPI):
                 "description": product.description,
                 "price": product.price,
                 "tags": product.tags[:13] if product.tags else [],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request(
                 "PUT",
                 f"/application / shops/{self.shop_id}/listings/{product_id}",
                 data=listing_data,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             listing = response.json()
 
@@ -113,7 +121,8 @@ class EtsyAPI(BaseMonetizationAPI):
                 product_id=product_id,
                 product_url=listing.get("url"),
                 platform_data=listing,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Failed to update Etsy listing {product_id}: {e}")
@@ -124,7 +133,8 @@ class EtsyAPI(BaseMonetizationAPI):
         try:
             self._make_request(
                 "DELETE", f"/application / shops/{self.shop_id}/listings/{product_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return True
         except Exception as e:
             logger.error(f"Failed to delete Etsy listing {product_id}: {e}")
@@ -146,11 +156,13 @@ class EtsyAPI(BaseMonetizationAPI):
                 "limit": min(limit, 100),  # Etsy max limit is 100
                 "offset": offset,
                 "state": "active",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request(
                 "GET", f"/application / shops/{self.shop_id}/listings", params=params
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return response.json().get("results", [])
         except Exception as e:
@@ -164,11 +176,13 @@ class EtsyAPI(BaseMonetizationAPI):
                 "min_created": int(start_date.timestamp()),
                 "max_created": int(end_date.timestamp()),
                 "limit": 100,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request(
                 "GET", f"/application / shops/{self.shop_id}/receipts", params=params
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             receipts = response.json().get("results", [])
 
@@ -183,7 +197,8 @@ class EtsyAPI(BaseMonetizationAPI):
                 "total_revenue": total_revenue,
                 "currency": "USD",
                 "receipts": receipts,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to get Etsy sales data: {e}")
@@ -199,7 +214,8 @@ class EtsyAPI(BaseMonetizationAPI):
             "printables": 69150467,
             "ebooks": 69150467,
             "courses": 69150467,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return category_mapping.get(category.lower(), 69150467)
 
     def _upload_digital_files(self, listing_id: str, file_paths: List[str]):
@@ -228,7 +244,8 @@ class EtsyAPI(BaseMonetizationAPI):
                 "PUT",
                 f"/application / shops/{self.shop_id}/listings/{listing_id}",
                 data={"state": "active"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return response.status_code == 200
         except Exception as e:
             logger.error(f"Failed to activate Etsy listing {listing_id}: {e}")

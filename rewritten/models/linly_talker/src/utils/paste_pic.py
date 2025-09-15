@@ -14,7 +14,8 @@ def paste_pic(
     new_audio_path,
     full_video_path,
     extended_crop=False,
-):
+# BRACKET_SURGEON: disabled
+# ):
     if not os.path.isfile(pic_path):
         raise ValueError("pic_path must be a valid path to video/image file")
     elif pic_path.split(".")[-1] in ["jpg", "png", "jpeg"]:
@@ -46,7 +47,7 @@ def paste_pic(
         crop_frames.append(frame)
 
     if len(crop_info) != 3:
-        print("you didn't crop the image")
+        print("you didn't crop the image")'
         return
     else:
         r_w, r_h = crop_info[0]

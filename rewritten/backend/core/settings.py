@@ -18,14 +18,16 @@ def _cx():
 def ensure_settings_schema() -> None:
     with _cx() as cx:
         cx.execute(
-            """
+            """"""
         CREATE TABLE IF NOT EXISTS settings(
             k TEXT PRIMARY KEY,
                 v TEXT NOT NULL,
                 mtime REAL NOT NULL
-        );
-        """
-        )
+# BRACKET_SURGEON: disabled
+#         );
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
         cx.commit()
 
 
@@ -43,5 +45,6 @@ def set_setting(key: str, value: str) -> None:
         cx.execute(
             "INSERT OR REPLACE INTO settings(k,v,mtime) VALUES(?,?,?)",
             (key, value, time()),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         cx.commit()

@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 System Debug Script for TRAE.AI
 
 This script performs comprehensive system health checks and debugging.
-"""
+""""""
 
 import os
 import sys
@@ -65,7 +65,8 @@ def main():
         "app / dashboard.py",
         "backend / secret_store.py",
         "backend / task_queue_manager.py",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for file_path in critical_files:
         if Path(file_path).exists():

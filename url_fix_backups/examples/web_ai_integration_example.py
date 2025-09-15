@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Web AI Integration Example
 Demonstrates how to use web AI platforms for avatar generation and chat completion
-"""
+""""""
 
 import asyncio
 import json
@@ -34,15 +34,17 @@ class WebAIIntegration:
             "failed_requests": 0,
             "platform_usage": {},
             "session_start": datetime.now(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def generate_avatar_prompt(
         self,
         description: str,
         style: str = "realistic",
         platform: WebAIPlatform = WebAIPlatform.CHATGPT,
-    ) -> str:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> str:
+        """"""
         Generate an optimized prompt for avatar creation
 
         Args:
@@ -52,7 +54,7 @@ class WebAIIntegration:
 
         Returns:
             Optimized prompt for avatar generation
-        """
+        """"""
         try:
             print(f"🎨 Generating avatar prompt using {platform.value}...")
 
@@ -60,17 +62,21 @@ class WebAIIntegration:
                 {
                     "role": "system",
                     "content": "You are an expert at creating detailed prompts for AI image generation. Create optimized prompts that produce high - quality avatar images.",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "role": "user",
-                    "content": f"Create a detailed prompt for generating a {style} avatar with this description: {description}. Include specific details about lighting, composition, \
-    and quality modifiers that work well with AI image generators.",
-                },
-            ]
+                    "content": f"Create a detailed prompt for generating a {style} avatar with this description: {description}. Include specific details about lighting, composition, \"
+#     and quality modifiers that work well with AI image generators.",
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
 
             response = await self.web_ai_client.chat_completion(
                 messages=messages, platform=platform
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self._update_stats(platform, response.success)
 
@@ -88,8 +94,9 @@ class WebAIIntegration:
 
     async def chat_with_platform(
         self, messages: List[Dict], platform: WebAIPlatform = WebAIPlatform.CHATGPT
-    ) -> Dict:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
+        """"""
         Send chat completion request to specified platform
 
         Args:
@@ -98,13 +105,14 @@ class WebAIIntegration:
 
         Returns:
             Response dictionary with success status and content
-        """
+        """"""
         try:
             print(f"💬 Sending chat request to {platform.value}...")
 
             response = await self.web_ai_client.chat_completion(
                 messages=messages, platform=platform
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self._update_stats(platform, response.success)
 
@@ -115,14 +123,16 @@ class WebAIIntegration:
                     "content": response.content,
                     "platform": platform.value,
                     "response_time": response.response_time,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 print(f"❌ Chat request failed: {response.error}")
                 return {
                     "success": False,
                     "error": response.error,
                     "platform": platform.value,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             print(f"❌ Chat request exception: {e}")
@@ -131,8 +141,9 @@ class WebAIIntegration:
 
     async def multi_platform_comparison(
         self, prompt: str, platforms: List[WebAIPlatform] = None
-    ) -> Dict:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
+        """"""
         Compare responses from multiple AI platforms
 
         Args:
@@ -141,13 +152,14 @@ class WebAIIntegration:
 
         Returns:
             Dictionary with responses from each platform
-        """
+        """"""
         if platforms is None:
             platforms = [
                 WebAIPlatform.CHATGPT,
                 WebAIPlatform.GEMINI,
                 WebAIPlatform.CLAUDE,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
         print(f"🔄 Comparing responses across {len(platforms)} platforms...")
 
@@ -170,12 +182,13 @@ class WebAIIntegration:
                     "success": False,
                     "error": str(e),
                     "platform": platform.value,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return results
 
     async def generate_avatar_workflow(self, description: str, style: str = "realistic") -> Dict:
-        """
+        """"""
         Complete avatar generation workflow
 
         Args:
@@ -184,7 +197,7 @@ class WebAIIntegration:
 
         Returns:
             Dictionary with workflow results
-        """
+        """"""
         print(f"🎭 Starting avatar generation workflow...")
 
         workflow_results = {
@@ -193,18 +206,21 @@ class WebAIIntegration:
             "steps": {},
             "final_prompt": None,
             "success": False,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Step 1: Generate optimized prompt
             print("Step 1: Generating optimized prompt...")
             optimized_prompt = await self.generate_avatar_prompt(
                 description, style, WebAIPlatform.CHATGPT
-            )
+# BRACKET_SURGEON: disabled
+#             )
             workflow_results["steps"]["prompt_generation"] = {
                 "success": True,
                 "prompt": optimized_prompt,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             workflow_results["final_prompt"] = optimized_prompt
 
             # Step 2: Validate prompt with another platform
@@ -212,14 +228,17 @@ class WebAIIntegration:
             validation_messages = [
                 {
                     "role": "user",
-                    "content": f"Rate this AI image generation prompt on a scale of 1 - 10 \
-    and suggest improvements: {optimized_prompt}",
-                }
-            ]
+                    "content": f"Rate this AI image generation prompt on a scale of 1 - 10 \"
+#     and suggest improvements: {optimized_prompt}",
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ]
 
             validation_response = await self.chat_with_platform(
                 validation_messages, WebAIPlatform.GEMINI
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             workflow_results["steps"]["prompt_validation"] = validation_response
 
@@ -229,12 +248,15 @@ class WebAIIntegration:
                 {
                     "role": "user",
                     "content": f"Create 2 alternative prompts for this avatar: {description} (style: {style}). Make them different but equally detailed.",
-                }
-            ]
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ]
 
             alternatives_response = await self.chat_with_platform(
                 alternative_messages, WebAIPlatform.CLAUDE
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             workflow_results["steps"]["alternative_prompts"] = alternatives_response
 
@@ -262,7 +284,8 @@ class WebAIIntegration:
                 "requests": 0,
                 "successes": 0,
                 "failures": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         self.session_stats["platform_usage"][platform_name]["requests"] += 1
         if success:
@@ -280,13 +303,16 @@ class WebAIIntegration:
             "success_rate": (
                 self.session_stats["successful_requests"]
                 / max(self.session_stats["total_requests"], 1)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             * 100,
             "platform_usage": self.session_stats["platform_usage"],
             "requests_per_minute": (
                 self.session_stats["total_requests"] / max(session_duration / 60, 1)
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add platform health checks
         health_checks = {}
@@ -345,7 +371,8 @@ async def main():
 
         avatar_result = await integration.generate_avatar_workflow(
             "A friendly robot with blue eyes and a warm smile", "cartoon"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Avatar Workflow: {json.dumps(avatar_result, indent = 2)}")
 
         # Test 4: Multi - platform comparison
@@ -354,7 +381,8 @@ async def main():
 
         comparison_result = await integration.multi_platform_comparison(
             "What makes a good avatar design?"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Platform Comparison: {json.dumps(comparison_result, indent = 2)}")
 
         # Test 5: Session analytics

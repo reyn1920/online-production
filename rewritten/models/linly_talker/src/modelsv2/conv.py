@@ -6,7 +6,8 @@ class Conv2d(nn.Module):
         super().__init__(*args, **kwargs)
         self.conv_block = nn.Sequential(
             nn.Conv2d(cin, cout, kernel_size, stride, padding), nn.BatchNorm2d(cout)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.act = nn.ReLU()
         self.residual = residual
 
@@ -22,7 +23,8 @@ class nonorm_Conv2d(nn.Module):
         super().__init__(*args, **kwargs)
         self.conv_block = nn.Sequential(
             nn.Conv2d(cin, cout, kernel_size, stride, padding),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.act = nn.LeakyReLU(0.01, inplace=True)
 
     def forward(self, x):
@@ -36,7 +38,8 @@ class Conv2dTranspose(nn.Module):
         self.conv_block = nn.Sequential(
             nn.ConvTranspose2d(cin, cout, kernel_size, stride, padding, output_padding),
             nn.BatchNorm2d(cout),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.act = nn.ReLU()
 
     def forward(self, x):

@@ -29,7 +29,7 @@ def init_database():
 
     # Business opportunities table
     cursor.execute(
-        """
+        """"""
         CREATE TABLE IF NOT EXISTS market_opportunities (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
                 trend_topic TEXT NOT NULL,
@@ -40,13 +40,15 @@ def init_database():
                 analysis_data TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 status TEXT DEFAULT 'identified'
-        )
-    """
-    )
+# BRACKET_SURGEON: disabled
+#         )
+    """"""
+# BRACKET_SURGEON: disabled
+#     )
 
     # Active business instances table
     cursor.execute(
-        """
+        """"""
         CREATE TABLE IF NOT EXISTS active_businesses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
                 business_type TEXT NOT NULL,
@@ -58,13 +60,15 @@ def init_database():
                 last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 performance_metrics TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """
-    )
+# BRACKET_SURGEON: disabled
+#         )
+    """"""
+# BRACKET_SURGEON: disabled
+#     )
 
     # Content repurposing queue
     cursor.execute(
-        """
+        """"""
         CREATE TABLE IF NOT EXISTS content_queue (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
                 source_content TEXT NOT NULL,
@@ -75,13 +79,15 @@ def init_database():
                 generated_content TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (business_id) REFERENCES active_businesses (id)
-        )
-    """
-    )
+# BRACKET_SURGEON: disabled
+#         )
+    """"""
+# BRACKET_SURGEON: disabled
+#     )
 
     # Sales funnel tracking
     cursor.execute(
-        """
+        """"""
         CREATE TABLE IF NOT EXISTS sales_funnels (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
                 business_id INTEGER,
@@ -91,9 +97,11 @@ def init_database():
                 optimization_actions TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (business_id) REFERENCES active_businesses (id)
-        )
-    """
-    )
+# BRACKET_SURGEON: disabled
+#         )
+    """"""
+# BRACKET_SURGEON: disabled
+#     )
 
     conn.commit()
     conn.close()
@@ -151,7 +159,8 @@ class TrendAnalysisAgent:
             "https://trends.google.com / trends / api",
             "https://api.reddit.com / r/entrepreneur",
             "https://api.twitter.com / 2/tweets / search",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def get_trending_topics(self) -> List[str]:
         """Fetch current trending topics from various sources"""
@@ -168,7 +177,8 @@ class TrendAnalysisAgent:
             "cryptocurrency education",
             "home fitness equipment",
             "eco - friendly products",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         logger.info(f"Identified {len(trending_topics)} trending topics")
         return trending_topics
@@ -195,9 +205,11 @@ class TrendAnalysisAgent:
                     "search_volume": hash(topic) % 10000 + 1000,
                     "social_mentions": hash(topic) % 5000 + 500,
                     "market_size": f"${hash(topic) % 1000000 + 100000}",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 created_at=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             opportunities.append(opportunity)
 
@@ -236,7 +248,8 @@ class ContentRepurposingAgent:
             "ebook_chapter",
             "presentation_slides",
             "email_sequence",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def repurpose_content(
         self, source_content: str, target_formats: List[str]
@@ -261,7 +274,8 @@ class ContentRepurposingAgent:
             "paddle": "Professional B2B focused content",
             "sendowl": "Direct - to - consumer appeal",
             "gumroad": "Creator - focused messaging",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         optimization = platform_optimizations.get(platform, "Generic optimization")
         return f"{content} [{optimization}]"
@@ -277,7 +291,8 @@ class SalesFunnelAgent:
             "consideration",
             "purchase",
             "retention",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def analyze_funnel_performance(self, business_id: int) -> Dict[str, float]:
         """Analyze conversion rates at each funnel stage"""
@@ -288,7 +303,8 @@ class SalesFunnelAgent:
             "consideration": 0.45,
             "purchase": 0.25,
             "retention": 0.80,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info(f"Analyzed funnel performance for business {business_id}")
         return performance
@@ -300,24 +316,29 @@ class SalesFunnelAgent:
                 "Improve SEO",
                 "Increase social media presence",
                 "Content marketing",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "interest": [
                 "Better product descriptions",
                 "Add customer testimonials",
                 "Improve visuals",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "consideration": [
                 "Offer free samples",
                 "Create comparison charts",
                 "Add urgency",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "purchase": ["Simplify checkout", "Offer payment plans", "Reduce friction"],
             "retention": [
                 "Follow - up emails",
                 "Loyalty program",
                 "Upsell opportunities",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         return optimizations.get(stage, ["General optimization"])
 
@@ -345,12 +366,13 @@ class MasterOrchestrator:
 
         for opp in opportunities:
             cursor.execute(
-                """
+                """"""
                 INSERT INTO market_opportunities
                 (trend_topic, niche, monetization_potential, competition_level,
-                    recommended_business_models, analysis_data)
+# BRACKET_SURGEON: disabled
+#                     recommended_business_models, analysis_data)
                 VALUES (?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     opp.trend_topic,
                     opp.niche,
@@ -358,8 +380,10 @@ class MasterOrchestrator:
                     opp.competition_level,
                     json.dumps(opp.recommended_business_models),
                     json.dumps(opp.analysis_data),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
         conn.commit()
         conn.close()
@@ -373,25 +397,28 @@ class MasterOrchestrator:
             niche=niche,
             platform=platform,
             created_at=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Store in database
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT INTO active_businesses
             (business_type, niche, platform, performance_metrics)
             VALUES (?, ?, ?, ?)
-        """,
+        ""","""
             (
                 business.business_type,
                 business.niche,
                 business.platform,
                 json.dumps(business.performance_metrics or {}),
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         business_id = cursor.lastrowid
         conn.commit()
@@ -410,7 +437,8 @@ class MasterOrchestrator:
             # Analyze funnel performance
             funnel_performance = await self.sales_funnel_manager.analyze_funnel_performance(
                 business_id
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Find weakest stage
             weakest_stage = min(funnel_performance.items(), key=lambda x: x[1])[0]
@@ -418,13 +446,15 @@ class MasterOrchestrator:
             # Get optimization recommendations
             optimizations = await self.sales_funnel_manager.optimize_funnel_stage(
                 business_id, weakest_stage
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             optimization_results[business_id] = {
                 "funnel_performance": funnel_performance,
                 "weakest_stage": weakest_stage,
                 "optimizations": optimizations,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return optimization_results
 
@@ -447,13 +477,14 @@ class MasterOrchestrator:
 
         # Get recent opportunities
         cursor.execute(
-            """
+            """"""
             SELECT trend_topic, monetization_potential
             FROM market_opportunities
             ORDER BY created_at DESC
             LIMIT 5
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
         recent_opportunities = cursor.fetchall()
 
         conn.close()
@@ -464,7 +495,8 @@ class MasterOrchestrator:
             "total_products": total_products,
             "recent_opportunities": recent_opportunities,
             "last_updated": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # FastAPI app setup
@@ -472,7 +504,8 @@ app = FastAPI(
     title="Master Orchestrator AI CEO",
     description="Central intelligence system for automated business management",
     version="1.0.0",
-)
+# BRACKET_SURGEON: disabled
+# )
 
 app.add_middleware(
     CORSMiddleware,
@@ -480,7 +513,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Global orchestrator instance
 orchestrator = MasterOrchestrator()
@@ -526,7 +560,8 @@ async def analyze_market():
             "status": "success",
             "opportunities_count": len(opportunities),
             "opportunities": [asdict(opp) for opp in opportunities[:10]],  # Return top 10
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         logger.error(f"Error analyzing market: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -538,12 +573,14 @@ async def launch_business(request: LaunchBusinessRequest):
     try:
         business_id = await orchestrator.launch_business_model(
             request.business_type.value, request.niche, request.platform.value
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return {
             "status": "success",
             "business_id": business_id,
             "message": f"Launched {request.business_type.value} business for {request.niche}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         logger.error(f"Error launching business: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -558,7 +595,8 @@ async def optimize_businesses():
             "status": "success",
             "optimized_count": len(results),
             "results": results,
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         logger.error(f"Error optimizing businesses: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -583,13 +621,14 @@ async def get_active_businesses():
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             SELECT id, business_type, niche, platform, status,
                 revenue_generated, products_created, created_at
             FROM active_businesses
             ORDER BY created_at DESC
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         businesses = []
         for row in cursor.fetchall():
@@ -603,8 +642,10 @@ async def get_active_businesses():
                     "revenue_generated": row[5],
                     "products_created": row[6],
                     "created_at": row[7],
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         conn.close()
 

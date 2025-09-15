@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Agentic Protocol Implementation
 Base44 Agentic Protocol with Intelligent Mode Switching and Failsafe Mechanisms
 
@@ -8,7 +8,7 @@ System Constitution Adherence:
 - Zero - Cost Stack: Uses only free, open - source tools and APIs
 - Additive Evolution: Builds upon existing systems without breaking changes
 - Secure Design: Implements robust security and error handling
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -32,8 +32,12 @@ logging.basicConfig(
         handlers=[
         logging.FileHandler("logs / agentic_protocol.log"),
             logging.StreamHandler(),
-            ],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -156,7 +160,7 @@ class AgenticProtocol:
 
         with sqlite3.connect(self.db_path) as conn:
             conn.executescript(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS agents (
                     id TEXT PRIMARY KEY,
                         name TEXT NOT NULL,
@@ -166,7 +170,8 @@ class AgenticProtocol:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         last_activity TIMESTAMP,
                         config TEXT
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS tasks (
                     id TEXT PRIMARY KEY,
@@ -183,7 +188,8 @@ class AgenticProtocol:
                         error TEXT,
                         retry_count INTEGER DEFAULT 0,
                         FOREIGN KEY (agent_id) REFERENCES agents (id)
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS failsafe_events (
                     id TEXT PRIMARY KEY,
@@ -195,7 +201,8 @@ class AgenticProtocol:
                         resolved BOOLEAN DEFAULT FALSE,
                         resolution_time TIMESTAMP,
                         actions_taken TEXT
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS metrics (
                     agent_id TEXT PRIMARY KEY,
@@ -207,9 +214,12 @@ class AgenticProtocol:
                         error_rate REAL DEFAULT 0.0,
                         efficiency_score REAL DEFAULT 100.0,
                         FOREIGN KEY (agent_id) REFERENCES agents (id)
-                );
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 );
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _start_background_processes(self):
@@ -242,12 +252,12 @@ class AgenticProtocol:
                 # Store in database
                 with sqlite3.connect(self.db_path) as conn:
                     conn.execute(
-                        "INSERT OR REPLACE INTO agents (id,
+                        "INSERT OR REPLACE INTO agents (id,"
     name,
     type,
     mode,
     status,
-    config) VALUES (?, ?, ?, ?, ?, ?)",
+    config) VALUES (?, ?, ?, ?, ?, ?)","
                             (
                             agent.id,
                                 agent.name,
@@ -255,14 +265,19 @@ class AgenticProtocol:
                                 agent.mode.value,
                                 agent.status.value,
                                 json.dumps(agent.config),
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Initialize metrics
                     conn.execute(
                         "INSERT OR REPLACE INTO metrics (agent_id) VALUES (?)",
                             (agent.id,),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 logger.info(f"Agent {agent.id} registered successfully")
                 return True
@@ -290,7 +305,9 @@ class AgenticProtocol:
                 with sqlite3.connect(self.db_path) as conn:
                     conn.execute(
                         "UPDATE agents SET status = 'offline' WHERE id = ?", (agent_id,)
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 logger.info(f"Agent {agent_id} unregistered successfully")
                 return True
@@ -316,13 +333,13 @@ class AgenticProtocol:
                 # Store in database
                 with sqlite3.connect(self.db_path) as conn:
                     conn.execute(
-                        "INSERT INTO tasks (id,
+                        "INSERT INTO tasks (id,"
     agent_id,
     task_type,
     priority,
     payload,
     status,
-    scheduled_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    scheduled_at) VALUES (?, ?, ?, ?, ?, ?, ?)","
                             (
                             task.id,
                                 task.agent_id,
@@ -331,8 +348,11 @@ class AgenticProtocol:
                                 json.dumps(task.payload),
                                 task.status,
                                 task.scheduled_at,
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 logger.info(f"Task {task.id} submitted for agent {task.agent_id}")
                 return True
@@ -365,14 +385,17 @@ class AgenticProtocol:
                     if not agent:
                         logger.error(
                             f"Agent {task.agent_id} not found for task {task.id}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         continue
 
                     # Check agent availability
                     if (
                         agent.status != AgentStatus.ACTIVE
                         and agent.status != AgentStatus.IDLE
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         # Re - queue task
                         self.task_queue.append(task)
                         time.sleep(1)
@@ -397,7 +420,9 @@ class AgenticProtocol:
                 conn.execute(
                     "UPDATE tasks SET status = 'running', started_at = ? WHERE id = ?",
                         (task.started_at, task.id),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             # Execute task
             result = agent.execute_task(task)
@@ -413,7 +438,9 @@ class AgenticProtocol:
                     agent.id,
                         success = True,
                         response_time=(task.completed_at - task.started_at).total_seconds(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 logger.info(f"Task {task.id} completed successfully")
 
@@ -430,23 +457,31 @@ class AgenticProtocol:
                     task.status = "pending"
                     task.scheduled_at = datetime.now() + timedelta(
                         minutes = task.retry_count * 5
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     with self.lock:
                         self.task_queue.append(task)
                     logger.warning(
-                        f"Task {task.id} failed,
-    retrying ({task.retry_count}/{task.max_retries})"
-                    )
+                        f"Task {task.id} failed,"
+    retrying ({task.retry_count}/{task.max_retries})""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     logger.error(
                         f"Task {task.id} failed permanently after {task.max_retries} retries"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     self._trigger_failsafe(
                         agent.id,
                             FailsafeLevel.WARNING,
                             "task_failure",
                             f"Task {task.id} failed permanently",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             # Update database
             with sqlite3.connect(self.db_path) as conn:
@@ -459,8 +494,11 @@ class AgenticProtocol:
                             task.error,
                             task.retry_count,
                             task.id,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         except Exception as e:
             logger.error(f"Error executing task {task.id}: {e}")
@@ -468,7 +506,9 @@ class AgenticProtocol:
             task.error = str(e)
             self._trigger_failsafe(
                 agent.id, FailsafeLevel.CRITICAL, "task_execution_error", str(e)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _monitor_health(self):
@@ -485,7 +525,9 @@ class AgenticProtocol:
                                     FailsafeLevel.CAUTION,
                                     "unresponsive",
                                     "Agent not responding to health checks",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                         # Check resource usage
                         resource_usage = agent.get_resource_usage()
@@ -495,7 +537,9 @@ class AgenticProtocol:
                                     FailsafeLevel.WARNING,
                                     "high_cpu",
                                     f"CPU usage: {resource_usage['cpu_percent']}%",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                         if resource_usage.get("memory_percent", 0) > 90:
                             self._trigger_failsafe(
@@ -503,7 +547,9 @@ class AgenticProtocol:
                                     FailsafeLevel.WARNING,
                                     "high_memory",
                                     f"Memory usage: {resource_usage['memory_percent']}%",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                 time.sleep(30)  # Check every 30 seconds
 
@@ -522,7 +568,9 @@ class AgenticProtocol:
                     for e in self.failsafe_events
                     if not e.resolved
                     and e.level in [FailsafeLevel.CRITICAL, FailsafeLevel.EMERGENCY]
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
                 for event in critical_events:
                     if datetime.now() - event.timestamp > timedelta(minutes = 5):
@@ -552,8 +600,11 @@ class AgenticProtocol:
                                         metrics.uptime_percentage,
                                         metrics.efficiency_score,
                                         agent_id,
-                                        ),
-                                    )
+# BRACKET_SURGEON: disabled
+#                                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                 time.sleep(300)  # Collect every 5 minutes
 
@@ -564,27 +615,34 @@ class AgenticProtocol:
 
     def _update_agent_metrics(
         self, agent_id: str, success: bool, response_time: float = 0.0
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Update agent performance metrics"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 if success:
                     conn.execute(
-                        "UPDATE metrics SET tasks_completed = tasks_completed + 1,
-    average_response_time = (average_response_time + ?) / 2 WHERE agent_id = ?",
+                        "UPDATE metrics SET tasks_completed = tasks_completed + 1,"
+    average_response_time = (average_response_time + ?) / 2 WHERE agent_id = ?","
                             (response_time, agent_id),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 else:
                     conn.execute(
                         "UPDATE metrics SET tasks_failed = tasks_failed + 1 WHERE agent_id = ?",
                             (agent_id,),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # Calculate error rate
                 cursor = conn.execute(
                     "SELECT tasks_completed, tasks_failed FROM metrics WHERE agent_id = ?",
                         (agent_id,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 row = cursor.fetchone()
                 if row:
                     completed, failed = row
@@ -594,7 +652,9 @@ class AgenticProtocol:
                     conn.execute(
                         "UPDATE metrics SET error_rate = ? WHERE agent_id = ?",
                             (error_rate, agent_id),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
         except Exception as e:
             logger.error(f"Error updating metrics for agent {agent_id}: {e}")
@@ -602,7 +662,8 @@ class AgenticProtocol:
 
     def _trigger_failsafe(
         self, agent_id: str, level: FailsafeLevel, event_type: str, description: str
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Trigger a failsafe event"""
         try:
             event = FailsafeEvent(
@@ -613,19 +674,21 @@ class AgenticProtocol:
                     description = description,
                     timestamp = datetime.now(),
                     actions_taken=[],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.failsafe_events.append(event)
 
             # Store in database
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    "INSERT INTO failsafe_events (id,
+                    "INSERT INTO failsafe_events (id,"
     level,
     agent_id,
     event_type,
     description,
-    timestamp) VALUES (?, ?, ?, ?, ?, ?)",
+    timestamp) VALUES (?, ?, ?, ?, ?, ?)","
                         (
                         event.id,
                             event.level.value,
@@ -633,8 +696,11 @@ class AgenticProtocol:
                             event.event_type,
                             event.description,
                             event.timestamp,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             # Take immediate action based on level
             self._handle_failsafe_event(event)
@@ -669,7 +735,9 @@ class AgenticProtocol:
                                 FailsafeLevel.CRITICAL,
                                 "recovery_failed",
                                 "Agent recovery failed",
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
             elif event.level == FailsafeLevel.CRITICAL:
                 # Restart agent
@@ -687,7 +755,9 @@ class AgenticProtocol:
                                 FailsafeLevel.EMERGENCY,
                                 "restart_failed",
                                 "Agent restart failed",
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
             elif event.level == FailsafeLevel.EMERGENCY:
                 # Switch to manual mode and alert
@@ -711,8 +781,11 @@ class AgenticProtocol:
                             event.resolution_time,
                             json.dumps(actions),
                             event.id,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         except Exception as e:
             logger.error(f"Error handling failsafe event {event.id}: {e}")
@@ -734,7 +807,9 @@ class AgenticProtocol:
                 new_level,
                 f"escalated_{event.event_type}",
                 f"Escalated from {event.level.value}: {event.description}",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def get_system_status(self) -> Dict[str, Any]:
@@ -744,7 +819,8 @@ class AgenticProtocol:
                 agent_statuses = {
                     agent_id: agent.status.value
                     for agent_id, agent in self.agents.items()
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 return {
                     "system_mode": self.system_mode.value,
@@ -754,19 +830,25 @@ class AgenticProtocol:
                             a
                             for a in self.agents.values()
                             if a.status == AgentStatus.ACTIVE
-                        ]
-                    ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# BRACKET_SURGEON: disabled
+#                     ),
                         "pending_tasks": len(self.task_queue),
                         "unresolved_failsafes": len(
                         [e for e in self.failsafe_events if not e.resolved]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "agent_statuses": agent_statuses,
                         "uptime": (
                         time.time() - self.start_time
                         if hasattr(self, "start_time")
                         else 0
-                    ),
-                        }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                         }
         except Exception as e:
             logger.error(f"Error getting system status: {e}")
             return {"error": str(e)}
@@ -792,7 +874,8 @@ class BaseAgent:
 
     def __init__(
         self, agent_id: str, name: str, agent_type: str, config: Dict[str, Any] = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.id = agent_id
         self.name = name
         self.agent_type = agent_type
@@ -817,7 +900,9 @@ class BaseAgent:
             # Simple health check - can be overridden by subclasses
             return (
                 self.status != AgentStatus.ERROR and self.status != AgentStatus.OFFLINE
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except Exception:
             return False
 
@@ -928,7 +1013,8 @@ class ContentCreationAgent(BaseAgent):
             "title": "Optimized title",
                 "description": "Optimized description",
                 "tags": ["tag1", "tag2"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
 class MarketingAgent(BaseAgent):
@@ -1018,7 +1104,9 @@ if __name__ == "__main__":
             priority = TaskPriority.HIGH,
             payload={"topic": "AI in 2024", "duration": 300},
             created_at = datetime.now(),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     protocol.submit_task(test_task)
 

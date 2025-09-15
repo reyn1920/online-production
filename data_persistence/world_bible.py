@@ -26,7 +26,7 @@ class WorldBible:
 
             # Niches table - core niche tracking
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS niches (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT UNIQUE NOT NULL,
@@ -39,13 +39,17 @@ class WorldBible:
                         market_size_estimate INTEGER DEFAULT 0,
                         competition_level TEXT DEFAULT 'unknown',
                         metadata TEXT  -- JSON field for additional data
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Trends table - trend data from various sources
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS trends (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         niche_id INTEGER,
@@ -57,13 +61,17 @@ class WorldBible:
                         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         data_snapshot TEXT,  -- JSON field for raw data
                     FOREIGN KEY (niche_id) REFERENCES niches (id)
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Market analysis table - comprehensive market data
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS market_analysis (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         niche_id INTEGER,
@@ -77,13 +85,17 @@ class WorldBible:
                     opportunities TEXT,  -- JSON array
                     analysis_data TEXT,  -- JSON field for detailed analysis
                     FOREIGN KEY (niche_id) REFERENCES niches (id)
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Content opportunities table - specific content ideas
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS content_opportunities (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         niche_id INTEGER,
@@ -98,13 +110,17 @@ class WorldBible:
                         status TEXT DEFAULT 'identified',
                         metadata TEXT,  -- JSON field
                     FOREIGN KEY (niche_id) REFERENCES niches (id)
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Competitor analysis table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS competitors (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         niche_id INTEGER,
@@ -119,13 +135,17 @@ class WorldBible:
                     last_analyzed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         analysis_data TEXT,  -- JSON field
                     FOREIGN KEY (niche_id) REFERENCES niches (id)
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Revenue streams table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS revenue_streams (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         niche_id INTEGER,
@@ -138,13 +158,17 @@ class WorldBible:
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         metadata TEXT,  -- JSON field
                     FOREIGN KEY (niche_id) REFERENCES niches (id)
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Analytics snapshots table - periodic data snapshots
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS analytics_snapshots (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         niche_id INTEGER,
@@ -157,36 +181,57 @@ class WorldBible:
                     combined_score REAL DEFAULT 0.0,
                         trend_direction TEXT DEFAULT 'stable',  -- 'rising', 'falling', 'stable'
                     FOREIGN KEY (niche_id) REFERENCES niches (id)
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Create indexes for better performance
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_niches_name ON niches (name)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_niches_category ON niches (category)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_niches_viability ON niches (viability_score DESC)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_trends_niche_source ON trends (niche_id,
-    source)"
-            )
+                "CREATE INDEX IF NOT EXISTS idx_trends_niche_source ON trends (niche_id,"
+# BRACKET_SURGEON: disabled
+#     source)""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_trends_timestamp ON trends (timestamp DESC)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_content_opportunities_niche ON content_opportunities (niche_id)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_competitors_niche ON competitors (niche_id)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_analytics_snapshots_date ON analytics_snapshots (snapshot_date DESC)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.commit()
             logger.info("Database initialized successfully")
@@ -219,18 +264,21 @@ class WorldBible:
             description: str = "",
             category: str = "",
             metadata: Dict[str, Any] = None,
-            ) -> int:
+# BRACKET_SURGEON: disabled
+#             ) -> int:
         """Create a new niche entry"""
         with self._get_connection() as conn:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO niches (name, description, category, metadata)
                 VALUES (?, ?, ?, ?)
-            """,
+            ""","""
                 (name, description, category, json.dumps(metadata or {})),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             niche_id = cursor.lastrowid
             conn.commit()
@@ -277,7 +325,8 @@ class WorldBible:
             viability_score: float,
             market_size_estimate: int = None,
             competition_level: str = None,
-            ) -> bool:
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
         """Update niche viability metrics"""
         with self._get_connection() as conn:
             cursor = conn.cursor()
@@ -296,13 +345,15 @@ class WorldBible:
             params.append(niche_id)
 
             cursor.execute(
-                f"""
+                f""""""
                 UPDATE niches
                 SET {', '.join(update_fields)}
                 WHERE id = ?
-            """,
+            ""","""
                 params,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             success = cursor.rowcount > 0
             conn.commit()
@@ -354,18 +405,21 @@ class WorldBible:
             volume: int = 0,
             growth_rate: float = 0.0,
             data_snapshot: Dict[str, Any] = None,
-            ) -> int:
+# BRACKET_SURGEON: disabled
+#             ) -> int:
         """Record trend data for a niche"""
         with self._get_connection() as conn:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO trends (
                     niche_id, source, keyword, trend_score, volume,
                         growth_rate, data_snapshot
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            ""","""
                 (
                     niche_id,
                         source,
@@ -374,8 +428,11 @@ class WorldBible:
                         volume,
                         growth_rate,
                         json.dumps(data_snapshot or {}),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             trend_id = cursor.lastrowid
             conn.commit()
@@ -390,10 +447,10 @@ class WorldBible:
         with self._get_connection() as conn:
             cursor = conn.cursor()
 
-            query = f"""
+            query = f""""""
                 SELECT * FROM trends
                 WHERE niche_id = ? AND timestamp >= datetime('now', '-{days_back} days')
-            """
+            """"""
 
             params = [niche_id]
 
@@ -428,19 +485,22 @@ class WorldBible:
             risk_factors: List[str] = None,
             opportunities: List[str] = None,
             analysis_data: Dict[str, Any] = None,
-            ) -> int:
+# BRACKET_SURGEON: disabled
+#             ) -> int:
         """Record market analysis for a niche"""
         with self._get_connection() as conn:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO market_analysis (
                     niche_id, total_addressable_market, serviceable_addressable_market,
                         competition_density, entry_barriers, monetization_potential,
                         risk_factors, opportunities, analysis_data
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ""","""
                 (
                     niche_id,
                         tam,
@@ -451,8 +511,11 @@ class WorldBible:
                         json.dumps(risk_factors or []),
                         json.dumps(opportunities or []),
                         json.dumps(analysis_data or {}),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             analysis_id = cursor.lastrowid
             conn.commit()
@@ -466,14 +529,16 @@ class WorldBible:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 SELECT * FROM market_analysis
                 WHERE niche_id = ?
                 ORDER BY analysis_date DESC
                 LIMIT 1
-            """,
+            ""","""
                 (niche_id,),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             row = cursor.fetchone()
 
@@ -482,10 +547,14 @@ class WorldBible:
                 analysis["risk_factors"] = json.loads(analysis["risk_factors"] or "[]")
                 analysis["opportunities"] = json.loads(
                     analysis["opportunities"] or "[]"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 analysis["analysis_data"] = json.loads(
                     analysis["analysis_data"] or "{}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return analysis
 
             return None
@@ -504,18 +573,21 @@ class WorldBible:
             difficulty_score: float = 0.0,
             monetization_potential: float = 0.0,
             metadata: Dict[str, Any] = None,
-            ) -> int:
+# BRACKET_SURGEON: disabled
+#             ) -> int:
         """Add a content opportunity"""
         with self._get_connection() as conn:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO content_opportunities (
                     niche_id, content_type, title, description, target_keywords,
                         estimated_demand, difficulty_score, monetization_potential, metadata
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ""","""
                 (
                     niche_id,
                         content_type,
@@ -526,8 +598,11 @@ class WorldBible:
                         difficulty_score,
                         monetization_potential,
                         json.dumps(metadata or {}),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             opportunity_id = cursor.lastrowid
             conn.commit()
@@ -563,7 +638,9 @@ class WorldBible:
                 opportunity = dict(row)
                 opportunity["target_keywords"] = json.loads(
                     opportunity["target_keywords"] or "[]"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 opportunity["metadata"] = json.loads(opportunity["metadata"] or "{}")
                 opportunities.append(opportunity)
 
@@ -582,18 +659,21 @@ class WorldBible:
             youtube_data: Dict[str, Any] = None,
             combined_score: float = 0.0,
             trend_direction: str = "stable",
-            ) -> int:
+# BRACKET_SURGEON: disabled
+#             ) -> int:
         """Create an analytics snapshot"""
         with self._get_connection() as conn:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO analytics_snapshots (
                     niche_id, google_trends_data, reddit_data, github_data,
                         arxiv_data, youtube_data, combined_score, trend_direction
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ""","""
                 (
                     niche_id,
                         json.dumps(google_trends_data or {}),
@@ -603,8 +683,11 @@ class WorldBible:
                         json.dumps(youtube_data or {}),
                         combined_score,
                         trend_direction,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             snapshot_id = cursor.lastrowid
             conn.commit()
@@ -631,14 +714,16 @@ class WorldBible:
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT * FROM analytics_snapshots
                 WHERE niche_id = ?
                 ORDER BY snapshot_date DESC
                 LIMIT 1
-            """,
+            ""","""
                 (niche_id,),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             snapshot_row = cursor.fetchone()
             latest_snapshot = None
@@ -651,7 +736,9 @@ class WorldBible:
                         "github_data",
                         "arxiv_data",
                         "youtube_data",
-                        ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]:
                     latest_snapshot[field] = json.loads(latest_snapshot[field] or "{}")
 
         return {
@@ -661,7 +748,8 @@ class WorldBible:
                 "content_opportunities": content_opportunities,
                 "latest_snapshot": latest_snapshot,
                 "dashboard_generated": datetime.utcnow().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def get_top_niches(self, limit: int = 10) -> List[Dict[str, Any]]:
@@ -679,14 +767,18 @@ class WorldBible:
             # Clean old trends
             cursor.execute(
                 "DELETE FROM trends WHERE timestamp < ?", (cutoff_date.isoformat(),)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             trends_deleted = cursor.rowcount
 
             # Clean old analytics snapshots
             cursor.execute(
                 "DELETE FROM analytics_snapshots WHERE snapshot_date < ?",
                     (cutoff_date.isoformat(),),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             snapshots_deleted = cursor.rowcount
 
             conn.commit()
@@ -695,4 +787,5 @@ class WorldBible:
                 "trends_deleted": trends_deleted,
                     "snapshots_deleted": snapshots_deleted,
                     "cutoff_date": cutoff_date.isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }

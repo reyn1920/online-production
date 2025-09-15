@@ -10,7 +10,8 @@ from .net_s3fd import s3fd
 
 models_urls = {
     "s3fd": "https://www.adrianbulat.com/downloads/python - fan/s3fd - 619a316812.pth",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 class SFDDetector(FaceDetector):
@@ -21,11 +22,13 @@ class SFDDetector(FaceDetector):
             device,
             path_to_detector = r"checkpoints/hub/checkpoints/s3fd - 619a316812.pth",
             verbose = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super(SFDDetector, self).__init__(device, verbose)
 
         # Initialise the face detector
             if not os.path.isfile(path_to_detector):
+                pass
             model_weights = load_url(models_urls["s3fd"])
         else:
             model_weights = torch.load(path_to_detector)

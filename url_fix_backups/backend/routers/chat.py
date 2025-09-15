@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Chat Integration Router
 
 Comprehensive chat system with real - time messaging, AI integration,
@@ -12,7 +12,7 @@ Features:
 - Chat history persistence
 - Multi - user support
 - Rich media support (images, links, embeds)
-"""
+""""""
 
 import asyncio
 import json
@@ -24,7 +24,9 @@ from uuid import uuid4
 import httpx
 from fastapi import (APIRouter, Body, Depends, HTTPException, Query, WebSocket,
 
-    WebSocketDisconnect)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     WebSocketDisconnect)
 
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
@@ -34,14 +36,18 @@ try:
 
     from backend.database.chat_db import (add_message, chat_db, create_conversation,
 
-        get_conversations, get_messages)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         get_conversations, get_messages)
 except ImportError:
     # Fallback for different import paths
     try:
 
         from database.chat_db import (add_message, chat_db, create_conversation,
 
-            get_conversations, get_messages)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             get_conversations, get_messages)
     except ImportError:
         logger.warning("Chat persistence not available - running without database")
         chat_db = None
@@ -120,7 +126,8 @@ class ConnectionManager:
 
     async def connect(
         self, websocket: WebSocket, user_id: str, room_id: str = "general"
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         await websocket.accept()
         connection_id = f"{user_id}_{room_id}_{uuid4()}"
         self.active_connections[connection_id] = websocket
@@ -166,13 +173,15 @@ class ConnectionManager:
 
     async def broadcast_to_room(
         self, message: str, room_id: str, exclude_connection: Optional[str] = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         if room_id in self.room_connections:
             for connection_id in self.room_connections[room_id]:
                 if (
                     connection_id != exclude_connection
                     and connection_id in self.active_connections
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     websocket = self.active_connections[connection_id]
                     try:
                         await websocket.send_text(message)
@@ -201,7 +210,8 @@ rooms: Dict[str, ChatRoom] = {"general": ChatRoom(id="general", name="General Ch
 
 async def get_ai_response(
     message: str, provider: str = "openai", context: Optional[Dict] = None
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     """Get AI response from specified provider"""
     try:
         if provider == "openai" and get_secret("OPENAI_API_KEY"):
@@ -232,14 +242,20 @@ async def get_openai_response(message: str, context: Optional[Dict] = None) -> s
                     "messages": [
                     {
                         "role": "system",
-                            "content": "You are a helpful assistant integrated into TRAE.AI production system. Be concise \
-    and helpful.",
-                            },
+                            "content": "You are a helpful assistant integrated into TRAE.AI production system. Be concise \"
+#     and helpful.",
+# BRACKET_SURGEON: disabled
+#                             },
                         {"role": "user", "content": message},
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "max_tokens": 500,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if response.status_code == 200:
             data = response.json()
@@ -262,8 +278,11 @@ async def get_anthropic_response(message: str, context: Optional[Dict] = None) -
                 "model": "claude - 3 - sonnet - 20240229",
                     "max_tokens": 500,
                     "messages": [{"role": "user", "content": message}],
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if response.status_code == 200:
             data = response.json()
@@ -284,8 +303,11 @@ async def get_gemini_response(message: str, context: Optional[Dict] = None) -> s
                 json={
                 "contents": [{"parts": [{"text": message}]}],
                     "generationConfig": {"maxOutputTokens": 500},
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if response.status_code == 200:
             data = response.json()
@@ -327,7 +349,9 @@ async def get_weather_data(
     async with httpx.AsyncClient() as client:
         response = await client.get(
             f"https://api.openweathermap.org / data / 2.5 / weather?q={query}&appid={api_key}&units = metric"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if response.status_code == 200:
             data = response.json()
@@ -338,7 +362,8 @@ async def get_weather_data(
                     "description": data["weather"][0]["description"],
                     "humidity": data["main"]["humidity"],
                     "wind_speed": data["wind"]["speed"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
         else:
             return {"error": f"Weather API error: {response.status_code}"}
 
@@ -354,7 +379,9 @@ async def get_news_data(
     async with httpx.AsyncClient() as client:
         response = await client.get(
             f"https://newsapi.org / v2 / everything?q={query}&apiKey={api_key}&pageSize = 5"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if response.status_code == 200:
             data = response.json()
@@ -366,8 +393,11 @@ async def get_news_data(
                             "description": article["description"],
                             "url": article["url"],
                             "source": article["source"]["name"],
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             return {"type": "news", "articles": articles}
         else:
             return {"error": f"News API error: {response.status_code}"}
@@ -385,7 +415,9 @@ async def get_image_data(
         response = await client.get(
             f"https://api.unsplash.com / search / photos?query={query}&per_page = 3",
                 headers={"Authorization": f"Client - ID {api_key}"},
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if response.status_code == 200:
             data = response.json()
@@ -396,8 +428,11 @@ async def get_image_data(
                         "url": photo["urls"]["small"],
                             "description": photo["alt_description"],
                             "photographer": photo["user"]["name"],
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             return {"type": "images", "images": images}
         else:
             return {"error": f"Image API error: {response.status_code}"}
@@ -410,7 +445,9 @@ async def get_pet_data(query: str, parameters: Optional[Dict] = None) -> Dict[st
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 f"http://localhost:8000 / pets / search?animal={query}&limit = 3"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.status_code == 200:
                 data = response.json()
@@ -426,17 +463,19 @@ async def get_pet_data(query: str, parameters: Optional[Dict] = None) -> Dict[st
 
 async def websocket_endpoint(
     websocket: WebSocket, user_id: str, room_id: str = Query("general")
-):
+# BRACKET_SURGEON: disabled
+# ):
     connection_id = await manager.connect(websocket, user_id, room_id)
     conversation_id = manager.user_conversations.get(user_id)
 
     # Send welcome message
     welcome_msg = {
         "type": "system",
-            "content": f"Welcome to {rooms.get(room_id, {}).get('name', room_id)}! You can ask me about weather, news, images, \
-    or pets.",
+            "content": f"Welcome to {rooms.get(room_id, {}).get('name', room_id)}! You can ask me about weather, news, images, \"
+#     or pets.",
             "timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
     await manager.send_personal_message(json.dumps(welcome_msg), connection_id)
 
     try:
@@ -454,7 +493,9 @@ async def websocket_endpoint(
                         content = content,
                         message_type="text",
                         metadata = message_data.get("metadata", {}),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Store message in memory
                 if room_id not in chat_history:
@@ -469,7 +510,9 @@ async def websocket_endpoint(
                             content,
                             "text",
                             {"room_id": room_id, "user_id": user_id},
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # Broadcast message to room
                 broadcast_data = {
@@ -479,12 +522,15 @@ async def websocket_endpoint(
                         "message_type": chat_message.message_type,
                         "timestamp": chat_message.timestamp.isoformat(),
                         "id": chat_message.id,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 await manager.broadcast_to_room(
                     json.dumps(broadcast_data),
                         room_id,
                         exclude_connection = connection_id,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Check for AI triggers or integration requests
                 content_lower = content.lower()
@@ -501,8 +547,8 @@ async def websocket_endpoint(
                     # Weather request
                     location = content_lower.replace("/weather ", "")
                     weather_data = await get_weather_data(location)
-                    response = f"Weather in {weather_data.get('location',
-    location)}: {weather_data.get('description', 'N / A')}, {weather_data.get('temperature', 'N / A')}°C"
+                    response = f"Weather in {weather_data.get('location',"
+    location)}: {weather_data.get('description', 'N / A')}, {weather_data.get('temperature', 'N / A')}°C""
                     response_type = "integration_response"
 
                 elif content_lower.startswith("/news "):
@@ -513,11 +559,15 @@ async def websocket_endpoint(
                         articles = news_data["articles"][:3]
                         response = "Latest news:\\n" + "\\n".join(
                             [f"• {article['title']}" for article in articles]
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     else:
                         response = (
                             f"News error: {news_data.get('error', 'Unknown error')}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     response_type = "integration_response"
 
                 elif content_lower.startswith("/images "):
@@ -530,7 +580,9 @@ async def websocket_endpoint(
                     else:
                         response = (
                             f"Image error: {image_data.get('error', 'Unknown error')}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     response_type = "integration_response"
 
                 elif content_lower.startswith("/pets "):
@@ -543,7 +595,9 @@ async def websocket_endpoint(
                     else:
                         response = (
                             f"Pet error: {pet_data.get('error', 'Unknown error')}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     response_type = "integration_response"
 
                 # Send AI / integration response
@@ -561,9 +615,13 @@ async def websocket_endpoint(
                                     content.split()[0]
                                     if content.startswith("/")
                                     else None
-                                ),
-                                    },
-                                )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# BRACKET_SURGEON: disabled
+#                                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                     ai_message = {
                         "type": response_type,
@@ -571,7 +629,8 @@ async def websocket_endpoint(
                             "content": response,
                             "timestamp": datetime.utcnow().isoformat(),
                             "id": str(uuid4()),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     await manager.broadcast_to_room(json.dumps(ai_message), room_id)
 
             elif message_type == "get_history":
@@ -582,15 +641,20 @@ async def websocket_endpoint(
                         "type": "history",
                             "messages": messages,
                             "conversation_id": conversation_id,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     await websocket.send_text(json.dumps(history_data))
 
             elif message_type == "ping":
                 await websocket.send_text(
                     json.dumps(
                         {"type": "pong", "timestamp": datetime.utcnow().isoformat()}
-                    )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     except WebSocketDisconnect:
         manager.disconnect(connection_id)
@@ -600,7 +664,8 @@ async def websocket_endpoint(
             "type": "system",
                 "content": f"User {user_id} has left the chat",
                 "timestamp": datetime.utcnow().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         await manager.broadcast_to_room(json.dumps(disconnect_msg), room_id)
 
 # REST API Endpoints
@@ -642,7 +707,8 @@ async def ai_chat(request: AIRequest):
         "response": response,
             "provider": provider,
             "timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 @router.post("/integrations")
 
@@ -656,7 +722,8 @@ async def integration_request(request: IntegrationRequest):
             "query": request.query,
             "data": data,
             "timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 @router.get("/status")
 
@@ -672,14 +739,18 @@ async def chat_status():
                 "openai" if get_secret("OPENAI_API_KEY") else None,
                     "anthropic" if get_secret("ANTHROPIC_API_KEY") else None,
                     "google_gemini" if get_secret("GOOGLE_API_KEY") else None,
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "weather": bool(get_secret("OPENWEATHER_KEY")),
                 "news": bool(get_secret("NEWSAPI_KEY")),
                 "images": bool(get_secret("UNSPLASH_KEY")),
                 "pets": True,  # Uses internal API
-        },
+# BRACKET_SURGEON: disabled
+#         },
             "timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 @router.delete("/rooms/{room_id}/history")
 
@@ -708,7 +779,8 @@ async def health_check():
             "active_connections": len(manager.active_connections),
             "rooms": list(manager.room_connections.keys()),
             "database_stats": stats,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 # Chat History and Conversation Management Endpoints
 
@@ -726,18 +798,22 @@ async def get_user_conversations(user_id: str, limit: int = 50):
             "user_id": user_id,
                 "conversations": conversations,
                 "total": len(conversations),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except Exception as e:
         logger.error(f"Failed to get conversations for user {user_id}: {e}")
         raise HTTPException(status_code = 500,
-    detail="Failed to retrieve conversations")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail="Failed to retrieve conversations")
 
 @router.get("/conversations/{user_id}/{conversation_id}/messages")
 
 
 async def get_conversation_messages(
     user_id: str, conversation_id: str, limit: int = 100
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get messages for a specific conversation"""
     if not chat_db:
         raise HTTPException(status_code = 503, detail="Chat persistence not available")
@@ -749,7 +825,8 @@ async def get_conversation_messages(
                 "user_id": user_id,
                 "messages": messages,
                 "total": len(messages),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except Exception as e:
         logger.error(f"Failed to get messages for conversation {conversation_id}: {e}")
         raise HTTPException(status_code = 500, detail="Failed to retrieve messages")
@@ -769,7 +846,8 @@ async def create_new_conversation(user_id: str, title: str = None):
                 "user_id": user_id,
                 "title": title or f"Chat {datetime.now().strftime('%Y-%m-%d %H:%M')}",
                 "created_at": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except Exception as e:
         logger.error(f"Failed to create conversation for user {user_id}: {e}")
         raise HTTPException(status_code = 500, detail="Failed to create conversation")
@@ -791,14 +869,17 @@ async def update_conversation_title(conversation_id: str, title: str):
             "conversation_id": conversation_id,
                 "title": title,
                 "updated_at": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Failed to update conversation title {conversation_id}: {e}")
         raise HTTPException(
             status_code = 500, detail="Failed to update conversation title"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 @router.delete("/conversations/{conversation_id}")
 
@@ -817,7 +898,8 @@ async def delete_conversation(conversation_id: str):
             "conversation_id": conversation_id,
                 "deleted": True,
                 "deleted_at": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except HTTPException:
         raise
     except Exception as e:
@@ -835,7 +917,9 @@ async def search_user_messages(user_id: str, q: str, limit: int = 50):
     if not q or len(q.strip()) < 2:
         raise HTTPException(
             status_code = 400, detail="Search query must be at least 2 characters"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     try:
 
@@ -847,7 +931,8 @@ async def search_user_messages(user_id: str, q: str, limit: int = 50):
                 "user_id": user_id,
                 "results": results,
                 "total": len(results),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except Exception as e:
         logger.error(f"Failed to search messages for user {user_id}: {e}")
         raise HTTPException(status_code = 500, detail="Failed to search messages")

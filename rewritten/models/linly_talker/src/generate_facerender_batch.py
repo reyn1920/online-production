@@ -21,11 +21,13 @@ def get_facerender_data(
     preprocess="crop",
     size=256,
     facemodel="facevid2vid",
-):
+# BRACKET_SURGEON: disabled
+# ):
     semantic_radius = 13
     video_name = (
         f"{os.path.basename(pic_path).split('.')[0]}_{os.path.basename(audio_path).split('.')[0]}"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     # txt_path = os.path.splitext(coeff_path)[0]
 
     data = {}
@@ -62,14 +64,17 @@ def get_facerender_data(
             [
                 generated_3dmm,
                 np.repeat(source_semantics[:, 70:], generated_3dmm.shape[0], axis=0),
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             axis=1,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     if still_mode:
         generated_3dmm[:, 64:] = np.repeat(
             source_semantics[:, 64:], generated_3dmm.shape[0], axis=0
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     # with open(txt_path+'.txt', 'w') as f:
     #     for coeff in generated_3dmm:
@@ -92,7 +97,8 @@ def get_facerender_data(
     target_semantics_np = np.array(target_semantics_list)  # frame_num 70 semantic_radius * 2 + 1
     target_semantics_np = target_semantics_np.reshape(
         batch_size, -1, target_semantics_np.shape[-2], target_semantics_np.shape[-1]
-    )
+# BRACKET_SURGEON: disabled
+#     )
     data["target_semantics_list"] = torch.FloatTensor(target_semantics_np)
     data["video_name"] = video_name
     data["audio_path"] = audio_path

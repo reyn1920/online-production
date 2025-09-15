@@ -121,3 +121,8 @@ build/
 
 # Local development
 paste_content.txt
+
+# venvs (keep them out of git and scanners)
+.venv*/
+venv*/
+**/__pycache__/

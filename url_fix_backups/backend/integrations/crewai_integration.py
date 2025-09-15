@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI CrewAI Agent Framework Integration
 
 Provides seamless integration between CrewAI multi - agent framework
@@ -15,7 +15,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -207,10 +207,10 @@ class TraeAITool(BaseTool):
 
 
 class CrewAIIntegration:
-    """
+    """"""
     Comprehensive CrewAI framework integration with TRAE.AI
     for multi - agent coordination and collaborative task execution.
-    """
+    """"""
 
 
     def __init__(self, secrets_db_path: str = "data / secrets.sqlite"):
@@ -221,7 +221,9 @@ class CrewAIIntegration:
         if not CREWAI_AVAILABLE:
             self.logger.warning(
                 "CrewAI not installed. Install with: pip install crewai"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Load credentials
         self.credentials = self._load_credentials()
@@ -257,7 +259,8 @@ class CrewAIIntegration:
                         "anthropic_api_key": store.get_secret("ANTHROPIC_API_KEY"),
                         "google_api_key": store.get_secret("GOOGLE_API_KEY"),
                         "huggingface_api_key": store.get_secret("HUGGINGFACE_API_KEY"),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 # Set environment variables for CrewAI
                 for key, value in credentials.items():
@@ -278,7 +281,7 @@ class CrewAIIntegration:
         with sqlite3.connect(self.db_path) as conn:
             # Crew executions table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS crew_executions (
                     id TEXT PRIMARY KEY,
                         crew_name TEXT NOT NULL,
@@ -289,13 +292,17 @@ class CrewAIIntegration:
                         error TEXT,
                         metrics TEXT,
                         config TEXT
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Agent performance table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS agent_performance (
                     id TEXT PRIMARY KEY,
                         execution_id TEXT,
@@ -308,13 +315,17 @@ class CrewAIIntegration:
                         execution_time REAL,
                         tokens_used INTEGER,
                         FOREIGN KEY (execution_id) REFERENCES crew_executions (id)
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Task tracking table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS task_tracking (
                     id TEXT PRIMARY KEY,
                         execution_id TEXT,
@@ -327,9 +338,13 @@ class CrewAIIntegration:
                         output TEXT,
                         dependencies TEXT,
                         FOREIGN KEY (execution_id) REFERENCES crew_executions (id)
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.commit()
 
@@ -341,27 +356,37 @@ class CrewAIIntegration:
             "web_search",
                 "Search the web for information on a given topic",
                 self._web_search_tool,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.register_tool(
             "file_writer", "Write content to a file", self._file_writer_tool
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.register_tool(
             "data_analyzer",
                 "Analyze data and generate insights",
                 self._data_analyzer_tool,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.register_tool(
             "content_generator",
                 "Generate various types of content",
                 self._content_generator_tool,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.register_tool(
             "api_caller", "Make API calls to external services", self._api_caller_tool
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def _init_default_agents(self):
@@ -369,53 +394,59 @@ class CrewAIIntegration:
         default_agents = {
             AgentRole.RESEARCHER: AgentConfig(
                 role="Senior Research Analyst",
-                    goal="Conduct comprehensive research \
-    and provide accurate, well - sourced information",
-                    backstory="You are a seasoned research analyst with expertise in gathering, analyzing, \
-    and synthesizing information from multiple sources. You excel at identifying trends, patterns, \
-    and insights that others might miss.",
+                    goal="Conduct comprehensive research \"
+#     and provide accurate, well - sourced information",
+                    backstory="You are a seasoned research analyst with expertise in gathering, analyzing, \"
+#     and synthesizing information from multiple sources. You excel at identifying trends, patterns, \
+#     and insights that others might miss.",
                     tools=["web_search", "data_analyzer"],
                     allow_delegation = True,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 AgentRole.CONTENT_CREATOR: AgentConfig(
                 role="Creative Content Specialist",
-                    goal="Create engaging, high - quality content across multiple formats \
-    and platforms",
-                    backstory="You are a versatile content creator with a talent for crafting compelling narratives, engaging copy, \
-    and multimedia content that resonates with target audiences.",
+                    goal="Create engaging, high - quality content across multiple formats \"
+#     and platforms",
+                    backstory="You are a versatile content creator with a talent for crafting compelling narratives, engaging copy, \"
+#     and multimedia content that resonates with target audiences.",
                     tools=["content_generator", "file_writer"],
                     allow_delegation = False,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 AgentRole.MARKETING_SPECIALIST: AgentConfig(
                 role="Digital Marketing Strategist",
-                    goal="Develop \
-    and execute effective marketing strategies to maximize reach \
-    and engagement",
-                    backstory="You are a data - driven marketing professional with deep understanding of digital channels, audience psychology, \
-    and conversion optimization.",
+                    goal="Develop \"
+#     and execute effective marketing strategies to maximize reach \
+#     and engagement",
+                    backstory="You are a data - driven marketing professional with deep understanding of digital channels, audience psychology, \"
+#     and conversion optimization.",
                     tools=["web_search", "data_analyzer", "api_caller"],
                     allow_delegation = True,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 AgentRole.DATA_ANALYST: AgentConfig(
                 role="Senior Data Scientist",
-                    goal="Extract actionable insights from complex datasets \
-    and provide data - driven recommendations",
-                    backstory="You are an experienced data scientist with expertise in statistical analysis, machine learning, \
-    and data visualization. You excel at turning raw data into strategic insights.",
+                    goal="Extract actionable insights from complex datasets \"
+#     and provide data - driven recommendations",
+                    backstory="You are an experienced data scientist with expertise in statistical analysis, machine learning, \"
+#     and data visualization. You excel at turning raw data into strategic insights.",
                     tools=["data_analyzer", "file_writer"],
                     allow_delegation = False,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 AgentRole.PROJECT_MANAGER: AgentConfig(
                 role="Agile Project Manager",
-                    goal="Coordinate team efforts, manage timelines, \
-    and ensure successful project delivery",
-                    backstory="You are an experienced project manager with a track record of delivering complex projects on time \
-    and within budget. You excel at resource allocation \
-    and risk management.",
+                    goal="Coordinate team efforts, manage timelines, \"
+#     and ensure successful project delivery",
+                    backstory="You are an experienced project manager with a track record of delivering complex projects on time \"
+#     and within budget. You excel at resource allocation \
+#     and risk management.",
                     tools=["file_writer", "api_caller"],
                     allow_delegation = True,
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         for role, config in default_agents.items():
             self.register_agent_config(role.value, config)
@@ -462,7 +493,9 @@ class CrewAIIntegration:
                     model="gpt - 4",
                         temperature = 0.7,
                         openai_api_key = self.credentials["openai_api_key"],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             agent = Agent(
                 role = config.role,
@@ -475,7 +508,9 @@ class CrewAIIntegration:
                     verbose = config.verbose,
                     allow_delegation = config.allow_delegation,
                     memory = config.memory,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.logger.info(f"Created agent: {config.role}")
             return agent
@@ -507,7 +542,9 @@ class CrewAIIntegration:
                     context = config.context,
                     output_file = config.output_file,
                     callback = config.callback,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.logger.info(f"Created task: {config.description[:50]}...")
             return task
@@ -565,15 +602,19 @@ class CrewAIIntegration:
                     cache = config.cache,
                     max_rpm = config.max_rpm,
                     language = config.language,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Register crew
             self.crews_registry[config.name] = crew
 
             self.logger.info(
-                f"Created crew: {config.name} with {len(agents)} agents \
-    and {len(tasks)} tasks"
-            )
+                f"Created crew: {config.name} with {len(agents)} agents \"
+#     and {len(tasks)} tasks"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return crew
 
         except Exception as e:
@@ -597,7 +638,9 @@ class CrewAIIntegration:
                     crew_name = crew_name,
                     status = CrewStatus.EXECUTING,
                     started_at = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Store execution
             self.executions_cache[execution_id] = execution
@@ -625,13 +668,15 @@ class CrewAIIntegration:
                 "success": True,
                     "result": result,
                     "timestamp": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
         except Exception as e:
             return {
                 "success": False,
                     "error": str(e),
                     "timestamp": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _monitor_crew_execution(self, execution_id: str, future):
@@ -657,7 +702,9 @@ class CrewAIIntegration:
 
                 self.logger.info(
                     f"Crew execution {execution_id} completed with status: {execution.status.value}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.logger.error(f"Error monitoring crew execution {execution_id}: {e}")
@@ -681,7 +728,7 @@ class CrewAIIntegration:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO crew_executions
                     (id,
     crew_name,
@@ -690,9 +737,11 @@ class CrewAIIntegration:
     finished_at,
     results,
     error,
-    metrics)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     metrics)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         execution.id,
                             execution.crew_name,
@@ -702,12 +751,16 @@ class CrewAIIntegration:
                             execution.finished_at.isoformat()
                             if execution.finished_at
                             else None
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             json.dumps(execution.results) if execution.results else None,
                             execution.error,
                             json.dumps(execution.metrics) if execution.metrics else None,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing execution: {e}")
@@ -721,7 +774,9 @@ class CrewAIIntegration:
             # This would integrate with actual search APIs
             return (
                 f"Search results for: {query}\\n[Placeholder for actual search results]"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except Exception as e:
             return f"Search error: {str(e)}"
 
@@ -743,7 +798,9 @@ class CrewAIIntegration:
             # This would integrate with actual data analysis capabilities
             return (
                 f"Analysis of data: {data[:100]}...\\n[Placeholder for actual analysis]"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except Exception as e:
             return f"Analysis error: {str(e)}"
 
@@ -759,7 +816,8 @@ class CrewAIIntegration:
 
     def _api_caller_tool(
         self, url: str, method: str = "GET", data: Optional[Dict] = None
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """API caller tool implementation."""
         try:
             # This would make actual API calls
@@ -783,27 +841,37 @@ if __name__ == "__main__":
                         goal="Research AI trends for 2024",
                         backstory="Expert AI researcher",
                         tools=["web_search", "data_analyzer"],
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                     AgentConfig(
                     role="content_creator",
                         goal="Create engaging content from research",
                         backstory="Creative content specialist",
                         tools=["content_generator", "file_writer"],
-                        ),
-                    ],
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 tasks=[
                 TaskConfig(
                     description="Research the latest AI trends for 2024",
                         expected_output="Comprehensive report on AI trends",
                         agent_role="researcher",
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                     TaskConfig(
                     description="Create a blog post from the research findings",
                         expected_output="Engaging blog post about AI trends",
                         agent_role="content_creator",
-                        ),
-                    ],
-                )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         crew = crewai.create_crew(crew_config)
         if crew:

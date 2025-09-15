@@ -24,11 +24,14 @@ from utils import load_filepaths_and_text, load_wav_to_torch
 
 
 class TextAudioSpeakerLoader(torch.utils.data.Dataset):
-    """
-    1) loads audio, speaker_id, text pairs
-    2) normalizes text and converts them to sequences of integers
-    3) computes spectrograms from audio files.
-    """
+    """"""
+# BRACKET_SURGEON: disabled
+#     1) loads audio, speaker_id, text pairs
+# BRACKET_SURGEON: disabled
+#     2) normalizes text and converts them to sequences of integers
+# BRACKET_SURGEON: disabled
+#     3) computes spectrograms from audio files.
+    """"""
 
     def __init__(self, hparams, val=False):
         exp_dir = hparams.exp_dir
@@ -130,7 +133,8 @@ class TextAudioSpeakerLoader(torch.utils.data.Dataset):
     def get_audio(self, filename):
         audio_array = load_audio(
             filename, self.sampling_rate
-        )  # load_audio的方法是已经归一化到 - 1~1之间的，不用再 / 32768
+# BRACKET_SURGEON: disabled
+#         )  # load_audio的方法是已经归一化到 - 1~1之间的，不用再 / 32768
         audio = torch.FloatTensor(audio_array)  # /32768
         audio_norm = audio
         audio_norm = audio_norm.unsqueeze(0)
@@ -141,7 +145,8 @@ class TextAudioSpeakerLoader(torch.utils.data.Dataset):
             self.hop_length,
             self.win_length,
             center=False,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         spec = torch.squeeze(spec, 0)
         return spec, audio_norm
 
@@ -161,7 +166,8 @@ class TextAudioSpeakerLoader(torch.utils.data.Dataset):
             "first",
             ssl.shape,
             wav.shape,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         len_mel = mel.shape[1]
         if self.val:
@@ -190,7 +196,8 @@ class TextAudioSpeakerLoader(torch.utils.data.Dataset):
             self.hop_length,
             sep_point * self.hop_length,
             dir,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return reference_mel, ssl, wav2, mel
 
 
@@ -201,15 +208,16 @@ class TextAudioSpeakerCollate:
         self.return_ids = return_ids
 
     def __call__(self, batch):
-        """Collate's training batch from normalized text, audio and speaker identities
+        """Collate's training batch from normalized text, audio and speaker identities"""
         PARAMS
         ------
             batch: [text_normalized, spec_normalized, wav_normalized, sid]
-        """
+        """"""
         # Right zero - pad all one - hot text sequences to max input length
         _, ids_sorted_decreasing = torch.sort(
             torch.LongTensor([x[1].size(1) for x in batch]), dim=0, descending=True
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         max_ssl_len = max([x[0].size(2) for x in batch])
         max_ssl_len = int(2 * ((max_ssl_len // 2) + 1))
@@ -261,20 +269,21 @@ class TextAudioSpeakerCollate:
             wav_lengths,
             text_padded,
             text_lengths,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 class DistributedBucketSampler(torch.utils.data.distributed.DistributedSampler):
-    """
+    """"""
     Maintain similar input lengths in a batch.
     Length groups are specified by boundaries.
     Ex) boundaries = [b1, b2, b3] -> any batch is included either {x | b1 < length(x) <=b2} \
-    or {x | b2 < length(x) <= b3}.
+#     or {x | b2 < length(x) <= b3}.
 
     It removes samples which are not included in the boundaries.
     Ex) boundaries = [b1, b2, b3] -> any x s.t. length(x) <= b1 \
-    or length(x) > b3 are discarded.
-    """
+#     or length(x) > b3 are discarded.
+    """"""
 
     def __init__(
         self,
@@ -284,7 +293,8 @@ class DistributedBucketSampler(torch.utils.data.distributed.DistributedSampler):
         num_replicas=None,
         rank=None,
         shuffle=True,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__(dataset, num_replicas=num_replicas, rank=rank, shuffle=shuffle)
         self.lengths = dataset.lengths
         self.batch_size = batch_size
@@ -339,7 +349,8 @@ class DistributedBucketSampler(torch.utils.data.distributed.DistributedSampler):
             rem = num_samples_bucket - len_bucket
             ids_bucket = (
                 ids_bucket + ids_bucket * (rem // len_bucket) + ids_bucket[: (rem % len_bucket)]
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             ids_bucket = ids_bucket[self.rank :: self.num_replicas]
 
@@ -347,7 +358,8 @@ class DistributedBucketSampler(torch.utils.data.distributed.DistributedSampler):
                 batch = [
                     bucket[idx]
                     for idx in ids_bucket[j * self.batch_size : (j + 1) * self.batch_size]
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
                 batches.append(batch)
 
         if self.shuffle:

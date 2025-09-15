@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI YouTube Analytics Automation System
 
 Comprehensive analytics system that provides:
@@ -23,7 +23,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -218,10 +218,10 @@ class CompetitorAnalysis:
 
 
 class YouTubeAnalyticsAutomation:
-    """
+    """"""
     Advanced YouTube analytics automation system with AI - powered insights,
         real - time monitoring, and automated optimization recommendations.
-    """
+    """"""
 
     def __init__(self, config_path: str = "config/analytics_config.json"):
         self.logger = setup_logger("youtube_analytics")
@@ -272,38 +272,45 @@ class YouTubeAnalyticsAutomation:
                 "track_audience_metrics": True,
                 "track_revenue_metrics": True,
                 "historical_days": 90,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "insights": {
                 "generate_insights": True,
                 "insight_frequency_hours": 6,
                 "min_confidence_threshold": 0.7,
                 "max_insights_per_run": 10,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "alerts": {
                 "enabled": True,
                 "performance_drop_threshold": 0.3,  # 30% drop
                 "viral_threshold_multiplier": 5.0,  # 5x average views
                 "subscriber_milestone_intervals": [1000, 10000, 100000, 1000000],
                 "revenue_threshold_drop": 0.25,  # 25% revenue drop
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "competitors": {
                 "track_competitors": True,
                 "competitor_channels": [],
                 "analysis_frequency_hours": 24,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "reporting": {
                 "generate_reports": True,
                 "report_frequency": "daily",
                 "email_reports": False,
                 "dashboard_updates": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "optimization": {
                 "auto_optimize": True,
                 "optimization_frequency_hours": 12,
                 "learning_enabled": True,
                 "a_b_testing": True,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _init_database(self):
         """Initialize analytics database."""
@@ -312,7 +319,7 @@ class YouTubeAnalyticsAutomation:
         with sqlite3.connect(self.db_path) as conn:
             # Video metrics table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS video_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         video_id TEXT,
@@ -341,13 +348,15 @@ class YouTubeAnalyticsAutomation:
                         card_clicks INTEGER,
                         playlist_additions INTEGER,
                         recorded_at TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Channel metrics table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS channel_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         channel_id TEXT,
@@ -367,13 +376,15 @@ class YouTubeAnalyticsAutomation:
                         device_breakdown TEXT,
                         geography_breakdown TEXT,
                         recorded_at TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Analytics insights table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS analytics_insights (
                     id TEXT PRIMARY KEY,
                         insight_type TEXT,
@@ -388,13 +399,15 @@ class YouTubeAnalyticsAutomation:
                         priority TEXT,
                         created_at TIMESTAMP,
                         expires_at TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Performance alerts table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS performance_alerts (
                     id TEXT PRIMARY KEY,
                         alert_type TEXT,
@@ -410,13 +423,15 @@ class YouTubeAnalyticsAutomation:
                         created_at TIMESTAMP,
                         acknowledged BOOLEAN,
                         resolved BOOLEAN
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Competitor analysis table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS competitor_analysis (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         competitor_channel_id TEXT,
@@ -432,13 +447,15 @@ class YouTubeAnalyticsAutomation:
                         opportunities TEXT,
                         threats TEXT,
                         analyzed_at TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Performance trends table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS performance_trends (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         metric_type TEXT,
@@ -447,9 +464,11 @@ class YouTubeAnalyticsAutomation:
                         change_percentage REAL,
                         trend_direction TEXT,
                         recorded_at TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -509,7 +528,8 @@ class YouTubeAnalyticsAutomation:
 
     def _process_video_analytics(
         self, video_id: str, analytics_data: Dict[str, Any]
-    ) -> VideoMetrics:
+# BRACKET_SURGEON: disabled
+#     ) -> VideoMetrics:
         """Process raw analytics data into structured metrics."""
         try:
             # Extract metrics from analytics data
@@ -518,7 +538,8 @@ class YouTubeAnalyticsAutomation:
                 title=analytics_data.get("title", ""),
                 published_at=datetime.fromisoformat(
                     analytics_data.get("published_at", datetime.now().isoformat())
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 views=analytics_data.get("views", 0),
                 watch_time_minutes=analytics_data.get("watch_time_minutes", 0.0),
                 likes=analytics_data.get("likes", 0),
@@ -542,7 +563,8 @@ class YouTubeAnalyticsAutomation:
                 card_clicks=analytics_data.get("card_clicks", 0),
                 playlist_additions=analytics_data.get("playlist_additions", 0),
                 recorded_at=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return metrics
 
@@ -582,7 +604,8 @@ class YouTubeAnalyticsAutomation:
                     # Get channel analytics from YouTube API
                     analytics_data = await self.youtube_integration.get_channel_analytics(
                         channel_id
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if analytics_data:
                         metrics = self._process_channel_analytics(channel_id, analytics_data)
@@ -603,7 +626,8 @@ class YouTubeAnalyticsAutomation:
 
     def _process_channel_analytics(
         self, channel_id: str, analytics_data: Dict[str, Any]
-    ) -> ChannelMetrics:
+# BRACKET_SURGEON: disabled
+#     ) -> ChannelMetrics:
         """Process raw channel analytics data into structured metrics."""
         try:
             metrics = ChannelMetrics(
@@ -624,7 +648,8 @@ class YouTubeAnalyticsAutomation:
                 device_breakdown=analytics_data.get("device_breakdown", {}),
                 geography_breakdown=analytics_data.get("geography_breakdown", {}),
                 recorded_at=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return metrics
 
@@ -649,13 +674,16 @@ class YouTubeAnalyticsAutomation:
                 # Generate different types of insights
                 content_insights = await self._generate_content_insights(
                     channel_id, performance_data
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 audience_insights = await self._generate_audience_insights(
                     channel_id, performance_data
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 optimization_insights = await self._generate_optimization_insights(
                     channel_id, performance_data
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 insights.extend(content_insights)
                 insights.extend(audience_insights)
@@ -800,22 +828,26 @@ class YouTubeAnalyticsAutomation:
                         f"Optimize video titles to approximately {optimal_length} characters",
                         "Focus on clear, descriptive titles that capture viewer interest",
                         "A/B test different title lengths for your content type",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     supporting_data={
                         "top_avg_length": top_avg_length,
                         "bottom_avg_length": bottom_avg_length,
                         "sample_top_titles": top_titles[:3],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     actionable_items=[
                         "Review upcoming video titles",
                         "Adjust title length to optimal range",
                         "Monitor performance of optimized titles",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     expected_improvement="10 - 25% increase in click - through rate",
                     priority="high",
                     created_at=datetime.now(),
                     expires_at=datetime.now() + timedelta(days=30),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             self.logger.error(f"Error analyzing title patterns: {e}")
@@ -863,7 +895,8 @@ class YouTubeAnalyticsAutomation:
                     "medium": "3 - 8 minutes",
                     "long": "8 - 15 minutes",
                     "very_long": "15+ minutes",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 return AnalyticsInsight(
                     id=f"video_length_{int(time.time())}",
@@ -876,22 +909,26 @@ class YouTubeAnalyticsAutomation:
                         f"Focus on creating videos in the {duration_ranges[best_category]} range",
                         "Analyze top performing videos in this duration for content patterns",
                         "Test different content structures within optimal duration",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     supporting_data={
                         "duration_performance": dict(avg_performance),
                         "best_category": best_category,
                         "optimal_range": duration_ranges[best_category],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     actionable_items=[
                         "Plan upcoming videos within optimal duration",
                         "Edit existing long - form content into optimal segments",
                         "Create content templates for optimal duration",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     expected_improvement="15 - 30% increase in engagement rate",
                     priority="high",
                     created_at=datetime.now(),
                     expires_at=datetime.now() + timedelta(days=45),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             self.logger.error(f"Error analyzing video length performance: {e}")
@@ -953,7 +990,8 @@ class YouTubeAnalyticsAutomation:
             if recent_avg_views < historical_avg_views * (1 - drop_threshold):
                 drop_percentage = (
                     (historical_avg_views - recent_avg_views) / historical_avg_views
-                ) * 100
+# BRACKET_SURGEON: disabled
+#                 ) * 100
 
                 alert = PerformanceAlert(
                     id=f"perf_drop_{channel_id}_{int(time.time())}",
@@ -971,11 +1009,13 @@ class YouTubeAnalyticsAutomation:
                         "Analyze audience feedback and comments",
                         "Check for algorithm changes or external factors",
                         "Consider adjusting content strategy",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     created_at=datetime.now(),
                     acknowledged=False,
                     resolved=False,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 alerts.append(alert)
 
@@ -1005,7 +1045,8 @@ class YouTubeAnalyticsAutomation:
             # Collect metrics
             video_metrics = await self._get_video_metrics_by_date_range(
                 channel_id, start_date, end_date
-            )
+# BRACKET_SURGEON: disabled
+#             )
             channel_metrics = await self._get_latest_channel_metrics(channel_id)
 
             # Calculate summary statistics
@@ -1030,9 +1071,11 @@ class YouTubeAnalyticsAutomation:
                 "alerts": [asdict(alert) for alert in alerts],
                 "recommendations": self._generate_report_recommendations(
                     video_metrics, insights, alerts
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "generated_at": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return report
 
@@ -1064,7 +1107,8 @@ class YouTubeAnalyticsAutomation:
                 "average_click_through_rate": avg_ctr,
                 "top_performing_video": max(video_metrics, key=lambda x: x.views).video_id,
                 "most_engaging_video": max(video_metrics, key=lambda x: x.engagement_rate).video_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error calculating summary statistics: {e}")
@@ -1077,7 +1121,7 @@ class YouTubeAnalyticsAutomation:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO video_metrics
                     (video_id,
     title,
@@ -1089,9 +1133,10 @@ class YouTubeAnalyticsAutomation:
                         comments, shares, subscribers_gained, click_through_rate, average_view_duration,
                          audience_retention, impressions, impression_ctr, revenue, rpm, traffic_sources,
                          demographics, engagement_rate, thumbnail_impressions, thumbnail_ctr,
-                         end_screen_clicks, card_clicks, playlist_additions, recorded_at)
+# BRACKET_SURGEON: disabled
+#                          end_screen_clicks, card_clicks, playlist_additions, recorded_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         metrics.video_id,
                         metrics.title,
@@ -1119,8 +1164,10 @@ class YouTubeAnalyticsAutomation:
                         metrics.card_clicks,
                         metrics.playlist_additions,
                         metrics.recorded_at.isoformat(),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing video metrics: {e}")
@@ -1155,7 +1202,8 @@ class YouTubeAnalyticsAutomation:
 
                 cursor = conn.execute(
                     "SELECT COUNT(*) FROM analytics_insights WHERE expires_at > datetime('now')"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 active_insights = cursor.fetchone()[0]
 
                 cursor = conn.execute("SELECT COUNT(*) FROM performance_alerts WHERE resolved = 0")
@@ -1169,7 +1217,8 @@ class YouTubeAnalyticsAutomation:
                     "active_insights": active_insights,
                     "active_alerts": active_alerts,
                     "config": self.config,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception as e:
             self.logger.error(f"Error getting analytics status: {e}")
             return {"error": str(e)}
@@ -1285,6 +1334,7 @@ if __name__ == "__main__":
 
     else:
         print(
-            "Use --collect, --insights, --report, --monitor, \
-    or --status with channel ID"
-        )
+            "Use --collect, --insights, --report, --monitor, \"
+#     or --status with channel ID"
+# BRACKET_SURGEON: disabled
+#         )

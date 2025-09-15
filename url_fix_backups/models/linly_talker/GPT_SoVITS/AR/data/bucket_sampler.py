@@ -12,19 +12,20 @@ from torch.utils.data import Dataset, Sampler
 
 __all__ = [
     "DistributedBucketSampler",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 T_co = TypeVar("T_co", covariant=True)
 
 
 class DistributedBucketSampler(Sampler[T_co]):
-    r"""
+    r""""""
     sort the dataset wrt. input length
     divide samples into buckets
     sort within buckets
     divide buckets into batches
     sort batches
-    """
+    """"""
 
     def __init__(
         self,
@@ -35,7 +36,8 @@ class DistributedBucketSampler(Sampler[T_co]):
         seed: int = 0,
         drop_last: bool = False,
         batch_size: int = 32,
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         if num_replicas is None:
             if not dist.is_available():
                 raise RuntimeError("Requires distributed package to be available")
@@ -50,7 +52,8 @@ class DistributedBucketSampler(Sampler[T_co]):
             raise ValueError(
                 "Invalid rank {}, rank should be in the interval"
                 " [0, {}]".format(rank, num_replicas - 1)
-            )
+# BRACKET_SURGEON: disabled
+#             )
         self.dataset = dataset
         self.num_replicas = num_replicas
         self.rank = rank
@@ -66,7 +69,8 @@ class DistributedBucketSampler(Sampler[T_co]):
             # using this Sampler.
             self.num_samples = math.ceil(
                 (len(self.dataset) - self.num_replicas) / self.num_replicas  # type: ignore[arg - type]
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             self.num_samples = math.ceil(
                 len(self.dataset) / self.num_replicas
@@ -117,7 +121,8 @@ class DistributedBucketSampler(Sampler[T_co]):
             batches = [
                 shuffled_bucket[b * grouped_batch_size : (b + 1) * grouped_batch_size]
                 for b in range(n_batch)
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             shuffle(batches)
             indices = list(itertools.chain(*batches))
         else:
@@ -146,12 +151,12 @@ class DistributedBucketSampler(Sampler[T_co]):
         return self.num_samples
 
     def set_epoch(self, epoch: int) -> None:
-        r"""
+        r""""""
         Sets the epoch for this sampler. When :attr:`shuffle = True`, this ensures all replicas
         use a different random ordering for each epoch. Otherwise, the next iteration of this
         sampler will yield the same ordering.
 
         Args:
             epoch (int): Epoch number.
-        """
+        """"""
         self.epoch = epoch

@@ -13,7 +13,8 @@ def get_resolve_path() -> str:
     return get_setting(
         "resolve_path",
         "/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/MacOS/Resolve",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def set_resolve_path(path: str) -> Dict[str, Any]:
@@ -31,7 +32,8 @@ def validate_resolve_installation() -> Dict[str, Any]:
             "ok": False,
             "error": f"DaVinci Resolve not found at {resolve_path}",
             "suggestion": "Please set the correct Resolve path using set_resolve_path()",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     # Check if Resolve is accessible (basic check)
     try:
@@ -77,7 +79,8 @@ def create_resolve_project(project_name: str, media_files: List[str]) -> Dict[st
                 return {
                     "ok": False,
                     "error": f"Failed to copy media file {media_file}: {str(e)}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
     # Create project metadata
     project_metadata = {
@@ -85,7 +88,8 @@ def create_resolve_project(project_name: str, media_files: List[str]) -> Dict[st
         "created": str(project_dir.stat().st_ctime),
         "media_files": copied_files,
         "project_dir": str(project_dir),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     metadata_file = project_dir / "project_metadata.json"
     metadata_file.write_text(json.dumps(project_metadata, indent=2))
@@ -97,7 +101,8 @@ def create_resolve_project(project_name: str, media_files: List[str]) -> Dict[st
         "timeline_count": 1,
         "media_pool_items": len(copied_files),
         "created_by": "TRAE.AI Handoff Pipeline",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     drp_info_file = project_dir / "Project Files" / f"{project_name}_info.json"
     drp_info_file.write_text(json.dumps(drp_info, indent=2))
@@ -109,7 +114,8 @@ def create_resolve_project(project_name: str, media_files: List[str]) -> Dict[st
         "media_files": copied_files,
         "metadata_file": str(metadata_file),
         "message": f"Resolve project '{project_name}' created successfully",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def create_resolve_timeline(
@@ -127,7 +133,8 @@ def create_resolve_timeline(
         "frame_rate": 24,
         "resolution": "1920x1080",
         "created": str(Path().stat().st_ctime),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     timeline_file = project_dir / "Project Files" / f"{timeline_name}_timeline.json"
     timeline_file.write_text(json.dumps(timeline_data, indent=2))
@@ -137,7 +144,8 @@ def create_resolve_timeline(
         "timeline_file": str(timeline_file),
         "timeline_name": timeline_name,
         "clips_count": len(clips),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def export_resolve_timeline(
@@ -164,7 +172,8 @@ def export_resolve_timeline(
         "quality": "high",
         "resolution": "1920x1080",
         "frame_rate": 24,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Merge with provided settings
     final_settings = {**default_settings, **export_settings}
@@ -176,7 +185,8 @@ def export_resolve_timeline(
         "export_path": str(export_dir / f"{timeline_name}.{final_settings['format']}"),
         "status": "ready_for_export",
         "created": str(Path().stat().st_ctime),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     export_file = export_dir / f"{timeline_name}_export.json"
     export_file.write_text(json.dumps(export_metadata, indent=2))
@@ -186,7 +196,8 @@ def export_resolve_timeline(
         "export_metadata": export_metadata,
         "export_file": str(export_file),
         "message": f"Export configuration created for timeline '{timeline_name}'",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def list_resolve_projects() -> Dict[str, Any]:
@@ -209,8 +220,10 @@ def list_resolve_projects() -> Dict[str, Any]:
                             "path": str(project_dir),
                             "metadata": metadata,
                             "created": project_dir.stat().st_ctime,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
                 except Exception:
                     # Skip projects with invalid metadata
                     continue
@@ -254,7 +267,8 @@ def get_resolve_project_info(project_path: str) -> Dict[str, Any]:
             "timelines": timelines,
             "exports": exports,
             "project_path": project_path,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         return {"ok": False, "error": f"Error reading project info: {str(e)}"}

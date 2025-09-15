@@ -24,13 +24,17 @@ class CNHubert(nn.Module):
         self.model = HubertModel.from_pretrained(cnhubert_base_path)
         self.feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained(
             cnhubert_base_path
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def forward(self, x):
         input_values = self.feature_extractor(
             x, return_tensors="pt", sampling_rate = 16000
-        ).input_values.to(x.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).input_values.to(x.device)
         feats = self.model(input_values)["last_hidden_state"]
         return feats
 
@@ -42,7 +46,9 @@ class CNHubert(nn.Module):
 #     def forward(self, x):
 #         input_values = self.feature_extractor(x,
     return_tensors="pt",
-    sampling_rate = 16000).input_values.to(x.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     sampling_rate = 16000).input_values.to(x.device)
 #         feats = self.model(input_values)["last_hidden_state"]
 #         return feats
 #
@@ -54,7 +60,9 @@ class CNHubert(nn.Module):
 #     def forward(self, x):
 #         input_values = self.feature_extractor(x,
     return_tensors="pt",
-    sampling_rate = 16000).input_values.to(x.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     sampling_rate = 16000).input_values.to(x.device)
 #         feats = self.model(input_values)["last_hidden_state"]
 #         return feats
 #
@@ -66,7 +74,9 @@ class CNHubert(nn.Module):
 #     def forward(self, x):
 #         input_values = self.feature_extractor(x,
     return_tensors="pt",
-    sampling_rate = 16000).input_values.to(x.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     sampling_rate = 16000).input_values.to(x.device)
 #         feats = self.model(input_values)["last_hidden_state"]
 #         return feats
 

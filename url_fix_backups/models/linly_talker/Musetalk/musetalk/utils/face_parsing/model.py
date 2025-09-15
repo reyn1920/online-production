@@ -21,7 +21,8 @@ class ConvBNReLU(nn.Module):
             stride=stride,
             padding=padding,
             bias=False,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.bn = nn.BatchNorm2d(out_chan)
         self.init_weight()
 
@@ -193,10 +194,12 @@ class FeatureFusionModule(nn.Module):
         self.convblk = ConvBNReLU(in_chan, out_chan, ks=1, stride=1, padding=0)
         self.conv1 = nn.Conv2d(
             out_chan, out_chan // 4, kernel_size=1, stride=1, padding=0, bias=False
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.conv2 = nn.Conv2d(
             out_chan // 4, out_chan, kernel_size=1, stride=1, padding=0, bias=False
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.relu = nn.ReLU(inplace=True)
         self.sigmoid = nn.Sigmoid()
         self.init_weight()
@@ -235,7 +238,8 @@ class FeatureFusionModule(nn.Module):
 class BiSeNet(nn.Module):
     def __init__(
         self, resnet_path="models / resnet18 - 5c106cde.pth", n_classes=19, *args, **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(BiSeNet, self).__init__()
         self.cp = ContextPath(resnet_path)
         ## here self.sp is deleted

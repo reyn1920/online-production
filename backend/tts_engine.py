@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TTS Engine - Coqui TTS Integration for TRAE.AI
-
+""""""
 This module provides high - quality text - to - speech generation using Coqui TTS,
 replacing the proprietary Speechelo Pro RPA system with a direct, local integration.
+"""
+
+TTS Engine - Coqui TTS Integration for TRAE.AI
+
+
+
+""""""
+
 
 Features:
+
+
+
 - Multiple voice models and languages
 - Emotion and style control
 - Batch processing capabilities
@@ -14,6 +25,7 @@ Features:
 
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
+
 """
 
 import logging
@@ -51,7 +63,7 @@ except ImportError:
 
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO):
 logger = logging.getLogger(__name__)
 
 
@@ -72,7 +84,9 @@ class VoiceConfig:
 
 @dataclass
 class SynthesisResult:
-    """Result of text - to - speech synthesis."""
+    """
+Result of text - to - speech synthesis.
+
 
     audio_path: str
     text: str
@@ -80,20 +94,39 @@ class SynthesisResult:
     duration: float
     sample_rate: int
     created_at: datetime
+   
+""""""
+
     metadata: Dict[str, Any]
+   
 
-
+    
+   
+"""
 class TTSEngine:
-    """High - quality text - to - speech engine using Coqui TTS."""
+    """
+High - quality text - to - speech engine using Coqui TTS.
+
 
     def __init__(self, cache_dir: Optional[str] = None):
-        """Initialize TTS Engine.
+        
+"""Initialize TTS Engine."""
+
 
         Args:
             cache_dir: Directory to cache models and audio files
-        """
-        self.tts_available = TTS_AVAILABLE
+       
 
+        
+       
+""""""
+
+        
+       
+
+        self.tts_available = TTS_AVAILABLE
+       
+""""""
         if not self.tts_available:
             logger.warning("TTS Engine initialized in disabled mode - Coqui TTS not available")
             self.models_cache = {}
@@ -112,16 +145,23 @@ class TTSEngine:
             speed=1.0,
             pitch=1.0,
             volume=1.0,
-        )
+         )
 
         logger.info(f"TTS Engine initialized with {len(self.available_models)} available models")
 
     def _get_available_models(self) -> Dict[str, Dict[str, Any]]:
-        """Get list of available TTS models."""
-        if not self.tts_available:
-            return {}
+        """
+Get list of available TTS models.
 
+        if not self.tts_available:
+            
+"""
+            return {}
+            """"""
         try:
+            """
+            return {}
+            """
             manager = ModelManager()
             models = manager.list_models()
 
@@ -130,7 +170,7 @@ class TTSEngine:
                 "multilingual": [],
                 "english": [],
                 "other_languages": [],
-            }
+             }
 
             for model in models:
                 if "multilingual" in model.lower():
@@ -146,12 +186,19 @@ class TTSEngine:
             return {"english": ["tts_models/en/ljspeech/tacotron2 - DDC"]}
 
     def _load_model(self, model_name: str) -> TTS:
-        """Load and cache TTS model."""
-        if model_name in self.models_cache:
-            return self.models_cache[model_name]
+        """
+Load and cache TTS model.
 
+        if model_name in self.models_cache:
+            
+"""
+            return self.models_cache[model_name]
+            """"""
         try:
             logger.info(f"Loading TTS model: {model_name}")
+            """
+            return self.models_cache[model_name]
+            """
             tts = TTS(model_name=model_name, progress_bar=True)
 
             # Move to GPU if available
@@ -173,8 +220,10 @@ class TTSEngine:
         text: str,
         voice_config: Optional[VoiceConfig] = None,
         output_path: Optional[str] = None,
-    ) -> SynthesisResult:
-        """Synthesize text to speech.
+#     ) -> SynthesisResult:
+        """
+Synthesize text to speech.
+
 
         Args:
             text: Text to synthesize
@@ -183,7 +232,8 @@ class TTSEngine:
 
         Returns:
             SynthesisResult with audio file path and metadata
-        """
+       
+""""""
         if not self.tts_available:
             raise RuntimeError("TTS Engine is not available - Coqui TTS not installed")
 
@@ -220,7 +270,7 @@ class TTSEngine:
             if config.speed != 1.0 or config.pitch != 1.0 or config.volume != 1.0:
                 output_path = self._post_process_audio(
                     output_path, config.speed, config.pitch, config.volume
-                )
+                 )
 
             # Get audio duration
             duration = self._get_audio_duration(output_path)
@@ -238,8 +288,8 @@ class TTSEngine:
                     "text_length": len(text),
                     "words_count": len(text.split()),
                     "gpu_used": torch.cuda.is_available(),
-                },
-            )
+                 },
+             )
 
             logger.info(f"Synthesis completed in {synthesis_time:.2f}s, duration: {duration:.2f}s")
             return result
@@ -250,17 +300,61 @@ class TTSEngine:
 
     def _post_process_audio(
         self, audio_path: str, speed: float, pitch: float, volume: float
-    ) -> str:
-        """Post - process audio with speed, pitch, and volume adjustments."""
+#     ) -> str:
+        """
+Post - process audio with speed, pitch, and volume adjustments.
+
         try:
             # Load audio
+           
+""""""
+
             y, sr = librosa.load(audio_path, sr=None)
+           
+
+            
+           
+""""""
+
+
+            
+
+           
 
             # Adjust speed (time stretching)
-            if speed != 1.0:
-                y = librosa.effects.time_stretch(y, rate=speed)
+           
+""""""
 
+           
+
+            
+           
+"""
+            y, sr = librosa.load(audio_path, sr=None)
+           """
+
+            
+           
+
+            if speed != 1.0:
+               
+""""""
+
+                y = librosa.effects.time_stretch(y, rate=speed)
+               
+
+                
+               
+"""
             # Adjust pitch
+               """
+
+                
+               
+
+                y = librosa.effects.time_stretch(y, rate=speed)
+               
+""""""
             if pitch != 1.0:
                 n_steps = 12 * np.log2(pitch)  # Convert to semitones
                 y = librosa.effects.pitch_shift(y, sr=sr, n_steps=n_steps)
@@ -283,12 +377,31 @@ class TTSEngine:
             return audio_path  # Return original if processing fails
 
     def _get_audio_duration(self, audio_path: str) -> float:
-        """Get audio file duration in seconds."""
+        """
+Get audio file duration in seconds.
+
         try:
+           
+""""""
+
             y, sr = librosa.load(audio_path, sr=None)
+           
+
+            
+           
+"""
             return len(y) / sr
         except Exception as e:
             logger.error(f"Error getting audio duration: {e}")
+           """
+
+            
+           
+
+            y, sr = librosa.load(audio_path, sr=None)
+           
+""""""
+
             return 0.0
 
     def batch_synthesize(
@@ -297,7 +410,9 @@ class TTSEngine:
         voice_config: Optional[VoiceConfig] = None,
         output_dir: Optional[str] = None,
     ) -> List[SynthesisResult]:
-        """Synthesize multiple texts in batch.
+        
+Synthesize multiple texts in batch.
+"""
 
         Args:
             texts: List of texts to synthesize
@@ -306,10 +421,21 @@ class TTSEngine:
 
         Returns:
             List of SynthesisResult objects
-        """
+       """
+
+        
+       
+
         if not texts:
+            
+"""
+            return []
+            """"""
+            """
+
             return []
 
+            """
         config = voice_config or self.default_config
         output_dir = Path(output_dir) if output_dir else self.cache_dir
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -338,19 +464,35 @@ class TTSEngine:
         return results
 
     def get_available_voices(self, language: str = "en") -> List[str]:
-        """Get available voices for a language.
+        """
+Get available voices for a language.
+
 
         Args:
             language: Language code (e.g., 'en', 'es', 'fr')
 
         Returns:
             List of available voice model names
-        """
-        voices = []
+       
+""""""
 
+       
+
+        
+       
+"""
+        voices = []
+       """"""
         # Add multilingual models
         voices.extend(self.available_models.get("multilingual", []))
+       """
 
+        
+       
+
+        voices = []
+       
+""""""
         # Add language - specific models
         if language == "en":
             voices.extend(self.available_models.get("english", []))
@@ -363,17 +505,38 @@ class TTSEngine:
         return voices
 
     def get_model_info(self, model_name: str) -> Dict[str, Any]:
-        """Get information about a specific model.
+        """
+Get information about a specific model.
+
 
         Args:
             model_name: Name of the model
 
         Returns:
             Dictionary with model information
-        """
-        try:
-            tts = self._load_model(model_name)
+       
+""""""
 
+        
+
+        try:
+        
+""""""
+
+            
+           
+
+            tts = self._load_model(model_name)
+           
+""""""
+
+        
+
+        try:
+        
+""""""
+        
+       """
             info = {
                 "model_name": model_name,
                 "language": "unknown",
@@ -381,7 +544,7 @@ class TTSEngine:
                 "sample_rate": getattr(tts, "sample_rate", 22050),
                 "is_multi_speaker": False,
                 "is_multi_lingual": False,
-            }
+             }
 
             # Extract language from model name
             if "/en/" in model_name:
@@ -405,19 +568,47 @@ class TTSEngine:
             return {"model_name": model_name, "error": str(e)}
 
     def cleanup_cache(self, max_age_days: int = 7) -> int:
-        """Clean up old cached audio files.
+        """
+Clean up old cached audio files.
+
 
         Args:
             max_age_days: Maximum age of files to keep in days
 
         Returns:
             Number of files deleted
-        """
-        try:
-            deleted_count = 0
-            current_time = datetime.now()
+       
+""""""
 
+        
+
+        try:
+        
+"""
+            deleted_count = 0
+        """
+
+        try:
+        
+
+           
+""""""
+
+            current_time = datetime.now()
+           
+
+            
+           
+"""
             for file_path in self.cache_dir.glob("*.wav"):
+           """
+
+            
+           
+
+            current_time = datetime.now()
+           
+""""""
                 file_age = current_time - datetime.fromtimestamp(file_path.stat().st_mtime)
 
                 if file_age.days > max_age_days:
@@ -456,13 +647,13 @@ if __name__ == "__main__":
             speed=1.1,
             pitch=1.05,
             volume=0.9,
-        )
+         )
 
         result2 = tts_engine.synthesize_text(
-            "This is a test with custom voice settings including speed, pitch, \
-    and volume adjustments.",
+            "This is a test with custom voice settings including speed, pitch, \"
+#     and volume adjustments.",
             voice_config=custom_config,
-        )
+         )
         print(f"✅ Custom synthesis successful: {result2.audio_path}")
 
         # Test batch synthesis
@@ -471,7 +662,7 @@ if __name__ == "__main__":
             "First sentence for batch processing.",
             "Second sentence with different content.",
             "Third and final sentence in the batch.",
-        ]
+         ]
 
         batch_results = tts_engine.batch_synthesize(batch_texts)
         print(f"✅ Batch synthesis completed: {len(batch_results)} files generated")

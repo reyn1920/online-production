@@ -108,7 +108,8 @@ _C.INPUT.FLIP_ORDER = [
     93,
     97,
     96,
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 ### BACKBONE ###
 _C.BACKBONE = CN()

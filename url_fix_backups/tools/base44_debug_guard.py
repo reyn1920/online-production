@@ -16,7 +16,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 ROOT = (
     Path(__file__).resolve().parents[1] if (Path(__file__).parent.name == "tools") else Path.cwd()
-)
+# BRACKET_SURGEON: disabled
+# )
 LOG_PATH = ROOT / "base44_guard.log"
 REPORT_JSON = ROOT / "base44_guard_report.json"
 
@@ -43,7 +44,8 @@ FORBIDDEN = [
     r"\\bDUMMY_DATA_HERE\\b",
     r"\\bSAMPLE_CONTENT_ONLY\\b",
     r"\\bTEST_MODE_ONLY\\b",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 EXCLUDE_DIRS = {
     ".git",
@@ -70,7 +72,8 @@ EXCLUDE_DIRS = {
     "test_results",
     "outputs",
     "output",
-}
+# BRACKET_SURGEON: disabled
+# }
 SCAN_EXTS = {
     ".js",
     ".jsx",
@@ -91,7 +94,8 @@ SCAN_EXTS = {
     ".toml",
     ".ini",
     ".conf",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def log(msg: str):
@@ -116,7 +120,8 @@ def run(
         stderr=subprocess.PIPE,
         shell=True,
         text=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     try:
         out, err = p.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
@@ -167,7 +172,8 @@ def has_eslint_config(root: Path) -> bool:
         ".eslintrc.js",
         ".eslintrc.yaml",
         ".eslintrc.yml",
-    ]:
+# BRACKET_SURGEON: disabled
+#     ]:
         if (root / f).exists():
             return True
     return False
@@ -207,7 +213,8 @@ def scan_forbidden(root: Path) -> List[Dict[str, Any]]:
         "mock.",
         "Mock",
         "MOCK",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     for path in root.rglob("*"):
         # Skip if any parent directory is in EXCLUDE_DIRS
@@ -245,9 +252,9 @@ def scan_forbidden(root: Path) -> List[Dict[str, Any]]:
                     for tech in [
                         "placeholder=",
                         "placeholder:",
-                        "placeholder'",
-                        'placeholder"',
-                        "# check for todo",
+                        "placeholder'",'
+                        'placeholder"',"
+                        "# check for todo","
                         "scanning for todo",
                         "todo_count",
                         "todo / fixme",
@@ -275,7 +282,7 @@ def scan_forbidden(root: Path) -> List[Dict[str, Any]]:
                         "log_success",
                         "echo",
                         "print",
-                        "# ",
+                        "# ","
                         "// ",
                         "/* ",
                         "<!-- ",
@@ -283,19 +290,22 @@ def scan_forbidden(root: Path) -> List[Dict[str, Any]]:
                         "yaml",
                         "json",
                         "[redacted",
-                        "redacted]",
+# BRACKET_SURGEON: disabled
+#                         "redacted]",
                         "security scan",
                         "weak_passwords",
                         "common_passwords",
                         "password_list",
                         "security_check",
                         "scanner",
-                    ]
-                ):
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ):
                     continue
 
                 # Skip if it's in a comment or documentation context
-                if any(marker in ctx for marker in ["#", "//", "/*", "<!--", '"""', "'''"]):
+                if any(marker in ctx for marker in ["#", "//", "/*", "<!--", '"""', "'''"]):'''"""
                     continue
 
                 # Skip if it's in a security scanning context
@@ -308,8 +318,10 @@ def scan_forbidden(root: Path) -> List[Dict[str, Any]]:
                         "line": line_no,
                         "hit": m.group(0),
                         "context": ctx,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
     return issues
 
 
@@ -419,7 +431,8 @@ def serve_and_probe(dist_dir: Path, port: int = 5173, duration_sec: int = 15) ->
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     try:
         time.sleep(2)
         ok = False
@@ -456,7 +469,8 @@ def pass_once(root: Path, pm: str, pass_name: str) -> Dict[str, Any]:
         for i, issue in enumerate(issues[:10]):
             log(
                 f"  {i + 1}. {issue['file']}:{issue['line']} - '{issue['hit']}' in: {issue['context'][:100]}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
         report["sample_hits"] = issues[:20]  # Include sample in report
         raise RuntimeError(f"Forbidden vocabulary present: {len(issues)} hit(s).")
 
@@ -491,7 +505,8 @@ def main():
         "root": str(ROOT),
         "passes": [],
         "status": "unknown",
-    }
+# BRACKET_SURGEON: disabled
+#     }
     pm = detect_pkg_manager(ROOT)
 
     try:

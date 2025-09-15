@@ -9,9 +9,9 @@ from torch.optim import Adam
 
 
 class WarmupCosineLRSchedule(torch.optim.lr_scheduler._LRScheduler):
-    """
+    """"""
     Implements Warmup learning rate schedule until 'warmup_steps', going from 'init_lr' to 'peak_lr' for multiple optimizers.
-    """
+    """"""
 
     def __init__(
         self,
@@ -22,7 +22,8 @@ class WarmupCosineLRSchedule(torch.optim.lr_scheduler._LRScheduler):
         warmup_steps=10000,
         total_steps=400000,
         current_step=0,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.init_lr = init_lr
         self.peak_lr = peak_lr
         self.end_lr = end_lr
@@ -51,7 +52,8 @@ class WarmupCosineLRSchedule(torch.optim.lr_scheduler._LRScheduler):
         else:
             decay_ratio = (self._current_step - self.warmup_steps) / (
                 self.total_steps - self.warmup_steps
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if decay_ratio < 0.0 or decay_ratio > 1.0:
                 raise RuntimeError("Decay ratio must be in [0.0, 1.0]. Fix LR scheduler settings.")
             coeff = 0.5 * (1.0 + math.cos(math.pi * decay_ratio))
@@ -69,7 +71,8 @@ if __name__ == "__main__":
     opt = Adam(m.parameters(), lr=1e-4)
     s = WarmupCosineLRSchedule(
         opt, 1e-6, 2e-4, 1e-6, warmup_steps=2000, total_steps=20000, current_step=0
-    )
+# BRACKET_SURGEON: disabled
+#     )
     lrs = []
     for i in range(25000):
         s.step()

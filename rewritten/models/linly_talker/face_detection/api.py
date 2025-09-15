@@ -16,14 +16,14 @@ from .utils import *
 
 
 class LandmarksType(Enum):
-    """Enum class defining the type of landmarks to detect.
+    """Enum class defining the type of landmarks to detect."""
 
     ``_2D`` - the detected points ``(x,y)`` are detected in a 2D space \
-    and follow the visible contour of the face
+#     and follow the visible contour of the face
     ``_2halfD`` - this points represent the projection of the 3D points into 3D
     ``_3D`` - detect the points ``(x,y,z)``` in a 3D space
 
-    """
+    """"""
 
     _2D = 1
     _2halfD = 2
@@ -57,7 +57,8 @@ class FaceAlignment:
         flip_input=False,
         face_detector="sfd",
         verbose=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.device = device
         self.flip_input = flip_input
         self.landmarks_type = landmarks_type
@@ -75,7 +76,8 @@ class FaceAlignment:
                 locals(),
                 [face_detector],
                 0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         self.face_detector = face_detector_module.FaceDetector(device=device, verbose=verbose)
 
     def get_detections_for_batch(self, images):

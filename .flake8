@@ -1,0 +1,76 @@
+[flake8]
+# Maximum line length
+max-line-length = 127
+
+# Maximum cyclomatic complexity
+max-complexity = 10
+
+# Ignore specific error codes
+ignore = 
+    # E203: whitespace before ':' (conflicts with black)
+    E203,
+    # W503: line break before binary operator (conflicts with black)
+    W503,
+    # E501: line too long (handled by max-line-length)
+    E501,
+    # F401: imported but unused (handled by other tools)
+    F401
+
+# Exclude directories
+exclude = 
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    env,
+    .env,
+    node_modules,
+    .tox,
+    .eggs,
+    *.egg,
+    build,
+    dist,
+    .pytest_cache,
+    .coverage,
+    htmlcov,
+    .mypy_cache,
+    migrations,
+    .github,
+    docs/_build
+
+# File patterns to include
+filename = *.py
+
+# Enable specific checks
+select = 
+    # Pyflakes errors
+    F,
+    # Pycodestyle errors
+    E,
+    # Pycodestyle warnings
+    W,
+    # McCabe complexity
+    C90
+
+# Per-file ignores
+per-file-ignores = 
+    # Tests can have longer lines and more complex functions
+    tests/*.py:E501,C901
+    # Init files can have unused imports
+    __init__.py:F401
+    # Settings files can have longer lines
+    settings.py:E501
+    # Configuration files can have longer lines
+    config.py:E501
+
+# Show source code for each error
+show-source = True
+
+# Show pep8 violation statistics
+statistics = True
+
+# Count errors and warnings
+count = True
+
+# Format for error messages
+format = %(path)s:%(row)d:%(col)d: %(code)s %(text)s

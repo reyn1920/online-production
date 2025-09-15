@@ -16,7 +16,8 @@ from utils.utils_callbacks import (
     CallBackLogging,
     CallBackModelCheckpoint,
     CallBackVerification,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from utils.utils_config import get_config
 from utils.utils_logging import AverageMeter, init_logging
@@ -36,7 +37,8 @@ def main(args):
             init_method="tcp://127.0.0.1:12584",
             rank=rank,
             world_size=world_size,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     local_rank = args.local_rank
     torch.cuda.set_device(local_rank)
@@ -57,7 +59,8 @@ def main(args):
         num_workers=2,
         pin_memory=True,
         drop_last=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     backbone = get_model(
         cfg.network, dropout=0.0, fp16=cfg.fp16, num_features=cfg.embedding_size
     ).to(local_rank)
@@ -67,7 +70,8 @@ def main(args):
             backbone_pth = os.path.join(cfg.output, "backbone.pth")
             backbone.load_state_dict(
                 torch.load(backbone_pth, map_location=torch.device(local_rank))
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if rank == 0:
                 logging.info("backbone resume successfully!")
         except (FileNotFoundError, KeyError, IndexError, RuntimeError):
@@ -76,7 +80,8 @@ def main(args):
 
     backbone = torch.nn.parallel.DistributedDataParallel(
         module=backbone, broadcast_buffers=False, device_ids=[local_rank]
-    )
+# BRACKET_SURGEON: disabled
+#     )
     backbone.train()
     margin_softmax = losses.get_loss(cfg.loss)
     module_partial_fc = PartialFC(
@@ -90,20 +95,23 @@ def main(args):
         sample_rate=cfg.sample_rate,
         embedding_size=cfg.embedding_size,
         prefix=cfg.output,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     opt_backbone = torch.optim.SGD(
         params=[{"params": backbone.parameters()}],
         lr=cfg.lr / 512 * cfg.batch_size * world_size,
         momentum=0.9,
         weight_decay=cfg.weight_decay,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     opt_pfc = torch.optim.SGD(
         params=[{"params": module_partial_fc.parameters()}],
         lr=cfg.lr / 512 * cfg.batch_size * world_size,
         momentum=0.9,
         weight_decay=cfg.weight_decay,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     num_image = len(train_set)
     total_batch_size = cfg.batch_size * world_size
@@ -119,7 +127,8 @@ def main(args):
 
     scheduler_backbone = torch.optim.lr_scheduler.LambdaLR(
         optimizer=opt_backbone, lr_lambda=lr_step_func
-    )
+# BRACKET_SURGEON: disabled
+#     )
     scheduler_pfc = torch.optim.lr_scheduler.LambdaLR(optimizer=opt_pfc, lr_lambda=lr_step_func)
 
     for key, value in cfg.items():
@@ -138,7 +147,8 @@ def main(args):
         MaxClipGradScaler(cfg.batch_size, 128 * cfg.batch_size, growth_interval=100)
         if cfg.fp16
         else None
-    )
+# BRACKET_SURGEON: disabled
+#     )
     for epoch in range(start_epoch, cfg.num_epoch):
         train_sampler.set_epoch(epoch)
         for step, (img, label) in enumerate(train_loader):
@@ -168,7 +178,8 @@ def main(args):
                 cfg.fp16,
                 scheduler_backbone.get_last_lr()[0],
                 grad_amp,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             callback_verification(global_step, backbone)
             scheduler_backbone.step()
             scheduler_pfc.step()

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
 AI Video Production Pipeline
 Integrates Linly Talker, DaVinci Resolve, and Blender for automated video production
 
 Author: AI Assistant
 Date: 2024
 Version: 1.0
-"""
+""""""
 
 import json
 import os
@@ -43,7 +43,8 @@ class LinlyTalkerAPI:
         voice_sample: Optional[str] = None,
         image_path: Optional[str] = None,
         output_dir: str = "/tmp",
-    ) -> Dict:
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
         """Generate talking avatar video from text input"""
 
         if not self.health_check():
@@ -58,7 +59,8 @@ class LinlyTalkerAPI:
             "output_dir": output_dir,
             "quality": "high",
             "fps": 24,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if voice_sample and os.path.exists(voice_sample):
             payload["voice_sample"] = voice_sample
@@ -106,7 +108,8 @@ class DaVinciResolveAutomation:
             # Set up environment variables
             resolve_script_api = (
                 "/Library/Application Support/Blackmagic Design/DaVinci Resolve/Developer/Scripting"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             resolve_script_lib = "/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/Libraries/Fusion/fusionscript.so"
 
             os.environ["RESOLVE_SCRIPT_API"] = resolve_script_api
@@ -131,9 +134,10 @@ class DaVinciResolveAutomation:
         except ImportError:
             print("⚠ DaVinci Resolve scripting API not available")
             print(
-                "Please ensure DaVinci Resolve is installed \
-    and external scripting is enabled"
-            )
+                "Please ensure DaVinci Resolve is installed \"
+#     and external scripting is enabled"
+# BRACKET_SURGEON: disabled
+#             )
             self.resolve = None
         except Exception as e:
             print(f"⚠ DaVinci Resolve initialization failed: {str(e)}")
@@ -225,7 +229,8 @@ class DaVinciResolveAutomation:
                 "TargetDir": os.path.dirname(output_path),
                 "CustomName": os.path.splitext(os.path.basename(output_path))[0],
                 "Format": format_preset,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             project.SetRenderSettings(render_settings)
 
@@ -259,17 +264,19 @@ class BlenderAutomation:
                 capture_output=True,
                 text=True,
                 timeout=10,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result.returncode == 0
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return False
 
     def create_enhancement_script(
         self, video_path: str, output_path: str, environment_type: str = "studio"
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Create Blender Python script for video enhancement"""
 
-        script_content = f"""
+        script_content = f""""""
 
 import bpy
 import os
@@ -353,7 +360,8 @@ if "{environment_type}" == "studio":
     backdrop_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.8,
     0.8,
     0.8,
-    1.0)
+# BRACKET_SURGEON: disabled
+#     1.0)
     backdrop.data.materials.append(backdrop_material)
 
 # Setup camera
@@ -376,7 +384,7 @@ try:
 except Exception as e:
     print(f"✗ Render failed: {{e}}")
     sys.exit(1)
-"""
+""""""
 
         script_path = os.path.join(self.temp_script_dir, f"enhance_{int(time.time())}.py")
         with open(script_path, "w") as f:
@@ -386,7 +394,8 @@ except Exception as e:
 
     def enhance_video(
         self, video_path: str, output_path: str, environment_type: str = "studio"
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Enhance video with 3D environment using Blender"""
 
         if not self.is_available():
@@ -455,8 +464,10 @@ class AIVideoProductionPipeline:
                     "llm": "gpt - 3.5 - turbo",
                     "tts": "edge - tts",
                     "avatar": "sadtalker",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "blender": {
                 "executable_path": "blender",
                 "render_settings": {
@@ -464,19 +475,25 @@ class AIVideoProductionPipeline:
                     "resolution_y": 1080,
                     "fps": 24,
                     "samples": 128,
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "resolve": {
                 "project_settings": {
                     "timeline_resolution": "1920x1080",
                     "timeline_framerate": "24",
-                }
-            },
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
             "output": {
                 "temp_directory": "/tmp/ai_pipeline",
                 "final_directory": "/Users/thomasbrianreynolds/online production/output",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def load_config(self, config_path: str) -> Dict:
         """Load configuration from file"""
@@ -504,9 +521,10 @@ class AIVideoProductionPipeline:
         else:
             print("⚠ DaVinci Resolve API is not available")
             print(
-                "  Please ensure DaVinci Resolve is installed \
-    and external scripting is enabled"
-            )
+                "  Please ensure DaVinci Resolve is installed \"
+#     and external scripting is enabled"
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check Blender
         if self.blender_automation.is_available():
@@ -533,7 +551,8 @@ class AIVideoProductionPipeline:
                 voice_sample=voice_sample,
                 image_path=character_image,
                 output_dir=self.temp_dir,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             avatar_video_path = result.get("output_path")
 
@@ -563,7 +582,8 @@ class AIVideoProductionPipeline:
 
         success = self.blender_automation.enhance_video(
             avatar_video_path, enhanced_output, environment_type
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if success and os.path.exists(enhanced_output):
             print(f"✓ Enhanced video created: {enhanced_output}")
@@ -639,7 +659,8 @@ class AIVideoProductionPipeline:
         voice_sample: Optional[str] = None,
         additional_assets: Optional[List[str]] = None,
         environment_type: str = "studio",
-    ) -> Dict:
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
         """Execute complete AI video production pipeline"""
 
         print("\\n" + "=" * 50)
@@ -652,7 +673,8 @@ class AIVideoProductionPipeline:
             # Step 1: Generate AI Avatar
             avatar_video = self.generate_ai_avatar_content(
                 script_text, character_image, voice_sample
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not avatar_video:
                 return {"success": False, "error": "Avatar generation failed"}
@@ -677,7 +699,8 @@ class AIVideoProductionPipeline:
                 "enhanced_video": enhanced_video,
                 "final_video": final_video,
                 "processing_time": elapsed_time,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             print("\\n" + "=" * 50)
             print("PIPELINE COMPLETED SUCCESSFULLY")
@@ -694,7 +717,8 @@ class AIVideoProductionPipeline:
                 "success": False,
                 "error": str(e),
                 "processing_time": elapsed_time,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             print("\\n" + "=" * 50)
             print("PIPELINE FAILED")
@@ -720,7 +744,8 @@ def main():
         default="studio",
         choices=["studio", "outdoor"],
         help="3D environment type",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument("--assets", nargs="*", help="Additional asset files")
 
     args = parser.parse_args()
@@ -735,7 +760,8 @@ def main():
         voice_sample=args.voice,
         additional_assets=args.assets,
         environment_type=args.environment,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Exit with appropriate code
     sys.exit(0 if result["success"] else 1)

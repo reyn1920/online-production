@@ -13,12 +13,12 @@ class GuardianAPI(BaseAPI):
     """Guardian API integration for free news content"""
 
     def __init__(self, api_key: Optional[str] = None):
-        """
+        """"""
         Initialize Guardian API client
 
         Args:
             api_key: Guardian API key. If not provided, will try to get from environment
-        """
+        """"""
         super().__init__()
         self.api_key = api_key or os.getenv("GUARDIAN_API_KEY")
         self.base_url = "https://content.guardianapis.com"
@@ -42,7 +42,7 @@ class GuardianAPI(BaseAPI):
         page: int = 1,
         **kwargs,
     ) -> Dict[str, Any]:
-        """
+        """"""
         Search for content
 
         Args:
@@ -54,7 +54,7 @@ class GuardianAPI(BaseAPI):
 
         Returns:
             Dict containing search results
-        """
+        """"""
         if not self.api_key:
             raise APIError("Guardian API key not configured")
 
@@ -66,7 +66,8 @@ class GuardianAPI(BaseAPI):
             **({"section": section} if section else {}),
             **{"page - size": min(page_size, 50)},  # API limit
             **{"page": page},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         try:
             response = requests.get(url, params=params)
@@ -84,12 +85,12 @@ class GuardianAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_sections(self) -> Dict[str, Any]:
-        """
+        """"""
         Get available sections
 
         Returns:
             Dict containing available sections
-        """
+        """"""
         if not self.api_key:
             raise APIError("Guardian API key not configured")
 
@@ -111,7 +112,7 @@ class GuardianAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_tags(self, query: str = None, page_size: int = 10, page: int = 1) -> Dict[str, Any]:
-        """
+        """"""
         Get available tags
 
         Args:
@@ -121,7 +122,7 @@ class GuardianAPI(BaseAPI):
 
         Returns:
             Dict containing available tags
-        """
+        """"""
         if not self.api_key:
             raise APIError("Guardian API key not configured")
 
@@ -131,7 +132,8 @@ class GuardianAPI(BaseAPI):
             **({"q": query} if query else {}),
             **{"page - size": min(page_size, 50)},  # API limit
             **{"page": page},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         try:
             response = requests.get(url, params=params)
@@ -149,7 +151,7 @@ class GuardianAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_content_by_id(self, content_id: str, show_fields: str = "all") -> Dict[str, Any]:
-        """
+        """"""
         Get specific content by ID
 
         Args:
@@ -158,7 +160,7 @@ class GuardianAPI(BaseAPI):
 
         Returns:
             Dict containing content details
-        """
+        """"""
         if not self.api_key:
             raise APIError("Guardian API key not configured")
 
@@ -184,7 +186,7 @@ class GuardianAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_latest_news(self, section: str = None, page_size: int = 10) -> Dict[str, Any]:
-        """
+        """"""
         Get latest news articles
 
         Args:
@@ -193,11 +195,11 @@ class GuardianAPI(BaseAPI):
 
         Returns:
             Dict containing latest news
-        """
+        """"""
         return self.search_content(section=section, page_size=page_size, **{"order - by": "newest"})
 
     def search_by_topic(self, topic: str, page_size: int = 10) -> Dict[str, Any]:
-        """
+        """"""
         Search articles by topic/keyword
 
         Args:
@@ -206,16 +208,16 @@ class GuardianAPI(BaseAPI):
 
         Returns:
             Dict containing search results
-        """
+        """"""
         return self.search_content(query=topic, page_size=page_size, **{"order - by": "relevance"})
 
     def get_status(self) -> Dict[str, Any]:
-        """
+        """"""
         Get API status and configuration
 
         Returns:
             Dict containing status information
-        """
+        """"""
         return {
             "name": self.name,
             "category": self.category,
@@ -227,25 +229,28 @@ class GuardianAPI(BaseAPI):
                 "Tag search",
                 "Content by ID",
                 "Latest news",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "rate_limits": "5,000 calls per day for free tier",
             "last_checked": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def test_connection(self) -> Dict[str, Any]:
-        """
+        """"""
         Test the API connection
 
         Returns:
             Dict containing test results
-        """
+        """"""
         try:
             if not self.api_key:
                 return {
                     "success": False,
                     "error": "API key not configured",
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Test with a simple sections request
             result = self.get_sections()
@@ -255,11 +260,13 @@ class GuardianAPI(BaseAPI):
                 "message": "Connection successful",
                 "sections_available": len(result.get("response", {}).get("results", [])),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {
                 "success": False,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }

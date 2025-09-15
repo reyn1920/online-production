@@ -1,7 +1,7 @@
 #!/usr / bin / env python3
-"""
+""""""
 Submit paste content to the paste app running on localhost:8080
-"""
+""""""
 
 import json
 

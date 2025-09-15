@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 Simple API Discovery Script
 
 Standalone script to discover and integrate free APIs without complex dependencies.
-"""
+""""""
 
 import json
 import sqlite3
@@ -37,7 +37,8 @@ class SimpleAPIDiscovery:
                     for api in all_apis
                     if api.get("Auth", "").lower() in ["", "no", "none"]
                     or "free" in api.get("Description", "").lower()
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 print(f"✅ Found {len(free_apis)} free APIs out of {len(all_apis)} total")
                 return free_apis[:50]  # Limit to first 50 for processing
@@ -69,7 +70,7 @@ class SimpleAPIDiscovery:
                 for api in apis:
                     # Insert into api_suggestions table
                     conn.execute(
-                        """
+                        """"""
                         INSERT OR REPLACE INTO api_suggestions (
                             api_name, provider, category, description, signup_url,
                             documentation_url, pricing_model, free_tier_limits,
@@ -77,7 +78,7 @@ class SimpleAPIDiscovery:
                             use_cases, required_credentials, rate_limits, status,
                             discovery_source, created_at, updated_at
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             api.get("API", "Unknown"),
                             "PublicAPIs.org",
@@ -97,8 +98,10 @@ class SimpleAPIDiscovery:
                                     api.get("Category", "Other"),
                                     "automation",
                                     "integration",
-                                ]
-                            ),
+# BRACKET_SURGEON: disabled
+#                                 ]
+# BRACKET_SURGEON: disabled
+#                             ),
                             json.dumps([api.get("Auth", "none")])
                             if api.get("Auth")
                             else json.dumps([]),
@@ -107,18 +110,20 @@ class SimpleAPIDiscovery:
                             "simple_api_discovery",
                             datetime.now().isoformat(),
                             datetime.now().isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Insert into api_discovery_tasks table
                     conn.execute(
-                        """
+                        """"""
                         INSERT OR REPLACE INTO api_discovery_tasks (
                             task_name, task_type, target_capability, search_parameters,
                             capability_gap, search_keywords, priority, status,
                             assigned_agent, progress_notes, apis_found, created_at, updated_at
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             f"Discovered: {api.get('API', 'Unknown')}",
                             "api_integration",
@@ -128,15 +133,19 @@ class SimpleAPIDiscovery:
                                     "link": api.get("Link", ""),
                                     "auth": api.get("Auth", "none"),
                                     "https": api.get("HTTPS", False),
-                                }
-                            ),
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                             ),
                             "Free API integration",
                             json.dumps(
                                 [
                                     api.get("API", "Unknown"),
                                     api.get("Category", "Other"),
-                                ]
-                            ),
+# BRACKET_SURGEON: disabled
+#                                 ]
+# BRACKET_SURGEON: disabled
+#                             ),
                             5,  # Medium priority
                             "completed",
                             "simple_api_discovery",
@@ -144,8 +153,10 @@ class SimpleAPIDiscovery:
                             1,
                             datetime.now().isoformat(),
                             datetime.now().isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                     saved_count += 1
 
@@ -163,37 +174,43 @@ class SimpleAPIDiscovery:
             with sqlite3.connect(self.db_path) as conn:
                 # Update last discovery time
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO system_config (key,
     value,
     description,
-    updated_at)
+# BRACKET_SURGEON: disabled
+#     updated_at)
                     VALUES (?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         "last_api_discovery",
                         datetime.now().isoformat(),
                         "Last successful API discovery run",
                         datetime.now().isoformat(),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Update total discovered APIs count
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO system_config (key,
     value,
     description,
-    updated_at)
+# BRACKET_SURGEON: disabled
+#     updated_at)
                     VALUES (?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         "total_discovered_apis",
                         str(total_apis),
                         "Total number of discovered APIs",
                         datetime.now().isoformat(),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
 
@@ -208,7 +225,7 @@ class SimpleAPIDiscovery:
 
                 # Get API statistics by category
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT
                         category,
                         COUNT(*) as count,
@@ -217,32 +234,35 @@ class SimpleAPIDiscovery:
                     WHERE status = 'discovered'
                     GROUP BY category
                     ORDER BY count DESC
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 category_stats = [dict(row) for row in cursor.fetchall()]
 
                 # Get total count
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT COUNT(*) as total_count
                     FROM api_suggestions
                     WHERE status = 'discovered'
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 total_count = cursor.fetchone()[0]
 
                 # Get recent discoveries
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT api_name, category, quality_score, created_at
                     FROM api_suggestions
                     WHERE status = 'discovered'
                     ORDER BY created_at DESC
                     LIMIT 10
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 recent_discoveries = [dict(row) for row in cursor.fetchall()]
 
@@ -250,7 +270,8 @@ class SimpleAPIDiscovery:
                     "total_apis": total_count,
                     "by_category": category_stats,
                     "recent_discoveries": recent_discoveries,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             print(f"❌ Error generating report: {e}")
@@ -295,7 +316,8 @@ class SimpleAPIDiscovery:
             "categories": list(categorized.keys()),
             "report": report,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Print summary
         print("\\n" + "=" * 40)
@@ -319,7 +341,8 @@ def main():
     # Save results to file
     results_file = (
         f"simple_api_discovery_results_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     with open(results_file, "w") as f:
         json.dump(results, f, indent=2, default=str)
 

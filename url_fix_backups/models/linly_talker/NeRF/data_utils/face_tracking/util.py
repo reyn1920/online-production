@@ -27,25 +27,31 @@ def euler2rot(euler_angle):
             torch.cat((one, zero, zero), 1),
             torch.cat((zero, theta.cos(), theta.sin()), 1),
             torch.cat((zero, -theta.sin(), theta.cos()), 1),
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         2,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     rot_y = torch.cat(
         (
             torch.cat((phi.cos(), zero, -phi.sin()), 1),
             torch.cat((zero, one, zero), 1),
             torch.cat((phi.sin(), zero, phi.cos()), 1),
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         2,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     rot_z = torch.cat(
         (
             torch.cat((psi.cos(), -psi.sin(), zero), 1),
             torch.cat((psi.sin(), psi.cos(), zero), 1),
             torch.cat((zero, zero, one), 1),
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         2,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return torch.bmm(rot_x, torch.bmm(rot_y, rot_z))
 
 
@@ -57,7 +63,8 @@ def rot_trans_pts(geometry, rot, trans):
 def cal_lap_loss(tensor_list, weight_list):
     lap_kernel = (
         torch.Tensor((-0.5, 1.0, -0.5)).unsqueeze(0).unsqueeze(0).float().to(tensor_list[0].device)
-    )
+# BRACKET_SURGEON: disabled
+#     )
     loss_lap = 0
     for i in range(len(tensor_list)):
         in_tensor = tensor_list[i]

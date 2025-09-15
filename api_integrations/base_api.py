@@ -86,7 +86,8 @@ class RateLimiter:
         raise RateLimitError(
             f"Rate limit exceeded, wait {wait_time:.2f} seconds",
             retry_after=int(wait_time),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 class BaseAPI(ABC):
@@ -134,7 +135,8 @@ class BaseAPI(ABC):
                     params=params,
                     json=data,
                     headers=request_headers,
-                ) as response:
+# BRACKET_SURGEON: disabled
+#                 ) as response:
                     # Handle rate limiting from server
                     if response.status == 429:
                         retry_after = int(response.headers.get("Retry - After", 60))
@@ -157,7 +159,8 @@ class BaseAPI(ABC):
                     wait_time = 2**attempt  # Exponential backoff
                     logger.warning(
                         f"Request failed (attempt {attempt + 1}), retrying in {wait_time}s: {e}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     await asyncio.sleep(wait_time)
                     continue
                 else:

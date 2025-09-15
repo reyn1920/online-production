@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 Script to set up Twitter credentials for the current system
-"""
+""""""
 
 import sys
 from pathlib import Path
@@ -34,7 +34,8 @@ def setup_twitter_credentials():
             store.secret_exists("TWITTER_API_SECRET"),
             store.secret_exists("TWITTER_ACCESS_TOKEN"),
             store.secret_exists("TWITTER_ACCESS_TOKEN_SECRET"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         if all(existing_creds):
             print("✓ Twitter credentials already configured")
@@ -97,7 +98,8 @@ def check_current_status():
             "TWITTER_API_SECRET",
             "TWITTER_ACCESS_TOKEN",
             "TWITTER_ACCESS_TOKEN_SECRET",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         print("=== Current Twitter Credential Status ===")
         for cred in credentials:
@@ -107,7 +109,8 @@ def check_current_status():
         all_set = all(store.secret_exists(cred) for cred in credentials)
         print(
             f"\\nOverall Status: {'✅ All credentials configured' if all_set else '❌ Missing credentials'}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return all_set
 

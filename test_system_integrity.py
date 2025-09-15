@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI System Integrity Test Suite
 
 This comprehensive test suite verifies that all aspects of the TRAE.AI application
 are 100% complete, fully integrated, \
-    and working correctly in a live production environment.
+#     and working correctly in a live production environment.
 
 Test Coverage:
 1. System Startup and Health
@@ -12,7 +12,7 @@ Test Coverage:
 3. Core Tool Verification
 4. Agent Initialization Test
 5. Full End - to - End Workflow Test (The "Golden Path")
-"""
+""""""
 
 import importlib
 import os
@@ -87,7 +87,8 @@ class TestSystemStartupAndHealth:
             env=env,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Wait for system to start up
         time.sleep(15)
@@ -95,7 +96,8 @@ class TestSystemStartupAndHealth:
         # Verify the process is still running
         assert (
             system_test.launch_process.poll() is None
-        ), "launch_live.py process terminated unexpectedly"
+# BRACKET_SURGEON: disabled
+#         ), "launch_live.py process terminated unexpectedly"
 
     def test_dashboard_health_endpoint(self, system_test):
         """Test that the dashboard health endpoint responds correctly"""
@@ -147,7 +149,8 @@ class TestDatabaseIntegrity:
             "evidence",
             "reports",
             "content_performance",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         conn = sqlite3.connect(system_test.db_path)
         cursor = conn.cursor()
@@ -178,7 +181,8 @@ class TestCoreToolVerification:
             "/Applications/Blender.app/Contents/MacOS/Blender",
             "/usr/local/bin/blender",
             "/opt/homebrew/bin/blender",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         blender_found = False
         for path in blender_paths:
@@ -204,7 +208,7 @@ class TestCoreToolVerification:
 
             import DaVinciResolveScript as dvr_script
 
-            resolve = dvr_script.scriptapp("Resolve")
+            dvr_script.scriptapp("Resolve")
             # If we get here without exception, API is available
             assert True
         except ImportError:
@@ -242,7 +246,8 @@ class TestAgentInitialization:
             "backend.agents.financial_agent",
             "backend.agents.growth_agent",
             "backend.agents.self_repair_agent",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for module_name in agent_modules:
             try:
@@ -261,7 +266,8 @@ class TestAgentInitialization:
                 QAAgent,
                 ResearchAgent,
                 SystemAgent,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test agent classes are importable and have required attributes
             agent_classes = [
@@ -272,7 +278,8 @@ class TestAgentInitialization:
                 (QAAgent, "QAAgent"),
                 (FinancialAgent, "FinancialAgent"),
                 (GrowthAgent, "GrowthAgent"),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             for agent_class, agent_name in agent_classes:
                 # Test that class exists and has required methods
@@ -322,13 +329,16 @@ class TestEndToEndWorkflow:
                 "topic": "Test Video Creation",
                 "style": "educational",
                 "duration": 60,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             response = requests.post(
                 f"{system_test.dashboard_url}/api/tasks", json=task_data, timeout=10
-            )
+# BRACKET_SURGEON: disabled
+#             )
             assert response.status_code in [
                 200,
                 201,
@@ -351,7 +361,8 @@ class TestEndToEndWorkflow:
             try:
                 response = requests.get(
                     f"{system_test.dashboard_url}/api/tasks/{task_id}", timeout=5
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if response.status_code == 200:
                     task_info = response.json()
@@ -382,7 +393,8 @@ class TestEndToEndWorkflow:
             system_test.project_root / "assets" / "generated",
             system_test.project_root / "output",
             system_test.project_root / "videos",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         video_found = False
         for output_dir in output_directories:
@@ -392,14 +404,16 @@ class TestEndToEndWorkflow:
                     # Check if any video file was created recently (within last 10 minutes)
                     recent_videos = [
                         f for f in video_files if time.time() - f.stat().st_mtime < 600
-                    ]
+# BRACKET_SURGEON: disabled
+#                     ]
                     if recent_videos:
                         video_found = True
                         break
 
         assert (
             video_found
-        ), "No recent .mp4 video file found in output directories after workflow completion"
+# BRACKET_SURGEON: disabled
+#         ), "No recent .mp4 video file found in output directories after workflow completion"
 
 
 # Test execution configuration

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAEAI Live Environment Configuration Manager
 
 This module provides comprehensive environment configuration management
@@ -10,7 +10,7 @@ Features:
 - Configuration templates generation
 - Deployment checklists
 - Setup guides for API integrations
-"""
+""""""
 
 import os
 import json
@@ -42,27 +42,34 @@ class EnvironmentConfigManager:
                         "description": "Application environment (development/staging/production)",
                         "default": "development",
                         "required": True
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "DEBUG": {
                         "description": "Enable debug mode (true/false)",
                         "default": "true",
                         "required": True
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "SECRET_KEY": {
                         "description": "Secret key for cryptographic operations (32+ characters)",
                         "required": True
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "JWT_SECRET_KEY": {
                         "description": "JWT token signing key",
                         "required": True
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "ALLOWED_HOSTS": {
                         "description": "Comma-separated list of allowed hosts",
                         "default": "localhost,127.0.0.1",
                         "required": True
-                    }
-                }
-            },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
             "ai_ml": {
                 "description": "AI/ML Service APIs",
                 "required": False,
@@ -70,13 +77,17 @@ class EnvironmentConfigManager:
                     "GROQ_API_KEY": {
                         "description": "Groq API key for fast AI inference",
                         "service_url": "https://console.groq.com/keys"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "HUGGINGFACE_API_KEY": {
                         "description": "Hugging Face API key for ML models",
                         "service_url": "https://huggingface.co/settings/tokens"
-                    }
-                }
-            },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
             "media": {
                 "description": "Media and Content APIs",
                 "required": False,
@@ -84,9 +95,12 @@ class EnvironmentConfigManager:
                     "PEXELS_API_KEY": {
                         "description": "Pexels API key for stock photos",
                         "service_url": "https://www.pexels.com/api/"
-                    }
-                }
-            },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
             "news": {
                 "description": "News and Information APIs",
                 "required": False,
@@ -94,13 +108,17 @@ class EnvironmentConfigManager:
                     "GUARDIAN_API_KEY": {
                         "description": "Guardian API key for news content",
                         "service_url": "https://open-platform.theguardian.com/access/"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "NYTIMES_API_KEY": {
                         "description": "New York Times API key",
                         "service_url": "https://developer.nytimes.com/get-started"
-                    }
-                }
-            },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
             "social": {
                 "description": "Social Media APIs",
                 "required": False,
@@ -108,21 +126,27 @@ class EnvironmentConfigManager:
                     "REDDIT_CLIENT_ID": {
                         "description": "Reddit API client ID",
                         "service_url": "https://www.reddit.com/prefs/apps"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "REDDIT_CLIENT_SECRET": {
                         "description": "Reddit API client secret",
                         "service_url": "https://www.reddit.com/prefs/apps"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "YOUTUBE_API_KEY": {
                         "description": "YouTube Data API key",
                         "service_url": "https://console.developers.google.com/"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "GITHUB_TOKEN": {
                         "description": "GitHub personal access token",
                         "service_url": "https://github.com/settings/tokens"
-                    }
-                }
-            },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
             "email": {
                 "description": "Email Service APIs",
                 "required": False,
@@ -130,13 +154,17 @@ class EnvironmentConfigManager:
                     "SENDGRID_API_KEY": {
                         "description": "SendGrid API key for email delivery",
                         "service_url": "https://app.sendgrid.com/settings/api_keys"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "MAILCHIMP_API_KEY": {
                         "description": "Mailchimp API key for email marketing",
                         "service_url": "https://mailchimp.com/developer/marketing/guides/quick-start/"
-                    }
-                }
-            },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
             "analytics": {
                 "description": "Analytics and Tracking",
                 "required": False,
@@ -144,9 +172,12 @@ class EnvironmentConfigManager:
                     "GOOGLE_ANALYTICS_ID": {
                         "description": "Google Analytics tracking ID",
                         "service_url": "https://analytics.google.com/"
-                    }
-                }
-            },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
             "payment_sandbox": {
                 "description": "Payment Gateway Sandbox",
                 "required": False,
@@ -154,43 +185,55 @@ class EnvironmentConfigManager:
                     "STRIPE_PUBLIC_KEY": {
                         "description": "Stripe publishable key (sandbox)",
                         "service_url": "https://dashboard.stripe.com/test/apikeys"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "STRIPE_SECRET_KEY": {
                         "description": "Stripe secret key (sandbox)",
                         "service_url": "https://dashboard.stripe.com/test/apikeys"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "PAYPAL_CLIENT_ID": {
                         "description": "PayPal client ID (sandbox)",
                         "service_url": "https://developer.paypal.com/developer/applications/"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "PAYPAL_CLIENT_SECRET": {
                         "description": "PayPal client secret (sandbox)",
                         "service_url": "https://developer.paypal.com/developer/applications/"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "SQUARE_APPLICATION_ID": {
                         "description": "Square application ID (sandbox)",
                         "service_url": "https://developer.squareup.com/apps"
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "SQUARE_ACCESS_TOKEN": {
                         "description": "Square access token (sandbox)",
                         "service_url": "https://developer.squareup.com/apps"
-                    }
-                }
-            },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
             "deployment": {
                 "description": "Deployment Configuration",
                 "required": False,
                 "variables": {
                     "NETLIFY_AUTH_TOKEN": {
                         "description": "Netlify authentication token",
-                        "service_url": "https://app.netlify.com/user/applications#personal-access-tokens"
-                    },
+                        "service_url": "https://app.netlify.com/user/applications#personal-access-tokens""
+# BRACKET_SURGEON: disabled
+#                     },
                     "NETLIFY_SITE_ID": {
                         "description": "Netlify site ID",
                         "service_url": "https://app.netlify.com/sites"
-                    }
-                }
-            },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
             "security": {
                 "description": "Security Configuration",
                 "required": True,
@@ -199,14 +242,19 @@ class EnvironmentConfigManager:
                         "description": "Comma-separated list of allowed CORS origins",
                         "default": "http://localhost:3000,http://localhost:8000",
                         "required": True
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "RATE_LIMIT_PER_MINUTE": {
                         "description": "Rate limit per minute per IP",
                         "default": "60"
-                    }
-                }
-            }
-        }
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
     def validate_environment(self) -> Dict[str, Any]:
         """Validate current environment configuration."""
@@ -219,7 +267,8 @@ class EnvironmentConfigManager:
             "total_configured": 0,
             "total_possible": 0,
             "configuration_score": 0.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Load current environment
         current_env = self._load_current_env()
@@ -232,7 +281,8 @@ class EnvironmentConfigManager:
                 "missing_vars": [],
                 "total_vars": len(category_config["variables"]),
                 "configured_count": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             for var_name, var_config in category_config["variables"].items():
                 validation_results["total_possible"] += 1
@@ -255,7 +305,8 @@ class EnvironmentConfigManager:
         if validation_results["total_possible"] > 0:
             validation_results["configuration_score"] = (
                 validation_results["total_configured"] / validation_results["total_possible"]
-            ) * 100
+# BRACKET_SURGEON: disabled
+#             ) * 100
 
         return validation_results
 
@@ -268,7 +319,7 @@ class EnvironmentConfigManager:
             with open(self.env_file_path, "r") as f:
                 for line in f:
                     line = line.strip()
-                    if line and not line.startswith("#") and "=" in line:
+                    if line and not line.startswith("#") and "=" in line:"
                         key, value = line.split("=", 1)
                         env_vars[key.strip()] = value.strip()
 
@@ -281,20 +332,23 @@ class EnvironmentConfigManager:
     def generate_env_template(self) -> str:
         """Generate a complete env template with all possible configurations."""
         template_lines = [
-            "# TRAEAI Live Environment Configuration",
-            "# Generated on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "# This file contains all possible environment variables for live deployment",
+            "# TRAEAI Live Environment Configuration","
+            "# Generated on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"
+            "# This file contains all possible environment variables for live deployment","
             "",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for category_name, category_config in self.config_categories.items():
             template_lines.extend(
                 [
-                    f"# {category_config['description'].upper()}",
-                    f"# Required: {'Yes' if category_config['required'] else 'No'}",
+                    f"# {category_config['description'].upper()}","
+                    f"# Required: {'Yes' if category_config['required'] else 'No'}","
                     "",
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
             for var_name, var_config in category_config["variables"].items():
                 description = var_config.get("description", "")
@@ -303,16 +357,16 @@ class EnvironmentConfigManager:
                 required = var_config.get("required", False)
 
                 if description:
-                    template_lines.append(f"# {description}")
+                    template_lines.append(f"# {description}")"
                 if service_url:
-                    template_lines.append(f"# Get from: {service_url}")
+                    template_lines.append(f"# Get from: {service_url}")"
                 if required:
-                    template_lines.append("# REQUIRED")
+                    template_lines.append("# REQUIRED")"
 
                 if default_value:
                     template_lines.append(f"{var_name}={default_value}")
                 else:
-                    template_lines.append(f"# {var_name}=your_{var_name.lower()}_here")
+                    template_lines.append(f"# {var_name}=your_{var_name.lower()}_here")"
 
                 template_lines.append("")
 
@@ -324,7 +378,8 @@ class EnvironmentConfigManager:
             "title": "Live Environment Setup Guide",
             "generated_at": datetime.now().isoformat(),
             "categories": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for category_name, category_config in self.config_categories.items():
             category_guide = {
@@ -332,7 +387,8 @@ class EnvironmentConfigManager:
                 "title": category_config["description"],
                 "required": category_config["required"],
                 "services": [],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             for var_name, var_config in category_config["variables"].items():
                 service_info = {
@@ -341,7 +397,8 @@ class EnvironmentConfigManager:
                     "signup_url": var_config.get("service_url", ""),
                     "required": var_config.get("required", False),
                     "free_tier": self._get_free_tier_info(var_name),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 category_guide["services"].append(service_info)
 
             setup_guide["categories"].append(category_guide)
@@ -365,7 +422,8 @@ class EnvironmentConfigManager:
             "STRIPE_PUBLIC_KEY": "Free sandbox environment",
             "PAYPAL_CLIENT_ID": "Free sandbox environment",
             "SQUARE_APPLICATION_ID": "Free sandbox environment",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return free_tier_info.get(var_name, "Free tier available")
 
     def backup_current_config(self) -> str:
@@ -396,54 +454,69 @@ class EnvironmentConfigManager:
                     {
                         "task": "Configure strong SECRET_KEY (32+ chars)",
                         "critical": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {"task": "Set up JWT secrets", "critical": True},
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "category": "Security Configuration",
                 "items": [
                     {
                         "task": "Configure ALLOWED_HOSTS for production domain",
                         "critical": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {"task": "Set CORS_ORIGINS for production URLs", "critical": True},
                     {"task": "Verify no secrets in source code", "critical": True},
                     {"task": "Enable HTTPS in production", "critical": True},
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "category": "API Integration",
                 "items": [
                     {
                         "task": "Configure free AI/ML APIs (Groq, Hugging Face)",
                         "critical": False,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {"task": "Set up media APIs (Pexels)", "critical": False},
                     {
                         "task": "Configure news APIs (Guardian, NY Times)",
                         "critical": False,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "task": "Set up social APIs (Reddit, YouTube, GitHub)",
                         "critical": False,
-                    },
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "category": "Service Integration",
                 "items": [
                     {
                         "task": "Configure email services (SendGrid, Mailchimp)",
                         "critical": False,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {"task": "Set up analytics (Google Analytics)", "critical": False},
                     {
                         "task": "Configure payment sandbox environments",
                         "critical": False,
-                    },
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "category": "Deployment",
                 "items": [
@@ -451,9 +524,12 @@ class EnvironmentConfigManager:
                     {"task": "Configure CI/CD pipeline", "critical": False},
                     {"task": "Test all integrations in staging", "critical": True},
                     {"task": "Verify database connectivity", "critical": True},
-                ],
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
         return checklist
 
 
@@ -475,7 +551,8 @@ def main():
     print(f"\nConfiguration Score: {validation['configuration_score']:.1f}%")
     print(
         f"Total Variables Configured: {validation['total_configured']}/{validation['total_possible']}"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if validation["missing_required"]:
         print(f"\n❌ CRITICAL: Missing Required Variables ({len(validation['missing_required'])})")
@@ -495,10 +572,12 @@ def main():
             else "❌"
             if category_data["required"]
             else "⚪"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(
             f"{status} {category_name.upper()}: {category_data['configured_count']}/{category_data['total_vars']}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"    {category_data['description']}")
 
     # Generate setup guide
@@ -508,7 +587,8 @@ def main():
     # Save setup guide
     setup_filename = (
         f"environment_setup_guide_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     with open(setup_filename, "w") as f:
         json.dump(setup_guide, f, indent=2)
 
@@ -518,7 +598,8 @@ def main():
     checklist = env_manager.generate_deployment_checklist()
     checklist_filename = (
         f"deployment_checklist_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     with open(checklist_filename, "w") as f:
         json.dump(checklist, f, indent=2)
 

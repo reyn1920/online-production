@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 API Opportunity Finder - Research Agent for Automated API Discovery
 
 This module acts as an intelligent research agent that discovers new API opportunities
@@ -12,7 +12,7 @@ Features:
 - Intelligent scoring and prioritization of API opportunities
 - Integration with existing Ollama infrastructure
 - Comprehensive logging and analytics
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -34,7 +34,9 @@ import requests
 
 from backend.integrations.ollama_integration import (OllamaIntegration, PromptTemplate,
 
-    QueryRequest)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     QueryRequest)
 
 # Configure logging
 logging.basicConfig(level = logging.INFO)
@@ -129,7 +131,8 @@ class APIOpportunityFinder:
             db_path: str = "right_perspective.db",
             ollama_base_url: str = "http://localhost:11434",
             ollama_model: str = "llama2:7b",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.db_path = db_path
         self.ollama_base_url = ollama_base_url
         self.ollama_model = ollama_model
@@ -140,7 +143,8 @@ class APIOpportunityFinder:
                 "gitlab": "https://gitlab.com / api / v4",
                 "rapidapi": "https://rapidapi.com / search",
                 "programmableweb": "https://www.programmableweb.com / apis / directory",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Initialize database
         self._init_database()
@@ -157,7 +161,7 @@ class APIOpportunityFinder:
 
             # Ensure api_discovery_tasks table exists
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS api_discovery_tasks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         task_type TEXT NOT NULL,
@@ -175,13 +179,17 @@ class APIOpportunityFinder:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         completed_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Ensure api_suggestions table exists
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS api_suggestions (
                     suggestion_id TEXT PRIMARY KEY,
                         api_name TEXT NOT NULL,
@@ -201,9 +209,13 @@ class APIOpportunityFinder:
                         analyzed_at TIMESTAMP,
                         llm_analysis TEXT,
                         UNIQUE(api_name, api_url)
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.commit()
             conn.close()
@@ -223,8 +235,11 @@ class APIOpportunityFinder:
                         "enable_caching": True,
                         "performance_monitoring": True,
                         "max_concurrent_requests": 3,
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             logger.info("Ollama integration initialized for API research")
         except Exception as e:
             logger.error(f"Failed to initialize Ollama integration: {e}")
@@ -249,7 +264,9 @@ class APIOpportunityFinder:
                     template = PromptTemplate.RESEARCH_SYNTHESIS,
                     context = context,
                     priority = 7,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if response and response.response_text:
                 return response.response_text.strip()
@@ -268,7 +285,9 @@ class APIOpportunityFinder:
         """Research and discover new API opportunities"""
         logger.info(
             f"Starting API opportunity research with context: {context.priority_areas}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         suggestions = []
 
@@ -290,7 +309,9 @@ class APIOpportunityFinder:
                 created_at = datetime.now(timezone.utc),
                 updated_at = datetime.now(timezone.utc),
                 completed_at = None,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         await self._save_discovery_task(task)
 
@@ -303,25 +324,33 @@ class APIOpportunityFinder:
             # Search GitHub for API repositories
             github_suggestions = await self._search_github_apis(
                 context, max_results // 2
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             suggestions.extend(github_suggestions)
 
             # Search RapidAPI marketplace
             rapidapi_suggestions = await self._search_rapidapi(
                 context, max_results // 4
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             suggestions.extend(rapidapi_suggestions)
 
             # Search ProgrammableWeb directory
             programmableweb_suggestions = await self._search_programmableweb(
                 context, max_results // 4
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             suggestions.extend(programmableweb_suggestions)
 
             # Analyze and score suggestions using LLM
             analyzed_suggestions = await self._analyze_suggestions_with_llm(
                 suggestions, context
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Save suggestions to database
             for suggestion in analyzed_suggestions:
@@ -335,7 +364,9 @@ class APIOpportunityFinder:
 
             logger.info(
                 f"API research completed. Found {len(analyzed_suggestions)} opportunities"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return analyzed_suggestions
 
         except Exception as e:
@@ -367,12 +398,15 @@ class APIOpportunityFinder:
                             "sort": "stars",
                             "order": "desc",
                             "per_page": min(max_results // len(context.priority_areas),
-    20),
-                            }
+# BRACKET_SURGEON: disabled
+#     20),
+# BRACKET_SURGEON: disabled
+#                             }
 
                     async with session.get(
                         url, headers = headers, params = params
-                    ) as response:
+# BRACKET_SURGEON: disabled
+#                     ) as response:
                         if response.status == 200:
                             data = await response.json()
 
@@ -387,17 +421,22 @@ class APIOpportunityFinder:
                                         discovery_source="github",
                                         confidence_score = min(
                                         repo["stargazers_count"] / 1000, 1.0
-                                    ),
+# BRACKET_SURGEON: disabled
+#                                     ),
                                         priority_score = 0.0,  # Will be calculated by LLM
                                     status = SuggestionStatus.DISCOVERED,
                                         github_url = repo["html_url"],
                                         created_at = datetime.now(timezone.utc),
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
                                 suggestions.append(suggestion)
                         else:
                             logger.warning(
                                 f"GitHub API search failed: {response.status}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # Rate limiting
                 await asyncio.sleep(1)
@@ -438,23 +477,29 @@ class APIOpportunityFinder:
                 context.priority_areas
                 if context.priority_areas
                 else ["data", "social", "messaging", "financial"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             for category in search_categories[:3]:  # Limit to 3 categories
                 try:
                     # Construct search URL for ProgrammableWeb
                     search_url = (
                         f"https://www.programmableweb.com / category/{category}/apis"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     headers = {
-                        "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,
-    like Gecko) Chrome / 91.0.4472.124 Safari / 537.36",
+                        "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,"
+# BRACKET_SURGEON: disabled
+#     like Gecko) Chrome / 91.0.4472.124 Safari / 537.36","
                             "Accept": "text / html,application / xhtml + xml,application / xml;q = 0.9,*/*;q = 0.8",
                             "Accept - Language": "en - US,en;q = 0.5",
                             "Accept - Encoding": "gzip, deflate",
                             "Connection": "keep - alive",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Make request with timeout
                     response = requests.get(search_url, headers = headers, timeout = 15)
@@ -466,11 +511,15 @@ class APIOpportunityFinder:
                     # Find API listings (adjust selectors based on actual ProgrammableWeb structure)
                     api_listings = soup.find_all(
                         "div", class_=["views - row", "api - listing", "node"]
-                    ) or soup.find_all("article")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) or soup.find_all("article")
 
                     for listing in api_listings[
                         : max_results // 3
-                    ]:  # Distribute results across categories
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]:  # Distribute results across categories
                         try:
                             # Extract API information
                             api_name = self._extract_api_name(listing)
@@ -483,7 +532,8 @@ class APIOpportunityFinder:
 
                                 if (
                                     is_free or context.budget_constraints > 0
-                                ):  # Include if free or budget allows
+# BRACKET_SURGEON: disabled
+#                                 ):  # Include if free or budget allows
                                     suggestion = APISuggestion(
                                         id = None,
                                             api_name = api_name,
@@ -497,7 +547,9 @@ class APIOpportunityFinder:
                                             status = SuggestionStatus.DISCOVERED,
                                             created_at = datetime.now(timezone.utc),
                                             pricing_model="Free" if is_free else "Unknown",
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                     suggestions.append(suggestion)
 
                         except Exception as e:
@@ -510,7 +562,9 @@ class APIOpportunityFinder:
                 except requests.RequestException as e:
                     logger.error(
                         f"Failed to scrape ProgrammableWeb category {category}: {e}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     continue
                 except Exception as e:
                     logger.error(f"Unexpected error scraping category {category}: {e}")
@@ -518,13 +572,17 @@ class APIOpportunityFinder:
 
             logger.info(
                 f"Found {len(suggestions)} API suggestions from ProgrammableWeb"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return suggestions
 
         except ImportError as e:
             logger.error(
                 f"Required libraries not available for ProgrammableWeb scraping: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return []
         except Exception as e:
             logger.error(f"Error in ProgrammableWeb search: {e}")
@@ -541,7 +599,9 @@ class APIOpportunityFinder:
                     ".title a",
                     ".api - name",
                     'a[href*="/api/"]',
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             for selector in name_selectors:
                 element = listing.select_one(selector)
@@ -616,7 +676,9 @@ class APIOpportunityFinder:
                 "gratis",
                 "complimentary",
                 "no charge",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         paid_indicators = [
             "premium",
                 "paid",
@@ -625,7 +687,9 @@ class APIOpportunityFinder:
                 "pricing",
                 "cost",
                 "$",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         has_free = any(indicator in text_to_check for indicator in free_indicators)
         has_paid = any(indicator in text_to_check for indicator in paid_indicators)
@@ -646,7 +710,7 @@ class APIOpportunityFinder:
         for suggestion in suggestions:
             try:
                 # Create analysis prompt
-                analysis_prompt = f"""
+                analysis_prompt = f""""""
 Analyze this API opportunity:
 
 API Name: {suggestion.api_name}
@@ -673,14 +737,15 @@ Provide analysis in JSON format:
       "potential_risks": ["risk1", "risk2"],
       "estimated_integration_hours": 12,
       "confidence_level": 0.85
-}}
-"""
+# BRACKET_SURGEON: disabled
+# }}
+""""""
 
-                system_prompt = """
+                system_prompt = """"""
 You are an expert API strategist analyzing API opportunities for integration.
 Focus on strategic value, technical feasibility, and business impact.
 Provide objective, data - driven analysis with specific scores and recommendations.
-"""
+""""""
 
                 # Query LLM for analysis
                 llm_response = await self._query_ollama(analysis_prompt, system_prompt)
@@ -695,10 +760,14 @@ Provide objective, data - driven analysis with specific scores and recommendatio
                             # Update suggestion with LLM analysis
                             suggestion.priority_score = analysis.get(
                                 "overall_priority_score", 5.0
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             suggestion.confidence_score = analysis.get(
                                 "confidence_level", 0.5
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             suggestion.status = SuggestionStatus.ANALYZED
                             suggestion.analyzed_at = datetime.now(timezone.utc)
                             suggestion.llm_analysis = analysis
@@ -707,10 +776,13 @@ Provide objective, data - driven analysis with specific scores and recommendatio
                         else:
                             logger.warning(
                                 f"No JSON found in LLM analysis for {suggestion.api_name}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             suggestion.status = (
                                 SuggestionStatus.DISCOVERED
-                            )  # Keep as discovered
+# BRACKET_SURGEON: disabled
+#                             )  # Keep as discovered
                             analyzed_suggestions.append(suggestion)
 
                     except json.JSONDecodeError as e:
@@ -740,13 +812,15 @@ Provide objective, data - driven analysis with specific scores and recommendatio
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO api_discovery_tasks
                 (id, task_type, target_capability, search_parameters, task_name,
                     capability_gap, search_keywords, target_domains, priority, status,
-                     assigned_agent, progress_notes, apis_found, created_at, updated_at, completed_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                      assigned_agent, progress_notes, apis_found, created_at, updated_at, completed_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     task.id,
                         task.task_type,
@@ -764,8 +838,11 @@ Provide objective, data - driven analysis with specific scores and recommendatio
                         task.created_at,
                         task.updated_at,
                         task.completed_at,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
             conn.close()
@@ -786,12 +863,14 @@ Provide objective, data - driven analysis with specific scores and recommendatio
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO api_suggestions
                 (service_name, api_url, description, capability, discovery_source,
-                    confidence_score, status, documentation_url)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     confidence_score, status, documentation_url)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     suggestion.api_name,
                         suggestion.api_url,
@@ -801,8 +880,11 @@ Provide objective, data - driven analysis with specific scores and recommendatio
                         suggestion.confidence_score,
                         suggestion.status.value,
                         suggestion.documentation_url,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
             conn.close()
@@ -821,27 +903,31 @@ Provide objective, data - driven analysis with specific scores and recommendatio
 
             if status:
                 cursor.execute(
-                    """
+                    """"""
                     SELECT id, service_name, capability, api_url, documentation_url, description,
                         discovery_source, confidence_score, status, created_at
                     FROM api_suggestions
                     WHERE status = ?
                     ORDER BY confidence_score DESC, created_at DESC
                     LIMIT ?
-                """,
+                ""","""
                     (status.value, limit),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 cursor.execute(
-                    """
+                    """"""
                     SELECT id, service_name, capability, api_url, documentation_url, description,
                         discovery_source, confidence_score, status, created_at
                     FROM api_suggestions
                     ORDER BY confidence_score DESC, created_at DESC
                     LIMIT ?
-                """,
+                ""","""
                     (limit,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             rows = cursor.fetchall()
             conn.close()
@@ -862,8 +948,11 @@ Provide objective, data - driven analysis with specific scores and recommendatio
                         SuggestionStatus(row[8])
                         if row[8] in [s.value for s in SuggestionStatus]
                         else SuggestionStatus.DISCOVERED
-                    ),
-                        )
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 suggestions.append(suggestion)
 
             return suggestions
@@ -883,23 +972,27 @@ Provide objective, data - driven analysis with specific scores and recommendatio
 
             if status:
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM api_discovery_tasks
                     WHERE status = ?
                     ORDER BY created_at DESC
                     LIMIT ?
-                """,
+                ""","""
                     (status, limit),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM api_discovery_tasks
                     ORDER BY created_at DESC
                     LIMIT ?
-                """,
+                ""","""
                     (limit,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             rows = cursor.fetchall()
             conn.close()
@@ -924,10 +1017,13 @@ Provide objective, data - driven analysis with specific scores and recommendatio
                         datetime.fromisoformat(row[13])
                         if row[13]
                         else datetime.now(timezone.utc)
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         updated_at = datetime.fromisoformat(row[14]) if row[14] else None,
                         completed_at = datetime.fromisoformat(row[15]) if row[15] else None,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 tasks.append(task)
 
             return tasks
@@ -941,7 +1037,9 @@ Provide objective, data - driven analysis with specific scores and recommendatio
         """Run automated API discovery at regular intervals"""
         logger.info(
             f"Starting automated API discovery (interval: {interval_hours} hours)"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         while True:
             try:
@@ -951,16 +1049,22 @@ Provide objective, data - driven analysis with specific scores and recommendatio
                         usage_patterns={"text - generation": 1000, "image - generation": 500},
                         budget_constraints = 1000.0,
                         priority_areas=["machine - learning", "data - analysis", "automation"],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Run discovery
                 suggestions = await self.research_api_opportunities(
                     context, max_results = 20
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 logger.info(
                     f"Automated discovery completed. Found {len(suggestions)} new opportunities"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Wait for next interval
                 await asyncio.sleep(interval_hours * 3600)
@@ -978,44 +1082,52 @@ Provide objective, data - driven analysis with specific scores and recommendatio
 
             # Get suggestion statistics
             cursor.execute(
-                """
+                """"""
                 SELECT status, COUNT(*) as count
                 FROM api_suggestions
                 GROUP BY status
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             suggestion_stats = {row[0]: row[1] for row in cursor.fetchall()}
 
             # Get discovery task statistics
             cursor.execute(
-                """
+                """"""
                 SELECT status, COUNT(*) as count
                 FROM api_discovery_tasks
                 GROUP BY status
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             task_stats = {row[0]: row[1] for row in cursor.fetchall()}
 
             # Get top capabilities
             cursor.execute(
-                """
+                """"""
                 SELECT capability, COUNT(*) as count
                 FROM api_suggestions
                 GROUP BY capability
                 ORDER BY count DESC
                 LIMIT 10
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             top_capabilities = {row[0]: row[1] for row in cursor.fetchall()}
 
             # Get discovery sources
             cursor.execute(
-                """
+                """"""
                 SELECT discovery_source, COUNT(*) as count
                 FROM api_suggestions
                 GROUP BY discovery_source
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             source_stats = {row[0]: row[1] for row in cursor.fetchall()}
 
             conn.close()
@@ -1027,7 +1139,8 @@ Provide objective, data - driven analysis with specific scores and recommendatio
                     "discovery_sources": source_stats,
                     "total_suggestions": sum(suggestion_stats.values()),
                     "total_tasks": sum(task_stats.values()),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             logger.error(f"Failed to get analytics: {e}")
@@ -1064,8 +1177,12 @@ async def example_usage():
                 "data - analysis",
                 "automation",
                 "payment - processing",
-                ],
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Research API opportunities
     print("Starting API opportunity research...")
@@ -1081,7 +1198,9 @@ async def example_usage():
         if suggestion.llm_analysis:
             print(
                 f"  Recommendation: {suggestion.llm_analysis.get('recommendation', 'N / A')}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Get analytics
     analytics = finder.get_analytics()

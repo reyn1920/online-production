@@ -72,7 +72,8 @@ class MonetizationManager:
             "paddle": PaddleAPI,
             "sendowl": SendOwlAPI,
             "gumroad": GumroadAPI,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def add_platform(
         self,
@@ -82,7 +83,8 @@ class MonetizationManager:
         enabled: bool = True,
         priority: int = 1,
         product_types: List[str] = None,
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Add a monetization platform."""
         try:
             config = PlatformConfig(
@@ -92,7 +94,8 @@ class MonetizationManager:
                 enabled=enabled,
                 priority=priority,
                 product_types=product_types or ["digital", "physical", "service"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Initialize the API client
             if name == "etsy":
@@ -101,12 +104,14 @@ class MonetizationManager:
                     shared_secret=credentials.get("shared_secret"),
                     oauth_token=credentials.get("oauth_token"),
                     oauth_token_secret=credentials.get("oauth_token_secret"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif name == "paddle":
                 api_client = api_class(
                     vendor_id=credentials.get("vendor_id"),
                     vendor_auth_code=credentials.get("vendor_auth_code"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif name in ["sendowl", "gumroad"]:
                 api_client = api_class(access_token=credentials.get("access_token"))
             else:
@@ -159,7 +164,8 @@ class MonetizationManager:
         product: Product,
         platforms: Optional[List[str]] = None,
         parallel: bool = True,
-    ) -> MultiPlatformResult:
+# BRACKET_SURGEON: disabled
+#     ) -> MultiPlatformResult:
         """Create a product across multiple platforms."""
         if platforms is None:
             platforms = self.get_enabled_platforms(product.category)
@@ -174,7 +180,8 @@ class MonetizationManager:
                     executor.submit(self._create_product_single, platform, product): platform
                     for platform in platforms
                     if platform in self.platforms
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 for future in as_completed(future_to_platform):
                     platform = future_to_platform[future]
@@ -207,7 +214,8 @@ class MonetizationManager:
             results=results,
             errors=errors,
             total_platforms=len(platforms),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_product_single(self, platform: str, product: Product) -> ProductResponse:
         """Create product on a single platform."""
@@ -232,10 +240,12 @@ class MonetizationManager:
             future_to_platform = {
                 executor.submit(
                     self._get_sales_data_single, platform, start_date, end_date
-                ): platform
+# BRACKET_SURGEON: disabled
+#                 ): platform
                 for platform in platforms
                 if platform in self.platforms
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             for future in as_completed(future_to_platform):
                 platform = future_to_platform[future]
@@ -259,7 +269,8 @@ class MonetizationManager:
             "total_sales": total_sales,
             "platforms": all_sales_data,
             "generated_at": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_sales_data_single(
         self, platform: str, start_date: datetime, end_date: datetime
@@ -275,7 +286,8 @@ class MonetizationManager:
             not force_refresh
             and self.last_health_check
             and datetime.now() - self.last_health_check < timedelta(minutes=5)
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return self.health_status
 
         health_results = {}
@@ -284,7 +296,8 @@ class MonetizationManager:
             future_to_platform = {
                 executor.submit(self._health_check_single, platform): platform
                 for platform in self.platforms.keys()
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             for future in as_completed(future_to_platform):
                 platform = future_to_platform[future]
@@ -326,7 +339,8 @@ class MonetizationManager:
                 "recent_sales": sales_data,
                 "product_count": len(products) if isinstance(products, list) else 0,
                 "generated_at": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Platform - specific analytics
             if hasattr(api_client, "get_analytics_summary"):
@@ -349,8 +363,10 @@ class MonetizationManager:
                 "healthy_platforms": 0,
                 "total_revenue_30d": 0.0,
                 "total_sales_30d": 0,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # Health check all platforms
         health_status = self.health_check_all_platforms()
@@ -365,7 +381,8 @@ class MonetizationManager:
             if "recent_sales" in analytics and "total_revenue" in analytics["recent_sales"]:
                 dashboard["summary"]["total_revenue_30d"] += analytics["recent_sales"][
                     "total_revenue"
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
             if "recent_sales" in analytics and "total_sales" in analytics["recent_sales"]:
                 dashboard["summary"]["total_sales_30d"] += analytics["recent_sales"]["total_sales"]
 
@@ -378,7 +395,8 @@ class MonetizationManager:
             "recommended_platforms": [],
             "analysis": {},
             "generated_at": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Platform suitability analysis
         platform_scores = {}
@@ -402,7 +420,8 @@ class MonetizationManager:
                     analysis["reasons"].append("Excellent for handmade / vintage items")
                 if product.tags and any(
                     tag in ["handmade", "vintage", "craft"] for tag in product.tags
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     score += 20
 
             elif platform_name == "gumroad":
@@ -443,17 +462,20 @@ class MonetizationManager:
         # Sort by score and recommend top platforms
         sorted_platforms = sorted(
             platform_scores.items(), key=lambda x: x[1]["score"], reverse=True
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         recommendations["recommended_platforms"] = [
             {
                 "platform": platform,
                 "score": data["score"],
                 "reasons": data["analysis"]["reasons"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
             for platform, data in sorted_platforms[:3]  # Top 3 recommendations
             if data["score"] > 20  # Minimum viable score
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         recommendations["analysis"] = platform_scores
 
@@ -473,6 +495,8 @@ class MonetizationManager:
             "healthy_platforms": (sum(self.health_status.values()) if self.health_status else 0),
             "last_health_check": (
                 self.last_health_check.isoformat() if self.last_health_check else None
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "configured_platforms": list(self.platforms.keys()),
-        }
+# BRACKET_SURGEON: disabled
+#         }

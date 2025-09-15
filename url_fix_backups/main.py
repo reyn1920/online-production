@@ -19,7 +19,8 @@ from fastapi import (
     Request,
     WebSocket,
     WebSocketDisconnect,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -44,7 +45,8 @@ from backend.production_init import get_production_manager, initialize_productio
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 # Dynamic router loading
@@ -58,79 +60,92 @@ ROUTER_CONFIGS = [
         "name": "pet_router",
         "prefix": "/api / v1",
         "tags": ["pets"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["app.routers.places"],
         "attr": "router",
         "name": "places_router",
         "prefix": "/places",
         "tags": ["places"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["backend.routers.social"],
         "attr": "router",
         "name": "social_router",
         "tags": ["social"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["app.routers.chat", "backend.routers.chat"],
         "attr": "router",
         "name": "chat_router",
         "tags": ["chat"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["backend.routers.payment_webhooks"],
         "attr": "router",
         "name": "webhooks_router",
         "tags": ["webhooks"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["backend.routers.analytics_hub"],
         "attr": "router",
         "name": "analytics_router",
         "tags": ["analytics"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["app.routers.integrations_max"],
         "attr": "router",
         "name": "integrations_max_router",
         "tags": ["integrations"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["app.routers.oauth"],
         "attr": "router",
         "name": "oauth_router",
         "tags": ["oauth"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["app.routers.paste"],
         "attr": "router",
         "name": "paste_router",
         "prefix": "/paste",
         "tags": ["paste"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["app.routers.avatar_api"],
         "attr": "router",
         "name": "avatar_api_router",
         "prefix": "/api / avatar",
         "tags": ["avatar - api"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["master_orchestrator.main"],
         "attr": "router",
         "name": "master_orchestrator_router",
         "prefix": "/api / orchestrator",
         "tags": ["orchestrator"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     {
         "modules": ["app.routers.affiliate_credentials"],
         "attr": "router",
         "name": "affiliate_credentials_router",
         "prefix": "/api / affiliate",
         "tags": ["affiliate - credentials"],
-    },
-]
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# ]
 
 # Load routers dynamically
 loaded_routers = {}
@@ -153,62 +168,74 @@ for config in ROUTER_CONFIGS:
 # Extract individual routers for backward compatibility
 pet_router = (
     loaded_routers.get("pet_router", {}).get("router") if loaded_routers.get("pet_router") else None
-)
+# BRACKET_SURGEON: disabled
+# )
 places_router = (
     loaded_routers.get("places_router", {}).get("router")
     if loaded_routers.get("places_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 social_router = (
     loaded_routers.get("social_router", {}).get("router")
     if loaded_routers.get("social_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 chat_router = (
     loaded_routers.get("chat_router", {}).get("router")
     if loaded_routers.get("chat_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 webhooks_router = (
     loaded_routers.get("webhooks_router", {}).get("router")
     if loaded_routers.get("webhooks_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 analytics_router = (
     loaded_routers.get("analytics_router", {}).get("router")
     if loaded_routers.get("analytics_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 integrations_max_router = (
     loaded_routers.get("integrations_max_router", {}).get("router")
     if loaded_routers.get("integrations_max_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 oauth_router = (
     loaded_routers.get("oauth_router", {}).get("router")
     if loaded_routers.get("oauth_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 paste_router = (
     loaded_routers.get("paste_router", {}).get("router")
     if loaded_routers.get("paste_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 avatar_api_router = (
     loaded_routers.get("avatar_api_router", {}).get("router")
     if loaded_routers.get("avatar_api_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 master_orchestrator_router = (
     loaded_routers.get("master_orchestrator_router", {}).get("router")
     if loaded_routers.get("master_orchestrator_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 affiliate_credentials_router = (
     loaded_routers.get("affiliate_credentials_router", {}).get("router")
     if loaded_routers.get("affiliate_credentials_router")
     else None
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Logger already configured above
 
@@ -264,7 +291,8 @@ try:
         MonetizationManager,
         PaddleAPI,
         SendOwlAPI,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     logger.info("✅ Monetization platform APIs imported successfully")
 except ImportError as e:
@@ -334,13 +362,14 @@ else:
 # Create FastAPI app
 app = FastAPI(
     title="Online Production API",
-    description="Production - ready API with pet care services \
-    and affiliate processing",
+    description="Production - ready API with pet care services \"
+#     and affiliate processing",
     version="1.0.0",
     docs_url="/docs" if __name__ == "__main__" else None,  # Disable docs in production
     redoc_url="/redoc" if __name__ == "__main__" else None,
     lifespan=lifespan,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Create Socket.IO server for dashboard real - time updates
 sio = socketio.AsyncServer(
@@ -348,11 +377,13 @@ sio = socketio.AsyncServer(
         "http://localhost:3000",
         "http://localhost:8000",
         "https://*.netlify.app",
-    ],
+# BRACKET_SURGEON: disabled
+#     ],
     async_mode="asgi",
     logger=True,
     engineio_logger=False,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 # Socket.IO event handlers
@@ -406,8 +437,10 @@ app.add_middleware(
         "localhost",
         "127.0.0.1",
         "*.netlify.app",
-    ],  # Configure for production
-)
+# BRACKET_SURGEON: disabled
+#     ],  # Configure for production
+# BRACKET_SURGEON: disabled
+# )
 
 # Configure CORS with security considerations
 app.add_middleware(
@@ -416,12 +449,14 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:8000",
         "https://*.netlify.app",  # Configure appropriately for production
-    ],
+# BRACKET_SURGEON: disabled
+#     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
     max_age=600,  # Cache preflight requests for 10 minutes
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="app / static"), name="static")
@@ -542,7 +577,8 @@ if comprehensive_dashboard_router:
         comprehensive_dashboard_router,
         prefix="/api / comprehensive",
         tags=["comprehensive - dashboard"],
-    )
+# BRACKET_SURGEON: disabled
+#     )
     logger.info("Comprehensive dashboard router mounted at /api / comprehensive")
 else:
     logger.warning("Comprehensive dashboard router not mounted - service unavailable")
@@ -563,7 +599,8 @@ else:
 if master_orchestrator_router:
     app.include_router(
         master_orchestrator_router, prefix="/api / orchestrator", tags=["orchestrator"]
-    )
+# BRACKET_SURGEON: disabled
+#     )
     logger.info("✅ Master Orchestrator endpoints mounted at /api / orchestrator")
 else:
     logger.warning("⚠️ Master Orchestrator endpoints not mounted - router not available")
@@ -574,7 +611,8 @@ if affiliate_credentials_router:
         affiliate_credentials_router,
         prefix="/api / affiliate",
         tags=["affiliate - credentials"],
-    )
+# BRACKET_SURGEON: disabled
+#     )
     logger.info("✅ Affiliate Credentials endpoints mounted at /api / affiliate")
 else:
     logger.warning("⚠️ Affiliate Credentials endpoints not mounted - router not available")
@@ -647,7 +685,8 @@ class WebSocketManager:
             await self.send_personal_message(
                 {"type": "subscribed", "channel": message.get("channel", "dashboard")},
                 websocket,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def get_connection_count(self):
         return len(self.active_connections)
@@ -656,7 +695,8 @@ class WebSocketManager:
         return {
             "total": len(self.active_connections),
             "clients": list(self.client_connections.keys()),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def start_heartbeat(self):
         while True:
@@ -678,8 +718,10 @@ async def simulate_real_time_updates():
             "data": {
                 "active_users": len(websocket_manager.active_connections),
                 "system_status": "healthy",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
         await websocket_manager.broadcast(update_data)
 
 
@@ -697,7 +739,8 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str = None):
             except json.JSONDecodeError:
                 await websocket_manager.send_personal_message(
                     {"type": "error", "message": "Invalid JSON format"}, websocket
-                )
+# BRACKET_SURGEON: disabled
+#                 )
     except WebSocketDisconnect:
         websocket_manager.disconnect(websocket)
     except Exception as e:
@@ -712,7 +755,8 @@ async def websocket_info():
     return {
         "active_connections": websocket_manager.get_connection_count(),
         "connections": websocket_manager.get_connection_info(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Chat page route
@@ -752,7 +796,8 @@ async def pets_search(
     location: Optional[str] = None,
     limit: int = Query(20, ge=1, le=100),
     page: int = Query(1, ge=1),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Search for pets using TheDogAPI or TheCatAPI"""
     if animal == "dog":
         try:
@@ -762,7 +807,8 @@ async def pets_search(
                 r = await client.get(
                     f"https://api.thedogapi.com / v1 / images / search?limit={limit}&has_breeds = 1",
                     headers=headers,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 r.raise_for_status()
                 return {"provider": "thedogapi", "data": r.json()}
         except Exception as e:
@@ -775,7 +821,8 @@ async def pets_search(
                 r = await client.get(
                     f"https://api.thecatapi.com / v1 / images / search?limit={limit}&has_breeds = 1",
                     headers=headers,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 r.raise_for_status()
                 return {"provider": "thecatapi", "data": r.json()}
         except Exception as e:
@@ -794,13 +841,15 @@ async def get_configuration_status():
                 "timestamp": datetime.now().isoformat(),
                 "configuration": status_data,
                 "message": "Configuration status retrieved successfully",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         else:
             return {
                 "success": False,
                 "timestamp": datetime.now().isoformat(),
                 "message": "Configuration not available",
-            }
+# BRACKET_SURGEON: disabled
+#             }
     except Exception as e:
         logger.error(f"Configuration status error: {str(e)}")
         raise HTTPException(status_code=500, detail="Configuration status service unavailable")
@@ -818,7 +867,8 @@ async def pets_types():
                 r = await client.get(
                     "https://api.petfinder.com / v2 / types",
                     headers={"Authorization": f"Bearer {token}"},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if r.status_code < 400:
                     return {"provider": "petfinder", "types": r.json().get("types", [])}
     # Fallback static set
@@ -833,8 +883,10 @@ async def pets_types():
             {"name": "Scales, Fins & Other"},
             {"name": "Horse"},
             {"name": "Barnyard"},
-        ],
-    }
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @app.get("/health")
@@ -845,7 +897,8 @@ async def health_check():
         "timestamp": datetime.now().isoformat(),
         "version": "1.0.0",
         "service": "main_app",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @app.get("/health / detailed")
@@ -870,7 +923,8 @@ async def detailed_health_check():
             "memory_percent": process.memory_percent(),
             "create_time": datetime.fromtimestamp(process.create_time()).isoformat(),
             "status": process.status(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Database connectivity (if applicable)
         db_status = "unknown"
@@ -918,14 +972,16 @@ async def detailed_health_check():
                 "memory_available_gb": round(memory.available / (1024**3), 2),
                 "disk_percent": disk.percent,
                 "disk_free_gb": round(disk.free / (1024**3), 2),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "process": process_info,
             "database": {"status": db_status},
             "issues": issues,
             "uptime_seconds": (
                 datetime.now() - datetime.fromtimestamp(process.create_time())
             ).total_seconds(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         return {
@@ -934,7 +990,8 @@ async def detailed_health_check():
             "version": "1.0.0",
             "service": "main_app",
             "error": str(e),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 @app.get("/health / ready")
@@ -978,7 +1035,8 @@ async def readiness_check():
             "timestamp": datetime.now().isoformat(),
             "service": "main_app",
             "checks": checks,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         return {
@@ -986,7 +1044,8 @@ async def readiness_check():
             "timestamp": datetime.now().isoformat(),
             "service": "main_app",
             "error": str(e),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 @app.get("/health / live")
@@ -1004,7 +1063,8 @@ async def liveness_check():
             "service": "main_app",
             "thread_count": threading.active_count(),
             "pid": os.getpid(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         return {
@@ -1012,7 +1072,8 @@ async def liveness_check():
             "timestamp": datetime.now().isoformat(),
             "service": "main_app",
             "error": str(e),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Version endpoint for production monitoring
@@ -1025,7 +1086,8 @@ async def get_version():
         "environment": os.getenv("ENVIRONMENT", "development"),
         "build_time": datetime.now().isoformat(),
         "status": "production - ready",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Version endpoint alias for compatibility
@@ -1062,12 +1124,14 @@ async def get_system_metrics_direct():
             "health_score": 100,
             "load_average": (
                 list(psutil.getloadavg()) if hasattr(psutil, "getloadavg") else [0, 0, 0]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "process_count": len(psutil.pids()),
             "network_bytes_sent": 0,
             "network_bytes_recv": 0,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except ImportError:
         # Fallback if psutil is not available
         return {
@@ -1087,7 +1151,8 @@ async def get_system_metrics_direct():
             "network_bytes_sent": 0,
             "network_bytes_recv": 0,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         logger.error(f"Error getting system metrics: {e}")
         raise HTTPException(status_code=500, detail="Failed to get system metrics")
@@ -1103,14 +1168,18 @@ async def get_services_status():
             "websocket": {
                 "status": "active",
                 "connections": len(websocket_manager.active_connections),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "socketio": {
                 "status": "active",
                 "connections": len(websocket_manager.active_connections),
-            },
-        },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         },
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @app.get("/api / system - info")
@@ -1127,14 +1196,17 @@ async def get_system_info():
                 "architecture": platform.machine(),
                 "hostname": platform.node(),
                 "python_version": platform.python_version(),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "application": {
                 "name": "Online Production API",
                 "version": "1.0.0",
                 "environment": "development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         logger.error(f"Error getting system info: {e}")
         return {
@@ -1143,9 +1215,11 @@ async def get_system_info():
                 "name": "Online Production API",
                 "version": "1.0.0",
                 "environment": "development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Dashboard - specific endpoints with /dashboard prefix
@@ -1184,9 +1258,10 @@ async def startup_event():
                 username="admin",
                 email="admin@dashboard.local",
                 full_name="System Administrator",
-                password=os.getenv("ADMIN_PASSWORD", "demo-password-for-testing-only"),  # Change this in production!
+                password=os.getenv("ADMIN_PASSWORD"),  # Change this in production!
                 role="ADMIN",
-            )
+# BRACKET_SURGEON: disabled
+#             )
             logger.info(f"Created default admin user: {admin_user.username}")
             logger.warning("Default password: admin123 - Please change this immediately!")
 
@@ -1224,4 +1299,5 @@ if __name__ == "__main__":
         port=port,
         reload=False,  # Disable reload in production
         log_level="info",
-    )
+# BRACKET_SURGEON: disabled
+#     )

@@ -1,16 +1,13 @@
 from __future__ import annotations
-
 import os
 import socket
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
-
 from backend.agents.marketing_tools import (
     AffiliateLink,
     AffiliateManager,
@@ -21,9 +18,7 @@ from backend.agents.marketing_tools import (
     MarketingChannel,
     RelentlessOptimizationLoop,
 )
-
 # Import our modules
-
 from backend.core.settings import get_setting, set_setting
 from backend.ecommerce_marketing_layer import EcommerceMarketingLayer
 from backend.marketing.affiliate_embed import build_affiliate_footer
@@ -33,7 +28,6 @@ from backend.marketing.affiliate_manager import (
     toggle_affiliate,
     validate_url,
 )
-
 from backend.pipelines.blender_handoff import (
     create_blender_project,
     export_blender_assets,
@@ -42,7 +36,6 @@ from backend.pipelines.blender_handoff import (
     set_blender_path,
     validate_blender_installation,
 )
-
 from backend.pipelines.resolve_handoff import (
     create_resolve_project,
     create_resolve_timeline,
@@ -53,12 +46,10 @@ from backend.pipelines.resolve_handoff import (
     set_resolve_path,
     validate_resolve_installation,
 )
-
 from backend.services.rss_watcher import RSSWatcherService
 from backend.routers.davinci_resolve import router as davinci_resolve_router
 from backend.routers.system_software import router as system_software_router
 from backend.routers.scraping import router as scraping_router
-
 # Base44 Pack routers
 try:
     from backend.routers.health import router as health_router
@@ -67,19 +58,14 @@ except ImportError as e:
     print(f"Warning: Could not import Base44 Pack routers: {e}")
     health_router = None
     policy_router = None
-
 app = FastAPI(title="TRAE.AI Production System", version="1.0.0")
-
 # Include DaVinci Resolve Pro Router
 app.include_router(davinci_resolve_router)
-
 # Include System Software Integration Router
 app.include_router(system_software_router)
-
 # Include Web Scraping Router
 app.include_router(scraping_router, tags=["webscraping"])
 print("✓ Web scraping router included")
-
 # Include Base44 Pack routers
 if health_router:
     app.include_router(health_router, prefix="/api", tags=["health"])
@@ -87,14 +73,12 @@ if health_router:
 if policy_router:
     app.include_router(policy_router, prefix="/api", tags=["policy"])
     print("✓ Policy router included")
-
 # Global service instances
 rss_watcher = None
 marketing_optimizer = None
 affiliate_manager = None
 cross_promotion_manager = None
 ecommerce_marketing = None
-
 # Initialize services
 try:
     rss_watcher = RSSWatcherService()
@@ -104,7 +88,6 @@ try:
     ecommerce_marketing = EcommerceMarketingLayer()
 except Exception as e:
     print(f"Warning: Could not initialize services: {e}")
-
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -113,8 +96,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
 # Agent status endpoints
 @app.get("/api/agents/status")
 async def get_agents_status():
@@ -146,22 +127,18 @@ async def get_agents_status():
             "last_activity": datetime.now().isoformat(),
         },
     ]
-
     return {
         "agents": agents,
         "total": len(agents),
         "timestamp": datetime.now().isoformat(),
     }
 
-
 @app.post("/api/agents/{agent_id}/control")
 async def control_agent(agent_id: str, action_data: dict):
     """Control agent operations (pause/restart)"""
     action = action_data.get("action")
-
     if action not in ["pause", "restart"]:
         raise HTTPException(status_code=400, detail="Invalid action")
-
     # Mock response - in production this would control real agents
     return {
         "agent_id": agent_id,
@@ -169,7 +146,6 @@ async def control_agent(agent_id: str, action_data: dict):
         "status": "success",
         "timestamp": datetime.now().isoformat(),
     }
-
 
 @app.get("/api/agents/{agent_id}/logs")
 async def get_agent_logs(agent_id: str, lines: int = 100):
@@ -187,24 +163,18 @@ async def get_agent_logs(agent_id: str, lines: int = 100):
             "message": "Video content analysis completed",
         },
     ]
-
     return {
         "agent_id": agent_id,
         "logs": mock_logs,
         "line_count": len(mock_logs),
         "timestamp": datetime.now().isoformat(),
     }
-
-
 # Pydantic models
-
-
 class CreateVideoIn(BaseModel):
     prompt: str
     style: Optional[str] = "default"
     duration: Optional[int] = 30
     include_affiliates: Optional[bool] = True
-
 
 class AffiliateIn(BaseModel):
     name: str
@@ -212,42 +182,34 @@ class AffiliateIn(BaseModel):
     tag: Optional[str] = ""
     enabled: Optional[bool] = True
 
-
 class SettingIn(BaseModel):
     key: str
     value: str
-
 
 class BlenderProjectIn(BaseModel):
     project_name: str
     assets: List[str] = []
 
-
 class BlenderExportIn(BaseModel):
     project_path: str
     export_format: str = "fbx"
 
-
 class ResolveProjectIn(BaseModel):
     project_name: str
     media_files: List[str] = []
-
 
 class ResolveTimelineIn(BaseModel):
     project_path: str
     timeline_name: str
     clips: List[Dict[str, Any]] = []
 
-
 class ResolveExportIn(BaseModel):
     project_path: str
     timeline_name: str
     export_settings: Dict[str, Any] = {}
 
-
 class PathSettingIn(BaseModel):
     path: str
-
 
 class RSSWatcherConfigIn(BaseModel):
     monitoring_interval: Optional[int] = 300
@@ -255,12 +217,10 @@ class RSSWatcherConfigIn(BaseModel):
     include_affiliates: Optional[bool] = True
     video_duration: Optional[int] = 60
 
-
 class RSSWatcherStatusOut(BaseModel):
     running: bool
     monitoring_interval: int
     min_urgency_threshold: float
-
 
 class MarketingCampaignIn(BaseModel):
     name: str
@@ -272,7 +232,6 @@ class MarketingCampaignIn(BaseModel):
     objectives: List[str] = []
     content_themes: List[str] = []
 
-
 class AffiliateProductIn(BaseModel):
     product_name: str
     affiliate_url: str
@@ -283,20 +242,17 @@ class AffiliateProductIn(BaseModel):
     conversion_rate: Optional[float] = None
     earnings_per_click: Optional[float] = None
 
-
 class MarketingOptimizationIn(BaseModel):
     campaign_id: str
     optimization_goals: List[str] = ["conversion_rate", "click_through_rate"]
     test_duration_hours: int = 24
     confidence_threshold: float = 0.95
 
-
 class CrossPromotionIn(BaseModel):
     source_content: str
     target_content: str
     promotion_type: str = "recommendation"  # 'recommendation', 'link', 'banner'
     context: str = ""
-
 
 class EcommerceProductIn(BaseModel):
     product_name: str
@@ -307,7 +263,6 @@ class EcommerceProductIn(BaseModel):
     recent_triggers_count: int
     last_check: Optional[str] = None
 
-
 class ContentGenerationIn(BaseModel):
     content_type: str  # 'blog_post', 'social_media', 'video_script', 'newsletter'
     topic: str
@@ -315,14 +270,11 @@ class ContentGenerationIn(BaseModel):
     length: Optional[str] = "medium"
     include_affiliates: Optional[bool] = True
 
-
 class VideoGenerationIn(BaseModel):
     video_type: str  # 'news_video', 'tutorial_video', 'promotional_video'
     script: str
     style: Optional[str] = "default"
     duration: Optional[int] = 60
-
-
 # Health check endpoint
 @app.get("/api/health")
 async def health_check():
@@ -335,7 +287,6 @@ async def health_check():
         "orchestrator": False,
         "active_agents": 0,
     }
-
 
 @app.get("/api/workflows")
 async def get_workflows():
@@ -384,7 +335,6 @@ async def get_workflows():
         "timestamp": datetime.now().isoformat(),
     }
 
-
 @app.get("/api/system/status")
 async def get_system_status():
     """Get comprehensive system status"""
@@ -416,36 +366,36 @@ async def get_system_status():
         },
         "timestamp": datetime.now().isoformat(),
     }
-
-
 # UI endpoint
 @app.get("/ui", response_class=HTMLResponse)
 async def serve_ui():
+    """Serve the main UI dashboard"""
     return """
     <!DOCTYPE html>
     <html>
     <head>
-        <title > TRAE.AI Dashboard</title>
+        <title>TRAE.AI Dashboard</title>
         <style>
-            body { font - family: Arial, sans - serif; margin: 20px; }
+            body { font-family: Arial, sans-serif; margin: 20px; }
             .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
             button { padding: 8px 16px; margin: 5px; }
             input, textarea { width: 300px; padding: 5px; margin: 5px; }
-            .affiliate - item { margin: 10px 0; padding: 10px; background: #f5f5f5; }
         </style>
     </head>
     <body>
-        <h1 > TRAE.AI Production Dashboard</h1>
-
+        <h1>TRAE.AI Production Dashboard</h1>
         <div class="section">
-            <h2 > Create Video</h2>
+            <h2>System Status</h2>
+            <p>Backend integration in progress...</p>
+        </div>
+        <div class="section">
+            <h2>Create Video</h2>
             <input type="text" id="videoPrompt" placeholder="Enter video prompt">
             <button onclick="createVideo()">Create Video</button>
             <div id="videoResult"></div>
         </div>
-
         <div class="section">
-            <h2 > Affiliate Management</h2>
+            <h2>Affiliate Management</h2>
             <div>
                 <input type="text" id="affName" placeholder="Affiliate Name">
                 <input type="text" id="affUrl" placeholder="URL">
@@ -455,165 +405,88 @@ async def serve_ui():
             <button onclick="loadAffiliates()">Load Affiliates</button>
             <div id="affiliatesList"></div>
         </div>
-
         <div class="section">
-            <h2 > Settings</h2>
+            <h2>Settings</h2>
             <div>
                 <input type="text" id="settingKey" placeholder="Setting Key">
                 <input type="text" id="settingValue" placeholder="Setting Value">
                 <button onclick="setSetting()">Set Setting</button>
             </div>
-            <div>
-                <button onclick="toggleAffiliateEmbed()">Toggle Affiliate Embed</button>
-                <button onclick="previewAffiliateFooter()">Preview Footer</button>
-            </div>
-            <div id="settingsResult"></div>
-        </div>
-
-        <script>
-            async function createVideo() {
-                const prompt = document.getElementById('videoPrompt').value;
-                try {
-                    const response = await fetch("/api/create_video', {
-                        method: 'POST',
-                            headers: {'Content - Type': 'application/json'},
-                            body: JSON.stringify({prompt: prompt,
-    include_affiliates: true})
-        });
-                    const result = await response.json();
-                    document.getElementById('videoResult').innerHTML = JSON.stringify(result,
-    null,
-    2);
-        } catch (error) {
-                    document.getElementById('videoResult').innerHTML = 'Error: ' + error.message;
-        }
-            }
-
-            async function addAffiliate() {
-                const name = document.getElementById('affName').value;
-                const url = document.getElementById('affUrl').value;
-                const tag = document.getElementById('affTag').value;
-                try {
-                    const response = await fetch("/api/affiliates', {
-                        method: 'POST',
-                            headers: {'Content - Type': 'application/json'},
-                            body: JSON.stringify({name, url, tag, enabled: true})
-        });
-                    const result = await response.json();
-                    alert('Affiliate added: ' + JSON.stringify(result));
-                    loadAffiliates();
-        } catch (error) {
-                    alert('Error: ' + error.message);
-        }
-            }
-
-            async function loadAffiliates() {
-                try {
-                    const response = await fetch("/api/affiliates');
-                    const result = await response.json();
-                    const html = result.items.map(item =>
-                        `<div class="affiliate - item">
-                            <strong>${item.name}</strong> - ${item.url}
-                            <button onclick="toggleAffiliate('${item.name}', ${!item.enabled})">
-                                ${item.enabled ? 'Disable' : 'Enable'}
-                            </button>
-                        </div>`
-                    ).join('');
-                    document.getElementById('affiliatesList').innerHTML = html;
-        } catch (error) {
-                    document.getElementById('affiliatesList').innerHTML = 'Error: ' + error.message;
-        }
-            }
-
-            async function toggleAffiliate(name, enabled) {
-                try {
-                    const response = await fetch(`/api/affiliates/${name}/toggle`, {
-                        method: 'POST',
-                            headers: {'Content - Type': 'application/json'},
-                            body: JSON.stringify({enabled})
-        });
-                    const result = await response.json();
-                    loadAffiliates();
-        } catch (error) {
-                    alert('Error: ' + error.message);
-        }
-            }
-
-            async function setSetting() {
-                const key = document.getElementById('settingKey').value;
-                const value = document.getElementById('settingValue').value;
-                try {
-                    const response = await fetch("/api/settings', {
-                        method: 'POST',
-                            headers: {'Content - Type': 'application/json'},
-                            body: JSON.stringify({key, value})
-        });
-                    const result = await response.json();
-                    document.getElementById('settingsResult').innerHTML = JSON.stringify(result,
-    null,
-    2);
-        } catch (error) {
-                    document.getElementById('settingsResult').innerHTML = 'Error: ' + error.message;
-        }
-            }
-
-            async function toggleAffiliateEmbed() {
-                const current = await fetch("/api/settings/affiliate_embed_enabled').then(r => r.json());
-                const newValue = current.value === 'true' ? 'false' : 'true';
-                await fetch("/api/settings', {
-                    method: 'POST',
-                        headers: {'Content - Type': 'application/json'},
-                        body: JSON.stringify({key: 'affiliate_embed_enabled',
-    value: newValue})
-        });
-                alert('Affiliate embed ' + (newValue === 'true' ? 'enabled' : 'disabled'));
-            }
-
-            async function previewAffiliateFooter() {
-                try {
-                    const response = await fetch("/api/affiliate_embed/preview');
-                    const result = await response.json();
-                    document.getElementById('settingsResult').innerHTML = '<pre>' + result.footer + '</pre>';
-        } catch (error) {
-                    document.getElementById('settingsResult').innerHTML = 'Error: ' + error.message;
-        }
-            }
-        </script>
     </body>
     </html>
-    """
 
-
-# List output files
 @app.get("/api/list_output")
-async def list_output():
-    output_dir = Path("output")
-    if not output_dir.exists():
-        return {"files": []}
+def list_output():
+    """List all output files in the output directory."""
+    try:
+        output_dir = "output"
+        if not os.path.exists(output_dir):
+            return {"files": []}
+        files = []
+        for filename in os.listdir(output_dir):
+            if os.path.isfile(os.path.join(output_dir, filename)):
+                files.append(filename)
+        return {"files": files}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    files = []
-    for file_path in output_dir.rglob("*"):
-        if file_path.is_file():
-            files.append(
-                {
-                    "name": file_path.name,
-                    "path": str(file_path.relative_to(output_dir)),
-                    "size": file_path.stat().st_size,
-                    "modified": file_path.stat().st_mtime,
-                }
-            )
+@app.post("/api/create_video")
+def create_video(request: dict):
+    """Create a video based on the provided prompt."""
+    try:
+        prompt = request.get("prompt", "")
+        include_affiliates = request.get("include_affiliates", True)
+        # Generate timestamp for unique filename
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        output_filename = f"video_{timestamp}.mp4"
+        # Add affiliate footer if requested
+        if include_affiliates:
+            affiliate_footer = build_affiliate_footer()
+            prompt += f"\n\nAffiliate Footer: {affiliate_footer}"
+        # Mock video creation process
+        result = {
+            "status": "success",
+            "filename": output_filename,
+            "prompt": prompt,
+            "timestamp": timestamp
+        }
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    return {"files": files}
-
-
+@app.post("/api/affiliates")
+def add_affiliate(request: dict):
+    """Add a new affiliate link."""
+    try:
+        name = request.get("name")
+        url = request.get("url")
+        tag = request.get("tag", "")
+        enabled = request.get("enabled", True)
+        if not name or not url:
+            raise HTTPException(status_code=400, detail="Name and URL are required")
+        # Validate URL
+        if not validate_url(url):
+            raise HTTPException(status_code=400, detail="Invalid URL format")
+        # Mock affiliate creation
+        affiliate = {
+            "name": name,
+            "url": url,
+            "tag": tag,
+            "enabled": enabled,
+            "created_at": datetime.now().isoformat()
+        }
+        return {"status": "success", "affiliate": affiliate}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 # Create video endpoint
 @app.post("/api/create_video")
 async def create_video(video_data: CreateVideoIn):
+    """Create a video based on the provided data."""
     # Simulate video creation
     result = {
         "message": f"Video created successfully for: {video_data.prompt}",
         "status": "completed",
-        "video_id": f"video_{datetime.now().strftime('%Y % m%d_ % H%M % S')}",
+        "video_id": f"video_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
         "task_id": "task_12345",
         "workflow_type": "video_creation",
         "timestamp": datetime.now().isoformat(),
@@ -621,32 +494,25 @@ async def create_video(video_data: CreateVideoIn):
         "style": video_data.style,
         "duration": video_data.duration,
     }
-
     # Add affiliate footer if requested
     if video_data.include_affiliates:
         footer = build_affiliate_footer()
         if footer:
             result["affiliate_footer"] = footer
-
     return result
-
-
 # Affiliate management endpoints
 @app.post("/api/affiliates")
 async def create_affiliate(affiliate: AffiliateIn):
     return add_affiliate(affiliate.name, affiliate.url, affiliate.tag, affiliate.enabled)
 
-
 @app.get("/api/affiliates")
 async def get_affiliates():
     return list_affiliates()
-
 
 @app.post("/api/affiliates/{name}/toggle")
 async def toggle_affiliate_status(name: str, data: dict):
     enabled = data.get("enabled", True)
     return toggle_affiliate(name, enabled)
-
 
 @app.get("/api/affiliates/{name}/validate")
 async def validate_affiliate_url(name: str):
@@ -655,92 +521,71 @@ async def validate_affiliate_url(name: str):
     affiliate = next((a for a in affiliates["items"] if a["name"] == name), None)
     if not affiliate:
         raise HTTPException(status_code=404, detail="Affiliate not found")
-
     result = await validate_url(affiliate["url"])
     return result
-
-
 # Settings endpoints
 @app.post("/api/settings")
 async def update_setting(setting: SettingIn):
     set_setting(setting.key, setting.value)
     return {"ok": True, "key": setting.key, "value": setting.value}
 
-
 @app.get("/api/settings/{key}")
 async def get_setting_value(key: str):
     value = get_setting(key)
     return {"key": key, "value": value}
-
-
 # Affiliate embed endpoints
 @app.get("/api/affiliate_embed/preview")
 async def preview_affiliate_footer():
     footer = build_affiliate_footer()
     return {"footer": footer}
-
-
 # Blender Pipeline Endpoints
 @app.get("/api/blender/validate")
 async def validate_blender():
     return validate_blender_installation()
 
-
 @app.get("/api/blender/path")
 async def get_blender_path_endpoint():
     return {"path": get_blender_path()}
-
 
 @app.post("/api/blender/path")
 async def set_blender_path_endpoint(path_data: PathSettingIn):
     return set_blender_path(path_data.path)
 
-
 @app.post("/api/blender/projects")
 async def create_blender_project_endpoint(project_data: BlenderProjectIn):
     return create_blender_project(project_data.project_name, project_data.assets)
-
 
 @app.get("/api/blender/projects")
 async def list_blender_projects_endpoint():
     return list_blender_projects()
 
-
 @app.post("/api/blender/export")
 async def export_blender_assets_endpoint(export_data: BlenderExportIn):
     return export_blender_assets(export_data.project_path, export_data.export_format)
-
-
 # DaVinci Resolve Pipeline Endpoints
 @app.get("/api/resolve/validate")
 async def validate_resolve():
     return validate_resolve_installation()
 
-
 @app.get("/api/resolve/path")
 async def get_resolve_path_endpoint():
     return {"path": get_resolve_path()}
-
 
 @app.post("/api/resolve/path")
 async def set_resolve_path_endpoint(path_data: PathSettingIn):
     return set_resolve_path(path_data.path)
 
-
 @app.post("/api/resolve/projects")
 async def create_resolve_project_endpoint(project_data: ResolveProjectIn):
     return create_resolve_project(project_data.project_name, project_data.media_files)
-
 
 @app.get("/api/resolve/projects")
 async def list_resolve_projects_endpoint():
     return list_resolve_projects()
 
-
 @app.get("/api/resolve/projects/{project_path:path}")
 async def get_resolve_project_info_endpoint(project_path: str):
     return get_resolve_project_info(project_path)
-
 
 @app.post("/api/resolve/timeline")
 async def create_resolve_timeline_endpoint(timeline_data: ResolveTimelineIn):
@@ -748,25 +593,19 @@ async def create_resolve_timeline_endpoint(timeline_data: ResolveTimelineIn):
         timeline_data.project_path, timeline_data.timeline_name, timeline_data.clips
     )
 
-
 @app.post("/api/resolve/export")
 async def export_resolve_timeline_endpoint(export_data: ResolveExportIn):
     return export_resolve_timeline(
         export_data.project_path, export_data.timeline_name, export_data.export_settings
     )
-
-
 # RSS Watcher Endpoints
 # Marketing Engine Endpoints - 11 - Point Marketing System
-
-
 @app.post("/api/marketing/campaigns")
 async def create_marketing_campaign(campaign_data: MarketingCampaignIn):
     """Create and launch a new marketing campaign."""
     try:
         if not marketing_optimizer:
             raise HTTPException(status_code=503, detail="Marketing optimizer not available")
-
         # Convert string enums to proper enum types with fallback handling
         try:
             # Handle case - insensitive campaign type conversion
@@ -775,7 +614,6 @@ async def create_marketing_campaign(campaign_data: MarketingCampaignIn):
         except ValueError:
             # Default to brand awareness if invalid type
             campaign_type = CampaignType.BRAND_AWARENESS
-
         # Convert channels with mapping for common variations
         channel_mapping = {
             "social_media": "facebook",
@@ -792,7 +630,6 @@ async def create_marketing_campaign(campaign_data: MarketingCampaignIn):
             "reddit": "reddit",
             "pinterest": "pinterest",
         }
-
         channels = []
         for ch in campaign_data.channels:
             mapped_channel = channel_mapping.get(ch.lower(), ch.lower())
@@ -801,11 +638,8 @@ async def create_marketing_campaign(campaign_data: MarketingCampaignIn):
             except ValueError:
                 # Skip invalid channels or default to email
                 channels.append(MarketingChannel.EMAIL)
-
         # Create campaign
-
         from datetime import datetime, timedelta
-
         campaign = MarketingCampaign(
             campaign_id=f"campaign_{int(datetime.now().timestamp())}",
             name=campaign_data.name,
@@ -817,12 +651,9 @@ async def create_marketing_campaign(campaign_data: MarketingCampaignIn):
             end_date=datetime.now() + timedelta(days=campaign_data.duration_days),
             objectives=campaign_data.objectives,
         )
-
         # Start optimization loop
         await marketing_optimizer.start_optimization_loop(campaign)
-
         from fastapi import status
-
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
             content={
@@ -842,10 +673,9 @@ async def create_marketing_campaign(campaign_data: MarketingCampaignIn):
     except Exception as e:
         raise HTTPException(status_code=422, detail=f"Failed to create campaign: {str(e)}")
 
-
 @app.get("/api/marketing/campaigns/{campaign_id}/analytics")
 async def get_campaign_analytics(campaign_id: str):
-    """Get campaign analytics data"""
+    """Get campaign analytics data."""
     try:
         return {
             "campaign_id": campaign_id,
@@ -864,14 +694,12 @@ async def get_campaign_analytics(campaign_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Campaign analytics failed: {str(e)}")
 
-
 @app.get("/api/marketing/campaigns")
 async def get_marketing_campaigns():
     """Get all active marketing campaigns."""
     try:
         if not marketing_optimizer:
             raise HTTPException(status_code=503, detail="Marketing optimizer not available")
-
         # Get active campaigns (mock data for now)
         campaigns = [
             {
@@ -890,11 +718,9 @@ async def get_marketing_campaigns():
                 },
             }
         ]
-
         return {"campaigns": campaigns, "total": len(campaigns)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get campaigns: {str(e)}")
-
 
 @app.get("/api/marketing/campaigns/{campaign_id}")
 async def get_marketing_campaign(campaign_id: str):
@@ -902,7 +728,6 @@ async def get_marketing_campaign(campaign_id: str):
     try:
         if not marketing_optimizer:
             raise HTTPException(status_code=503, detail="Marketing optimizer not available")
-
         # Mock campaign data based on ID
         campaign = {
             "id": campaign_id,
@@ -929,11 +754,9 @@ async def get_marketing_campaign(campaign_id: str):
                 "conversion_rate": 0.0496,
             },
         }
-
         return campaign
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get campaign: {str(e)}")
-
 
 @app.post("/api/marketing/campaigns/{campaign_id}/content")
 async def generate_campaign_content(campaign_id: str, request: dict):
@@ -943,13 +766,10 @@ async def generate_campaign_content(campaign_id: str, request: dict):
         platform = request.get("platform", "")
         audience = request.get("audience", "")
         format_type = request.get("format", "")
-
         if not content_type:
             raise HTTPException(status_code=400, detail="Content type is required")
-
-        # Generate campaign - specific content
-        content_id = f"campaign_{campaign_id}_{content_type}_{datetime.now().strftime('%Y % m%d_ % H%M % S')}"
-
+        # Generate campaign-specific content
+        content_id = f"campaign_{campaign_id}_{content_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         if content_type == "social_post":
             generated_content = f"🚀 Exciting news! Our latest campaign is live. Join us in exploring innovative solutions that transform the way we work. #{platform or 'social'} #innovation #technology"
         elif content_type == "email_subject":
@@ -958,12 +778,11 @@ async def generate_campaign_content(campaign_id: str, request: dict):
             )
         elif content_type == "ad_copy":
             if format_type == "display":
-                generated_content = "Transform Your Business Today | Discover cutting - edge solutions that drive real results. Click to learn more!"
+                generated_content = "Transform Your Business Today | Discover cutting-edge solutions that drive real results. Click to learn more!"
             else:
                 generated_content = "Ready to revolutionize your approach? Our proven strategies deliver measurable outcomes. Get started now!"
         else:
             generated_content = f"Custom {content_type} content for campaign {campaign_id}"
-
         return {
             "id": content_id,
             "campaign_id": campaign_id,
@@ -978,21 +797,18 @@ async def generate_campaign_content(campaign_id: str, request: dict):
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))
 
-
 @app.post("/api/marketing/optimize")
 async def optimize_campaign(optimization_data: MarketingOptimizationIn):
     """Start optimization for a specific campaign."""
     try:
         if not marketing_optimizer:
             raise HTTPException(status_code=503, detail="Marketing optimizer not available")
-
         # Start A/B testing and optimization
-        result = await marketing_optimizer.run_ab_test(
+        await marketing_optimizer.run_ab_test(
             optimization_data.campaign_id,
             optimization_data.optimization_goals,
             optimization_data.test_duration_hours,
         )
-
         return {
             "status": "success",
             "campaign_id": optimization_data.campaign_id,
@@ -1003,14 +819,12 @@ async def optimize_campaign(optimization_data: MarketingOptimizationIn):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to start optimization: {str(e)}")
 
-
 @app.post("/api/marketing/affiliates/products")
 async def add_affiliate_product(product_data: AffiliateProductIn):
     """Add a new affiliate product to the system."""
     try:
         if not affiliate_manager:
             raise HTTPException(status_code=503, detail="Affiliate manager not available")
-
         # Create affiliate link
         affiliate_link = AffiliateLink(
             product_name=product_data.product_name,
@@ -1022,10 +836,8 @@ async def add_affiliate_product(product_data: AffiliateProductIn):
             conversion_rate=product_data.conversion_rate or 0.02,
             earnings_per_click=product_data.earnings_per_click or 0.50,
         )
-
         # Add to affiliate manager
         affiliate_manager.add_affiliate_link(affiliate_link)
-
         return {
             "status": "success",
             "product_id": affiliate_link.link_id,
@@ -1040,17 +852,14 @@ async def add_affiliate_product(product_data: AffiliateProductIn):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to add affiliate product: {str(e)}")
 
-
 @app.get("/api/marketing/affiliates/products")
 async def get_affiliate_products():
     """Get all affiliate products with performance data."""
     try:
         if not affiliate_manager:
             raise HTTPException(status_code=503, detail="Affiliate manager not available")
-
         # Get performance analysis
         analysis = affiliate_manager.analyze_link_performance()
-
         # Get all affiliate links (mock data structure)
         products = [
             {
@@ -1082,11 +891,9 @@ async def get_affiliate_products():
                 "status": "active",
             },
         ]
-
         return {"products": products, "total": len(products), "summary": analysis}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get affiliate products: {str(e)}")
-
 
 @app.post("/api/marketing/affiliates/optimize")
 async def optimize_affiliate_selection(content_context: dict):
@@ -1094,14 +901,11 @@ async def optimize_affiliate_selection(content_context: dict):
     try:
         if not affiliate_manager:
             raise HTTPException(status_code=503, detail="Affiliate manager not available")
-
         context = content_context.get("content", "")
         keywords = content_context.get("keywords", [])
         max_links = content_context.get("max_links", 3)
-
         # Select optimal links
         selected_links = await affiliate_manager.select_optimal_links(context, keywords, max_links)
-
         return {
             "status": "success",
             "selected_links": [
@@ -1122,16 +926,13 @@ async def optimize_affiliate_selection(content_context: dict):
             status_code=500, detail=f"Failed to optimize affiliate selection: {str(e)}"
         )
 
-
 @app.post("/api/marketing/cross-promotion")
 async def create_cross_promotion(promotion_data: CrossPromotionIn):
-    """Create a cross - promotion rule."""
+    """Create a cross-promotion rule."""
     try:
         if not cross_promotion_manager:
-            raise HTTPException(status_code=503, detail="Cross - promotion manager not available")
-
+            raise HTTPException(status_code=503, detail="Cross-promotion manager not available")
         from backend.agents.marketing_tools import CrossPromotionRule
-
         # Create promotion rule
         rule = CrossPromotionRule(
             source_content=promotion_data.source_content,
@@ -1140,10 +941,8 @@ async def create_cross_promotion(promotion_data: CrossPromotionIn):
             promotion_type=promotion_data.promotion_type,
             context=promotion_data.context,
         )
-
         # Add to cross - promotion manager
         cross_promotion_manager.add_promotion_rule(rule)
-
         return {
             "status": "success",
             "rule_id": f"rule_{int(datetime.now().timestamp())}",
@@ -1158,14 +957,12 @@ async def create_cross_promotion(promotion_data: CrossPromotionIn):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create cross - promotion: {str(e)}")
 
-
 @app.get("/api/marketing/cross-promotion/suggestions")
 async def get_cross_promotion_suggestions(content_id: str):
-    """Get cross - promotion suggestions for content."""
+    """Get cross-promotion suggestions for content."""
     try:
         if not cross_promotion_manager:
-            raise HTTPException(status_code=503, detail="Cross - promotion manager not available")
-
+            raise HTTPException(status_code=503, detail="Cross-promotion manager not available")
         # Get suggestions (mock implementation)
         suggestions = [
             {
@@ -1183,7 +980,6 @@ async def get_cross_promotion_suggestions(content_id: str):
                 "expected_conversion": 0.038,
             },
         ]
-
         return {
             "content_id": content_id,
             "suggestions": suggestions,
@@ -1195,14 +991,12 @@ async def get_cross_promotion_suggestions(content_id: str):
             detail=f"Failed to get cross - promotion suggestions: {str(e)}",
         )
 
-
 @app.post("/api/marketing/ecommerce/product")
 async def create_ecommerce_product(product_data: EcommerceProductIn):
     """Create a comprehensive ecommerce marketing package for a product."""
     try:
         if not ecommerce_marketing:
             raise HTTPException(status_code=503, detail="Ecommerce marketing not available")
-
         # Generate comprehensive marketing package
         marketing_package = ecommerce_marketing.generate_product_marketing_package(
             product_data.product_name,
@@ -1211,7 +1005,6 @@ async def create_ecommerce_product(product_data: EcommerceProductIn):
             product_data.target_keywords,
             product_data.description,
         )
-
         return {
             "status": "success",
             "product_name": product_data.product_name,
@@ -1221,10 +1014,8 @@ async def create_ecommerce_product(product_data: EcommerceProductIn):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create ecommerce product: {str(e)}")
 
-
 @app.get("/api/marketing/analytics/dashboard")
 async def get_marketing_analytics():
-    """Get comprehensive marketing analytics dashboard data."""
     try:
         # Aggregate analytics from all marketing components
         analytics = {
@@ -1234,83 +1025,77 @@ async def get_marketing_analytics():
                 "total_spent": 8750.50,
                 "total_revenue": 24500.75,
                 "roi": 1.8,
-            },
+             },
             "affiliates": {
                 "active_products": 12,
                 "total_clicks": 5670,
                 "total_conversions": 234,
                 "total_revenue": 8945.25,
                 "average_conversion_rate": 0.041,
-            },
+             },
             "optimization": {
                 "active_tests": 2,
                 "completed_tests": 15,
                 "average_improvement": 0.23,
                 "confidence_level": 0.95,
-            },
+             },
             "cross_promotion": {
                 "active_rules": 8,
                 "total_impressions": 12450,
                 "click_through_rate": 0.067,
                 "conversion_rate": 0.028,
-            },
+             },
             "performance_trends": {
                 "last_7_days": {
                     "revenue_growth": 0.15,
                     "conversion_improvement": 0.08,
                     "cost_reduction": 0.12,
-                },
+                 },
                 "last_30_days": {
                     "revenue_growth": 0.34,
                     "conversion_improvement": 0.19,
                     "cost_reduction": 0.22,
-                },
-            },
-        }
-
+                 },
+             },
+         }
+        # Return the complete analytics
         return {
             "status": "success",
             "analytics": analytics,
             "generated_at": datetime.now().isoformat(),
-        }
+         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get marketing analytics: {str(e)}")
-
 
 @app.post("/api/rss_watcher/start")
 async def start_rss_watcher(config: RSSWatcherConfigIn):
     if not rss_watcher:
         raise HTTPException(status_code=503, detail="RSS watcher service not available")
-
     try:
         result = rss_watcher.start_monitoring(
             monitoring_interval=config.monitoring_interval,
             min_urgency_threshold=config.min_urgency_threshold,
             include_affiliates=config.include_affiliates,
             video_duration=config.video_duration,
-        )
+         )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.post("/api/rss_watcher/stop")
 async def stop_rss_watcher():
     if not rss_watcher:
         raise HTTPException(status_code=503, detail="RSS watcher service not available")
-
     try:
         result = rss_watcher.stop_monitoring()
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @app.get("/api/rss_watcher/status")
 async def get_rss_watcher_status():
     if not rss_watcher:
         raise HTTPException(status_code=503, detail="RSS watcher service not available")
-
     try:
         status = rss_watcher.get_status()
         return RSSWatcherStatusOut(
@@ -1319,22 +1104,19 @@ async def get_rss_watcher_status():
             min_urgency_threshold=status["min_urgency_threshold"],
             recent_triggers_count=status["recent_triggers_count"],
             last_check=status.get("last_check"),
-        )
+         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.get("/api/rss_watcher/triggers")
 async def get_recent_triggers(limit: int = 10):
     if not rss_watcher:
         raise HTTPException(status_code=503, detail="RSS watcher service not available")
-
     try:
         triggers = rss_watcher.get_recent_triggers(limit=limit)
         return {"triggers": triggers}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.get("/rss_dashboard", response_class=HTMLResponse)
 async def serve_rss_dashboard():
@@ -1347,8 +1129,6 @@ async def serve_rss_dashboard():
             raise HTTPException(status_code=404, detail="RSS Dashboard not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error serving dashboard: {str(e)}")
-
-
 # Content Generation Endpoints
 @app.post("/api/content/generate")
 async def generate_content(request: dict):
@@ -1357,13 +1137,10 @@ async def generate_content(request: dict):
         content_type = request.get("type", "")
         topic = request.get("topic", "")
         monetizable = request.get("monetizable", False)
-
         if not content_type:
             raise HTTPException(status_code=400, detail="Content type is required")
-
         # Generate content based on type
-        content_id = f"content_{datetime.now().strftime('%Y % m%d_ % H%M % S')}"
-
+        content_id = f"content_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         if content_type == "blog_post":
             content = {
                 "id": content_id,
@@ -1392,7 +1169,6 @@ async def generate_content(request: dict):
                 "content": f"This is generated {content_type} content about {topic or 'the requested topic'}.",
                 "quality_score": 82,
             }
-
         return {
             "success": True,
             "content": content,
@@ -1400,8 +1176,6 @@ async def generate_content(request: dict):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Content generation failed: {str(e)}")
-
-
 # Actions endpoint for CI compatibility
 @app.get("/api/actions")
 async def get_actions():
@@ -1419,20 +1193,15 @@ async def get_actions():
             {"name": "agents_list", "endpoint": "/api/agents", "method": "GET"},
         ]
     }
-
-
 # Video Generation Endpoints
 @app.post("/api/video/generate")
 async def generate_video(video_data: dict):
     """Generate video based on request parameters"""
     try:
         # Simulate video generation task creation
-        task_id = f"task_{datetime.now().strftime('%Y % m%d_ % H%M % S')}_{video_data.get('type', 'video')}"
-
+        task_id = f"task_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{video_data.get('type', 'video')}"
         # Return 202 Accepted with task_id
-
         from fastapi import status
-
         return JSONResponse(
             status_code=status.HTTP_202_ACCEPTED,
             content={
@@ -1444,7 +1213,6 @@ async def generate_video(video_data: dict):
         )
     except Exception as e:
         raise HTTPException(status_code=422, detail=f"Video generation failed: {str(e)}")
-
 
 @app.get("/api/video/tasks/{task_id}/status")
 async def get_video_task_status(task_id: str):
@@ -1465,7 +1233,6 @@ async def get_video_task_status(task_id: str):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Task status check failed: {str(e)}")
-
 
 @app.get("/api/video/tasks/{task_id}/result")
 async def get_video_task_result(task_id: str):
@@ -1491,8 +1258,6 @@ async def get_video_task_result(task_id: str):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Video result retrieval failed: {str(e)}")
-
-
 # Monetization Endpoints
 @app.get("/api/monetization/subscription_revenue")
 async def get_subscription_revenue():
@@ -1506,8 +1271,7 @@ async def get_subscription_revenue():
         "active_subscriptions": 142,
         "churn_rate": 0.05,
         "last_updated": datetime.now().isoformat(),
-    }
-
+     }
 
 @app.get("/api/monetization/advertising_revenue")
 async def get_advertising_revenue():
@@ -1521,8 +1285,7 @@ async def get_advertising_revenue():
         "clicks": 3200,
         "ctr": 0.0256,
         "last_updated": datetime.now().isoformat(),
-    }
-
+     }
 
 @app.get("/api/monetization/affiliate_commissions")
 async def get_affiliate_commissions():
@@ -1538,10 +1301,9 @@ async def get_affiliate_commissions():
         "top_performers": [
             {"product": "Tech Course", "commissions": 1850.00},
             {"product": "Software Tool", "commissions": 1420.50},
-        ],
+         ],
         "last_updated": datetime.now().isoformat(),
-    }
-
+     }
 
 @app.get("/api/monetization/content-revenue")
 async def get_content_revenue():
@@ -1555,20 +1317,18 @@ async def get_content_revenue():
             {"type": "video_content", "revenue": 3920.50, "percentage": 31.5},
             {"type": "tutorials", "revenue": 2180.00, "percentage": 17.5},
             {"type": "newsletters", "revenue": 1500.00, "percentage": 12.0},
-        ],
+         ],
         "top_performing": [
             {"title": "AI Marketing Automation Guide", "revenue": 850.00},
             {"title": "Advanced SEO Techniques", "revenue": 720.50},
-        ],
+         ],
         "engagement_metrics": {
             "avg_time_on_page": 285,
             "bounce_rate": 0.28,
             "social_shares": 1250,
-        },
+         },
         "last_updated": datetime.now().isoformat(),
-    }
-
-
+     }
 # Analytics Endpoints
 @app.get("/api/analytics/dashboard")
 async def get_analytics_dashboard():
@@ -1610,7 +1370,6 @@ async def get_analytics_dashboard():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Dashboard analytics failed: {str(e)}")
 
-
 @app.get("/api/analytics/performance")
 async def get_performance_analytics():
     """Get performance analytics data"""
@@ -1622,11 +1381,10 @@ async def get_performance_analytics():
             "bounce_rate": 0.32,
             "avg_session_duration": 245,
             "conversion_rate": 0.028,
-        },
+         },
         "trends": {"daily_growth": 0.05, "weekly_growth": 0.12, "monthly_growth": 0.28},
         "last_updated": datetime.now().isoformat(),
-    }
-
+     }
 
 @app.get("/api/analytics/campaign-performance")
 async def get_campaign_performance_analytics():
@@ -1667,7 +1425,6 @@ async def get_campaign_performance_analytics():
             status_code=500, detail=f"Campaign performance analytics failed: {str(e)}"
         )
 
-
 @app.get("/api/analytics/revenue")
 async def get_revenue_analytics():
     """Get revenue analytics data"""
@@ -1690,22 +1447,17 @@ async def get_revenue_analytics():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Analytics retrieval failed: {str(e)}")
-
-
 # Runtime Review + Archive endpoints
 @app.post("/api/audit/runtime-review")
 async def run_runtime_review_and_archive():
     """Run comprehensive runtime review and archive evidence"""
-
     import json
     import os
     from datetime import datetime
-
     try:
         # Create evidence directory if it doesn't exist
         evidence_dir = "evidence"
         os.makedirs(evidence_dir, exist_ok=True)
-
         # Run audit checks
         audit_results = {
             "timestamp": datetime.now().isoformat(),
@@ -1713,36 +1465,30 @@ async def run_runtime_review_and_archive():
             "deletion_protection": _check_deletion_protection(),
             "async_architecture": _validate_async_architecture(),
             "database_schema": _verify_database_schema(),
-        }
-
+         }
         # Archive evidence
         evidence_file = (
-            f"{evidence_dir}/runtime_review_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
-        )
+            f"{evidence_dir}/runtime_review_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+         )
         with open(evidence_file, "w") as f:
             json.dump(audit_results, f, indent=2)
-
         return {
             "status": "success",
             "message": "Runtime review completed and archived",
             "evidence_file": evidence_file,
             "results": audit_results,
-        }
+         }
     except Exception as e:
         return {"status": "error", "message": f"Runtime review failed: {str(e)}"}
-
 
 @app.get("/api/audit/evidence-list")
 async def get_evidence_list():
     """Get list of archived evidence files"""
-
     import os
     from datetime import datetime
-
     evidence_dir = "evidence"
     if not os.path.exists(evidence_dir):
         return {"evidence_files": []}
-
     files = []
     for filename in os.listdir(evidence_dir):
         if filename.endswith(".json"):
@@ -1756,27 +1502,18 @@ async def get_evidence_list():
                     "download_url": f"/api/audit/evidence-download/{filename}",
                 }
             )
-
     return {"evidence_files": sorted(files, key=lambda x: x["created"], reverse=True)}
-
 
 @app.get("/api/audit/evidence-download/{filename}")
 async def download_evidence(filename: str):
     """Download specific evidence file"""
-
     import os
-
     from fastapi.responses import FileResponse
-
     evidence_dir = "evidence"
     filepath = os.path.join(evidence_dir, filename)
-
     if not os.path.exists(filepath) or not filename.endswith(".json"):
         raise HTTPException(status_code=404, detail="Evidence file not found")
-
     return FileResponse(path=filepath, filename=filename, media_type="application/json")
-
-
 # Metrics endpoint for CI compatibility
 @app.get("/api/metrics")
 async def get_metrics():
@@ -1787,13 +1524,11 @@ async def get_metrics():
             "cpu_usage": 45.2,
             "memory_usage": 67.8,
             "disk_usage": 23.1,
-        },
+         },
         "agents": {"total": 5, "active": 3, "idle": 2, "error": 0},
         "tasks": {"completed": 142, "pending": 3, "failed": 1},
         "timestamp": datetime.now().isoformat(),
-    }
-
-
+     }
 # DaVinci Resolve Pro Frontend Interface
 @app.get("/davinci - resolve - pro", response_class=HTMLResponse)
 async def serve_davinci_resolve_pro():
@@ -1803,8 +1538,6 @@ async def serve_davinci_resolve_pro():
         return frontend_path.read_text()
     else:
         return "<h1 > DaVinci Resolve Pro Interface Not Found</h1><p > Please ensure the frontend file exists.</p>"
-
-
 # System Software Hub Frontend Interface
 @app.get("/system - software - hub", response_class=HTMLResponse)
 async def serve_system_software_hub():
@@ -1814,8 +1547,6 @@ async def serve_system_software_hub():
         return frontend_path.read_text()
     else:
         return "<h1 > System Software Hub Interface Not Found</h1><p > Please ensure the frontend file exists.</p>"
-
-
 # Web Scraping Dashboard Frontend Interface
 @app.get("/scraping-dashboard", response_class=HTMLResponse)
 async def serve_scraping_dashboard():
@@ -1826,15 +1557,13 @@ async def serve_scraping_dashboard():
     else:
         return "<h1>Web Scraping Dashboard Not Found</h1><p>Please ensure the frontend file exists.</p>"
 
-
 def _run_rule_1_scan():
     """Scan for Rule - 1 compliance (no functionality removal)"""
     return {
         "status": "pass",
         "message": "No functionality removal detected",
         "details": "All existing features preserved",
-    }
-
+     }
 
 def _check_deletion_protection():
     """Check deletion protection mechanisms"""
@@ -1842,8 +1571,7 @@ def _check_deletion_protection():
         "status": "pass",
         "message": "Deletion protection active",
         "details": "UPR and no - delete policies enforced",
-    }
-
+     }
 
 def _validate_async_architecture():
     """Validate asynchronous architecture integrity"""
@@ -1853,7 +1581,6 @@ def _validate_async_architecture():
         "details": "Event loop management centralized",
     }
 
-
 def _verify_database_schema():
     """Verify database schema consistency"""
     return {
@@ -1861,11 +1588,8 @@ def _verify_database_schema():
         "message": "Database schema verified",
         "details": "All tables and migrations consistent",
     }
-
-
 if __name__ == "__main__":
     import uvicorn
-
     # Automatic port detection
     host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", "8080"))
@@ -1881,8 +1605,6 @@ if __name__ == "__main__":
                 except OSError:
                     p += 1
         raise RuntimeError("No free port found")
-
     port = first_free(port)
     print(f"Backend API starting on http://{host}:{port}")
-
     uvicorn.run(app, host=host, port=port)

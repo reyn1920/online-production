@@ -1,7 +1,7 @@
-"""
+""""""
 DeepSpeech features processing routines.
 NB: Based on VOCA code. See the corresponding license restrictions.
-"""
+""""""
 
 __all__ = ["conv_audios_to_deepspeech"]
 
@@ -23,8 +23,9 @@ def conv_audios_to_deepspeech(
     deepspeech_pb_path,
     audio_window_size=1,
     audio_window_stride=1,
-):
-    """
+# BRACKET_SURGEON: disabled
+# ):
+    """"""
     Convert list of audio files into files with DeepSpeech features.
 
     Parameters
@@ -41,7 +42,7 @@ def conv_audios_to_deepspeech(
         Audio window size.
     audio_window_stride : int, default 1
         Audio window stride.
-    """
+    """"""
     # deepspeech_pb_path="/disk4/keyu/DeepSpeech/deepspeech - 0.9.2 - models.pbmm"
     graph, logits_ph, input_node_ph, input_lengths_ph = prepare_deepspeech_net(deepspeech_pb_path)
 
@@ -64,9 +65,12 @@ def conv_audios_to_deepspeech(
                     feed_dict={
                         input_node_ph: x[np.newaxis, ...],
                         input_lengths_ph: [x.shape[0]],
-                    },
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             net_output = ds_features.reshape(-1, 29)
             win_size = 16
@@ -80,7 +84,7 @@ def conv_audios_to_deepspeech(
 
 
 def prepare_deepspeech_net(deepspeech_pb_path):
-    """
+    """"""
     Load and prepare DeepSpeech network.
 
     Parameters
@@ -98,7 +102,7 @@ def prepare_deepspeech_net(deepspeech_pb_path):
         ThensorFlow placeholder for `input_node`.
     input_lengths_ph : obj
         ThensorFlow placeholder for `input_lengths`.
-    """
+    """"""
     # Load graph and place_holders:
     with tf.io.gfile.GFile(deepspeech_pb_path, "rb") as f:
         graph_def = tf.compat.v1.GraphDef()
@@ -115,8 +119,9 @@ def prepare_deepspeech_net(deepspeech_pb_path):
 
 def pure_conv_audio_to_deepspeech(
     audio, audio_sample_rate, audio_window_size, audio_window_stride, num_frames, net_fn
-):
-    """
+# BRACKET_SURGEON: disabled
+# ):
+    """"""
     Core routine for converting audion into DeepSpeech features.
 
     Parameters
@@ -138,14 +143,15 @@ def pure_conv_audio_to_deepspeech(
     -------
         np.array
         DeepSpeech features.
-    """
+    """"""
     target_sample_rate = 16000
     if audio_sample_rate != target_sample_rate:
         resampled_audio = resampy.resample(
             x=audio.astype(np.float),
             sr_orig=audio_sample_rate,
             sr_new=target_sample_rate,
-        )
+# BRACKET_SURGEON: disabled
+#         )
     else:
         resampled_audio = audio.astype(np.float32)
     input_vector = conv_audio_to_deepspeech_input_vector(
@@ -153,7 +159,8 @@ def pure_conv_audio_to_deepspeech(
         sample_rate=target_sample_rate,
         num_cepstrum=26,
         num_context=9,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     network_output = net_fn(input_vector)
     # print(network_output.shape)
@@ -170,7 +177,8 @@ def pure_conv_audio_to_deepspeech(
         input_rate=deepspeech_fps,
         output_rate=video_fps,
         output_len=num_frames,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Make windows:
     zero_pad = np.zeros((int(audio_window_size / 2), network_output.shape[1]))
@@ -183,7 +191,7 @@ def pure_conv_audio_to_deepspeech(
 
 
 def conv_audio_to_deepspeech_input_vector(audio, sample_rate, num_cepstrum, num_context):
-    """
+    """"""
     Convert audio raw data into DeepSpeech input vector.
 
     Parameters
@@ -201,7 +209,7 @@ def conv_audio_to_deepspeech_input_vector(audio, sample_rate, num_cepstrum, num_
     -------
         np.array
         DeepSpeech input vector.
-    """
+    """"""
     # Get mfcc coefficients:
     features = mfcc(signal=audio, samplerate=sample_rate, numcep=num_cepstrum)
 
@@ -223,7 +231,8 @@ def conv_audio_to_deepspeech_input_vector(audio, sample_rate, num_cepstrum, num_
         shape=(num_strides, window_size, num_cepstrum),
         strides=(features.strides[0], features.strides[0], features.strides[1]),
         writeable=False,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Flatten the second and third dimensions:
     train_inputs = np.reshape(train_inputs, [num_strides, -1])
@@ -235,7 +244,7 @@ def conv_audio_to_deepspeech_input_vector(audio, sample_rate, num_cepstrum, num_
 
 
 def interpolate_features(features, input_rate, output_rate, output_len):
-    """
+    """"""
     Interpolate DeepSpeech features.
 
     Parameters
@@ -253,7 +262,7 @@ def interpolate_features(features, input_rate, output_rate, output_len):
     -------
         np.array
         Interpolated data.
-    """
+    """"""
     input_len = features.shape[0]
     num_features = features.shape[1]
     input_timestamps = np.arange(input_len) / float(input_rate)
@@ -262,5 +271,6 @@ def interpolate_features(features, input_rate, output_rate, output_len):
     for feature_idx in range(num_features):
         output_features[:, feature_idx] = np.interp(
             x=output_timestamps, xp=input_timestamps, fp=features[:, feature_idx]
-        )
+# BRACKET_SURGEON: disabled
+#         )
     return output_features

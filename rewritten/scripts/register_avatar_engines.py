@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Avatar Engine Registration Script
 Registers Linly - Talker \
-    and Talking Heads as avatar generation engines in the API registry.
-"""
+#     and Talking Heads as avatar generation engines in the API registry.
+""""""
 
 import json
 import os
@@ -42,10 +42,13 @@ def register_avatar_engines():
                     "supported_formats": ["mp4", "avi"],
                     "default_voice": "default",
                     "enhancement_level": "maximum",
-                }
-            ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ),
             "created_by": "system",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "api_name": "talking - heads - fallback",
             "base_url": "http://localhost:8000",  # Alternative port
@@ -67,11 +70,15 @@ def register_avatar_engines():
                     "supported_formats": ["mp4"],
                     "fallback_mode": True,
                     "reliability": "high",
-                }
-            ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ),
             "created_by": "system",
-        },
-    ]
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     ]
 
     try:
         conn = sqlite3.connect(db_path)
@@ -85,7 +92,7 @@ def register_avatar_engines():
             if existing:
                 # Update existing engine
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE api_registry SET
                         base_url = ?,
                             api_version = ?,
@@ -100,7 +107,7 @@ def register_avatar_engines():
                             configuration = ?,
                             updated_at = CURRENT_TIMESTAMP
                     WHERE api_name = ?
-                """,
+                ""","""
                     (
                         engine["base_url"],
                         engine["api_version"],
@@ -114,20 +121,22 @@ def register_avatar_engines():
                         engine["priority"],
                         engine["configuration"],
                         engine["api_name"],
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 print(f"✅ Updated existing avatar engine: {engine['api_name']}")
             else:
                 # Insert new engine
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO api_registry (
                         api_name, base_url, api_version, capability,
                             authentication_type, status, health_check_url,
                             health_status, allow_automatic_failover,
                             failover_priority, priority, configuration, created_by
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         engine["api_name"],
                         engine["base_url"],
@@ -142,21 +151,24 @@ def register_avatar_engines():
                         engine["priority"],
                         engine["configuration"],
                         engine["created_by"],
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 print(f"✅ Registered new avatar engine: {engine['api_name']}")
 
         conn.commit()
 
         # Verify registration
         cursor.execute(
-            """
+            """"""
             SELECT api_name, capability, priority, status
             FROM api_registry
             WHERE capability = 'avatar - generation'
             ORDER BY priority ASC
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         registered_engines = cursor.fetchall()
         print("\\n🎯 Avatar Generation Engines Registered:")
@@ -170,7 +182,8 @@ def register_avatar_engines():
         print("  • Fallback Engine: Talking Heads (Priority 10) - Reliable backup option")
         print(
             "  • Capability: 'avatar - generation' - Used by API Orchestrator for intelligent selection"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print("  • Failover: Automatic - System will switch to fallback if primary fails")
 
     except sqlite3.Error as e:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Go - Live Preparation Script
 
 This script prepares the TRAE AI system for live deployment by:
@@ -10,7 +10,7 @@ This script prepares the TRAE AI system for live deployment by:
 5. Creating production - ready configuration
 
 Follows the comprehensive go - live rules and best practices.
-"""
+""""""
 
 import os
 import sys
@@ -29,8 +29,12 @@ logging.basicConfig(
         handlers=[
         logging.FileHandler('go_live_preparation.log'),
             logging.StreamHandler()
-    ]
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -211,7 +215,9 @@ class GoLivePreparation:
                 "NETLIFY_SITE_ID",
                 "SECRET_KEY",
                 "TRAE_MASTER_KEY"
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         missing_vars = []
         for var in required_sections:
@@ -232,12 +238,14 @@ class GoLivePreparation:
 
         # Common secret patterns
         secret_patterns = [
-            r'(?i)(api[_-]?key|secret[_-]?key|access[_-]?token)\\s*=\\s*["\\'][^"\\'\\']+["\\']',
-                r'(?i)(password|passwd|pwd)\\s*=\\s*["\\'][^"\\'\\']+["\\']',
-                r'(?i)(database[_-]?url|db[_-]?url)\\s*=\\s*["\\'][^"\\'\\']+["\\']',
-                r'(?i)(private[_-]?key)\\s*=\\s*["\\'][^"\\'\\']+["\\']',
-                r'(?i)(auth[_-]?token|bearer[_-]?token)\\s*=\\s*["\\'][^"\\'\\']+["\\']'
-        ]
+            r'(?i)(api[_-]?key|secret[_-]?key|access[_-]?token)\\s*=\\s*["\\'][^"\\'\\']+["\\']',"
+                r'(?i)(password|passwd|pwd)\\s*=\\s*["\\'][^"\\'\\']+["\\']',"
+                r'(?i)(database[_-]?url|db[_-]?url)\\s*=\\s*["\\'][^"\\'\\']+["\\']',"
+                r'(?i)(private[_-]?key)\\s*=\\s*["\\'][^"\\'\\']+["\\']',"
+                r'(?i)(auth[_-]?token|bearer[_-]?token)\\s*=\\s*["\\'][^"\\'\\']+["\\']'"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         # Files to scan
         scan_extensions = ['.py', '.js', '.ts', '.json', '.yml', '.yaml']
@@ -292,7 +300,9 @@ class GoLivePreparation:
                 "NETLIFY_AUTH_TOKEN",
                 "NETLIFY_SITE_ID",
                 "production"
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         missing_elements = []
         for element in required_elements:
@@ -325,7 +335,9 @@ class GoLivePreparation:
                 "[context.production]",
                 "[[headers]]",
                 "functions"
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         missing_sections = []
         for section in required_sections:
@@ -374,10 +386,12 @@ class GoLivePreparation:
                     "checks_passed": self.checks_passed,
                     "success_rate": round(success_rate, 2),
                     "ready_for_deployment": success_rate >= 85
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 "issues": self.issues,
                 "recommendations": self.recommendations
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Save report
         report_path = self.project_root/"go_live_preparation_report.json"
@@ -423,7 +437,9 @@ class GoLivePreparation:
                 "NETLIFY_SITE_ID",
                 "SECRET_KEY",
                 "TRAE_MASTER_KEY"
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for secret in required_secrets:
             logger.info(f"  - {secret}")
@@ -459,7 +475,9 @@ class GoLivePreparation:
                     "X - Content - Type - Options",
                     "Content - Security - Policy",
                     "Strict - Transport - Security"
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             missing_headers = []
             for header in security_headers:
@@ -509,8 +527,8 @@ class GoLivePreparation:
                 content = f.read()
 
             if "security_scan" in content \
-    or "bandit" in content \
-    or "trufflehog" in content:
+#     or "bandit" in content \
+#     or "trufflehog" in content:
                 logger.info("✅ Security scanning configured")
                 self.checks_passed += 1
             else:
@@ -549,7 +567,9 @@ class GoLivePreparation:
         monitoring_files = [
             "monitoring/monitoring_dashboard.py",
                 "netlify/functions/health - check.js"
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         has_monitoring = any((self.project_root/mon_file).exists() for mon_file in monitoring_files)
 
@@ -558,8 +578,10 @@ class GoLivePreparation:
             self.checks_passed += 1
         else:
             logger.warning("⚠️ Limited monitoring configuration")
-            self.recommendations.append("Consider adding comprehensive monitoring \
-    and alerting")
+            self.recommendations.append("Consider adding comprehensive monitoring \"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     and alerting")
 
 
     def _validate_error_handling(self):
@@ -567,8 +589,10 @@ class GoLivePreparation:
         self.total_checks += 1
         logger.info("✅ Error handling should be implemented in application code")
         self.checks_passed += 1
-        self.recommendations.append("Ensure proper error handling \
-    and logging in application")
+        self.recommendations.append("Ensure proper error handling \"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     and logging in application")
 
 
     def _validate_backup_procedures(self):

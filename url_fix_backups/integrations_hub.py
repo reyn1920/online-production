@@ -22,7 +22,7 @@ from content_sources import router as content_router
 
 def _affiliate_status(entry: Dict[str, str]) -> str:
     # green if ID present \
-    and enabled; purple if missing ID; red if enabled but we detect problems later
+#     and enabled; purple if missing ID; red if enabled but we detect problems later
     has_id = entry.get("id_env") and get_secret(entry["id_env"])
     if not has_id:
         return "purple"
@@ -62,7 +62,7 @@ class Provider:
     key_env: Optional[str]
     base_url: str
     docs_url: str
-    health: Dict[str, Any] = field(default_factory = dict)
+    health: Dict[str, Any] = field(default_factory = dict):
     usage: Dict[str, Any] = field(default_factory = dict)
     status: str = "purple"  # default "needs key" until proven
     last_error: Optional[str] = None
@@ -97,10 +97,10 @@ class NewProvider(BaseModel):
 
 
 def set_secret(name: str, value: str) -> None:
-    """
-    Stores the secret using your project's secret_store.py if present.
+    """"""
+    Stores the secret using your project's secret_store.py if present.'
     Fallback: writes to config/.secrets.json (dev only).
-    """
+    """"""
     try:
         # pragma: no cover
 
@@ -144,7 +144,8 @@ def _update_rl_from_headers(p: Provider, headers: Dict[str, str]) -> None:
             h.get("x - ratelimit - reset")
             or h.get("ratelimit - reset")
             or h.get("x - rate - limit - reset")
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if rt:
             p.rl.reset_epoch = int(float(rt))
     except Exception:
@@ -176,7 +177,8 @@ def hydrate_providers() -> Dict[str, Provider]:
                 enabled = p.get("enabled", False),
                 requires_key = p.get(
                 "requires_key", p.get("needs_key", True)
-            ),  # fallback for migration
+# BRACKET_SURGEON: disabled
+#             ),  # fallback for migration
             key_env = p.get("key_env"),
                 base_url = p.get("base_url", ""),
                 docs_url = p["docs_url"],
@@ -185,7 +187,8 @@ def hydrate_providers() -> Dict[str, Provider]:
                 status = p.get("status", "purple"),
                 last_error = p.get("last_error"),
                 required_envs = p.get("required_envs", []),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         if provider.requires_key and not get_secret(provider.key_env or ""):
             provider.status = "purple"
         providers[provider.id] = provider
@@ -206,7 +209,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://open - platform.theguardian.com / documentation/",
             "signup_url": "https://bonobo.capi.gutools.co.uk / register / developer",
             "key_env": "GUARDIAN_API_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "gdelt",
             "name": "GDELT Project",
@@ -216,7 +220,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "wikimedia",
             "name": "Wikipedia / MediaWiki API",
@@ -226,7 +231,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "hackernews",
             "name": "Hacker News (Firebase API)",
@@ -236,7 +242,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "newsapi",
             "name": "NewsAPI",
@@ -244,7 +251,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://newsapi.org / docs",
             "signup_url": "https://newsapi.org / register",
             "key_env": "NEWSAPI_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "mediastack",
             "name": "Mediastack",
@@ -252,7 +260,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://mediastack.com / documentation",
             "signup_url": "https://mediastack.com / signup",
             "key_env": "MEDIASTACK_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         # Images & Video
     {
         "id": "unsplash",
@@ -262,7 +271,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "signup_url": "https://unsplash.com / developers",
             "key_env": "UNSPLASH_KEY",
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "pexels",
             "name": "Pexels",
@@ -271,7 +281,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "signup_url": "https://www.pexels.com / api / new/",
             "key_env": "PEXELS_KEY",
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "pixabay",
             "name": "Pixabay",
@@ -280,7 +291,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "signup_url": "https://pixabay.com / api / docs/",
             "key_env": "PIXABAY_KEY",
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "openverse",
             "name": "Openverse (CC Search)",
@@ -290,7 +302,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "lorempicsum",
             "name": "Lorem Picsum (no key)",
@@ -300,7 +313,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         # Social & Video Platforms
     {
         "id": "youtube",
@@ -309,7 +323,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://developers.google.com / youtube / v3",
             "signup_url": "https://console.cloud.google.com / apis / library / youtube.googleapis.com",
             "key_env": "YOUTUBE_API_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "reddit",
             "name": "Reddit API",
@@ -317,7 +332,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://www.reddit.com / dev / api/",
             "signup_url": "https://www.reddit.com / prefs / apps",
             "key_env": "REDDIT_CLIENT_ID",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         # Weather & Geo
     {
         "id": "openweather",
@@ -327,7 +343,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "signup_url": "https://home.openweathermap.org / users / sign_up",
             "key_env": "OPENWEATHER_KEY",
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "weatherapi",
             "name": "WeatherAPI.com",
@@ -335,7 +352,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://www.weatherapi.com / docs/",
             "signup_url": "https://www.weatherapi.com / signup.aspx",
             "key_env": "WEATHERAPI_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "openmeteo",
             "name": "Open - Meteo (no key)",
@@ -345,7 +363,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "opencage",
             "name": "OpenCage Geocoding",
@@ -353,7 +372,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://opencagedata.com / api",
             "signup_url": "https://opencagedata.com / users / sign_up",
             "key_env": "OPENCAGE_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "nominatim",
             "name": "OpenStreetMap Nominatim",
@@ -363,7 +383,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "openmeteo_geo",
             "name": "Open - Meteo Geocoding (no key)",
@@ -373,7 +394,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "geojs",
             "name": "GeoJS IP (no key)",
@@ -383,7 +405,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         # Finance
     {
         "id": "coingecko",
@@ -394,15 +417,17 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "alphavantage",
             "name": "Alpha Vantage",
             "category": "finance",
             "docs_url": "https://www.alphavantage.co / documentation/",
-            "signup_url": "https://www.alphavantage.co / support/#api - key",
+            "signup_url": "https://www.alphavantage.co / support/#api - key","
             "key_env": "ALPHAVANTAGE_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "finnhub",
             "name": "Finnhub",
@@ -410,7 +435,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://finnhub.io / docs / api",
             "signup_url": "https://finnhub.io / register",
             "key_env": "FINNHUB_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "coinapi",
             "name": "CoinAPI (freemium)",
@@ -418,7 +444,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://docs.coinapi.io/",
             "signup_url": "https://www.coinapi.io / pricing",
             "key_env": "COINAPI_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "coindesk",
             "name": "CoinDesk (no key)",
@@ -428,7 +455,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         # AI / ML (OFF by default; keep paid off until you're ready)
     {
         "id": "hf_inference",
@@ -437,7 +465,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://huggingface.co / docs / api - inference / index",
             "signup_url": "https://huggingface.co / join",
             "key_env": "HF_API_TOKEN",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "openai",
             "name": "OpenAI (off by default)",
@@ -446,7 +475,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "signup_url": "https://platform.openai.com / signup",
             "key_env": "OPENAI_API_KEY",
             "enabled": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "google_gemini",
             "name": "Google AI Studio (off by default)",
@@ -455,7 +485,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "signup_url": "https://aistudio.google.com/",
             "key_env": "GOOGLE_API_KEY",
             "enabled": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "anthropic",
             "name": "Anthropic (off by default)",
@@ -464,7 +495,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "signup_url": "https://console.anthropic.com/",
             "key_env": "ANTHROPIC_API_KEY",
             "enabled": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         # News / Politics
     {
         "id": "newscatcher",
@@ -473,7 +505,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://docs.newscatcherapi.com/",
             "signup_url": "https://newscatcherapi.com / signup",
             "key_env": "NEWSCATCHER_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "newsdata",
             "name": "Newsdata.io (freemium)",
@@ -481,7 +514,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://newsdata.io / documentation",
             "signup_url": "https://newsdata.io / register",
             "key_env": "NEWSDATA_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "currents",
             "name": "Currents API (freemium)",
@@ -489,7 +523,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://currentsapi.services / en / docs",
             "signup_url": "https://currentsapi.services / en / register",
             "key_env": "CURRENTS_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "gnews",
             "name": "GNews (freemium)",
@@ -497,7 +532,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://gnews.io / docs / v4",
             "signup_url": "https://gnews.io/",
             "key_env": "GNEWS_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "arxiv",
             "name": "arXiv (no key)",
@@ -507,7 +543,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         # Tech / Dev
     {
         "id": "github",
@@ -518,7 +555,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": "GITHUB_TOKEN",
             "enabled": True,
             "requires_key": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "producthunt",
             "name": "Product Hunt (freemium)",
@@ -526,7 +564,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://api.producthunt.com / v2 / docs",
             "signup_url": "https://www.producthunt.com / v2 / oauth / applications",
             "key_env": "PRODUCTHUNT_TOKEN",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         # Wellness / Food / Health
     {
         "id": "usda_fdc",
@@ -535,7 +574,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "docs_url": "https://fdc.nal.usda.gov / api - guide.html",
             "signup_url": "https://api.nal.usda.gov/",
             "key_env": "USDA_FDC_KEY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "openfda",
             "name": "OpenFDA (no key)",
@@ -545,7 +585,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "requires_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         # Pets
     {
         "id": "petfinder",
@@ -557,7 +598,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "required_envs": ["PETFINDER_KEY", "PETFINDER_SECRET"],
             "base_url": "https://api.petfinder.com",
             "enabled": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "thedogapi",
             "name": "TheDogAPI",
@@ -568,7 +610,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "base_url": "https://api.thedogapi.com",
             "enabled": True,
             "needs_key": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "thecatapi",
             "name": "TheCatAPI",
@@ -579,7 +622,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "base_url": "https://api.thecatapi.com",
             "enabled": True,
             "needs_key": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         # Education / AI Research
     {
         "id": "paperswithcode",
@@ -590,7 +634,8 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "needs_key": False,
             "enabled": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         {
         "id": "metaculus",
             "name": "Metaculus API (no key)",
@@ -600,8 +645,10 @@ DEFAULT_CATALOG: List[Dict[str, Any]] = [
             "key_env": None,
             "needs_key": False,
             "enabled": True,
-            },
-]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+# ]
 
 
 def ensure_seed_catalog(providers: Dict[str, Provider]) -> Dict[str, Provider]:
@@ -615,7 +662,8 @@ def ensure_seed_catalog(providers: Dict[str, Provider]) -> Dict[str, Provider]:
                     enabled = item.get("enabled", False),
                     requires_key = item.get("requires_key",
     item.get("needs_key",
-    True)),
+# BRACKET_SURGEON: disabled
+#     True)),
                     key_env = item.get("key_env"),
                     base_url = item.get("base_url", ""),
                     docs_url = item["docs_url"],
@@ -625,10 +673,12 @@ def ensure_seed_catalog(providers: Dict[str, Provider]) -> Dict[str, Provider]:
                     "green"
                     if not item.get("requires_key", item.get("needs_key", True))
                     else "purple"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     last_error = item.get("last_error"),
                     required_envs = item.get("required_envs", []),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
             if p.requires_key and p.key_env and get_secret(p.key_env):
                 p.status = "green"
             providers[p.id] = p
@@ -664,7 +714,8 @@ async def add_provider(new: NewProvider):
             enabled = new.enabled,
             status="purple" if new.requires_key else "green",
             health_url = new.health_url,
-            )
+# BRACKET_SURGEON: disabled
+#             )
     if p.requires_key and p.key_env and get_secret(p.key_env):
         p.status = "green"
     _state["providers"][p.id] = p
@@ -724,9 +775,11 @@ async def update_provider_status(p: Provider) -> Provider:
                         "grant_type": "client_credentials",
                             "client_id": pf_key,
                             "client_secret": pf_secret,
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         headers={"Content - Type": "application / x - www - form - urlencoded"},
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 if token_resp.status_code >= 400:
                     p.status, p.last_error = "red", f"oauth {token_resp.status_code}"
                     return p
@@ -783,8 +836,10 @@ async def update_provider(
     pid: str,
         patch: ProviderUpdate = Body(
         ..., description="Provider update data with validation metadata"
-    ),
-):
+# BRACKET_SURGEON: disabled
+#     ),
+# BRACKET_SURGEON: disabled
+# ):
     p = _state["providers"].get(pid)
     if not p:
         raise HTTPException(404, "Unknown provider")
@@ -857,12 +912,16 @@ async def configure_provider(
                 "method": "GET",
                     "path": "/health",
                     "headers": {"User - Agent": "IntegrationsHub / 1.0"},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "rate_limits": {"requests_per_minute": 60, "burst_limit": 10},
                 "auth_config": {"type": "bearer", "header_name": "Authorization"},
-                },
-            ),
-):
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+# ):
     """Configure advanced provider settings using Body with embedded validation."""
     p = _state["providers"].get(pid)
     if not p:
@@ -901,9 +960,11 @@ async def _petfinder_token() -> Optional[str]:
                     "grant_type": "client_credentials",
                         "client_id": k,
                         "client_secret": s,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     headers={"Content - Type": "application / x - www - form - urlencoded"},
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
             if r.status_code >= 400:
                 return None
             return r.json().get("access_token")
@@ -918,7 +979,8 @@ async def pets_search(
         location: Optional[str] = None,
         limit: int = Query(20, ge = 1, le = 100),
         page: int = Query(1, ge = 1),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Search for pets using Petfinder API with fallback to breed images"""
     # Prefer Petfinder if enabled and credentials provided
     pf = _state["providers"].get("petfinder")
@@ -934,7 +996,8 @@ async def pets_search(
                         "https://api.petfinder.com / v2 / animals",
                             headers={"Authorization": f"Bearer {token}"},
                             params = params,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                     r.raise_for_status()
                     data = r.json()
                     return {"provider": "petfinder", "data": data}
@@ -952,7 +1015,8 @@ async def pets_search(
                     r = await client.get(
                         f"{p.base_url}/v1 / images / search?limit={limit}&has_breeds = 1",
                             headers = headers,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                     r.raise_for_status()
                     return {"provider": "thedogapi", "data": r.json()}
             except Exception as e:
@@ -967,7 +1031,8 @@ async def pets_search(
                     r = await client.get(
                         f"{p.base_url}/v1 / images / search?limit={limit}&has_breeds = 1",
                             headers = headers,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                     r.raise_for_status()
                     return {"provider": "thecatapi", "data": r.json()}
             except Exception as e:
@@ -1026,36 +1091,42 @@ DEFAULT_AFFILIATES = {
                 "url": "https://www.expressvpn.com / affiliates",
                 "id_env": "AFFIL_EXPRESSVPN_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "nordvpn",
                 "name": "NordVPN",
                 "url": "https://nordvpn.com / affiliate - program/",
                 "id_env": "AFFIL_NORDVPN_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "mps",
                 "name": "My Patriot Supply",
                 "url": "https://www.mypatriotsupply.com / pages / affiliate",
                 "id_env": "AFFIL_MPS_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "goldco",
                 "name": "Goldco",
                 "url": "https://www.goldco.com / affiliate - program/",
                 "id_env": "AFFIL_GOLDCO_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "audible",
                 "name": "Audible",
                 "url": "https://www.audible.com / affiliates",
                 "id_env": "AFFIL_AUDIBLE_ID",
                 "enabled": False,
-                },
-            ],
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ],
         "Next Gen Tech Today": [
         {
             "id": "amazon",
@@ -1063,36 +1134,42 @@ DEFAULT_AFFILIATES = {
                 "url": "https://affiliate - program.amazon.com/",
                 "id_env": "AFFIL_AMAZON_TAG",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "bestbuy",
                 "name": "Best Buy",
                 "url": "https://www.bestbuy.com / site / misc / affiliates / pcmcat316000050005.c?id = pcmcat316000050005",
                 "id_env": "AFFIL_BESTBUY_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "bh",
                 "name": "B&H Photo",
                 "url": "https://www.bhphotovideo.com / find / HelpCenter / affiliate.jsp",
                 "id_env": "AFFIL_BH_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "epn",
                 "name": "eBay Partner Network",
                 "url": "https://partnernetwork.ebay.com/",
                 "id_env": "AFFIL_EBAY_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "newegg",
                 "name": "Newegg",
                 "url": "https://newegg.io / affiliate",
                 "id_env": "AFFIL_NEWEGG_ID",
                 "enabled": False,
-                },
-            ],
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ],
         "EcoWell Living": [
         {
             "id": "thrive",
@@ -1100,36 +1177,42 @@ DEFAULT_AFFILIATES = {
                 "url": "https://thrivemarket.com / affiliate",
                 "id_env": "AFFIL_THRIVE_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "iherb",
                 "name": "iHerb",
                 "url": "https://www.iherb.com / info / affiliates",
                 "id_env": "AFFIL_IHERB_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "earthhero",
                 "name": "EarthHero",
                 "url": "https://earthhero.com / affiliate - program/",
                 "id_env": "AFFIL_EARTHHERO_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "grove",
                 "name": "Grove Collaborative",
                 "url": "https://www.grove.co / affiliate",
                 "id_env": "AFFIL_GROVE_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "pact",
                 "name": "Pact Apparel",
                 "url": "https://wearpact.com / pages / affiliate - program",
                 "id_env": "AFFIL_PACT_ID",
                 "enabled": False,
-                },
-            ],
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ],
         "AI Trend Reports": [
         {
             "id": "canva",
@@ -1137,37 +1220,44 @@ DEFAULT_AFFILIATES = {
                 "url": "https://www.canva.com / affiliates/",
                 "id_env": "AFFIL_CANVA_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "grammarly",
                 "name": "Grammarly",
                 "url": "https://www.grammarly.com / affiliates",
                 "id_env": "AFFIL_GRAMMARLY_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "descript",
                 "name": "Descript",
                 "url": "https://www.descript.com / affiliate - program",
                 "id_env": "AFFIL_DESCRIPT_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "coursera",
                 "name": "Coursera",
                 "url": "https://www.coursera.org / affiliates",
                 "id_env": "AFFIL_COURSERA_ID",
                 "enabled": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "id": "udemy",
                 "name": "Udemy",
                 "url": "https://www.udemy.com / affiliate/",
                 "id_env": "AFFIL_UDEMY_ID",
                 "enabled": False,
-                },
-            ],
-}
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+# }
 
 
 def hydrate_affiliates() -> Dict[str, List[Dict[str, str]]]:
@@ -1216,7 +1306,7 @@ async def update_affiliate(channel: str, affil_id: str, patch: AffiliatePatch):
     return {"ok": True}
 
 # --- Simple HTML UI: colored dots + key entry + quick add
-HTML_PAGE = """
+HTML_PAGE = """"""
 <!doctype html>
 <html>
 <head>
@@ -1248,7 +1338,7 @@ HTML_PAGE = """
 <body>
   <h1 > Integrations Hub</h1>
   <p class="note">Green = working, Purple = needs key, Red = not working. Toggle enabled, add keys, \
-    and test providers below. Use the <b > Add Provider</b> card to add new ones quickly.</p>
+#     and test providers below. Use the <b > Add Provider</b> card to add new ones quickly.</p>
 
   <div class="grid">
     <div class="card">
@@ -1284,40 +1374,47 @@ HTML_PAGE = """
 async function fetchProviders(){
     const res = await fetch('/integrations / providers');
   const data = await res.json();
-  const tbody = document.querySelector('#providers tbody');
+  const tbody = document.querySelector('#providers tbody');'
   tbody.innerHTML = '';
   data.providers.forEach(p => {
       const tr = document.createElement('tr');
     const status = `<span class="dot ${p.status}"></span><span class="pill">${p.status}</span>`;
     const docs = `<a href="${p.docs_url}" target="_blank">Docs</a>`;
     const signup = p.signup_url ? `<a href="${p.signup_url}" target="_blank">Get Key</a>` : '<span class="note">n / a</span>';
-    const keyCell = p.key_env ? `<input type="password" placeholder="${p.key_env}" onblur="saveKey('${p.id}',
-    this.value)" />` : '<span class="note">none</span>';
-    const enabled = `<input type="checkbox" ${p.enabled?'checked':''} onchange="toggleEnabled('${p.id}',
-    this.checked)" />`;
+    const keyCell = p.key_env ? `<input type="password" placeholder="${p.key_env}" onblur="saveKey('${p.id}',"
+# BRACKET_SURGEON: disabled
+#     this.value)" />` : '<span class="note">none</span>';"
+    const enabled = `<input type="checkbox" ${p.enabled?'checked':''} onchange="toggleEnabled('${p.id}',"
+# BRACKET_SURGEON: disabled
+#     this.checked)" />`;"
     const testBtn = `<button onclick="testProvider('${p.id}')">Test</button>`;
     tr.innerHTML = `<td>${status}</td><td>${p.name}</td><td>${p.category}</td><td>${docs}</td><td>${signup}</td><td>${keyCell}</td><td>${enabled}</td><td class="row - actions">${testBtn}</td>`;
     tbody.appendChild(tr);
-  });
-}
+# BRACKET_SURGEON: disabled
+#   });
+# BRACKET_SURGEON: disabled
+# }
 
 async function toggleEnabled(id, enabled){
     await fetch('/integrations / providers/'+id, {method:'PATCH',
     headers:{'Content - Type':'application / json'},
     body: JSON.stringify({enabled})});
   fetchProviders();
-}
+# BRACKET_SURGEON: disabled
+# }
 async function saveKey(id, key){
     if(!key) return;
   await fetch('/integrations / providers/'+id, {method:'PATCH',
     headers:{'Content - Type':'application / json'},
     body: JSON.stringify({key})});
   fetchProviders();
-}
+# BRACKET_SURGEON: disabled
+# }
 async function testProvider(id){
     await fetch('/integrations / providers/'+id+'/test', {method:'POST'});
   fetchProviders();
-}
+# BRACKET_SURGEON: disabled
+# }
 async function addProvider(){
     const id = document.getElementById('np_id').value.trim();
   const name = document.getElementById('np_name').value.trim();
@@ -1331,7 +1428,8 @@ async function addProvider(){
   if(!id || !name || !category || !docs_url){
       msg.textContent = 'Please fill id, name, category, docs_url';
     return;
-  }
+# BRACKET_SURGEON: disabled
+#   }
   const res = await fetch('/integrations / providers', {method:'POST',
     headers:{'Content - Type':'application / json'},
     body: JSON.stringify({id,
@@ -1340,7 +1438,8 @@ async function addProvider(){
     docs_url,
     signup_url,
     key_env,
-    requires_key})});
+# BRACKET_SURGEON: disabled
+#     requires_key})});
   if(res.ok){
       msg.textContent = 'Added!';
     document.getElementById('np_id').value='';
@@ -1353,8 +1452,10 @@ async function addProvider(){
     fetchProviders();
   } else {
       msg.textContent = 'Failed: '+res.status;
-  }
-}
+# BRACKET_SURGEON: disabled
+#   }
+# BRACKET_SURGEON: disabled
+# }
 
 async function loadAffiliates(){
     const res = await fetch('/integrations / affiliates / rich');
@@ -1370,41 +1471,50 @@ async function loadAffiliates(){
     const tbody = table.querySelector('tbody');
     data[channel].forEach(a => {
         const dot = `<span class="dot ${a.status}"></span><span class="pill">${a.status}</span>`;
-        const idCell = a.id_env ? `<input type="text" placeholder="${a.id_env}" onblur="saveAffilId('${channel}','${a.id}',
-    this.value)" />` : '<span class="note">n / a</span>';
-        const enabled = `<input type="checkbox" ${a.enabled?'checked':''} onchange="toggleAffil('${channel}','${a.id}',
-    this.checked)" />`;
+        const idCell = a.id_env ? `<input type="text" placeholder="${a.id_env}" onblur="saveAffilId('${channel}','${a.id}',"
+# BRACKET_SURGEON: disabled
+#     this.value)" />` : '<span class="note">n / a</span>';"
+        const enabled = `<input type="checkbox" ${a.enabled?'checked':''} onchange="toggleAffil('${channel}','${a.id}',"
+# BRACKET_SURGEON: disabled
+#     this.checked)" />`;"
         const signup = `<a href="${a.url}" target="_blank">Join / Get ID</a>`;
         const tr = document.createElement('tr');
         tr.innerHTML = `<td>${dot}</td><td>${a.name}</td><td>${a.id}</td><td>${idCell}</td><td>${enabled}</td><td>${signup}</td>`;
         tbody.appendChild(tr);
-    });
+# BRACKET_SURGEON: disabled
+#     });
     root.appendChild(table);
-  });
-}
+# BRACKET_SURGEON: disabled
+#   });
+# BRACKET_SURGEON: disabled
+# }
 async function saveAffilId(channel, id, id_value){
     if(!id_value) return;
     await fetch(`/integrations / affiliates/${encodeURIComponent(channel)}/${id}`, {
         method:'PATCH',
     headers:{'Content - Type':'application / json'},
     body: JSON.stringify({id_value})
-    });
+# BRACKET_SURGEON: disabled
+#     });
     loadAffiliates();
-}
+# BRACKET_SURGEON: disabled
+# }
 async function toggleAffil(channel, id, enabled){
     await fetch(`/integrations / affiliates/${encodeURIComponent(channel)}/${id}`, {
         method:'PATCH',
     headers:{'Content - Type':'application / json'},
     body: JSON.stringify({enabled})
-    });
+# BRACKET_SURGEON: disabled
+#     });
     loadAffiliates();
-}
+# BRACKET_SURGEON: disabled
+# }
 fetchProviders();
 loadAffiliates();
 </script>
 </body>
 </html>
-"""
+""""""
 
 @router.get("/", response_class = HTMLResponse)
 
@@ -1417,7 +1527,7 @@ async def integrations_home(request: Request):
 
 async def affiliates_only_page(request: Request):
     return HTMLResponse(
-        """
+        """"""
     <!DOCTYPE html>
     <html>
     <head>
@@ -1465,42 +1575,52 @@ async def affiliates_only_page(request: Request):
                 const tbody = table.querySelector('tbody');
                 data[channel].forEach(a => {
                     const dot = `<span class="dot ${a.status}"></span><span class="pill">${a.status}</span>`;
-                    const idCell = a.id_env ? `<input type="text" placeholder="${a.id_env}" onblur="saveAffilId('${channel}','${a.id}',
-    this.value)" />` : '<span class="note">n / a</span>';
-                    const enabled = `<input type="checkbox" ${a.enabled?'checked':''} onchange="toggleAffil('${channel}','${a.id}',
-    this.checked)" />`;
+                    const idCell = a.id_env ? `<input type="text" placeholder="${a.id_env}" onblur="saveAffilId('${channel}','${a.id}',"
+# BRACKET_SURGEON: disabled
+#     this.value)" />` : '<span class="note">n / a</span>';"
+                    const enabled = `<input type="checkbox" ${a.enabled?'checked':''} onchange="toggleAffil('${channel}','${a.id}',"
+# BRACKET_SURGEON: disabled
+#     this.checked)" />`;"
                     const signup = `<a href="${a.url}" target="_blank">Join / Get ID</a>`;
                     const tr = document.createElement('tr');
                     tr.innerHTML = `<td>${dot}</td><td>${a.name}</td><td>${a.id}</td><td>${idCell}</td><td>${enabled}</td><td>${signup}</td>`;
                     tbody.appendChild(tr);
-                });
+# BRACKET_SURGEON: disabled
+#                 });
                 root.appendChild(table);
-            });
-        }
+# BRACKET_SURGEON: disabled
+#             });
+# BRACKET_SURGEON: disabled
+#         }
         async function saveAffilId(channel, id, id_value){
             if(!id_value) return;
             await fetch(`/integrations / affiliates/${encodeURIComponent(channel)}/${id}`, {
                 method:'PATCH',
     headers:{'Content - Type':'application / json'},
     body: JSON.stringify({id_value})
-            });
+# BRACKET_SURGEON: disabled
+#             });
             loadAffiliates();
-        }
+# BRACKET_SURGEON: disabled
+#         }
         async function toggleAffil(channel, id, enabled){
             await fetch(`/integrations / affiliates/${encodeURIComponent(channel)}/${id}`, {
                 method:'PATCH',
     headers:{'Content - Type':'application / json'},
     body: JSON.stringify({enabled})
-            });
+# BRACKET_SURGEON: disabled
+#             });
             loadAffiliates();
-        }
+# BRACKET_SURGEON: disabled
+#         }
         // Load affiliates on page load
         loadAffiliates();
         </script>
     </body>
     </html>
-    """
-    )
+    """"""
+# BRACKET_SURGEON: disabled
+#     )
 
 # --- Background health monitor
 
@@ -1551,12 +1671,14 @@ async def _health_worker():
                 except Exception as provider_error:
                     logger.exception(
                         f"Error processing provider {getattr(p, 'id', 'unknown')}: {provider_error}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     continue
         except Exception as worker_error:
             logger.exception(
                 f"Health worker crashed; continuing (handled): {worker_error}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
 @asynccontextmanager
 

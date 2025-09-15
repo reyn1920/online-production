@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Centralized Logging System
 
 Production - ready logging configuration with automatic log rotation,
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -32,12 +32,12 @@ from typing import Any, Dict, List, Optional, Union
 
 
 class SecurityFilter(logging.Filter):
-    """
+    """"""
     Security filter to prevent logging of sensitive information.
 
     This filter scans log messages for common patterns that might
     contain sensitive data and either redacts or blocks them.
-    """
+    """"""
 
     SENSITIVE_PATTERNS = [
         "password",
@@ -54,10 +54,11 @@ class SecurityFilter(logging.Filter):
         "private",
         "confidential",
         "sensitive",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     def filter(self, record: logging.LogRecord) -> bool:
-        """
+        """"""
         Filter log records to prevent sensitive data exposure.
 
         Args:
@@ -65,7 +66,7 @@ class SecurityFilter(logging.Filter):
 
         Returns:
             bool: True if record should be logged, False otherwise
-        """
+        """"""
         message = str(record.getMessage()).lower()
 
         # Check for sensitive patterns
@@ -78,7 +79,7 @@ class SecurityFilter(logging.Filter):
         return True
 
     def _redact_sensitive_data(self, message: str) -> str:
-        """
+        """"""
         Redact sensitive data from log messages.
 
         Args:
@@ -86,7 +87,7 @@ class SecurityFilter(logging.Filter):
 
         Returns:
             str: Message with sensitive data redacted
-        """
+        """"""
         # Simple redaction - replace potential sensitive values
 
         import re
@@ -95,25 +96,27 @@ class SecurityFilter(logging.Filter):
         patterns = [
             r"(password|passwd|pwd|secret|key|token|api_key|apikey)\\s*[=:]\\s*[^\\s]+",
             r"(auth|credential|cred)\\s*[=:]\\s*[^\\s]+",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         redacted_message = message
         for pattern in patterns:
             redacted_message = re.sub(
                 pattern, r"\\1=***REDACTED***", redacted_message, flags=re.IGNORECASE
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return redacted_message
 
 
 class RegexNoiseFilter(logging.Filter):
-    """
+    """"""
     Regex - based noise filter to reduce chatty log output.
 
     This filter uses configurable regex patterns to drop or reduce
     repetitive, verbose, or noisy log messages that clutter the logs
     without providing significant value.
-    """
+    """"""
 
     # Default noise patterns - common chatty log messages
     DEFAULT_DROP_PATTERNS = [
@@ -127,29 +130,32 @@ class RegexNoiseFilter(logging.Filter):
         r".*websocket.*frame.*received.*",  # WebSocket frame messages
         r".*socket\\.io.*transport.*",  # Socket.IO transport messages
         r".*received.*ack.*",  # ACK messages
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     # Default reduction patterns - reduce frequency but don't drop entirely
     DEFAULT_REDUCE_PATTERNS = [
         r".*database.*query.*executed.*",  # DB query messages
         r".*cache.*hit.*",  # Cache hit messages
         r".*request.*processed.*",  # Request processing messages
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     def __init__(
         self,
         drop_patterns: List[str] = None,
         reduce_patterns: List[str] = None,
         reduce_frequency: int = 10,
-    ):
-        """
+# BRACKET_SURGEON: disabled
+#     ):
+        """"""
         Initialize the regex noise filter.
 
         Args:
             drop_patterns (List[str]): Regex patterns for messages to drop entirely
             reduce_patterns (List[str]): Regex patterns for messages to reduce frequency
             reduce_frequency (int): Show 1 out of every N messages for reduce patterns
-        """
+        """"""
         super().__init__()
 
         self.drop_patterns = drop_patterns or self.DEFAULT_DROP_PATTERNS
@@ -159,16 +165,18 @@ class RegexNoiseFilter(logging.Filter):
         # Compile regex patterns for performance
         self.compiled_drop_patterns = [
             re.compile(pattern, re.IGNORECASE) for pattern in self.drop_patterns
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         self.compiled_reduce_patterns = [
             re.compile(pattern, re.IGNORECASE) for pattern in self.reduce_patterns
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Counter for reduce patterns
         self.reduce_counters = {}
 
     def filter(self, record: logging.LogRecord) -> bool:
-        """
+        """"""
         Filter log records based on regex patterns.
 
         Args:
@@ -176,7 +184,7 @@ class RegexNoiseFilter(logging.Filter):
 
         Returns:
             bool: True if record should be logged, False otherwise
-        """
+        """"""
         message = str(record.getMessage()).lower()
 
         # Check drop patterns - completely block these messages
@@ -202,29 +210,29 @@ class RegexNoiseFilter(logging.Filter):
         return True
 
     def add_drop_pattern(self, pattern: str) -> None:
-        """
+        """"""
         Add a new drop pattern at runtime.
 
         Args:
             pattern (str): Regex pattern to add
-        """
+        """"""
         self.drop_patterns.append(pattern)
         self.compiled_drop_patterns.append(re.compile(pattern, re.IGNORECASE))
 
     def add_reduce_pattern(self, pattern: str) -> None:
-        """
+        """"""
         Add a new reduce pattern at runtime.
 
         Args:
             pattern (str): Regex pattern to add
-        """
+        """"""
         self.reduce_patterns.append(pattern)
         self.compiled_reduce_patterns.append(re.compile(pattern, re.IGNORECASE))
 
     def clear_patterns(self) -> None:
-        """
+        """"""
         Clear all patterns and reset counters.
-        """
+        """"""
         self.drop_patterns.clear()
         self.reduce_patterns.clear()
         self.compiled_drop_patterns.clear()
@@ -233,15 +241,15 @@ class RegexNoiseFilter(logging.Filter):
 
 
 class JSONFormatter(logging.Formatter):
-    """
+    """"""
     JSON formatter for structured logging.
 
     Formats log records as JSON objects with consistent structure
     for easy parsing by log aggregation systems.
-    """
+    """"""
 
     def format(self, record: logging.LogRecord) -> str:
-        """
+        """"""
         Format log record as JSON.
 
         Args:
@@ -249,7 +257,7 @@ class JSONFormatter(logging.Formatter):
 
         Returns:
             str: JSON - formatted log message
-        """
+        """"""
         log_entry = {
             "timestamp": datetime.fromtimestamp(record.created).isoformat(),
             "level": record.levelname,
@@ -261,7 +269,8 @@ class JSONFormatter(logging.Formatter):
             "thread": record.thread,
             "thread_name": record.threadName,
             "process": record.process,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add exception information if present
         if record.exc_info:
@@ -269,7 +278,8 @@ class JSONFormatter(logging.Formatter):
                 "type": record.exc_info[0].__name__,
                 "message": str(record.exc_info[1]),
                 "traceback": traceback.format_exception(*record.exc_info),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Add extra fields if present
         if hasattr(record, "extra_data"):
@@ -279,12 +289,12 @@ class JSONFormatter(logging.Formatter):
 
 
 class ColoredFormatter(logging.Formatter):
-    """
+    """"""
     Colored formatter for console output.
 
     Adds color coding to different log levels for better readability
     in terminal environments.
-    """
+    """"""
 
     # ANSI color codes
     COLORS = {
@@ -294,10 +304,11 @@ class ColoredFormatter(logging.Formatter):
         "ERROR": "\\033[31m",  # Red
         "CRITICAL": "\\033[35m",  # Magenta
         "RESET": "\\033[0m",  # Reset
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     def format(self, record: logging.LogRecord) -> str:
-        """
+        """"""
         Format log record with colors.
 
         Args:
@@ -305,7 +316,7 @@ class ColoredFormatter(logging.Formatter):
 
         Returns:
             str: Colored log message
-        """
+        """"""
         # Get color for log level
         color = self.COLORS.get(record.levelname, self.COLORS["RESET"])
         reset = self.COLORS["RESET"]
@@ -321,15 +332,15 @@ class ColoredFormatter(logging.Formatter):
 
 
 class TraeLogger:
-    """
+    """"""
     Centralized logging system for TRAE.AI.
 
     Provides a standardized logging interface with automatic rotation,
         multiple output formats, and security - aware filtering.
-    """
+    """"""
 
     _instance = None
-    _lock = threading.Lock()
+    _lock = threading.Lock():
 
     def __new__(cls, *args, **kwargs):
         """Singleton pattern implementation"""
@@ -352,8 +363,9 @@ class TraeLogger:
         noise_drop_patterns: List[str] = None,
         noise_reduce_patterns: List[str] = None,
         noise_reduce_frequency: int = 10,
-    ):
-        """
+# BRACKET_SURGEON: disabled
+#     ):
+        """"""
         Initialize the centralized logger.
 
         Args:
@@ -368,7 +380,7 @@ class TraeLogger:
             noise_drop_patterns (List[str]): Custom patterns to drop entirely
             noise_reduce_patterns (List[str]): Custom patterns to reduce frequency
             noise_reduce_frequency (int): Show 1 out of every N messages for reduce patterns
-        """
+        """"""
         # Prevent re - initialization
         if hasattr(self, "_initialized"):
             return
@@ -394,7 +406,7 @@ class TraeLogger:
         self._initialized = True
 
     def _parse_log_level(self, level: Union[str, int]) -> int:
-        """
+        """"""
         Parse log level from string or int.
 
         Args:
@@ -402,15 +414,15 @@ class TraeLogger:
 
         Returns:
             int: Numeric log level
-        """
+        """"""
         if isinstance(level, str):
             return getattr(logging, level.upper(), logging.INFO)
         return level
 
     def _setup_root_logger(self) -> None:
-        """
+        """"""
         Setup the root logger configuration.
-        """
+        """"""
         root_logger = logging.getLogger()
         root_logger.setLevel(self.log_level)
 
@@ -428,13 +440,14 @@ class TraeLogger:
                 drop_patterns=self.noise_drop_patterns,
                 reduce_patterns=self.noise_reduce_patterns,
                 reduce_frequency=self.noise_reduce_frequency,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             root_logger.addFilter(noise_filter)
 
     def _setup_application_logger(self) -> None:
-        """
+        """"""
         Setup application - specific loggers.
-        """
+        """"""
         # Main application logger
         self.app_logger = logging.getLogger("trae_ai")
         self.app_logger.setLevel(self.log_level)
@@ -446,14 +459,16 @@ class TraeLogger:
             maxBytes=self.max_bytes,
             backupCount=self.backup_count,
             encoding="utf - 8",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         text_handler.setLevel(self.log_level)
 
         # Text formatter
         text_formatter = logging.Formatter(
             fmt="%(asctime)s | %(levelname)-8s | %(name)s | %(funcName)s:%(lineno)d | %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         text_handler.setFormatter(text_formatter)
         self.app_logger.addHandler(text_handler)
 
@@ -465,7 +480,8 @@ class TraeLogger:
                 maxBytes=self.max_bytes,
                 backupCount=self.backup_count,
                 encoding="utf - 8",
-            )
+# BRACKET_SURGEON: disabled
+#             )
             json_handler.setLevel(self.log_level)
             json_handler.setFormatter(JSONFormatter())
             self.app_logger.addHandler(json_handler)
@@ -478,8 +494,10 @@ class TraeLogger:
                 ColoredFormatter(
                     fmt="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
                     datefmt="%H:%M:%S",
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             self.app_logger.addHandler(console_handler)
 
         # Error log file (separate file for errors and above)
@@ -489,13 +507,14 @@ class TraeLogger:
             maxBytes=self.max_bytes,
             backupCount=self.backup_count,
             encoding="utf - 8",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         error_handler.setLevel(logging.ERROR)
         error_handler.setFormatter(text_formatter)
         self.app_logger.addHandler(error_handler)
 
     def get_logger(self, name: str = None) -> logging.Logger:
-        """
+        """"""
         Get a logger instance.
 
         Args:
@@ -503,7 +522,7 @@ class TraeLogger:
 
         Returns:
             logging.Logger: Configured logger instance
-        """
+        """"""
         if name is None:
             return self.app_logger
 
@@ -514,14 +533,14 @@ class TraeLogger:
         return logger
 
     def log_performance(self, operation: str, duration: float, **kwargs) -> None:
-        """
+        """"""
         Log performance metrics.
 
         Args:
             operation (str): Operation name
             duration (float): Duration in seconds
             **kwargs: Additional metrics
-        """
+        """"""
         perf_logger = self.get_logger("performance")
 
         metrics = {
@@ -529,7 +548,8 @@ class TraeLogger:
             "duration_seconds": duration,
             "duration_ms": duration * 1000,
             **kwargs,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add extra data for JSON formatter
         extra = {"extra_data": metrics}
@@ -537,13 +557,13 @@ class TraeLogger:
         perf_logger.info(f"Performance: {operation} completed in {duration:.3f}s", extra=extra)
 
     def log_security_event(self, event_type: str, details: Dict[str, Any]) -> None:
-        """
+        """"""
         Log security - related events.
 
         Args:
             event_type (str): Type of security event
             details (Dict): Event details (will be sanitized)
-        """
+        """"""
         security_logger = self.get_logger("security")
 
         # Sanitize details to remove sensitive information
@@ -554,7 +574,7 @@ class TraeLogger:
         security_logger.warning(f"Security Event: {event_type}", extra=extra)
 
     def _sanitize_security_details(self, details: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Sanitize security event details to remove sensitive data.
 
         Args:
@@ -562,7 +582,7 @@ class TraeLogger:
 
         Returns:
             Dict: Sanitized details
-        """
+        """"""
         sanitized = {}
 
         for key, value in details.items():
@@ -577,13 +597,13 @@ class TraeLogger:
         return sanitized
 
     def configure_external_logger(self, logger_name: str, level: Union[str, int] = None) -> None:
-        """
+        """"""
         Configure external library loggers.
 
         Args:
             logger_name (str): Name of the external logger
             level (str|int, optional): Log level for the external logger
-        """
+        """"""
         external_logger = logging.getLogger(logger_name)
 
         if level is not None:
@@ -597,15 +617,16 @@ class TraeLogger:
         drop_patterns: List[str] = None,
         reduce_patterns: List[str] = None,
         reduce_frequency: int = None,
-    ) -> None:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> None:
+        """"""
         Configure the noise filter at runtime.
 
         Args:
             drop_patterns: List of regex patterns for messages to drop completely
             reduce_patterns: List of regex patterns for messages to reduce frequency
             reduce_frequency: How often to allow reduced messages (1 in N)
-        """
+        """"""
         if not self.enable_noise_filter:
             return
 
@@ -632,9 +653,9 @@ class TraeLogger:
                 noise_filter.reduce_frequency = reduce_frequency
 
     def shutdown(self) -> None:
-        """
+        """"""
         Shutdown the logging system gracefully.
-        """
+        """"""
         logging.shutdown()
 
 
@@ -644,8 +665,9 @@ _global_logger = None
 
 def setup_logging(
     log_dir: str = "data / logs", log_level: Union[str, int] = logging.INFO, **kwargs
-) -> TraeLogger:
-    """
+# BRACKET_SURGEON: disabled
+# ) -> TraeLogger:
+    """"""
     Setup the global logging system.
 
     Args:
@@ -655,7 +677,7 @@ def setup_logging(
 
     Returns:
         TraeLogger: Configured logger instance
-    """
+    """"""
     global _global_logger
 
     if _global_logger is None:
@@ -670,7 +692,7 @@ def setup_logging(
 
 
 def get_logger(name: str = None) -> logging.Logger:
-    """
+    """"""
     Get a logger instance from the global logging system.
 
     Args:
@@ -678,7 +700,7 @@ def get_logger(name: str = None) -> logging.Logger:
 
     Returns:
         logging.Logger: Configured logger instance
-    """
+    """"""
     global _global_logger
 
     if _global_logger is None:
@@ -692,8 +714,9 @@ def setup_logger(
     log_dir: str = "data / logs",
     log_level: Union[str, int] = logging.INFO,
     **kwargs,
-) -> logging.Logger:
-    """
+# BRACKET_SURGEON: disabled
+# ) -> logging.Logger:
+    """"""
     Setup and return a logger instance (backward compatibility function).
 
     This function provides backward compatibility for scripts that expect
@@ -708,7 +731,7 @@ def setup_logger(
 
     Returns:
         logging.Logger: Configured logger instance
-    """
+    """"""
     # Initialize the global logging system
     setup_logging(log_dir=log_dir, log_level=log_level, **kwargs)
 
@@ -720,14 +743,14 @@ def setup_logger(
 
 
 class PerformanceTimer:
-    """
+    """"""
     Context manager for automatic performance logging.
 
     Usage:
         with PerformanceTimer('database_query'):
             # Your code here
             pass
-    """
+    """"""
 
     def __init__(self, operation: str, logger_name: str = None, **kwargs):
         self.operation = operation
@@ -781,9 +804,12 @@ if __name__ == "__main__":
                 "query_type": "SELECT",
                 "table": "users",
                 "duration_ms": 45.2,
-            }
-        },
-    )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
     # Test performance logging
     with PerformanceTimer("test_operation", user_id=123, operation_type="test"):
@@ -797,8 +823,10 @@ if __name__ == "__main__":
             "ip_address": "192.168.1.100",
             "password": "secret123",  # This will be redacted
             "timestamp": datetime.now().isoformat(),
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
     # Test exception logging
     try:

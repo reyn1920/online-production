@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 API Master Dashboard
 Unified interface for managing 100+ APIs
 
@@ -12,7 +12,7 @@ Features:
 
 Usage:
     python api_master_dashboard.py
-"""
+""""""
 
 import json
 import os
@@ -33,9 +33,10 @@ try:
 
 except ImportError:
     print(
-        "⚠️  Required modules not found. Make sure api_registration_automation.py \
-    and api_testing_suite.py are in the same directory."
-    )
+        "⚠️  Required modules not found. Make sure api_registration_automation.py \"
+#     and api_testing_suite.py are in the same directory."
+# BRACKET_SURGEON: disabled
+#     )
     sys.exit(1)
 
 
@@ -90,7 +91,8 @@ class APIMasterDashboard:
                 "monthly_costs": {},
                 "rate_limits": {},
                 "last_updated": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def save_usage(self):
         """Save API usage tracking"""
@@ -111,7 +113,8 @@ class APIMasterDashboard:
                 cost_tier=api_info["cost"],
                 phase=api_info["phase"],
                 priority=api_info["priority"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
         self.save_status()
 
     def update_api_status(self, api_key: str, test_result: APITestResult):
@@ -133,7 +136,8 @@ class APIMasterDashboard:
         tested_count = sum(1 for status in self.api_status.values() if status.last_tested)
         working_count = sum(
             1 for status in self.api_status.values() if status.test_status == "success"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Phase breakdown
         phase_stats = {}
@@ -144,7 +148,8 @@ class APIMasterDashboard:
                 "registered": sum(1 for s in phase_apis if s.registered),
                 "has_key": sum(1 for s in phase_apis if s.has_key),
                 "working": sum(1 for s in phase_apis if s.test_status == "success"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Cost breakdown
         cost_stats = {}
@@ -154,7 +159,8 @@ class APIMasterDashboard:
                 "total": len(cost_apis),
                 "registered": sum(1 for s in cost_apis if s.registered),
                 "working": sum(1 for s in cost_apis if s.test_status == "success"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return {
             "total_apis": total_apis,
@@ -166,7 +172,8 @@ class APIMasterDashboard:
             "success_rate": ((working_count / tested_count * 100) if tested_count > 0 else 0),
             "phase_stats": phase_stats,
             "cost_stats": cost_stats,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def display_dashboard(self):
         """Display the main dashboard"""
@@ -186,13 +193,15 @@ class APIMasterDashboard:
         for phase, data in stats["phase_stats"].items():
             print(
                 f"  Phase {phase}: {data['working']}/{data['registered']}/{data['total']} (Working / Registered / Total)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         print("\\n💰 Cost Breakdown:")
         for cost_tier, data in stats["cost_stats"].items():
             print(
                 f"  {cost_tier}: {data['working']}/{data['registered']}/{data['total']} (Working / Registered / Total)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Recent activity
         recent_tests = [(k, v) for k, v in self.api_status.items() if v.last_tested]
@@ -323,7 +332,8 @@ class APIMasterDashboard:
 
             print(
                 f"  {priority_emoji.get(status.priority, '❓')} {cost_emoji.get(status.cost_tier, '❓')} {status.name}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         print(f"\\n📊 Total unregistered: {len(unregistered_apis)} APIs")
 
@@ -332,9 +342,9 @@ class APIMasterDashboard:
         template_file = ".env.master_template"
 
         with open(template_file, "w") as f:
-            f.write("# Master API Environment Template\\n")
-            f.write(f"# Generated: {datetime.now().isoformat()}\\n")
-            f.write(f"# Total APIs: {len(self.api_status)}\\n\\n")
+            f.write("# Master API Environment Template\\n")"
+            f.write(f"# Generated: {datetime.now().isoformat()}\\n")"
+            f.write(f"# Total APIs: {len(self.api_status)}\\n\\n")"
 
             # Group by phase
             phases = {}
@@ -344,16 +354,17 @@ class APIMasterDashboard:
                 phases[status.phase].append((api_key, status))
 
             for phase in sorted(phases.keys()):
-                f.write(f"\\n# ===== PHASE {phase} APIs =====\\n")
+                f.write(f"\\n# ===== PHASE {phase} APIs =====\\n")"
 
                 for api_key, status in phases[phase]:
                     api_info = API_REGISTRY.get(api_key, {})
                     env_var = api_info.get("env_var", f"{api_key.upper()}_API_KEY")
 
-                    f.write(f"\\n# {status.name} ({status.cost_tier})\\n")
+                    f.write(f"\\n# {status.name} ({status.cost_tier})\\n")"
                     f.write(
-                        f"# Status: {'✅ Registered' if status.registered else '❌ Not registered'}"
-                    )
+                        f"# Status: {'✅ Registered' if status.registered else '❌ Not registered'}""
+# BRACKET_SURGEON: disabled
+#                     )
                     if status.has_key:
                         f.write(" | 🔑 Has key")
                     if status.test_status == "success":
@@ -361,7 +372,7 @@ class APIMasterDashboard:
                     f.write("\\n")
 
                     if api_info.get("signup_url"):
-                        f.write(f"# Signup: {api_info['signup_url']}\\n")
+                        f.write(f"# Signup: {api_info['signup_url']}\\n")"
 
                     current_value = os.getenv(env_var, "")
                     f.write(f"{env_var}={current_value}\\n")
@@ -378,7 +389,8 @@ class APIMasterDashboard:
                 # Test critical APIs
                 critical_apis = [
                     k for k, v in self.api_status.items() if v.priority == "high" and v.has_key
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 if critical_apis:
                     print(f"\\n🔍 Health check at {datetime.now().strftime('%H:%M:%S')}")

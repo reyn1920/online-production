@@ -30,5 +30,7 @@ class TorchTestCase(unittest.TestCase):
                 b,
                 np.abs(npa - npb).max(),
                 np.abs((npa - npb) / np.fmax(npa, 1e-5)).max(),
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )

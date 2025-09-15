@@ -9,7 +9,8 @@ from .base_monetization import (
     Product,
     ProductCreationError,
     ProductResponse,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,8 @@ class GumroadAPI(BaseMonetizationAPI):
             api_key=access_token,
             base_url="https://api.gumroad.com / v2",
             rate_limit=60,  # Gumroad allows 60 requests per minute
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.access_token = access_token
 
     def _get_auth_headers(self) -> Dict[str, str]:
@@ -30,7 +32,8 @@ class GumroadAPI(BaseMonetizationAPI):
         return {
             "Authorization": f"Bearer {self.access_token}",
             "Content - Type": "application / json",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def create_product(self, product: Product) -> ProductResponse:
         """Create a new product on Gumroad."""
@@ -50,7 +53,8 @@ class GumroadAPI(BaseMonetizationAPI):
                 "variants_enabled": product.metadata.get("variants_enabled", False),
                 "affiliate_program": product.metadata.get("affiliate_program", False),
                 "max_purchase_count": product.metadata.get("max_purchase_count", 0),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Remove None values
             product_data = {k: v for k, v in product_data.items() if v is not None}
@@ -70,12 +74,14 @@ class GumroadAPI(BaseMonetizationAPI):
                     product_id=product_info["id"],
                     product_url=product_info.get("short_url"),
                     platform_data=product_response,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return ProductResponse(
                     success=False,
                     error_message=product_response.get("message", "Unknown error"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             logger.error(f"Failed to create Gumroad product: {e}")
@@ -90,7 +96,8 @@ class GumroadAPI(BaseMonetizationAPI):
                 "price": int(product.price * 100),  # Gumroad uses cents
                 "currency": product.currency,
                 "tags": ",".join(product.tags) if product.tags else "",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request("PUT", f"/products/{product_id}", data=product_data)
             product_response = response.json()
@@ -101,12 +108,14 @@ class GumroadAPI(BaseMonetizationAPI):
                     product_id=product_id,
                     product_url=product_response["product"].get("short_url"),
                     platform_data=product_response,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return ProductResponse(
                     success=False,
                     error_message=product_response.get("message", "Unknown error"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             logger.error(f"Failed to update Gumroad product {product_id}: {e}")
@@ -141,7 +150,8 @@ class GumroadAPI(BaseMonetizationAPI):
             params = {
                 "page": (offset // limit) + 1,
                 "per_page": min(limit, 100),  # Gumroad max is 100
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request("GET", "/products", params=params)
             response_data = response.json()
@@ -161,7 +171,8 @@ class GumroadAPI(BaseMonetizationAPI):
                 "before": end_date.strftime("%Y-%m-%d"),
                 "page": 1,
                 "per_page": 100,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             all_sales = []
             page = 1
@@ -189,7 +200,8 @@ class GumroadAPI(BaseMonetizationAPI):
             total_sales = len(all_sales)
             total_revenue = sum(
                 float(sale.get("price", 0)) / 100 for sale in all_sales  # Convert from cents
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Get refund data
             refunds = [sale for sale in all_sales if sale.get("refunded")]
@@ -205,7 +217,8 @@ class GumroadAPI(BaseMonetizationAPI):
                 "currency": "USD",
                 "sales": all_sales,
                 "refunds": refunds,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to get Gumroad sales data: {e}")
@@ -231,11 +244,13 @@ class GumroadAPI(BaseMonetizationAPI):
                 "amount_cents": int(discount_percent * 100),  # Convert to basis points
                 "max_purchase_count": max_uses,
                 "universal": False,  # Product - specific discount
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request(
                 "POST", f"/products/{product_id}/offer_codes", data=discount_data
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return response.json()
 
         except Exception as e:
@@ -268,7 +283,8 @@ class GumroadAPI(BaseMonetizationAPI):
                     "platform": "Gumroad",
                     "total_subscribers": len(subscribers),
                     "subscribers": subscribers,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             return {"error": response_data.get("message", "Unknown error")}
 
         except Exception as e:
@@ -283,7 +299,8 @@ class GumroadAPI(BaseMonetizationAPI):
                 # Implementation depends on file handling strategy
                 logger.info(
                     f"Would upload digital file {file_path} to Gumroad product {product_id}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 logger.error(f"Failed to upload digital file {file_path}: {e}")
 
@@ -307,7 +324,8 @@ class GumroadAPI(BaseMonetizationAPI):
                 "monthly_sales": sales_data,
                 "subscribers": subscriber_data,
                 "generated_at": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to get Gumroad analytics summary: {e}")

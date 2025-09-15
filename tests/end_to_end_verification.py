@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI End - to - End Verification System
 Comprehensive testing suite for the autonomous content empire
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -35,13 +35,12 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import TRAE.AI modules
 try:
-
     from backend.agentic_protocol import AgenticProtocol
     from backend.autonomous_diagnosis_repair import AutonomousDiagnosisRepair
     from backend.hollywood_creative_pipeline import HollywoodCreativePipeline
     from backend.marketing_monetization_engine import MarketingMonetizationEngine
     from backend.trae_ai_orchestrator import TraeAIOrchestrator
-        from backend.zero_cost_stack import ZeroCostStackManager
+    from backend.zero_cost_stack import ZeroCostStackManager
 
 except ImportError as e:
     print(f"Warning: Could not import TRAE.AI modules: {e}")
@@ -54,8 +53,12 @@ logging.basicConfig(
         handlers=[
         logging.FileHandler("logs/e2e_verification.log"),
             logging.StreamHandler(),
-            ],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -158,15 +161,18 @@ class TraeAIE2EVerification:
                     "security": True,
                     "performance": True,
                     "end_to_end": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "thresholds": {
                 "cpu_usage_max": 80.0,
                     "memory_usage_max": 85.0,
                     "disk_usage_max": 90.0,
                     "response_time_max": 5.0,
                     "success_rate_min": 95.0,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         try:
             with open(self.config_path, "r") as f:
@@ -188,7 +194,7 @@ class TraeAIE2EVerification:
 
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS test_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         test_name TEXT NOT NULL,
@@ -199,12 +205,16 @@ class TraeAIE2EVerification:
                         details TEXT,
                         timestamp TEXT NOT NULL,
                         error_trace TEXT
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS system_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         cpu_usage REAL,
@@ -214,9 +224,13 @@ class TraeAIE2EVerification:
                         database_status BOOLEAN,
                         service_status TEXT,
                         timestamp TEXT NOT NULL
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _init_logging(self):
@@ -228,7 +242,9 @@ class TraeAIE2EVerification:
         handler = logging.FileHandler("logs/test_execution.log")
         formatter = logging.Formatter(
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         handler.setFormatter(formatter)
         self.test_logger.addHandler(handler)
         self.test_logger.setLevel(logging.DEBUG)
@@ -289,7 +305,9 @@ class TraeAIE2EVerification:
                     f"Critical system error: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         self.end_time = datetime.now()
         return self._generate_summary()
@@ -307,7 +325,9 @@ class TraeAIE2EVerification:
                 TestStatus.PASSED
                 if cpu_usage < self.config["thresholds"]["cpu_usage_max"]
                 else TestStatus.FAILED
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             message = f"CPU usage: {cpu_usage}%"
 
             self._add_result(
@@ -319,8 +339,11 @@ class TraeAIE2EVerification:
                     {
                     "cpu_usage": cpu_usage,
                         "threshold": self.config["thresholds"]["cpu_usage_max"],
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "cpu_usage_check",
@@ -330,7 +353,9 @@ class TraeAIE2EVerification:
                     f"Failed to check CPU usage: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # Memory usage test
         start_time = time.time()
@@ -341,7 +366,9 @@ class TraeAIE2EVerification:
                 TestStatus.PASSED
                 if memory_usage < self.config["thresholds"]["memory_usage_max"]
                 else TestStatus.FAILED
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             message = f"Memory usage: {memory_usage}%"
 
             self._add_result(
@@ -355,8 +382,11 @@ class TraeAIE2EVerification:
                         "total_memory": memory.total,
                         "available_memory": memory.available,
                         "threshold": self.config["thresholds"]["memory_usage_max"],
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "memory_usage_check",
@@ -366,7 +396,9 @@ class TraeAIE2EVerification:
                     f"Failed to check memory usage: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # Disk usage test
         start_time = time.time()
@@ -377,7 +409,9 @@ class TraeAIE2EVerification:
                 TestStatus.PASSED
                 if disk_usage < self.config["thresholds"]["disk_usage_max"]
                 else TestStatus.FAILED
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             message = f"Disk usage: {disk_usage:.1f}%"
 
             self._add_result(
@@ -392,8 +426,11 @@ class TraeAIE2EVerification:
                         "used_space": disk.used,
                         "free_space": disk.free,
                         "threshold": self.config["thresholds"]["disk_usage_max"],
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "disk_usage_check",
@@ -403,7 +440,9 @@ class TraeAIE2EVerification:
                     f"Failed to check disk usage: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # Database connectivity test
         start_time = time.time()
@@ -418,7 +457,9 @@ class TraeAIE2EVerification:
                     time.time() - start_time,
                     "Database connection successful",
                     {"database_path": self.db_path},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "database_connectivity",
@@ -428,7 +469,9 @@ class TraeAIE2EVerification:
                     f"Database connection failed: {str(e)}",
                     {"error": str(e), "database_path": self.db_path},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # Network connectivity test
         start_time = time.time()
@@ -436,7 +479,9 @@ class TraeAIE2EVerification:
             response = requests.get("https://httpbin.org/status/200", timeout = 10)
             status = (
                 TestStatus.PASSED if response.status_code == 200 else TestStatus.FAILED
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             message = f"Network test: HTTP {response.status_code}"
 
             self._add_result(
@@ -448,8 +493,11 @@ class TraeAIE2EVerification:
                     {
                     "status_code": response.status_code,
                         "response_time": response.elapsed.total_seconds(),
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "network_connectivity",
@@ -459,7 +507,9 @@ class TraeAIE2EVerification:
                     f"Network test failed: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _run_orchestrator_tests(self):
@@ -469,7 +519,7 @@ class TraeAIE2EVerification:
         start_time = time.time()
         try:
             # Initialize orchestrator
-                self.orchestrator = TraeAIOrchestrator()
+            self.orchestrator = TraeAIOrchestrator()
 
             self._add_result(
                 "orchestrator_initialization",
@@ -478,7 +528,9 @@ class TraeAIE2EVerification:
                     time.time() - start_time,
                     "Orchestrator initialized successfully",
                     {"component": "TraeAIOrchestrator"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "orchestrator_initialization",
@@ -488,7 +540,9 @@ class TraeAIE2EVerification:
                     f"Failed to initialize orchestrator: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _run_creative_pipeline_tests(self):
@@ -507,7 +561,9 @@ class TraeAIE2EVerification:
                     time.time() - start_time,
                     "Creative pipeline initialized successfully",
                     {"component": "HollywoodCreativePipeline"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "creative_pipeline_initialization",
@@ -517,7 +573,9 @@ class TraeAIE2EVerification:
                     f"Failed to initialize creative pipeline: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _run_marketing_engine_tests(self):
@@ -536,7 +594,9 @@ class TraeAIE2EVerification:
                     time.time() - start_time,
                     "Marketing engine initialized successfully",
                     {"component": "MarketingMonetizationEngine"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "marketing_engine_initialization",
@@ -546,7 +606,9 @@ class TraeAIE2EVerification:
                     f"Failed to initialize marketing engine: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _run_agentic_protocol_tests(self):
@@ -565,7 +627,9 @@ class TraeAIE2EVerification:
                     time.time() - start_time,
                     "Agentic protocol initialized successfully",
                     {"component": "AgenticProtocol"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "agentic_protocol_initialization",
@@ -575,7 +639,9 @@ class TraeAIE2EVerification:
                     f"Failed to initialize agentic protocol: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _run_diagnosis_repair_tests(self):
@@ -594,7 +660,9 @@ class TraeAIE2EVerification:
                     time.time() - start_time,
                     "Diagnosis and repair initialized successfully",
                     {"component": "AutonomousDiagnosisRepair"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "diagnosis_repair_initialization",
@@ -604,7 +672,9 @@ class TraeAIE2EVerification:
                     f"Failed to initialize diagnosis and repair: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _run_zero_cost_stack_tests(self):
@@ -623,7 +693,9 @@ class TraeAIE2EVerification:
                     time.time() - start_time,
                     "Zero cost stack initialized successfully",
                     {"component": "ZeroCostStackManager"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "zero_cost_stack_initialization",
@@ -633,7 +705,9 @@ class TraeAIE2EVerification:
                     f"Failed to initialize zero cost stack: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _run_integration_tests(self):
@@ -650,7 +724,9 @@ class TraeAIE2EVerification:
                     self.agentic_protocol is not None,
                     self.diagnosis_repair is not None,
                     self.zero_cost_stack is not None,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             initialized_count = sum(components_initialized)
             total_components = len(components_initialized)
@@ -659,7 +735,9 @@ class TraeAIE2EVerification:
                 TestStatus.PASSED
                 if initialized_count >= total_components * 0.8
                 else TestStatus.FAILED
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             message = f"Component integration: {initialized_count}/{total_components} components initialized"
 
             self._add_result(
@@ -672,8 +750,11 @@ class TraeAIE2EVerification:
                     "initialized_components": initialized_count,
                         "total_components": total_components,
                         "success_rate": (initialized_count/total_components) * 100,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "component_integration",
@@ -683,7 +764,9 @@ class TraeAIE2EVerification:
                     f"Integration test failed: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _run_security_tests(self):
@@ -695,11 +778,13 @@ class TraeAIE2EVerification:
         try:
             # Common secret patterns
             secret_patterns = [
-                r'api[_-]?key[\\s]*[=:][\\s]*["\\'][a - zA - Z0 - 9+/=]{10,}["\\']',
-                    r'secret[_-]?key[\\s]*[=:][\\s]*["\\'][a - zA - Z0 - 9+/=]{10,}["\\']',
-                    r'password[\\s]*[=:][\\s]*["\\'][a - zA - Z0 - 9!@#$%^&*]{8,}["\\']',
-                    r'token[\\s]*[=:][\\s]*["\\'][a - zA - Z0 - 9+/=]{10,}["\\']',
-                    ]
+                r'api[_-]?key[\\s]*[=:][\\s]*["\\'][a-zA-Z0-9+/=]{10,}["\\']',
+                r'secret[_-]?key[\\s]*[=:][\\s]*["\\'][a-zA-Z0-9+/=]{10,}["\\']',
+                r'password[\\s]*[=:][\\s]*["\\'][a-zA-Z0-9!@#$%^&*]{8,}["\\']',
+                r'token[\\s]*[=:][\\s]*["\\'][a-zA-Z0-9+/=]{10,}["\\']',
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             # Scan Python files
             secrets_found = []
@@ -711,7 +796,9 @@ class TraeAIE2EVerification:
                     for d in dirs
                     if not d.startswith(".")
                     and d not in ["__pycache__", "node_modules"]
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
                 for file in files:
                     if file.endswith((".py", ".js", ".json", ".yaml", ".yml", ".env")):
@@ -719,13 +806,16 @@ class TraeAIE2EVerification:
                         try:
                             with open(
                                 file_path, "r", encoding="utf - 8", errors="ignore"
-                            ) as f:
+# BRACKET_SURGEON: disabled
+#                             ) as f:
                                 content = f.read()
 
                                 for pattern in secret_patterns:
                                     matches = re.findall(
                                         pattern, content, re.IGNORECASE
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                                     if matches:
                                         secrets_found.extend(
                                             [
@@ -733,10 +823,15 @@ class TraeAIE2EVerification:
                                                     "file": file_path,
                                                         "pattern": pattern,
                                                         "match": match,
-                                                        }
+# BRACKET_SURGEON: disabled
+#                                                         }
                                                 for match in matches
-                                            ]
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
                         except Exception:
                             continue
 
@@ -745,7 +840,9 @@ class TraeAIE2EVerification:
                 f"Found {len(secrets_found)} potential secrets"
                 if secrets_found
                 else "No secrets detected"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self._add_result(
                 "secret_scanning",
@@ -756,8 +853,11 @@ class TraeAIE2EVerification:
                     {
                     "secrets_found": len(secrets_found),
                         "details": secrets_found[:5],
-                        },  # Limit details
-            )
+# BRACKET_SURGEON: disabled
+#                         },  # Limit details
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except Exception as e:
             self._add_result(
                 "secret_scanning",
@@ -767,7 +867,9 @@ class TraeAIE2EVerification:
                     f"Secret scanning failed: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _run_performance_tests(self):
@@ -786,7 +888,9 @@ class TraeAIE2EVerification:
                     lambda: psutil.cpu_percent(),
                     lambda: psutil.virtual_memory(),
                     lambda: time.time(),
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             for operation in test_operations:
                 operation()
@@ -796,7 +900,9 @@ class TraeAIE2EVerification:
                 TestStatus.PASSED
                 if response_time < self.config["thresholds"]["response_time_max"]
                 else TestStatus.FAILED
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             message = f"System response time: {response_time:.3f}s"
 
             self._add_result(
@@ -809,8 +915,11 @@ class TraeAIE2EVerification:
                     "response_time": response_time,
                         "threshold": self.config["thresholds"]["response_time_max"],
                         "operations_tested": len(test_operations),
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "system_response_time",
@@ -820,7 +929,9 @@ class TraeAIE2EVerification:
                     f"Performance test failed: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _run_end_to_end_tests(self):
@@ -838,7 +949,9 @@ class TraeAIE2EVerification:
                     "Network connectivity",
                     "Security validation",
                     "Performance validation",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             completed_steps = 0
             for step in workflow_steps:
@@ -851,7 +964,9 @@ class TraeAIE2EVerification:
                 TestStatus.PASSED
                 if success_rate >= self.config["thresholds"]["success_rate_min"]
                 else TestStatus.FAILED
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             message = f"End - to - end workflow: {completed_steps}/{len(workflow_steps)} steps completed ({success_rate:.1f}%)"
 
             self._add_result(
@@ -865,8 +980,11 @@ class TraeAIE2EVerification:
                         "total_steps": len(workflow_steps),
                         "success_rate": success_rate,
                         "workflow_steps": workflow_steps,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self._add_result(
                 "end_to_end_workflow",
@@ -876,7 +994,9 @@ class TraeAIE2EVerification:
                     f"End - to - end test failed: {str(e)}",
                     {"error": str(e)},
                     error_trace = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _add_result(
@@ -888,7 +1008,8 @@ class TraeAIE2EVerification:
             message: str,
             details: Dict[str, Any],
             error_trace: Optional[str] = None,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Add a test result"""
         result = TestResult(
             test_name = test_name,
@@ -899,7 +1020,9 @@ class TraeAIE2EVerification:
                 details = details,
                 timestamp = datetime.now(),
                 error_trace = error_trace,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.results.append(result)
 
@@ -907,7 +1030,7 @@ class TraeAIE2EVerification:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO test_results
                     (test_name,
     category,
@@ -916,9 +1039,11 @@ class TraeAIE2EVerification:
     message,
     details,
     timestamp,
-    error_trace)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     error_trace)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                         test_name,
                             category.value,
@@ -928,8 +1053,11 @@ class TraeAIE2EVerification:
                             json.dumps(details),
                             result.timestamp.isoformat(),
                             error_trace,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
         except Exception as e:
             logger.error(f"Failed to store test result: {e}")
 
@@ -947,7 +1075,9 @@ class TraeAIE2EVerification:
             (self.end_time - self.start_time).total_seconds()
             if self.end_time and self.start_time
             else 0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Determine overall status
         if error_tests > 0:
@@ -968,18 +1098,23 @@ class TraeAIE2EVerification:
                     "total": len(category_results),
                         "passed": len(
                         [r for r in category_results if r.status == TestStatus.PASSED]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "failed": len(
                         [r for r in category_results if r.status == TestStatus.FAILED]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "error": len(
                         [r for r in category_results if r.status == TestStatus.ERROR]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "skipped": len(
                         [r for r in category_results if r.status == TestStatus.SKIPPED]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "results": [asdict(r) for r in category_results],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         return {
             "overall_status": overall_status,
@@ -994,12 +1129,13 @@ class TraeAIE2EVerification:
                 "end_time": self.end_time.isoformat() if self.end_time else None,
                 "results_by_category": results_by_category,
                 "all_results": [asdict(r) for r in self.results],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def generate_html_report(self, summary: Dict[str, Any]) -> str:
         """Generate HTML report"""
-        html_template = """
+        html_template = """"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -1034,22 +1170,22 @@ class TraeAIE2EVerification:
     {category_sections}
 </body>
 </html>
-        """
+        """"""
 
         category_sections = ""
         for category, results in summary["results_by_category"].items():
             test_results_html = ""
             for result in results["results"]:
-                test_results_html += f"""
+                test_results_html += f""""""
                 <div class="test - result {result['status']}">
                     <strong>{result['test_name']}</strong><br>
                     Status: {result['status']}<br>
                     Duration: {result['duration']:.3f}s < br>
                     Message: {result['message']}
                 </div>
-                """
+                """"""
 
-            category_sections += f"""
+            category_sections += f""""""
             <div class="category - section">
                 <div class="category - title">
                     <h2>{category.replace('_', ' ').title()}</h2>
@@ -1057,7 +1193,7 @@ class TraeAIE2EVerification:
                 </div>
                 {test_results_html}
             </div>
-            """
+            """"""
 
         return html_template.format(
             overall_status = summary["overall_status"],
@@ -1068,7 +1204,9 @@ class TraeAIE2EVerification:
                 duration = summary["duration"],
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 category_sections = category_sections,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 if __name__ == "__main__":
     # Ensure directories exist

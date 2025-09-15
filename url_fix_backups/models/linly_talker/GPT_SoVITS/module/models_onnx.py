@@ -26,7 +26,8 @@ class StochasticDurationPredictor(nn.Module):
             p_dropout,
             n_flows = 4,
             gin_channels = 0,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__()
         filter_channels = in_channels  # it needs to be removed from future version.
         self.in_channels = in_channels
@@ -42,27 +43,35 @@ class StochasticDurationPredictor(nn.Module):
         for i in range(n_flows):
             self.flows.append(
                 modules.ConvFlow(2, filter_channels, kernel_size, n_layers = 3)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.flows.append(modules.Flip())
 
         self.post_pre = nn.Conv1d(1, filter_channels, 1)
         self.post_proj = nn.Conv1d(filter_channels, filter_channels, 1)
         self.post_convs = modules.DDSConv(
             filter_channels, kernel_size, n_layers = 3, p_dropout = p_dropout
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.post_flows = nn.ModuleList()
         self.post_flows.append(modules.ElementwiseAffine(2))
         for i in range(4):
             self.post_flows.append(
                 modules.ConvFlow(2, filter_channels, kernel_size, n_layers = 3)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.post_flows.append(modules.Flip())
 
         self.pre = nn.Conv1d(in_channels, filter_channels, 1)
         self.proj = nn.Conv1d(filter_channels, filter_channels, 1)
         self.convs = modules.DDSConv(
             filter_channels, kernel_size, n_layers = 3, p_dropout = p_dropout
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if gin_channels != 0:
             self.cond = nn.Conv1d(gin_channels, filter_channels, 1)
 
@@ -73,7 +82,8 @@ class StochasticDurationPredictor(nn.Module):
     w = None,
     g = None,
     reverse = False,
-    noise_scale = 1.0):
+# BRACKET_SURGEON: disabled
+#     noise_scale = 1.0):
         x = torch.detach(x)
         x = self.pre(x)
         if g is not None:
@@ -94,9 +104,13 @@ class StochasticDurationPredictor(nn.Module):
                 torch.randn(w.size(0),
     2,
     w.size(2)).to(device = x.device,
-    dtype = x.dtype)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     dtype = x.dtype)
                 * x_mask
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             z_q = e_q
             for flow in self.post_flows:
                 z_q, logdet_q = flow(z_q, x_mask, g=(x + h_w))
@@ -106,11 +120,15 @@ class StochasticDurationPredictor(nn.Module):
             z0 = (w - u) * x_mask
             logdet_tot_q += torch.sum(
                 (F.logsigmoid(z_u) + F.logsigmoid(-z_u)) * x_mask, [1, 2]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             logq = (
                 torch.sum(-0.5 * (math.log(2 * math.pi) + (e_q**2)) * x_mask, [1, 2])
                 - logdet_tot_q
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             logdet_tot = 0
             z0, logdet = self.log_flow(z0, x_mask)
@@ -122,7 +140,9 @@ class StochasticDurationPredictor(nn.Module):
             nll = (
                 torch.sum(0.5 * (math.log(2 * math.pi) + (z**2)) * x_mask, [1, 2])
                 - logdet_tot
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return nll + logq  # [b]
         else:
             flows = list(reversed(self.flows))
@@ -131,9 +151,13 @@ class StochasticDurationPredictor(nn.Module):
                 torch.randn(x.size(0),
     2,
     x.size(2)).to(device = x.device,
-    dtype = x.dtype)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     dtype = x.dtype)
                 * noise_scale
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             for flow in flows:
                 z = flow(z, x_mask, g = x, reverse = reverse)
             z0, z1 = torch.split(z, [1, 1], 1)
@@ -146,7 +170,8 @@ class DurationPredictor(nn.Module):
 
     def __init__(
         self, in_channels, filter_channels, kernel_size, p_dropout, gin_channels = 0
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
 
         self.in_channels = in_channels
@@ -158,11 +183,15 @@ class DurationPredictor(nn.Module):
         self.drop = nn.Dropout(p_dropout)
         self.conv_1 = nn.Conv1d(
             in_channels, filter_channels, kernel_size, padding = kernel_size // 2
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.norm_1 = modules.LayerNorm(filter_channels)
         self.conv_2 = nn.Conv1d(
             filter_channels, filter_channels, kernel_size, padding = kernel_size // 2
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.norm_2 = modules.LayerNorm(filter_channels)
         self.proj = nn.Conv1d(filter_channels, 1, 1)
 
@@ -200,7 +229,8 @@ class TextEncoder(nn.Module):
             kernel_size,
             p_dropout,
             latent_channels = 192,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__()
         self.out_channels = out_channels
         self.hidden_channels = hidden_channels
@@ -220,11 +250,15 @@ class TextEncoder(nn.Module):
                 n_layers // 2,
                 kernel_size,
                 p_dropout,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.encoder_text = attentions.Encoder(
             hidden_channels, filter_channels, n_heads, n_layers, kernel_size, p_dropout
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.text_embedding = nn.Embedding(len(symbols), hidden_channels)
 
         self.mrte = MRTE()
@@ -236,7 +270,9 @@ class TextEncoder(nn.Module):
                 n_layers // 2,
                 kernel_size,
                 p_dropout,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.proj = nn.Conv1d(hidden_channels, out_channels * 2, 1)
 
@@ -293,7 +329,8 @@ class ResidualCouplingBlock(nn.Module):
             n_layers,
             n_flows = 4,
             gin_channels = 0,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__()
         self.channels = channels
         self.hidden_channels = hidden_channels
@@ -314,8 +351,12 @@ class ResidualCouplingBlock(nn.Module):
                         n_layers,
                         gin_channels = gin_channels,
                         mean_only = True,
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.flows.append(modules.Flip())
 
 
@@ -341,7 +382,8 @@ class PosteriorEncoder(nn.Module):
             dilation_rate,
             n_layers,
             gin_channels = 0,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -358,7 +400,9 @@ class PosteriorEncoder(nn.Module):
                 dilation_rate,
                 n_layers,
                 gin_channels = gin_channels,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.proj = nn.Conv1d(hidden_channels, out_channels * 2, 1)
 
 
@@ -367,7 +411,9 @@ class PosteriorEncoder(nn.Module):
             g = g.detach()
         x_mask = torch.unsqueeze(commons.sequence_mask(x_lengths, x.size(2)), 1).to(
             x.dtype
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         x = self.pre(x) * x_mask
         x = self.enc(x, x_mask, g = g)
         stats = self.proj(x) * x_mask
@@ -388,7 +434,8 @@ class WNEncoder(nn.Module):
             dilation_rate,
             n_layers,
             gin_channels = 0,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -405,7 +452,9 @@ class WNEncoder(nn.Module):
                 dilation_rate,
                 n_layers,
                 gin_channels = gin_channels,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.proj = nn.Conv1d(hidden_channels, out_channels, 1)
         self.norm = modules.LayerNorm(out_channels)
 
@@ -413,7 +462,9 @@ class WNEncoder(nn.Module):
     def forward(self, x, x_lengths, g = None):
         x_mask = torch.unsqueeze(commons.sequence_mask(x_lengths, x.size(2)), 1).to(
             x.dtype
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         x = self.pre(x) * x_mask
         x = self.enc(x, x_mask, g = g)
         out = self.proj(x) * x_mask
@@ -434,13 +485,16 @@ class Generator(torch.nn.Module):
             upsample_initial_channel,
             upsample_kernel_sizes,
             gin_channels = 0,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super(Generator, self).__init__()
         self.num_kernels = len(resblock_kernel_sizes)
         self.num_upsamples = len(upsample_rates)
         self.conv_pre = Conv1d(
             initial_channel, upsample_initial_channel, 7, 1, padding = 3
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         resblock = modules.ResBlock1 if resblock == "1" else modules.ResBlock2
 
         self.ups = nn.ModuleList()
@@ -453,16 +507,23 @@ class Generator(torch.nn.Module):
                             k,
                             u,
                             padding=(k - u) // 2,
-                            )
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.resblocks = nn.ModuleList()
         for i in range(len(self.ups)):
             ch = upsample_initial_channel // (2 ** (i + 1))
             for j, (k, d) in enumerate(
                 zip(resblock_kernel_sizes, resblock_dilation_sizes)
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 self.resblocks.append(resblock(ch, k, d))
 
         self.conv_post = Conv1d(ch, 1, 7, 1, padding = 3, bias = False)
@@ -519,8 +580,11 @@ class DiscriminatorP(torch.nn.Module):
                             (kernel_size, 1),
                             (stride, 1),
                             padding=(get_padding(kernel_size, 1), 0),
-                            )
-                ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# BRACKET_SURGEON: disabled
+#                 ),
                     norm_f(
                     Conv2d(
                         32,
@@ -528,8 +592,11 @@ class DiscriminatorP(torch.nn.Module):
                             (kernel_size, 1),
                             (stride, 1),
                             padding=(get_padding(kernel_size, 1), 0),
-                            )
-                ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# BRACKET_SURGEON: disabled
+#                 ),
                     norm_f(
                     Conv2d(
                         128,
@@ -537,8 +604,11 @@ class DiscriminatorP(torch.nn.Module):
                             (kernel_size, 1),
                             (stride, 1),
                             padding=(get_padding(kernel_size, 1), 0),
-                            )
-                ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# BRACKET_SURGEON: disabled
+#                 ),
                     norm_f(
                     Conv2d(
                         512,
@@ -546,8 +616,11 @@ class DiscriminatorP(torch.nn.Module):
                             (kernel_size, 1),
                             (stride, 1),
                             padding=(get_padding(kernel_size, 1), 0),
-                            )
-                ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# BRACKET_SURGEON: disabled
+#                 ),
                     norm_f(
                     Conv2d(
                         1024,
@@ -555,10 +628,17 @@ class DiscriminatorP(torch.nn.Module):
                             (kernel_size, 1),
                             1,
                             padding=(get_padding(kernel_size, 1), 0),
-                            )
-                ),
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.conv_post = norm_f(Conv2d(1024, 1, (3, 1), 1, padding=(1, 0)))
 
 
@@ -598,8 +678,12 @@ class DiscriminatorS(torch.nn.Module):
                     norm_f(Conv1d(256, 1024, 41, 4, groups = 64, padding = 20)),
                     norm_f(Conv1d(1024, 1024, 41, 4, groups = 256, padding = 20)),
                     norm_f(Conv1d(1024, 1024, 5, 1, padding = 2)),
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.conv_post = norm_f(Conv1d(1024, 1, 3, 1, padding = 1))
 
 
@@ -627,7 +711,9 @@ class MultiPeriodDiscriminator(torch.nn.Module):
         discs = [DiscriminatorS(use_spectral_norm = use_spectral_norm)]
         discs = discs + [
             DiscriminatorP(i, use_spectral_norm = use_spectral_norm) for i in periods
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         self.discriminators = nn.ModuleList(discs)
 
 
@@ -648,10 +734,10 @@ class MultiPeriodDiscriminator(torch.nn.Module):
 
 
 class ReferenceEncoder(nn.Module):
-    """
+    """"""
     inputs --- [N, Ty / r, n_mels * r]  mels
     outputs --- [N, ref_enc_gru_size]
-    """
+    """"""
 
 
     def __init__(self, spec_channels, gin_channels = 0):
@@ -668,10 +754,16 @@ class ReferenceEncoder(nn.Module):
                         kernel_size=(3, 3),
                         stride=(2, 2),
                         padding=(1, 1),
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             for i in range(K)
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         self.convs = nn.ModuleList(convs)
         # self.wns = nn.ModuleList([weight_norm(num_features = ref_enc_filters[i]) for i in range(K)])
 
@@ -680,7 +772,9 @@ class ReferenceEncoder(nn.Module):
             input_size = ref_enc_filters[-1] * out_channels,
                 hidden_size = 256 // 2,
                 batch_first = True,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.proj = nn.Linear(128, gin_channels)
 
 
@@ -723,7 +817,9 @@ class Quantizer_module(torch.nn.Module):
             torch.sum(x**2, 1, keepdim = True)
             + torch.sum(self.embedding.weight**2, 1)
             - 2 * torch.matmul(x, self.embedding.weight.T)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         min_indicies = torch.argmin(d, 1)
         z_q = self.embedding(min_indicies)
         return z_q, min_indicies
@@ -739,8 +835,12 @@ class Quantizer(torch.nn.Module):
             [
                 Quantizer_module(n_codes, embed_dim // n_code_groups)
                 for _ in range(n_code_groups)
-            ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.n_code_groups = n_code_groups
         self.embed_dim = embed_dim
 
@@ -760,7 +860,9 @@ class Quantizer(torch.nn.Module):
                 z_q = torch.cat(z_q, -1).reshape(xin.shape)
         loss = 0.25 * torch.mean((z_q.detach() - xin) ** 2) + torch.mean(
             (z_q - xin.detach()) ** 2
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         z_q = xin + (z_q - xin).detach()
         z_q = z_q.transpose(1, 2)
         codes = torch.stack(min_indicies, -1).reshape(B, T, self.n_code_groups)
@@ -793,7 +895,8 @@ class CodePredictor(nn.Module):
             n_q = 8,
             dims = 1024,
             ssl_dim = 768,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__()
         self.hidden_channels = hidden_channels
         self.filter_channels = filter_channels
@@ -805,11 +908,15 @@ class CodePredictor(nn.Module):
         self.vq_proj = nn.Conv1d(ssl_dim, hidden_channels, 1)
         self.ref_enc = modules.MelStyleEncoder(
             ssl_dim, style_vector_dim = hidden_channels
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.encoder = attentions.Encoder(
             hidden_channels, filter_channels, n_heads, n_layers, kernel_size, p_dropout
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.out_proj = nn.Conv1d(hidden_channels, (n_q - 1) * dims, 1)
         self.n_q = n_q
@@ -825,7 +932,9 @@ class CodePredictor(nn.Module):
         x = self.out_proj(x * x_mask) * x_mask
         logits = x.reshape(x.shape[0], self.n_q - 1, self.dims, x.shape[-1]).transpose(
             2, 3
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         target = codes[1:].transpose(0, 1)
         if not infer:
             logits = logits.reshape(-1, self.dims)
@@ -847,9 +956,9 @@ class CodePredictor(nn.Module):
 
 
 class SynthesizerTrn(nn.Module):
-    """
+    """"""
     Synthesizer for Training
-    """
+    """"""
 
 
     def __init__(
@@ -875,7 +984,8 @@ class SynthesizerTrn(nn.Module):
             semantic_frame_rate = None,
             freeze_quantizer = None,
             **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.spec_channels = spec_channels
         self.inter_channels = inter_channels
@@ -904,7 +1014,9 @@ class SynthesizerTrn(nn.Module):
                 n_layers,
                 kernel_size,
                 p_dropout,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.dec = Generator(
             inter_channels,
                 resblock,
@@ -914,7 +1026,9 @@ class SynthesizerTrn(nn.Module):
                 upsample_initial_channel,
                 upsample_kernel_sizes,
                 gin_channels = gin_channels,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.enc_q = PosteriorEncoder(
             spec_channels,
                 inter_channels,
@@ -923,14 +1037,20 @@ class SynthesizerTrn(nn.Module):
                 1,
                 16,
                 gin_channels = gin_channels,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.flow = ResidualCouplingBlock(
             inter_channels, hidden_channels, 5, 1, 4, gin_channels = gin_channels
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.ref_enc = modules.MelStyleEncoder(
             spec_channels, style_vector_dim = gin_channels
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         ssl_dim = 768
         self.ssl_dim = ssl_dim
@@ -943,7 +1063,9 @@ class SynthesizerTrn(nn.Module):
 
         self.quantizer = ResidualVectorQuantizer(dimension = ssl_dim,
     n_q = 1,
-    bins = 1024)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     bins = 1024)
         if freeze_quantizer:
             self.ssl_proj.requires_grad_(False)
             self.quantizer.requires_grad_(False)

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI YouTube Community Engagement Agent
 
 Intelligently monitors YouTube comments and generates appropriate, contextual replies
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import hashlib
 import json
@@ -141,10 +141,10 @@ class TopicProfile:
 
 
 class YouTubeEngagementAgent:
-    """
+    """"""
     Intelligent YouTube community engagement agent that monitors comments
     and generates contextual replies to build community engagement.
-    """
+    """"""
 
     def __init__(self, db_path: str = "data / youtube_engagement.sqlite"):
         self.logger = setup_logger("youtube_engagement")
@@ -158,7 +158,8 @@ class YouTubeEngagementAgent:
             "max_concurrent_requests": 3,
             "cache_enabled": True,
             "cache_ttl": 3600,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.ollama_integration = OllamaIntegration(ollama_config)
         self.secret_store = SecretStore()
 
@@ -170,7 +171,8 @@ class YouTubeEngagementAgent:
             "max_reply_length": 500,
             "sentiment_threshold": 0.3,
             "relevance_threshold": 0.5,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Initialize database
         self._init_database()
@@ -190,7 +192,7 @@ class YouTubeEngagementAgent:
 
                 # Comments table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS comments (
                         comment_id TEXT PRIMARY KEY,
                             video_id TEXT NOT NULL,
@@ -207,13 +209,15 @@ class YouTubeEngagementAgent:
                             video_category TEXT,
                             processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (parent_comment_id) REFERENCES comments(comment_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Engagement opportunities table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS engagement_opportunities (
                         opportunity_id TEXT PRIMARY KEY,
                             comment_id TEXT NOT NULL,
@@ -227,13 +231,15 @@ class YouTubeEngagementAgent:
                             expires_at TIMESTAMP NOT NULL,
                             status TEXT DEFAULT 'pending',
                             FOREIGN KEY (comment_id) REFERENCES comments(comment_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Engagement results table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS engagement_results (
                         result_id TEXT PRIMARY KEY,
                             opportunity_id TEXT NOT NULL,
@@ -245,13 +251,15 @@ class YouTubeEngagementAgent:
                             error_message TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (opportunity_id) REFERENCES engagement_opportunities(opportunity_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Topic profiles table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS topic_profiles (
                         topic TEXT PRIMARY KEY,
                             keywords TEXT NOT NULL,
@@ -260,13 +268,15 @@ class YouTubeEngagementAgent:
                             max_daily_engagements INTEGER NOT NULL,
                             current_daily_count INTEGER DEFAULT 0,
                             last_reset_date DATE NOT NULL
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Engagement history table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS engagement_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             video_id TEXT NOT NULL,
@@ -276,9 +286,11 @@ class YouTubeEngagementAgent:
                             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             response_text TEXT,
                             metrics TEXT
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 self.logger.info("Database initialized successfully")
@@ -306,7 +318,8 @@ class YouTubeEngagementAgent:
                         max_daily,
                         current_count,
                         last_reset,
-                    ) = row
+# BRACKET_SURGEON: disabled
+#                     ) = row
                     keywords = json.loads(keywords_json)
                     last_reset_date = datetime.fromisoformat(last_reset)
 
@@ -318,7 +331,8 @@ class YouTubeEngagementAgent:
                         max_daily_engagements=max_daily,
                         current_daily_count=current_count,
                         last_reset_date=last_reset_date,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         except Exception as e:
             self.logger.warning(f"Failed to load topic profiles: {e}")
@@ -341,13 +355,15 @@ class YouTubeEngagementAgent:
                     "automation",
                     "technology",
                     "innovation",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 priority_weight=1.0,
                 engagement_style="informative",
                 max_daily_engagements=15,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "content_creation": TopicProfile(
                 topic="content_creation",
                 keywords=[
@@ -358,13 +374,15 @@ class YouTubeEngagementAgent:
                     "production",
                     "creative",
                     "tutorial",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 priority_weight=0.9,
                 engagement_style="helpful",
                 max_daily_engagements=12,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "business_growth": TopicProfile(
                 topic="business_growth",
                 keywords=[
@@ -374,13 +392,15 @@ class YouTubeEngagementAgent:
                     "strategy",
                     "entrepreneurship",
                     "startup",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 priority_weight=0.8,
                 engagement_style="professional",
                 max_daily_engagements=10,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "community_support": TopicProfile(
                 topic="community_support",
                 keywords=[
@@ -390,14 +410,17 @@ class YouTubeEngagementAgent:
                     "problem",
                     "issue",
                     "assistance",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 priority_weight=1.2,
                 engagement_style="supportive",
                 max_daily_engagements=20,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         # Save to database
         try:
@@ -405,7 +428,7 @@ class YouTubeEngagementAgent:
                 cursor = conn.cursor()
                 for profile in default_profiles.values():
                     cursor.execute(
-                        """
+                        """"""
                         INSERT OR REPLACE INTO topic_profiles
                         (topic,
     keywords,
@@ -413,9 +436,10 @@ class YouTubeEngagementAgent:
     engagement_style,
     max_daily_engagements,
     current_daily_count,
-    last_reset_date)
+# BRACKET_SURGEON: disabled
+#     last_reset_date)
                         VALUES (?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             profile.topic,
                             json.dumps(profile.keywords),
@@ -424,8 +448,10 @@ class YouTubeEngagementAgent:
                             profile.max_daily_engagements,
                             profile.current_daily_count,
                             profile.last_reset_date.isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to save default topic profiles: {e}")
@@ -462,7 +488,8 @@ class YouTubeEngagementAgent:
 
             self.logger.info(
                 f"Found {len(opportunities)} engagement opportunities for video {video_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Failed to monitor comments for video {video_id}: {e}")
@@ -475,7 +502,8 @@ class YouTubeEngagementAgent:
             # Use the YouTube integration to fetch comments
             comment_data = self.youtube_integration.get_video_comments(
                 video_id=video_id, max_results=50, order="time"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.logger.info(f"Fetched {len(comment_data)} comments for video {video_id}")
             return comment_data
@@ -486,7 +514,8 @@ class YouTubeEngagementAgent:
 
     def _create_comment_context(
         self, comment_data: Dict[str, Any], video_title: str, video_category: str
-    ) -> CommentContext:
+# BRACKET_SURGEON: disabled
+#     ) -> CommentContext:
         """Create comment context from API data."""
         # Handle both direct format and nested format from YouTube API
         if "snippet" in comment_data and "topLevelComment" in comment_data["snippet"]:
@@ -527,7 +556,8 @@ class YouTubeEngagementAgent:
             comment_id=comment_id,
             video_id=comment_data.get("snippet", {}).get(
                 "videoId", comment_data.get("video_id", "")
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             author_name=author_name,
             comment_text=comment_text,
             created_at=created_at,
@@ -540,7 +570,8 @@ class YouTubeEngagementAgent:
             relevance_score=relevance_score,
             video_title=video_title,
             video_category=video_category,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _analyze_sentiment(self, text: str) -> SentimentType:
         """Analyze sentiment of comment text."""
@@ -555,7 +586,8 @@ class YouTubeEngagementAgent:
                 "fantastic",
                 "helpful",
                 "thanks",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             negative_words = [
                 "bad",
                 "terrible",
@@ -565,7 +597,8 @@ class YouTubeEngagementAgent:
                 "useless",
                 "boring",
                 "stupid",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             text_lower = text.lower()
             positive_count = sum(1 for word in positive_words if word in text_lower)
@@ -644,7 +677,8 @@ class YouTubeEngagementAgent:
             # Generate contextual reply
             reply, confidence, reasoning = await self._generate_contextual_reply(
                 context, best_profile
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if confidence < self.config["min_confidence_score"]:
                 return None
@@ -668,7 +702,8 @@ class YouTubeEngagementAgent:
                 keywords_matched=context.topic_keywords,
                 created_at=datetime.now(),
                 expires_at=datetime.now() + timedelta(hours=24),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Failed to analyze comment for engagement: {e}")
@@ -687,7 +722,8 @@ class YouTubeEngagementAgent:
                 kw
                 for kw in context.topic_keywords
                 if kw.lower() in [pk.lower() for pk in profile.keywords]
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             if matched_keywords:
                 score = len(matched_keywords) * profile.priority_weight
 
@@ -714,17 +750,19 @@ class YouTubeEngagementAgent:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE topic_profiles
                     SET current_daily_count = ?, last_reset_date = ?
                     WHERE topic = ?
-                """,
+                ""","""
                     (
                         profile.current_daily_count,
                         profile.last_reset_date.isoformat(),
                         profile.topic,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to update topic profile: {e}")
@@ -737,7 +775,7 @@ class YouTubeEngagementAgent:
             # Create prompt for AI reply generation
             style_guidance = self._get_style_guidance(profile.engagement_style, context.sentiment)
 
-            prompt = f"""
+            prompt = f""""""
 You are a helpful YouTube content creator responding to a comment on your video.
 
 Video Title: {context.video_title}
@@ -754,12 +792,13 @@ Generate a helpful, engaging reply that:
 4. Is under {self.config['max_reply_length']} characters
 5. Encourages further engagement
 
-Reply:"""
+Reply:""""""
 
             # Generate reply using Ollama
             response = await self.ollama_integration.generate_response(
                 prompt=prompt, model="llama3.1:8b", max_tokens=150
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not response or not response.get("response"):
                 return "", 0.0, "Failed to generate AI response"
@@ -778,17 +817,18 @@ Reply:"""
     def _get_style_guidance(self, engagement_style: str, sentiment: SentimentType) -> str:
         """Get style guidance for reply generation."""
         style_guides = {
-            "informative": "Be educational \
-    and provide useful information. Use clear explanations.",
-            "helpful": "Be supportive \
-    and offer practical assistance. Focus on solving problems.",
-            "professional": "Maintain a business - appropriate tone. Be courteous \
-    and authoritative.",
-            "supportive": "Be encouraging \
-    and empathetic. Show understanding \
-    and offer help.",
+            "informative": "Be educational \"
+#     and provide useful information. Use clear explanations.",
+            "helpful": "Be supportive \"
+#     and offer practical assistance. Focus on solving problems.",
+            "professional": "Maintain a business - appropriate tone. Be courteous \"
+#     and authoritative.",
+            "supportive": "Be encouraging \"
+#     and empathetic. Show understanding \
+#     and offer help.",
             "friendly": "Be warm and approachable. Use conversational language.",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         base_guidance = style_guides.get(engagement_style, "Be helpful and engaging.")
 
@@ -830,7 +870,8 @@ Reply:"""
         # Quality indicators
         if "?" in context.comment_text and any(
             word in reply_text.lower() for word in ["yes", "no", "here", "try", "can"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             score += 0.2
             reasons.append("Addresses question")
 
@@ -839,7 +880,8 @@ Reply:"""
             "thanks for watching",
             "please subscribe",
             "check out my other videos",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         if any(phrase in reply_text.lower() for phrase in generic_phrases):
             score -= 0.2
             reasons.append("Contains generic phrases")
@@ -856,7 +898,8 @@ Reply:"""
 
     def _calculate_priority(
         self, context: CommentContext, profile: TopicProfile
-    ) -> CommentPriority:
+# BRACKET_SURGEON: disabled
+#     ) -> CommentPriority:
         """Calculate priority level for engagement opportunity."""
         score = 0.0
 
@@ -904,7 +947,7 @@ Reply:"""
 
                 # Save comment context first
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO comments
                     (comment_id,
     video_id,
@@ -913,9 +956,10 @@ Reply:"""
     created_at,
     like_count,
                         reply_count, is_reply, parent_comment_id, sentiment, relevance_score,
-                         video_title, video_category)
+# BRACKET_SURGEON: disabled
+#                          video_title, video_category)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         opportunity.comment.comment_id,
                         opportunity.comment.video_id,
@@ -930,21 +974,24 @@ Reply:"""
                         opportunity.comment.relevance_score,
                         opportunity.comment.video_title,
                         opportunity.comment.video_category,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Save opportunity
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO engagement_opportunities
                     (opportunity_id,
     comment_id,
     engagement_type,
     priority,
     suggested_reply,
-                        confidence_score, reasoning, keywords_matched, created_at, expires_at)
+# BRACKET_SURGEON: disabled
+#                         confidence_score, reasoning, keywords_matched, created_at, expires_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         opportunity.opportunity_id,
                         opportunity.comment.comment_id,
@@ -956,8 +1003,10 @@ Reply:"""
                         json.dumps(opportunity.keywords_matched),
                         opportunity.created_at,
                         opportunity.expires_at,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
 
@@ -972,7 +1021,8 @@ Reply:"""
                 return {
                     "status": "error",
                     "message": "Community building is disabled in configuration",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             task_type = task.get("type")
 
@@ -986,7 +1036,8 @@ Reply:"""
                     "status": "success",
                     "opportunities_found": len(opportunities),
                     "opportunities": [asdict(opp) for opp in opportunities],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             elif task_type == "get_engagement_opportunities":
                 opportunities = self._get_pending_opportunities()
@@ -1015,7 +1066,8 @@ Reply:"""
                 os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
                 "config",
                 "state.json",
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if os.path.exists(config_path):
                 with open(config_path, "r") as f:
                     config = json.load(f)
@@ -1033,15 +1085,16 @@ Reply:"""
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT eo.*, c.comment_text, c.author_name, c.video_title
                     FROM engagement_opportunities eo
                     JOIN comments c ON eo.comment_id = c.comment_id
                     WHERE eo.status = 'pending' AND eo.expires_at > datetime('now')
                     ORDER BY eo.priority DESC, eo.confidence_score DESC
                     LIMIT 50
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 rows = cursor.fetchall()
                 columns = [desc[0] for desc in cursor.description]
@@ -1063,14 +1116,15 @@ Reply:"""
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT eo.*, c.*
                         FROM engagement_opportunities eo
                     JOIN comments c ON eo.comment_id = c.comment_id
                     WHERE eo.opportunity_id = ?
-                """,
+                ""","""
                     (opportunity_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 row = cursor.fetchone()
                 if not row:
@@ -1091,7 +1145,8 @@ Reply:"""
                     # Post a reply to the comment
                     api_result = self.youtube_integration.post_comment_reply(
                         parent_comment_id=comment_id, reply_text=suggested_reply
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if api_result.get("status") == "success":
                         success = True
@@ -1114,7 +1169,8 @@ Reply:"""
                 engagement_metrics={"likes": 0, "replies": 0},
                 posted_at=datetime.now() if success else None,
                 error_message=error_message,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Save result
             self._save_engagement_result(result)
@@ -1123,13 +1179,14 @@ Reply:"""
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE engagement_opportunities
                     SET status = ?
                     WHERE opportunity_id = ?
-                """,
+                ""","""
                     ("posted" if success else "failed", opportunity_id),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
             return {
@@ -1138,9 +1195,11 @@ Reply:"""
                     "Engagement executed successfully"
                     if success
                     else f"Engagement failed: {error_message}"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "result": asdict(result),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Failed to execute engagement: {e}")
@@ -1152,12 +1211,13 @@ Reply:"""
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO engagement_results
                     (result_id, opportunity_id, status, posted_content, comment_id,
-                        engagement_metrics, posted_at, error_message)
+# BRACKET_SURGEON: disabled
+#                         engagement_metrics, posted_at, error_message)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         hashlib.md5(
                             f"{result.opportunity_id}_{datetime.now().isoformat()}".encode()
@@ -1169,8 +1229,10 @@ Reply:"""
                         json.dumps(result.engagement_metrics),
                         result.posted_at,
                         result.error_message,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
         except Exception as e:
@@ -1185,7 +1247,8 @@ Reply:"""
             "success_rate": 0.0,
             "daily_engagement_counts": {},
             "top_topics": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -1198,7 +1261,8 @@ Reply:"""
                 # Pending opportunities
                 cursor.execute(
                     "SELECT COUNT(*) FROM engagement_opportunities WHERE status = 'pending'"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 stats["pending_opportunities"] = cursor.fetchone()[0]
 
                 # Completed engagements
@@ -1209,14 +1273,16 @@ Reply:"""
                 if stats["total_opportunities"] > 0:
                     stats["success_rate"] = (
                         stats["completed_engagements"] / stats["total_opportunities"]
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Daily engagement counts by topic
                 for topic, profile in self.topic_profiles.items():
                     stats["daily_engagement_counts"][topic] = {
                         "current": profile.current_daily_count,
                         "max": profile.max_daily_engagements,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Failed to get engagement stats: {e}")

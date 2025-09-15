@@ -20,9 +20,13 @@ SRC = np.array(
             [48.0252, 71.7366],
             [33.5493, 92.3655],
             [62.7299, 92.2041],
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         dtype = np.float32,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 SRC[:, 0] += 8.0
 
 
@@ -46,7 +50,9 @@ class AlignedDataSet(mx.gluon.data.Dataset):
         img = cv2.cvtColor(cv2.imread(name), cv2.COLOR_BGR2RGB)
         landmark5 = np.array(
             [float(x) for x in name_lmk_score[1:-1]], dtype = np.float32
-        ).reshape((5, 2))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).reshape((5, 2))
         st = skimage.transform.SimilarityTransform()
         st.estimate(landmark5, SRC)
         img = cv2.warpAffine(img, st.params[0:2, :], (112, 112), borderValue = 0.0)
@@ -75,7 +81,9 @@ def extract(model_root, dataset):
             thread_pool = True,
             prefetch = 16,
             batchify_fn = batchify_fn,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     num_iter = 0
     for batch in data_loader:
         batch = batch.asnumpy()
@@ -119,7 +127,9 @@ def image2template_feature(img_feats = None, templates = None, medias = None):
         face_medias = medias[ind_t]
         unique_medias,
     unique_media_counts = np.unique(face_medias,
-    return_counts = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     return_counts = True)
         media_norm_feats = []
         for u, ct in zip(unique_medias, unique_media_counts):
             (ind_m,) = np.where(face_medias == u)
@@ -128,7 +138,9 @@ def image2template_feature(img_feats = None, templates = None, medias = None):
             else:  # image features from the same video will be aggregated into one feature
                 media_norm_feats += [
                     np.mean(face_norm_feats[ind_m], axis = 0, keepdims = True),
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
         media_norm_feats = np.array(media_norm_feats)
         template_feats[count_template] = np.sum(media_norm_feats, axis = 0)
         if count_template % 2000 == 0:
@@ -140,7 +152,8 @@ def image2template_feature(img_feats = None, templates = None, medias = None):
 def verification(template_norm_feats = None,
     unique_templates = None,
     p1 = None,
-    p2 = None):
+# BRACKET_SURGEON: disabled
+#     p2 = None):
     template2id = np.zeros((max(unique_templates) + 1, 1), dtype = int)
     for count_template, uqt in enumerate(unique_templates):
         template2id[uqt] = count_template
@@ -162,7 +175,8 @@ def verification(template_norm_feats = None,
 def verification2(template_norm_feats = None,
     unique_templates = None,
     p1 = None,
-    p2 = None):
+# BRACKET_SURGEON: disabled
+#     p2 = None):
     template2id = np.zeros((max(unique_templates) + 1, 1), dtype = int)
     for count_template, uqt in enumerate(unique_templates):
         template2id[uqt] = count_template
@@ -191,8 +205,12 @@ def main(args):
     templates, medias = read_template_media_list(
         os.path.join(
             "%s / meta" % args.image_path, "%s_face_tid_mid.txt" % args.target.lower()
-        )
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     stop = timeit.default_timer()
     print("Time: %.2f s. " % (stop - start))
 
@@ -201,8 +219,12 @@ def main(args):
         os.path.join(
             "%s / meta" % args.image_path,
                 "%s_template_pair_label.txt" % args.target.lower(),
-                )
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     stop = timeit.default_timer()
     print("Time: %.2f s. " % (stop - start))
 
@@ -211,7 +233,9 @@ def main(args):
     img_list_path = "%s / meta/%s_name_5pts_score.txt" % (
         args.image_path,
             args.target.lower(),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     img_list = open(img_list_path)
     files = img_list.readlines()
     dataset = AlignedDataSet(root = img_path, lines = files, align = True)
@@ -231,7 +255,9 @@ def main(args):
         img_input_feats = (
             img_feats[:, 0 : img_feats.shape[1] // 2]
             + img_feats[:, img_feats.shape[1] // 2 :]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     else:
         img_input_feats = img_feats[:, 0 : img_feats.shape[1] // 2]
 
@@ -240,7 +266,9 @@ def main(args):
     else:
         img_input_feats = img_input_feats / np.sqrt(
             np.sum(img_input_feats**2, -1, keepdims = True)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     if use_detector_score:
         print(img_input_feats.shape, faceness_scores.shape)
@@ -250,7 +278,9 @@ def main(args):
 
     template_norm_feats, unique_templates = image2template_feature(
         img_input_feats, templates, medias
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     stop = timeit.default_timer()
     print("Time: %.2f s. " % (stop - start))
 
@@ -282,7 +312,9 @@ def main(args):
         for fpr_iter in np.arange(len(x_labels)):
             _, min_index = min(
                 list(zip(abs(fpr - x_labels[fpr_iter]), range(len(fpr))))
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             tpr_fpr_row.append("%.2f" % (tpr[min_index] * 100))
         tpr_fpr_table.add_row(tpr_fpr_row)
     print(tpr_fpr_table)
@@ -295,5 +327,7 @@ if __name__ == "__main__":
     parser.add_argument("--result - dir", default=".", type = str, help="")
     parser.add_argument(
         "--target", default="IJBC", type = str, help="target, set to IJBC or IJBB"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     main(parser.parse_args())

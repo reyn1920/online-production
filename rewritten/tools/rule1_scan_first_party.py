@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Rule - 1 First - Party Scanner
 
 Optimized scanner that only processes first - party code files,
@@ -9,7 +9,7 @@ Usage:
     python3 tools/rule1_scan_first_party.py                    # Preview files
     python3 tools/rule1_scan_first_party.py --print - files      # Print file paths
     python3 tools/rule1_scan_first_party.py --scan             # Actually scan
-"""
+""""""
 
 import json
 import sys
@@ -30,7 +30,7 @@ def load_ignore_patterns() -> Set[str]:
         with open(ignore_file, "r") as f:
             for line in f:
                 line = line.strip()
-                if line and not line.startswith("#"):
+                if line and not line.startswith("#"):"
                     patterns.add(line)
 
     return patterns
@@ -83,7 +83,8 @@ def get_first_party_files(root_dir: Path = None) -> List[Path]:
         ".sql",
         ".sh",
         ".bash",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     for file_path in root_dir.rglob("*"):
         if not file_path.is_file():
@@ -119,18 +120,21 @@ def main():
         "--print - files",
         action="store_true",
         help="Print file paths only (for piping to scanner)",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument(
         "--scan",
         action="store_true",
         help="Actually run the scanner on first - party files",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument(
         "--limit",
         type=int,
         default=50,
         help="Limit number of files to show in preview (default: 50)",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     args = parser.parse_args()
 

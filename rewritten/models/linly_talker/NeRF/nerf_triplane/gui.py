@@ -25,7 +25,9 @@ class OrbitCamera:
     0], [0, -1,
     0], [0,
     0,
-    1]] (to suit ngp convention)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     1]] (to suit ngp convention)
         self.up = np.array([1, 0, 0], dtype = np.float32)  # need to be normalized!
 
     # pose
@@ -74,7 +76,9 @@ class OrbitCamera:
         # rotate along camera up/side axis!
         side = self.rot.as_matrix()[
             :3, 0
-        ]  # why this is side --> ? # already normalized.
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]  # why this is side --> ? # already normalized.
         rotvec_x = self.up * np.radians(-0.01 * dx)
         rotvec_y = side * np.radians(-0.01 * dy)
         self.rot = R.from_rotvec(rotvec_x) * R.from_rotvec(rotvec_y) * self.rot
@@ -121,11 +125,15 @@ class NeRFGUI:
                     bg_img.permute(2, 0, 1).unsqueeze(0).contiguous(),
                         (self.H, self.W),
                         mode="bilinear",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 .squeeze(0)
                 .permute(1, 2, 0)
                 .contiguous()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         self.bg_color = bg_img.view(1, -1, 3)
 
         # audio features (from dataloader, only used in non - playing mode)
@@ -135,7 +143,9 @@ class NeRFGUI:
         # control eye
         self.eye_area = (
             None if not self.opt.exp_eye else data_loader._data.eye_area.mean().item()
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # playing seq from dataloader, or pause.
         self.playing = False
@@ -176,7 +186,9 @@ class NeRFGUI:
 
         starter, ender = torch.cuda.Event(enable_timing = True), torch.cuda.Event(
             enable_timing = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         starter.record()
 
         outputs = self.trainer.train_gui(self.data_loader, step = self.train_steps)
@@ -191,10 +203,12 @@ class NeRFGUI:
         dpg.set_value("_log_train_time", f"{t:.4f}ms ({int(1000/t)} FPS)")
         dpg.set_value(
             "_log_train_log",
-                f'step = {self.step: 5d} (+{self.train_steps: 2d}),
+                f'step = {self.step: 5d} (+{self.train_steps: 2d}),'
     loss = {outputs["loss"]:.4f},
-    lr = {outputs["lr"]:.5f}',
-                )
+    lr = {outputs["lr"]:.5f}','
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # dynamic train steps
         # max allowed train time per - frame is 500 ms
@@ -217,7 +231,9 @@ class NeRFGUI:
 
             starter, ender = torch.cuda.Event(enable_timing = True), torch.cuda.Event(
                 enable_timing = True
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             starter.record()
 
             if self.playing:
@@ -240,7 +256,9 @@ class NeRFGUI:
                 if self.audio_features is not None:
                     auds = get_audio_features(
                         self.audio_features, self.opt.att, self.audio_idx
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     auds = None
                 outputs = self.trainer.test_gui(
@@ -254,7 +272,9 @@ class NeRFGUI:
                         self.bg_color,
                         self.spp,
                         self.downscale,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             ender.record()
             torch.cuda.synchronize()
@@ -275,7 +295,9 @@ class NeRFGUI:
             else:
                 self.render_buffer = (
                     self.render_buffer * self.spp + self.prepare_buffer(outputs)
-                )/(self.spp + 1)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )/(self.spp + 1)
                 self.spp += 1
 
             if self.playing:
@@ -285,7 +307,9 @@ class NeRFGUI:
             dpg.set_value(
                 "_log_resolution",
                     f"{int(self.downscale * self.W)}x{int(self.downscale * self.H)}",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             dpg.set_value("_log_spp", self.spp)
             dpg.set_value("_texture", self.render_buffer)
 
@@ -301,7 +325,9 @@ class NeRFGUI:
                     self.render_buffer,
                     format = dpg.mvFormat_Float_rgb,
                     tag="_texture",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         ### register window
 
@@ -319,7 +345,8 @@ class NeRFGUI:
         with dpg.window(label="Control",
     tag="_control_window",
     width = 400,
-    height = 300):
+# BRACKET_SURGEON: disabled
+#     height = 300):
 
             # button theme
             with dpg.theme() as theme_button:
@@ -363,7 +390,9 @@ class NeRFGUI:
 
                         dpg.add_button(
                             label="start", tag="_button_train", callback = callback_train
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         dpg.bind_item_theme("_button_train", theme_button)
 
 
@@ -378,12 +407,14 @@ class NeRFGUI:
 
                             self.trainer.model.apply(fn = weight_reset)
                             self.trainer.model.reset_extra_state()  # for cuda_ray density_grid \
-    and step_counter
+#     and step_counter
                             self.need_update = True
 
                         dpg.add_button(
                             label="reset", tag="_button_reset", callback = callback_reset
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         dpg.bind_item_theme("_button_reset", theme_button)
 
                     # save ckpt
@@ -398,15 +429,22 @@ class NeRFGUI:
                                     "saved "
                                 + os.path.basename(
                                     self.trainer.stats["checkpoints"][-1]
-                                ),
-                                    )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                             self.trainer.epoch += (
                                 1  # use epoch to indicate different calls.
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                         dpg.add_button(
                             label="save", tag="_button_save", callback = callback_save
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         dpg.bind_item_theme("_button_save", theme_button)
 
                         dpg.add_text("", tag="_log_ckpt")
@@ -422,14 +460,20 @@ class NeRFGUI:
                                 "_log_mesh",
                                     "saved "
                                 + f"{self.trainer.name}_{self.trainer.epoch}.ply",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                             self.trainer.epoch += (
                                 1  # use epoch to indicate different calls.
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                         dpg.add_button(
                             label="mesh", tag="_button_mesh", callback = callback_mesh
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         dpg.bind_item_theme("_button_mesh", theme_button)
 
                         dpg.add_text("", tag="_log_mesh")
@@ -459,7 +503,9 @@ class NeRFGUI:
 
                     dpg.add_button(
                         label="start", tag="_button_play", callback = callback_play
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     dpg.bind_item_theme("_button_play", theme_button)
 
                     # set asr
@@ -477,7 +523,9 @@ class NeRFGUI:
                             label="clear",
                                 tag="_button_clear_queue",
                                 callback = callback_clear_queue,
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         dpg.bind_item_theme("_button_clear_queue", theme_button)
 
                 # dynamic rendering resolution
@@ -495,7 +543,9 @@ class NeRFGUI:
                     # Disable dynamic resolution for face.
                     # dpg.add_checkbox(label="dynamic resolution",
     default_value = self.dynamic_resolution,
-    callback = callback_set_dynamic_resolution)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     callback = callback_set_dynamic_resolution)
                     dpg.add_text(f"{self.W}x{self.H}", tag="_log_resolution")
 
                 # mode combo
@@ -510,7 +560,9 @@ class NeRFGUI:
                         label="mode",
                         default_value = self.mode,
                         callback = callback_change_mode,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # bg_color picker
 
@@ -518,7 +570,9 @@ class NeRFGUI:
                 def callback_change_bg(sender, app_data):
                     self.bg_color = torch.tensor(
                         app_data[:3], dtype = torch.float32
-                    )  # only need RGB in [0, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )  # only need RGB in [0, 1]
                     self.need_update = True
 
                 dpg.add_color_edit(
@@ -528,7 +582,9 @@ class NeRFGUI:
                         tag="_color_editor",
                         no_alpha = True,
                         callback = callback_change_bg,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # audio index slider
                 if not self.opt.asr:
@@ -545,7 +601,9 @@ class NeRFGUI:
                             format="%d",
                             default_value = self.audio_idx,
                             callback = callback_set_audio_index,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # ind code index slider
                 if self.opt.ind_dim > 0:
@@ -562,7 +620,9 @@ class NeRFGUI:
                             format="%d",
                             default_value = self.ind_index,
                             callback = callback_set_individual_code,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # eye area slider
                 if self.opt.exp_eye:
@@ -579,7 +639,9 @@ class NeRFGUI:
                             format="%.2f percent",
                             default_value = self.eye_area,
                             callback = callback_set_eye,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # fov slider
 
@@ -595,7 +657,9 @@ class NeRFGUI:
                         format="%d deg",
                         default_value = self.cam.fovy,
                         callback = callback_set_fovy,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # dt_gamma slider
 
@@ -611,7 +675,9 @@ class NeRFGUI:
                         format="%.5f",
                         default_value = self.opt.dt_gamma,
                         callback = callback_set_dt_gamma,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # max_steps slider
 
@@ -627,18 +693,23 @@ class NeRFGUI:
                         format="%d",
                         default_value = self.opt.max_steps,
                         callback = callback_set_max_steps,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # aabb slider
 
 
                 def callback_set_aabb(sender, app_data, user_data):
+                    pass
                     # user_data is the dimension for aabb (xmin,
     ymin,
     zmin,
     xmax,
     ymax,
-    zmax)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     zmax)
                     self.trainer.model.aabb_infer[user_data] = app_data
 
                     # also change train aabb ? [better not...]
@@ -659,7 +730,9 @@ class NeRFGUI:
                             default_value=-self.opt.bound,
                             callback = callback_set_aabb,
                             user_data = 0,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     dpg.add_slider_float(
                         label="",
                             width = 150,
@@ -669,7 +742,9 @@ class NeRFGUI:
                             default_value = self.opt.bound,
                             callback = callback_set_aabb,
                             user_data = 3,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 with dpg.group(horizontal = True):
                     dpg.add_slider_float(
@@ -681,7 +756,9 @@ class NeRFGUI:
                             default_value=-self.opt.bound,
                             callback = callback_set_aabb,
                             user_data = 1,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     dpg.add_slider_float(
                         label="",
                             width = 150,
@@ -691,7 +768,9 @@ class NeRFGUI:
                             default_value = self.opt.bound,
                             callback = callback_set_aabb,
                             user_data = 4,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 with dpg.group(horizontal = True):
                     dpg.add_slider_float(
@@ -703,7 +782,9 @@ class NeRFGUI:
                             default_value=-self.opt.bound,
                             callback = callback_set_aabb,
                             user_data = 2,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     dpg.add_slider_float(
                         label="",
                             width = 150,
@@ -713,7 +794,9 @@ class NeRFGUI:
                             default_value = self.opt.bound,
                             callback = callback_set_aabb,
                             user_data = 5,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             # debug info
             if self.debug:
@@ -772,16 +855,22 @@ class NeRFGUI:
         with dpg.handler_registry():
             dpg.add_mouse_drag_handler(
                 button = dpg.mvMouseButton_Left, callback = callback_camera_drag_rotate
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             dpg.add_mouse_wheel_handler(callback = callback_camera_wheel_scale)
             dpg.add_mouse_drag_handler(
                 button = dpg.mvMouseButton_Middle, callback = callback_camera_drag_pan
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         dpg.create_viewport(title="RAD - NeRF",
     width = 1080,
     height = 720,
-    resizable = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     resizable = True)
 
         ### global theme
         with dpg.theme() as theme_no_padding:
@@ -789,13 +878,19 @@ class NeRFGUI:
                 # set all padding to 0 to avoid scroll bar
                 dpg.add_theme_style(
                     dpg.mvStyleVar_WindowPadding, 0, 0, category = dpg.mvThemeCat_Core
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 dpg.add_theme_style(
                     dpg.mvStyleVar_FramePadding, 0, 0, category = dpg.mvThemeCat_Core
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 dpg.add_theme_style(
                     dpg.mvStyleVar_CellPadding, 0, 0, category = dpg.mvThemeCat_Core
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         dpg.bind_item_theme("_primary_window", theme_no_padding)
 

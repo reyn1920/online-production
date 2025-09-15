@@ -29,9 +29,11 @@ def gen(prompt: str, temperature=0.8, max_tokens=800):
                 "model": OLLAMA_MODEL,
                 "prompt": prompt,
                 "options": {"temperature": temperature},
-            },
+# BRACKET_SURGEON: disabled
+#             },
             timeout=pick_timeout(120, ci_default=15),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         r.raise_for_status()
         out = []
         for line in r.text.splitlines():

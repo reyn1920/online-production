@@ -4,9 +4,9 @@
 # Author: David Goodger <goodger@python.org>
 # Copyright: This module has been placed in the public domain.
 
-"""
+""""""
 A minimal front end to the Docutils Publisher, producing pseudo-XML.
-"""
+""""""
 
 try:
     import locale
@@ -21,6 +21,7 @@ from docutils.core import publish_cmdline, default_description
 description = (
     "Generates pseudo-XML from standalone reStructuredText "
     "sources (for testing purposes).  " + default_description
-)
+# BRACKET_SURGEON: disabled
+# )
 
 publish_cmdline(description=description)

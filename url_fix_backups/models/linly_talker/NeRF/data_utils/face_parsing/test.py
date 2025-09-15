@@ -24,18 +24,21 @@ def vis_parsing_maps(
     save_im=False,
     save_path="vis_results / parsing_map_on_im.jpg",
     img_size=(512, 512),
-):
+# BRACKET_SURGEON: disabled
+# ):
     im = np.array(im)
     vis_im = im.copy().astype(np.uint8)
     vis_parsing_anno = parsing_anno.copy().astype(np.uint8)
     vis_parsing_anno = cv2.resize(
         vis_parsing_anno, None, fx=stride, fy=stride, interpolation=cv2.INTER_NEAREST
-    )
+# BRACKET_SURGEON: disabled
+#     )
     vis_parsing_anno_color = np.zeros(
         (vis_parsing_anno.shape[0], vis_parsing_anno.shape[1], 3)
     ) + np.array(
         [255, 255, 255]
-    )  # + 255
+# BRACKET_SURGEON: disabled
+#     )  # + 255
 
     num_of_class = np.max(vis_parsing_anno)
     # print(num_of_class)
@@ -74,8 +77,10 @@ def evaluate(respth="./res / test_res", dspth="./data", cp="model_final_diss.pth
         [
             transforms.ToTensor(),
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
-        ]
-    )
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     )
 
     image_paths = os.listdir(dspth)
 
@@ -103,7 +108,8 @@ def evaluate(respth="./res / test_res", dspth="./data", cp="model_final_diss.pth
                     save_im=True,
                     save_path=osp.join(respth, image_path),
                     img_size=ori_size,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
 
 if __name__ == "__main__":
@@ -112,6 +118,7 @@ if __name__ == "__main__":
     parser.add_argument("--imgpath", type=str, default="./imgs/", help="path for input images")
     parser.add_argument(
         "--modelpath", type=str, default="data_utils / face_parsing / 79999_iter.pth"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     args = parser.parse_args()
     evaluate(respth=args.respath, dspth=args.imgpath, cp=args.modelpath)

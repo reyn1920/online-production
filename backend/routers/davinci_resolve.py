@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 DaVinci Resolve Pro Integration Router
+"""""""""
 
 Comprehensive API endpoints for DaVinci Resolve Pro integration including:
 - Voice cloning and synthesis
@@ -10,8 +11,11 @@ Comprehensive API endpoints for DaVinci Resolve Pro integration including:
 - Professional rendering and export
 - Asset management
 
+
+
 Author: TRAE.AI Production System
 Version: 2.0.0
+
 """
 
 import asyncio
@@ -39,7 +43,7 @@ from backend.pipelines.resolve_handoff import (
     get_resolve_path,
     set_resolve_path,
     validate_resolve_installation,
-)
+ )
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/davinci", tags=["DaVinci Resolve Pro"])
@@ -131,24 +135,31 @@ class EffectRequest(BaseModel):
 # System Status Endpoints
 @router.get("/status")
 async def get_davinci_status():
-    """Get comprehensive DaVinci Resolve system status"""
-    try:
-        resolve_validation = validate_resolve_installation()
+    """
+Get comprehensive DaVinci Resolve system status
 
+    
+"""
+    try:
+    """"""
+        resolve_validation = validate_resolve_installation()
+       """"""
+    try:
+    """"""
         status = {
             "resolve_installed": resolve_validation.get("ok", False),
             "resolve_path": get_resolve_path(),
             "api_available": resolve_integration is not None,
             "voice_integration_available": voice_integration is not None,
             "timestamp": datetime.now().isoformat(),
-        }
+         }
 
         if resolve_integration:
             status["color_presets"] = (
                 list(resolve_integration.color_presets.keys())
                 if hasattr(resolve_integration, "color_presets")
                 else []
-            )
+             )
 
         if voice_integration:
             status["available_voices"] = voice_integration.get_available_voices()
@@ -163,10 +174,22 @@ async def get_davinci_status():
 
 @router.get("/validate")
 async def validate_installation():
-    """Validate DaVinci Resolve installation"""
+    """
+Validate DaVinci Resolve installation
+
+    
+"""
+    return validate_resolve_installation()
+    """"""
+    """
+
+
     return validate_resolve_installation()
 
+    
 
+   
+""""""
 @router.get("/path")
 async def get_installation_path():
     """Get DaVinci Resolve installation path"""
@@ -175,10 +198,22 @@ async def get_installation_path():
 
 @router.post("/path")
 async def set_installation_path(path: str):
-    """Set DaVinci Resolve installation path"""
+    """
+Set DaVinci Resolve installation path
+
+    
+"""
+    return set_resolve_path(path)
+    """"""
+    """
+
+
     return set_resolve_path(path)
 
+    
 
+   
+""""""
 # Project Management Endpoints
 @router.post("/projects")
 async def create_project(project_data: ResolveProjectCreate):
@@ -196,13 +231,13 @@ async def create_project(project_data: ResolveProjectCreate):
             "color_space": project_data.color_space,
             "created_at": datetime.now().isoformat(),
             "status": "created",
-        }
+         }
 
         return {
             "success": True,
             "project": project_info,
             "message": f"Project '{project_data.project_name}' created successfully",
-        }
+         }
 
     except Exception as e:
         logger.error(f"Error creating project: {e}")
@@ -211,9 +246,19 @@ async def create_project(project_data: ResolveProjectCreate):
 
 @router.get("/projects")
 async def list_projects():
-    """List all DaVinci Resolve projects"""
+    """
+List all DaVinci Resolve projects
+
     try:
+       
+""""""
+
         # Mock project list - in production this would query actual projects
+       
+
+        
+       
+"""
         projects = [
             {
                 "name": "Demo_Project",
@@ -221,21 +266,28 @@ async def list_projects():
                 "status": "active",
                 "timeline_count": 2,
                 "duration": "00:05:30",
-            },
+             },
             {
                 "name": "Voice_Clone_Project",
                 "created_at": "2024 - 01 - 14T15:45:00",
                 "status": "completed",
                 "timeline_count": 1,
                 "duration": "00:02:15",
-            },
-        ]
+             },
+         ]
+       """
 
+        
+       
+
+        # Mock project list - in production this would query actual projects
+       
+""""""
         return {
             "projects": projects,
             "total": len(projects),
             "timestamp": datetime.now().isoformat(),
-        }
+         }
 
     except Exception as e:
         logger.error(f"Error listing projects: {e}")
@@ -244,9 +296,19 @@ async def list_projects():
 
 @router.get("/projects/{project_name}")
 async def get_project_info(project_name: str):
-    """Get detailed information about a specific project"""
+    """
+Get detailed information about a specific project
+
     try:
+       
+""""""
+
         # Mock project info - in production this would query actual project
+       
+
+        
+       
+"""
         project_info = {
             "name": project_name,
             "description": "AI - generated video project",
@@ -262,24 +324,31 @@ async def get_project_info(project_name: str):
                     "duration": "00:05:30",
                     "clip_count": 8,
                     "track_count": 3,
-                }
-            ],
+                 }
+             ],
             "assets": [
                 {
                     "name": "intro_video.mp4",
                     "type": "video",
                     "duration": "00:00:10",
                     "resolution": [1920, 1080],
-                },
+                 },
                 {
                     "name": "background_music.wav",
                     "type": "audio",
                     "duration": "00:05:30",
                     "sample_rate": 48000,
-                },
-            ],
-        }
+                 },
+             ],
+         }
+       """
 
+        
+       
+
+        # Mock project info - in production this would query actual project
+       
+""""""
         return project_info
 
     except Exception as e:
@@ -307,7 +376,7 @@ async def create_timeline(timeline_data: TimelineCreate):
                 "asset_type": asset_data.asset_type,
                 "track_index": asset_data.track_index,
                 "effects": asset_data.effects or [],
-            }
+             }
             assets.append(asset)
 
         timeline_info = {
@@ -319,13 +388,13 @@ async def create_timeline(timeline_data: TimelineCreate):
             "transitions_count": len(timeline_data.transitions or []),
             "created_at": datetime.now().isoformat(),
             "status": "created",
-        }
+         }
 
         return {
             "success": True,
             "timeline": timeline_info,
             "message": f"Timeline '{timeline_data.timeline_name}' created successfully",
-        }
+         }
 
     except Exception as e:
         logger.error(f"Error creating timeline: {e}")
@@ -353,14 +422,14 @@ async def get_voice_samples():
                     "gender": "neutral",
                     "quality": "high",
                     "available": True,
-                }
-            )
+                 }
+             )
 
         return {
             "samples": sample_info,
             "total": len(sample_info),
             "supported_formats": list(voice_integration.supported_formats.keys()),
-        }
+         }
 
     except Exception as e:
         logger.error(f"Error getting voice samples: {e}")
@@ -381,7 +450,7 @@ async def clone_voice(request: VoiceCloneRequest):
             request.text,
             request.output_format,
             request.project_name,
-        )
+         )
 
         return {
             "success": True,
@@ -391,7 +460,7 @@ async def clone_voice(request: VoiceCloneRequest):
             "file_path": result.get("file_path") if result else None,
             "duration": result.get("duration") if result else None,
             "generated_at": datetime.now().isoformat(),
-        }
+         }
 
     except Exception as e:
         logger.error(f"Error cloning voice: {e}")
@@ -414,7 +483,7 @@ async def batch_clone_voice(request: BatchVoiceRequest):
                 text,
                 request.output_format,
                 request.project_name,
-            )
+             )
 
             results.append(
                 {
@@ -423,8 +492,8 @@ async def batch_clone_voice(request: BatchVoiceRequest):
                     "success": result is not None,
                     "file_path": result.get("file_path") if result else None,
                     "duration": result.get("duration") if result else None,
-                }
-            )
+                 }
+             )
 
         successful = sum(1 for r in results if r["success"])
 
@@ -436,7 +505,7 @@ async def batch_clone_voice(request: BatchVoiceRequest):
             "success_rate": f"{(successful/len(request.texts)*100):.1f}%",
             "results": results,
             "generated_at": datetime.now().isoformat(),
-        }
+         }
 
     except Exception as e:
         logger.error(f"Error batch cloning voice: {e}")
@@ -456,34 +525,34 @@ async def get_color_presets():
                 "name": "Cinematic",
                 "description": "Professional cinematic look with enhanced contrast",
                 "category": "professional",
-            },
+             },
             "warm_natural": {
                 "name": "Warm Natural",
                 "description": "Warm, natural color grading for lifestyle content",
                 "category": "natural",
-            },
+             },
             "cool_modern": {
                 "name": "Cool Modern",
                 "description": "Cool, modern look for tech and corporate content",
                 "category": "modern",
-            },
+             },
             "vintage_film": {
                 "name": "Vintage Film",
                 "description": "Classic film emulation with grain and color shifts",
                 "category": "vintage",
-            },
+             },
             "high_contrast": {
                 "name": "High Contrast",
                 "description": "Bold, high - contrast look for dramatic content",
                 "category": "dramatic",
-            },
-        }
+             },
+         }
 
         return {
             "presets": presets,
             "total": len(presets),
             "categories": list(set(p["category"] for p in presets.values())),
-        }
+         }
 
     except Exception as e:
         logger.error(f"Error getting color presets: {e}")
@@ -506,7 +575,7 @@ async def apply_color_grade(request: ColorGradeRequest):
             "grade_preset": request.grade_preset,
             "applied_at": datetime.now().isoformat(),
             "custom_settings_count": len(request.custom_settings or {}),
-        }
+         }
 
         return result
 
@@ -525,65 +594,65 @@ async def get_available_effects():
                 "name": "Blur",
                 "category": "filter",
                 "description": "Gaussian blur effect",
-            },
+             },
             {
                 "name": "Sharpen",
                 "category": "filter",
                 "description": "Image sharpening",
-            },
+             },
             {
                 "name": "Color Correction",
                 "category": "color",
                 "description": "Basic color correction",
-            },
+             },
             {
                 "name": "Noise Reduction",
                 "category": "cleanup",
                 "description": "Video noise reduction",
-            },
+             },
             {
                 "name": "Stabilization",
                 "category": "motion",
                 "description": "Camera shake stabilization",
-            },
-        ],
+             },
+         ],
         "transitions": [
             {
                 "name": "Cross Dissolve",
                 "category": "dissolve",
                 "description": "Standard cross dissolve",
-            },
+             },
             {
                 "name": "Fade to Black",
                 "category": "fade",
                 "description": "Fade to black transition",
-            },
+             },
             {
                 "name": "Wipe",
                 "category": "wipe",
                 "description": "Directional wipe transition",
-            },
+             },
             {
                 "name": "Zoom",
                 "category": "motion",
                 "description": "Zoom in/out transition",
-            },
-        ],
+             },
+         ],
         "audio_effects": [
             {"name": "EQ", "category": "filter", "description": "Audio equalizer"},
             {
                 "name": "Compressor",
                 "category": "dynamics",
                 "description": "Audio compressor",
-            },
+             },
             {"name": "Reverb", "category": "spatial", "description": "Reverb effect"},
             {
                 "name": "Noise Gate",
                 "category": "cleanup",
                 "description": "Audio noise gate",
-            },
-        ],
-    }
+             },
+         ],
+     }
 
     return effects
 
@@ -603,7 +672,7 @@ async def apply_effect(request: EffectRequest):
             "effect_type": request.effect_type,
             "settings_applied": len(request.effect_settings),
             "applied_at": datetime.now().isoformat(),
-        }
+         }
 
         return result
 
@@ -630,20 +699,20 @@ async def render_project(project_name: str, render_settings: RenderSettings):
                 "resolution": render_settings.resolution,
                 "frame_rate": render_settings.frame_rate,
                 "quality": render_settings.quality,
-            },
+             },
             "status": "queued",
             "progress": 0,
             "started_at": datetime.now().isoformat(),
             "estimated_completion": None,
             "output_path": render_settings.output_path
             or f"output/renders/{project_name}_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.{render_settings.format}",
-        }
+         }
 
         return {
             "success": True,
             "render": render_info,
             "message": f"Render started for project '{project_name}'",
-        }
+         }
 
     except Exception as e:
         logger.error(f"Error starting render: {e}")
@@ -652,9 +721,19 @@ async def render_project(project_name: str, render_settings: RenderSettings):
 
 @router.get("/render/{render_id}/status")
 async def get_render_status(render_id: str):
-    """Get render progress and status"""
+    """
+Get render progress and status
+
     try:
+       
+""""""
+
         # Mock render status - in production this would track actual render progress
+       
+
+        
+       
+"""
         status = {
             "render_id": render_id,
             "status": "completed",  # queued, rendering, completed, failed
@@ -665,8 +744,15 @@ async def get_render_status(render_id: str):
             "estimated_remaining": "00:00:00",
             "output_file_size": "45.2 MB",
             "completed_at": datetime.now().isoformat(),
-        }
+         }
+       """
 
+        
+       
+
+        # Mock render status - in production this would track actual render progress
+       
+""""""
         return status
 
     except Exception as e:
@@ -677,12 +763,29 @@ async def get_render_status(render_id: str):
 # Asset Management Endpoints
 @router.post("/assets/upload")
 async def upload_asset(file: UploadFile = File(...), asset_type: str = Form("video")):
-    """Upload media asset for use in projects"""
+    """
+Upload media asset for use in projects
+
     try:
+       
+""""""
+
         # Create assets directory
+       
+
+        
+       
+"""
         assets_dir = Path("assets/davinci_resolve")
         assets_dir.mkdir(parents=True, exist_ok=True)
+       """
 
+        
+       
+
+        # Create assets directory
+       
+""""""
         # Save uploaded file
         file_path = assets_dir / file.filename
         with open(file_path, "wb") as buffer:
@@ -696,13 +799,13 @@ async def upload_asset(file: UploadFile = File(...), asset_type: str = Form("vid
             "path": str(file_path),
             "uploaded_at": datetime.now().isoformat(),
             "status": "ready",
-        }
+         }
 
         return {
             "success": True,
             "asset": asset_info,
             "message": f"Asset '{file.filename}' uploaded successfully",
-        }
+         }
 
     except Exception as e:
         logger.error(f"Error uploading asset: {e}")
@@ -711,9 +814,17 @@ async def upload_asset(file: UploadFile = File(...), asset_type: str = Form("vid
 
 @router.get("/assets")
 async def list_assets():
-    """List all available assets"""
+    """
+List all available assets
+
+    
+"""
     try:
+    """
         assets_dir = Path("assets/davinci_resolve")
+    """
+    try:
+    """
         assets = []
 
         if assets_dir.exists():
@@ -727,14 +838,14 @@ async def list_assets():
                             "size": stat.st_size,
                             "path": str(file_path),
                             "modified_at": datetime.fromtimestamp(stat.st_mtime).isoformat(),
-                        }
-                    )
+                         }
+                     )
 
         return {
             "assets": assets,
             "total": len(assets),
             "total_size": sum(asset["size"] for asset in assets),
-        }
+         }
 
     except Exception as e:
         logger.error(f"Error listing assets: {e}")
@@ -744,14 +855,19 @@ async def list_assets():
 # Integration Summary Endpoint
 @router.get("/summary")
 async def get_integration_summary():
-    """Get comprehensive summary of DaVinci Resolve integration capabilities"""
+    """
+Get comprehensive summary of DaVinci Resolve integration capabilities
+
+    
+"""
     try:
+    """
         summary = {
             "system_status": {
                 "resolve_installed": validate_resolve_installation().get("ok", False),
                 "api_available": resolve_integration is not None,
                 "voice_integration": voice_integration is not None,
-            },
+             },
             "capabilities": {
                 "project_management": True,
                 "timeline_editing": True,
@@ -760,47 +876,54 @@ async def get_integration_summary():
                 "effects_processing": True,
                 "professional_rendering": True,
                 "asset_management": True,
-            },
+             },
             "supported_formats": {
                 "video": ["mp4", "mov", "avi", "mkv"],
                 "audio": ["wav", "aiff", "mp3", "flac"],
                 "image": ["jpg", "png", "tiff", "exr"],
-            },
+             },
             "voice_features": (
                 {
                     "available_voices": (
                         voice_integration.get_available_voices() if voice_integration else []
-                    ),
+                     ),
                     "supported_formats": (
                         list(voice_integration.supported_formats.keys())
+    """
+
+    try:
+    
+
+   
+""""""
                         if voice_integration
                         else []
-                    ),
+                     ),
                     "batch_processing": True,
                     "real_time_generation": False,
-                }
+                 }
                 if voice_integration
                 else None
-            ),
+             ),
             "color_grading": {
                 "presets_available": 5,
                 "custom_grades": True,
                 "real_time_preview": True,
                 "professional_tools": True,
-            },
+             },
             "rendering": {
                 "formats": ["mp4", "mov", "avi", "mkv"],
                 "codecs": ["H.264", "H.265", "ProRes", "DNxHD"],
                 "resolutions": ["1080p", "4K", "8K"],
                 "frame_rates": ["24fps", "30fps", "60fps", "120fps"],
-            },
+             },
             "integration_info": {
                 "version": "2.0.0",
                 "last_updated": datetime.now().isoformat(),
                 "documentation": "/api/davinci/docs",
                 "support_contact": "support@trae.ai",
-            },
-        }
+             },
+         }
 
         return summary
 

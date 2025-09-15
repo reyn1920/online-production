@@ -1,12 +1,12 @@
 #!/usr / bin / env python3
-"""
+""""""
 Affiliate Dashboard Credentials Viewer
 
 This script provides a secure way to view stored affiliate dashboard credentials
 
 from the stealth automation system. It displays login information for all
 
-affiliate programs you've signed up for.
+affiliate programs you've signed up for.'
 
 Usage:
     python view_affiliate_credentials.py
@@ -15,7 +15,7 @@ Security Note:
     - Passwords are stored encrypted in the database
     - This script requires proper authentication
     - Only displays credentials for authorized users
-"""
+""""""
 
 import getpass
 import hashlib
@@ -42,10 +42,10 @@ class AffiliateCredentialsViewer:
             exit(1)
 
     def authenticate_user(self) -> bool:
-        """
+        """"""
         Simple authentication to prevent unauthorized access
         In production, this would use proper authentication
-        """
+        """"""
         print("\\n🔐 Affiliate Credentials Access")
         print("Please authenticate to view stored credentials\\n")
 
@@ -61,22 +61,23 @@ class AffiliateCredentialsViewer:
         return True
 
     def get_affiliate_dashboards(self) -> List[Dict[str, Any]]:
-        """
+        """"""
         Retrieve all affiliate dashboard credentials from database
-        """
+        """"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
             # Query affiliate dashboards
             cursor.execute(
-                """
+                """"""
                 SELECT id, platform_name, dashboard_url, login_credentials_encrypted,
                     last_scraped, scraping_config, created_at
                 FROM affiliate_dashboards
                 ORDER BY platform_name
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             dashboards = cursor.fetchall()
             conn.close()
@@ -92,7 +93,8 @@ class AffiliateCredentialsViewer:
                     "last_scraped": row[4],
                     "scraping_config": json.loads(row[5]) if row[5] else {},
                     "created_at": row[6],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 dashboard_list.append(dashboard)
 
             return dashboard_list
@@ -105,21 +107,22 @@ class AffiliateCredentialsViewer:
             return []
 
     def get_stealth_profiles(self) -> List[Dict[str, Any]]:
-        """
+        """"""
         Get stealth profiles used for accessing dashboards
-        """
+        """"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 SELECT profile_id, user_agent, viewport_size, timezone,
                     language, platform, last_used, success_rate
                 FROM stealth_profiles
                 ORDER BY success_rate DESC
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             profiles = cursor.fetchall()
             conn.close()
@@ -135,7 +138,8 @@ class AffiliateCredentialsViewer:
                     "platform": row[5],
                     "last_used": row[6],
                     "success_rate": row[7],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 profile_list.append(profile)
 
             return profile_list
@@ -145,10 +149,10 @@ class AffiliateCredentialsViewer:
             return []
 
     def decrypt_credentials(self, encrypted_data: str) -> Dict[str, str]:
-        """
+        """"""
         Decrypt stored credentials (placeholder implementation)
         In production, use proper encryption / decryption
-        """
+        """"""
         try:
             # This is a placeholder - implement actual decryption
             # For now, assume credentials are stored as JSON
@@ -159,23 +163,24 @@ class AffiliateCredentialsViewer:
             return {"username": "[ENCRYPTED]", "password": "[ENCRYPTED]"}
 
     def display_dashboards(self):
-        """
+        """"""
         Display all affiliate dashboards with their credentials
-        """
+        """"""
         dashboards = self.get_affiliate_dashboards()
 
         if not dashboards:
             print("\\n❌ No affiliate dashboards found.")
             print(
                 "Make sure you have signed up for affiliate programs using the automation system."
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return
 
         print(f"\\n📊 Found {len(dashboards)} Affiliate Dashboard(s)\\n")
         print("=" * 80)
 
         for i, dashboard in enumerate(dashboards, 1):
-            print(f"\\n🏢 Dashboard #{i}: {dashboard['platform_name']}")
+            print(f"\\n🏢 Dashboard #{i}: {dashboard['platform_name']}")"
             print("-" * 50)
             print(f"📍 Dashboard URL: {dashboard['dashboard_url']}")
 
@@ -201,9 +206,9 @@ class AffiliateCredentialsViewer:
         print("\\n" + "=" * 80)
 
     def display_access_summary(self):
-        """
+        """"""
         Display summary of access information
-        """
+        """"""
         dashboards = self.get_affiliate_dashboards()
         profiles = self.get_stealth_profiles()
 
@@ -228,9 +233,9 @@ class AffiliateCredentialsViewer:
                 print(f"   {platform}: {count}")
 
     def export_credentials(self, output_file: str = "affiliate_credentials.json"):
-        """
+        """"""
         Export credentials to a JSON file for backup
-        """
+        """"""
         dashboards = self.get_affiliate_dashboards()
 
         if not dashboards:
@@ -242,7 +247,8 @@ class AffiliateCredentialsViewer:
             "export_date": datetime.now().isoformat(),
             "total_dashboards": len(dashboards),
             "dashboards": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for dashboard in dashboards:
             export_item = {
@@ -251,7 +257,8 @@ class AffiliateCredentialsViewer:
                 "created_at": dashboard["created_at"],
                 "last_scraped": dashboard["last_scraped"],
                 "has_credentials": bool(dashboard["login_credentials"]),
-            }
+# BRACKET_SURGEON: disabled
+#             }
             export_data["dashboards"].append(export_item)
 
         try:
@@ -263,9 +270,9 @@ class AffiliateCredentialsViewer:
 
 
 def main():
-    """
+    """"""
     Main function to run the credentials viewer
-    """
+    """"""
     print("🚀 Affiliate Dashboard Credentials Viewer")
     print("==========================================\\n")
 

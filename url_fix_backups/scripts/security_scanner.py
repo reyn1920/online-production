@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Conservative Research System - Security Scanner
 
 This script performs comprehensive security scanning including:
@@ -11,7 +11,7 @@ This script performs comprehensive security scanning including:
 
 Author: Conservative Research System
 Version: 1.0.0
-"""
+""""""
 
 import hashlib
 import json
@@ -31,7 +31,9 @@ logging.basicConfig(
     level = logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[logging.FileHandler("security_scan.log"), logging.StreamHandler()],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -92,80 +94,98 @@ class SecurityScanner:
                 "dist",
                 "build",
                 ".DS_Store",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Secret patterns for detection
         self.secret_patterns = {
             "api_key": {
                 "pattern": r'(?i)(api[_-]?key|apikey)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
                     "severity": SeverityLevel.HIGH,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "secret_key": {
                 "pattern": r'(?i)(secret[_-]?key|secretkey)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
                     "severity": SeverityLevel.CRITICAL,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "password": {
-                "pattern": r'(?i)(password|passwd|pwd)\\s*[=:]\\s*["\\']([^"\\s]{8,})["\\']',
+                "pattern": r'(?i)(password|passwd|pwd)\\s*[=:]\\s*["\\']([^"\\s]{8,})["\\']',"
                     "severity": SeverityLevel.HIGH,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "token": {
                 "pattern": r'(?i)(token|auth[_-]?token)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
                     "severity": SeverityLevel.HIGH,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "private_key": {
                 "pattern": r"-----BEGIN (RSA |EC |DSA )?PRIVATE KEY-----",
                     "severity": SeverityLevel.CRITICAL,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "aws_access_key": {
                 "pattern": r"AKIA[0 - 9A - Z]{16}",
                     "severity": SeverityLevel.CRITICAL,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "github_token": {
                 "pattern": r"ghp_[a - zA - Z0 - 9]{36}",
                     "severity": SeverityLevel.HIGH,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "slack_token": {
                 "pattern": r"xox[baprs]-[0 - 9a - zA - Z]{10,48}",
                     "severity": SeverityLevel.MEDIUM,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "stripe_key": {
                 "pattern": r"sk_live_[0 - 9a - zA - Z]{24}",
                     "severity": SeverityLevel.CRITICAL,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "paypal_key": {
                 "pattern": r'(?i)(paypal[_-]?(client[_-]?)?secret)\\s*[=:]\\s*["\\']?([a - zA - Z0 - 9_\\-]{20,})["\\']?',
                     "severity": SeverityLevel.HIGH,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Insecure code patterns
         self.insecure_patterns = {
             "sql_injection": {
-                "pattern": r'(?i)(execute|query)\\s*\\(\\s*["\\'][^"\\']*(\\+|%|format|f["\\'])',
+                "pattern": r'(?i)(execute|query)\\s*\\(\\s*["\\'][^"\\']*(\\+|%|format|f["\\'])',"
                     "severity": SeverityLevel.HIGH,
                     "description": "Potential SQL injection vulnerability",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "command_injection": {
                 "pattern": r"(?i)(os\\.system|subprocess\\.(call|run|Popen))\\s*\\([^)]*\\+",
                     "severity": SeverityLevel.HIGH,
                     "description": "Potential command injection vulnerability",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "eval_usage": {
                 "pattern": r"\\beval\\s*\\(",
                     "severity": SeverityLevel.MEDIUM,
                     "description": "Use of eval() function can be dangerous",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "debug_mode": {
                 "pattern": r"(?i)debug\\s*=\\s * true",
                     "severity": SeverityLevel.MEDIUM,
                     "description": "Debug mode enabled in production",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "hardcoded_ip": {
                 "pattern": r"\\b(?:[0 - 9]{1,3}\\.){3}[0 - 9]{1,3}\\b",
                     "severity": SeverityLevel.LOW,
                     "description": "Hardcoded IP address found",
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         logger.info(f"🔒 Initializing security scanner for: {self.project_root}")
 
@@ -213,10 +233,11 @@ class SecurityScanner:
         """Check a single line for secret patterns"""
         # Skip comments and obvious examples
         if (
-            line.strip().startswith("#")
+            line.strip().startswith("#")"
             or "example" in line.lower()
             or "placeholder" in line.lower()
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return
 
         for secret_type, config in self.secret_patterns.items():
@@ -228,7 +249,9 @@ class SecurityScanner:
                 # Extract the potential secret
                 secret_value = (
                     match.group(2) if match.lastindex >= 2 else match.group(0)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Skip obvious placeholders
                 if self._is_placeholder(secret_value):
@@ -241,19 +264,23 @@ class SecurityScanner:
                         SecurityIssue(
                             type = IssueType.HARDCODED_SECRET,
                                 severity = severity,
-                                title = f"Hardcoded {
+                                title = f"Hardcoded {"
                                 secret_type.replace(
                                     '_',
-                                        ' ').title()} Detected",
+                                        ' ').title()} Detected","
                                         description = f"Potential {secret_type} found in source code",
                                 file_path = str(file_path.relative_to(self.project_root)),
                                 line_number = line_num,
                                 code_snippet = line.strip(),
-                                recommendation = f"Move {secret_type} to environment variables \
-    or secure vault",
+                                recommendation = f"Move {secret_type} to environment variables \"
+#     or secure vault",
                                 confidence = confidence,
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _is_placeholder(self, value: str) -> bool:
@@ -274,7 +301,9 @@ class SecurityScanner:
                 "replace_me",
                 "todo",
                 "fixme",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         value_lower = value.lower()
         return any(indicator in value_lower for indicator in placeholder_indicators)
@@ -318,7 +347,8 @@ class SecurityScanner:
                     ".tsx",
                     ".php",
                     ".java",
-                    }:
+# BRACKET_SURGEON: disabled
+#                     }:
                 continue
 
             try:
@@ -329,7 +359,9 @@ class SecurityScanner:
                     for line_num, line in enumerate(lines, 1):
                         self._check_line_for_insecure_patterns(
                             file_path, line_num, line
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             except Exception as e:
                 logger.warning(f"Could not scan file {file_path}: {str(e)}")
@@ -337,10 +369,11 @@ class SecurityScanner:
 
     def _check_line_for_insecure_patterns(
         self, file_path: Path, line_num: int, line: str
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Check a single line for insecure patterns"""
         # Skip comments
-        if line.strip().startswith("#") or line.strip().startswith("//"):
+        if line.strip().startswith("#") or line.strip().startswith("//"):"
             return
 
         for pattern_name, config in self.insecure_patterns.items():
@@ -353,21 +386,26 @@ class SecurityScanner:
                     SecurityIssue(
                         type = IssueType.INSECURE_CODE,
                             severity = severity,
-                            title = f"Insecure Code Pattern: {
+                            title = f"Insecure Code Pattern: {"
                             pattern_name.replace(
                                 '_',
-                                    ' ').title()}",
+                                    ' ').title()}","
                                     description = description,
                             file_path = str(file_path.relative_to(self.project_root)),
                             line_number = line_num,
                             code_snippet = line.strip(),
-                            recommendation = f"Review and secure the {
+                            recommendation = f"Review and secure the {"
                             pattern_name.replace(
                                 '_',
-                                    ' ')} implementation",
+# BRACKET_SURGEON: disabled
+#                                     ' ')} implementation","
                                     confidence = 0.8,
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def _scan_file_permissions(self):
@@ -381,7 +419,9 @@ class SecurityScanner:
                 "id_rsa",
                 "id_dsa",
                 "id_ecdsa",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for file_path in self.project_root.rglob("*"):
             if file_path.is_file() and not self._should_exclude_path(file_path):
@@ -395,7 +435,8 @@ class SecurityScanner:
                         file_path.name in sensitive_files
                         or file_path.name.startswith(".env")
                         or "private" in file_path.name.lower()
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
 
                         if octal_perms[2] != "0":  # World readable
                             self.issues.append(
@@ -406,11 +447,16 @@ class SecurityScanner:
                                         description = f"Sensitive file has world - readable permissions: {permissions}",
                                         file_path = str(
                                         file_path.relative_to(self.project_root)
-                                    ),
+# BRACKET_SURGEON: disabled
+#                                     ),
                                         recommendation="Run: chmod 600 <filename> to restrict access",
                                         confidence = 1.0,
-                                        )
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Check for world - writable files
                     if octal_perms[2] in ["2", "3", "6", "7"]:  # World writable
@@ -423,14 +469,20 @@ class SecurityScanner:
                                     file_path = str(file_path.relative_to(self.project_root)),
                                     recommendation="Remove world - write permissions",
                                     confidence = 1.0,
-                                    )
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 except Exception as e:
                     logger.debug(
-                        f"Could not check permissions for {file_path}: {
-                            str(e)}"
-                    )
+                        f"Could not check permissions for {file_path}: {"
+                            str(e)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _scan_configuration_files(self):
@@ -446,7 +498,9 @@ class SecurityScanner:
                 "apache.conf",
                 ".htaccess",
                 "web.config",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for config_file in config_files:
             file_path = self.project_root / config_file
@@ -491,8 +545,12 @@ class SecurityScanner:
                                     file_path = str(file_path.relative_to(self.project_root)),
                                     recommendation="Review script for security implications",
                                     confidence = 0.8,
-                                    )
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         except json.JSONDecodeError:
             pass
@@ -517,8 +575,12 @@ class SecurityScanner:
                             line_number = line_num,
                             recommendation="Use a non - root user for better security",
                             confidence = 1.0,
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def _scan_dependencies(self):
@@ -546,7 +608,9 @@ class SecurityScanner:
                     text = True,
                     timeout = 30,
                     cwd = self.project_root,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if result.returncode == 0:
                 packages = json.loads(result.stdout)
@@ -556,16 +620,20 @@ class SecurityScanner:
                     "django": {
                         "version": "3.0.0",
                             "issue": "Known security vulnerabilities in older versions",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "flask": {
                         "version": "1.0.0",
                             "issue": "Security issues in older versions",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "requests": {
                         "version": "2.20.0",
                             "issue": "SSL verification issues in older versions",
-                            },
-                        }
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         }
 
                 for package in packages:
                     package_name = package["name"].lower()
@@ -578,8 +646,12 @@ class SecurityScanner:
                                     description = vulnerable_packages[package_name]["issue"],
                                     recommendation = f"Update {package_name} to the latest version",
                                     confidence = 0.7,
-                                    )
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         except Exception as e:
             logger.debug(f"Could not scan Python dependencies: {str(e)}")
@@ -594,7 +666,9 @@ class SecurityScanner:
                     text = True,
                     timeout = 60,
                     cwd = self.project_root,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if result.returncode != 0 and result.stdout:
                 try:
@@ -607,12 +681,15 @@ class SecurityScanner:
                                 "high": SeverityLevel.HIGH,
                                 "moderate": SeverityLevel.MEDIUM,
                                 "low": SeverityLevel.LOW,
-                                }
+# BRACKET_SURGEON: disabled
+#                                 }
 
                         severity = severity_map.get(
                             vuln_data.get("severity", "medium").lower(),
                                 SeverityLevel.MEDIUM,
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                         self.issues.append(
                             SecurityIssue(
@@ -621,16 +698,22 @@ class SecurityScanner:
                                     title = f"Vulnerable Dependency: {vuln_name}",
                                     description = vuln_data.get(
                                     "title", "Known vulnerability"
-                                ),
+# BRACKET_SURGEON: disabled
+#                                 ),
                                     recommendation="Run 'npm audit fix' to resolve vulnerabilities",
                                     cve_id=(
                                     vuln_data.get("cve", [None])[0]
                                     if vuln_data.get("cve")
                                     else None
-                                ),
+# BRACKET_SURGEON: disabled
+#                                 ),
                                     confidence = 1.0,
-                                    )
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 except json.JSONDecodeError:
                     pass
@@ -645,10 +728,12 @@ class SecurityScanner:
 
         # Look for common endpoint patterns in source files
         endpoint_patterns = [
-            r'@app\\.route\\(["\\']([^"\\']*)["\\'\\)]',  # Flask routes
-            r'app\\.(get|post|put|delete)\\(["\\']([^"\\']*)["\\'\\)]',  # Express routes
-            r'router\\.(get|post|put|delete)\\(["\\']([^"\\']*)["\\'\\)]',  # Router patterns
-        ]
+            r'@app\\.route\\(["\\']([^"\\']*)["\\'\\)]',  # Flask routes"
+            r'app\\.(get|post|put|delete)\\(["\\']([^"\\']*)["\\'\\)]',  # Express routes"
+            r'router\\.(get|post|put|delete)\\(["\\']([^"\\']*)["\\'\\)]',  # Router patterns"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for file_path in self._get_source_files():
             if file_path.suffix in {".py", ".js", ".ts"}:
@@ -663,7 +748,9 @@ class SecurityScanner:
                                 match.group(2)
                                 if match.lastindex >= 2
                                 else match.group(1)
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                             # Check for potentially sensitive endpoints
                             if any(
@@ -674,8 +761,11 @@ class SecurityScanner:
                                         "test",
                                         "internal",
                                         "private",
-                                        ]
-                            ):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         ]
+# BRACKET_SURGEON: disabled
+#                             ):
 
                                 line_num = content[: match.start()].count("\\n") + 1
 
@@ -687,13 +777,18 @@ class SecurityScanner:
                                             description = f"Endpoint '{endpoint}' may expose sensitive functionality",
                                             file_path = str(
                                             file_path.relative_to(self.project_root)
-                                        ),
+# BRACKET_SURGEON: disabled
+#                                         ),
                                             line_number = line_num,
-                                            recommendation="Ensure proper authentication \
-    and authorization",
+                                            recommendation="Ensure proper authentication \"
+#     and authorization",
                                             confidence = 0.6,
-                                            )
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                 except Exception as e:
                     logger.debug(f"Could not scan endpoints in {file_path}: {str(e)}")
@@ -708,7 +803,8 @@ class SecurityScanner:
                 file_path.is_file()
                 and not self._should_exclude_path(file_path)
                 and self._is_source_file(file_path)
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 source_files.append(file_path)
 
         return source_files
@@ -767,7 +863,8 @@ class SecurityScanner:
                 ".md",
                 ".txt",
                 ".env",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return file_path.suffix.lower() in source_extensions
 
@@ -789,7 +886,9 @@ class SecurityScanner:
             + severity_counts["medium"] * 4
             + severity_counts["low"] * 2
             + severity_counts["info"] * 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Determine overall security status
         if severity_counts["critical"] > 0:
@@ -811,26 +910,34 @@ class SecurityScanner:
                     "total_issues": len(self.issues),
                     "severity_breakdown": severity_counts,
                     "type_breakdown": type_counts,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "issues": [
                 {
                     **asdict(issue),
                         "severity": issue.severity.value,
                         "type": issue.type.value,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for issue in self.issues
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
                 "recommendations": self._generate_recommendations(),
                 "scan_metadata": {
                 "project_root": str(self.project_root),
                     "scanner_version": "1.0.0",
                     "scan_timestamp": str(Path().cwd()),
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         logger.info(
             f"🔒 Security scan completed: {overall_status} (Risk Score: {risk_score})"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return report
 
 
@@ -846,39 +953,53 @@ class SecurityScanner:
         if type_counts.get(IssueType.HARDCODED_SECRET, 0) > 0:
             recommendations.append(
                 "🔑 Move all hardcoded secrets to environment variables or secure vaults"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if type_counts.get(IssueType.WEAK_PERMISSION, 0) > 0:
             recommendations.append(
                 "🔒 Fix file permissions: chmod 600 for sensitive files, remove world - write access"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if type_counts.get(IssueType.VULNERABLE_DEPENDENCY, 0) > 0:
             recommendations.append(
-                "📦 Update vulnerable dependencies: run 'npm audit fix' \
-    and 'pip - audit --fix'"
-            )
+                "📦 Update vulnerable dependencies: run 'npm audit fix' \"
+#     and 'pip - audit --fix'"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if type_counts.get(IssueType.INSECURE_CODE, 0) > 0:
             recommendations.append(
                 "💻 Review and fix insecure code patterns: avoid eval(), sanitize inputs"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if type_counts.get(IssueType.CONFIGURATION_ISSUE, 0) > 0:
             recommendations.append(
                 "⚙️ Review configuration files for security best practices"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if type_counts.get(IssueType.EXPOSED_ENDPOINT, 0) > 0:
             recommendations.append(
-                "🌐 Secure exposed endpoints with proper authentication \
-    and authorization"
-            )
+                "🌐 Secure exposed endpoints with proper authentication \"
+#     and authorization"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if not recommendations:
             recommendations.append(
                 "✅ No critical security issues found. Continue following security best practices."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return recommendations
 
@@ -889,17 +1010,23 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="Conservative Research System - Security Scanner"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--project - root", default=".", help="Project root directory")
     parser.add_argument(
         "--output", choices=["json", "text"], default="text", help="Output format"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--severity",
             choices=["critical", "high", "medium", "low", "info"],
             default="medium",
             help="Minimum severity level to report",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     parser.add_argument("--save - report", help="Save report to file")
 
@@ -919,7 +1046,9 @@ if __name__ == "__main__":
         issue
         for issue in report["issues"]
         if severity_order.index(issue["severity"]) >= min_severity_index
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
 
     report["issues"] = filtered_issues
     report["scan_summary"]["filtered_issues"] = len(filtered_issues)
@@ -949,7 +1078,8 @@ if __name__ == "__main__":
                         "medium": "🟡",
                         "low": "🟢",
                         "info": "ℹ️",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 print(f"  {emoji.get(severity, '•')} {severity.title()}: {count}")
 
         if filtered_issues:
@@ -961,14 +1091,17 @@ if __name__ == "__main__":
                         "medium": "🟡",
                         "low": "🟢",
                         "info": "ℹ️",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 print(
-                    f"\\n{i}. {
+                    f"\\n{i}. {"
                         severity_emoji.get(
                             issue['severity'],
                                 '•')} {
-                                issue['title']}"
-                )
+                                issue['title']}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 print(f"   Severity: {issue['severity'].title()}")
                 print(f"   Description: {issue['description']}")
 

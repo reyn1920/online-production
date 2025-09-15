@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 Production Content Validation System
 Implements comprehensive input validation and sanitization for go - live security
-"""
+
+""""""
+
 
 import hashlib
 import html
@@ -19,24 +24,42 @@ from pydantic import BaseModel
 
 
 class ContentValidationError(Exception):
-    """Custom exception for content validation failures"""
+    
+Custom exception for content validation failures
+""""""
+
+
+    
+
+   
 
     pass
-
+   
+""""""
 
 class ValidationResult(BaseModel):
-    """Result of content validation"""
+    
+Result of content validation
+"""
 
     is_valid: bool
     sanitized_content: Optional[str] = None
     errors: List[str] = []
     warnings: List[str] = []
     risk_score: int = 0  # 0 - 100, higher is more risky
-    timestamp: datetime = datetime.utcnow()
+   """
 
+    
+   
+
+    timestamp: datetime = datetime.utcnow()
+   
+""""""
 
 class ProductionContentValidator:
-    """Comprehensive content validation for production environment"""
+    
+Comprehensive content validation for production environment
+"""
 
     def __init__(self):
         # Allowed HTML tags and attributes for rich content
@@ -60,13 +83,13 @@ class ProductionContentValidator:
             "pre",
             "a",
             "img",
-        ]
+         ]
 
         self.allowed_attributes = {
             "a": ["href", "title"],
             "img": ["src", "alt", "title", "width", "height"],
             "*": ["class"],
-        }
+         }
 
         # CSS sanitizer for safe styling
         self.css_sanitizer = CSSSanitizer(
@@ -79,8 +102,8 @@ class ProductionContentValidator:
                 "margin",
                 "padding",
                 "border",
-            ]
-        )
+             ]
+         )
 
         # Dangerous patterns to detect
         self.dangerous_patterns = [
@@ -92,14 +115,14 @@ class ProductionContentValidator:
             r"<iframe[^>]*>.*?</iframe>",  # Iframe tags
             r"<object[^>]*>.*?</object>",  # Object tags
             r"<embed[^>]*>.*?</embed>",  # Embed tags
-        ]
+         ]
 
         # SQL injection patterns
         self.sql_patterns = [
-            r"('|(\\-\\-)|(;)|(\\||\\|)|(\\*|\\*))",
+            r"('|(\\-\\-)|(;)|(\\||\\|)|(\\*|\\*))",'
             r"(union|select|insert|delete|update|drop|create|alter|exec|execute)",
             r"(script|javascript|vbscript|onload|onerror|onclick)",
-        ]
+         ]
 
         # Maximum content lengths
         self.max_lengths = {
@@ -110,12 +133,30 @@ class ProductionContentValidator:
             "username": 50,
             "email": 254,
             "url": 2048,
-        }
+         }
 
     def validate_text_input(self, content: str, content_type: str = "general") -> ValidationResult:
-        """Validate and sanitize text input"""
-        result = ValidationResult(is_valid=True)
+        """
+Validate and sanitize text input
 
+       
+""""""
+
+        result = ValidationResult(is_valid=True)
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        result = ValidationResult(is_valid=True)
+       
+""""""
         if not content or not isinstance(content, str):
             result.is_valid = False
             result.errors.append("Content is empty or not a string")
@@ -169,9 +210,27 @@ class ProductionContentValidator:
         return result
 
     def validate_html_content(self, content: str) -> ValidationResult:
-        """Validate and sanitize HTML content"""
-        result = ValidationResult(is_valid=True)
+        """
+Validate and sanitize HTML content
 
+       
+""""""
+
+        result = ValidationResult(is_valid=True)
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        result = ValidationResult(is_valid=True)
+       
+""""""
         if not content or not isinstance(content, str):
             result.is_valid = False
             result.errors.append("HTML content is empty or not a string")
@@ -185,7 +244,7 @@ class ProductionContentValidator:
                 attributes=self.allowed_attributes,
                 css_sanitizer=self.css_sanitizer,
                 strip=True,
-            )
+             )
 
             # Check if content was modified (indicates potentially dangerous content)
             if sanitized != content:
@@ -209,10 +268,27 @@ class ProductionContentValidator:
         return result
 
     def validate_json_input(self, content: Union[str, dict]) -> ValidationResult:
-        """Validate JSON input"""
-        result = ValidationResult(is_valid=True)
+        """
+Validate JSON input
 
+       
+""""""
+
+        result = ValidationResult(is_valid=True)
+       
+
+        
+       
+"""
         try:
+       """
+
+        
+       
+
+        result = ValidationResult(is_valid=True)
+       
+""""""
             if isinstance(content, str):
                 parsed_json = json.loads(content)
             else:
@@ -262,11 +338,28 @@ class ProductionContentValidator:
 
     def validate_file_upload(
         self, filename: str, content_type: str, file_size: int
-    ) -> ValidationResult:
-        """Validate file upload parameters"""
-        result = ValidationResult(is_valid=True)
+#     ) -> ValidationResult:
+        """
+Validate file upload parameters
 
+       
+""""""
+
+        result = ValidationResult(is_valid=True)
+       
+
+        
+       
+"""
         # Allowed file types
+       """
+
+        
+       
+
+        result = ValidationResult(is_valid=True)
+       
+""""""
         allowed_types = {
             "image/jpeg",
             "image/png",
@@ -276,7 +369,7 @@ class ProductionContentValidator:
             "text/csv",
             "application/pdf",
             "application/json",
-        }
+         }
 
         # Dangerous file extensions
         dangerous_extensions = {
@@ -292,7 +385,7 @@ class ProductionContentValidator:
             ".asp",
             ".aspx",
             ".jsp",
-        }
+         }
 
         # Check file extension
         file_ext = "." + filename.split(".")[-1].lower() if "." in filename else ""
@@ -327,10 +420,27 @@ class ProductionContentValidator:
     def validate_batch_content(
         self, content_items: List[Dict[str, Any]]
     ) -> Dict[str, ValidationResult]:
-        """Validate multiple content items in batch"""
-        results = {}
+        """
+Validate multiple content items in batch
 
+       
+""""""
+
+        results = {}
+       
+
+        
+       
+"""
         for i, item in enumerate(content_items):
+       """
+
+        
+       
+
+        results = {}
+       
+""""""
             item_id = item.get("id", f"item_{i}")
             content_type = item.get("type", "general")
             content = item.get("content", "")
@@ -352,20 +462,64 @@ content_validator = ProductionContentValidator()
 
 
 def validate_user_input(content: str, content_type: str = "general") -> ValidationResult:
-    """Quick validation for user input"""
+    """
+Quick validation for user input
+
+    
+"""
+    return content_validator.validate_text_input(content, content_type)
+    """"""
+    """
+
+
     return content_validator.validate_text_input(content, content_type)
 
+    
+
+   
+""""""
 
 def validate_html(content: str) -> ValidationResult:
-    """Quick HTML validation"""
+    
+Quick HTML validation
+""""""
+
+    return content_validator.validate_html_content(content)
+    
+
+   
+""""""
+
+    
+
+
     return content_validator.validate_html_content(content)
 
+    
+""""""
+
+    
+   
 
 def validate_json(content: Union[str, dict]) -> ValidationResult:
-    """Quick JSON validation"""
+    
+"""Quick JSON validation"""
+
+    
+
+    return content_validator.validate_json_input(content)
+    
+""""""
+
+    
+   
+
+    
+"""
+
     return content_validator.validate_json_input(content)
 
-
+    """"""
 def is_content_safe(content: str, content_type: str = "general") -> bool:
     """Quick safety check - returns True if content is safe"""
     result = validate_user_input(content, content_type)

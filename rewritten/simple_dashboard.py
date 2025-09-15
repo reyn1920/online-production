@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Simple Dashboard - Working Version
 
 A simplified version of the original dashboard that actually works.
-"""
+""""""
 
 import logging
 import time
@@ -15,7 +15,8 @@ from waitress import serve
 # Setup logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -35,7 +36,7 @@ class SimpleDashboard:
         @self.app.route("/")
         def index():
             """Main dashboard page"""
-            html = """
+            html = """"""
             <!DOCTYPE html>
             <html>
             <head>
@@ -58,13 +59,13 @@ class SimpleDashboard:
             <body>
                 <div class="container">
                     <h1>🚀 TRAE.AI Dashboard</h1>
-                    
+
                     <div class="status">
                         <h2>✅ System Status: OPERATIONAL</h2>
                         <p>Original TRAE.AI system restored and running successfully!</p>
                         <p>Time: {{ current_time }}</p>
                     </div>
-                    
+
                     <div class="metrics">
                         <div class="metric">
                             <h3>Active Agents</h3>
@@ -83,7 +84,7 @@ class SimpleDashboard:
                             <div class="value">99.9%</div>
                         </div>
                     </div>
-                    
+
                     <div class="actions">
                         <h3>Quick Actions</h3>
                         <button class="btn" onclick="triggerWorkflow('video')">Create Video</button>
@@ -91,7 +92,7 @@ class SimpleDashboard:
                         <button class="btn" onclick="triggerWorkflow('marketing')">Marketing Campaign</button>
                         <button class="btn" onclick="triggerWorkflow('audit')">Content Audit</button>
                     </div>
-                    
+
                     <div class="logs">
                         <h3>Recent Activity</h3>
                         <div id="activity-log">
@@ -101,7 +102,7 @@ class SimpleDashboard:
                         </div>
                     </div>
                 </div>
-                
+
                 <script>
                     function triggerWorkflow(type) {
                         fetch('/api/workflows/' + type, { method: 'POST' })
@@ -109,21 +110,25 @@ class SimpleDashboard:
                             .then(data => {
                                 alert('Workflow triggered: ' + type);
                                 location.reload();
-                            })
+# BRACKET_SURGEON: disabled
+#                             })
                             .catch(error => {
                                 alert('Error: ' + error);
-                            });
-                    }
-                    
+# BRACKET_SURGEON: disabled
+#                             });
+# BRACKET_SURGEON: disabled
+#                     }
+
                     // Auto-refresh every 30 seconds
                     setTimeout(() => location.reload(), 30000);
                 </script>
             </body>
             </html>
-            """
+            """"""
             return render_template_string(
                 html, current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api/health")
         def health():
@@ -134,8 +139,10 @@ class SimpleDashboard:
                     "timestamp": datetime.now(timezone.utc).isoformat(),
                     "version": "1.0.0",
                     "system": "TRAE.AI Original",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api/stats")
         def stats():
@@ -147,8 +154,10 @@ class SimpleDashboard:
                     "revenue": {"total": 15432.50, "today": 234.75},
                     "uptime": "99.9%",
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api/workflows/<workflow_type>", methods=["POST"])
         def trigger_workflow(workflow_type):
@@ -161,8 +170,10 @@ class SimpleDashboard:
                     "task_id": f"task_{int(time.time())}",
                     "status": "initiated",
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
     def run(self):
         """Run the dashboard server"""

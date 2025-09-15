@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Watchdog service monitor with debounce logic and restart policy support.
 Rule - 1 compliant monitoring system for the runtime environment.
-"""
+""""""
 
 import logging
 import os
@@ -18,7 +18,9 @@ import yaml
 # Configure logging
 logging.basicConfig(
     level = logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger("watchdog")
 
 # Debounce tracking
@@ -60,7 +62,9 @@ def is_running(service_name: str) -> bool:
                 ["pgrep", "-f", "trae_ai.monitoring_system"],
                     capture_output = True,
                     text = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             return result.returncode == 0
         return False
     except Exception as e:
@@ -79,7 +83,9 @@ def schedule_restart(service_name: str):
                     [sys.executable, launcher_path],
                         stdout = subprocess.DEVNULL,
                         stderr = subprocess.DEVNULL,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 logger.info(f"Started {service_name} via launcher")
             else:
                 # Fallback to direct execution
@@ -87,7 +93,9 @@ def schedule_restart(service_name: str):
                     [sys.executable, "-m", "trae_ai.monitoring_system"],
                         stdout = subprocess.DEVNULL,
                         stderr = subprocess.DEVNULL,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 logger.info(f"Started {service_name} directly")
     except Exception as e:
         logger.error(f"Failed to restart {service_name}: {e}")
@@ -110,20 +118,25 @@ def monitor_services():
                 if (
                     svc.get("critical", False)
                     or svc.get("restart_policy", {}).get("mode") == "always"
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     schedule_restart("monitoring_system")
                     logger.info(
                         "🔁 Restart scheduled: monitoring_system (policy = always)"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Apply backoff if configured
                     backoff = svc.get("restart_policy", {}).get("backoff_seconds", 2)
                     time.sleep(backoff)
                 else:
                     logger.info(
-                        "ℹ️ Service monitoring_system marked non - critical,
-    restart skipped (config)."
-                    )
+                        "ℹ️ Service monitoring_system marked non - critical,"
+    restart skipped (config).""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Sleep before next check
             time.sleep(5)

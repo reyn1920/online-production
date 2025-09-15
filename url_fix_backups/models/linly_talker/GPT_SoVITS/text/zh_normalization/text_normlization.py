@@ -24,7 +24,8 @@ from .chronology import (
     replace_date,
     replace_date2,
     replace_time,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from .constants import F2H_ASCII_LETTERS, F2H_DIGITS, F2H_SPACE
 from .num import (
@@ -43,7 +44,8 @@ from .num import (
     replace_percentage,
     replace_positive_quantifier,
     replace_range,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from .phonecode import (
     RE_MOBILE_PHONE,
@@ -51,7 +53,8 @@ from .phonecode import (
     RE_TELEPHONE,
     replace_mobile,
     replace_phone,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from .quantifier import RE_TEMPERATURE, replace_measure, replace_temperature
 
@@ -61,17 +64,17 @@ class TextNormalizer:
         self.SENTENCE_SPLITOR = re.compile(r"([：、，；。？！,;?!][”’]?)")
 
     def _split(self, text: str, lang="zh") -> List[str]:
-        """Split long text into sentences with sentence - splitting punctuations.
+        """Split long text into sentences with sentence - splitting punctuations."""
         Args:
             text (str): The input text.
         Returns:
             List[str]: Sentences.
-        """
+        """"""
         # Only for pure Chinese here
         if lang == "zh":
             text = text.replace(" ", "")
             # 过滤掉特殊字符
-            text = re.sub(r"[——《》【】<=>{}()（）#&@“”^_|…\\\\]", "", text)
+            text = re.sub(r"[——《》【】<=>{}()（）#&@“”^_|…\\\\]", "", text)"
         text = self.SENTENCE_SPLITOR.sub(r"\\1\\n", text)
         text = text.strip()
         sentences = [sentence.strip() for sentence in re.split(r"\\n+", text)]
@@ -116,7 +119,7 @@ class TextNormalizer:
         sentence = sentence.replace("ψ", "普赛").replace("Ψ", "普赛")
         sentence = sentence.replace("ω", "欧米伽").replace("Ω", "欧米伽")
         # re filter special characters, have one more character "-" than line 68
-        sentence = re.sub(r"[-——《》【】<=>{}()（）#&@“”^_|…\\\\]", "", sentence)
+        sentence = re.sub(r"[-——《》【】<=>{}()（）#&@“”^_|…\\\\]", "", sentence)"
         return sentence
 
     def normalize_sentence(self, sentence: str) -> str:

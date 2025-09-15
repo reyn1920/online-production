@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 Test Avatar Generation Functionality
 
 This script tests the avatar generation system to verify that models are working properly.
-"""
+""""""
 
 import asyncio
 import os
@@ -65,7 +65,9 @@ async def test_avatar_generation():
                 engine.get_engine_info()
                 if hasattr(engine, "get_engine_info")
                 else "No info method"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(f"   Engine info: {info}")
         except Exception as e:
             print(f"   ⚠️ Could not get engine info: {e}")
@@ -79,22 +81,27 @@ async def test_avatar_generation():
             "speed": 1.0,
             "pitch": 1.0,
             "volume": 1.0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
     video_settings = {
         "avatar_style": "professional",
             "duration": 5,
             "resolution": "720p",
             "fps": 25,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     try:
         result = await generate_avatar(test_text, voice_settings, video_settings)
         print(f"✅ Avatar generation completed successfully!")
         print(f"📊 Result type: {type(result)}")
         print(
-            f"📊 Result keys: {result.keys() if isinstance(result,
-    dict) else 'Not a dict'}"
-        )
+            f"📊 Result keys: {result.keys() if isinstance(result,"
+# BRACKET_SURGEON: disabled
+#     dict) else 'Not a dict'}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if isinstance(result, dict):
             if "video_url" in result:
@@ -128,7 +135,9 @@ def main():
     if models_path.exists():
         checkpoint_files = list(models_path.glob("*.pth")) + list(
             models_path.glob("*.safetensors")
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(f"📁 Found {len(checkpoint_files)} checkpoint files in {models_path}")
         for file in checkpoint_files[:5]:  # Show first 5 files
             print(f"   - {file.name}")

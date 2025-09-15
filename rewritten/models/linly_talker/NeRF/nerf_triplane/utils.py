@@ -49,11 +49,16 @@ def get_audio_features(features, att_mode, index):
                 [
                     torch.zeros(
                         pad_left, *auds.shape[1:], device = auds.device, dtype = auds.dtype
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         auds,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     dim = 0,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         return auds
     elif att_mode == 2:
         left = index - 4
@@ -72,7 +77,9 @@ def get_audio_features(features, att_mode, index):
         if pad_right > 0:
             auds = torch.cat(
                 [auds, torch.zeros_like(auds[:pad_right])], dim = 0
-            )  # [8, 16]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [8, 16]
         return auds
     else:
         raise NotImplementedError(f"wrong att_mode: {att_mode}")
@@ -94,14 +101,15 @@ def srgb_to_linear(x):
 
 def _angle_from_tan(
     axis: str, other_axis: str, data, horizontal: bool, tait_bryan: bool
-) -> torch.Tensor:
-    """
+# BRACKET_SURGEON: disabled
+# ) -> torch.Tensor:
+    """"""
     Extract the first or third Euler angle from the two members of
     the matrix which are positive constant times its sine and cosine.
 
     Args:
-        axis: Axis label "X" or "Y or "Z" for the angle we are finding.
-        other_axis: Axis label "X" or "Y or "Z" for the middle axis in the
+        axis: Axis label "X" or "Y or "Z" for the angle we are finding."
+        other_axis: Axis label "X" or "Y or "Z" for the middle axis in the"
             convention.
         data: Rotation matrices as tensor of shape (..., 3, 3).
         horizontal: Whether we are looking for the angle for the third axis,
@@ -112,7 +120,7 @@ def _angle_from_tan(
     Returns:
         Euler Angles in radians for each matrix in data as a tensor
             of shape (...).
-    """
+    """"""
 
     i1, i2 = {"X": (2, 1), "Y": (0, 2), "Z": (1, 0)}[axis]
     if horizontal:
@@ -137,8 +145,9 @@ def _index_from_letter(letter: str) -> int:
 
 def matrix_to_euler_angles(
     matrix: torch.Tensor, convention: str = "XYZ"
-) -> torch.Tensor:
-    """
+# BRACKET_SURGEON: disabled
+# ) -> torch.Tensor:
+    """"""
     Convert rotations given as rotation matrices to Euler angles in radians.
 
     Args:
@@ -147,7 +156,7 @@ def matrix_to_euler_angles(
 
     Returns:
         Euler angles in radians as tensor of shape (..., 3).
-    """
+    """"""
     # if len(convention) != 3:
     #     raise ValueError("Convention must have 3 letters.")
     # if convention[1] in (convention[0], convention[2]):
@@ -163,34 +172,40 @@ def matrix_to_euler_angles(
     if tait_bryan:
         central_angle = torch.asin(
             matrix[..., i0, i2] * (-1.0 if i0 - i2 in [-1, 2] else 1.0)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     else:
         central_angle = torch.acos(matrix[..., i0, i0])
 
     o = (
         _angle_from_tan(
             convention[0], convention[1], matrix[..., i2], False, tait_bryan
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
             central_angle,
             _angle_from_tan(
             convention[2], convention[1], matrix[..., i0, :], True, tait_bryan
-        ),
-            )
+# BRACKET_SURGEON: disabled
+#         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     return torch.stack(o, -1)
 
 @torch.cuda.amp.autocast(enabled = False)
 
 
 def _axis_angle_rotation(axis: str, angle: torch.Tensor) -> torch.Tensor:
-    """
+    """"""
     Return the rotation matrices for one of the rotations about an axis
     of which Euler angles describe, for each value of the angle given.
     Args:
-        axis: Axis label "X" or "Y or "Z".
+        axis: Axis label "X" or "Y or "Z"."
         angle: any shape tensor of Euler angles in radians
     Returns:
         Rotation matrices as tensor of shape (..., 3, 3).
-    """
+    """"""
 
     cos = torch.cos(angle)
     sin = torch.sin(angle)
@@ -213,8 +228,9 @@ def _axis_angle_rotation(axis: str, angle: torch.Tensor) -> torch.Tensor:
 
 def euler_angles_to_matrix(
     euler_angles: torch.Tensor, convention: str = "XYZ"
-) -> torch.Tensor:
-    """
+# BRACKET_SURGEON: disabled
+# ) -> torch.Tensor:
+    """"""
     Convert rotations given as Euler angles in radians to rotation matrices.
     Args:
         euler_angles: Euler angles in radians as tensor of shape (..., 3).
@@ -222,7 +238,7 @@ def euler_angles_to_matrix(
             {"X", "Y", and "Z"}.
     Returns:
         Rotation matrices as tensor of shape (..., 3, 3).
-    """
+    """"""
 
     # print(euler_angles, euler_angles.dtype)
 
@@ -238,7 +254,9 @@ def euler_angles_to_matrix(
     matrices = [
         _axis_angle_rotation(c, e)
         for c, e in zip(convention, torch.unbind(euler_angles, -1))
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
 
     return torch.matmul(torch.matmul(matrices[0], matrices[1]), matrices[2])
 
@@ -262,14 +280,16 @@ def get_bg_coords(H, W, device):
     xs, ys = custom_meshgrid(X, Y)
     bg_coords = torch.cat([xs.reshape(-1, 1), ys.reshape(-1, 1)], dim=-1).unsqueeze(
         0
-    )  # [1, H * W, 2], in [-1, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )  # [1, H * W, 2], in [-1, 1]
     return bg_coords
 
 @torch.cuda.amp.autocast(enabled = False)
 
 
 def get_rays(poses, intrinsics, H, W, N=-1, patch_size = 1, rect = None):
-    """get rays
+    """get rays"""
     Args:
         poses: [B, 4, 4], cam2world
         intrinsics: [4]
@@ -277,7 +297,7 @@ def get_rays(poses, intrinsics, H, W, N=-1, patch_size = 1, rect = None):
     Returns:
         rays_o, rays_d: [B, N, 3]
         inds: [B, N]
-    """
+    """"""
 
     device = poses.device
     B = poses.shape[0]
@@ -290,7 +310,8 @@ def get_rays(poses, intrinsics, H, W, N=-1, patch_size = 1, rect = None):
     i, j = custom_meshgrid(
         torch.linspace(0, W - 1, W, device = device),
             torch.linspace(0, H - 1, H, device = device),
-            )  # float
+# BRACKET_SURGEON: disabled
+#             )  # float
     i = i.t().reshape([1, H * W]).expand([B, H * W]) + 0.5
     j = j.t().reshape([1, H * W]).expand([B, H * W]) + 0.5
 
@@ -312,7 +333,9 @@ def get_rays(poses, intrinsics, H, W, N=-1, patch_size = 1, rect = None):
             pi, pj = custom_meshgrid(
                 torch.arange(patch_size, device = device),
                     torch.arange(patch_size, device = device),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             offsets = torch.stack([pi.reshape(-1), pj.reshape(-1)], dim=-1)  # [p^2, 2]
 
             inds = inds.unsqueeze(1) + offsets.unsqueeze(0)  # [np, p^2, 2]
@@ -391,7 +414,9 @@ def torch_vis_2d(x, renormalize = False):
     if renormalize:
         x = (x - x.min(axis = 0, keepdims = True))/(
             x.max(axis = 0, keepdims = True) - x.min(axis = 0, keepdims = True) + 1e-8
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     plt.imshow(x)
     plt.show()
@@ -412,19 +437,25 @@ def extract_fields(bound_min, bound_max, resolution, query_func, S = 128):
                     pts = torch.cat(
                         [xx.reshape(-1, 1), yy.reshape(-1, 1), zz.reshape(-1, 1)],
                             dim=-1,
-                            )  # [S, 3]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )  # [S, 3]
                     val = (
                         query_func(pts)
                         .reshape(len(xs), len(ys), len(zs))
                         .detach()
                         .cpu()
                         .numpy()
-                    )  # [S, 1] --> [x, y, z]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )  # [S, 1] --> [x, y, z]
                     u[
                         xi * S : xi * S + len(xs),
                             yi * S : yi * S + len(ys),
                             zi * S : zi * S + len(zs),
-                            ] = val
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ] = val
     return u
 
 
@@ -442,7 +473,9 @@ def extract_geometry(bound_min, bound_max, resolution, threshold, query_func):
     vertices = (
         vertices/(resolution - 1.0) * (b_max_np - b_min_np)[None, :]
         + b_min_np[None, :]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return vertices, triangles
 
 
@@ -472,7 +505,9 @@ class PSNRMeter:
     def update(self, preds, truths):
         preds, truths = self.prepare_inputs(
             preds, truths
-        )  # [B, N, 3] or [B, H, W, 3], range in [0, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # [B, N, 3] or [B, H, W, 3], range in [0, 1]
 
         # simplified since max_pixel_value is 1 here.
         psnr = -10 * np.log10(np.mean((preds - truths) ** 2))
@@ -505,7 +540,9 @@ class LPIPSMeter:
             device
             if device is not None
             else torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.fn = lpips.LPIPS(net = net).eval().to(self.device)
 
 
@@ -526,10 +563,14 @@ class LPIPSMeter:
     def update(self, preds, truths):
         preds, truths = self.prepare_inputs(
             preds, truths
-        )  # [B, H, W, 3] --> [B, 3, H, W], range in [0, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # [B, H, W, 3] --> [B, 3, H, W], range in [0, 1]
         v = self.fn(
             truths, preds, normalize = True
-        ).item()  # normalize = True: [0, 1] to [-1, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).item()  # normalize = True: [0, 1] to [-1, 1]
         self.V += v
         self.N += 1
 
@@ -541,7 +582,9 @@ class LPIPSMeter:
     def write(self, writer, global_step, prefix=""):
         writer.add_scalar(
             os.path.join(prefix, f"LPIPS ({self.net})"), self.measure(), global_step
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def report(self):
@@ -564,7 +607,9 @@ class LMDMeter:
             if not os.path.exists(self.predictor_path):
                 raise FileNotFoundError(
                     "Please download dlib checkpoint from http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             self.detector = dlib.get_frontal_face_detector()
             self.predictor = dlib.shape_predictor(self.predictor_path)
@@ -576,11 +621,15 @@ class LMDMeter:
             try:
                 self.predictor = face_alignment.FaceAlignment(
                     face_alignment.LandmarksType._2D, flip_input = False
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception:
                 self.predictor = face_alignment.FaceAlignment(
                     face_alignment.LandmarksType.TWO_D, flip_input = False
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.V = 0
         self.N = 0
@@ -612,7 +661,9 @@ class LMDMeter:
         plt.imshow(img)
         plt.plot(
             lms[48:68, 0], lms[48:68, 1], marker="o", markersize = 1, linestyle="-", lw = 2
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         plt.show()
 
 
@@ -662,7 +713,9 @@ class LMDMeter:
     def write(self, writer, global_step, prefix=""):
         writer.add_scalar(
             os.path.join(prefix, f"LMD ({self.backend})"), self.measure(), global_step
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def report(self):
@@ -698,7 +751,8 @@ class Trainer(object):
         use_checkpoint="latest",  # which ckpt to use at init time
         use_tensorboardX = True,  # whether to use tensorboard for logging
         scheduler_update_every_step = False,  # whether to call scheduler.step() after every train step
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
 
         self.name = name
         self.opt = opt
@@ -726,8 +780,12 @@ class Trainer(object):
             if device is not None
             else torch.device(
                 f"cuda:{local_rank}" if torch.cuda.is_available() else "cpu"
-            )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.console = Console()
 
         model.to(self.device)
@@ -735,7 +793,9 @@ class Trainer(object):
             model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
             model = torch.nn.parallel.DistributedDataParallel(
                 model, device_ids=[local_rank]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         self.model = model
 
         if isinstance(criterion, nn.Module):
@@ -745,21 +805,25 @@ class Trainer(object):
         if optimizer is None:
             self.optimizer = optim.Adam(
                 self.model.parameters(), lr = 0.001, weight_decay = 5e-4
-            )  # naive adam
+# BRACKET_SURGEON: disabled
+#             )  # naive adam
         else:
             self.optimizer = optimizer(self.model)
 
         if lr_scheduler is None:
             self.lr_scheduler = optim.lr_scheduler.LambdaLR(
                 self.optimizer, lr_lambda = lambda epoch: 1
-            )  # fake scheduler
+# BRACKET_SURGEON: disabled
+#             )  # fake scheduler
         else:
             self.lr_scheduler = lr_scheduler(self.optimizer)
 
         if ema_decay is not None:
             self.ema = ExponentialMovingAverage(
                 self.model.parameters(), decay = ema_decay
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             self.ema = None
 
@@ -783,7 +847,8 @@ class Trainer(object):
                 "results": [],  # metrics[0], or valid_loss
             "checkpoints": [],  # record path of saved ckpt, to automatically remove old ckpt
             "best_result": None,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # auto fix
         if len(metrics) == 0 or self.use_loss_as_metric:
@@ -802,10 +867,14 @@ class Trainer(object):
 
         self.log(
             f'[INFO] Trainer: {self.name} | {self.time_stamp} | {self.device} | {"fp16" if self.fp16 else "fp32"} | {self.workspace}'
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.log(
-            f"[INFO] #parameters: {sum([p.numel() for p in model.parameters() if p.requires_grad])}"
-        )
+            f"[INFO] #parameters: {sum([p.numel() for p in model.parameters() if p.requires_grad])}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if self.workspace is not None:
             if self.use_checkpoint == "scratch":
@@ -886,9 +955,12 @@ class Trainer(object):
                     False
                     if (self.opt.patch_size <= 1 and not self.opt.train_camera)
                     else True
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     **vars(self.opt),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             outputs = self.model.render_torso(
                 rays_o,
@@ -905,9 +977,12 @@ class Trainer(object):
                     False
                     if (self.opt.patch_size <= 1 and not self.opt.train_camera)
                     else True
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     **vars(self.opt),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         if not self.opt.torso:
             pred_rgb = outputs["image"]
@@ -939,7 +1014,9 @@ class Trainer(object):
             # print(unc_weight.shape, unc_weight.max(), unc_weight.min())
             loss *= alpha + (1 - alpha) * (
                 (1 - step_factor) + step_factor * unc_weight.detach()
-            ).clamp(0, 10)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).clamp(0, 10)
             # loss *= unc_weight.detach()
 
             beta = uncertainty + 1
@@ -959,14 +1036,18 @@ class Trainer(object):
                 .contiguous()
                 * 2
                 - 1
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             pred_rgb = (
                 pred_rgb.view(-1, self.opt.patch_size, self.opt.patch_size, 3)
                 .permute(0, 3, 1, 2)
                 .contiguous()
                 * 2
                 - 1
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # torch_vis_2d(rgb[0])
             # torch_vis_2d(pred_rgb[0])
@@ -984,14 +1065,18 @@ class Trainer(object):
                 .contiguous()
                 * 2
                 - 1
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             pred_rgb = (
                 pred_rgb.view(-1, xmax - xmin, ymax - ymin, 3)
                 .permute(0, 3, 1, 2)
                 .contiguous()
                 * 2
                 - 1
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             padding_h = max(0, (32 - rgb.shape[-2] + 1)//2)
             padding_w = max(0, (32 - rgb.shape[-1] + 1)//2)
@@ -999,10 +1084,14 @@ class Trainer(object):
             if padding_w or padding_h:
                 rgb = torch.nn.functional.pad(
                     rgb, (padding_w, padding_w, padding_h, padding_h)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 pred_rgb = torch.nn.functional.pad(
                     pred_rgb, (padding_w, padding_w, padding_h, padding_h)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # torch_vis_2d(rgb[0])
             # torch_vis_2d(pred_rgb[0])
@@ -1023,14 +1112,18 @@ class Trainer(object):
             # alphas = alphas ** 2 # skewed entropy, favors 0 over 1
             loss_ws = -alphas * torch.log2(alphas) - (1 - alphas) * torch.log2(
                 1 - alphas
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             loss = loss + 1e-4 * loss_ws.mean()
 
         else:
             alphas = outputs["weights_sum"].clamp(1e-5, 1 - 1e-5)
             loss_ws = -alphas * torch.log2(alphas) - (1 - alphas) * torch.log2(
                 1 - alphas
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             loss = loss + 1e-4 * loss_ws.mean()
 
         # aud att loss (regions out of face should be static)
@@ -1047,7 +1140,9 @@ class Trainer(object):
 
             loss_cross = (
                 (ambient_eye * ambient_aud.detach()) * face_mask.view(-1)
-            ).mean()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).mean()
             loss += lambda_amb * loss_cross
 
         # regularize
@@ -1056,18 +1151,26 @@ class Trainer(object):
             xyz_delta = (
                 torch.rand(size = xyzs.shape,
     dtype = xyzs.dtype,
-    device = xyzs.device) * 2
+# BRACKET_SURGEON: disabled
+#     device = xyzs.device) * 2
                 - 1
-            ) * 1e-3
+# BRACKET_SURGEON: disabled
+#             ) * 1e-3
             with torch.no_grad():
                 sigmas_raw, rgbs_raw, ambient_aud_raw, ambient_eye_raw, unc_raw = (
                     self.model(xyzs, dirs, enc_a.detach(), ind_code.detach(), eye)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             sigmas_reg, rgbs_reg, ambient_aud_reg, ambient_eye_reg, unc_reg = (
                 self.model(
                     xyzs + xyz_delta, dirs, enc_a.detach(), ind_code.detach(), eye
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             lambda_reg = step_factor * 1e-5
             reg_loss = 0
@@ -1116,7 +1219,9 @@ class Trainer(object):
                 bg_color = bg_color,
                 perturb = False,
                 **vars(self.opt),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         pred_rgb = outputs["image"].reshape(B, H, W, 3)
         pred_depth = outputs["depth"].reshape(B, H, W)
@@ -1136,7 +1241,9 @@ class Trainer(object):
                 images,
                 loss,
                 loss_raw,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     # moved out bg_color and perturb for more flexible control...
 
@@ -1176,7 +1283,9 @@ class Trainer(object):
                 bg_color = bg_color,
                 perturb = perturb,
                 **vars(self.opt),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.model.testing = False
 
         pred_rgb = outputs["image"].reshape(-1, H, W, 3)
@@ -1190,7 +1299,9 @@ class Trainer(object):
         if save_path is None:
             save_path = os.path.join(
                 self.workspace, "meshes", f"{self.name}_{self.epoch}.ply"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.log(f"==> Saving mesh to {save_path}")
 
@@ -1209,11 +1320,14 @@ class Trainer(object):
                 resolution = resolution,
                 threshold = threshold,
                 query_func = query_func,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         mesh = trimesh.Trimesh(
             vertices, triangles, process = False
-        )  # important, process = True leads to seg fault...
+# BRACKET_SURGEON: disabled
+#         )  # important, process = True leads to seg fault...
         mesh.export(save_path)
 
         self.log(f"==> Finished saving mesh.")
@@ -1225,14 +1339,20 @@ class Trainer(object):
         if self.use_tensorboardX and self.local_rank == 0:
             self.writer = tensorboardX.SummaryWriter(
                 os.path.join(self.workspace, "run", self.name)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # mark untrained region (i.e.,
-    not covered by any camera from the training dataset)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     not covered by any camera from the training dataset)
         if self.model.cuda_ray:
             self.model.mark_untrained_grid(
                 train_loader._data.poses, train_loader._data.intrinsics
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         for epoch in range(self.epoch + 1, max_epochs + 1):
             self.epoch = epoch
@@ -1271,7 +1391,9 @@ class Trainer(object):
         pbar = tqdm.tqdm(
             total = len(loader) * loader.batch_size,
                 bar_format="{percentage:3.0f}% {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.model.eval()
 
         all_preds = []
@@ -1316,30 +1438,41 @@ class Trainer(object):
                 fps = 25,
                 quality = 8,
                 macro_block_size = 1,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         imageio.mimwrite(
             os.path.join(save_path, f"{name}_depth.mp4"),
                 all_preds_depth,
                 fps = 25,
                 quality = 8,
                 macro_block_size = 1,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         # imageio.mimwrite(os.path.join(save_path,
     f'{name}_depth.mp4'),
     all_preds_depth,
     fps = 25,
     quality = 8,
-    macro_block_size = 1)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     macro_block_size = 1)
         # print('-'*100. self.opt.aud)
         if self.opt.aud != "":
+            pass
             # print(f'ffmpeg -i {os.path.join(save_path,
     f"{name}.mp4")} -i {self.opt.aud} -strict -2 {os.path.join(save_path,
-    f"{name}_audio.mp4")} -y')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     f"{name}_audio.mp4")} -y')
             os.system(
-                f'ffmpeg -i {os.path.join(save_path,
+                f'ffmpeg -i {os.path.join(save_path,'
     f"{name}.mp4")} -i {self.opt.aud} -strict -2 {os.path.join(save_path,
-    f"{name}_audio.mp4")} -y'
-            )
+    f"{name}_audio.mp4")} -y''
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.log(f"==> Finished Test.")
 
@@ -1358,7 +1491,9 @@ class Trainer(object):
         if self.global_step == 0:
             self.model.mark_untrained_grid(
                 train_loader._data.poses, train_loader._data.intrinsics
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         for _ in range(step):
 
@@ -1373,7 +1508,8 @@ class Trainer(object):
             if (
                 self.model.cuda_ray
                 and self.global_step % self.opt.update_extra_interval == 0
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 with torch.cuda.amp.autocast(enabled = self.fp16):
                     self.model.update_extra_state()
 
@@ -1396,7 +1532,8 @@ class Trainer(object):
             if (
                 self.ema is not None
                 and self.global_step % self.ema_update_interval == 0
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 self.ema.update()
 
         average_loss = total_loss.item()/step
@@ -1404,7 +1541,8 @@ class Trainer(object):
         if not self.scheduler_update_every_step:
             if isinstance(
                 self.lr_scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 self.lr_scheduler.step(average_loss)
             else:
                 self.lr_scheduler.step()
@@ -1412,7 +1550,8 @@ class Trainer(object):
         outputs = {
             "loss": average_loss,
                 "lr": self.optimizer.param_groups[0]["lr"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return outputs
 
@@ -1431,7 +1570,8 @@ class Trainer(object):
             bg_color = None,
             spp = 1,
             downscale = 1,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
         # render resolution (may need downscale to for better frame rate)
         rH = int(H * downscale)
@@ -1459,7 +1599,8 @@ class Trainer(object):
             "eye": eye,
                 "poses": pose,
                 "bg_coords": bg_coords,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         self.model.eval()
 
@@ -1473,7 +1614,9 @@ class Trainer(object):
                 # face: do not perturb for the first spp, else lead to scatters.
                 preds, preds_depth = self.test_step(
                     data, bg_color = bg_color, perturb = False if spp == 1 else spp
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if self.ema is not None:
             self.ema.restore()
@@ -1485,10 +1628,14 @@ class Trainer(object):
                 F.interpolate(preds.permute(0, 3, 1, 2), size=(H, W), mode="bilinear")
                 .permute(0, 2, 3, 1)
                 .contiguous()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             preds_depth = F.interpolate(
                 preds_depth.unsqueeze(1), size=(H, W), mode="nearest"
-            ).squeeze(1)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).squeeze(1)
 
         if self.opt.color_space == "linear":
             preds = linear_to_srgb(preds)
@@ -1499,7 +1646,8 @@ class Trainer(object):
         outputs = {
             "image": pred,
                 "depth": pred_depth,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return outputs
 
@@ -1531,10 +1679,14 @@ class Trainer(object):
             F.interpolate(preds.permute(0, 3, 1, 2), size=(H, W), mode="bilinear")
             .permute(0, 2, 3, 1)
             .contiguous()
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         preds_depth = F.interpolate(
             preds_depth.unsqueeze(1), size=(H, W), mode="nearest"
-        ).squeeze(1)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).squeeze(1)
 
         pred = preds[0].detach().cpu().numpy()
         pred_depth = preds_depth[0].detach().cpu().numpy()
@@ -1542,7 +1694,8 @@ class Trainer(object):
         outputs = {
             "image": pred,
                 "depth": pred_depth,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return outputs
 
@@ -1550,7 +1703,9 @@ class Trainer(object):
     def train_one_epoch(self, loader):
         self.log(
             f"==> Start Training Epoch {self.epoch}, lr={self.optimizer.param_groups[0]['lr']:.6f} ..."
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         total_loss = 0
         if self.local_rank == 0 and self.report_metric_at_train:
@@ -1569,7 +1724,9 @@ class Trainer(object):
                 total = len(loader) * loader.batch_size,
                     mininterval = 1,
                     bar_format="{desc}: {percentage:3.0f}% {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         self.local_step = 0
 
@@ -1578,7 +1735,8 @@ class Trainer(object):
             if (
                 self.model.cuda_ray
                 and self.global_step % self.opt.update_extra_interval == 0
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 with torch.cuda.amp.autocast(enabled = self.fp16):
                     self.model.update_extra_state()
 
@@ -1603,7 +1761,8 @@ class Trainer(object):
             if (
                 self.ema is not None
                 and self.global_step % self.ema_update_interval == 0
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 self.ema.update()
 
             if self.local_rank == 0:
@@ -1617,17 +1776,23 @@ class Trainer(object):
                         "train/lr",
                             self.optimizer.param_groups[0]["lr"],
                             self.global_step,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 if self.scheduler_update_every_step:
                     pbar.set_description(
-                        f"loss={loss_val:.4f} ({total_loss/self.local_step:.4f}),
-    lr={self.optimizer.param_groups[0]['lr']:.6f}"
-                    )
+                        f"loss={loss_val:.4f} ({total_loss/self.local_step:.4f}),"
+    lr={self.optimizer.param_groups[0]['lr']:.6f}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     pbar.set_description(
                         f"loss={loss_val:.4f} ({total_loss/self.local_step:.4f})"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 pbar.update(loader.batch_size)
 
         average_loss = total_loss/self.local_step
@@ -1645,7 +1810,8 @@ class Trainer(object):
         if not self.scheduler_update_every_step:
             if isinstance(
                 self.lr_scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 self.lr_scheduler.step(average_loss)
             else:
                 self.lr_scheduler.step()
@@ -1674,7 +1840,9 @@ class Trainer(object):
             pbar = tqdm.tqdm(
                 total = len(loader) * loader.batch_size,
                     bar_format="{desc}: {percentage:3.0f}% {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         with torch.no_grad():
             self.local_step = 0
@@ -1692,7 +1860,9 @@ class Trainer(object):
                             truths,
                             loss,
                             loss_raw,
-                            ) = self.eval_step(data)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ) = self.eval_step(data)
 
                 loss_val = loss.item()
                 total_loss += loss_val
@@ -1708,31 +1878,45 @@ class Trainer(object):
                         self.workspace,
                             "validation",
                             f"{name}_{self.local_step:04d}_rgb.png",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     save_path_depth = os.path.join(
                         self.workspace,
                             "validation",
                             f"{name}_{self.local_step:04d}_depth.png",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     # save_path_error = os.path.join(self.workspace, 'validation',
-    f'{name}_{self.local_step:04d}_errormap.png')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     f'{name}_{self.local_step:04d}_errormap.png')
                     save_path_ambient_aud = os.path.join(
                         self.workspace,
                             "validation",
                             f"{name}_{self.local_step:04d}_aud.png",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     save_path_ambient_eye = os.path.join(
                         self.workspace,
                             "validation",
                             f"{name}_{self.local_step:04d}_eye.png",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     save_path_uncertainty = os.path.join(
                         self.workspace,
                             "validation",
                             f"{name}_{self.local_step:04d}_uncertainty.png",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     # save_path_gt = os.path.join(self.workspace, 'validation',
-    f'{name}_{self.local_step:04d}_gt.png')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     f'{name}_{self.local_step:04d}_gt.png')
 
                     # self.log(f"==> Saving validation image to {save_path}")
                     os.makedirs(os.path.dirname(save_path), exist_ok = True)
@@ -1757,33 +1941,48 @@ class Trainer(object):
                     cv2.imwrite(
                         save_path,
                             cv2.cvtColor((pred * 255).astype(np.uint8),
-    cv2.COLOR_RGB2BGR),
-                            )
+# BRACKET_SURGEON: disabled
+#     cv2.COLOR_RGB2BGR),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if not self.opt.torso:
                         cv2.imwrite(
                             save_path_depth, (pred_depth * 255).astype(np.uint8)
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         # cv2.imwrite(save_path_error, (loss_raw * 255).astype(np.uint8))
                         cv2.imwrite(
                             save_path_ambient_aud,
                                 (pred_ambient_aud * 255).astype(np.uint8),
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         cv2.imwrite(
                             save_path_ambient_eye,
                                 (pred_ambient_eye * 255).astype(np.uint8),
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         cv2.imwrite(
                             save_path_uncertainty,
                                 (pred_uncertainty * 255).astype(np.uint8),
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         # cv2.imwrite(save_path_gt,
     cv2.cvtColor((linear_to_srgb(truths[0].detach().cpu().numpy()) * 255).astype(np.uint8),
-    cv2.COLOR_RGB2BGR))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     cv2.COLOR_RGB2BGR))
 
                     pbar.set_description(
                         f"loss={loss_val:.4f} ({total_loss/self.local_step:.4f})"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     pbar.update(loader.batch_size)
 
         average_loss = total_loss/self.local_step
@@ -1795,11 +1994,13 @@ class Trainer(object):
                 result = self.metrics[0].measure()
                 self.stats["results"].append(
                     result if self.best_mode == "min" else -result
-                )  # if max mode, use -result
+# BRACKET_SURGEON: disabled
+#                 )  # if max mode, use -result
             else:
                 self.stats["results"].append(
                     average_loss
-                )  # if no metric, choose best by min loss
+# BRACKET_SURGEON: disabled
+#                 )  # if no metric, choose best by min loss
 
             for metric in self.metrics:
                 self.log(metric.report(), style="blue")
@@ -1817,7 +2018,8 @@ class Trainer(object):
     name = None,
     full = False,
     best = False,
-    remove_old = True):
+# BRACKET_SURGEON: disabled
+#     remove_old = True):
 
         if name is None:
             name = f"{self.name}_ep{self.epoch:04d}"
@@ -1826,7 +2028,8 @@ class Trainer(object):
             "epoch": self.epoch,
                 "global_step": self.global_step,
                 "stats": self.stats,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         state["mean_count"] = self.model.mean_count
         state["mean_density"] = self.model.mean_density
@@ -1879,7 +2082,9 @@ class Trainer(object):
             else:
                 self.log(
                     f"[WARN] no evaluated results found, skip saving best checkpoint."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def load_checkpoint(self, checkpoint = None, model_only = False):
@@ -1901,7 +2106,9 @@ class Trainer(object):
 
         missing_keys, unexpected_keys = self.model.load_state_dict(
             checkpoint_dict["model"], strict = False
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.log("[INFO] loaded model.")
         if len(missing_keys) > 0:
             self.log(f"[WARN] missing keys: {missing_keys}")
@@ -1978,7 +2185,9 @@ def _build_mel_basis():
     n_fft = 800,
     n_mels = 80,
     fmin = 55,
-    fmax = 7600)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     fmax = 7600)
 
 
 def _amp_to_db(x):

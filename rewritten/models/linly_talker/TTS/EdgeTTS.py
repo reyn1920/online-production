@@ -16,10 +16,10 @@ from src import cost_time
 
 os.environ["GRADIO_TEMP_DIR"] = "./temp"
 
-"""
+""""""
 Constants for the Edge TTS project.
 https://github.com/rany2/edge - tts/blob/master/src/edge_tts/constants.py
-"""
+""""""
 
 BASE_URL = "speech.platform.bing.com/consumer/speech/synthesize/readaloud"
 TRUSTED_CLIENT_TOKEN = os.getenv("EDGE_TTS_TOKEN", "demo-token-for-testing-only")
@@ -31,7 +31,7 @@ DEFAULT_VOICE = "en - US - EmmaMultilingualNeural"
 
 
 def list_voices_fn(proxy = None):
-    """
+    """"""
     List all available voices and their attributes.
 
     This pulls data from the URL used by Microsoft Edge to return a list of
@@ -39,7 +39,7 @@ def list_voices_fn(proxy = None):
 
     Returns:
         dict: A dictionary of voice attributes.
-    """
+    """"""
     # ssl_ctx = ssl.create_default_context(cafile = certifi.where())
     headers = {
         "Authority": "speech.platform.bing.com",
@@ -53,7 +53,8 @@ def list_voices_fn(proxy = None):
             "Sec - Fetch - Dest": "empty",
             "Accept - Encoding": "gzip, deflate, br",
             "Accept - Language": "en - US,en;q = 0.9",
-            }
+# BRACKET_SURGEON: disabled
+#             }
     response = requests.get(VOICE_LIST, headers = headers, timeout = 3)
     data = json.loads(response.text)
     return data
@@ -389,7 +390,8 @@ class EdgeTTS:
                     "am - ET - AmehaNeural",
                     "af - ZA - WillemNeural",
                     "af - ZA - AdriNeural",
-                    ]
+# BRACKET_SURGEON: disabled
+#                     ]
 
 
     def preprocess(self, rate, volume, pitch):
@@ -416,15 +418,18 @@ class EdgeTTS:
         OUTPUT_FILE="result.wav",
         OUTPUT_SUBS="result.vtt",
         words_in_cue=8,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         async def amain():
             """Main function"""
             rate, volume, pitch = self.preprocess(
                 rate=RATE, volume=VOLUME, pitch=PITCH
-            )
+# BRACKET_SURGEON: disabled
+#             )
             communicate = Communicate(
                 TEXT, VOICE, rate=rate, volume=volume, pitch=pitch
-            )
+# BRACKET_SURGEON: disabled
+#             )
             submaker = SubMaker()
             with open(OUTPUT_FILE, "wb") as file:
                 async for chunk in communicate.stream():
@@ -443,7 +448,8 @@ class EdgeTTS:
         # 去掉每一行文字中的空格
         vtt_lines_without_spaces = [
             line.replace(" ", "") if "-->" not in line else line for line in vtt_lines
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         # print(vtt_lines_without_spaces)
         with open(OUTPUT_SUBS, "w", encoding="utf - 8") as output_file:
             output_file.writelines(vtt_lines_without_spaces)
@@ -462,18 +468,21 @@ class EdgeTTS:
         OUTPUT_FILE="result.wav",
         OUTPUT_SUBS="result.vtt",
         words_in_cue=8,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         rate, volume, pitch = self.preprocess(
             rate=RATE, volume=VOLUME, pitch=PITCH
-        )
+# BRACKET_SURGEON: disabled
+#         )
         communicate = Communicate(
             TEXT, VOICE, rate=rate, volume=volume, pitch=pitch
-        )
+# BRACKET_SURGEON: disabled
+#         )
         communicate.save_sync(OUTPUT_FILE)
 
-        """
+        """"""
         由于EdgeTTS的一些问题，并且最近发现其生成的字幕还是有些奇怪，所以会重新写一个字幕生成，暂不使用其字母生成
-        """
+        """"""
         # communicate = Communicate(TEXT, VOICE)
         # submaker = SubMaker()
         # with open(OUTPUT_FILE, "wb") as file:

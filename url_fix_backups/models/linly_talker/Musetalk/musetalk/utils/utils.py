@@ -8,7 +8,7 @@ ffmpeg_path = "ffmpeg"
 os.environ["PATH"] = f"{ffmpeg_path}:{os.environ['PATH']}"
 # if ffmpeg_path is None:
 #     print("please download ffmpeg - static \
-    and export to FFMPEG_PATH. \\nFor example: export FFMPEG_PATH=/musetalk / ffmpeg - 4.4 - amd64 - static")
+#     and export to FFMPEG_PATH. \\nFor example: export FFMPEG_PATH=/musetalk / ffmpeg - 4.4 - amd64 - static")
 # elif ffmpeg_path not in os.getenv('PATH'):
 #     print("add ffmpeg to path")
 #     os.environ["PATH"] = f"{ffmpeg_path}:{os.environ['PATH']}"
@@ -24,7 +24,8 @@ def load_all_model():
     unet = UNet(
         unet_config="./Musetalk / models / musetalk / musetalk.json",
             model_path="./Musetalk / models / musetalk / pytorch_model.bin",
-            )
+# BRACKET_SURGEON: disabled
+#             )
     pe = PositionalEncoding(d_model = 384)
     return audio_processor, vae, unet, pe
 

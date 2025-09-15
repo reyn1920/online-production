@@ -30,7 +30,8 @@ class CVAE(nn.Module):
             audio_emb_in_size,
             audio_emb_out_size,
             seq_len,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.decoder = DECODER(
             decoder_layer_sizes,
             latent_size,
@@ -38,7 +39,8 @@ class CVAE(nn.Module):
             audio_emb_in_size,
             audio_emb_out_size,
             seq_len,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def reparameterize(self, mu, logvar):
         std = torch.exp(0.5 * logvar)
@@ -54,11 +56,11 @@ class CVAE(nn.Module):
         return self.decoder(batch)
 
     def test(self, batch):
-        """
+        """"""
         class_id = batch['class']
         z = torch.randn([class_id.size(0), self.latent_size]).to(class_id.device)
         batch['z'] = z
-        """
+        """"""
         return self.decoder(batch)
 
 
@@ -71,7 +73,8 @@ class ENCODER(nn.Module):
         audio_emb_in_size,
         audio_emb_out_size,
         seq_len,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
 
         self.resunet = ResUnet()
@@ -128,7 +131,8 @@ class DECODER(nn.Module):
         audio_emb_in_size,
         audio_emb_out_size,
         seq_len,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
 
         self.resunet = ResUnet()

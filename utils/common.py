@@ -27,7 +27,7 @@ class Provider:
 
 def get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
     """Get secret from environment variables.
-
+    
     Args:
         key: Environment variable name
         default: Default value if not found
@@ -47,7 +47,7 @@ async def http_with_fallback(
     **kwargs,
 ) -> Optional[dict]:
     """Make HTTP request with error handling and fallback.
-
+    
     Args:
         url: Request URL
         method: HTTP method

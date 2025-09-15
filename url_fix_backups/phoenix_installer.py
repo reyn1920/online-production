@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Phoenix Protocol Installer
 This master script automates the entire deployment, configuration, and
 verification of the TRAE.AI system.
-"""
+""""""
 
 import os
 import sqlite3
@@ -76,7 +76,8 @@ def main():
     run_command([sys.executable, SECRETS_CLI_PATH, "list"], check=False)  # Show existing keys
     print(
         "\\nExample command to add a secret: python scripts / secrets_cli.py add SECRET_NAME 'your_secret_value'"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     input("Press Enter to continue after you have added all your secrets...")
 
     # Step 5: Automated System Tests

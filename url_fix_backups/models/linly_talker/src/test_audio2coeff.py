@@ -47,13 +47,17 @@ class Audio2Coeff:
                 checkpoints = safetensors.torch.load_file(sadtalker_path["checkpoint"])
                 self.audio2pose_model.load_state_dict(
                     load_x_from_safetensor(checkpoints, "audio2pose")
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 load_cpk(
                     sadtalker_path["audio2pose_checkpoint"],
                         model = self.audio2pose_model,
                         device = device,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
         except Exception:
             raise Exception("Failed in loading audio2pose_checkpoint")
 
@@ -70,12 +74,16 @@ class Audio2Coeff:
             else:
                 load_cpk(
                     sadtalker_path["audio2exp_checkpoint"], model = netG, device = device
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except Exception:
             raise Exception("Failed in loading audio2exp_checkpoint")
         self.audio2exp_model = Audio2Exp(
             netG, cfg_exp, device = device, prepare_training_loss = False
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.audio2exp_model = self.audio2exp_model.to(device)
         for param in self.audio2exp_model.parameters():
             param.requires_grad = False
@@ -103,11 +111,15 @@ class Audio2Coeff:
                 pose_len = int((pose_len - 1) / 2) * 2 + 1
                 pose_pred = torch.Tensor(
                     savgol_filter(np.array(pose_pred.cpu()), pose_len, 2, axis = 1)
-                ).to(self.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).to(self.device)
             else:
                 pose_pred = torch.Tensor(
                     savgol_filter(np.array(pose_pred.cpu()), 13, 2, axis = 1)
-                ).to(self.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).to(self.device)
 
             coeffs_pred = torch.cat((exp_pred, pose_pred), dim=-1)  # bs T 70
 
@@ -115,10 +127,14 @@ class Audio2Coeff:
 
             # if ref_pose_coeff_path is not None:
             #  coeffs_pred_numpy = self.using_refpose(coeffs_pred_numpy,
-    ref_pose_coeff_path)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ref_pose_coeff_path)
 
             # savemat(os.path.join(coeff_save_dir, '%s##%s.mat'%(batch['pic_name'],
     batch['audio_name'])),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
                 #         {'coeff_3dmm': coeffs_pred_numpy})
 
             return coeffs_pred_numpy
@@ -139,5 +155,7 @@ class Audio2Coeff:
         #### relative head pose
         coeffs_pred_numpy[:, 64:70] = coeffs_pred_numpy[:, 64:70] + (
             refpose_coeff[:num_frames, :] - refpose_coeff[0:1, :]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return coeffs_pred_numpy

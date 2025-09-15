@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Conservative Media Research Agent
 
 This agent scrapes news sources and tracks examples of Democratic hypocrisy,
@@ -8,7 +8,7 @@ for conservative media content generation.
 
 Author: Trae AI Production System
 Date: 2025
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -28,7 +28,9 @@ from bs4 import BeautifulSoup
 # Configure logging
 logging.basicConfig(
     level = logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -69,7 +71,8 @@ class ConservativeResearchAgent:
                 "cnn": "https://www.cnn.com",  # For monitoring opposition narratives
             "msnbc": "https://www.msnbc.com",  # For monitoring opposition narratives
             "politico": "https://www.politico.com",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Pre - loaded examples from research
         self.documented_examples = [
@@ -83,19 +86,21 @@ class ConservativeResearchAgent:
                     "contradiction_details": "Mueller investigation found no evidence of collusion, Durham investigation revealed FBI misconduct",
                     "severity": "high",
                     "tags": ["russia_hoax", "false_claims", "censure"],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "politician": "Hillary Clinton",
                     "category": "russia_investigation",
                     "title": "Campaign Funded Steele Dossier While Claiming Russian Interference",
-                    "description": "Clinton campaign \
-    and DNC paid for unverified Steele dossier through Fusion GPS while publicly claiming Russian interference",
+                    "description": "Clinton campaign \"
+#     and DNC paid for unverified Steele dossier through Fusion GPS while publicly claiming Russian interference",
                     "source_url": "https://www.washingtonpost.com / world / national - security / clinton - campaign - dnc - paid - for - research - that - led - to - russia - dossier / 2017 / 10 / 24 / 226fabf0 - b8e4 - 11e7 - a908 - a3470754bbb9_story.html",
                     "evidence_type": "financial_records",
                     "contradiction_details": "FEC fined Clinton campaign for misreporting dossier spending as legal expenses",
                     "severity": "high",
                     "tags": ["steele_dossier", "fake_news", "fec_violation"],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "politician": "Chuck Schumer",
                     "category": "immigration",
@@ -106,20 +111,22 @@ class ConservativeResearchAgent:
                     "contradiction_details": "Called Trump wall immoral despite voting for similar barrier in 2006",
                     "severity": "medium",
                     "tags": ["border_security", "flip_flop", "secure_fence_act"],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "politician": "Barack Obama",
                     "category": "immigration",
                     "title": "Strong Border Security Rhetoric vs. Open Borders Policy",
-                    "description": "Made strong statements about border security \
-    and illegal immigration in 2014 speech, but implemented catch - \
-    and - release policies",
+                    "description": "Made strong statements about border security \"
+#     and illegal immigration in 2014 speech, but implemented catch - \
+#     and - release policies",
                     "source_url": "https://obamawhitehouse.archives.gov / the - press - office / 2014 / 11 / 20 / remarks - President - address - nation - immigration",
                     "evidence_type": "speech",
                     "contradiction_details": "Claimed strongest border security while implementing policies that increased illegal crossings",
                     "severity": "medium",
                     "tags": ["border_security", "catch_and_release", "rhetoric_vs_action"],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "politician": "Nancy Pelosi",
                     "category": "immigration",
@@ -130,8 +137,11 @@ class ConservativeResearchAgent:
                     "contradiction_details": "Voted against 2006 Secure Fence Act but later supported similar measures, now opposes all physical barriers",
                     "severity": "medium",
                     "tags": ["border_security", "immoral_wall", "policy_reversal"],
-                    },
-                ]
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         self.init_database()
 
@@ -143,7 +153,7 @@ class ConservativeResearchAgent:
 
         # Create main hypocrisy examples table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS hypocrisy_examples (
                 id TEXT PRIMARY KEY,
                     politician TEXT NOT NULL,
@@ -158,13 +168,17 @@ class ConservativeResearchAgent:
                     tags TEXT NOT NULL,
                     created_at TEXT NOT NULL,
                     updated_at TEXT NOT NULL
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Create news articles table for tracking sources
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS news_articles (
                 id TEXT PRIMARY KEY,
                     source TEXT NOT NULL,
@@ -174,22 +188,30 @@ class ConservativeResearchAgent:
                     published_date TEXT,
                     scraped_at TEXT NOT NULL,
                     relevance_score REAL DEFAULT 0.0
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Create politicians tracking table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS politicians (
                 name TEXT PRIMARY KEY,
                     party TEXT NOT NULL,
                     position TEXT,
                     hypocrisy_count INTEGER DEFAULT 0,
                     last_updated TEXT NOT NULL
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         conn.commit()
         conn.close()
@@ -206,18 +228,22 @@ class ConservativeResearchAgent:
         for example in self.documented_examples:
             example_id = hashlib.md5(
                 f"{example['politician']}_{example['title']}".encode()
-            ).hexdigest()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).hexdigest()
 
             # Check if example already exists
             cursor.execute(
                 "SELECT id FROM hypocrisy_examples WHERE id = ?", (example_id,)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if cursor.fetchone():
                 continue
 
             # Insert new example
             cursor.execute(
-                """
+                """"""
                 INSERT INTO hypocrisy_examples
                 (id,
     politician,
@@ -226,9 +252,11 @@ class ConservativeResearchAgent:
     description,
     source_url,
     date_recorded,
-                    evidence_type, contradiction_details, severity, tags, created_at, updated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     evidence_type, contradiction_details, severity, tags, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     example_id,
                         example["politician"],
@@ -243,22 +271,29 @@ class ConservativeResearchAgent:
                         json.dumps(example["tags"]),
                         datetime.now().isoformat(),
                         datetime.now().isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         conn.commit()
         conn.close()
         logger.info(
             f"Loaded {len(self.documented_examples)} documented examples into database"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     async def start_session(self):
         """Start aiohttp session for web scraping"""
         headers = {
-            "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,
-    like Gecko) Chrome / 91.0.4472.124 Safari / 537.36"
-        }
+            "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,"
+# BRACKET_SURGEON: disabled
+#     like Gecko) Chrome / 91.0.4472.124 Safari / 537.36""
+# BRACKET_SURGEON: disabled
+#         }
         self.session = aiohttp.ClientSession(headers = headers)
 
 
@@ -278,7 +313,9 @@ class ConservativeResearchAgent:
                 if response.status != 200:
                     logger.warning(
                         f"Failed to scrape {source_name}: HTTP {response.status}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return []
 
                 html = await response.text()
@@ -295,7 +332,9 @@ class ConservativeResearchAgent:
                         "h2 a",
                         "h3 a",
                         ".headline a",
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
 
                 for selector in article_selectors:
                     elements = soup.select(selector)
@@ -312,12 +351,17 @@ class ConservativeResearchAgent:
                                         "title": title,
                                         "url": url,
                                         "scraped_at": datetime.now().isoformat(),
-                                        }
-                            )
+# BRACKET_SURGEON: disabled
+#                                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 logger.info(
                     f"Scraped {len(articles)} relevant articles from {source_name}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return articles
 
         except Exception as e:
@@ -335,7 +379,9 @@ class ConservativeResearchAgent:
             or element.find("h1")
             or element.find("h2")
             or element.find("h3")
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if title_element:
             return title_element.get_text(strip = True)
 
@@ -402,7 +448,9 @@ class ConservativeResearchAgent:
                 "voting",
                 "fraud",
                 "integrity",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         return any(keyword in title_lower for keyword in relevant_keywords)
 
@@ -427,7 +475,9 @@ class ConservativeResearchAgent:
                         ".entry - content",
                         "article p",
                         ".content p",
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
 
                 content = ""
                 for selector in content_selectors:
@@ -435,7 +485,9 @@ class ConservativeResearchAgent:
                     if elements:
                         content = " ".join(
                             [elem.get_text(strip = True) for elem in elements]
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         break
 
                 if not content:
@@ -452,7 +504,8 @@ class ConservativeResearchAgent:
                             "content": content[:2000],  # Limit content length
                         "hypocrisy_score": hypocrisy_score,
                             "analyzed_at": datetime.now().isoformat(),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
         except Exception as e:
             logger.error(f"Error analyzing article {article['url']}: {str(e)}")
@@ -478,7 +531,9 @@ class ConservativeResearchAgent:
                 r"changed position",
                 r"voted for.*now opposes",
                 r"previously supported.*now against",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for pattern in high_value_patterns:
             if re.search(pattern, content_lower):
@@ -493,7 +548,9 @@ class ConservativeResearchAgent:
                 "fact check",
                 "pants on fire",
                 "four pinocchios",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for keyword in medium_value_keywords:
             if keyword in content_lower:
@@ -512,7 +569,9 @@ class ConservativeResearchAgent:
                 "waters",
                 "clinton",
                 "obama",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for politician in politicians:
             if politician in content_lower:
@@ -571,11 +630,12 @@ class ConservativeResearchAgent:
         content = {
             "title": f"Weekly Conservative Research Brief - {datetime.now().strftime('%B %d, %Y')}",
                 "summary": f"This week's compilation of {len(examples)} documented examples of Democratic hypocrisy \
-    and false claims.",
+#     and false claims.",
                 "examples": examples,
                 "categories": {},
                 "generated_at": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Group by category
         for example in examples:
@@ -630,7 +690,7 @@ class ConservativeResearchAgent:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT OR REPLACE INTO news_articles
             (id,
     source,
@@ -639,9 +699,11 @@ class ConservativeResearchAgent:
     content,
     published_date,
     scraped_at,
-    relevance_score)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     relevance_score)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """,
+        ""","""
             (
                 article["id"],
                     article["source"],
@@ -651,8 +713,11 @@ class ConservativeResearchAgent:
                     None,  # We'd need to extract publish date
                 article["scraped_at"],
                     analysis["hypocrisy_score"],
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         conn.commit()
         conn.close()
@@ -668,12 +733,16 @@ if __name__ == "__main__":
             choices=["research", "examples", "weekly"],
             default="examples",
             help="Action to perform",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument("--category", help="Filter by category")
     parser.add_argument("--politician", help="Filter by politician")
     parser.add_argument(
         "--severity", choices=["high", "medium", "low"], help="Filter by severity"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     args = parser.parse_args()
 
@@ -684,7 +753,9 @@ if __name__ == "__main__":
     elif args.action == "examples":
         examples = agent.get_hypocrisy_examples(
             category = args.category, politician = args.politician, severity = args.severity
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(json.dumps(examples, indent = 2))
     elif args.action == "weekly":
         content = agent.generate_weekly_content()

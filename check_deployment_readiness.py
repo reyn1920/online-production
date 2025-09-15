@@ -67,6 +67,8 @@ def check_git_status():
             return True
 
     except subprocess.CalledProcessError:
+        print("❌ Git status: Not a git repository or git command failed")
+        return False
         print("❌ Git repository: Not initialized or not accessible - CANNOT GO LIVE")
         return False
     except FileNotFoundError:
@@ -149,9 +151,46 @@ def check_ai_integrations():
     return all_exist
 
 
+def check_github_secrets_info():
+    """Check if GitHub repository secrets are properly documented"""
+    try:
+        # Check if there's documentation about required secrets
+        docs_exist = any([
+            os.path.exists("DEPLOYMENT_SETUP_GUIDE.md"),
+            os.path.exists("DEPLOYMENT.md"),
+            os.path.exists("README.md")
+        ])
+        
+        if docs_exist:
+            print("✅ Deployment documentation exists")
+            # Check if workflow file mentions the required secrets
+            workflow_path = ".github/workflows/deploy.yml"
+            if os.path.exists(workflow_path):
+                with open(workflow_path, "r") as f:
+                    content = f.read()
+                    if "NETLIFY_AUTH_TOKEN" in content and "NETLIFY_SITE_ID" in content:
+                        print("✅ GitHub secrets configuration documented in workflow")
+                        return True
+                    else:
+                        print("⚠️  GitHub secrets not properly configured in workflow")
+                        return False
+            else:
+                print("⚠️  GitHub workflow file missing")
+                return False
+        else:
+            print("⚠️  Deployment documentation missing")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error checking GitHub secrets info: {e}")
+        return False
+
+
 def generate_readiness_report(results):
     """Generate deployment readiness report"""
-    report = {
+    from typing import Dict, List, Any
+    
+    report: Dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),
         "project_root": os.getcwd(),
         "readiness_check": {
@@ -164,26 +203,33 @@ def generate_readiness_report(results):
         "deployment_status": "READY" if all(results.values()) else "NOT_READY",
         "next_steps": [],
     }
+    
+    # Ensure next_steps is properly typed as a list
+    next_steps: List[str] = report["next_steps"]
 
     # Add specific next steps based on failures
     if not results.get("github_secrets_info", True):
-        report["next_steps"].append(
+        next_steps.append(
             "Configure GitHub repository secrets (NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID)"
         )
 
     if not results.get("netlify_config", True):
-        report["next_steps"].append("Set up Netlify site and configuration")
+        next_steps.append("Set up Netlify site and configuration")
 
     if not results.get("git_status", True):
-        report["next_steps"].append("Commit and push changes to main branch")
+        next_steps.append("Commit and push changes to main branch")
 
     if report["deployment_status"] == "READY":
-        report["next_steps"] = [
+        next_steps.clear()
+        next_steps.extend([
             "Configure GitHub secrets (see DEPLOYMENT_SETUP_GUIDE.md)",
             "Set up Netlify site",
             "Run staging deployment test",
-            "Deploy to production",
-        ]
+            "Deploy to production"
+        ])
+    
+    # Update the report with the modified next_steps
+    report["next_steps"] = next_steps
 
     return report
 
@@ -202,6 +248,7 @@ def main():
         "netlify_config": check_netlify_config(),
         "environment_template": check_environment_template(),
         "ai_integrations": check_ai_integrations(),
+        "github_secrets_info": check_github_secrets_info()
     }
 
     print("\\n" + "=" * 50)

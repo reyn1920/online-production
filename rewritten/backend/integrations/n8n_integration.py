@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI n8n Workflow Orchestration Integration
 
 Provides seamless integration between n8n workflow automation platform
@@ -15,7 +15,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -126,16 +126,17 @@ class N8nWorkflow:
 
 
 class N8nIntegration:
-    """
+    """"""
     Comprehensive n8n workflow orchestration integration with
     TRAE.AI agent system bridge and visual workflow management.
-    """
+    """"""
 
     def __init__(
         self,
         n8n_base_url: str = "http://localhost:5678",
         secrets_db_path: str = "data/secrets.sqlite",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.logger = setup_logger("n8n_integration")
         self.secret_store = SecretStore(secrets_db_path)
         self.base_url = n8n_base_url.rstrip("/")
@@ -151,7 +152,8 @@ class N8nIntegration:
         self.session = requests.Session()
         retry_strategy = Retry(
             total=3, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self.session.mount("http://", adapter)
         self.session.mount("https://", adapter)
@@ -172,7 +174,8 @@ class N8nIntegration:
             "system": "SystemAgent",
             "qa": "QAAgent",
             "planner": "PlannerAgent",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.logger.info("n8n integration initialized successfully")
 
@@ -185,13 +188,15 @@ class N8nIntegration:
                     "webhook_url": store.get_secret("N8N_WEBHOOK_URL"),
                     "username": store.get_secret("N8N_USERNAME"),
                     "password": store.get_secret("N8N_PASSWORD"),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 missing_creds = [
                     k
                     for k, v in credentials.items()
                     if not v and k != "username" and k != "password"
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
                 if missing_creds:
                     self.logger.warning(f"Missing n8n credentials: {missing_creds}")
 
@@ -208,7 +213,7 @@ class N8nIntegration:
         with sqlite3.connect(self.db_path) as conn:
             # Workflows table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS workflows (
                     id TEXT PRIMARY KEY,
                         name TEXT NOT NULL,
@@ -220,13 +225,15 @@ class N8nIntegration:
                         updated_at TIMESTAMP,
                         tags TEXT,
                         agent_mapping TEXT
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Executions table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS executions (
                     id TEXT PRIMARY KEY,
                         workflow_id TEXT,
@@ -238,13 +245,15 @@ class N8nIntegration:
                         mode TEXT DEFAULT 'trigger',
                         retry_count INTEGER DEFAULT 0,
                         FOREIGN KEY (workflow_id) REFERENCES workflows (id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Agent tasks mapping table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS agent_task_mapping (
                     id TEXT PRIMARY KEY,
                         execution_id TEXT,
@@ -256,9 +265,11 @@ class N8nIntegration:
                         completed_at TIMESTAMP,
                         result TEXT,
                         FOREIGN KEY (execution_id) REFERENCES executions (id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -278,13 +289,15 @@ class N8nIntegration:
                     "version": response.headers.get("X - N8N - Version", "unknown"),
                     "authenticated": bool(self.credentials.get("api_key")),
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {
                     "status": "unhealthy",
                     "error": f"HTTP {response.status_code}",
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             self.logger.error(f"n8n health check failed: {e}")
@@ -292,7 +305,8 @@ class N8nIntegration:
                 "status": "error",
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def get_workflows(self, active_only: bool = False) -> List[N8nWorkflow]:
         """Retrieve all workflows from n8n instance."""
@@ -300,7 +314,8 @@ class N8nIntegration:
             params = {"active": "true"} if active_only else {}
             response = self.session.get(
                 f"{self.base_url}/rest/workflows", params=params, timeout=30
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 workflows_data = response.json()
@@ -349,7 +364,8 @@ class N8nIntegration:
             else:
                 self.logger.error(
                     f"Failed to get workflow {workflow_id}: HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return None
 
         except Exception as e:
@@ -369,7 +385,8 @@ class N8nIntegration:
                 f"{self.base_url}/rest/workflows/{workflow_id}/execute",
                 json=payload,
                 timeout=30,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 execution_data = response.json()
@@ -404,12 +421,14 @@ class N8nIntegration:
                     WorkflowStatus.SUCCESS,
                     WorkflowStatus.ERROR,
                     WorkflowStatus.CANCELED,
-                ]:
+# BRACKET_SURGEON: disabled
+#                 ]:
                     return cached_execution
 
             response = self.session.get(
                 f"{self.base_url}/rest/executions/{execution_id}", timeout=15
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 execution_data = response.json()
@@ -425,7 +444,8 @@ class N8nIntegration:
             else:
                 self.logger.error(
                     f"Failed to get execution {execution_id}: HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return None
 
         except Exception as e:
@@ -452,9 +472,11 @@ class N8nIntegration:
                     "path": webhook_path,
                     "httpMethod": "POST",
                     "responseMode": "onReceived",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "webhookId": str(uuid.uuid4()),
-            }
+# BRACKET_SURGEON: disabled
+#             }
             nodes.append(webhook_node)
 
             # Create agent task nodes
@@ -474,8 +496,10 @@ class N8nIntegration:
                         "jsonParameters": True,
                         "options": {},
                         "bodyParametersJson": json.dumps(task.get("parameters", {})),
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
                 nodes.append(task_node)
 
                 # Add connection from previous node
@@ -485,8 +509,10 @@ class N8nIntegration:
                         "source_output": "main",
                         "target_node": task_node["id"],
                         "target_input": "main",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
                 prev_node_id = task_node["id"]
                 x_pos += 200
@@ -499,11 +525,13 @@ class N8nIntegration:
                 "connections": self._format_connections(connections),
                 "settings": {"executionOrder": "v1"},
                 "tags": ["trae - ai", "agent - workflow"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self.session.post(
                 f"{self.base_url}/rest/workflows", json=workflow_payload, timeout=30
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 workflow_data = response.json()
@@ -537,7 +565,8 @@ class N8nIntegration:
                 credentials=node_data.get("credentials"),
                 webhook_id=node_data.get("webhookId"),
                 disabled=node_data.get("disabled", False),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             nodes.append(node)
 
         connections = []
@@ -550,7 +579,8 @@ class N8nIntegration:
                         source_output=output_name,
                         target_node=target["node"],
                         target_input=target["type"],
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     connections.append(connection)
 
         return N8nWorkflow(
@@ -561,14 +591,17 @@ class N8nIntegration:
             connections=connections,
             created_at=datetime.fromisoformat(
                 workflow_data.get("createdAt", datetime.now().isoformat())
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             updated_at=datetime.fromisoformat(
                 workflow_data.get("updatedAt", datetime.now().isoformat())
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             tags=workflow_data.get("tags", []),
             settings=workflow_data.get("settings"),
             static_data=workflow_data.get("staticData"),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _parse_execution(self, execution_data: Dict[str, Any]) -> WorkflowExecution:
         """Parse n8n execution data into WorkflowExecution object."""
@@ -579,7 +612,8 @@ class N8nIntegration:
             "error": WorkflowStatus.ERROR,
             "canceled": WorkflowStatus.CANCELED,
             "waiting": WorkflowStatus.WAITING,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return WorkflowExecution(
             id=execution_data["id"],
@@ -587,18 +621,21 @@ class N8nIntegration:
             status=status_map.get(execution_data.get("status"), WorkflowStatus.WAITING),
             started_at=datetime.fromisoformat(
                 execution_data.get("startedAt", datetime.now().isoformat())
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             finished_at=(
                 datetime.fromisoformat(execution_data["finishedAt"])
                 if execution_data.get("finishedAt")
                 else None
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             data=execution_data.get("data"),
             error=execution_data.get("error"),
             mode=execution_data.get("mode", "trigger"),
             retry_of=execution_data.get("retryOf"),
             retry_count=execution_data.get("retryCount", 0),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _format_connections(self, connections: List[Dict[str, str]]) -> Dict[str, Any]:
         """Format connections for n8n API."""
@@ -615,7 +652,8 @@ class N8nIntegration:
 
             formatted[source][output].append(
                 {"node": conn["target_node"], "type": conn["target_input"], "index": 0}
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return formatted
 
@@ -624,7 +662,7 @@ class N8nIntegration:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO workflows
                     (id,
     name,
@@ -634,9 +672,10 @@ class N8nIntegration:
     settings,
     created_at,
     updated_at,
-    tags)
+# BRACKET_SURGEON: disabled
+#     tags)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         workflow.id,
                         workflow.name,
@@ -647,8 +686,10 @@ class N8nIntegration:
                         workflow.created_at.isoformat(),
                         workflow.updated_at.isoformat(),
                         json.dumps(workflow.tags) if workflow.tags else None,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing workflow: {e}")
@@ -658,7 +699,7 @@ class N8nIntegration:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO executions
                     (id,
     workflow_id,
@@ -668,9 +709,10 @@ class N8nIntegration:
     data,
     error,
     mode,
-    retry_count)
+# BRACKET_SURGEON: disabled
+#     retry_count)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         execution.id,
                         execution.workflow_id,
@@ -681,8 +723,10 @@ class N8nIntegration:
                         execution.error,
                         execution.mode,
                         execution.retry_count,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing execution: {e}")
@@ -699,10 +743,12 @@ class N8nIntegration:
                     WorkflowStatus.SUCCESS,
                     WorkflowStatus.ERROR,
                     WorkflowStatus.CANCELED,
-                ]:
+# BRACKET_SURGEON: disabled
+#                 ]:
                     self.logger.info(
                         f"Execution {execution_id} completed with status: {execution.status.value}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     break
 
                 await asyncio.sleep(5)  # Check every 5 seconds
@@ -732,22 +778,28 @@ if __name__ == "__main__":
                 "parameters": {
                     "query": "AI trends 2024",
                     "sources": ["google_trends", "reddit"],
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "agent_type": "content",
                 "parameters": {
                     "content_type": "blog_post",
                     "topic": "AI trends research results",
-                },
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         workflow = await n8n.create_webhook_workflow(
             name="TRAE.AI Research to Content Pipeline",
             webhook_path="trae - ai - research",
             agent_tasks=agent_tasks,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if workflow:
             print(f"Created workflow: {workflow.name} ({workflow.id})")

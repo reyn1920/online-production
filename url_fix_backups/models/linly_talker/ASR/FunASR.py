@@ -1,9 +1,9 @@
-"""
+""""""
 Reference: https://github.com / alibaba - damo - academy / FunASR
 pip install funasr
 pip install modelscope
 pip install -U rotary_embedding_torch
-"""
+""""""
 
 try:
     from funasr import AutoModel
@@ -35,7 +35,8 @@ class FunASR:
             model=model_path if model_exists else "paraformer - zh",
             vad_model=vad_model_path if vad_model_exists else "fsmn - vad",
             punc_model=punc_model_path if punc_model_exists else "ct - punc - c",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         # 自定义路径
         # self.model = AutoModel(model="FunASR / speech_seaco_paraformer_large_asr_nat - zh - cn - 16k - common - vocab8404 - pytorch", # model_revision="v2.0.4",
         #         vad_model="FunASR / speech_fsmn_vad_zh - cn - 16k - common - pytorch", # vad_model_revision="v2.0.4",

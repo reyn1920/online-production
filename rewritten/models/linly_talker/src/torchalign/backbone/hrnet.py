@@ -22,12 +22,14 @@ class BasicBlock(nn.Module):
         self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = nn.BatchNorm2d(
             planes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.relu = nn.ReLU(inplace=True)
         self.conv2 = conv3x3(planes, planes)
         self.bn2 = nn.BatchNorm2d(
             planes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.downsample = downsample
         self.stride = stride
 
@@ -98,7 +100,8 @@ class HighResolutionModule(nn.Module):
         num_channels,
         fuse_method,
         multi_scale_output=True,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(HighResolutionModule, self).__init__()
         self._check_branches(num_branches, blocks, num_blocks, num_inchannels, num_channels)
 
@@ -120,13 +123,15 @@ class HighResolutionModule(nn.Module):
         if num_branches != len(num_channels):
             error_msg = "NUM_BRANCHES({}) <> NUM_CHANNELS({})".format(
                 num_branches, len(num_channels)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             raise ValueError(error_msg)
 
         if num_branches != len(num_inchannels):
             error_msg = "NUM_BRANCHES({}) <> NUM_INCHANNELS({})".format(
                 num_branches, len(num_inchannels)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             raise ValueError(error_msg)
 
     def _make_one_branch(self, branch_index, block, num_blocks, num_channels, stride=1):
@@ -134,7 +139,8 @@ class HighResolutionModule(nn.Module):
         if (
             stride != 1
             or self.num_inchannels[branch_index] != num_channels[branch_index] * block.expansion
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             downsample = nn.Sequential(
                 nn.Conv2d(
                     self.num_inchannels[branch_index],
@@ -142,9 +148,11 @@ class HighResolutionModule(nn.Module):
                     kernel_size=1,
                     stride=stride,
                     bias=False,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.BatchNorm2d(num_channels[branch_index] * block.expansion),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         layers = []
         layers.append(
@@ -153,8 +161,10 @@ class HighResolutionModule(nn.Module):
                 num_channels[branch_index],
                 stride,
                 downsample,
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
         self.num_inchannels[branch_index] = num_channels[branch_index] * block.expansion
         for i in range(1, num_blocks[branch_index]):
             layers.append(block(self.num_inchannels[branch_index], num_channels[branch_index]))
@@ -189,11 +199,14 @@ class HighResolutionModule(nn.Module):
                                 1,
                                 0,
                                 bias=False,
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             nn.BatchNorm2d(num_inchannels[i]),
                             nn.Upsample(scale_factor=2 ** (j - i), mode="nearest"),
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif j == i:
                     fuse_layer.append(None)
                 else:
@@ -210,10 +223,13 @@ class HighResolutionModule(nn.Module):
                                         2,
                                         1,
                                         bias=False,
-                                    ),
+# BRACKET_SURGEON: disabled
+#                                     ),
                                     nn.BatchNorm2d(num_outchannels_conv3x3),
-                                )
-                            )
+# BRACKET_SURGEON: disabled
+#                                 )
+# BRACKET_SURGEON: disabled
+#                             )
                         else:
                             num_outchannels_conv3x3 = num_inchannels[j]
                             conv3x3s.append(
@@ -225,11 +241,14 @@ class HighResolutionModule(nn.Module):
                                         2,
                                         1,
                                         bias=False,
-                                    ),
+# BRACKET_SURGEON: disabled
+#                                     ),
                                     nn.BatchNorm2d(num_outchannels_conv3x3),
                                     nn.ReLU(False),
-                                )
-                            )
+# BRACKET_SURGEON: disabled
+#                                 )
+# BRACKET_SURGEON: disabled
+#                             )
                     fuse_layer.append(nn.Sequential(*conv3x3s))
             fuse_layers.append(nn.ModuleList(fuse_layer))
 
@@ -261,7 +280,8 @@ class HighResolutionModule(nn.Module):
 class HighResolutionNet(nn.Module):
     def __init__(
         self, num_modules, num_branches, block, num_blocks, num_channels, fuse_method, **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(HighResolutionNet, self).__init__()
         self.num_modules = num_modules
         self.num_branches = num_branches
@@ -313,13 +333,17 @@ class HighResolutionNet(nn.Module):
                                 1,
                                 1,
                                 bias=False,
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             nn.BatchNorm2d(
                                 num_channels_cur_layer[i],
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             nn.ReLU(inplace=True),
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     transition_layers.append(None)
             else:
@@ -328,16 +352,20 @@ class HighResolutionNet(nn.Module):
                     inchannels = num_channels_pre_layer[-1]
                     outchannels = (
                         num_channels_cur_layer[i] if j == i - num_branches_pre else inchannels
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     conv3x3s.append(
                         nn.Sequential(
                             nn.Conv2d(inchannels, outchannels, 3, 2, 1, bias=False),
                             nn.BatchNorm2d(
                                 outchannels,
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             nn.ReLU(inplace=True),
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
                 transition_layers.append(nn.Sequential(*conv3x3s))
 
         return nn.ModuleList(transition_layers)
@@ -352,11 +380,14 @@ class HighResolutionNet(nn.Module):
                     kernel_size=1,
                     stride=stride,
                     bias=False,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.BatchNorm2d(
                     planes * block.expansion,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
         layers = []
         layers.append(block(inplanes, planes, stride, downsample))
@@ -390,8 +421,10 @@ class HighResolutionNet(nn.Module):
                     num_channels,
                     fuse_method,
                     reset_multi_scale_output,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             in_channels = modules[-1].get_num_inchannels()
 
         return nn.Sequential(*modules), in_channels
@@ -433,7 +466,8 @@ class HighResolutionNet(nn.Module):
             "size": tuple(y_list[0].shape[-2:]),
             "mode": "bilinear",
             "align_corners": False,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return torch.cat([F.interpolate(y, **kwargs) for y in y_list], 1)
 
 
@@ -446,7 +480,8 @@ def hrnet18s(pretrained=True, **kwargs):
         num_channels=[(64,), (18, 36), (18, 36, 72), (18, 36, 72, 144)],
         fuse_method=["SUM", "SUM", "SUM", "SUM"],
         **kwargs
-    )
+# BRACKET_SURGEON: disabled
+#     )
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls["hrnet_w18s"]), strict=False)
     return model
@@ -461,7 +496,8 @@ def hrnet18(pretrained=False, **kwargs):
         num_channels=[(64,), (18, 36), (18, 36, 72), (18, 36, 72, 144)],
         fuse_method=["SUM", "SUM", "SUM", "SUM"],
         **kwargs
-    )
+# BRACKET_SURGEON: disabled
+#     )
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls["hrnet18"]), strict=False)
     return model
@@ -476,7 +512,8 @@ def hrnet32(pretrained=False, **kwargs):
         num_channels=[(64,), (32, 64), (32, 64, 128), (32, 64, 128, 256)],
         fuse_method=["SUM", "SUM", "SUM", "SUM"],
         **kwargs
-    )
+# BRACKET_SURGEON: disabled
+#     )
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls["hrnet32"]), strict=False)
     return model

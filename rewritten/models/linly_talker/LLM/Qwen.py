@@ -11,7 +11,8 @@ class Qwen:
         mode="offline",
         model_path="Qwen/Qwen - 1_8B - Chat",
         prefix_prompt="""请用少于25个字回答以下问题\\n\\n""",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """暂时不写api版本,与Linly - api相类似,感兴趣可以实现一下"""
         self.url = "http://ip:port"  # local server: http://ip:port
         self.headers = {"Content - Type": "application/json"}
@@ -38,7 +39,8 @@ class Qwen:
                     self.data["question"],
                     history=self.history,
                     system=system_prompt,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 # print(self.history)
                 return response
             except Exception as e:

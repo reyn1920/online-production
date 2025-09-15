@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 DaVinci Voice Cloning System
 Integrates voice cloning capabilities using audio samples for voice synthesis
 Supports multiple voice cloning engines and sample - based voice generation
-"""
+""""""
 
 import asyncio
 import logging
@@ -90,7 +90,8 @@ class ElevenLabsCloneEngine(VoiceCloneEngine):
             # In production, this would use actual ElevenLabs API
             logger.info(
                 f"🎤 Cloning voice with {self.name} using sample: {request.voice_sample.name}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create output directory
             os.makedirs(os.path.dirname(request.output_path), exist_ok=True)
@@ -113,8 +114,10 @@ class ElevenLabsCloneEngine(VoiceCloneEngine):
                     "pitch": request.pitch,
                     "emotion": request.emotion,
                     "style": request.style,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"❌ {self.name} cloning failed: {e}")
@@ -148,7 +151,8 @@ class LocalVoiceCloneEngine(VoiceCloneEngine):
         try:
             logger.info(
                 f"🎤 Cloning voice with {self.name} using sample: {request.voice_sample.name}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create output directory
             os.makedirs(os.path.dirname(request.output_path), exist_ok=True)
@@ -172,8 +176,10 @@ class LocalVoiceCloneEngine(VoiceCloneEngine):
                     "pitch": request.pitch,
                     "emotion": request.emotion,
                     "style": request.style,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"❌ {self.name} cloning failed: {e}")
@@ -195,10 +201,12 @@ class LocalVoiceCloneEngine(VoiceCloneEngine):
                             output_path.replace(".mp3", ".aiff"),
                             "-y",
                             output_path,
-                        ],
+# BRACKET_SURGEON: disabled
+#                         ],
                         check=True,
                         capture_output=True,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     os.remove(output_path.replace(".mp3", ".aiff"))
                 except subprocess.CalledProcessError:
                     # Keep AIFF if conversion fails
@@ -219,7 +227,8 @@ class DaVinciVoiceCloner:
         self.engines = {
             "elevenlabs": ElevenLabsCloneEngine(),
             "local": LocalVoiceCloneEngine(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Voice samples database
         self.voice_samples: Dict[str, VoiceSample] = {}
@@ -239,7 +248,8 @@ class DaVinciVoiceCloner:
                     quality_score=0.8,  # Default quality score
                     language="en",
                     speaker_id=audio_file.stem,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.voice_samples[sample.name] = sample
 
         # Add demo samples if no samples found
@@ -263,10 +273,12 @@ class DaVinciVoiceCloner:
                     "-of",
                     "csv = p = 0",
                     file_path,
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 capture_output=True,
                 text=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return float(result.stdout.strip())
         except Exception:
             return 5.0  # Default duration
@@ -277,13 +289,16 @@ class DaVinciVoiceCloner:
             {
                 "name": "narrator",
                 "text": "Welcome to our professional voice cloning system.",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {"name": "assistant", "text": "I am your AI assistant, ready to help you."},
             {
                 "name": "presenter",
                 "text": "This is a demonstration of voice synthesis technology.",
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         samples_dir = Path("assets/voice_samples")
         samples_dir.mkdir(parents=True, exist_ok=True)
@@ -301,7 +316,8 @@ class DaVinciVoiceCloner:
                     language="en",
                     speaker_id=demo["name"],
                     metadata={"demo": True, "original_text": demo["text"]},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.voice_samples[sample.name] = sample
 
             except subprocess.CalledProcessError:
@@ -339,7 +355,8 @@ class DaVinciVoiceCloner:
 
         request = VoiceCloneRequest(
             text=text, voice_sample=voice_sample, output_path=output_path, **kwargs
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Clone voice
         logger.info(f"🎤 Starting voice cloning: '{text[:50]}...' using {voice_sample_name}")
@@ -378,7 +395,8 @@ class DaVinciVoiceCloner:
             "samples": [],
             "engines": self.get_available_engines(),
             "total_samples": len(self.voice_samples),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for name, sample in self.voice_samples.items():
             showcase_info["samples"].append(
@@ -389,8 +407,10 @@ class DaVinciVoiceCloner:
                     "language": sample.language,
                     "speaker_id": sample.speaker_id,
                     "metadata": sample.metadata,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return showcase_info
 
@@ -428,7 +448,8 @@ async def main():
                     engine_name=engine_name,
                     speed=1.0,
                     emotion="professional",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if result["success"]:
                     print(f"✅ {engine_name}: {result['output_path']}")
@@ -447,12 +468,14 @@ async def main():
             "Welcome to our service.",
             "Thank you for choosing us.",
             "Have a great day!",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         print("\\n🎵 Testing batch voice cloning...")
         batch_results = await cloner.batch_clone_voices(
             texts=batch_texts, voice_sample_name=sample_name, engine_name=engine_name
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         successful_batch = sum(1 for r in batch_results if isinstance(r, dict) and r.get("success"))
         print(f"✅ Batch results: {successful_batch}/{len(batch_texts)} successful")

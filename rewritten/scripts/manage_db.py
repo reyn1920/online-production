@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE AI Database Management Script
 
 This script serves as the single source of truth for all database operations.
@@ -16,7 +16,7 @@ Usage:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import argparse
 import json
@@ -47,23 +47,28 @@ class DatabaseManager:
                 "path": self.data_dir / "trae_ai.db",
                 "schema_file": self.project_root / "master_schema.sql",
                 "description": "Main application database",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "intelligence": {
                 "path": self.data_dir / "right_perspective.db",
                 "schema_file": self.project_root / "right_perspective_schema.sql",
                 "description": "Intelligence and research database",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "app_main": {
                 "path": self.app_dir / "trae_ai.db",
                 "schema_file": self.project_root / "master_schema.sql",
                 "description": "App directory main database",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "app_intelligence": {
                 "path": self.app_dir / "right_perspective.db",
                 "schema_file": self.project_root / "right_perspective_schema.sql",
                 "description": "App directory intelligence database",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # Ensure directories exist
         self.data_dir.mkdir(exist_ok=True)
@@ -224,7 +229,8 @@ class DatabaseManager:
             "databases_backed_up": success_count,
             "backup_directory": str(backup_subdir),
             "created_by": "TRAE AI Database Manager",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         manifest_path = backup_subdir / "manifest.json"
         with open(manifest_path, "w") as f:
@@ -309,20 +315,22 @@ def main():
     parser = argparse.ArgumentParser(
         description="TRAE AI Database Management System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+        epilog=""""""
 Examples:
   python scripts/manage_db.py init          # Initialize all databases
   python scripts/manage_db.py verify        # Check database integrity
   python scripts/manage_db.py backup        # Create backup
   python scripts/manage_db.py status        # Show database status
-        """,
-    )
+        ""","""
+# BRACKET_SURGEON: disabled
+#     )
 
     parser.add_argument(
         "command",
         choices=["init", "migrate", "verify", "backup", "restore", "reset", "status"],
         help="Database management command",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     parser.add_argument("file", nargs="?", help="File for restore command")
     parser.add_argument("--force", action="store_true", help="Force operation without confirmation")

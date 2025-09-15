@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Orchestrator - Master Control System
 Coordinates all agents and manages the complete workflow
-"""
+""""""
 
 import asyncio
 import json
@@ -69,13 +69,15 @@ class TraeAIOrchestrator:
             sys.stdout,
             level=self.config.log_level,
             format="<green>{time:YYYY - MM - DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logger.add(
             "/app / logs / orchestrator.log",
             rotation="1 day",
             retention="30 days",
             level=self.config.log_level,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def setup_routes(self):
         """Setup FastAPI routes"""
@@ -94,8 +96,10 @@ class TraeAIOrchestrator:
                 "config": {
                     "use_mock": self.config.use_mock,
                     "agents_configured": bool(self.config.openai_api_key),
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         @self.app.post("/workflow / start")
         async def start_workflow():
@@ -145,9 +149,11 @@ class TraeAIOrchestrator:
                     "topic": "trending_news",
                     "format": "educational",
                     "duration": 300,  # 5 minutes
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 timeout=300,  # 5 minutes timeout
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 result = response.json()
@@ -168,7 +174,8 @@ class TraeAIOrchestrator:
             # Check marketing agent health
             if not await self.check_agent_health(
                 self.config.marketing_agent_url, "Marketing Agent"
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 raise Exception("Marketing Agent is not available")
 
             # Launch marketing campaign
@@ -180,9 +187,11 @@ class TraeAIOrchestrator:
                     "title": content_data.get("title"),
                     "description": content_data.get("description"),
                     "channels": ["youtube", "twitter", "newsletter", "seo"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 timeout=120,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 result = response.json()
@@ -203,7 +212,8 @@ class TraeAIOrchestrator:
             # Check monetization service health
             if not await self.check_agent_health(
                 self.config.monetization_url, "Monetization Bundle"
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 raise Exception("Monetization Bundle is not available")
 
             # Execute monetization
@@ -215,15 +225,18 @@ class TraeAIOrchestrator:
                     "title": content_data.get("title"),
                     "campaign_id": marketing_data.get("campaign_id"),
                     "channels": ["ebook", "merch", "affiliate", "newsletter"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 timeout=180,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 result = response.json()
                 logger.info(
                     f"✅ Monetization completed: {len(result.get('products', []))} products created"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return result
             else:
                 raise Exception(f"Monetization failed: {response.text}")
@@ -248,9 +261,11 @@ class TraeAIOrchestrator:
                     "products": monetization_data.get("products", []),
                     "timestamp": datetime.now().isoformat(),
                     "source": "orchestrator",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 timeout=60,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 result = response.json()
@@ -273,7 +288,8 @@ class TraeAIOrchestrator:
             agent="orchestrator",
             status="running",
             created_at=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.tasks[workflow_id] = task
 
         try:
@@ -303,7 +319,8 @@ class TraeAIOrchestrator:
                 "marketing": marketing_data,
                 "monetization": monetization_data,
                 "revenue": revenue_data,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.info(f"✅ Full workflow completed: {workflow_id}")
             return workflow_id
@@ -371,7 +388,8 @@ class TraeAIOrchestrator:
             host="0.0.0.0",
             port=8000,
             log_level=self.config.log_level.lower(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         server = uvicorn.Server(config)
         await server.serve()
 

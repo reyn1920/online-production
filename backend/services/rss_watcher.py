@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 RSS Watcher Service
-
+""""""
 This service continuously monitors RSS feeds and automatically triggers
 video creation through the API when new items are detected.
+"""""""""
+
+RSS Watcher Service
+
+
+
 """
 
 import asyncio
@@ -48,7 +54,7 @@ class RSSWatcherService:
         api_base_url: str = "http://localhost:8080",
         config_path: str = "rss_feeds_example.json",
         db_path: str = "rss_watcher.db",
-    ):
+#     ):
         self.api_base_url = api_base_url
         self.config_path = config_path
         self.db_path = db_path
@@ -62,7 +68,7 @@ class RSSWatcherService:
             "style": "news_analysis",
             "duration": 60,  # 1 minute videos
             "include_affiliates": True,
-        }
+         }
 
         # Initialize database
         self._init_database()
@@ -73,13 +79,26 @@ class RSSWatcherService:
         logger.info("RSS Watcher Service initialized")
 
     def _init_database(self):
-        """Initialize RSS watcher database tables."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Initialize RSS watcher database tables.
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         # RSS video triggers table
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS rss_video_triggers (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     trigger_id TEXT UNIQUE NOT NULL,
@@ -93,13 +112,33 @@ class RSSWatcherService:
                     video_task_id TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     processed_at TIMESTAMP
-            )
-        """
-        )
+             )
+        
+""""""
 
+        
+
+         
+        
+"""
+         )
+        """"""
+        
+       """
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         # RSS feed items tracking (to avoid duplicates)
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS rss_feed_items (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     feed_name TEXT NOT NULL,
@@ -108,22 +147,49 @@ class RSSWatcherService:
                     item_hash TEXT NOT NULL,
                     first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(feed_name, item_hash)
-            )
+             )
+        
+""""""
+
+        
+
+         
+        
+"""
+         )
         """
-        )
+
+         
+        
 
         # RSS watcher logs
         cursor.execute(
-            """
+           
+""""""
             CREATE TABLE IF NOT EXISTS rss_watcher_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     action TEXT NOT NULL,
                     details TEXT,
                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+             )
+        """"""
 
+        
+
+         
+        
+"""
+         )
+        """"""
+         
+        """
+
+         )
+        
+
+         
+        
+"""
         conn.commit()
         conn.close()
 
@@ -136,7 +202,7 @@ class RSSWatcherService:
             "keyword_relevance": 0.0,
             "feed_priority": 0.0,
             "sentiment": 0.0,
-        }
+         }
 
         # Recency factor (newer = higher urgency)
         now = datetime.now()
@@ -155,7 +221,7 @@ class RSSWatcherService:
             "emergency",
             "investigation",
             "leaked",
-        ]
+         ]
 
         content_text = f"{article.title} {article.content}".lower()
         keyword_matches = sum(1 for keyword in high_priority_keywords if keyword in content_text)
@@ -174,61 +240,153 @@ class RSSWatcherService:
             "keyword_relevance": 0.3,
             "feed_priority": 0.2,
             "sentiment": 0.1,
-        }
+         }
 
         urgency_score = sum(urgency_factors[factor] * weights[factor] for factor in urgency_factors)
 
         logger.debug(
             f"Urgency calculation for '{article.title[:50]}...': {urgency_factors} -> {urgency_score:.3f}"
-        )
+         )
         return urgency_score
 
     def _is_duplicate_item(self, feed_name: str, article: NewsArticle) -> bool:
-        """Check if RSS item has already been processed."""
+        """
+Check if RSS item has already been processed.
+
         try:
+           
+""""""
+
             # Create a hash from title and URL for duplicate detection
+           
+
+            
+           
+"""
             item_hash = str(hash(f"{article.title}{article.url}"))
+           """
+
+            
+           
+
+            # Create a hash from title and URL for duplicate detection
+           
+""""""
 
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT COUNT(*) FROM rss_feed_items
                 WHERE feed_name = ? AND item_hash = ?
-            """,
-                (feed_name, item_hash),
-            )
+            """
+,
 
+                (feed_name, item_hash),
+            
+""""""
+
+             )
+            
+
+             
+            
+"""
             count = cursor.fetchone()[0]
 
             if count == 0:
                 # Store new item
                 cursor.execute(
-                    """
+                    """"""
+
                     INSERT INTO rss_feed_items (feed_name,
     item_url,
     item_title,
-    item_hash)
+#     item_hash)
                     VALUES (?, ?, ?, ?)
-                """,
+                
+,
+"""
                     (feed_name, article.url, article.title, item_hash),
-                )
+                 )
+               """
+
+                
+               
+
                 conn.commit()
+               
+""""""
 
+           
+
+
+            
+
+           
+"""
             conn.close()
-            return count > 0
+           """"""
+                
+               """
 
+                conn.commit()
+               
+
+                
+               
+""""""
+
+            return count > 0
+            
+
+           
+""""""
         except Exception as e:
             logger.error(f"Error checking duplicate item: {e}")
+            """
+
+            return count > 0
+            
+
+           
+""""""
+
             return False
 
     async def _create_video_via_api(self, trigger: RSSVideoTrigger) -> Optional[str]:
-        """Create video through the API endpoint."""
+        
+Create video through the API endpoint.
+"""
         try:
+           """
+
+            
+           
+
             # Prepare video creation prompt
-            prompt = f"""
+           
+""""""
+
+           
+
+            
+           
+"""
+            prompt = f
+           """"""
 Create a news analysis video about: {trigger.title}
+""""""
+            # Prepare video creation prompt
+           """
+
+            
+           
 
 Description: {trigger.description}
 
@@ -239,16 +397,31 @@ Source: {trigger.feed_name}
 Urgency: {trigger.urgency_score:.2f}
 
 Style: Professional news analysis with Right Perspective approach
-"""
+
+""""""
+
+
+            
+
+           
 
             # API payload
+           
+""""""
             payload = {
                 "prompt": prompt,
                 "style": self.video_settings["style"],
                 "duration": self.video_settings["duration"],
                 "include_affiliates": self.video_settings["include_affiliates"],
-            }
+             }
+           """
 
+            
+           
+
+            # API payload
+           
+""""""
             # Make API call
             async with httpx.AsyncClient(timeout=30.0) as client:
                 response = await client.post(f"{self.api_base_url}/api/create_video", json=payload)
@@ -259,7 +432,7 @@ Style: Professional news analysis with Right Perspective approach
 
                     logger.info(
                         f"Video creation initiated: {task_id} for trigger {trigger.trigger_id}"
-                    )
+                     )
                     return task_id
                 else:
                     logger.error(f"API call failed: {response.status_code} - {response.text}")
@@ -270,18 +443,41 @@ Style: Professional news analysis with Right Perspective approach
             return None
 
     def _store_trigger(self, trigger: RSSVideoTrigger) -> bool:
-        """Store video trigger in database."""
+        """
+Store video trigger in database.
+
+        
+"""
         try:
+        """
+
             conn = sqlite3.connect(self.db_path)
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             cursor = conn.cursor()
+           
+""""""
 
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 INSERT INTO rss_video_triggers
                 (trigger_id, title, description, source_url, feed_name,
-                    keywords, urgency_score, status, video_task_id)
+#                     keywords, urgency_score, status, video_task_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            """
+,
+
                 (
                     trigger.trigger_id,
                     trigger.title,
@@ -292,20 +488,39 @@ Style: Professional news analysis with Right Perspective approach
                     trigger.urgency_score,
                     trigger.status,
                     trigger.video_task_id,
-                ),
-            )
+                 ),
+            
+""""""
+
+             )
+            
+
+             
+            
+""""""
+
+            
+           
+
+            cursor = conn.cursor()
+           
+""""""
 
             # Log the action
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 INSERT INTO rss_watcher_logs (action, details)
                 VALUES (?, ?)
-            """,
+            ""","""
                 (
                     "trigger_created",
                     f"Trigger {trigger.trigger_id}: {trigger.title[:50]}... (urgency: {trigger.urgency_score:.3f})",
-                ),
-            )
+                 ),
+             )
 
             conn.commit()
             conn.close()
@@ -356,13 +571,13 @@ Style: Professional news analysis with Right Perspective approach
                                     article.content[:500] + "..."
                                     if len(article.content) > 500
                                     else article.content
-                                ),
+                                 ),
                                 source_url=article.url,
                                 feed_name=feed_name,
                                 keywords=article.keywords[:10],  # Limit keywords
                                 urgency_score=urgency_score,
                                 created_at=datetime.now(),
-                            )
+                             )
 
                             # Create video via API
                             task_id = await self._create_video_via_api(trigger)
@@ -379,7 +594,7 @@ Style: Professional news analysis with Right Perspective approach
 
                             logger.info(
                                 f"Created video trigger: {trigger.title[:50]}... (urgency: {urgency_score:.3f})"
-                            )
+                             )
 
                 except Exception as e:
                     logger.error(f"Error processing feed {feed_name}: {e}")
@@ -407,12 +622,30 @@ Style: Professional news analysis with Right Perspective approach
                 await asyncio.sleep(60)  # Wait 1 minute before retrying
 
     def stop_monitoring(self):
-        """Stop RSS monitoring."""
+        """
+Stop RSS monitoring.
+
+       
+""""""
+
         self.running = False
+       
+
+        
+       
+"""
         if self._monitoring_task and not self._monitoring_task.done():
             self._monitoring_task.cancel()
             self._monitoring_task = None
         logger.info("RSS watcher stopped")
+       """
+
+        
+       
+
+        self.running = False
+       
+""""""
         return {"status": "stopped", "message": "RSS monitoring stopped"}
 
     def start_monitoring(
@@ -421,11 +654,29 @@ Style: Professional news analysis with Right Perspective approach
         min_urgency_threshold: float = None,
         include_affiliates: bool = None,
         video_duration: int = None,
-    ):
-        """Start RSS monitoring with optional configuration updates."""
+#     ):
+        """
+Start RSS monitoring with optional configuration updates.
+
+       
+""""""
+
         # Update configuration if provided
+       
+
+        
+       
+"""
         if monitoring_interval is not None:
             self.monitoring_interval = monitoring_interval
+       """
+
+        
+       
+
+        # Update configuration if provided
+       
+""""""
         if min_urgency_threshold is not None:
             self.min_urgency_threshold = min_urgency_threshold
         if include_affiliates is not None:
@@ -446,7 +697,7 @@ Style: Professional news analysis with Right Perspective approach
 
         logger.info(
             f"RSS monitoring started (interval: {self.monitoring_interval}s, threshold: {self.min_urgency_threshold})"
-        )
+         )
         return {
             "status": "started",
             "message": "RSS monitoring started",
@@ -455,13 +706,31 @@ Style: Professional news analysis with Right Perspective approach
                 "min_urgency_threshold": self.min_urgency_threshold,
                 "include_affiliates": self.video_settings["include_affiliates"],
                 "video_duration": self.video_settings["duration"],
-            },
-        }
+             },
+         }
 
     def get_status(self):
-        """Get current RSS watcher status."""
-        recent_triggers = self.get_recent_triggers(limit=5)
+        """
+Get current RSS watcher status.
 
+       
+""""""
+
+        recent_triggers = self.get_recent_triggers(limit=5)
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        recent_triggers = self.get_recent_triggers(limit=5)
+       
+""""""
         return {
             "running": self.running,
             "monitoring_interval": self.monitoring_interval,
@@ -469,25 +738,62 @@ Style: Professional news analysis with Right Perspective approach
             "recent_triggers_count": len(recent_triggers),
             "last_check": recent_triggers[0]["created_at"] if recent_triggers else None,
             "video_settings": self.video_settings,
-        }
+         }
 
     def get_recent_triggers(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """Get recent video triggers."""
+        """
+Get recent video triggers.
+
+        
+"""
         try:
+        """
+
             conn = sqlite3.connect(self.db_path)
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             cursor = conn.cursor()
+           
+""""""
 
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT trigger_id, title, feed_name, urgency_score,
                     status, video_task_id, created_at
                 FROM rss_video_triggers
                 ORDER BY created_at DESC
                 LIMIT ?
-            """,
-                (limit,),
-            )
+            """
+,
 
+                (limit,),
+            
+""""""
+
+             )
+            
+
+             
+            
+""""""
+
+            
+           
+
+            cursor = conn.cursor()
+           
+""""""
             results = cursor.fetchall()
             conn.close()
 
@@ -502,8 +808,8 @@ Style: Professional news analysis with Right Perspective approach
                         "status": result[4],
                         "video_task_id": result[5],
                         "created_at": result[6],
-                    }
-                )
+                     }
+                 )
 
             return triggers
 

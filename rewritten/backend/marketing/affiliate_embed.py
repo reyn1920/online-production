@@ -7,20 +7,21 @@ from backend.core.settings import get_setting
 
 
 def get_enabled_affiliates() -> List[Dict[str, Any]]:
-    """
+    """"""
     Returns a list of enabled affiliates from the database.
-    """
+    """"""
     with connect() as cx:
         cur = cx.execute(
             "SELECT name, url, tag FROM affiliates WHERE enabled = 1 ORDER BY name ASC"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return [dict(row) for row in cur.fetchall()]
 
 
 def build_affiliate_footer() -> str:
-    """
+    """"""
     Builds an affiliate footer string based on enabled affiliates and settings.
-    """
+    """"""
     # Check if affiliate embedding is enabled
     embed_enabled = get_setting("affiliate_embed_enabled", "false").lower() == "true"
     if not embed_enabled:
@@ -34,7 +35,8 @@ def build_affiliate_footer() -> str:
     template = get_setting(
         "affiliate_footer_template",
         "\\n\\n--- Affiliate Links ---\\n{links}\\n\\nSupport us by using these links!",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Build links
     links = []

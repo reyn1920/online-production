@@ -57,7 +57,8 @@ def preprocess_render(geometry, euler, trans, cam, tris, vert_tris, ori_img):
         (ori_img.shape[0], ori_img.shape[1] * ori_img.shape[2]),
         dtype=torch.float32,
         device=ori_img.device,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return rott_geo, proj_geo, rot_tri_normal, is_visible, pixel_valid
 
 
@@ -70,15 +71,18 @@ class Render_Face(torch.autograd.Function):
             (
                 torch.ones((batch_size, 1), dtype=torch.int32, device=ori_img.device) * h,
                 torch.ones((batch_size, 1), dtype=torch.int32, device=ori_img.device) * w,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             dim=1,
         ).view(-1)
         tri_index, tri_coord, render, real = render_util.render_face_forward(
             proj_geo, ori_img, ori_size, texture, nbl, is_visible, tri_inds, pixel_valid
-        )
+# BRACKET_SURGEON: disabled
+#         )
         ctx.save_for_backward(
             ori_img, ori_size, proj_geo, texture, nbl, tri_inds, tri_index, tri_coord
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return render, real
 
     @staticmethod
@@ -92,7 +96,8 @@ class Render_Face(torch.autograd.Function):
             tri_inds,
             tri_index,
             tri_coord,
-        ) = ctx.saved_tensors
+# BRACKET_SURGEON: disabled
+#         ) = ctx.saved_tensors
         grad_proj_geo, grad_texture, grad_nbl = render_util.render_face_backward(
             grad_render,
             grad_real,
@@ -104,7 +109,8 @@ class Render_Face(torch.autograd.Function):
             tri_inds,
             tri_index,
             tri_coord,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return grad_proj_geo, grad_texture, grad_nbl, None, None, None, None
 
 
@@ -120,7 +126,8 @@ def cal_land(proj_geo, is_visible, lands_info, land_num):
     (land_index,) = render_util.update_contour(lands_info, is_visible, land_num)
     proj_land = torch.index_select(proj_geo.reshape(-1, 3), 0, land_index)[:, :2].reshape(
         -1, land_num, 2
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return proj_land
 
 
@@ -143,12 +150,14 @@ class Render_Land(nn.Module):
             (
                 torch.ones((batch_size, 1), dtype=torch.int32, device=ori_img.device) * h,
                 torch.ones((batch_size, 1), dtype=torch.int32, device=ori_img.device) * w,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             dim=1,
         ).view(-1)
         rott_geo, proj_geo, rot_tri_normal, _, _ = preprocess_render(
             geometry, euler, trans, cam, self.tris, self.vert_tris, ori_img
-        )
+# BRACKET_SURGEON: disabled
+#         )
         tri_nb = self.normal_baser(rot_tri_normal.contiguous())
         nbl = torch.bmm(tri_nb, (light.reshape(-1, 9, 3))[:, :, 0].unsqueeze(-1).repeat(1, 1, 3))
         texture = torch.ones_like(geometry) * 200
@@ -158,17 +167,20 @@ class Render_Land(nn.Module):
     def cal_loss_rgb(self, geometry, euler, trans, cam, ori_img, light, texture, lands):
         rott_geo, proj_geo, rot_tri_normal, is_visible, pixel_valid = preprocess_render(
             geometry, euler, trans, cam, self.tris, self.vert_tris, ori_img
-        )
+# BRACKET_SURGEON: disabled
+#         )
         tri_nb = self.normal_baser(rot_tri_normal.contiguous())
         nbl = torch.bmm(tri_nb, light.reshape(-1, 9, 3))
         render, real = self.renderer(
             proj_geo, texture, nbl, ori_img, is_visible, self.tris, pixel_valid
-        )
+# BRACKET_SURGEON: disabled
+#         )
         proj_land = cal_land(proj_geo, is_visible, self.lands_info, lands.shape[1])
         col_minus = torch.norm((render - real).reshape(-1, 3), dim=1).reshape(ori_img.shape[0], -1)
         col_dis = torch.mean(col_minus * pixel_valid) / (torch.mean(pixel_valid) + 0.00001)
         land_dists = torch.norm((proj_land - lands).reshape(-1, 2), dim=1).reshape(
             ori_img.shape[0], -1
-        )
+# BRACKET_SURGEON: disabled
+#         )
         lan_dis = torch.mean(land_dists)
         return col_dis, lan_dis

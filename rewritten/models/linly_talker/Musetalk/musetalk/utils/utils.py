@@ -25,7 +25,8 @@ def load_all_model():
     unet = UNet(
         unet_config="./Musetalk/models/musetalk/musetalk.json",
             model_path="./Musetalk/models/musetalk/pytorch_model.bin",
-            )
+# BRACKET_SURGEON: disabled
+#             )
     pe = PositionalEncoding(d_model = 384)
     return audio_processor, vae, unet, pe
 

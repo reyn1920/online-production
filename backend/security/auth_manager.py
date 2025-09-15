@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 Enterprise-Grade Authentication & Authorization Manager
 Implements JWT authentication, RBAC authorization, and comprehensive security controls
-"""
+
+""""""
+
 
 import jwt
 import bcrypt
@@ -25,7 +30,9 @@ logger = logging.getLogger(__name__)
 
 
 class UserRole(Enum):
-    """User roles with hierarchical permissions"""
+    
+User roles with hierarchical permissions
+"""
 
     GUEST = "guest"
     USER = "user"
@@ -37,10 +44,28 @@ class UserRole(Enum):
 
 
 class Permission(Enum):
-    """Granular permissions for RBAC"""
+    """
+Granular permissions for RBAC
+
+
+   
+""""""
 
     # Basic permissions
+   
+
+    
+   
+"""
     READ_BASIC = "read:basic"
+   """
+
+    
+   
+
+    # Basic permissions
+   
+""""""
     WRITE_BASIC = "write:basic"
 
     # API permissions
@@ -124,7 +149,7 @@ class SecurityManager:
                 Permission.USE_FREE_APIS,
                 Permission.CREATE_CONTENT,
                 Permission.EDIT_CONTENT,
-            },
+             },
             UserRole.PREMIUM: {
                 Permission.READ_BASIC,
                 Permission.WRITE_BASIC,
@@ -137,7 +162,7 @@ class SecurityManager:
                 Permission.EDIT_VIDEO,
                 Permission.RENDER_4K,
                 Permission.USE_AI_VOICES,
-            },
+             },
             UserRole.BUSINESS: {
                 Permission.READ_BASIC,
                 Permission.WRITE_BASIC,
@@ -155,7 +180,7 @@ class SecurityManager:
                 Permission.USE_AI_VOICES,
                 Permission.VIEW_ANALYTICS,
                 Permission.MANAGE_TEAM,
-            },
+             },
             UserRole.ENTERPRISE: {
                 Permission.READ_BASIC,
                 Permission.WRITE_BASIC,
@@ -174,10 +199,10 @@ class SecurityManager:
                 Permission.VIEW_ANALYTICS,
                 Permission.MANAGE_TEAM,
                 Permission.BILLING_ACCESS,
-            },
+             },
             UserRole.ADMIN: set(Permission),  # All permissions
             UserRole.SUPER_ADMIN: set(Permission),  # All permissions
-        }
+         }
 
         # In-memory user store (replace with database in production)
         self.users: Dict[str, User] = {}
@@ -187,7 +212,7 @@ class SecurityManager:
             "login": {"requests": 5, "window": 300},  # 5 attempts per 5 minutes
             "api": {"requests": 1000, "window": 3600},  # 1000 requests per hour
             "premium_api": {"requests": 10000, "window": 3600},  # 10k requests per hour
-        }
+         }
 
     def hash_password(self, password: str) -> str:
         """Hash password using bcrypt"""
@@ -199,16 +224,44 @@ class SecurityManager:
         return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
 
     def generate_user_id(self) -> str:
-        """Generate secure user ID"""
+        """
+Generate secure user ID
+
+        
+"""
         return secrets.token_urlsafe(32)
+        """"""
+        """
+
+
+        return secrets.token_urlsafe(32)
+
+        
+
+       
+""""""
 
     def create_user(
         self, email: str, username: str, password: str, role: UserRole = UserRole.USER
-    ) -> User:
-        """Create new user with security validations"""
+#     ) -> User:
+        
+Create new user with security validations
+"""
         # Validate email uniqueness
+        """
+
         for user in self.users.values():
+        
+
+       
+""""""
+
             if user.email == email:
+        
+
+        for user in self.users.values():
+        
+"""
                 raise ValueError("Email already exists")
 
         # Validate password strength
@@ -225,33 +278,77 @@ class SecurityManager:
             password_hash=password_hash,
             role=role,
             permissions=self.role_permissions.get(role, set()),
-        )
+         )
 
         self.users[user_id] = user
         logger.info(f"User created: {email} with role {role.value}")
         return user
 
     def _validate_password_strength(self, password: str) -> bool:
-        """Validate password meets security requirements"""
+        """
+Validate password meets security requirements
+
         if len(password) < 8:
+            
+"""
+            return False
+            """"""
+            """
+
             return False
 
+            """
         has_upper = any(c.isupper() for c in password)
         has_lower = any(c.islower() for c in password)
         has_digit = any(c.isdigit() for c in password)
-        has_special = any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password)
+        has_special = any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password)"
 
         return has_upper and has_lower and has_digit and has_special
 
     def authenticate_user(self, email: str, password: str) -> Optional[User]:
-        """Authenticate user with rate limiting and account lockout"""
+        """
+Authenticate user with rate limiting and account lockout
+
+       
+""""""
+
         # Find user by email
+       
+
+        
+       
+"""
         user = None
         for u in self.users.values():
+       """
+
+        
+       
+
+        # Find user by email
+       
+""""""
+
             if u.email == email:
                 user = u
-                break
+               
 
+                
+               
+"""
+                break
+               """"""
+
+                
+
+               """
+
+                break
+               
+
+                
+               
+"""
         if not user:
             return None
 
@@ -291,7 +388,7 @@ class SecurityManager:
             "exp": datetime.utcnow() + self.access_token_expire,
             "iat": datetime.utcnow(),
             "type": "access",
-        }
+         }
 
         token = jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
 
@@ -301,7 +398,7 @@ class SecurityManager:
                 f"token:{user.id}:{hashlib.sha256(token.encode()).hexdigest()[:16]}",
                 int(self.access_token_expire.total_seconds()),
                 "valid",
-            )
+             )
 
         return token
 
@@ -312,15 +409,22 @@ class SecurityManager:
             "exp": datetime.utcnow() + self.refresh_token_expire,
             "iat": datetime.utcnow(),
             "type": "refresh",
-        }
+         }
 
         return jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
 
     def verify_token(self, token: str) -> Optional[Dict[str, Any]]:
-        """Verify and decode JWT token"""
-        try:
-            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+        """
+Verify and decode JWT token
 
+        
+"""
+        try:
+        """"""
+            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+           """"""
+        try:
+        """"""
             # Check if token is revoked
             token_hash = hashlib.sha256(token.encode()).hexdigest()[:16]
             if self.redis_client:
@@ -334,11 +438,37 @@ class SecurityManager:
             return None
 
     def revoke_token(self, token: str) -> bool:
-        """Revoke a JWT token"""
-        try:
-            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
-            token_hash = hashlib.sha256(token.encode()).hexdigest()[:16]
+        """
+Revoke a JWT token
 
+        
+"""
+        try:
+        """
+
+            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+        
+
+        try:
+        
+""""""
+
+            
+           
+
+            token_hash = hashlib.sha256(token.encode()).hexdigest()[:16]
+           
+""""""
+
+           
+
+
+            
+
+           
+"""
+            token_hash = hashlib.sha256(token.encode()).hexdigest()[:16]
+           """"""
             if self.redis_client:
                 self.redis_client.delete(f"token:{payload['user_id']}:{token_hash}")
                 return True
@@ -347,18 +477,65 @@ class SecurityManager:
         return False
 
     def check_permission(self, user: User, permission: Permission) -> bool:
-        """Check if user has specific permission"""
+        """
+Check if user has specific permission
+
+        
+"""
+        return permission in user.permissions
+        """"""
+        """
+
+
         return permission in user.permissions
 
+        
+
+       
+""""""
+
     def check_permissions(self, user: User, permissions: List[Permission]) -> bool:
-        """Check if user has all specified permissions"""
+        
+Check if user has all specified permissions
+""""""
+
+        return all(p in user.permissions for p in permissions)
+        
+
+       
+""""""
+
+        
+
+
         return all(p in user.permissions for p in permissions)
 
+        
+""""""
+
+        
+       
+
     def _check_rate_limit(self, key: str, limit_type: str) -> bool:
-        """Check rate limiting"""
+        
+"""Check rate limiting"""
+
         if limit_type not in self.rate_limits:
+            
+
+            return True
+            
+""""""
+
+            
+           
+
+            
+"""
+
             return True
 
+            """
         limit_config = self.rate_limits[limit_type]
         current_time = int(datetime.utcnow().timestamp())
         window_start = current_time - limit_config["window"]
@@ -382,7 +559,7 @@ class SecurityManager:
             # Clean old entries
             self._memory_store[key] = [
                 timestamp for timestamp in self._memory_store[key] if timestamp > window_start
-            ]
+             ]
 
             if len(self._memory_store[key]) >= limit_config["requests"]:
                 return False
@@ -391,28 +568,79 @@ class SecurityManager:
             return True
 
     def encrypt_sensitive_data(self, data: str) -> str:
-        """Encrypt sensitive data"""
+        """
+Encrypt sensitive data
+
+        
+"""
+        return self.cipher_suite.encrypt(data.encode()).decode()
+        """"""
+        """
+
+
         return self.cipher_suite.encrypt(data.encode()).decode()
 
+        
+
+       
+""""""
+
     def decrypt_sensitive_data(self, encrypted_data: str) -> str:
-        """Decrypt sensitive data"""
+        
+Decrypt sensitive data
+""""""
+
+        return self.cipher_suite.decrypt(encrypted_data.encode()).decode()
+        
+
+       
+""""""
+
+        
+
+
         return self.cipher_suite.decrypt(encrypted_data.encode()).decode()
 
+        
+""""""
+
+        
+       
 
 # FastAPI Security Dependencies
 security = HTTPBearer()
 
 
 def create_auth_dependency(security_manager: SecurityManager):
-    """Create authentication dependency for FastAPI"""
+    
+"""Create authentication dependency for FastAPI"""
+
 
     async def get_current_user(
         credentials: HTTPAuthorizationCredentials = security,
-    ) -> User:
-        """Get current authenticated user"""
+#     ) -> User:
+        
+Get current authenticated user
+"""
         token = credentials.credentials
-        payload = security_manager.verify_token(token)
+       """
 
+        
+       
+
+        payload = security_manager.verify_token(token)
+       
+""""""
+
+       
+
+
+        
+
+       
+"""
+        payload = security_manager.verify_token(token)
+       """"""
         if not payload:
             raise HTTPException(status_code=401, detail="Invalid or expired token")
 
@@ -442,7 +670,7 @@ def require_permissions(*permissions: Permission):
                     raise HTTPException(
                         status_code=403,
                         detail=f"Permission required: {permission.value}",
-                    )
+                     )
 
             return await func(*args, **kwargs)
 
@@ -452,7 +680,9 @@ def require_permissions(*permissions: Permission):
 
 
 def require_role(min_role: UserRole):
-    """Decorator to require minimum role level"""
+    """
+Decorator to require minimum role level
+
     role_hierarchy = {
         UserRole.GUEST: 0,
         UserRole.USER: 1,
@@ -461,8 +691,24 @@ def require_role(min_role: UserRole):
         UserRole.ENTERPRISE: 4,
         UserRole.ADMIN: 5,
         UserRole.SUPER_ADMIN: 6,
-    }
+    
+""""""
 
+     }
+    
+
+     
+    
+""""""
+
+
+     
+
+    
+
+     }
+    
+""""""
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
@@ -473,7 +719,7 @@ def require_role(min_role: UserRole):
             if role_hierarchy.get(user.role, 0) < role_hierarchy.get(min_role, 0):
                 raise HTTPException(
                     status_code=403, detail=f"Role required: {min_role.value} or higher"
-                )
+                 )
 
             return await func(*args, **kwargs)
 
@@ -493,20 +739,20 @@ if __name__ == "__main__":
     import os
     admin_password = os.getenv("TEST_ADMIN_PASSWORD", "AdminPass123!")
     premium_password = os.getenv("TEST_PREMIUM_PASSWORD", "PremiumPass123!")
-    
+
     admin_user = security_manager.create_user(
         email="admin@example.com",
         username="admin",
         password=admin_password,
         role=UserRole.ADMIN,
-    )
+     )
 
     premium_user = security_manager.create_user(
         email="premium@example.com",
         username="premium",
         password=premium_password,
         role=UserRole.PREMIUM,
-    )
+     )
 
     # Test authentication
     auth_user = security_manager.authenticate_user("admin@example.com", admin_password)

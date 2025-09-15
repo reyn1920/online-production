@@ -1,10 +1,26 @@
 #!/usr/bin/env python3
-"""
+""""""
 Conservative Media Research Agent
+"""""""""
 
 This agent scrapes news sources and tracks examples of Democratic hypocrisy,
+
+
 lies, and inaction. It builds a comprehensive database of documented examples
+
+""""""
+
+
+
 for conservative media content generation.
+
+""""""
+
+
+
+lies, and inaction. It builds a comprehensive database of documented examples
+
+""""""
 
 Author: Trae AI Production System
 Date: 2025
@@ -33,7 +49,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class HypocrisyExample:
-    """Data structure for tracking hypocrisy examples"""
+    """
+Data structure for tracking hypocrisy examples
+
 
     id: str
     politician: str
@@ -47,9 +65,15 @@ class HypocrisyExample:
     severity: str  # 'high', 'medium', 'low'
     tags: List[str]
     created_at: str
+   
+""""""
+
     updated_at: str
+   
 
-
+    
+   
+"""
 class ConservativeResearchAgent:
     """Main agent class for researching and tracking Democratic hypocrisy"""
 
@@ -130,72 +154,154 @@ class ConservativeResearchAgent:
         self.init_database()
 
     def init_database(self):
-        """Initialize SQLite database for storing research data"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Initialize SQLite database for storing research data
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         # Create main hypocrisy examples table
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS hypocrisy_examples (
                 id TEXT PRIMARY KEY,
-                    politician TEXT NOT NULL,
-                    category TEXT NOT NULL,
-                    title TEXT NOT NULL,
-                    description TEXT NOT NULL,
-                    source_url TEXT NOT NULL,
-                    date_recorded TEXT,
-                    evidence_type TEXT NOT NULL,
-                    contradiction_details TEXT NOT NULL,
-                    severity TEXT NOT NULL,
-                    tags TEXT NOT NULL,
-                    created_at TEXT NOT NULL,
-                    updated_at TEXT NOT NULL
+                politician TEXT NOT NULL,
+                category TEXT NOT NULL,
+                title TEXT NOT NULL,
+                description TEXT NOT NULL,
+                source_url TEXT NOT NULL,
+                date_recorded TEXT,
+                evidence_type TEXT NOT NULL,
+                contradiction_details TEXT NOT NULL,
+                severity TEXT NOT NULL,
+                tags TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
             )
-        """
-        )
+       
+""""""
 
+       
+
+        
+       
+"""
+        )
+       """"""
+        
+       """
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         # Create news articles table for tracking sources
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS news_articles (
                 id TEXT PRIMARY KEY,
-                    source TEXT NOT NULL,
-                    title TEXT NOT NULL,
-                    url TEXT NOT NULL,
-                    content TEXT,
-                    published_date TEXT,
-                    scraped_at TEXT NOT NULL,
-                    relevance_score REAL DEFAULT 0.0
+                source TEXT NOT NULL,
+                title TEXT NOT NULL,
+                url TEXT NOT NULL,
+                content TEXT,
+                published_date TEXT,
+                scraped_at TEXT NOT NULL,
+                relevance_score REAL DEFAULT 0.0
             )
-        """
+       
+""""""
+
+       
+
+        
+       
+"""
         )
+       """"""
+            
+           """
 
         # Create politicians tracking table
         cursor.execute(
-            """
+           
+
+            
+           
+"""
             CREATE TABLE IF NOT EXISTS politicians (
                 name TEXT PRIMARY KEY,
-                    party TEXT NOT NULL,
-                    position TEXT,
-                    hypocrisy_count INTEGER DEFAULT 0,
-                    last_updated TEXT NOT NULL
+                party TEXT NOT NULL,
+                position TEXT,
+                hypocrisy_count INTEGER DEFAULT 0,
+                last_updated TEXT NOT NULL
             )
-        """
+       """"""
+        
+       """
+
         )
+       
+
+        
+       
+""""""
+
+            
+           
 
         conn.commit()
         conn.close()
 
         # Load pre - documented examples
+       
+""""""
+
         self.load_documented_examples()
+       
 
+        
+       
+"""
     def load_documented_examples(self):
-        """Load pre - researched examples into database"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Load pre - researched examples into database
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         for example in self.documented_examples:
+       """
+
+        
+       
+
+        cursor = conn.cursor()
+       
+""""""
             example_id = hashlib.md5(
                 f"{example['politician']}_{example['title']}".encode()
             ).hexdigest()
@@ -207,18 +313,17 @@ class ConservativeResearchAgent:
 
             # Insert new example
             cursor.execute(
-                """
+               """
+
+                
+               
+
                 INSERT INTO hypocrisy_examples
-                (id,
-    politician,
-    category,
-    title,
-    description,
-    source_url,
-    date_recorded,
-                    evidence_type, contradiction_details, severity, tags, created_at, updated_at)
+                (id, politician, category, title, description, source_url, date_recorded,
+                 evidence_type, contradiction_details, severity, tags, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+                
+""","""
                 (
                     example_id,
                     example["politician"],
@@ -233,9 +338,9 @@ class ConservativeResearchAgent:
                     json.dumps(example["tags"]),
                     datetime.now().isoformat(),
                     datetime.now().isoformat(),
-                ),
+                )
             )
-
+               """"""
         conn.commit()
         conn.close()
         logger.info(f"Loaded {len(self.documented_examples)} documented examples into database")
@@ -248,17 +353,51 @@ class ConservativeResearchAgent:
         self.session = aiohttp.ClientSession(headers=headers)
 
     async def close_session(self):
-        """Close aiohttp session"""
-        if self.session:
-            await self.session.close()
+        """
+Close aiohttp session
 
+        if self.session:
+           
+""""""
+
+            await self.session.close()
+           
+
+            
+           
+"""
     async def scrape_news_source(self, source_name: str, source_url: str) -> List[Dict]:
-        """Scrape a news source for relevant articles"""
+        """
+Scrape a news source for relevant articles
+
+           
+""""""
+
+            await self.session.close()
+           
+
+            
+           
+"""
         if not self.session:
+           """
+
+            
+           
+
             await self.start_session()
+           
+""""""
 
         try:
             async with self.session.get(source_url, timeout=30) as response:
+           
+
+            
+           
+"""
+            await self.start_session()
+           """"""
                 if response.status != 200:
                     logger.warning(f"Failed to scrape {source_name}: HTTP {response.status}")
                     return []
@@ -273,7 +412,7 @@ class ConservativeResearchAgent:
                     "article",
                     ".article",
                     ".story",
-                    ".news - item",
+                    ".news-item",
                     "h2 a",
                     "h3 a",
                     ".headline a",
@@ -325,10 +464,19 @@ class ConservativeResearchAgent:
         return None
 
     def is_relevant_article(self, title: str) -> bool:
-        """Check if article title is relevant to conservative research"""
+        """
+Check if article title is relevant to conservative research
+
         if not title:
+            
+"""
+            return False
+            """"""
+            """
+
             return False
 
+            """
         title_lower = title.lower()
 
         # Keywords indicating potential hypocrisy/lies/inaction
@@ -381,12 +529,29 @@ class ConservativeResearchAgent:
         return any(keyword in title_lower for keyword in relevant_keywords)
 
     async def analyze_article_content(self, article: Dict) -> Optional[Dict]:
-        """Analyze article content for hypocrisy examples"""
-        if not self.session:
-            await self.start_session()
+        """
+Analyze article content for hypocrisy examples
 
+        if not self.session:
+           
+""""""
+
+            await self.start_session()
+           
+
+            
+           
+"""
         try:
             async with self.session.get(article["url"], timeout=30) as response:
+           """
+
+            
+           
+
+            await self.start_session()
+           
+""""""
                 if response.status != 200:
                     return None
 
@@ -395,9 +560,9 @@ class ConservativeResearchAgent:
 
                 # Extract article content
                 content_selectors = [
-                    ".article - content",
-                    ".story - content",
-                    ".entry - content",
+                    ".article-content",
+                    ".story-content",
+                    ".entry-content",
                     "article p",
                     ".content p",
                 ]
@@ -431,10 +596,19 @@ class ConservativeResearchAgent:
         return None
 
     def calculate_hypocrisy_score(self, content: str) -> float:
-        """Calculate relevance score for potential hypocrisy content"""
+        """
+Calculate relevance score for potential hypocrisy content
+
         if not content:
+            
+"""
+            return 0.0
+            """"""
+            """
+
             return 0.0
 
+            """
         content_lower = content.lower()
         score = 0.0
 
@@ -497,10 +671,28 @@ class ConservativeResearchAgent:
         severity: str = None,
         limit: int = 50,
     ) -> List[Dict]:
-        """Retrieve hypocrisy examples from database with filters"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Retrieve hypocrisy examples from database with filters
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        cursor = conn.cursor()
+       
+""""""
         query = "SELECT * FROM hypocrisy_examples WHERE 1 = 1"
         params = []
 
@@ -533,9 +725,27 @@ class ConservativeResearchAgent:
         return examples
 
     def generate_weekly_content(self) -> Dict:
-        """Generate weekly conservative content based on documented examples"""
-        examples = self.get_hypocrisy_examples(limit=10)
+        """
+Generate weekly conservative content based on documented examples
 
+       
+""""""
+
+        examples = self.get_hypocrisy_examples(limit=10)
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        examples = self.get_hypocrisy_examples(limit=10)
+       
+""""""
         content = {
             "title": f"Weekly Conservative Research Brief - {datetime.now().strftime('%B %d, %Y')}",
             "summary": f"This week's compilation of {len(examples)} documented examples of Democratic hypocrisy and false claims.",
@@ -590,23 +800,30 @@ class ConservativeResearchAgent:
             await self.close_session()
 
     def store_article_analysis(self, article: Dict, analysis: Dict):
-        """Store article analysis in database"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Store article analysis in database
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         cursor.execute(
-            """
+           """
+
+            
+           
+
             INSERT OR REPLACE INTO news_articles
-            (id,
-    source,
-    title,
-    url,
-    content,
-    published_date,
-    scraped_at,
-    relevance_score)
+            (id, source, title, url, content, published_date, scraped_at, relevance_score)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """,
+            
+""","""
             (
                 article["id"],
                 article["source"],
@@ -618,7 +835,14 @@ class ConservativeResearchAgent:
                 analysis["hypocrisy_score"],
             ),
         )
+       """
 
+        
+       
+
+        cursor = conn.cursor()
+       
+""""""
         conn.commit()
         conn.close()
 

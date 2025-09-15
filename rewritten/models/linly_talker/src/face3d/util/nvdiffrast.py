@@ -1,6 +1,6 @@
-"""This script is the differentiable renderer for Deep3DFaceRecon_pytorch
+"""This script is the differentiable renderer for Deep3DFaceRecon_pytorch"""
 Attention, antialiasing step is missing in current version.
-"""
+""""""
 
 from typing import List
 
@@ -13,7 +13,9 @@ from kornia.geometry.camera import pixel2cam
 from pytorch3d.renderer import (DirectionalLights, FoVPerspectiveCameras,
 
     MeshRasterizer, MeshRenderer, RasterizationSettings,
-                                    SoftPhongShader, TexturesUV, look_at_view_transform)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     SoftPhongShader, TexturesUV, look_at_view_transform)
 
 from pytorch3d.structures import Meshes
 from scipy.io import loadmat
@@ -23,6 +25,8 @@ from torch import nn
 #     return np.array([[n/x,    0,            0,              0],
 #                      [  0, n/-x,            0,              0],
 #                      [  0,    0, -(f + n)/(f - n), -(2 * f * n)/(f - n)],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
 #                      [  0,    0,           -1,              0]]).astype(np.float32)
 
 
@@ -36,6 +40,8 @@ class MeshRenderer(nn.Module):
         # self.ndc_proj = torch.tensor(ndc_projection(x = x,
     n = znear,
     f = zfar)).matmul(
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
             #         torch.diag(torch.tensor([1., -1, -1, 1])))
         self.rasterize_size = rasterize_size
         self.fov = rasterize_fov
@@ -46,7 +52,7 @@ class MeshRenderer(nn.Module):
 
 
     def forward(self, vertex, tri, feat = None):
-        """
+        """"""
         Return:
             mask               -- torch.tensor, size (B, 1, H, W)
             depth              -- torch.tensor, size (B, 1, H, W)
@@ -56,7 +62,7 @@ class MeshRenderer(nn.Module):
             vertex          -- torch.tensor, size (B, N, 3)
             tri             -- torch.tensor, size (B, M, 3) or (M, 3), triangles
             feat(optional)  -- torch.tensor, size (B, N ,C), features
-        """
+        """"""
         device = vertex.device
         rsize = int(self.rasterize_size)
         # ndc_proj = self.ndc_proj.to(device)
@@ -64,7 +70,9 @@ class MeshRenderer(nn.Module):
         if vertex.shape[-1] == 3:
             vertex = torch.cat(
                 [vertex, torch.ones([*vertex.shape[:2], 1]).to(device)], dim=-1
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             vertex[..., 0] = -vertex[..., 0]
 
         # vertex_ndc = vertex @ ndc_proj.t()
@@ -92,7 +100,9 @@ class MeshRenderer(nn.Module):
                 fov = self.fov,
                 znear = self.znear,
                 zfar = self.zfar,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         raster_settings = RasterizationSettings(image_size = rsize)
 
@@ -100,11 +110,15 @@ class MeshRenderer(nn.Module):
         mesh = Meshes(
             vertex.contiguous()[..., :3],
                 tri.unsqueeze(0).repeat((vertex.shape[0], 1, 1)),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         fragments = self.rasterizer(
             mesh, cameras = cameras, raster_settings = raster_settings
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         rast_out = fragments.pix_to_face.squeeze(-1)
         depth = fragments.zbuf
 
@@ -118,7 +132,9 @@ class MeshRenderer(nn.Module):
             attributes = feat.reshape(-1, 3)[mesh.faces_packed()]
             image = pytorch3d.ops.interpolate_face_attributes(
                 fragments.pix_to_face, fragments.bary_coords, attributes
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             # print(image.shape)
             image = image.squeeze(-2).permute(0, 3, 1, 2)
             image = mask * image

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 First Channel Setup Script
 Sets up the primary channel configuration and initializes content generation pipeline
 Excludes video production as requested
-"""
+""""""
 
 import json
 import logging
@@ -15,7 +15,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("channel_setup.log"), logging.StreamHandler()],
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -54,7 +55,8 @@ class ChannelSetup:
             self.content_dir / "scripts" / channel_name.lower().replace(" ", "_"),
             self.content_dir / "templates" / channel_name.lower().replace(" ", "_"),
             Path("logs") / channel_name.lower().replace(" ", "_"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for directory in directories:
             directory.mkdir(parents=True, exist_ok=True)
@@ -76,7 +78,8 @@ class ChannelSetup:
             "platforms": channel_config.get("platforms", []),
             "setup_date": datetime.now().isoformat(),
             "status": "initialized",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Save pipeline config
         config_file = self.base_dir / f'{channel_name.lower().replace(" ", "_")}_pipeline.json'
@@ -91,7 +94,7 @@ class ChannelSetup:
         template_dir = self.content_dir / "templates" / channel_name.lower().replace(" ", "_")
 
         # Script template
-        script_template = f"""
+        script_template = f""""""
 # {channel_name} Content Script Template
 
 ## Episode Information
@@ -104,7 +107,7 @@ class ChannelSetup:
 
 ### Introduction (30 - 60 seconds)
 - Hook/Opening statement
-- Brief overview of today's topic
+- Brief overview of today's topic'
 - Channel branding reminder
 
 ### Main Content (8 - 12 minutes)
@@ -124,13 +127,13 @@ class ChannelSetup:
 
 ## Monetization Integration
 {chr(10).join(f'- {item}' for item in channel_config.get('monetization', []))}
-"""
+""""""
 
         with open(template_dir / "script_template.md", "w") as f:
             f.write(script_template)
 
         # Audio production checklist
-        audio_checklist = f"""
+        audio_checklist = f""""""
 # {channel_name} Audio Production Checklist
 
 ## Pre - Production
@@ -156,7 +159,7 @@ class ChannelSetup:
 - [ ] Platform - specific optimization
 - [ ] Monetization elements integrated
 - [ ] Analytics tracking enabled
-"""
+""""""
 
         with open(template_dir / "production_checklist.md", "w") as f:
             f.write(audio_checklist)
@@ -176,7 +179,8 @@ class ChannelSetup:
                 str(self.output_dir / "thumbnails" / channel_name.lower().replace(" ", "_")),
                 str(self.content_dir / "scripts" / channel_name.lower().replace(" ", "_")),
                 str(self.content_dir / "templates" / channel_name.lower().replace(" ", "_")),
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "templates_created": ["script_template.md", "production_checklist.md"],
             "next_steps": [
                 "Create first content script using template",
@@ -184,9 +188,11 @@ class ChannelSetup:
                 "Create thumbnail graphics",
                 "Schedule first publication",
                 "Monitor analytics and engagement",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "status": "READY_FOR_CONTENT_CREATION",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         report_file = self.base_dir / f'{channel_name.lower().replace(" ", "_")}_setup_report.json'
         with open(report_file, "w") as f:
@@ -224,7 +230,7 @@ class ChannelSetup:
             self.create_content_templates(channel_name, channel_config)
 
             # Generate report
-            report = self.generate_setup_report(channel_name, channel_config, pipeline_config)
+            self.generate_setup_report(channel_name, channel_config, pipeline_config)
 
             logger.info("✅ Channel setup completed successfully!")
             logger.info(f"Primary channel '{channel_name}' is ready for content creation")

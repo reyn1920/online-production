@@ -1,19 +1,20 @@
-"""This package includes all the modules related to data loading and preprocessing
+"""This package includes all the modules related to data loading and preprocessing"""
 
  To add a custom dataset class called 'dummy', you need to add a file called 'dummy_dataset.py' \
-    and define a subclass 'DummyDataset' inherited from BaseDataset.
+#     and define a subclass 'DummyDataset' inherited from BaseDataset.
  You need to implement four functions:
     -- <__init__>:                      initialize the class,
     first call BaseDataset.__init__(self,
-    opt).
+# BRACKET_SURGEON: disabled
+#     opt).
     -- <__len__>:                       return the size of dataset.
     -- <__getitem__>:                   get a data point from data loader.
     -- <modify_commandline_options>:    (optionally) add dataset - specific options \
-    and set default options.
+#     and set default options.
 
 Now you can use the dataset class by specifying flag '--dataset_mode dummy'.
 See our template dataset class 'template_dataset.py' for more details.
-"""
+""""""
 
 import importlib
 
@@ -23,12 +24,12 @@ from face3d.data.base_dataset import BaseDataset
 
 
 def find_dataset_using_name(dataset_name):
-    """Import the module "data/[dataset_name]_dataset.py".
+    """Import the module "data/[dataset_name]_dataset.py"."""
 
     In the file, the class called DatasetNameDataset() will
     be instantiated. It has to be a subclass of BaseDataset,
     and it is case-insensitive.
-    """
+    """"""
     dataset_filename = "data." + dataset_name + "_dataset"
 
     try:
@@ -65,7 +66,8 @@ def find_dataset_using_name(dataset_name):
         else:
             raise NotImplementedError(
                 f"Dataset '{dataset_name}' not found. Available datasets: flist, template, imagefolder"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     dataset = None
     target_dataset_name = dataset_name.replace("_", "") + "dataset"
@@ -77,7 +79,8 @@ def find_dataset_using_name(dataset_name):
         raise NotImplementedError(
             "In %s.py, there should be a subclass of BaseDataset with class name that matches %s in lowercase."
             % (dataset_filename, target_dataset_name)
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     return dataset
 
@@ -89,7 +92,7 @@ def get_option_setter(dataset_name):
 
 
 def create_dataset(opt, rank=0):
-    """Create a dataset given the option.
+    """Create a dataset given the option."""
 
     This function wraps the class CustomDatasetDataLoader.
         This is the main interface between this package and 'train.py'/'test.py'
@@ -97,7 +100,7 @@ def create_dataset(opt, rank=0):
     Example:
         >>> from data import create_dataset
         >>> dataset = create_dataset(opt)
-    """
+    """"""
     data_loader = CustomDatasetDataLoader(opt, rank=rank)
     dataset = data_loader.load_data()
     return dataset
@@ -107,11 +110,11 @@ class CustomDatasetDataLoader:
     """Wrapper class of Dataset class that performs multi - threaded data loading"""
 
     def __init__(self, opt, rank=0):
-        """Initialize this class
+        """Initialize this class"""
 
         Step 1: create a dataset instance given the name [dataset_mode]
         Step 2: create a multi - threaded data loader.
-        """
+        """"""
         self.opt = opt
         dataset_class = find_dataset_using_name(opt.dataset_mode)
         self.dataset = dataset_class(opt)
@@ -119,7 +122,8 @@ class CustomDatasetDataLoader:
         print(
             "rank %d %s dataset [%s] was created"
             % (rank, self.dataset.name, type(self.dataset).__name__)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if opt.use_ddp and opt.isTrain:
             world_size = opt.world_size
             self.sampler = torch.utils.data.distributed.DistributedSampler(
@@ -127,14 +131,16 @@ class CustomDatasetDataLoader:
                 num_replicas=world_size,
                 rank=rank,
                 shuffle=not opt.serial_batches,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.dataloader = torch.utils.data.DataLoader(
                 self.dataset,
                 sampler=self.sampler,
                 num_workers=int(opt.num_threads / world_size),
                 batch_size=int(opt.batch_size / world_size),
                 drop_last=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             self.dataloader = torch.utils.data.DataLoader(
                 self.dataset,
@@ -142,7 +148,8 @@ class CustomDatasetDataLoader:
                 shuffle=(not opt.serial_batches) and opt.isTrain,
                 num_workers=int(opt.num_threads),
                 drop_last=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def set_epoch(self, epoch):
         self.dataset.current_epoch = epoch

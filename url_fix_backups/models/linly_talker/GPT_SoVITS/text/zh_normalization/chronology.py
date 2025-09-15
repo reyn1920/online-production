@@ -37,16 +37,17 @@ RE_TIME_RANGE = re.compile(
     r"([0 - 1]?[0 - 9]|2[0 - 3])"
     r":([0 - 5][0 - 9])"
     r"(:([0 - 5][0 - 9]))?"
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 def replace_time(match) -> str:
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
 
     is_range = len(match.groups()) > 5
 
@@ -84,16 +85,17 @@ def replace_time(match) -> str:
 
 RE_DATE = re.compile(
     r"(\\d{4}|\\d{2})年" r"((0?[1 - 9]|1[0 - 2])月)?" r"(((0?[1 - 9])|((1|2)[0 - 9])|30|31)([日号]))?"
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 def replace_date(match) -> str:
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
     year = match.group(1)
     month = match.group(3)
     day = match.group(5)
@@ -112,12 +114,12 @@ RE_DATE2 = re.compile(r"(\\d{4})([- /.])(0[1 - 9]|1[012])\\2(0[1 - 9]|[12][0 - 9
 
 
 def replace_date2(match) -> str:
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
     year = match.group(1)
     month = match.group(3)
     day = match.group(4)

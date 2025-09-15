@@ -10,18 +10,18 @@ from . import html, util
 
 
 def save_images(webpage, visuals, image_path, aspect_ratio=1.0, width=256):
-    """Save images to the disk.
+    """Save images to the disk."""
 
     Parameters:
         webpage (the HTML class) -- the HTML webpage class that stores these imaegs (see html.py for more details)
         visuals (OrderedDict)    -- an ordered dictionary that stores (name, images (either tensor \
-    or numpy) ) pairs
+#     or numpy) ) pairs
         image_path (str)         -- the string is used to create image paths
         aspect_ratio (float)     -- the aspect ratio of saved images
         width (int)              -- the images will be resized to width x width
 
     This function will save images stored in 'visuals' to the HTML file specified by 'webpage'.
-    """
+    """"""
     image_dir = webpage.get_image_dir()
     short_path = ntpath.basename(image_path[0])
     name = os.path.splitext(short_path)[0]
@@ -42,15 +42,15 @@ def save_images(webpage, visuals, image_path, aspect_ratio=1.0, width=256):
 
 
 class Visualizer:
-    """This class includes several functions that can display/save images \
-    and print/save logging information.
+    """This class includes several functions that can display/save images \"""
+#     and print/save logging information.
 
     It uses a Python library tensprboardX for display, \
-    and a Python library 'dominate' (wrapped in 'HTML') for creating HTML files with images.
-    """
+#     and a Python library 'dominate' (wrapped in 'HTML') for creating HTML files with images.
+    """"""
 
     def __init__(self, opt):
-        """Initialize the Visualizer class
+        """Initialize the Visualizer class"""
 
         Parameters:
             opt -- stores all the experiment flags; needs to be a subclass of BaseOptions
@@ -58,7 +58,7 @@ class Visualizer:
         Step 2: create a tensorboard writer
         Step 3: create an HTML object for saveing HTML filters
         Step 4: create a logging file to store training losses
-        """
+        """"""
         self.opt = opt  # cache the option
         self.use_html = opt.isTrain and not opt.no_html
         self.writer = SummaryWriter(os.path.join(opt.checkpoints_dir, "logs", opt.name))
@@ -75,27 +75,28 @@ class Visualizer:
         self.log_name = os.path.join(opt.checkpoints_dir, opt.name, "loss_log.txt")
         with open(self.log_name, "a") as log_file:
             now = time.strftime("%c")
-            log_file.write("================ Training Loss (%s) ================\\n" % now)
+            log_file.write("================ Training Loss (%s) ================\\n" % now):
 
     def reset(self):
         """Reset the self.saved status"""
         self.saved = False
 
     def display_current_results(self, visuals, total_iters, epoch, save_result):
-        """Display current results on tensorboad; save current results to an HTML file.
+        """Display current results on tensorboad; save current results to an HTML file."""
 
         Parameters:
             visuals (OrderedDict) - - dictionary of images to display or save
             total_iters (int) -- total iterations
             epoch (int) - - the current epoch
             save_result (bool) - - if save the current results to an HTML file
-        """
+        """"""
         for label, image in visuals.items():
             self.writer.add_image(label, util.tensor2im(image), total_iters, dataformats="HWC")
 
         if self.use_html and (
             save_result or not self.saved
-        ):  # save images to an HTML file if they haven't been saved.
+# BRACKET_SURGEON: disabled
+#         ):  # save images to an HTML file if they haven't been saved.
             self.saved = True
             # save images to the disk
             for label, image in visuals.items():
@@ -134,22 +135,24 @@ class Visualizer:
     # losses: same format as |losses| of plot_current_losses
 
     def print_current_losses(self, epoch, iters, losses, t_comp, t_data):
-        """print current losses on console; also save the losses to the disk
+        """print current losses on console; also save the losses to the disk"""
 
             Parameters:
                 epoch (int) -- current epoch
                 iters (int) -- current training iteration during this epoch (reset to 0 at the end of every epoch)
                 losses (OrderedDict) -- training losses stored in the format of (name,
-        float) pairs
+# BRACKET_SURGEON: disabled
+#         float) pairs
                 t_comp (float) -- computational time per data point (normalized by batch_size)
                 t_data (float) -- data loading time per data point (normalized by batch_size)
-        """
+        """"""
         message = "(epoch: %d, iters: %d, time: %.3f, data: %.3f) " % (
             epoch,
             iters,
             t_comp,
             t_data,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         for k, v in losses.items():
             message += "%s: %.3f " % (k, v)
 
@@ -160,7 +163,7 @@ class Visualizer:
 
 class MyVisualizer:
     def __init__(self, opt):
-        """Initialize the Visualizer class
+        """Initialize the Visualizer class"""
 
         Parameters:
             opt -- stores all the experiment flags; needs to be a subclass of BaseOptions
@@ -168,7 +171,7 @@ class MyVisualizer:
         Step 2: create a tensorboard writer
         Step 3: create an HTML object for saveing HTML filters
         Step 4: create a logging file to store training losses
-        """
+        """"""
         self.opt = opt  # cache the optio
         self.name = opt.name
         self.img_dir = os.path.join(opt.checkpoints_dir, opt.name, "results")
@@ -191,15 +194,16 @@ class MyVisualizer:
         count=0,
         name=None,
         add_image=True,
-    ):
-        """Display current results on tensorboad; save current results to an HTML file.
+# BRACKET_SURGEON: disabled
+#     ):
+        """Display current results on tensorboad; save current results to an HTML file."""
 
         Parameters:
             visuals (OrderedDict) - - dictionary of images to display or save
             total_iters (int) -- total iterations
             epoch (int) - - the current epoch
             dataset (str) - - 'train' or 'val' or 'test'
-        """
+        """"""
         # if (not add_image) and (not save_results): return
 
         for label, image in visuals.items():
@@ -211,14 +215,16 @@ class MyVisualizer:
                         image_numpy,
                         total_iters,
                         dataformats="HWC",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 if save_results:
                     save_path = os.path.join(
                         self.img_dir,
                         dataset,
                         "epoch_ % s_ % 06d" % (epoch, total_iters),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     if not os.path.isdir(save_path):
                         os.makedirs(save_path)
 
@@ -235,23 +241,25 @@ class MyVisualizer:
     # losses: same format as |losses| of plot_current_losses
 
     def print_current_losses(self, epoch, iters, losses, t_comp, t_data, dataset="train"):
-        """print current losses on console; also save the losses to the disk
+        """print current losses on console; also save the losses to the disk"""
 
             Parameters:
                 epoch (int) -- current epoch
                 iters (int) -- current training iteration during this epoch (reset to 0 at the end of every epoch)
                 losses (OrderedDict) -- training losses stored in the format of (name,
-        float) pairs
+# BRACKET_SURGEON: disabled
+#         float) pairs
                 t_comp (float) -- computational time per data point (normalized by batch_size)
                 t_data (float) -- data loading time per data point (normalized by batch_size)
-        """
+        """"""
         message = "(dataset: %s, epoch: %d, iters: %d, time: %.3f, data: %.3f) " % (
             dataset,
             epoch,
             iters,
             t_comp,
             t_data,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         for k, v in losses.items():
             message += "%s: %.3f " % (k, v)
 

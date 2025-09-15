@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 AI - Driven Video Editing - Script Cue Parser for Dynamic Blender Effects
-
+""""""
 This module implements AI - driven video editing that parses script cues like
 [TENSE_MOMENT], [DRAMATIC_PAUSE], [ACTION_SEQUENCE] to automatically add
 dynamic effects in Blender. It uses NLP for cue detection and generates
 Blender Python scripts for automated effect application.
+"""
+
+AI - Driven Video Editing - Script Cue Parser for Dynamic Blender Effects
+
+
+
+"""
 
 Author: TRAE.AI System
 Version: 1.0.0
 """
+
 
 import json
 import logging
@@ -37,7 +45,9 @@ except ImportError:
 
 
 class CueType(Enum):
-    """Types of script cues that can trigger effects."""
+    
+Types of script cues that can trigger effects.
+"""
 
     TENSE_MOMENT = "tense_moment"
     DRAMATIC_PAUSE = "dramatic_pause"
@@ -163,7 +173,7 @@ class ScriptCueParser:
                 r"\\[SUSPENSEFUL\\]",
                 r"tension builds",
                 r"atmosphere grows tense",
-            ],
+             ],
             CueType.DRAMATIC_PAUSE: [
                 r"\\[DRAMATIC[_\\s]*PAUSE\\]",
                 r"\\[PAUSE\\]",
@@ -171,7 +181,7 @@ class ScriptCueParser:
                 r"\\.\\.\\.",
                 r"long pause",
                 r"moment of silence",
-            ],
+             ],
             CueType.ACTION_SEQUENCE: [
                 r"\\[ACTION[_\\s]*SEQUENCE\\]",
                 r"\\[ACTION\\]",
@@ -179,14 +189,14 @@ class ScriptCueParser:
                 r"\\[CHASE\\]",
                 r"action packed",
                 r"intense action",
-            ],
+             ],
             CueType.EMOTIONAL_PEAK: [
                 r"\\[EMOTIONAL[_\\s]*PEAK\\]",
                 r"\\[CLIMAX\\]",
                 r"\\[BREAKDOWN\\]",
                 r"emotional climax",
                 r"tears in.*eyes",
-            ],
+             ],
             CueType.TRANSITION: [
                 r"\\[TRANSITION\\]",
                 r"\\[CUT[_\\s]*TO\\]",
@@ -194,92 +204,92 @@ class ScriptCueParser:
                 r"meanwhile",
                 r"later that day",
                 r"suddenly",
-            ],
+             ],
             CueType.EMPHASIS: [
                 r"\\[EMPHASIS\\]",
                 r"\\[IMPORTANT\\]",
                 r"\\[KEY[_\\s]*POINT\\]",
                 r"\\*\\*.*\\*\\*",
                 r"THIS IS IMPORTANT",
-            ],
+             ],
             CueType.SUSPENSE: [
                 r"\\[SUSPENSE\\]",
                 r"\\[MYSTERY\\]",
                 r"\\[OMINOUS\\]",
                 r"something.*wrong",
                 r"eerie silence",
-            ],
+             ],
             CueType.REVELATION: [
                 r"\\[REVELATION\\]",
                 r"\\[DISCOVERY\\]",
                 r"\\[REALIZATION\\]",
                 r"suddenly realizes",
                 r"the truth is",
-            ],
+             ],
             CueType.CLOSE_UP: [
                 r"\\[CLOSE[_\\s]*UP\\]",
                 r"\\[CU\\]",
                 r"close - up on",
                 r"zoom in on",
-            ],
+             ],
             CueType.WIDE_SHOT: [
                 r"\\[WIDE[_\\s]*SHOT\\]",
                 r"\\[WS\\]",
                 r"\\[ESTABLISHING[_\\s]*SHOT\\]",
                 r"wide view of",
                 r"panoramic view",
-            ],
+             ],
             CueType.ZOOM_IN: [
                 r"\\[ZOOM[_\\s]*IN\\]",
                 r"\\[PUSH[_\\s]*IN\\]",
                 r"camera moves closer",
                 r"zoom in on",
-            ],
+             ],
             CueType.ZOOM_OUT: [
                 r"\\[ZOOM[_\\s]*OUT\\]",
                 r"\\[PULL[_\\s]*BACK\\]",
                 r"camera pulls back",
                 r"zoom out to reveal",
-            ],
+             ],
             CueType.SHAKE: [
                 r"\\[SHAKE\\]",
                 r"\\[CAMERA[_\\s]*SHAKE\\]",
                 r"\\[EARTHQUAKE\\]",
                 r"ground shakes",
                 r"violent tremor",
-            ],
+             ],
             CueType.SLOW_MOTION: [
                 r"\\[SLOW[_\\s]*MOTION\\]",
                 r"\\[SLO[_\\s]*MO\\]",
                 r"time slows down",
                 r"in slow motion",
-            ],
+             ],
             CueType.FADE_IN: [
                 r"\\[FADE[_\\s]*IN\\]",
                 r"\\[FADE[_\\s]*FROM[_\\s]*BLACK\\]",
                 r"fade in from",
                 r"slowly appears",
-            ],
+             ],
             CueType.FADE_OUT: [
                 r"\\[FADE[_\\s]*OUT\\]",
                 r"\\[FADE[_\\s]*TO[_\\s]*BLACK\\]",
                 r"fade to black",
                 r"slowly disappears",
-            ],
+             ],
             CueType.FLASH: [
                 r"\\[FLASH\\]",
                 r"\\[LIGHTNING\\]",
                 r"\\[STROBE\\]",
                 r"bright flash",
                 r"blinding light",
-            ],
+             ],
             CueType.BLUR: [
                 r"\\[BLUR\\]",
                 r"\\[OUT[_\\s]*OF[_\\s]*FOCUS\\]",
                 r"vision blurs",
                 r"everything becomes hazy",
-            ],
-        }
+             ],
+         }
 
         # Intensity keywords
         self.intensity_keywords = {
@@ -291,15 +301,15 @@ class ScriptCueParser:
                 "powerful",
                 "dramatic",
                 "bold",
-            ],
+             ],
             EffectIntensity.EXTREME: [
                 "extreme",
                 "violent",
                 "explosive",
                 "massive",
                 "overwhelming",
-            ],
-        }
+             ],
+         }
 
     def parse_script(self, script_content: str, duration: float, fps: int = 24) -> List[ScriptCue]:
         """Parse script content to extract cues."""
@@ -334,11 +344,28 @@ class ScriptCueParser:
     def _extract_cues_from_line(
         self, line: str, start_time: float, duration: float, line_num: int
     ) -> List[ScriptCue]:
-        """Extract cues from a single line."""
-        cues = []
+        """
+Extract cues from a single line.
 
+       
+""""""
+
+        cues = []
+       
+
+        
+       
+"""
         for cue_type, patterns in self.cue_patterns.items():
             for pattern in patterns:
+       """
+
+        
+       
+
+        cues = []
+       
+""""""
                 matches = re.finditer(pattern, line, re.IGNORECASE)
 
                 for match in matches:
@@ -360,7 +387,7 @@ class ScriptCueParser:
                         timing=timing,
                         parameters=parameters,
                         context=line,
-                    )
+                     )
 
                     cues.append(cue)
                     self.logger.debug(f"Found cue: {cue_type.value} at {start_time:.2f}s")
@@ -368,10 +395,27 @@ class ScriptCueParser:
         return cues
 
     def _determine_intensity(self, text: str) -> EffectIntensity:
-        """Determine effect intensity from text context."""
-        text_lower = text.lower()
+        """
+Determine effect intensity from text context.
 
+       
+""""""
+
+        text_lower = text.lower()
+       
+
+        
+       
+"""
         for intensity, keywords in self.intensity_keywords.items():
+       """
+
+        
+       
+
+        text_lower = text.lower()
+       
+""""""
             if any(keyword in text_lower for keyword in keywords):
                 return intensity
 
@@ -386,9 +430,27 @@ class ScriptCueParser:
             return EffectIntensity.SUBTLE
 
     def _determine_timing(self, text: str, cue_type: CueType) -> EffectTiming:
-        """Determine effect timing from context."""
-        text_lower = text.lower()
+        """
+Determine effect timing from context.
 
+       
+""""""
+
+        text_lower = text.lower()
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        text_lower = text.lower()
+       
+""""""
         if any(word in text_lower for word in ["gradually", "slowly", "builds", "grows"]):
             return EffectTiming.GRADUAL
         elif any(word in text_lower for word in ["pulse", "throb", "beat", "rhythm"]):
@@ -404,19 +466,36 @@ class ScriptCueParser:
                 CueType.FADE_OUT,
                 CueType.ZOOM_IN,
                 CueType.ZOOM_OUT,
-            ]:
+#             ]:
                 return EffectTiming.GRADUAL
             else:
                 return EffectTiming.INSTANT
 
     def _extract_parameters(self, cue_text: str, context: str) -> Dict[str, Any]:
-        """Extract parameters from cue text."""
-        parameters = {}
+        """
+Extract parameters from cue text.
 
+       
+""""""
+
+        parameters = {}
+       
+
+        
+       
+"""
         # Look for duration specifications
+       """
+
+        
+       
+
+        parameters = {}
+       
+""""""
         duration_match = re.search(
             r"(\\d+(?:\\.\\d+)?)\\s*(?:sec|second|s)\\b", context, re.IGNORECASE
-        )
+         )
         if duration_match:
             parameters["duration"] = float(duration_match.group(1))
 
@@ -438,8 +517,18 @@ class ScriptCueParser:
         return parameters
 
     def _calculate_cue_duration(self, cue_type: CueType, line_duration: float) -> float:
-        """Calculate appropriate duration for a cue type."""
+        """
+Calculate appropriate duration for a cue type.
+
+       
+""""""
+
         # Default durations based on cue type
+       
+
+        
+       
+"""
         duration_map = {
             CueType.FLASH: 0.1,
             CueType.SHAKE: 0.5,
@@ -451,22 +540,57 @@ class ScriptCueParser:
             CueType.SLOW_MOTION: 3.0,
             CueType.BLUR: 1.5,
             CueType.EMPHASIS: 0.5,
-        }
+        """
+
+         
+        
+
+         }
+        
+""""""
+
+       
+
+        
+       
+"""
+        # Default durations based on cue type
+       """
+
+        
+       
 
         return duration_map.get(cue_type, min(line_duration, 2.0))
 
 
 class BlenderEffectGenerator:
-    """Generates Blender effects from script cues."""
-
+    """
+    Generates Blender effects from script cues.
+    """
+    
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
 
     def generate_effects(self, cues: List[ScriptCue], fps: int = 24) -> List[BlenderEffect]:
-        """Generate Blender effects from script cues."""
+        
+Generate Blender effects from script cues.
+""""""
+
+        
+       
+
         effects = []
+       
+""""""
 
         for cue in cues:
+       
+
+        
+       
+"""
+        effects = []
+       """"""
             start_frame = int(cue.start_time * fps)
             end_frame = int((cue.start_time + cue.duration) * fps)
 
@@ -480,23 +604,41 @@ class BlenderEffectGenerator:
     def _create_effect_for_cue(
         self, cue: ScriptCue, start_frame: int, end_frame: int
     ) -> Optional[BlenderEffect]:
-        """Create a Blender effect for a specific cue."""
-        intensity_multiplier = self._get_intensity_multiplier(cue.intensity)
+        """
+Create a Blender effect for a specific cue.
 
+       
+""""""
+
+        intensity_multiplier = self._get_intensity_multiplier(cue.intensity)
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        intensity_multiplier = self._get_intensity_multiplier(cue.intensity)
+       
+""""""
         if cue.cue_type == CueType.SHAKE:
             return self._create_camera_shake_effect(
                 cue, start_frame, end_frame, intensity_multiplier
-            )
+             )
 
         elif cue.cue_type == CueType.ZOOM_IN:
             return self._create_zoom_effect(
                 cue, start_frame, end_frame, intensity_multiplier, zoom_in=True
-            )
+             )
 
         elif cue.cue_type == CueType.ZOOM_OUT:
             return self._create_zoom_effect(
                 cue, start_frame, end_frame, intensity_multiplier, zoom_in=False
-            )
+             )
 
         elif cue.cue_type == CueType.FADE_IN:
             return self._create_fade_effect(cue, start_frame, end_frame, fade_in=True)
@@ -530,22 +672,54 @@ class BlenderEffectGenerator:
             return None
 
     def _get_intensity_multiplier(self, intensity: EffectIntensity) -> float:
-        """Get intensity multiplier for effects."""
+        """
+Get intensity multiplier for effects.
+
         multipliers = {
             EffectIntensity.SUBTLE: 0.3,
             EffectIntensity.MODERATE: 0.6,
             EffectIntensity.STRONG: 1.0,
             EffectIntensity.EXTREME: 1.5,
-        }
+         }
+        
+"""
         return multipliers.get(intensity, 0.6)
+        """"""
+        """
+
+
+        return multipliers.get(intensity, 0.6)
+
+        
+
+       
+""""""
 
     def _create_camera_shake_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, intensity: float
-    ) -> BlenderEffect:
-        """Create camera shake effect."""
+#     ) -> BlenderEffect:
+        
+Create camera shake effect.
+"""
         shake_amount = 0.1 * intensity
-        frequency = 10.0 * intensity
+       """
 
+        
+       
+
+        frequency = 10.0 * intensity
+       
+""""""
+
+       
+
+
+        
+
+       
+"""
+        frequency = 10.0 * intensity
+       """"""
         keyframes = []
         for frame in range(start_frame, end_frame + 1):
             # Generate random shake values
@@ -559,8 +733,8 @@ class BlenderEffectGenerator:
                     "location_x": shake_x,
                     "location_y": shake_y,
                     "interpolation": "LINEAR",
-                }
-            )
+                 }
+             )
 
         return BlenderEffect(
             name=f"camera_shake_{start_frame}",
@@ -571,9 +745,9 @@ class BlenderEffectGenerator:
                 "shake_amount": shake_amount,
                 "frequency": frequency,
                 "target": "location",
-            },
+             },
             keyframes=keyframes,
-        )
+         )
 
     def _create_zoom_effect(
         self,
@@ -582,20 +756,38 @@ class BlenderEffectGenerator:
         end_frame: int,
         intensity: float,
         zoom_in: bool = True,
-    ) -> BlenderEffect:
-        """Create zoom effect."""
+#     ) -> BlenderEffect:
+        """
+Create zoom effect.
+
         start_focal_length = 50.0  # Default focal length
         zoom_factor = 1.5 * intensity if zoom_in else 0.7 / intensity
-        end_focal_length = start_focal_length * zoom_factor
+       
+""""""
 
+        end_focal_length = start_focal_length * zoom_factor
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        end_focal_length = start_focal_length * zoom_factor
+       
+""""""
         keyframes = [
             {
                 "frame": start_frame,
                 "lens": start_focal_length,
                 "interpolation": "BEZIER",
-            },
+             },
             {"frame": end_frame, "lens": end_focal_length, "interpolation": "BEZIER"},
-        ]
+         ]
 
         return BlenderEffect(
             name=f"zoom_{'in' if zoom_in else 'out'}_{start_frame}",
@@ -606,21 +798,39 @@ class BlenderEffectGenerator:
                 "start_focal_length": start_focal_length,
                 "end_focal_length": end_focal_length,
                 "target": "lens",
-            },
+             },
             keyframes=keyframes,
-        )
+         )
 
     def _create_fade_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, fade_in: bool = True
-    ) -> BlenderEffect:
-        """Create fade effect."""
-        start_alpha = 0.0 if fade_in else 1.0
-        end_alpha = 1.0 if fade_in else 0.0
+#     ) -> BlenderEffect:
+        """
+Create fade effect.
 
+        start_alpha = 0.0 if fade_in else 1.0
+       
+""""""
+
+        end_alpha = 1.0 if fade_in else 0.0
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        end_alpha = 1.0 if fade_in else 0.0
+       
+""""""
         keyframes = [
             {"frame": start_frame, "alpha": start_alpha, "interpolation": "LINEAR"},
             {"frame": end_frame, "alpha": end_alpha, "interpolation": "LINEAR"},
-        ]
+         ]
 
         return BlenderEffect(
             name=f"fade_{'in' if fade_in else 'out'}_{start_frame}",
@@ -631,24 +841,41 @@ class BlenderEffectGenerator:
                 "start_alpha": start_alpha,
                 "end_alpha": end_alpha,
                 "node_type": "AlphaOver",
-            },
+             },
             keyframes=keyframes,
-        )
+         )
 
     def _create_flash_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, intensity: float
-    ) -> BlenderEffect:
-        """Create flash effect."""
-        flash_brightness = 2.0 * intensity
+#     ) -> BlenderEffect:
+        """
+Create flash effect.
 
+       
+""""""
+
+        flash_brightness = 2.0 * intensity
+       
+
+        
+       
+"""
         # Flash peaks at middle frame
+       """
+
+        
+       
+
+        flash_brightness = 2.0 * intensity
+       
+""""""
         mid_frame = (start_frame + end_frame) // 2
 
         keyframes = [
             {"frame": start_frame, "energy": 1.0, "interpolation": "LINEAR"},
             {"frame": mid_frame, "energy": flash_brightness, "interpolation": "LINEAR"},
             {"frame": end_frame, "energy": 1.0, "interpolation": "LINEAR"},
-        ]
+         ]
 
         return BlenderEffect(
             name=f"flash_{start_frame}",
@@ -659,30 +886,48 @@ class BlenderEffectGenerator:
                 "flash_brightness": flash_brightness,
                 "target": "energy",
                 "light_type": "SUN",
-            },
+             },
             keyframes=keyframes,
-        )
+         )
 
     def _create_blur_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, intensity: float
-    ) -> BlenderEffect:
-        """Create blur effect."""
-        blur_amount = 5.0 * intensity
+#     ) -> BlenderEffect:
+        """
+Create blur effect.
 
+       
+""""""
+
+        blur_amount = 5.0 * intensity
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        blur_amount = 5.0 * intensity
+       
+""""""
         keyframes = [
             {"frame": start_frame, "size": 0.0, "interpolation": "LINEAR"},
             {
                 "frame": start_frame + (end_frame - start_frame) // 3,
                 "size": blur_amount,
                 "interpolation": "LINEAR",
-            },
+             },
             {
                 "frame": end_frame - (end_frame - start_frame) // 3,
                 "size": blur_amount,
                 "interpolation": "LINEAR",
-            },
+             },
             {"frame": end_frame, "size": 0.0, "interpolation": "LINEAR"},
-        ]
+         ]
 
         return BlenderEffect(
             name=f"blur_{start_frame}",
@@ -691,29 +936,47 @@ class BlenderEffectGenerator:
             end_frame=end_frame,
             properties={"blur_amount": blur_amount, "node_type": "Blur"},
             keyframes=keyframes,
-        )
+         )
 
     def _create_tension_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, intensity: float
-    ) -> BlenderEffect:
-        """Create tension effect (desaturation + vignette)."""
-        desaturation = 0.3 * intensity
-        vignette_strength = 0.5 * intensity
+#     ) -> BlenderEffect:
+        """
+Create tension effect (desaturation + vignette).
 
+        desaturation = 0.3 * intensity
+       
+""""""
+
+        vignette_strength = 0.5 * intensity
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        vignette_strength = 0.5 * intensity
+       
+""""""
         keyframes = [
             {
                 "frame": start_frame,
                 "saturation": 1.0,
                 "vignette": 0.0,
                 "interpolation": "LINEAR",
-            },
+             },
             {
                 "frame": end_frame,
                 "saturation": 1.0 - desaturation,
                 "vignette": vignette_strength,
                 "interpolation": "LINEAR",
-            },
-        ]
+             },
+         ]
 
         return BlenderEffect(
             name=f"tension_{start_frame}",
@@ -724,13 +987,13 @@ class BlenderEffectGenerator:
                 "desaturation": desaturation,
                 "vignette_strength": vignette_strength,
                 "node_type": "ColorBalance",
-            },
+             },
             keyframes=keyframes,
-        )
+         )
 
     def _create_dramatic_pause_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int
-    ) -> BlenderEffect:
+#     ) -> BlenderEffect:
         """Create dramatic pause effect (time dilation)."""
         return BlenderEffect(
             name=f"dramatic_pause_{start_frame}",
@@ -744,33 +1007,51 @@ class BlenderEffectGenerator:
                     "frame": start_frame + 5,
                     "time_scale": 0.5,
                     "interpolation": "LINEAR",
-                },
+                 },
                 {"frame": end_frame - 5, "time_scale": 0.5, "interpolation": "LINEAR"},
                 {"frame": end_frame, "time_scale": 1.0, "interpolation": "LINEAR"},
-            ],
-        )
+             ],
+         )
 
     def _create_action_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, intensity: float
-    ) -> BlenderEffect:
-        """Create action sequence effect (increased contrast + saturation)."""
-        contrast_boost = 0.2 * intensity
-        saturation_boost = 0.3 * intensity
+#     ) -> BlenderEffect:
+        """
+Create action sequence effect (increased contrast + saturation).
 
+        contrast_boost = 0.2 * intensity
+       
+""""""
+
+        saturation_boost = 0.3 * intensity
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        saturation_boost = 0.3 * intensity
+       
+""""""
         keyframes = [
             {
                 "frame": start_frame,
                 "contrast": 1.0,
                 "saturation": 1.0,
                 "interpolation": "LINEAR",
-            },
+             },
             {
                 "frame": end_frame,
                 "contrast": 1.0 + contrast_boost,
                 "saturation": 1.0 + saturation_boost,
                 "interpolation": "LINEAR",
-            },
-        ]
+             },
+         ]
 
         return BlenderEffect(
             name=f"action_{start_frame}",
@@ -781,13 +1062,13 @@ class BlenderEffectGenerator:
                 "contrast_boost": contrast_boost,
                 "saturation_boost": saturation_boost,
                 "node_type": "ColorBalance",
-            },
+             },
             keyframes=keyframes,
-        )
+         )
 
     def _create_slow_motion_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int
-    ) -> BlenderEffect:
+#     ) -> BlenderEffect:
         """Create slow motion effect."""
         return BlenderEffect(
             name=f"slow_motion_{start_frame}",
@@ -801,19 +1082,36 @@ class BlenderEffectGenerator:
                     "frame": start_frame + 10,
                     "time_scale": 0.3,
                     "interpolation": "BEZIER",
-                },
+                 },
                 {"frame": end_frame - 10, "time_scale": 0.3, "interpolation": "BEZIER"},
                 {"frame": end_frame, "time_scale": 1.0, "interpolation": "BEZIER"},
-            ],
-        )
+             ],
+         )
 
     def _create_color_grade_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int
-    ) -> BlenderEffect:
-        """Create color grading effect."""
-        # Extract color from parameters if available
-        target_color = cue.parameters.get("color", "blue")
+#     ) -> BlenderEffect:
+        """
+Create color grading effect.
 
+       
+""""""
+
+        # Extract color from parameters if available
+       
+
+        
+       
+"""
+        target_color = cue.parameters.get("color", "blue")
+       """
+
+        
+       
+
+        # Extract color from parameters if available
+       
+""""""
         color_shifts = {
             "red": (0.1, -0.05, -0.05),
             "blue": (-0.05, -0.05, 0.1),
@@ -821,7 +1119,7 @@ class BlenderEffectGenerator:
             "orange": (0.1, 0.05, -0.1),
             "purple": (0.05, -0.05, 0.1),
             "yellow": (0.1, 0.1, -0.1),
-        }
+         }
 
         color_shift = color_shifts.get(target_color.lower(), (0.0, 0.0, 0.0))
 
@@ -832,15 +1130,15 @@ class BlenderEffectGenerator:
                 "lift_g": 0.0,
                 "lift_b": 0.0,
                 "interpolation": "LINEAR",
-            },
+             },
             {
                 "frame": end_frame,
                 "lift_r": color_shift[0],
                 "lift_g": color_shift[1],
                 "lift_b": color_shift[2],
                 "interpolation": "LINEAR",
-            },
-        ]
+             },
+         ]
 
         return BlenderEffect(
             name=f"color_grade_{target_color}_{start_frame}",
@@ -851,35 +1149,38 @@ class BlenderEffectGenerator:
                 "target_color": target_color,
                 "color_shift": color_shift,
                 "node_type": "ColorBalance",
-            },
+             },
             keyframes=keyframes,
-        )
+         )
 
 
 class BlenderScriptGenerator:
-    """Generates Blender Python scripts for applying effects."""
+    """
+Generates Blender Python scripts for applying effects.
+
 
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
 
     def generate_script(self, effects: List[BlenderEffect], fps: int = 24) -> str:
-        """Generate Blender Python script for applying effects."""
+        
+"""Generate Blender Python script for applying effects."""
         script_lines = [
             "import bpy",
             "import bmesh",
             "from mathutils import Vector, Euler",
             "import math",
             "",
-            "# Clear existing keyframes",
+            "# Clear existing keyframes","
             "bpy.context.scene.frame_set(1)",
             "for obj in bpy.data.objects:",
             "    obj.animation_data_clear()",
             "",
-            "# Set frame rate",
+            "# Set frame rate","
             f"bpy.context.scene.render.fps = {fps}",
             "",
-            "# Apply effects",
-        ]
+            "# Apply effects","
+         ]
 
         for effect in effects:
             script_lines.extend(self._generate_effect_script(effect))
@@ -887,17 +1188,17 @@ class BlenderScriptGenerator:
 
         script_lines.extend(
             [
-                "# Update scene",
+                "# Update scene","
                 "bpy.context.view_layer.update()",
                 "print('Effects applied successfully')",
-            ]
-        )
+             ]
+         )
 
         return "\\n".join(script_lines)
 
     def _generate_effect_script(self, effect: BlenderEffect) -> List[str]:
         """Generate script lines for a specific effect."""
-        lines = [f"# Effect: {effect.name}"]
+        lines = [f"# Effect: {effect.name}"]"
 
         if effect.effect_type == "camera":
             lines.extend(self._generate_camera_effect_script(effect))
@@ -908,17 +1209,17 @@ class BlenderScriptGenerator:
         elif effect.effect_type == "animation":
             lines.extend(self._generate_animation_effect_script(effect))
         else:
-            lines.append(f"# Unsupported effect type: {effect.effect_type}")
+            lines.append(f"# Unsupported effect type: {effect.effect_type}")"
 
         return lines
 
     def _generate_camera_effect_script(self, effect: BlenderEffect) -> List[str]:
         """Generate camera effect script."""
         lines = [
-            "# Get active camera",
+            "# Get active camera","
             "camera = bpy.context.scene.camera",
             "if camera:",
-        ]
+         ]
 
         target = effect.properties.get("target", "location")
 
@@ -935,8 +1236,8 @@ class BlenderScriptGenerator:
                         f"    camera.location.x += {x}",
                         f"    camera.location.y += {y}",
                         f"    camera.keyframe_insert(data_path='location', frame={frame})",
-                    ]
-                )
+                     ]
+                 )
 
         elif target == "lens":
             # Zoom effect
@@ -949,15 +1250,15 @@ class BlenderScriptGenerator:
                         f"    bpy.context.scene.frame_set({frame})",
                         f"    camera.data.lens = {lens}",
                         f"    camera.data.keyframe_insert(data_path='lens', frame={frame})",
-                    ]
-                )
+                     ]
+                 )
 
         return lines
 
     def _generate_lighting_effect_script(self, effect: BlenderEffect) -> List[str]:
         """Generate lighting effect script."""
         lines = [
-            "# Get or create light",
+            "# Get or create light","
             "light = None",
             "for obj in bpy.data.objects:",
             "    if obj.type == 'LIGHT':",
@@ -966,7 +1267,7 @@ class BlenderScriptGenerator:
             "if not light:",
             "    bpy.ops.object.light_add(type='SUN')",
             "    light = bpy.context.active_object",
-        ]
+         ]
 
         for keyframe in effect.keyframes:
             frame = keyframe["frame"]
@@ -977,25 +1278,25 @@ class BlenderScriptGenerator:
                     f"bpy.context.scene.frame_set({frame})",
                     f"light.data.energy = {energy}",
                     f"light.data.keyframe_insert(data_path='energy', frame={frame})",
-                ]
-            )
+                 ]
+             )
 
         return lines
 
     def _generate_compositor_effect_script(self, effect: BlenderEffect) -> List[str]:
         """Generate compositor effect script."""
         lines = [
-            "# Enable compositor",
+            "# Enable compositor","
             "bpy.context.scene.use_nodes = True",
             "tree = bpy.context.scene.node_tree",
             "",
-            "# Find or create effect nodes",
+            "# Find or create effect nodes","
             "effect_node = None",
             "for node in tree.nodes:",
             f"    if node.name == '{effect.name}':",
             "        effect_node = node",
             "        break",
-        ]
+         ]
 
         node_type = effect.properties.get("node_type", "ColorBalance")
 
@@ -1005,8 +1306,8 @@ class BlenderScriptGenerator:
                 f"    effect_node = tree.nodes.new('CompositorNode{node_type}')",
                 f"    effect_node.name = '{effect.name}'",
                 "    effect_node.location = (400, 0)",
-            ]
-        )
+             ]
+         )
 
         # Add keyframes for node properties
         for keyframe in effect.keyframes:
@@ -1020,14 +1321,14 @@ class BlenderScriptGenerator:
                             f"if hasattr(effect_node, '{prop}'):",
                             f"    effect_node.{prop} = {value}",
                             f"    effect_node.keyframe_insert(data_path='{prop}', frame={frame})",
-                        ]
-                    )
+                         ]
+                     )
 
         return lines
 
     def _generate_animation_effect_script(self, effect: BlenderEffect) -> List[str]:
         """Generate animation effect script."""
-        lines = ["# Animation effect (time remapping)", "scene = bpy.context.scene"]
+        lines = ["# Animation effect (time remapping)", "scene = bpy.context.scene"]"
 
         if effect.properties.get("target") == "frame_rate":
             # Time scale effect
@@ -1037,10 +1338,10 @@ class BlenderScriptGenerator:
 
                 lines.extend(
                     [
-                        f"# Time scale at frame {frame}: {time_scale}",
-                        "# Note: Time remapping requires post - processing",
-                    ]
-                )
+                        f"# Time scale at frame {frame}: {time_scale}","
+                        "# Note: Time remapping requires post - processing","
+                     ]
+                 )
 
         return lines
 
@@ -1072,7 +1373,7 @@ class AIVideoEditor:
             "/usr/bin/blender",
             "/usr/local/bin/blender",
             "blender",
-        ]
+         ]
 
         for path in possible_paths:
             if shutil.which(path) or Path(path).exists():
@@ -1088,7 +1389,7 @@ class AIVideoEditor:
         job_id: Optional[str] = None,
         fps: int = 24,
         duration: Optional[float] = None,
-    ) -> VideoEditingJob:
+#     ) -> VideoEditingJob:
         """Create a new video editing job."""
         if job_id is None:
             job_id = f"video_edit_{int(time.time())}_{len(self.active_jobs)}"
@@ -1115,8 +1416,8 @@ class AIVideoEditor:
                 "created_at": datetime.now().isoformat(),
                 "script_length": len(script_content),
                 "video_duration": duration,
-            },
-        )
+             },
+         )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Video editing job created: {job_id}")
@@ -1173,8 +1474,13 @@ class AIVideoEditor:
             return False
 
     def _get_video_duration(self, video_path: str) -> float:
-        """Get video duration using ffprobe."""
+        """
+Get video duration using ffprobe.
+
+        
+"""
         try:
+        """
             cmd = [
                 "ffprobe",
                 "-v",
@@ -1183,8 +1489,14 @@ class AIVideoEditor:
                 "json",
                 "-show_format",
                 video_path,
-            ]
+             ]
+        """
 
+        try:
+        
+
+       
+""""""
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
             if result.returncode == 0:
@@ -1199,16 +1511,27 @@ class AIVideoEditor:
             return 60.0  # Default duration
 
     def _apply_effects_in_blender(self, job: VideoEditingJob, script_path: str) -> bool:
-        """Apply effects in Blender."""
+        """
+Apply effects in Blender.
+
+        
+"""
         try:
+        """
             cmd = [
                 self.blender_executable,
                 "--background",
                 "--factory - startup",
                 "--python",
                 script_path,
-            ]
+             ]
+        """
 
+        try:
+        
+
+       
+""""""
             self.logger.info(f"Applying effects in Blender: {' '.join(cmd)}")
 
             result = subprocess.run(
@@ -1217,7 +1540,7 @@ class AIVideoEditor:
                 text=True,
                 timeout=600,
                 cwd=str(self.temp_dir),
-            )
+             )
 
             if result.returncode == 0:
                 self.logger.info("Effects applied successfully in Blender")
@@ -1233,11 +1556,27 @@ class AIVideoEditor:
             return False
 
     def get_job_status(self, job_id: str) -> Optional[VideoEditingJob]:
-        """Get status of a video editing job."""
+        """
+Get status of a video editing job.
+
+        
+"""
+        return self.active_jobs.get(job_id)
+        """"""
+        """
+
+
         return self.active_jobs.get(job_id)
 
+        
+
+       
+""""""
+
     def cancel_job(self, job_id: str) -> bool:
-        """Cancel a video editing job."""
+        
+Cancel a video editing job.
+"""
         if job_id in self.active_jobs:
             job = self.active_jobs[job_id]
             job.status = "cancelled"
@@ -1247,29 +1586,58 @@ class AIVideoEditor:
         return False
 
     def cleanup_temp_files(self, job_id: Optional[str] = None) -> None:
-        """Clean up temporary files."""
+        """
+Clean up temporary files.
+
+        
+"""
         try:
+        """"""
             if job_id:
                 for file_path in self.temp_dir.glob(f"{job_id}*"):
                     file_path.unlink(missing_ok=True)
             else:
                 shutil.rmtree(self.temp_dir)
                 self.temp_dir.mkdir(parents=True, exist_ok=True)
+        """
 
+        try:
+        
+
+       
+""""""
             self.logger.info(f"Temporary files cleaned up: {job_id or 'all'}")
         except Exception as e:
             self.logger.error(f"Cleanup failed: {e}")
 
     def process_script_with_effects(
         self, script_content: str, video_path: str, output_path: str
-    ) -> str:
-        """Convenience method to process script and apply effects."""
+#     ) -> str:
+        """
+Convenience method to process script and apply effects.
+
         job = self.create_editing_job(
             script_content=script_content,
             video_path=video_path,
             output_path=output_path,
-        )
+        
+""""""
 
+         )
+        
+
+         
+        
+""""""
+
+
+         
+
+        
+
+         )
+        
+""""""
         if self.process_job(job.job_id):
             return job.job_id
         else:
@@ -1285,29 +1653,59 @@ if __name__ == "__main__":
     video_editor = AIVideoEditor()
 
     # Example script with cues
-    sample_script = """
+    sample_script = """"""
+
+   
+
+    
+   
+"""
     The hero walks into the dark room.
+   """
+
+    
+   
 
     [TENSE_MOMENT] Something feels wrong. The air is thick with danger.
+   
+""""""
 
+    The hero walks into the dark room.
+   
+
+    
+   
+"""
     Suddenly, a shadow moves in the corner. [DRAMATIC_PAUSE]
 
-    [ZOOM_IN] The hero's eyes widen in realization.
+    [ZOOM_IN] The hero's eyes widen in realization.'
 
     [ACTION_SEQUENCE] A fight breaks out! Punches fly and furniture crashes.
 
     [SLOW_MOTION] Time slows as the final blow is delivered.
 
     [FADE_OUT] The scene fades to black.
-    """
+   """
+
+    
+   
 
     # Example usage
+    
+"""
     try:
+    """
+
         job_id = video_editor.process_script_with_effects(
+    
+
+    try:
+    
+"""
             script_content=sample_script,
             video_path="./assets/raw_video.mp4",
             output_path="./output/enhanced_video.blend",
-        )
+         )
 
         print(f"Video editing job created: {job_id}")
 

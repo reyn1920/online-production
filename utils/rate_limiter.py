@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 RouteLL Rate Limiter and Usage Optimizer
 Implements intelligent rate limiting and credit optimization strategies
-"""
+""""""
 
 import json
 import logging
@@ -13,15 +13,16 @@ from typing import Dict, List, Tuple
 
 
 class RateLimiter:
-    """
+    """"""
     Advanced rate limiter with multiple strategies for credit optimization
-    """
+    """"""
 
     def __init__(self, config_path: str = None):
         self.config_path = (
             config_path
             or "/Users/thomasbrianreynolds/online production/config/routellm_config.json"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.config = self._load_config()
 
         # Rate limiting state
@@ -29,7 +30,8 @@ class RateLimiter:
         self.credit_usage_history = deque(maxlen=1000)
         self.model_performance = defaultdict(
             lambda: {"avg_response_time": 0, "success_rate": 1.0, "cost_per_token": 0}
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Thread safety
         self.lock = threading.Lock()
@@ -39,14 +41,16 @@ class RateLimiter:
             "minute": deque(maxlen=100),
             "hour": deque(maxlen=3600),
             "day": deque(maxlen=86400),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Optimization strategies
         self.optimization_strategies = {
             "conservative": {"max_rpm": 30, "max_rph": 1000, "max_rpd": 10000},
             "balanced": {"max_rpm": 60, "max_rph": 2000, "max_rpd": 20000},
             "aggressive": {"max_rpm": 100, "max_rph": 3000, "max_rpd": 30000},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.current_strategy = "balanced"
 
@@ -72,24 +76,27 @@ class RateLimiter:
                 "requests_per_day": 20000,
                 "burst_allowance": 10,
                 "backoff_strategy": "exponential",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "optimization": {
                 "auto_model_selection": True,
                 "cost_optimization": True,
                 "performance_tracking": True,
                 "adaptive_rate_limiting": True,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def can_make_request(
         self, model: str = None, estimated_tokens: int = 100
     ) -> Tuple[bool, str, float]:
-        """
+        """"""
         Check if a request can be made based on rate limits and optimization
 
         Returns:
             Tuple[bool, str, float]: (can_proceed, reason, wait_time_seconds)
-        """
+        """"""
         with self.lock:
             now = time.time()
 
@@ -138,7 +145,8 @@ class RateLimiter:
                 False,
                 f"Rate limit exceeded: {strategy['max_rpm']} requests per minute",
                 max(0, wait_time),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check requests per hour
         if len(self.windows["hour"]) >= strategy["max_rph"]:
@@ -147,7 +155,8 @@ class RateLimiter:
                 False,
                 f"Rate limit exceeded: {strategy['max_rph']} requests per hour",
                 max(0, wait_time),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check requests per day
         if len(self.windows["day"]) >= strategy["max_rpd"]:
@@ -156,7 +165,8 @@ class RateLimiter:
                 False,
                 f"Rate limit exceeded: {strategy['max_rpd']} requests per day",
                 max(0, wait_time),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return True, "Rate limits OK", 0.0
 
@@ -175,7 +185,8 @@ class RateLimiter:
             entry.get("credits", 0)
             for entry in self.credit_usage_history
             if time.time() - entry.get("timestamp", 0) < 86400
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         daily_limit = self.config.get("credit_system", {}).get("daily_limit", 1000)
 
@@ -184,7 +195,8 @@ class RateLimiter:
                 False,
                 f"Daily credit limit would be exceeded. Used: {daily_usage}, Limit: {daily_limit}",
                 3600,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return True, "Credit optimization OK", 0.0
 
@@ -202,7 +214,8 @@ class RateLimiter:
                 entry
                 for entry in self.request_history
                 if entry.get("model") == model and now - entry.get("timestamp", 0) < 3600
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             if len(model_requests) >= 100:  # Max 100 requests per hour for expensive models
                 return False, f"Model - specific rate limit exceeded for {model}", 1800
@@ -229,7 +242,8 @@ class RateLimiter:
         response_time: float,
         success: bool,
         credits_used: float = 0,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Record a completed request for analytics and optimization"""
         with self.lock:
             now = time.time()
@@ -246,14 +260,16 @@ class RateLimiter:
                 "response_time": response_time,
                 "success": success,
                 "credits_used": credits_used,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.request_history.append(request_info)
 
             if credits_used > 0:
                 self.credit_usage_history.append(
                     {"timestamp": now, "credits": credits_used, "model": model}
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Update model performance metrics
             self._update_model_performance(model, response_time, success, credits_used, tokens_used)
@@ -269,7 +285,8 @@ class RateLimiter:
         success: bool,
         credits_used: float,
         tokens_used: int,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Update performance metrics for a model"""
         perf = self.model_performance[model]
 
@@ -280,7 +297,8 @@ class RateLimiter:
         # Update success rate (exponential moving average)
         perf["success_rate"] = (1 - alpha) * perf["success_rate"] + alpha * (
             1.0 if success else 0.0
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Update cost per token
         if tokens_used > 0:
@@ -291,7 +309,8 @@ class RateLimiter:
         """Dynamically adjust rate limiting strategy based on performance"""
         recent_requests = [
             req for req in self.request_history if time.time() - req.get("timestamp", 0) < 3600
-        ]  # Last hour
+# BRACKET_SURGEON: disabled
+#         ]  # Last hour
 
         if len(recent_requests) < 10:
             return  # Not enough data
@@ -299,12 +318,14 @@ class RateLimiter:
         # Calculate success rate
         success_rate = sum(1 for req in recent_requests if req.get("success", False)) / len(
             recent_requests
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Calculate average response time
         avg_response_time = sum(req.get("response_time", 0) for req in recent_requests) / len(
             recent_requests
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Adjust strategy based on performance
         if success_rate > 0.95 and avg_response_time < 2.0:
@@ -357,18 +378,21 @@ class RateLimiter:
         # Recent requests (last hour)
         recent_requests = [
             req for req in self.request_history if now - req.get("timestamp", 0) < 3600
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Daily stats
         daily_requests = [
             req for req in self.request_history if now - req.get("timestamp", 0) < 86400
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         daily_credits = sum(
             entry.get("credits", 0)
             for entry in self.credit_usage_history
             if now - entry.get("timestamp", 0) < 86400
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return {
             "current_strategy": self.current_strategy,
@@ -379,7 +403,8 @@ class RateLimiter:
             / max(1, len(recent_requests)),
             "avg_response_time_last_hour": sum(
                 req.get("response_time", 0) for req in recent_requests
-            )
+# BRACKET_SURGEON: disabled
+#             )
             / max(1, len(recent_requests)),
             "model_performance": dict(self.model_performance),
             "rate_limits": self.optimization_strategies[self.current_strategy],
@@ -387,8 +412,10 @@ class RateLimiter:
                 "minute": len(self.windows["minute"]),
                 "hour": len(self.windows["hour"]),
                 "day": len(self.windows["day"]),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def reset_limits(self):
         """Reset all rate limiting counters (for testing or manual override)"""
@@ -405,20 +432,21 @@ class RateLimiter:
         else:
             raise ValueError(
                 f"Invalid strategy: {strategy}. Available: {list(self.optimization_strategies.keys())}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
 
 class CreditOptimizer:
-    """
+    """"""
     Advanced credit optimization and budget management
-    """
+    """"""
 
     def __init__(self, rate_limiter: RateLimiter):
         self.rate_limiter = rate_limiter
         self.logger = logging.getLogger(__name__)
 
     def optimize_request(self, messages: List[Dict], preferences: Dict = None) -> Dict:
-        """
+        """"""
         Optimize a request for maximum credit efficiency
 
         Args:
@@ -427,7 +455,7 @@ class CreditOptimizer:
 
         Returns:
             Dict with optimized parameters
-        """
+        """"""
         preferences = preferences or {"cost": 0.7, "speed": 0.2, "quality": 0.1}
 
         # Estimate token count
@@ -444,7 +472,8 @@ class CreditOptimizer:
             "max_tokens": min(estimated_tokens * 2, 4000),  # Conservative token limit
             "temperature": 0.7 if preferences.get("quality", 0) > 0.5 else 0.3,
             "stream": preferences.get("speed", 0) > 0.5,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add cost - saving measures if cost is prioritized
         if preferences.get("cost", 0) > 0.6:
@@ -472,10 +501,12 @@ class CreditOptimizer:
             "monthly_projection": monthly_projection,
             "budget_status": (
                 "on_track" if monthly_projection <= monthly_budget else "over_budget"
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "recommended_daily_limit": monthly_budget / 30,
             "savings_opportunities": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add specific recommendations
         if monthly_projection > monthly_budget:
@@ -485,8 +516,10 @@ class CreditOptimizer:
                     f"Reduce daily usage by {overage/30:.1f} credits to stay within budget",
                     "Consider using more unlimited models for routine tasks",
                     "Implement stricter rate limiting during peak hours",
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
         # Model - specific recommendations
         model_perf = stats["model_performance"]
@@ -494,7 +527,8 @@ class CreditOptimizer:
             most_expensive = max(model_perf.items(), key=lambda x: x[1]["cost_per_token"])
             recommendations["savings_opportunities"].append(
                 f"Consider alternatives to {most_expensive[0]} (highest cost per token)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return recommendations
 
@@ -521,7 +555,8 @@ if __name__ == "__main__":
                 response_time=1.5,
                 success=True,
                 credits_used=0.15,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             print(f"   Wait time: {wait_time:.1f} seconds")
 

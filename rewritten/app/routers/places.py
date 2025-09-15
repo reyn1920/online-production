@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Places API Router
 
 FastAPI router for places and location-based services.
@@ -8,7 +8,7 @@ Follows go-live security practices:
 - Rate limiting
 - Error handling
 - Secure response formatting
-"""
+""""""
 
 import asyncio
 import logging
@@ -96,7 +96,8 @@ async def search_places(
     query: str = Query(..., min_length=1, max_length=200, description="Search query"),
     limit: int = Query(10, ge=1, le=50, description="Maximum results"),
     _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Search for places by query"""
     try:
         # Validate input
@@ -118,7 +119,8 @@ async def search_places(
                     provider["id"],
                     "search_places",
                     {"query": location_request.query, "limit": location_request.limit},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 places = places_data.get("places", [])
 
             return PlaceResponse(
@@ -128,11 +130,13 @@ async def search_places(
                     "query": location_request.query,
                     "total_results": len(places),
                     "provider_used": (geo_providers[0]["name"] if geo_providers else None),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 message="Places retrieved successfully",
                 timestamp=datetime.now(),
                 count=len(places),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except Exception as provider_error:
             logger.warning(f"Provider error: {provider_error}, using fallback")
             # Fallback to empty results on provider error
@@ -142,11 +146,13 @@ async def search_places(
                     "places": [],
                     "query": location_request.query,
                     "total_results": 0,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 message="No places found",
                 timestamp=datetime.now(),
                 count=0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -163,7 +169,8 @@ async def get_nearby_places(
     place_type: str = Query("restaurant", min_length=1, max_length=50),
     radius: int = Query(1000, ge=100, le=50000, description="Search radius in meters"),
     _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get nearby places by coordinates"""
     try:
         # Use integration registry to find nearby places
@@ -186,8 +193,10 @@ async def get_nearby_places(
                         "lng": lng,
                         "place_type": place_type,
                         "radius": radius,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
                 nearby_places = places_data.get("places", [])
 
             return PlaceResponse(
@@ -198,11 +207,13 @@ async def get_nearby_places(
                     "radius": radius,
                     "place_type": place_type,
                     "provider_used": (geo_providers[0]["name"] if geo_providers else None),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 message="Nearby places retrieved successfully",
                 timestamp=datetime.now(),
                 count=len(nearby_places),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except Exception as provider_error:
             logger.warning(f"Provider error: {provider_error}, using fallback")
             # Fallback to empty results on provider error
@@ -213,18 +224,21 @@ async def get_nearby_places(
                     "center": {"lat": lat, "lng": lng},
                     "radius": radius,
                     "place_type": place_type,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 message="No nearby places found",
                 timestamp=datetime.now(),
                 count=0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     except Exception as e:
         logger.error(f"Error getting nearby places: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail="Internal server error while retrieving nearby places",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @router.get("/geocode", response_model=PlaceResponse)
@@ -232,7 +246,8 @@ async def geocode_address(
     request: Request,
     address: str = Query(..., min_length=1, max_length=300, description="Address to geocode"),
     _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Geocode an address to coordinates"""
     try:
         # Get active geo providers from registry
@@ -243,7 +258,8 @@ async def geocode_address(
                 success=False,
                 message="No geocoding providers available",
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Use the first available geo provider
         provider = geo_providers[0]
@@ -252,7 +268,8 @@ async def geocode_address(
             provider["id"],
             "geocode",
             {"address": address},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return PlaceResponse(
             success=True,
@@ -260,10 +277,12 @@ async def geocode_address(
                 "coordinates": geocode_data.get("coordinates", {}),
                 "address": address,
                 "formatted_address": geocode_data.get("formatted_address", address),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             message="Address geocoded successfully",
             timestamp=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         logger.error(f"Error geocoding address: {str(e)}")
@@ -276,7 +295,8 @@ async def reverse_geocode(
     lat: float = Query(..., ge=-90, le=90, description="Latitude"),
     lng: float = Query(..., ge=-180, le=180, description="Longitude"),
     _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Reverse geocode coordinates to address"""
     try:
         # Get active geo providers from registry
@@ -287,7 +307,8 @@ async def reverse_geocode(
                 success=False,
                 message="No reverse geocoding providers available",
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Use the first available geo provider
         provider = geo_providers[0]
@@ -296,7 +317,8 @@ async def reverse_geocode(
             provider["id"],
             "reverse_geocode",
             {"lat": lat, "lng": lng},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return PlaceResponse(
             success=True,
@@ -304,10 +326,12 @@ async def reverse_geocode(
                 "address": reverse_data.get("address", ""),
                 "coordinates": {"lat": lat, "lng": lng},
                 "components": reverse_data.get("components", {}),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             message="Coordinates reverse geocoded successfully",
             timestamp=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         logger.error(f"Error reverse geocoding: {str(e)}")
@@ -330,15 +354,18 @@ async def provider_status():
                     "status": status.get("status", "unknown"),
                     "last_check": status.get("last_check"),
                     "error_count": status.get("error_count", 0),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "success": True,
             "providers": provider_statuses,
             "total_providers": len(provider_statuses),
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         logger.error(f"Error getting provider status: {str(e)}")
@@ -346,7 +373,8 @@ async def provider_status():
             "success": False,
             "error": "Failed to get provider status",
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 @router.get("/locator", response_class=HTMLResponse)
@@ -368,7 +396,8 @@ async def health_check():
         "status": "healthy",
         "service": "places-api",
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/dashboard")
@@ -379,7 +408,8 @@ async def places_dashboard():
         "active_providers": len(_registry.get_active_providers_by_category("geo")),
         "uptime": "99.9%",
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/providers")
@@ -392,40 +422,48 @@ async def get_providers_status():
                 "name": "Google Places API",
                 "status": "active",
                 "features": ["search", "nearby", "geocode", "reverse_geocode"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "mapbox",
                 "name": "Mapbox Geocoding API",
                 "status": "active",
                 "features": ["geocode", "reverse_geocode"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "openstreetmap",
                 "name": "OpenStreetMap Nominatim",
                 "status": "active",
                 "features": ["search", "geocode", "reverse_geocode"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "bing_maps",
                 "name": "Bing Maps API",
                 "status": "inactive",
                 "features": ["search", "nearby", "geocode"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "here_maps",
                 "name": "HERE Maps API",
                 "status": "inactive",
                 "features": ["search", "nearby", "geocode", "reverse_geocode"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "tomtom",
                 "name": "TomTom Maps API",
                 "status": "inactive",
                 "features": ["search", "geocode"],
-            },
-        ],
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ],
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 __all__ = ["router"]

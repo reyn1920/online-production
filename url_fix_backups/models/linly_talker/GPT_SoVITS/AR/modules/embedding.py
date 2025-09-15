@@ -12,7 +12,8 @@ class TokenEmbedding(nn.Module):
         embedding_dim: int,
         vocab_size: int,
         dropout: float = 0.0,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
 
         self.vocab_size = vocab_size
@@ -41,7 +42,8 @@ class SinePositionalEmbedding(nn.Module):
         dropout: float = 0.0,
         scale: bool = False,
         alpha: bool = False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.embedding_dim = embedding_dim
         self.x_scale = math.sqrt(embedding_dim) if scale else 1.0
@@ -67,7 +69,8 @@ class SinePositionalEmbedding(nn.Module):
         div_term = torch.exp(
             torch.arange(0, self.embedding_dim, 2, dtype=torch.float32)
             * -(math.log(10000.0) / self.embedding_dim)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term)
         pe = pe.unsqueeze(0)

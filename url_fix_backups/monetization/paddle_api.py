@@ -9,7 +9,8 @@ from .base_monetization import (
     Product,
     ProductCreationError,
     ProductResponse,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -22,13 +23,15 @@ class PaddleAPI(BaseMonetizationAPI):
             "https://vendors.paddle.com / api / 2.0"
             if environment == "production"
             else "https://sandbox - vendors.paddle.com / api / 2.0"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         super().__init__(
             api_key=api_key,
             base_url=base_url,
             rate_limit=60,  # Paddle allows 60 requests per minute
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.vendor_id = vendor_id
         self.environment = environment
 
@@ -43,7 +46,8 @@ class PaddleAPI(BaseMonetizationAPI):
             "vendor_id": self.vendor_id,
             "vendor_auth_code": self.api_key,
             **data,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         response = self._make_request("POST", endpoint, data=request_data)
         return response.json()
@@ -59,12 +63,14 @@ class PaddleAPI(BaseMonetizationAPI):
                 "initial_price": product.price,
                 "recurring_price": (
                     product.price if product.metadata.get("subscription") else None
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "trial_days": product.metadata.get("trial_days", 0),
                 "billing_type": ("month" if product.metadata.get("subscription") else "one_off"),
                 "billing_period": product.metadata.get("billing_period", 1),
                 "icon": product.preview_images[0] if product.preview_images else None,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Remove None values
             product_data = {k: v for k, v in product_data.items() if v is not None}
@@ -77,12 +83,14 @@ class PaddleAPI(BaseMonetizationAPI):
                     product_id=str(response_data.get("response", {}).get("product_id")),
                     product_url=response_data.get("response", {}).get("url"),
                     platform_data=response_data,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return ProductResponse(
                     success=False,
                     error_message=response_data.get("error", {}).get("message", "Unknown error"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             logger.error(f"Failed to create Paddle product: {e}")
@@ -97,19 +105,22 @@ class PaddleAPI(BaseMonetizationAPI):
                 "description": product.description,
                 "base_price": product.price,
                 "currency": product.currency,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response_data = self._make_paddle_request("/product / update_product", update_data)
 
             if response_data.get("success"):
                 return ProductResponse(
                     success=True, product_id=product_id, platform_data=response_data
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return ProductResponse(
                     success=False,
                     error_message=response_data.get("error", {}).get("message", "Unknown error"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             logger.error(f"Failed to update Paddle product {product_id}: {e}")
@@ -120,7 +131,8 @@ class PaddleAPI(BaseMonetizationAPI):
         try:
             response_data = self._make_paddle_request(
                 "/product / update_product", {"product_id": product_id, "active": False}
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return response_data.get("success", False)
         except Exception as e:
             logger.error(f"Failed to delete Paddle product {product_id}: {e}")
@@ -131,7 +143,8 @@ class PaddleAPI(BaseMonetizationAPI):
         try:
             response_data = self._make_paddle_request(
                 "/product / get_products", {"product_id": product_id}
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response_data.get("success"):
                 products = response_data.get("response", [])
@@ -164,8 +177,10 @@ class PaddleAPI(BaseMonetizationAPI):
                 {
                     "from": start_date.strftime("%Y-%m-%d"),
                     "to": end_date.strftime("%Y-%m-%d"),
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             if response_data.get("success"):
                 transactions = response_data.get("response", [])
@@ -174,7 +189,8 @@ class PaddleAPI(BaseMonetizationAPI):
                 total_sales = len(transactions)
                 total_revenue = sum(
                     float(transaction.get("earnings", 0)) for transaction in transactions
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return {
                     "platform": "Paddle",
@@ -183,7 +199,8 @@ class PaddleAPI(BaseMonetizationAPI):
                     "total_revenue": total_revenue,
                     "currency": "USD",
                     "transactions": transactions,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"error": response_data.get("error", {}).get("message", "Unknown error")}
 
@@ -202,7 +219,8 @@ class PaddleAPI(BaseMonetizationAPI):
                 "main_currency_code": product.currency,
                 "initial_price": product.price,
                 "recurring_price": product.price,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response_data = self._make_paddle_request("/subscription / plans_create", plan_data)
 
@@ -210,12 +228,14 @@ class PaddleAPI(BaseMonetizationAPI):
                 plan_id = response_data.get("response", {}).get("product_id")
                 return ProductResponse(
                     success=True, product_id=str(plan_id), platform_data=response_data
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return ProductResponse(
                     success=False,
                     error_message=response_data.get("error", {}).get("message", "Unknown error"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             logger.error(f"Failed to create Paddle subscription plan: {e}")
@@ -231,12 +251,14 @@ class PaddleAPI(BaseMonetizationAPI):
 
                 active_subscriptions = [
                     sub for sub in subscriptions if sub.get("state") == "active"
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 monthly_recurring_revenue = sum(
                     float(sub.get("next_payment", {}).get("amount", 0))
                     for sub in active_subscriptions
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return {
                     "platform": "Paddle",
@@ -245,7 +267,8 @@ class PaddleAPI(BaseMonetizationAPI):
                     "monthly_recurring_revenue": monthly_recurring_revenue,
                     "currency": "USD",
                     "subscriptions": subscriptions,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"error": response_data.get("error", {}).get("message", "Unknown error")}
 
@@ -264,7 +287,8 @@ class PaddleAPI(BaseMonetizationAPI):
                 "webhook_url": custom_data.get("webhook_url"),
                 "prices": custom_data.get("prices", []),
                 "custom_message": custom_data.get("custom_message"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Remove None values
             checkout_data = {k: v for k, v in checkout_data.items() if v is not None}

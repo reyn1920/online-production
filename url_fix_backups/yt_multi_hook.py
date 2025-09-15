@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Multi - channel YouTube → Live Dashboard updater (safe by default).
 - Stdlib only (urllib), works with Python 3.13+
 - Defaults to DRY RUN (prints payload). Add --post to push to dashboard.
@@ -11,7 +11,7 @@ Usage examples:
   python3 yt_multi_hook.py --channel primary --post
   python3 yt_multi_hook.py --all --post
   python3 yt_multi_hook.py --channel NextGenTechToday --revenue 25.00 --post
-"""
+""""""
 
 import argparse
 import json
@@ -32,7 +32,8 @@ CHANNELS: Dict[str, Dict[str, Any]] = {
         "voice": "Matthew (Speechelo)",
         "email": "test@example.com",
         "monetization": ["High - value ads", "Merch", "Affiliate"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "NextGenTechToday": {
         "label": "Next Gen Tech Today",
         "handle": "@NextGenTechToday",
@@ -42,7 +43,8 @@ CHANNELS: Dict[str, Dict[str, Any]] = {
         "voice": "David (Speechelo)",
         "email": "test@example.com",
         "monetization": ["Tech affiliate", "Sponsored reviews"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "EcoWellLiving": {
         "label": "EcoWell Living",
         "handle": "@EcoWellLiving",
@@ -52,7 +54,8 @@ CHANNELS: Dict[str, Dict[str, Any]] = {
         "voice": "Brian (Speechelo)",
         "email": "test@example.com",
         "monetization": ["Eco partners", "Wellness services"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "AITrendReports": {
         "label": "AI Trend Reports",
         "handle": "@AITrendReports",
@@ -62,8 +65,10 @@ CHANNELS: Dict[str, Dict[str, Any]] = {
         "voice": "Alex (Speechelo)",
         "email": "test@example.com",
         "monetization": ["AI tool affiliates", "Courses"],
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 # ---- Config via env (override as needed) ------------------------------------
 API_KEY = os.environ.get("YT_API_KEY", "").strip()
@@ -86,7 +91,8 @@ def get_channel_stats(api_key: str, channel_id: str) -> Dict[str, int]:
         "views": int(s.get("viewCount", 0)),
         "subscribers": int(s.get("subscriberCount", 0)),
         "active_videos": int(s.get("videoCount", 0)),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def compose_payload(stats: Dict[str, int], revenue: float = 0.0) -> Dict[str, Any]:
@@ -98,7 +104,8 @@ def compose_payload(stats: Dict[str, int], revenue: float = 0.0) -> Dict[str, An
         "engagement": 0,  # You can wire a real calc later
         "active_videos": stats["active_videos"],
         "trending_topics": [],  # Placeholder until you feed topics
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def post_dashboard(url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -134,7 +141,8 @@ def main():
     g.add_argument(
         "--channel",
         help="Channel key / handle / label / id (e.g. primary, @NextGenTechToday)",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     g.add_argument("--all", action="store_true", help="Aggregate all channels")
     p.add_argument("--revenue", type=float, default=0.0, help="Revenue to display (default 0.0)")
     p.add_argument("--post", action="store_true", help="POST to dashboard (otherwise print only)")
@@ -142,7 +150,8 @@ def main():
         "--dashboard",
         default=DASHBOARD,
         help=f"Dashboard endpoint (default {DASHBOARD})",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     args = p.parse_args()
 
     if not API_KEY:

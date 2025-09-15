@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 VidScriptPro Framework - AI - Powered Multi - Stage Scriptwriting System
 
 This module provides a comprehensive scriptwriting framework that uses local Ollama LLM
 for generating professional video scripts through a structured multi - stage process:
+    pass
 1. Logline Development
 2. Synopsis Creation
 3. Character Development
@@ -12,7 +13,7 @@ for generating professional video scripts through a structured multi - stage pro
 
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -111,7 +112,8 @@ class OllamaLLMClient:
 
     def generate(
         self, prompt: str, system_prompt: str = "", max_tokens: int = 2000
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate text using Ollama LLM."""
         try:
             payload = {
@@ -123,14 +125,18 @@ class OllamaLLMClient:
                     "num_predict": max_tokens,
                     "temperature": 0.7,
                     "top_p": 0.9,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self.session.post(
                 f"{self.base_url}/api/generate",
                 json=payload,
                 headers={"Content - Type": "application/json"},
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.status_code == 200:
                 result = response.json()
@@ -138,7 +144,9 @@ class OllamaLLMClient:
             else:
                 logger.error(
                     f"Ollama API error: {response.status_code} - {response.text}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return ""
 
         except requests.exceptions.RequestException as e:
@@ -162,7 +170,8 @@ class VidScriptPro:
 
     def __init__(
         self, ollama_url: str = "http://localhost:11434", model: str = "llama2"
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.llm = OllamaLLMClient(ollama_url, model)
         self.current_project: Optional[Dict[str, Any]] = None
         self.script_templates = self._load_script_templates()
@@ -183,7 +192,7 @@ class VidScriptPro:
     def _load_script_templates(self) -> Dict[str, str]:
         """Load scriptwriting templates and prompts."""
         return {
-            "logline_prompt": """
+            "logline_prompt": """"""
 You are a professional screenwriter. Create a compelling logline for a video script.
 
 A logline is a one - sentence summary that captures:
@@ -198,8 +207,8 @@ Target Duration: {duration} minutes
 Target Audience: {audience}
 
 Write a single, powerful logline that would make someone want to watch this video.
-""",
-            "synopsis_prompt": """
+""","""
+            "synopsis_prompt": """"""
 You are a professional screenwriter. Expand the following logline into a detailed synopsis.
 
 Logline: {logline}
@@ -211,8 +220,8 @@ Create a 3 - 4 paragraph synopsis that includes:
 - Emotional journey and themes
 
 Keep it engaging and visual, suitable for a {duration}-minute video.
-""",
-            "character_prompt": """
+""","""
+            "character_prompt": """"""
 You are a professional character developer. Create detailed character profiles for this script.
 
 Synopsis: {synopsis}
@@ -225,8 +234,8 @@ For each main character, provide:
 - Character arc throughout the story
 
 Focus on characters that will drive the narrative forward.
-""",
-            "scene_breakdown_prompt": """
+""","""
+            "scene_breakdown_prompt": """"""
 You are a professional screenwriter. Break down this story into scenes.
 
 Synopsis: {synopsis}
@@ -242,8 +251,8 @@ Create a scene - by - scene breakdown with:
 - Estimated duration
 
 Aim for {target_scenes} scenes total.
-""",
-            "script_prompt": """
+""","""
+            "script_prompt": """"""
 You are a professional screenwriter. Write the full script for this scene.
 
 Scene Details:
@@ -260,8 +269,9 @@ Write in proper screenplay format with:
 - Parentheticals when needed
 
 Make it engaging, visual, and true to the characters.
-""",
-        }
+""","""
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_live_script_briefing(self, topic: str, genre: str) -> str:
         """Get live briefing from Research Agent for enhanced script generation."""
@@ -285,10 +295,12 @@ Make it engaging, visual, and true to the characters.
             if hasattr(self.research_agent, "get_hypocrisy_content_opportunities"):
                 hypocrisy_opportunities = (
                     self.research_agent.get_hypocrisy_content_opportunities(topic)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Compile live briefing for script context
-            live_briefing = f"""
+            live_briefing = f""""""
 === LIVE SCRIPT BRIEFING ===
 Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 Topic: {topic}
@@ -298,11 +310,12 @@ Genre: {genre}
 {briefing.get('summary', 'No recent intelligence available')}
 
 --- TRENDING TOPICS ---
-"""
+""""""
 
             for trend in trending_topics[:4]:  # Top 4 trends for scripts
-                live_briefing += f"• {trend.get('topic', 'Unknown')}: {trend.get('momentum_score',
-    0):.2f} momentum\\n"
+                live_briefing += f"• {trend.get('topic', 'Unknown')}: {trend.get('momentum_score',"
+# BRACKET_SURGEON: disabled
+#     0):.2f} momentum\\n""
 
             live_briefing += "\\n--- RELEVANT HEADLINES ---\\n"
             for headline in topic_headlines[:6]:  # Top 6 headlines for scripts
@@ -318,7 +331,9 @@ Genre: {genre}
             live_briefing += "• Use trending topics to add relevance and timeliness\\n"
             live_briefing += (
                 "• Leverage recent headlines for authentic dialogue and scenarios\\n"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             live_briefing += "\\n=== END BRIEFING ===\\n"
 
@@ -336,26 +351,33 @@ Genre: {genre}
         duration: int = 10,
         audience: str = "General",
         live_briefing: str = "",
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate a compelling logline for the video script."""
         logger.info(f"Creating logline for topic: {topic}")
 
         # Enhanced prompt with live briefing context
         briefing_context = ""
         if live_briefing:
-            briefing_context = f"\\n\\nCURRENT EVENTS CONTEXT:\\n{live_briefing}\\n\\nUse this current events context to make the logline more timely \
-    and relevant."
+            briefing_context = f"\\n\\nCURRENT EVENTS CONTEXT:\\n{live_briefing}\\n\\nUse this current events context to make the logline more timely \"
+#     and relevant."
 
         prompt = (
             self.script_templates["logline_prompt"].format(
                 topic=topic, genre=genre, duration=duration, audience=audience
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             + briefing_context
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         system_prompt = (
             "You are an expert screenwriter specializing in compelling loglines."
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         logline = self.llm.generate(prompt, system_prompt, max_tokens=200)
 
@@ -367,26 +389,33 @@ Genre: {genre}
 
     def create_synopsis(
         self, logline: str, duration: int = 10, live_briefing: str = ""
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Expand logline into detailed synopsis."""
         logger.info("Creating synopsis from logline")
 
         # Enhanced prompt with live briefing context
         briefing_context = ""
         if live_briefing:
-            briefing_context = f"\\n\\nCURRENT EVENTS CONTEXT:\\n{live_briefing}\\n\\nIncorporate relevant current events to make the synopsis more engaging \
-    and timely."
+            briefing_context = f"\\n\\nCURRENT EVENTS CONTEXT:\\n{live_briefing}\\n\\nIncorporate relevant current events to make the synopsis more engaging \"
+#     and timely."
 
         prompt = (
             self.script_templates["synopsis_prompt"].format(
                 logline=logline, duration=duration
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             + briefing_context
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         system_prompt = (
             "You are an expert story developer who creates engaging synopses."
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         synopsis = self.llm.generate(prompt, system_prompt, max_tokens=800)
 
@@ -404,7 +433,9 @@ Genre: {genre}
 
         prompt = self.script_templates["character_prompt"].format(
             synopsis=synopsis, genre=genre
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         system_prompt = "You are an expert character developer who creates compelling, three - dimensional characters."
 
@@ -420,8 +451,12 @@ Genre: {genre}
                     background="Unknown",
                     motivation="To overcome challenges",
                     arc="Growth through adversity",
-                )
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
         # Parse character text into Character objects
         characters = self._parse_characters(character_text)
@@ -445,8 +480,10 @@ Genre: {genre}
                 name_line = lines[0]
                 name = (
                     name_line.split(":")[0].strip() if ":" in name_line else name_line
-                )
-                name = name.replace("**", "").replace("#", "").replace("*", "").strip()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+                name = name.replace("**", "").replace("#", "").replace("*", "").strip()"
 
                 # Enhanced character attribute extraction
                 description = " ".join(lines[1:])[:200]  # Limit length
@@ -462,7 +499,9 @@ Genre: {genre}
                     background=background,
                     motivation=motivation,
                     arc=arc,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 characters.append(character)
 
         # Generate realistic default characters if none found
@@ -470,28 +509,32 @@ Genre: {genre}
             default_characters = [
                 Character(
                     name="Alex Rivera",
-                    description="A determined coffee shop owner who believes in creating community through quality beverages \
-    and genuine connections.",
-                    personality="Passionate, detail - oriented, empathetic, with a strong work ethic \
-    and natural leadership qualities",
+                    description="A determined coffee shop owner who believes in creating community through quality beverages \"
+#     and genuine connections.",
+                    personality="Passionate, detail - oriented, empathetic, with a strong work ethic \"
+#     and natural leadership qualities",
                     background="Former corporate executive who left the business world to pursue their dream of opening an independent coffee shop",
-                    motivation="To build a sustainable business that serves as a community hub \
-    and provides ethically sourced coffee",
+                    motivation="To build a sustainable business that serves as a community hub \"
+#     and provides ethically sourced coffee",
                     arc="Learns to balance business success with personal fulfillment while building meaningful relationships",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 Character(
                     name="Jordan Chen",
-                    description="A talented barista \
-    and aspiring artist who finds inspiration in the daily interactions with customers.",
-                    personality="Creative, observant, introverted but warm, with a keen eye for detail \
-    and artistic expression",
-                    background="Art school graduate working part - time while developing their portfolio \
-    and artistic career",
+                    description="A talented barista \"
+#     and aspiring artist who finds inspiration in the daily interactions with customers.",
+                    personality="Creative, observant, introverted but warm, with a keen eye for detail \"
+#     and artistic expression",
+                    background="Art school graduate working part - time while developing their portfolio \"
+#     and artistic career",
                     motivation="To support their artistic pursuits while contributing to a positive workplace environment",
-                    arc="Gains confidence in their artistic abilities \
-    and learns to share their creativity with others",
-                ),
-            ]
+                    arc="Gains confidence in their artistic abilities \"
+#     and learns to share their creativity with others",
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             characters.extend(default_characters)
 
         return characters[:4]  # Limit to 4 main characters
@@ -504,88 +547,95 @@ Genre: {genre}
         # Common personality indicators
         if any(
             word in description_lower for word in ["confident", "bold", "assertive"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             traits.append("confident")
         if any(
             word in description_lower for word in ["kind", "caring", "compassionate"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             traits.append("empathetic")
         if any(
             word in description_lower
             for word in ["creative", "artistic", "imaginative"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             traits.append("creative")
         if any(
             word in description_lower for word in ["determined", "persistent", "driven"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             traits.append("determined")
         if any(word in description_lower for word in ["funny", "humorous", "witty"]):
             traits.append("humorous")
 
         if traits:
-            return f"Characterized by being {', '.join(traits)}, with depth \
-    and authenticity that drives character development"
+            return f"Characterized by being {', '.join(traits)}, with depth \"
+#     and authenticity that drives character development"
         else:
-            return "Multi - dimensional with realistic strengths \
-    and flaws that create compelling character dynamics"
+            return "Multi - dimensional with realistic strengths \"
+#     and flaws that create compelling character dynamics"
 
     def _generate_character_background(self, name: str, description: str) -> str:
         """Generate appropriate background based on character context."""
         description_lower = description.lower()
 
         if any(word in description_lower for word in ["coffee", "barista", "shop"]):
-            return "Has experience in hospitality \
-    and customer service, with a passion for coffee culture \
-    and community building"
+            return "Has experience in hospitality \"
+#     and customer service, with a passion for coffee culture \
+#     and community building"
         elif any(
             word in description_lower for word in ["office", "business", "corporate"]
-        ):
-            return "Professional background in business with experience in corporate environments \
-    and team management"
+# BRACKET_SURGEON: disabled
+#         ):
+            return "Professional background in business with experience in corporate environments \"
+#     and team management"
         elif any(
             word in description_lower for word in ["artist", "creative", "design"]
-        ):
-            return "Educational background in the arts with experience in creative industries \
-    and artistic expression"
+# BRACKET_SURGEON: disabled
+#         ):
+            return "Educational background in the arts with experience in creative industries \"
+#     and artistic expression"
         else:
-            return "Diverse life experiences that inform their worldview \
-    and approach to relationships \
-    and challenges"
+            return "Diverse life experiences that inform their worldview \"
+#     and approach to relationships \
+#     and challenges"
 
     def _extract_character_motivation(self, description: str) -> str:
         """Extract or generate character motivation."""
         description_lower = description.lower()
 
         if any(word in description_lower for word in ["success", "achieve", "goal"]):
-            return "Driven by the desire to achieve meaningful success while maintaining personal values \
-    and relationships"
+            return "Driven by the desire to achieve meaningful success while maintaining personal values \"
+#     and relationships"
         elif any(
             word in description_lower for word in ["help", "support", "community"]
-        ):
-            return "Motivated by the opportunity to make a positive impact on others \
-    and contribute to community well - being"
+# BRACKET_SURGEON: disabled
+#         ):
+            return "Motivated by the opportunity to make a positive impact on others \"
+#     and contribute to community well - being"
         elif any(word in description_lower for word in ["create", "build", "develop"]):
-            return "Inspired by the creative process \
-    and the satisfaction of building something meaningful \
-    and lasting"
+            return "Inspired by the creative process \"
+#     and the satisfaction of building something meaningful \
+#     and lasting"
         else:
-            return "Seeks personal growth \
-    and authentic connections while navigating life's challenges \
-    and opportunities"
+            return "Seeks personal growth \"
+#     and authentic connections while navigating life's challenges \
+#     and opportunities"
 
     def _generate_character_arc(self, name: str, personality: str) -> str:
         """Generate appropriate character arc based on personality."""
         if "confident" in personality.lower():
             return "Learns to balance confidence with vulnerability, discovering the strength that comes from authentic connections"
         elif "creative" in personality.lower():
-            return "Develops the courage to share their creative vision while learning to collaborate \
-    and accept constructive feedback"
+            return "Develops the courage to share their creative vision while learning to collaborate \"
+#     and accept constructive feedback"
         elif "determined" in personality.lower():
-            return "Discovers that true success includes personal fulfillment \
-    and meaningful relationships, not just achievement"
+            return "Discovers that true success includes personal fulfillment \"
+#     and meaningful relationships, not just achievement"
         else:
-            return "Undergoes meaningful personal growth through challenges that reveal inner strength \
-    and authentic character"
+            return "Undergoes meaningful personal growth through challenges that reveal inner strength \"
+#     and authentic character"
 
     def create_scene_breakdown(
         self, synopsis: str, characters: List[Character], duration: int = 10
@@ -601,7 +651,9 @@ Genre: {genre}
             characters=", ".join(character_names),
             duration=duration,
             target_scenes=target_scenes,
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         system_prompt = "You are an expert script supervisor who creates well - paced scene breakdowns."
 
@@ -630,8 +682,11 @@ Genre: {genre}
                     "The espresso machine hisses as steam rises",
                     "Customers check their phones while waiting in line",
                     "The cash register chimes with each transaction",
-                ],
-            },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "location": "EXT. CITY STREET",
                 "time": "DAY",
@@ -641,21 +696,29 @@ Genre: {genre}
                     "Traffic lights change from red to green",
                     "Footsteps echo on the concrete sidewalk",
                     "A gentle breeze rustles through nearby trees",
-                ],
-            },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "location": "INT. OFFICE BUILDING",
                 "time": "AFTERNOON",
-                "description": "A modern office space with glass walls \
-    and contemporary furniture. Employees collaborate in an open workspace.",
+                "description": "A modern office space with glass walls \"
+#     and contemporary furniture. Employees collaborate in an open workspace.",
                 "characters": ["MANAGER", "EMPLOYEE"],
                 "actions": [
                     "Keyboards click as people type at their desks",
                     "A printer hums quietly in the background",
                     "Sunlight streams through large windows",
-                ],
-            },
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for i in range(num_scenes):
             template = scene_templates[i % len(scene_templates)]
@@ -670,15 +733,21 @@ Genre: {genre}
                     {
                         "character": template["characters"][0],
                         "line": "This scene establishes the setting and mood.",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "character": template["characters"][-1],
                         "line": "The story unfolds naturally from here.",
-                    },
-                ],
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                 action=template["actions"],
                 duration_estimate=duration * 60 // num_scenes,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             scenes.append(scene)
 
         return scenes
@@ -701,7 +770,9 @@ Genre: {genre}
             time_of_day = "DAY"
             description = (
                 "A scene unfolds with careful attention to detail and atmosphere."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             extracted_actions = []
 
             for line in lines:
@@ -711,10 +782,13 @@ Genre: {genre}
                     or "setting" in line_lower
                     or "int." in line_lower
                     or "ext." in line_lower
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     location = (
                         line.split(":")[-1].strip() if ":" in line else line.strip()
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     if not location.startswith(("INT.", "EXT.")):
                         location = f"INT. {location.upper()}"
                 elif (
@@ -723,25 +797,32 @@ Genre: {genre}
                     or "afternoon" in line_lower
                     or "evening" in line_lower
                     or "night" in line_lower
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     time_of_day = (
                         line.split(":")[-1].strip()
                         if ":" in line
                         else self._extract_time_of_day(line)
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 elif len(line) > 30 and not any(
                     keyword in line_lower
                     for keyword in ["scene", "location", "time", "character"]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     if (
                         not description
                         or description
-                        == "A scene unfolds with careful attention to detail \
-    and atmosphere."
-                    ):
+                        == "A scene unfolds with careful attention to detail \"
+#     and atmosphere."
+# BRACKET_SURGEON: disabled
+#                     ):
                         description = line[
                             :200
-                        ]  # Use first substantial line as description
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]  # Use first substantial line as description
                 elif len(line) > 15 and any(
                     action_word in line_lower
                     for action_word in [
@@ -753,8 +834,11 @@ Genre: {genre}
                         "moves",
                         "opens",
                         "closes",
-                    ]
-                ):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ):
                     extracted_actions.append(line)
 
             # Generate contextual actions if none found
@@ -764,25 +848,33 @@ Genre: {genre}
                         "The coffee shop bustles with morning activity",
                         "Steam rises from freshly brewed beverages",
                         "Customers engage in quiet conversation",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
                 elif "office" in location.lower():
                     extracted_actions = [
                         "Fluorescent lights illuminate the workspace",
                         "Keyboards click as work progresses",
                         "Papers rustle as documents are reviewed",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
                 elif "street" in location.lower() or "ext." in location.lower():
                     extracted_actions = [
                         "Urban sounds create a dynamic soundscape",
                         "Pedestrians move with purpose along the sidewalk",
                         "Natural light creates interesting shadows",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
                 else:
                     extracted_actions = [
                         "The environment establishes mood and atmosphere",
                         "Characters interact naturally within the space",
                         "Visual details enhance the storytelling",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             scene = Scene(
                 number=i,
@@ -795,7 +887,9 @@ Genre: {genre}
                 duration_estimate=total_duration
                 * 60
                 // max(len(scene_sections[1:]), 3),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             scenes.append(scene)
 
         # Ensure at least 3 scenes with realistic content
@@ -814,26 +908,37 @@ Genre: {genre}
                         time_of_day="DAY",
                         characters=(
                             character_names[:1] if character_names else ["PROTAGONIST"]
-                        ),
-                        description="The story continues with natural progression \
-    and development.",
+# BRACKET_SURGEON: disabled
+#                         ),
+                        description="The story continues with natural progression \"
+#     and development.",
                         dialogue=[
                             {
                                 "character": (
                                     character_names[0]
                                     if character_names
                                     else "PROTAGONIST"
-                                ),
+# BRACKET_SURGEON: disabled
+#                                 ),
                                 "line": "The narrative flows seamlessly into this moment.",
-                            }
-                        ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                         action=[
                             "The scene transitions smoothly from the previous moment",
                             "Characters continue their journey through the story",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                         duration_estimate=total_duration * 60 // 3,
-                    )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return scenes
 
@@ -857,17 +962,21 @@ Genre: {genre}
 
         character_info = "\\n".join(
             [f"{char.name}: {char.description}" for char in characters]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
-        scene_details = f"""
+        scene_details = f""""""
 Scene {scene.number}: {scene.location} - {scene.time_of_day}
 Characters: {', '.join(scene.characters)}
 Description: {scene.description}
-"""
+""""""
 
         prompt = self.script_templates["script_prompt"].format(
             scene_details=scene_details, characters=character_info
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         system_prompt = "You are a professional screenwriter who writes engaging, properly formatted scripts."
 
@@ -882,7 +991,9 @@ Description: {scene.description}
             logger.error(f"Failed to generate script for scene {scene.number}")
             scene.dialogue = [
                 {"character": scene.characters[0], "line": "Dialogue to be written"}
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             scene.action = ["Action to be written"]
 
         return scene
@@ -934,31 +1045,45 @@ Description: {scene.description}
                     {
                         "character": "BARISTA",
                         "line": "Welcome to our coffee shop! What can I get you today?",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 dialogue.append(
-                    {"character": "CUSTOMER", "line": "I'll have a cappuccino, please."}
-                )
+                    {"character": "CUSTOMER", "line": "I'll have a cappuccino, please."}'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             elif any(word in words for word in ["office", "work", "meeting"]):
                 dialogue.append(
                     {
                         "character": "MANAGER",
                         "line": "Let's discuss the quarterly results in today's meeting.",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 dialogue.append(
                     {
                         "character": "EMPLOYEE",
-                        "line": "I've prepared the presentation slides.",
-                    }
-                )
+                        "line": "I've prepared the presentation slides.",'
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 dialogue.append(
                     {
                         "character": "PROTAGONIST",
                         "line": "This is where our story begins.",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if not action:
             # Generate contextual actions
@@ -980,7 +1105,8 @@ Description: {scene.description}
         genre: str = "Drama",
         duration: int = 10,
         audience: str = "General",
-    ) -> Script:
+# BRACKET_SURGEON: disabled
+#     ) -> Script:
         """Generate complete script through all stages."""
         logger.info(f"Starting full script generation for: {topic}")
 
@@ -991,7 +1117,9 @@ Description: {scene.description}
             # Stage 1: Logline with live context
             logline = self.create_logline(
                 topic, genre, duration, audience, live_briefing
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             time.sleep(1)  # Rate limiting
 
             # Stage 2: Synopsis with live context
@@ -1025,7 +1153,9 @@ Description: {scene.description}
                 target_audience=audience,
                 created_at=datetime.now(),
                 version="1.0",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             logger.info(f"Successfully generated script: {script.title}")
             return script
@@ -1036,7 +1166,8 @@ Description: {scene.description}
 
     def export_script(
         self, script: Script, output_path: str, format_type: str = "json"
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Export script to file."""
         try:
             output_file = Path(output_path)
@@ -1061,7 +1192,9 @@ Description: {scene.description}
                     for scene in script.scenes:
                         f.write(
                             f"SCENE {scene.number} - {scene.location} - {scene.time_of_day}\\n"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         f.write(f"{scene.description}\\n\\n")
 
                         for action_line in scene.action:
@@ -1070,7 +1203,9 @@ Description: {scene.description}
                         for dialogue in scene.dialogue:
                             f.write(
                                 f"\\n{dialogue['character']}\\n{dialogue['line']}\\n"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                         f.write("\\n" + "=" * 50 + "\\n\\n")
 
@@ -1092,7 +1227,9 @@ Description: {scene.description}
                 char = dialogue["character"]
                 character_dialogue_count[char] = (
                     character_dialogue_count.get(char, 0) + 1
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return {
             "title": script.title,
@@ -1104,11 +1241,13 @@ Description: {scene.description}
             "character_dialogue_distribution": character_dialogue_count,
             "average_scene_duration": (
                 script.total_duration // len(script.scenes) if script.scenes else 0
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "genre": script.genre,
             "target_audience": script.target_audience,
             "created_at": script.created_at.isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Example usage and testing
@@ -1127,7 +1266,9 @@ if __name__ == "__main__":
                 genre="Slice of Life",
                 duration=5,
                 audience="General",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Print statistics
             stats = scriptwriter.get_script_statistics(script)
@@ -1144,6 +1285,8 @@ if __name__ == "__main__":
     else:
         print(
             "❌ Ollama server not accessible. Please ensure Ollama is running on localhost:11434"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print("   You can start Ollama with: ollama serve")
         print("   And pull a model with: ollama pull llama2")

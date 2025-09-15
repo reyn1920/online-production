@@ -8,10 +8,10 @@ OUT  = ROOT / "rewritten"
 IGNORE = []
 if (ROOT / ".rewriteignore").exists():
     IGNORE = [p.strip() for p in open(ROOT / ".rewriteignore", encoding="utf-8").read().splitlines()
-              if p.strip() and not p.startswith("#")]
+              if p.strip() and not p.startswith("#")]"
 
 def ignored(path: str) -> bool:
-    norm = path.replace("\\", "/")
+    norm = path.replace("\\", "/")"
     return any(fnmatch.fnmatch(norm, pat) for pat in IGNORE)
 
 def normalize_newlines(s: str) -> str:
@@ -32,7 +32,7 @@ def try_parse(src: str, filename: str):
 
 def close_unterminated_triple_quotes(s: str):
     actions = []
-    for triple in ("'''", '"""'):
+    for triple in ("'''", '"""'):'''"""
         if s.count(triple) % 2 == 1:
             s += triple + "\n"
             actions.append(f"closed {triple} at EOF")
@@ -72,7 +72,7 @@ def comment_out_line(s: str, lineno: int, reason: str):
     lines = s.split("\n")
     if 1 <= lineno <= len(lines):
         orig = lines[lineno-1]
-        marker = f'"""[PRESERVED-BROKEN-LINE] {reason[:120]}"""\n# ' + orig
+        marker = f'"""[PRESERVED-BROKEN-LINE] {reason[:120]}"""\n# ' + orig'
         lines[lineno-1] = marker
     return "\n".join(lines)
 
@@ -81,7 +81,7 @@ def process_file(src: pathlib.Path, comment_on_fail: bool):
     out = OUT / rel
     out.parent.mkdir(parents=True, exist_ok=True)
     raw = src.read_text(encoding="utf-8", errors="replace")
-    meta = {"file": str(rel).replace("\\","/"), "actions": []}
+    meta = {"file": str(rel).replace("\\","/"), "actions": []}"
 
     s = normalize_newlines(raw)
     if s != raw: meta["actions"].append("normalize_newlines")
@@ -133,7 +133,7 @@ def main():
     results = []
     files = []
     for p in ROOT.rglob("*.py"):
-        rel = str(p.relative_to(ROOT)).replace("\\","/")
+        rel = str(p.relative_to(ROOT)).replace("\\","/")"
         if rel.endswith(".failed.py") or ignored(rel):
             continue
         if args.only and not any(fnmatch.fnmatch(rel, pat) for pat in args.only):

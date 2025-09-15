@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import Dict, Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, HttpUrl, Field
 
@@ -30,7 +31,7 @@ class RedditPost(BaseModel):
     text: str | None = None
     url: HttpUrl | None = None
 
-def _raise_if_not_ok(res: dict) -> dict:
+def _raise_if_not_ok(res: Dict[str, Any]) -> Dict[str, Any]:
     if not res.get("ok"):
         # 400 for not configured; adjust to 502 if upstream error
         raise HTTPException(status_code=400, detail=res.get("error", "Service not configured"))
@@ -42,8 +43,8 @@ async def post_to_facebook(post: FacebookPost):
     client = FacebookClient.from_env()
     if not client.is_configured():
         raise HTTPException(status_code=400, detail="Facebook not configured")
-    
-    result = await client.post_message(post.message, post.link)
+
+    result = await client.post_message(post.message, str(post.link) if post.link else None)
     return _raise_if_not_ok(result)
 
 # ----- LinkedIn Endpoints -----
@@ -52,8 +53,8 @@ async def post_to_linkedin(post: LinkedInPost):
     client = LinkedInClient.from_env()
     if not client.is_configured():
         raise HTTPException(status_code=400, detail="LinkedIn not configured")
-    
-    result = await client.post_content(post.text, post.url)
+
+    result = await client.post_content(post.text, str(post.url) if post.url else None)
     return _raise_if_not_ok(result)
 
 # ----- Pinterest Endpoints -----
@@ -62,8 +63,8 @@ async def post_to_pinterest(post: PinterestPost):
     client = PinterestClient.from_env()
     if not client.is_configured():
         raise HTTPException(status_code=400, detail="Pinterest not configured")
-    
-    result = await client.create_pin(post.title, post.link, post.image_path)
+
+    result = await client.create_pin(post.title, post.image_path)
     return _raise_if_not_ok(result)
 
 # ----- Reddit Endpoints -----
@@ -72,8 +73,8 @@ async def post_to_reddit(post: RedditPost):
     client = RedditClient.from_env()
     if not client.is_configured():
         raise HTTPException(status_code=400, detail="Reddit not configured")
-    
-    result = await client.submit_post(post.subreddit, post.title, post.text, post.url)
+
+    result = await client.submit_post(post.subreddit, post.title, post.text, str(post.url) if post.url else None)
     return _raise_if_not_ok(result)
 
 # ----- Health Check -----

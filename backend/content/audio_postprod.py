@@ -1,13 +1,23 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Audio Post - Production - Automated Sound Design and Mastering
-
+""""""
 This module implements automated audio post - production using ffmpeg for
 sound design, mastering, audio ducking, and advanced audio processing.
 It supports batch processing, real - time effects, and professional audio workflows.
+"""
+
+Audio Post - Production - Automated Sound Design and Mastering
+
+
+
+""""""
 
 Author: TRAE.AI System
 Version: 1.0.0
+
+
+
 """
 
 import json
@@ -90,7 +100,9 @@ class EffectType(Enum):
 
 
 class AudioConfig:
-    """Configuration for audio processing."""
+    """
+Configuration for audio processing.
+
 
     sample_rate: int = 48000
     bit_depth: int = 24
@@ -103,13 +115,22 @@ class AudioConfig:
     use_limiter: bool = True
     remove_silence: bool = False
     silence_threshold: float = -50.0  # dB
-    fade_duration: float = 0.1  # seconds
+   
+""""""
 
+    fade_duration: float = 0.1  # seconds
+   
+
+    
+   
+"""
 @dataclass
 
 
 class DuckingConfig:
-    """Configuration for audio ducking."""
+    """
+Configuration for audio ducking.
+
 
     mode: DuckingMode = DuckingMode.VOICE_OVER
     threshold: float = -30.0  # dB threshold for ducking trigger
@@ -118,20 +139,35 @@ class DuckingConfig:
     release_time: float = 0.5  # seconds
     knee: float = 2.0  # dB soft knee
     lookahead: float = 0.05  # seconds
-    frequency_range: Tuple[float, float] = (200.0, 4000.0)  # Hz range for detection
+   
+""""""
 
+    frequency_range: Tuple[float, float] = (200.0, 4000.0): # Hz range for detection
+   
+
+    
+   
+"""
 @dataclass
 
 
 class AudioEffect:
-    """Represents an audio effect."""
+    """
+Represents an audio effect.
+
 
     type: EffectType
     parameters: Dict[str, Any]
     enabled: bool = True
+   
+""""""
+
     order: int = 0
+   
 
-
+    
+   
+"""
     def __post_init__(self):
         if not self.parameters:
             self.parameters = {}
@@ -146,7 +182,7 @@ class AudioTrack:
     source_path: str
     track_type: str  # "voice", "music", "sfx", "ambient"
     volume: float = 1.0
-    pan: float = 0.0  # -1.0 (left) to 1.0 (right)
+    pan: float = 0.0: # -1.0 (left) to 1.0 (right)
     start_time: float = 0.0  # seconds
     duration: Optional[float] = None  # seconds, None = full length
     effects: List[AudioEffect] = None
@@ -205,7 +241,9 @@ class FFmpegAudioProcessor:
                 "/opt/homebrew/bin/ffmpeg",
                 "/usr/bin/ffmpeg",
                 "ffmpeg",  # In PATH
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         ]
 
         for path in possible_paths:
             if shutil.which(path) or Path(path).exists():
@@ -215,14 +253,24 @@ class FFmpegAudioProcessor:
 
 
     def _validate_ffmpeg(self) -> bool:
-        """Validate FFmpeg installation."""
+        """
+Validate FFmpeg installation.
+
+        
+"""
         try:
+        """
             result = subprocess.run(
                 [self.ffmpeg_path, "-version"],
+        """
+        try:
+        """
                     capture_output = True,
                     text = True,
                     timeout = 10,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
             if result.returncode == 0 and "ffmpeg version" in result.stdout:
                 version_line = result.stdout.split("\\n")[0]
@@ -238,14 +286,27 @@ class FFmpegAudioProcessor:
 
 
     def get_audio_info(self, file_path: str) -> Dict[str, Any]:
-        """Get audio file information."""
-        try:
-            cmd = [self.ffmpeg_path, "-i", file_path, "-f", "null", "-"]
+        """
+Get audio file information.
 
+        
+"""
+        try:
+        """
+            cmd = [self.ffmpeg_path, "-i", file_path, "-f", "null", "-"]
+        """
+
+        try:
+        
+
+       
+""""""
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    timeout = 30)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 30)
 
             # Parse FFmpeg output for audio info
             info = {
@@ -254,27 +315,35 @@ class FFmpegAudioProcessor:
                     "channels": 0,
                     "bit_rate": 0,
                     "format": "unknown",
-                    }
+                     }
 
             # Extract duration
             duration_match = re.search(
                 r"Duration: (\\d{2}):(\\d{2}):(\\d{2}\\.\\d{2})", result.stderr
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             if duration_match:
                 hours, minutes, seconds = duration_match.groups()
                 info["duration"] = (
                     int(hours) * 3600 + int(minutes) * 60 + float(seconds)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
             # Extract audio stream info
             audio_match = re.search(
-                r"Stream #\\d+:\\d+.*?: Audio: (\\w+).*?, (\\d+) Hz, (\\w+), .*, (\\d+) kb/s",
+                r"Stream #\\d+:\\d+.*?: Audio: (\\w+).*?, (\\d+) Hz, (\\w+), .*, (\\d+) kb/s","
                     result.stderr,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
             if audio_match:
                 format_name, sample_rate, channel_layout, bit_rate = (
                     audio_match.groups()
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 info["format"] = format_name
                 info["sample_rate"] = int(sample_rate)
                 info["bit_rate"] = int(bit_rate)
@@ -299,13 +368,35 @@ class FFmpegAudioProcessor:
 
     def apply_effect(
         self, input_path: str, output_path: str, effect: AudioEffect
-    ) -> bool:
-        """Apply a single audio effect."""
+#     ) -> bool:
+        """
+Apply a single audio effect.
+
+        
+"""
         try:
+        """
+
             filter_string = self._build_effect_filter(effect)
+        
+
+        try:
+        
+""""""
+
+        
+       
+
             if not filter_string:
+                
+"""
+                return False
+                """"""
+                """
+
                 return False
 
+                """
             cmd = [
                 self.ffmpeg_path,
                     "-i",
@@ -314,12 +405,16 @@ class FFmpegAudioProcessor:
                     filter_string,
                     "-y",  # Overwrite output
                 output_path,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
 
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    timeout = 300)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 300)
 
             if result.returncode == 0:
                 self.logger.debug(f"Effect applied: {effect.type.value}")
@@ -334,9 +429,27 @@ class FFmpegAudioProcessor:
 
 
     def _build_effect_filter(self, effect: AudioEffect) -> str:
-        """Build FFmpeg filter string for an effect."""
-        params = effect.parameters
+        """
+Build FFmpeg filter string for an effect.
 
+       
+""""""
+
+        params = effect.parameters
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        params = effect.parameters
+       
+""""""
         if effect.type == EffectType.COMPRESSOR:
             threshold = params.get("threshold", -20.0)
             ratio = params.get("ratio", 4.0)
@@ -394,13 +507,37 @@ class FFmpegAudioProcessor:
 
     def mix_tracks(
         self, tracks: List[AudioTrack], output_path: str, config: AudioConfig
-    ) -> bool:
-        """Mix multiple audio tracks."""
+#     ) -> bool:
+        """
+Mix multiple audio tracks.
+
+        
+"""
         try:
+        """"""
             if not tracks:
+        """
+
+        try:
+        
+
+       
+""""""
+
+                
+
                 return False
+                
+""""""
+
+                
+               
 
             # Build FFmpeg command for mixing
+                
+"""
+                return False
+                """
             cmd = [self.ffmpeg_path]
 
             # Add input files
@@ -426,7 +563,9 @@ class FFmpegAudioProcessor:
                 if track.pan != 0.0:
                     track_filters.append(
                         f"pan = stereo|c0={1 - abs(track.pan)}*c0+{max(0,-track.pan)}*c1|c1={1 - abs(track.pan)}*c1+{max(0,track.pan)}*c0"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
                 # Time offset
                 if track.start_time > 0:
@@ -447,7 +586,9 @@ class FFmpegAudioProcessor:
                 if track_filters:
                     filter_parts.append(
                         f"[{input_index}:a]{','.join(track_filters)}[a{i}]"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
                     input_index += 1
                 else:
                     filter_parts.append(f"[{input_index}:a]acopy[a{i}]")
@@ -458,12 +599,16 @@ class FFmpegAudioProcessor:
                 i
                 for i, track in enumerate(tracks)
                 if not track.mute and Path(track.source_path).exists()
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             ]
             if len(active_tracks) > 1:
                 mix_inputs = "".join([f"[a{i}]" for i in active_tracks])
                 filter_parts.append(
                     f"{mix_inputs}amix = inputs={len(active_tracks)}:duration = longest[mixed]"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 output_label = "[mixed]"
             elif len(active_tracks) == 1:
                 output_label = f"[a{active_tracks[0]}]"
@@ -472,6 +617,7 @@ class FFmpegAudioProcessor:
 
             # Add filter complex to command
                 if filter_parts:
+                    pass
                 cmd.extend(["-filter_complex", ";".join(filter_parts)])
                 cmd.extend(["-map", output_label.strip("[]")])
 
@@ -484,14 +630,20 @@ class FFmpegAudioProcessor:
                         str(config.channels),
                         "-y",  # Overwrite output
                     output_path,
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Execute mixing
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    timeout = 600)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 600)
 
             if result.returncode == 0:
                 self.logger.info(f"Audio mixing completed: {output_path}")
@@ -506,7 +658,9 @@ class FFmpegAudioProcessor:
 
 
 class AudioDucker:
-    """Implements audio ducking functionality."""
+    """
+Implements audio ducking functionality.
+
 
 
     def __init__(self, processor: FFmpegAudioProcessor):
@@ -520,12 +674,34 @@ class AudioDucker:
             trigger_audio: str,
             output_path: str,
             config: DuckingConfig,
-            ) -> bool:
-        """Apply audio ducking to main audio based on trigger audio."""
-        try:
-            # Build ducking filter
-            ducking_filter = self._build_ducking_filter(config)
+#             ) -> bool:
+        
+"""Apply audio ducking to main audio based on trigger audio."""
 
+        try:
+           
+
+            
+           
+"""
+            # Build ducking filter
+           """"""
+            
+           """
+
+            ducking_filter = self._build_ducking_filter(config)
+           
+
+            
+           
+""""""
+
+            
+           
+
+            # Build ducking filter
+           
+""""""
             cmd = [
                 self.processor.ffmpeg_path,
                     "-i",
@@ -538,12 +714,16 @@ class AudioDucker:
                     "[ducked]",
                     "-y",
                     output_path,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
 
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    timeout = 600)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 600)
 
             if result.returncode == 0:
                 self.logger.info(f"Audio ducking completed: {output_path}")
@@ -558,15 +738,52 @@ class AudioDucker:
 
 
     def _build_ducking_filter(self, config: DuckingConfig) -> str:
-        """Build FFmpeg filter for audio ducking."""
+        """
+Build FFmpeg filter for audio ducking.
+
+       
+""""""
+
         # Sidechaining compressor for ducking
+       
+
+        
+       
+"""
         threshold = config.threshold
+       """
+
+        
+       
+
+        # Sidechaining compressor for ducking
+       
+""""""
+
         ratio = 1.0/config.ratio  # Invert ratio for ducking
         attack = config.attack_time
         release = config.release_time
+       
+
+        
+       
+"""
         knee = config.knee
+       """
+
+        
+       
 
         # Filter to detect trigger signal
+       
+""""""
+
+        knee = config.knee
+       
+
+        
+       
+"""
         trigger_filter = f"[1:a]highpass = f={config.frequency_range[0]},lowpass = f={config.frequency_range[1]}[trigger]"
 
         # Sidechain compressor
@@ -601,7 +818,7 @@ class AudioPostProduction:
             config: Optional[AudioConfig] = None,
             ducking_config: Optional[DuckingConfig] = None,
             master_effects: Optional[List[AudioEffect]] = None,
-            ) -> AudioJob:
+#             ) -> AudioJob:
         """Create a new audio processing job."""
         if job_id is None:
             job_id = f"audio_{int(time.time())}_{len(self.active_jobs)}"
@@ -625,8 +842,10 @@ class AudioPostProduction:
                 "created_at": datetime.now().isoformat(),
                     "track_count": len(tracks),
                     "total_duration": self._estimate_total_duration(tracks),
-                    },
-                )
+                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Audio job created: {job_id}")
@@ -687,10 +906,27 @@ class AudioPostProduction:
 
 
     def _process_individual_tracks(self, job: AudioJob) -> List[AudioTrack]:
-        """Process individual tracks with their effects."""
-        processed_tracks = []
+        """
+Process individual tracks with their effects.
 
+       
+""""""
+
+        processed_tracks = []
+       
+
+        
+       
+"""
         for i, track in enumerate(job.tracks):
+       """
+
+        
+       
+
+        processed_tracks = []
+       
+""""""
             if track.mute:
                 continue
 
@@ -706,7 +942,9 @@ class AudioPostProduction:
                     effects=[],  # Effects will be applied
                 mute = track.mute,
                     solo = track.solo,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
             # Apply track effects if any
             if track.effects:
@@ -714,20 +952,24 @@ class AudioPostProduction:
 
                 for j, effect in enumerate(
                     sorted(track.effects, key = lambda x: x.order)
-                ):
+#                 ):
                     if not effect.enabled:
                         continue
 
                     temp_path = str(
                         self.temp_dir/f"{job.job_id}_track_{i}_effect_{j}.wav"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
                     if self.processor.apply_effect(current_path, temp_path, effect):
                         current_path = temp_path
                     else:
                         self.logger.warning(
                             f"Failed to apply effect {effect.type.value} to track {track.name}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
 
                 processed_track.source_path = current_path
 
@@ -739,11 +981,18 @@ class AudioPostProduction:
     def _apply_ducking_to_tracks(
         self, job: AudioJob, tracks: List[AudioTrack]
     ) -> List[AudioTrack]:
-        """Apply ducking between tracks."""
-        if not job.ducking_config:
-            return tracks
+        """
+Apply ducking between tracks.
 
+        if not job.ducking_config:
+            
+"""
+            return tracks
+            """"""
         # Find voice/trigger track and music/background tracks
+            """
+            return tracks
+            """
         voice_tracks = [t for t in tracks if t.track_type in ["voice", "dialogue"]]
         music_tracks = [t for t in tracks if t.track_type in ["music", "ambient"]]
 
@@ -760,14 +1009,16 @@ class AudioPostProduction:
                 voice_track = voice_tracks[0]
                 ducked_path = str(
                     self.temp_dir/f"{job.job_id}_{track.name}_ducked.wav"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
                 if self.ducker.apply_ducking(
                     track.source_path,
                         voice_track.source_path,
                         ducked_path,
                         job.ducking_config,
-                        ):
+#                         ):
                     track.source_path = ducked_path
                     self.logger.info(f"Ducking applied to track: {track.name}")
 
@@ -777,10 +1028,19 @@ class AudioPostProduction:
 
 
     def _apply_master_effects(self, job: AudioJob, input_path: str) -> str:
-        """Apply master effects to the mixed audio."""
+        """
+Apply master effects to the mixed audio.
+
         if not job.master_effects:
+            
+"""
+            return input_path
+            """"""
+            """
+
             return input_path
 
+            """
         current_path = input_path
 
         for i, effect in enumerate(sorted(job.master_effects, key = lambda x: x.order)):
@@ -795,14 +1055,21 @@ class AudioPostProduction:
             else:
                 self.logger.warning(
                     f"Failed to apply master effect: {effect.type.value}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
         return current_path
 
 
     def _finalize_output(self, job: AudioJob, input_path: str) -> bool:
-        """Finalize the output with format conversion and quality settings."""
+        """
+Finalize the output with format conversion and quality settings.
+
+        
+"""
         try:
+        """
             cmd = [
                 self.processor.ffmpeg_path,
                     "-i",
@@ -811,8 +1078,16 @@ class AudioPostProduction:
                     str(job.config.sample_rate),
                     "-ac",
                     str(job.config.channels),
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
+        """
 
+        try:
+        
+
+       
+""""""
             # Add format - specific options
             if job.config.format == AudioFormat.MP3:
                 if job.config.quality == AudioQuality.HIGH:
@@ -832,15 +1107,21 @@ class AudioPostProduction:
                     [
                         "-af",
                             f"loudnorm = I={job.config.target_lufs}:TP={job.config.peak_limit}:LRA = 11.0",
-                            ]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
             cmd.extend(["-y", job.output_path])
 
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    timeout = 300)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 300)
 
             if result.returncode == 0:
                 self.logger.info(f"Output finalized: {job.output_path}")
@@ -855,10 +1136,27 @@ class AudioPostProduction:
 
 
     def _estimate_total_duration(self, tracks: List[AudioTrack]) -> float:
-        """Estimate total duration of the mix."""
-        max_duration = 0.0
+        """
+Estimate total duration of the mix.
 
+       
+""""""
+
+        max_duration = 0.0
+       
+
+        
+       
+"""
         for track in tracks:
+       """
+
+        
+       
+
+        max_duration = 0.0
+       
+""""""
             if track.mute:
                 continue
 
@@ -866,7 +1164,9 @@ class AudioPostProduction:
                 info = self.processor.get_audio_info(track.source_path)
                 track_end = track.start_time + (
                     track.duration or info.get("duration", 0)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 max_duration = max(max_duration, track_end)
             except Exception:
                 continue
@@ -875,12 +1175,27 @@ class AudioPostProduction:
 
 
     def get_job_status(self, job_id: str) -> Optional[AudioJob]:
-        """Get status of an audio job."""
+        """
+Get status of an audio job.
+
+        
+"""
+        return self.active_jobs.get(job_id)
+        """"""
+        """
+
+
         return self.active_jobs.get(job_id)
 
+        
+
+       
+""""""
 
     def cancel_job(self, job_id: str) -> bool:
-        """Cancel an audio job."""
+        
+Cancel an audio job.
+"""
         if job_id in self.active_jobs:
             job = self.active_jobs[job_id]
             job.status = "cancelled"
@@ -891,8 +1206,13 @@ class AudioPostProduction:
 
 
     def cleanup_temp_files(self, job_id: Optional[str] = None) -> None:
-        """Clean up temporary files."""
+        """
+Clean up temporary files.
+
+        
+"""
         try:
+        """"""
             if job_id:
                 # Clean up specific job files
                 for file_path in self.temp_dir.glob(f"{job_id}*"):
@@ -901,7 +1221,13 @@ class AudioPostProduction:
                 # Clean up all temp files
                 shutil.rmtree(self.temp_dir)
                 self.temp_dir.mkdir(parents = True, exist_ok = True)
+        """
 
+        try:
+        
+
+       
+""""""
             self.logger.info(f"Temporary files cleaned up: {job_id or 'all'}")
         except Exception as e:
             self.logger.error(f"Cleanup failed: {e}")
@@ -913,23 +1239,27 @@ class AudioPostProduction:
             music_file: str,
             output_path: str,
             ducking_strength: float = 0.3,
-            ) -> str:
+#             ) -> str:
         """Convenience method to create voice - over mix with ducking."""
         tracks = [
             AudioTrack(
                 name="music", source_path = music_file, track_type="music", volume = 0.7
-            ),
+             ),
                 AudioTrack(
                 name="voice", source_path = voice_file, track_type="voice", volume = 1.0
-            ),
-                ]
+             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ]
 
         config = AudioConfig(
             sample_rate = 48000,
                 format = AudioFormat.WAV,
                 quality = AudioQuality.HIGH,
                 normalize_loudness = True,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
         ducking_config = DuckingConfig(
             mode = DuckingMode.VOICE_OVER,
@@ -937,7 +1267,9 @@ class AudioPostProduction:
                 threshold=-30.0,
                 attack_time = 0.1,
                 release_time = 0.5,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
         master_effects = [
             AudioEffect(
@@ -947,15 +1279,17 @@ class AudioPostProduction:
                         "ratio": 3.0,
                         "attack": 0.003,
                         "release": 0.1,
-                        },
+                         },
                     order = 1,
-                    ),
+                     ),
                 AudioEffect(
                 type = EffectType.LIMITER,
                     parameters={"limit": -1.0, "release": 0.05},
                     order = 2,
-                    ),
-                ]
+                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ]
 
         job = self.create_audio_job(
             tracks = tracks,
@@ -963,7 +1297,9 @@ class AudioPostProduction:
                 config = config,
                 ducking_config = ducking_config,
                 master_effects = master_effects,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
         if self.process_job(job.job_id):
             return job.job_id
@@ -986,7 +1322,9 @@ if __name__ == "__main__":
                 music_file="./assets/background_music.mp3",
                 output_path="./output/final_mix.wav",
                 ducking_strength = 0.4,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
         print(f"Voice - over mix job created: {job_id}")
 

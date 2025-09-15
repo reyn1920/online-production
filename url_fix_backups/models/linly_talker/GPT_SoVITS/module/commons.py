@@ -68,10 +68,12 @@ def get_timing_signal_1d(length, channels, min_timescale=1.0, max_timescale=1.0e
     num_timescales = channels // 2
     log_timescale_increment = math.log(float(max_timescale) / float(min_timescale)) / (
         num_timescales - 1
-    )
+# BRACKET_SURGEON: disabled
+#     )
     inv_timescales = min_timescale * torch.exp(
         torch.arange(num_timescales, dtype=torch.float) * -log_timescale_increment
-    )
+# BRACKET_SURGEON: disabled
+#     )
     scaled_time = position.unsqueeze(0) * inv_timescales.unsqueeze(1)
     signal = torch.cat([torch.sin(scaled_time), torch.cos(scaled_time)], 0)
     signal = F.pad(signal, [0, 0, 0, channels % 2])
@@ -125,10 +127,10 @@ def sequence_mask(length, max_length=None):
 
 
 def generate_path(duration, mask):
-    """
+    """"""
     duration: [b, 1, t_x]
     mask: [b, 1, t_y, t_x]
-    """
+    """"""
     device = duration.device
 
     b, _, t_y, t_x = mask.shape

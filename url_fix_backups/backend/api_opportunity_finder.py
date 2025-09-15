@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 API Opportunity Finder - Research Agent for API Discovery
 
 This module implements an intelligent research agent that:
@@ -7,7 +7,7 @@ This module implements an intelligent research agent that:
 - Uses LLM to analyze API documentation and suggest integrations
 - Tracks discovery tasks and maintains a suggestion database
 - Provides scoring and prioritization for new API opportunities
-"""
+""""""
 
 import asyncio
 import json
@@ -102,7 +102,8 @@ class APIOpportunityFinder:
         self,
         db_path: str = "right_perspective.db",
         ollama_url: str = "http://localhost:11434",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.db_path = db_path
         self.ollama_url = ollama_url
         self.session = None
@@ -114,17 +115,19 @@ class APIOpportunityFinder:
             conn.execute("PRAGMA foreign_keys = ON")
             # Add indexes for better performance
             conn.execute(
-                """
+                """"""
                 CREATE INDEX IF NOT EXISTS idx_api_suggestions_status
                 ON api_suggestions(status, confidence_score DESC)
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             conn.execute(
-                """
+                """"""
                 CREATE INDEX IF NOT EXISTS idx_api_discovery_tasks_status
                 ON api_discovery_tasks(status, priority DESC)
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     async def __aenter__(self):
@@ -144,7 +147,7 @@ class APIOpportunityFinder:
 
             # Get current capabilities
             cursor = conn.execute(
-                """
+                """"""
                 SELECT DISTINCT capability, COUNT(*) as api_count,
                     AVG(success_rate) as avg_success_rate,
                            SUM(daily_usage_count) as total_usage
@@ -152,8 +155,9 @@ class APIOpportunityFinder:
                 WHERE is_active = 1
                 GROUP BY capability
                 ORDER BY total_usage DESC
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             capabilities_data = cursor.fetchall()
             current_capabilities = [row["capability"] for row in capabilities_data]
@@ -174,7 +178,8 @@ class APIOpportunityFinder:
                 budget_constraints=None,  # Could be configured
                 preferred_pricing_models=["freemium", "pay - per - use"],
                 integration_preferences={"auth_type": "api_key", "format": "json"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def query_ollama(self, prompt: str, model: str = "llama2") -> Optional[str]:
         """Query Ollama LLM for research assistance"""
@@ -184,13 +189,15 @@ class APIOpportunityFinder:
                 "prompt": prompt,
                 "stream": False,
                 "options": {"temperature": 0.7, "top_p": 0.9},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             async with self.session.post(
                 f"{self.ollama_url}/api / generate",
                 json=payload,
                 timeout=aiohttp.ClientTimeout(total=60),
-            ) as response:
+# BRACKET_SURGEON: disabled
+#             ) as response:
                 if response.status == 200:
                     data = await response.json()
                     return data.get("response", "").strip()
@@ -208,9 +215,9 @@ class APIOpportunityFinder:
         """Use LLM to research and suggest API opportunities"""
 
         # Construct research prompt
-        prompt = f"""
+        prompt = f""""""
 You are an expert API researcher. Analyze the following context \
-    and suggest new API opportunities.
+#     and suggest new API opportunities.
 
 Current Capabilities: {', '.join(context.current_capabilities)}
 Capability Gaps: {', '.join(context.capability_gaps)}
@@ -241,8 +248,9 @@ Format your response as a JSON array of objects with these fields:
       "potential_value": 8,
       "confidence_score": 7,
       "reasoning": "This API would help because..."
-}}]
-"""
+# BRACKET_SURGEON: disabled
+# }}]
+""""""
 
         response = await self.query_ollama(prompt)
         if not response:
@@ -269,11 +277,12 @@ Format your response as a JSON array of objects with these fields:
         search_keywords: List[str],
         target_domains: List[str] = None,
         priority: int = 5,
-    ) -> int:
+# BRACKET_SURGEON: disabled
+#     ) -> int:
         """Create a new API discovery task"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
-                """
+                """"""
                 INSERT INTO api_discovery_tasks
                 (task_name,
     capability_gap,
@@ -281,9 +290,10 @@ Format your response as a JSON array of objects with these fields:
     target_domains,
     priority,
     status,
-    assigned_agent)
+# BRACKET_SURGEON: disabled
+#     assigned_agent)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     task_name,
                     capability_gap,
@@ -292,8 +302,10 @@ Format your response as a JSON array of objects with these fields:
                     priority,
                     DiscoveryStatus.PENDING.value,
                     "research_agent_v1",
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
             return cursor.lastrowid
 
@@ -303,7 +315,8 @@ Format your response as a JSON array of objects with these fields:
         status: DiscoveryStatus,
         progress_notes: str = None,
         apis_found: int = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Update discovery task status and progress"""
         with sqlite3.connect(self.db_path) as conn:
             updates = ["status = ?", "updated_at = ?", "progress_notes = ?"]
@@ -311,7 +324,8 @@ Format your response as a JSON array of objects with these fields:
                 status.value,
                 datetime.now(timezone.utc).isoformat(),
                 progress_notes,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             if apis_found is not None:
                 updates.append("apis_found = ?")
@@ -324,26 +338,28 @@ Format your response as a JSON array of objects with these fields:
             values.append(task_id)
 
             conn.execute(
-                f"""
+                f""""""
                 UPDATE api_discovery_tasks
                 SET {', '.join(updates)}
                 WHERE id = ?
-            """,
+            ""","""
                 values,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     def save_api_suggestion(self, suggestion: APISuggestion) -> int:
         """Save a discovered API suggestion to the database"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
-                """
+                """"""
                 INSERT INTO api_suggestions
                 (discovery_task_id, api_name, api_url, capability, description,
                     documentation_url, pricing_model, estimated_cost, integration_complexity,
-                     potential_value, confidence_score, status)
+# BRACKET_SURGEON: disabled
+#                      potential_value, confidence_score, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     suggestion.discovery_task_id,
                     suggestion.api_name,
@@ -357,8 +373,10 @@ Format your response as a JSON array of objects with these fields:
                     suggestion.potential_value,
                     suggestion.confidence_score,
                     suggestion.status,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
             return cursor.lastrowid
 
@@ -378,7 +396,8 @@ Format your response as a JSON array of objects with these fields:
         # Update task status to in_progress
         self.update_discovery_task(
             task_id, DiscoveryStatus.IN_PROGRESS, "Starting API research with LLM"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         try:
             # Get research context
@@ -387,7 +406,8 @@ Format your response as a JSON array of objects with these fields:
             # Use LLM to research opportunities
             focus_area = (
                 f"{task.capability_gap} - Keywords: {', '.join(json.loads(task.search_keywords))}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             suggestions_data = await self.research_api_opportunities(context, focus_area)
 
             suggestions = []
@@ -410,7 +430,8 @@ Format your response as a JSON array of objects with these fields:
                     status=SuggestionStatus.NEW.value,
                     review_notes=suggestion_data.get("reasoning"),
                     discovered_at=datetime.now(timezone.utc).isoformat(),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Save to database
                 suggestion.id = self.save_api_suggestion(suggestion)
@@ -422,7 +443,8 @@ Format your response as a JSON array of objects with these fields:
                 DiscoveryStatus.COMPLETED,
                 f"Discovered {len(suggestions)} API opportunities",
                 len(suggestions),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             logger.info(f"Discovery task {task_id} completed with {len(suggestions)} suggestions")
             return suggestions
@@ -438,23 +460,23 @@ Format your response as a JSON array of objects with these fields:
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
 
-            query = """
+            query = """"""
                 SELECT s.*, t.task_name, t.capability_gap
                 FROM api_suggestions s
                 JOIN api_discovery_tasks t ON s.discovery_task_id = t.id
                 WHERE s.status IN ('new', 'reviewed')
-            """
+            """"""
             params = []
 
             if capability:
                 query += " AND s.capability = ?"
                 params.append(capability)
 
-            query += """
+            query += """"""
                 ORDER BY (s.confidence_score * s.potential_value) DESC,
     s.discovered_at DESC
                 LIMIT ?
-            """
+            """"""
             params.append(limit)
 
             cursor = conn.execute(query, params)
@@ -465,35 +487,38 @@ Format your response as a JSON array of objects with these fields:
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
 
-            query = """
+            query = """"""
                 SELECT *
                     FROM api_suggestions
                 WHERE status = ?
                 ORDER BY discovered_at DESC
                 LIMIT ?
-            """
+            """"""
 
             cursor = conn.execute(query, [status, limit])
             return [dict(row) for row in cursor.fetchall()]
 
     def update_suggestion_status(
         self, suggestion_id: int, status: SuggestionStatus, review_notes: str = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Update the status of an API suggestion"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 UPDATE api_suggestions
                 SET status = ?, review_notes = ?, updated_at = ?
                 WHERE id = ?
-            """,
+            ""","""
                 (
                     status.value,
                     review_notes,
                     datetime.now(timezone.utc).isoformat(),
                     suggestion_id,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     async def run_automated_discovery(self, max_tasks: int = 3) -> Dict[str, Any]:
@@ -502,14 +527,15 @@ Format your response as a JSON array of objects with these fields:
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
-                """
+                """"""
                 SELECT * FROM api_discovery_tasks
                 WHERE status = 'pending'
                 ORDER BY priority DESC, created_at ASC
                 LIMIT ?
-            """,
+            ""","""
                 (max_tasks,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             pending_tasks = [dict(row) for row in cursor.fetchall()]
 
@@ -537,20 +563,21 @@ Format your response as a JSON array of objects with these fields:
 
             # Task statistics
             cursor = conn.execute(
-                """
+                """"""
                 SELECT
                     status,
                         COUNT(*) as count,
                         AVG(apis_found) as avg_apis_found
                 FROM api_discovery_tasks
                 GROUP BY status
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             task_stats = {row["status"]: dict(row) for row in cursor.fetchall()}
 
             # Suggestion statistics
             cursor = conn.execute(
-                """
+                """"""
                 SELECT
                     capability,
                         status,
@@ -559,13 +586,14 @@ Format your response as a JSON array of objects with these fields:
                         AVG(potential_value) as avg_potential_value
                 FROM api_suggestions
                 GROUP BY capability, status
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             suggestion_stats = [dict(row) for row in cursor.fetchall()]
 
             # Top capabilities by suggestion count
             cursor = conn.execute(
-                """
+                """"""
                 SELECT
                     capability,
                         COUNT(*) as suggestion_count,
@@ -574,15 +602,17 @@ Format your response as a JSON array of objects with these fields:
                 GROUP BY capability
                 ORDER BY suggestion_count DESC
                 LIMIT 10
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             top_capabilities = [dict(row) for row in cursor.fetchall()]
 
             return {
                 "task_statistics": task_stats,
                 "suggestion_statistics": suggestion_stats,
                 "top_capabilities": top_capabilities,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 # Example usage
@@ -598,7 +628,8 @@ async def example_usage():
             search_keywords=["text generation", "GPT", "language model", "AI writing"],
             target_domains=["openai.com", "anthropic.com", "cohere.ai"],
             priority=8,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         print(f"Created discovery task: {task_id}")
 
@@ -610,7 +641,8 @@ async def example_usage():
             print(f"- {suggestion.api_name}: {suggestion.description}")
             print(
                 f"  Confidence: {suggestion.confidence_score:.2f}, Value: {suggestion.potential_value}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Get top suggestions
         top_suggestions = finder.get_top_suggestions(limit=5)

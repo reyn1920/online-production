@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 """
+
+
+
 Unified AI Service Layer
 Integrates ChatGPT, Gemini, and Abacus.AI with free APIs and cross-version compatibility
-"""
+
+""""""
+
+
+
 
 import os
 import asyncio
@@ -23,7 +30,8 @@ logger = logging.getLogger(__name__)
 
 
 class AIServiceType(Enum):
-    """Enumeration of available AI services"""
+    
+"""Enumeration of available AI services"""
 
     CHATGPT = "chatgpt"
     GEMINI = "gemini"
@@ -48,7 +56,9 @@ class RequestType(Enum):
 
 @dataclass
 class RateLimit:
-    """Rate limiting configuration"""
+    """
+Rate limiting configuration
+
 
     requests_per_minute: int
     requests_per_day: int
@@ -58,12 +68,20 @@ class RateLimit:
     current_month_count: int = 0
     last_reset_minute: datetime = field(default_factory=datetime.now)
     last_reset_day: datetime = field(default_factory=datetime.now)
+   
+""""""
+
     last_reset_month: datetime = field(default_factory=datetime.now)
+   
 
-
+    
+   
+"""
 @dataclass
 class AIRequest:
-    """AI service request structure"""
+    """
+AI service request structure
+
 
     request_type: RequestType
     data: Dict[str, Any]
@@ -71,12 +89,20 @@ class AIRequest:
     priority: int = 1
     timeout: int = 30
     retry_count: int = 3
+   
+""""""
+
     cache_key: Optional[str] = None
+   
 
-
+    
+   
+"""
 @dataclass
 class AIResponse:
-    """AI service response structure"""
+    """
+AI service response structure
+
 
     success: bool
     data: Any
@@ -85,11 +111,19 @@ class AIResponse:
     tokens_used: int = 0
     cost: float = 0.0
     error_message: Optional[str] = None
+   
+""""""
+
     cached: bool = False
+   
 
-
+    
+   
+"""
 class RateLimitManager:
-    """Manages rate limits for all AI services"""
+    """
+Manages rate limits for all AI services
+
 
     def __init__(self):
         self.limits = {
@@ -102,31 +136,47 @@ class RateLimitManager:
             AIServiceType.HUGGINGFACE: RateLimit(
                 requests_per_minute=30,
                 requests_per_day=10000,
-                requests_per_month=100000,
+                requests_per_month=100000
             ),
             AIServiceType.CHATGPT: RateLimit(
                 requests_per_minute=60,
                 requests_per_day=10000,
-                requests_per_month=100000,
+                requests_per_month=100000
             ),
             AIServiceType.GEMINI: RateLimit(
                 requests_per_minute=60,
                 requests_per_day=10000,
-                requests_per_month=100000,
+                requests_per_month=100000
             ),
             AIServiceType.ABACUS: RateLimit(
                 requests_per_minute=100,
                 requests_per_day=50000,
-                requests_per_month=500000,
-            ),
+                requests_per_month=500000
+            )
         }
         self.request_queues = {service: deque() for service in AIServiceType}
 
     async def check_rate_limit(self, service: AIServiceType) -> bool:
-        """Check if request is within rate limits"""
+        
+"""Check if request is within rate limits"""
+
         limit = self.limits.get(service)
         if not limit:
+            
+
             return True
+            
+""""""
+
+            
+           
+
+            
+"""
+
+            return True
+
+            """
 
         now = datetime.now()
 
@@ -154,25 +204,59 @@ class RateLimitManager:
         return True
 
     async def increment_usage(self, service: AIServiceType):
-        """Increment usage counters"""
+        
+Increment usage counters
+"""
         limit = self.limits.get(service)
         if limit:
             limit.current_minute_count += 1
             limit.current_day_count += 1
+           """
+
+            
+           
+
             limit.current_month_count += 1
+           
+""""""
 
     async def queue_request(self, service: AIServiceType, request: AIRequest) -> bool:
-        """Queue request if rate limited"""
-        if await self.check_rate_limit(service):
-            return True
+        
+Queue request if rate limited
+""""""
 
+            
+           
+
+            limit.current_month_count += 1
+           
+""""""
+
+        if await self.check_rate_limit(service):
+            
+
+            return True
+            
+""""""
+            
+           """
         self.request_queues[service].append(request)
         logger.info(f"Request queued for {service.value} due to rate limiting")
+            """
+
+            return True
+            
+
+           
+""""""
+
         return False
 
 
 class CacheManager:
-    """Manages caching for AI responses"""
+    
+Manages caching for AI responses
+"""
 
     def __init__(self, max_size: int = 10000, ttl_seconds: int = 3600):
         self.cache = {}
@@ -181,18 +265,46 @@ class CacheManager:
         self.ttl_seconds = ttl_seconds
 
     def _generate_cache_key(self, request: AIRequest) -> str:
-        """Generate cache key for request"""
+        """
+Generate cache key for request
+
         if request.cache_key:
+            
+"""
+            return request.cache_key
+            """"""
+            """
+
             return request.cache_key
 
+            """
         content = json.dumps(
             {"type": request.request_type.value, "data": request.data}, sort_keys=True
         )
         return hashlib.md5(content.encode()).hexdigest()
 
     async def get(self, request: AIRequest) -> Optional[AIResponse]:
-        """Get cached response"""
+        """
+Get cached response
+
+       
+""""""
+
         key = self._generate_cache_key(request)
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        key = self._generate_cache_key(request)
+       
+""""""
 
         if key in self.cache:
             cached_time, response = self.cache[key]
@@ -209,10 +321,25 @@ class CacheManager:
         return None
 
     async def set(self, request: AIRequest, response: AIResponse):
-        """Cache response"""
+        
+Cache response
+"""
         if not response.success:
+            """
+
+            return  # Don't cache failed responses
+            
+
+           
+""""""
+
+            
+
+
             return  # Don't cache failed responses
 
+            
+"""
         key = self._generate_cache_key(request)
         current_time = time.time()
 
@@ -241,26 +368,43 @@ class ChatGPTIntegration:
         return self.session
 
     async def generate_content(self, prompt: str, model: str = "gpt-3.5-turbo") -> AIResponse:
-        """Generate content using ChatGPT"""
-        start_time = time.time()
+        """
+Generate content using ChatGPT
 
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         try:
+       """
+
+        
+       
+
+        start_time = time.time()
+       
+""""""
             session = await self._get_session()
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
-            }
+             }
 
             payload = {
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 2000,
                 "temperature": 0.7,
-            }
+             }
 
             async with session.post(
                 f"{self.base_url}/chat/completions", headers=headers, json=payload
-            ) as response:
+#             ) as response:
                 if response.status == 200:
                     data = await response.json()
                     content = data["choices"][0]["message"]["content"]
@@ -272,7 +416,7 @@ class ChatGPTIntegration:
                         service_used=AIServiceType.CHATGPT,
                         response_time=time.time() - start_time,
                         tokens_used=tokens_used,
-                    )
+                     )
                 else:
                     error_data = await response.text()
                     return AIResponse(
@@ -281,7 +425,7 @@ class ChatGPTIntegration:
                         service_used=AIServiceType.CHATGPT,
                         response_time=time.time() - start_time,
                         error_message=f"HTTP {response.status}: {error_data}",
-                    )
+                     )
 
         except Exception as e:
             return AIResponse(
@@ -290,13 +434,13 @@ class ChatGPTIntegration:
                 service_used=AIServiceType.CHATGPT,
                 response_time=time.time() - start_time,
                 error_message=str(e),
-            )
+             )
 
     async def code_review(self, code_snippet: str) -> AIResponse:
         """Review code using ChatGPT"""
         prompt = (
             f"Please review this code and provide suggestions for improvement:\n\n{code_snippet}"
-        )
+         )
         return await self.generate_content(prompt)
 
     async def close(self):
@@ -318,10 +462,27 @@ class GeminiIntegration:
         return self.session
 
     async def multimodal_analysis(self, content_type: str, data: Any) -> AIResponse:
-        """Perform multimodal analysis using Gemini"""
-        start_time = time.time()
+        """
+Perform multimodal analysis using Gemini
 
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         try:
+       """
+
+        
+       
+
+        start_time = time.time()
+       
+""""""
             session = await self._get_session()
 
             payload = {"contents": [{"parts": [{"text": f"Analyze this {content_type}: {data}"}]}]}
@@ -338,7 +499,7 @@ class GeminiIntegration:
                         data=content,
                         service_used=AIServiceType.GEMINI,
                         response_time=time.time() - start_time,
-                    )
+                     )
                 else:
                     error_data = await response.text()
                     return AIResponse(
@@ -347,7 +508,7 @@ class GeminiIntegration:
                         service_used=AIServiceType.GEMINI,
                         response_time=time.time() - start_time,
                         error_message=f"HTTP {response.status}: {error_data}",
-                    )
+                     )
 
         except Exception as e:
             return AIResponse(
@@ -356,7 +517,7 @@ class GeminiIntegration:
                 service_used=AIServiceType.GEMINI,
                 response_time=time.time() - start_time,
                 error_message=str(e),
-            )
+             )
 
     async def advanced_reasoning(self, query: str) -> AIResponse:
         """Perform advanced reasoning using Gemini"""
@@ -382,25 +543,42 @@ class AbacusAIIntegration:
         return self.session
 
     async def enterprise_ai_service(self, service_type: str, data: Any) -> AIResponse:
-        """Use enterprise AI service"""
-        start_time = time.time()
+        """
+Use enterprise AI service
 
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         try:
+       """
+
+        
+       
+
+        start_time = time.time()
+       
+""""""
             session = await self._get_session()
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
-            }
+             }
 
             payload = {
                 "app_id": self.app_id,
                 "service_type": service_type,
                 "data": data,
-            }
+             }
 
             async with session.post(
                 f"{self.base_url}/v1/inference", headers=headers, json=payload
-            ) as response:
+#             ) as response:
                 if response.status == 200:
                     result = await response.json()
 
@@ -409,7 +587,7 @@ class AbacusAIIntegration:
                         data=result,
                         service_used=AIServiceType.ABACUS,
                         response_time=time.time() - start_time,
-                    )
+                     )
                 else:
                     error_data = await response.text()
                     return AIResponse(
@@ -418,7 +596,7 @@ class AbacusAIIntegration:
                         service_used=AIServiceType.ABACUS,
                         response_time=time.time() - start_time,
                         error_message=f"HTTP {response.status}: {error_data}",
-                    )
+                     )
 
         except Exception as e:
             return AIResponse(
@@ -427,7 +605,7 @@ class AbacusAIIntegration:
                 service_used=AIServiceType.ABACUS,
                 response_time=time.time() - start_time,
                 error_message=str(e),
-            )
+             )
 
     async def custom_model_inference(self, model_id: str, input_data: Any) -> AIResponse:
         """Run inference on custom model"""
@@ -452,21 +630,38 @@ class HuggingFaceIntegration:
         return self.session
 
     async def inference(self, model_name: str, inputs: Any) -> AIResponse:
-        """Run inference on Hugging Face model"""
-        start_time = time.time()
+        """
+Run inference on Hugging Face model
 
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         try:
+       """
+
+        
+       
+
+        start_time = time.time()
+       
+""""""
             session = await self._get_session()
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
-            }
+             }
 
             async with session.post(
                 f"{self.base_url}/{model_name}",
                 headers=headers,
                 json={"inputs": inputs},
-            ) as response:
+#             ) as response:
                 if response.status == 200:
                     result = await response.json()
 
@@ -475,7 +670,7 @@ class HuggingFaceIntegration:
                         data=result,
                         service_used=AIServiceType.HUGGINGFACE,
                         response_time=time.time() - start_time,
-                    )
+                     )
                 else:
                     error_data = await response.text()
                     return AIResponse(
@@ -484,7 +679,7 @@ class HuggingFaceIntegration:
                         service_used=AIServiceType.HUGGINGFACE,
                         response_time=time.time() - start_time,
                         error_message=f"HTTP {response.status}: {error_data}",
-                    )
+                     )
 
         except Exception as e:
             return AIResponse(
@@ -493,7 +688,7 @@ class HuggingFaceIntegration:
                 service_used=AIServiceType.HUGGINGFACE,
                 response_time=time.time() - start_time,
                 error_message=str(e),
-            )
+             )
 
     async def close(self):
         if self.session:
@@ -512,26 +707,58 @@ class AIServiceMonitor:
             "total_requests": defaultdict(int),
             "total_tokens": defaultdict(int),
             "total_cost": defaultdict(float),
-        }
+         }
 
     async def track_request(
         self, service: AIServiceType, request_type: RequestType, response: AIResponse
     ):
-        """Track service performance metrics"""
-        service_key = service.value
+        """
+Track service performance metrics
 
+       
+""""""
+
+        service_key = service.value
+       
+
+        
+       
+"""
         self.metrics["response_times"][service_key].append(response.response_time)
         self.metrics["success_rates"][service_key].append(1 if response.success else 0)
         self.metrics["error_rates"][service_key].append(0 if response.success else 1)
         self.metrics["total_requests"][service_key] += 1
         self.metrics["total_tokens"][service_key] += response.tokens_used
         self.metrics["total_cost"][service_key] += response.cost
+       """
+
+        
+       
+
+        service_key = service.value
+       
+""""""
 
     async def generate_performance_report(self) -> Dict[str, Any]:
-        """Generate comprehensive performance report"""
-        report = {}
+        """
+        Generate comprehensive performance report
+        """"""
 
+        
+       
+
+        report = {}
+       
+""""""
         for service in self.metrics["response_times"].keys():
+       """
+
+        
+       
+
+        report = {}
+       
+""""""
             response_times = self.metrics["response_times"][service]
             success_rates = self.metrics["success_rates"][service]
 
@@ -545,13 +772,15 @@ class AIServiceMonitor:
                     "total_requests": self.metrics["total_requests"][service],
                     "total_tokens": self.metrics["total_tokens"][service],
                     "total_cost": self.metrics["total_cost"][service],
-                }
+                 }
 
         return report
 
 
 class UnifiedAIService:
-    """Unified interface for all AI services"""
+    """
+Unified interface for all AI services
+
 
     def __init__(self):
         self.chatgpt = ChatGPTIntegration()
@@ -568,7 +797,7 @@ class UnifiedAIService:
                 AIServiceType.CHATGPT,
                 AIServiceType.GEMINI,
                 AIServiceType.HUGGINGFACE,
-            ],
+             ],
             RequestType.CODE_GENERATION: [AIServiceType.CHATGPT, AIServiceType.GEMINI],
             RequestType.CODE_REVIEW: [AIServiceType.CHATGPT, AIServiceType.GEMINI],
             RequestType.CONTENT_CREATION: [AIServiceType.CHATGPT, AIServiceType.GEMINI],
@@ -577,23 +806,38 @@ class UnifiedAIService:
                 AIServiceType.CHATGPT,
                 AIServiceType.GEMINI,
                 AIServiceType.HUGGINGFACE,
-            ],
+             ],
             RequestType.SUMMARIZATION: [
                 AIServiceType.CHATGPT,
                 AIServiceType.GEMINI,
                 AIServiceType.HUGGINGFACE,
-            ],
+             ],
             RequestType.QUESTION_ANSWERING: [
                 AIServiceType.CHATGPT,
                 AIServiceType.GEMINI,
                 AIServiceType.ABACUS,
-            ],
-        }
+             ],
+         }
 
     async def process_request(self, request: AIRequest) -> AIResponse:
-        """Process AI request with intelligent service selection"""
+        
+"""Process AI request with intelligent service selection""""""
         # Check cache first
+       """
+
+        
+       
+
         cached_response = await self.cache.get(request)
+       
+""""""
+
+        # Check cache first
+       
+
+        
+       
+"""
         if cached_response:
             logger.info(f"Cache hit for request type: {request.request_type.value}")
             return cached_response
@@ -632,22 +876,51 @@ class UnifiedAIService:
             service_used=(services_to_try[0] if services_to_try else AIServiceType.CHATGPT),
             response_time=0,
             error_message="All available services failed or rate limited",
-        )
+         )
 
     async def _get_best_available_services(self, request_type: RequestType) -> List[AIServiceType]:
-        """Get best available services for request type"""
-        capable_services = self.service_capabilities.get(request_type, [])
+        """
+Get best available services for request type
 
+       
+""""""
+
+        capable_services = self.service_capabilities.get(request_type, [])
+       
+
+        
+       
+"""
         # Sort by preference (free services first, then paid)
+       """
+
+        
+       
+
+        capable_services = self.service_capabilities.get(request_type, [])
+       
+""""""
         free_services = [s for s in capable_services if "free" in s.value.lower()]
         paid_services = [s for s in capable_services if "free" not in s.value.lower()]
 
         return free_services + paid_services
 
     async def _process_with_service(self, service: AIServiceType, request: AIRequest) -> AIResponse:
-        """Process request with specific service"""
+        """
+Process request with specific service
+
+        
+"""
         try:
+        """"""
             if service == AIServiceType.CHATGPT:
+        """
+
+        try:
+        
+
+       
+""""""
                 if request.request_type == RequestType.TEXT_GENERATION:
                     return await self.chatgpt.generate_content(request.data.get("prompt", ""))
                 elif request.request_type == RequestType.CODE_REVIEW:
@@ -660,14 +933,14 @@ class UnifiedAIService:
                     return await self.gemini.multimodal_analysis(
                         request.data.get("content_type", "text"),
                         request.data.get("data", ""),
-                    )
+                     )
                 else:
                     return await self.gemini.advanced_reasoning(request.data.get("query", ""))
 
             elif service == AIServiceType.ABACUS:
                 return await self.abacus.enterprise_ai_service(
                     request.request_type.value, request.data
-                )
+                 )
 
             elif service == AIServiceType.HUGGINGFACE:
                 model_name = request.data.get("model", "gpt2")
@@ -681,7 +954,7 @@ class UnifiedAIService:
                     service_used=service,
                     response_time=0,
                     error_message=f"Service {service.value} not implemented",
-                )
+                 )
 
         except Exception as e:
             return AIResponse(
@@ -690,30 +963,51 @@ class UnifiedAIService:
                 service_used=service,
                 response_time=0,
                 error_message=str(e),
-            )
+             )
 
     async def get_performance_metrics(self) -> Dict[str, Any]:
-        """Get performance metrics for all services"""
-        return await self.monitor.generate_performance_report()
+        """
+Get performance metrics for all services
 
+        
+"""
+        return await self.monitor.generate_performance_report()
+        """"""
     async def close(self):
-        """Close all service connections"""
+        """
+Close all service connections
+
         await self.chatgpt.close()
         await self.gemini.close()
         await self.abacus.close()
-        await self.huggingface.close()
+       
+""""""
 
+        await self.huggingface.close()
+       
+
+        
+       
+""""""
+
+        return await self.monitor.generate_performance_report()
+        
+
+       
+""""""
 
 # Convenience functions for common use cases
 async def generate_text(prompt: str, preferred_service: Optional[AIServiceType] = None) -> str:
-    """Generate text using the best available service"""
+    
+Generate text using the best available service
+"""
     service = UnifiedAIService()
     try:
         request = AIRequest(
             request_type=RequestType.TEXT_GENERATION,
             data={"prompt": prompt},
             preferred_service=preferred_service,
-        )
+         )
         response = await service.process_request(request)
         return response.data if response.success else f"Error: {response.error_message}"
     finally:
@@ -728,7 +1022,7 @@ async def review_code(code: str, preferred_service: Optional[AIServiceType] = No
             request_type=RequestType.CODE_REVIEW,
             data={"code": code},
             preferred_service=preferred_service,
-        )
+         )
         response = await service.process_request(request)
         return response.data if response.success else f"Error: {response.error_message}"
     finally:
@@ -737,7 +1031,7 @@ async def review_code(code: str, preferred_service: Optional[AIServiceType] = No
 
 async def analyze_multimodal(
     content_type: str, data: Any, preferred_service: Optional[AIServiceType] = None
-) -> str:
+# ) -> str:
     """Analyze multimodal content using the best available service"""
     service = UnifiedAIService()
     try:
@@ -745,7 +1039,7 @@ async def analyze_multimodal(
             request_type=RequestType.MULTIMODAL_ANALYSIS,
             data={"content_type": content_type, "data": data},
             preferred_service=preferred_service or AIServiceType.GEMINI,
-        )
+         )
         response = await service.process_request(request)
         return response.data if response.success else f"Error: {response.error_message}"
     finally:
@@ -762,7 +1056,7 @@ if __name__ == "__main__":
             request = AIRequest(
                 request_type=RequestType.TEXT_GENERATION,
                 data={"prompt": "Write a short story about AI"},
-            )
+             )
             response = await service.process_request(request)
             print(f"Response: {response.data}")
             print(f"Service used: {response.service_used.value}")

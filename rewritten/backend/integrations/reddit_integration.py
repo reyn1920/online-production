@@ -24,14 +24,18 @@ class RedditClient:
                 username = os.getenv("REDDIT_USERNAME"),
                 password = os.getenv("REDDIT_PASSWORD"),
                 user_agent = os.getenv("REDDIT_USER_AGENT", "MyApp/1.0"),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def ready(self) -> bool:
         # OFF by default: returns True only when creds exist
         return bool(
             self.client_id and self.client_secret and self.username and self.password
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     # --- Stubs (no network calls yet) ---
 
@@ -48,7 +52,8 @@ class RedditClient:
                 "title": title[:300],
                 "text": text,
                 "url": url,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def submit_comment(self, post_id: str, text: str) -> Dict[str, Any]:
@@ -59,7 +64,8 @@ class RedditClient:
                 "id": "reddit_comment_stub",
                 "post_id": post_id,
                 "text": text,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def insights(self) -> Dict[str, Any]:

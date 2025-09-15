@@ -13,7 +13,8 @@ from musetalk.utils.preprocessing import (
     coord_placeholder,
     get_landmark_and_bbox,
     read_imgs,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from musetalk.utils.utils import datagen, get_file_type, get_video_fps, load_all_model
 from omegaconf import OmegaConf
@@ -45,10 +46,12 @@ def main(args):
         output_basename = f"{input_basename}_{audio_basename}"
         result_img_save_path = os.path.join(
             args.result_dir, output_basename
-        )  # related to video & audio inputs
+# BRACKET_SURGEON: disabled
+#         )  # related to video & audio inputs
         crop_coord_save_path = os.path.join(
             result_img_save_path, input_basename + ".pkl"
-        )  # only related to video input
+# BRACKET_SURGEON: disabled
+#         )  # only related to video input
         os.makedirs(result_img_save_path, exist_ok=True)
 
         if args.output_vid_name is None:
@@ -66,20 +69,23 @@ def main(args):
         elif get_file_type(video_path) == "image":
             input_img_list = [
                 video_path,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             fps = args.fps
         elif os.path.isdir(video_path):  # input img folder
             input_img_list = glob.glob(os.path.join(video_path, "*.[jpJP][pnPN]*[gG]"))
             input_img_list = sorted(
                 input_img_list,
                 key=lambda x: int(os.path.splitext(os.path.basename(x))[0]),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             fps = args.fps
         else:
             raise ValueError(
-                f"{video_path} should be a video file, an image file \
-    or a directory of images"
-            )
+                f"{video_path} should be a video file, an image file \"
+#     or a directory of images"
+# BRACKET_SURGEON: disabled
+#             )
 
         # print(input_img_list)
         ############################################## extract audio feature ##############################################
@@ -120,17 +126,20 @@ def main(args):
         res_frame_list = []
         for i, (whisper_batch, latent_batch) in enumerate(
             tqdm(gen, total=int(np.ceil(float(video_num) / batch_size)))
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             audio_feature_batch = torch.from_numpy(whisper_batch)
             audio_feature_batch = audio_feature_batch.to(
                 device=unet.device, dtype=unet.model.dtype
-            )  # torch, B, 5 * N,384
+# BRACKET_SURGEON: disabled
+#             )  # torch, B, 5 * N,384
             audio_feature_batch = pe(audio_feature_batch)
             latent_batch = latent_batch.to(dtype=unet.model.dtype)
 
             pred_latents = unet.model(
                 latent_batch, timesteps, encoder_hidden_states=audio_feature_batch
-            ).sample
+# BRACKET_SURGEON: disabled
+#             ).sample
             recon = vae.decode_latents(pred_latents)
             for res_frame in recon:
                 res_frame_list.append(res_frame)
@@ -176,12 +185,14 @@ if __name__ == "__main__":
         "--use_saved_coord",
         action="store_true",
         help="use saved coordinate to save time",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument(
         "--use_float16",
         action="store_true",
         help="Whether use float16 to speed up inference",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     args = parser.parse_args()
     main(args)

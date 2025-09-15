@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Live Deployment Script
 Deploys the fully integrated AI platform system to production
-"""
+""""""
 
 import os
 import sys
@@ -32,7 +32,8 @@ class LiveDeployment:
             self.log(
                 "❌ Go - live preparation report not found. Run go_live_preparation.py first.",
                 "ERROR",
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
         # Check if tests were run
@@ -40,7 +41,8 @@ class LiveDeployment:
             self.log(
                 "❌ AI integration test results not found. Run test_ai_integrations.py first.",
                 "ERROR",
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
         # Check critical files
@@ -49,7 +51,8 @@ class LiveDeployment:
             "netlify.toml",
             "package.json",
             "GO_LIVE_CHECKLIST.md",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for file in critical_files:
             if not os.path.exists(file):
@@ -76,7 +79,8 @@ class LiveDeployment:
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if result.stdout.strip():
                 self.log("⚠️  Uncommitted changes detected", "WARN")
                 self.log("Consider committing changes before deployment", "WARN")
@@ -118,7 +122,8 @@ class LiveDeployment:
                 self.log("🐍 Running Python tests...")
                 result = subprocess.run(
                     ["python", "-m", "pytest", "-v"], capture_output=True, text=True
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if result.returncode == 0:
                     self.log("✅ Python tests passed")
                 else:
@@ -128,7 +133,8 @@ class LiveDeployment:
             self.log("🔗 Running integration tests...")
             result = subprocess.run(
                 ["python", "test_ai_integrations.py"], capture_output=True, text=True
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if result.returncode == 0:
                 self.log("✅ Integration tests completed")
             else:
@@ -168,8 +174,10 @@ class LiveDeployment:
                 "Set up Netlify site and environment variables",
                 "Trigger GitHub Actions deployment workflow",
                 "Monitor deployment and perform post-deployment verification",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         with open("deployment_summary.json", "w") as f:
             json.dump(deployment_summary, f, indent=2)

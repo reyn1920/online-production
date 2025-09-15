@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Channel Intelligence Feeds System
-
+""""""
 Automatically monitors and processes RSS feeds for each channel,
 extracting relevant content and storing it in channel - specific knowledge bases.
+"""""""""
+
+Channel Intelligence Feeds System
+
+
+
 """
 
 import asyncio
@@ -55,10 +61,23 @@ class FeedItem:
 
 
 class ChannelIntelligenceFeeds:
-    """
-    Manages RSS feed monitoring and content extraction for all channels
-    """
+   """
 
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
+    Manages RSS feed monitoring and content extraction for all channels
+   
+
+    
+   
+""""""
+    
+   """
     def __init__(self, db_path: str = "data/right_perspective.db"):
         self.db_path = db_path
         self.logger = logging.getLogger(__name__)
@@ -88,21 +107,21 @@ class ChannelIntelligenceFeeds:
                     "development",
                     "innovation",
                     "startup",
-                ],
+                 ],
                 "relevance_boost": [
                     "breakthrough",
                     "revolutionary",
                     "cutting - edge",
                     "beta",
                     "launch",
-                ],
+                 ],
                 "credibility_sources": [
                     "techcrunch.com",
                     "arstechnica.com",
                     "wired.com",
                     "theverge.com",
-                ],
-            },
+                 ],
+             },
             ChannelType.WELLNESS: {
                 "keywords": [
                     "health",
@@ -115,21 +134,21 @@ class ChannelIntelligenceFeeds:
                     "meditation",
                     "yoga",
                     "supplements",
-                ],
+                 ],
                 "relevance_boost": [
                     "study shows",
                     "research",
                     "clinical trial",
                     "proven",
                     "effective",
-                ],
+                 ],
                 "credibility_sources": [
                     "healthline.com",
                     "webmd.com",
                     "mayoclinic.org",
                     "nih.gov",
-                ],
-            },
+                 ],
+             },
             ChannelType.FINANCE: {
                 "keywords": [
                     "finance",
@@ -142,21 +161,21 @@ class ChannelIntelligenceFeeds:
                     "bitcoin",
                     "portfolio",
                     "retirement",
-                ],
+                 ],
                 "relevance_boost": [
                     "earnings",
                     "profit",
                     "loss",
                     "bull market",
                     "bear market",
-                ],
+                 ],
                 "credibility_sources": [
                     "bloomberg.com",
                     "reuters.com",
                     "wsj.com",
                     "marketwatch.com",
-                ],
-            },
+                 ],
+             },
             ChannelType.POLITICAL: {
                 "keywords": [
                     "politics",
@@ -170,21 +189,21 @@ class ChannelIntelligenceFeeds:
                     "liberal",
                     "democrat",
                     "republican",
-                ],
+                 ],
                 "relevance_boost": [
                     "breaking",
                     "scandal",
                     "investigation",
                     "vote",
                     "bill passed",
-                ],
+                 ],
                 "credibility_sources": [
                     "breitbart.com",
                     "dailywire.com",
                     "townhall.com",
                     "foxnews.com",
-                ],
-            },
+                 ],
+             },
             ChannelType.BUSINESS: {
                 "keywords": [
                     "business",
@@ -197,20 +216,20 @@ class ChannelIntelligenceFeeds:
                     "strategy",
                     "marketing",
                     "sales",
-                ],
+                 ],
                 "relevance_boost": [
                     "acquisition",
                     "merger",
                     "IPO",
                     "funding",
                     "expansion",
-                ],
+                 ],
                 "credibility_sources": [
                     "forbes.com",
                     "businessinsider.com",
                     "entrepreneur.com",
-                ],
-            },
+                 ],
+             },
             ChannelType.SCIENCE: {
                 "keywords": [
                     "science",
@@ -223,37 +242,87 @@ class ChannelIntelligenceFeeds:
                     "chemistry",
                     "biology",
                     "space",
-                ],
+                 ],
                 "relevance_boost": [
                     "breakthrough",
                     "discovery",
                     "published",
                     "peer - reviewed",
-                ],
+                 ],
                 "credibility_sources": [
                     "nature.com",
                     "sciencemag.org",
                     "newscientist.com",
-                ],
-            },
-        }
+                 ],
+             },
+         }
 
     async def __aenter__(self):
-        """Async context manager entry"""
+        """
+Async context manager entry
+
+        
+"""
         self.session = aiohttp.ClientSession(
+        """
+
             timeout=aiohttp.ClientTimeout(total=30),
+        
+
+        self.session = aiohttp.ClientSession(
+        
+"""
             headers={"User - Agent": "TRAE.AI Channel Intelligence Bot 1.0"},
-        )
+         )
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Async context manager exit"""
-        if self.session:
-            await self.session.close()
+        """
+Async context manager exit
 
+        if self.session:
+           
+""""""
+
+            await self.session.close()
+           
+
+            
+           
+"""
     async def monitor_all_channels(self):
-        """Monitor RSS feeds for all channels"""
+        """
+Monitor RSS feeds for all channels
+
+           
+""""""
+
+            await self.session.close()
+           
+
+            
+           
+""""""
+
+        
+       
+
         channels = self.protocol.get_all_channels()
+       
+""""""
+
+       
+
+
+        
+
+       
+"""
+        channels = self.protocol.get_all_channels()
+       """
+
+        
+       
 
         tasks = []
         for channel_id, config in channels.items():
@@ -265,13 +334,26 @@ class ChannelIntelligenceFeeds:
             await asyncio.gather(*tasks, return_exceptions=True)
 
     async def monitor_channel_feeds(self, channel_id: str):
-        """Monitor RSS feeds for a specific channel"""
+        
+"""Monitor RSS feeds for a specific channel"""
+
         config = self.protocol.get_channel_config(channel_id)
         if not config:
+            
+
             return
-
+            
+""""""
+            
+           """
         self.logger.info(f"Monitoring feeds for channel: {channel_id}")
+            """
 
+            return
+            
+
+           
+""""""
         for feed_url in config.rss_feeds:
             try:
                 await self.process_feed(channel_id, feed_url)
@@ -280,12 +362,34 @@ class ChannelIntelligenceFeeds:
                 self._log_feed_error(channel_id, feed_url, str(e))
 
     async def process_feed(self, channel_id: str, feed_url: str):
-        """Process a single RSS feed"""
-        try:
-            # Check if we've processed this feed recently
-            if self._should_skip_feed(channel_id, feed_url):
-                return
+        """
+Process a single RSS feed
 
+        try:
+           
+""""""
+
+            # Check if we've processed this feed recently
+           
+
+            
+           
+"""
+            if self._should_skip_feed(channel_id, feed_url):
+                """
+
+                return
+                
+
+           
+""""""
+
+            # Check if we've processed this feed recently
+           
+
+            
+           
+"""
             # Fetch feed content
             feed_content = await self._fetch_feed(feed_url)
             if not feed_content:
@@ -308,17 +412,35 @@ class ChannelIntelligenceFeeds:
 
             self.logger.info(
                 f"Processed {processed_count} entries from {feed_url} for {channel_id}"
-            )
+             )
 
         except Exception as e:
             self.logger.error(f"Error processing feed {feed_url}: {e}")
             self._log_feed_error(channel_id, feed_url, str(e))
 
     async def _fetch_feed(self, feed_url: str) -> Optional[str]:
-        """Fetch RSS feed content"""
+        """
+Fetch RSS feed content
+
         try:
+           
+""""""
+
             async with self.session.get(feed_url) as response:
+           
+
+            
+           
+"""
                 if response.status == 200:
+           """
+
+            
+           
+
+            async with self.session.get(feed_url) as response:
+           
+""""""
                     return await response.text()
                 else:
                     self.logger.warning(f"HTTP {response.status} for feed: {feed_url}")
@@ -328,16 +450,42 @@ class ChannelIntelligenceFeeds:
             return None
 
     def _should_skip_feed(self, channel_id: str, feed_url: str) -> bool:
-        """Check if feed should be skipped based on last check time"""
+        """
+Check if feed should be skipped based on last check time
+
+        
+"""
         with sqlite3.connect(self.db_path) as conn:
+        """
+
             cursor = conn.cursor()
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT last_checked FROM channel_rss_feeds
                 WHERE channel_id = ? AND feed_url = ?
-            """,
+            """
+,
+
                 (channel_id, feed_url),
-            )
+            
+""""""
+
+             )
+            
+
+             
+            
+""""""
+
+        with sqlite3.connect(self.db_path) as conn:
+        
+
+       
+""""""
 
             row = cursor.fetchone()
             if row and row[0]:
@@ -349,16 +497,34 @@ class ChannelIntelligenceFeeds:
         return False
 
     def _update_feed_metadata(self, channel_id: str, feed_url: str, feed):
-        """Update feed metadata in database"""
+        
+Update feed metadata in database
+""""""
+
         with sqlite3.connect(self.db_path) as conn:
+        
+
             cursor = conn.cursor()
             cursor.execute(
-                """
+               
+""""""
+
                 UPDATE channel_rss_feeds
+               
+
+                
+               
+"""
                 SET feed_title = ?, feed_description = ?, last_checked = ?,
+               """"""
+        with sqlite3.connect(self.db_path) as conn:
+        """
+
                     last_updated = ?, status = 'active', error_count = 0
                 WHERE channel_id = ? AND feed_url = ?
-            """,
+            
+,
+"""
                 (
                     getattr(feed.feed, "title", ""),
                     getattr(feed.feed, "description", ""),
@@ -366,15 +532,33 @@ class ChannelIntelligenceFeeds:
                     datetime.now().isoformat(),
                     channel_id,
                     feed_url,
-                ),
-            )
+                 ),
+             )
             conn.commit()
 
     async def _process_feed_entry(self, channel_id: str, feed_url: str, entry) -> bool:
-        """Process a single feed entry"""
+        """
+Process a single feed entry
+
         try:
+           
+""""""
+
             # Extract basic information
+           
+
+            
+           
+"""
             title = getattr(entry, "title", "")
+           """
+
+            
+           
+
+            # Extract basic information
+           
+""""""
             link = getattr(entry, "link", "")
             summary = getattr(entry, "summary", "")
             content = getattr(entry, "content", [{}])
@@ -403,17 +587,17 @@ class ChannelIntelligenceFeeds:
                 published=published or datetime.now(),
                 author=getattr(entry, "author", ""),
                 summary=summary,
-            )
+             )
 
             # Calculate relevance and credibility scores
             config = self.protocol.get_channel_config(channel_id)
             if config:
                 feed_item.relevance_score = self._calculate_relevance_score(
                     feed_item, config.channel_type
-                )
+                 )
                 feed_item.credibility_score = self._calculate_credibility_score(
                     feed_item, feed_url, config.channel_type
-                )
+                 )
 
             # Only store if relevance score is above threshold
             if feed_item.relevance_score >= 0.3:
@@ -427,12 +611,23 @@ class ChannelIntelligenceFeeds:
             return False
 
     def _parse_date(self, date_str: str) -> Optional[datetime]:
-        """Parse publication date from various formats"""
-        if not date_str:
-            return None
+        """
+Parse publication date from various formats
 
+        if not date_str:
+            
+"""
+            return None
+            """"""
         try:
             # Try parsing with feedparser's built - in parser
+            """
+
+            return None
+            
+
+           
+""""""
 
             import email.utils
 
@@ -446,26 +641,70 @@ class ChannelIntelligenceFeeds:
         return datetime.now()
 
     def _is_entry_processed(self, channel_id: str, url: str) -> bool:
-        """Check if entry has already been processed"""
-        url_hash = hashlib.md5(url.encode()).hexdigest()
+        
+Check if entry has already been processed
+""""""
+
+        
+       
+
+        hashlib.md5(url.encode()).hexdigest()
+       
+""""""
+
+        
+
 
         with sqlite3.connect(self.db_path) as conn:
+
+        
+""""""
+
+        
+       
+
+        hashlib.md5(url.encode()).hexdigest()
+       
+""""""
+
             cursor = conn.cursor()
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT id FROM channel_knowledge_base
                 WHERE channel_id = ? AND source_url = ?
-            """,
-                (channel_id, url),
-            )
+            """
+,
 
+                (channel_id, url),
+            
+""""""
+
+             )
+            
+
+             
+            
+"""
             return cursor.fetchone() is not None
 
     def _calculate_relevance_score(self, item: FeedItem, channel_type: ChannelType) -> float:
-        """Calculate relevance score for a feed item"""
+        """
+Calculate relevance score for a feed item
+
         if channel_type not in self.content_extractors:
+            
+"""
+            return 0.5
+            """"""
+            """
+
             return 0.5
 
+            """
         extractor = self.content_extractors[channel_type]
         text = f"{item.title} {item.content} {item.summary}".lower()
 
@@ -488,10 +727,28 @@ class ChannelIntelligenceFeeds:
 
     def _calculate_credibility_score(
         self, item: FeedItem, feed_url: str, channel_type: ChannelType
-    ) -> float:
-        """Calculate credibility score for a feed item"""
-        base_score = 0.5
+#     ) -> float:
+        """
+Calculate credibility score for a feed item
 
+       
+""""""
+
+        base_score = 0.5
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        base_score = 0.5
+       
+""""""
         if channel_type not in self.content_extractors:
             return base_score
 
@@ -522,10 +779,33 @@ class ChannelIntelligenceFeeds:
         return min(1.0, base_score)
 
     async def _store_feed_item(self, channel_id: str, item: FeedItem):
-        """Store feed item in channel knowledge base"""
-        # Determine entry type based on content
-        entry_type = self._classify_entry_type(item)
+        """
+Store feed item in channel knowledge base
 
+       
+""""""
+
+        # Determine entry type based on content
+       
+
+        
+       
+""""""
+
+        
+       
+
+        entry_type = self._classify_entry_type(item)
+       
+""""""
+
+       
+
+        
+       
+"""
+        # Determine entry type based on content
+       """"""
         # Determine appropriate table
         config = self.protocol.get_channel_config(channel_id)
         if not config or not config.knowledge_base_tables:
@@ -537,7 +817,7 @@ class ChannelIntelligenceFeeds:
             table_name = next(
                 (t for t in config.knowledge_base_tables if "research" in t or "study" in t),
                 table_name,
-            )
+             )
         elif entry_type == "news" and "news" in str(config.knowledge_base_tables):
             table_name = next((t for t in config.knowledge_base_tables if "news" in t), table_name)
 
@@ -555,7 +835,7 @@ class ChannelIntelligenceFeeds:
             credibility=item.credibility_score,
             relevance=item.relevance_score,
             tags=tags,
-        )
+         )
 
         if success:
             self.logger.debug(f"Stored feed item: {item.title[:50]}... for {channel_id}")
@@ -601,43 +881,109 @@ class ChannelIntelligenceFeeds:
         return list(set(tags))  # Remove duplicates
 
     def _log_feed_error(self, channel_id: str, feed_url: str, error_msg: str):
-        """Log feed processing error"""
+        """
+Log feed processing error
+
+        
+"""
         with sqlite3.connect(self.db_path) as conn:
+        """
+
             cursor = conn.cursor()
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 UPDATE channel_rss_feeds
+               """
+
+                
+               
+
                 SET error_count = error_count + 1, last_error = ?,
+               
+""""""
+
+        
+
+        with sqlite3.connect(self.db_path) as conn:
+        
+"""
                     status = CASE WHEN error_count >= 5 THEN 'error' ELSE 'active' END
                 WHERE channel_id = ? AND feed_url = ?
-            """,
-                (error_msg, channel_id, feed_url),
-            )
-            conn.commit()
+            """
+,
 
+                (error_msg, channel_id, feed_url),
+             )
+           
+""""""
+
+            conn.commit()
+           
+
+            
+           
+"""
     async def get_latest_intelligence(
         self, channel_id: str, limit: int = 10
     ) -> List[Dict[str, Any]]:
-        """Get latest intelligence for a channel"""
+        """
+Get latest intelligence for a channel
+
+           
+""""""
+
+            conn.commit()
+           
+
+            
+           
+""""""
+
         return self.protocol.get_channel_knowledge_base(channel_id)[:limit]
+        
+
+       
+""""""
 
     async def search_intelligence(
         self, channel_id: str, query: str, limit: int = 10
     ) -> List[Dict[str, Any]]:
-        """Search intelligence for a channel"""
+        
+Search intelligence for a channel
+""""""
+
         with sqlite3.connect(self.db_path) as conn:
+        
+
+       
+""""""
+
+        
+
+        return self.protocol.get_channel_knowledge_base(channel_id)[:limit]
+        
+"""
             cursor = conn.cursor()
             cursor.execute(
-                """
+               """
+
+                
+               
+
                 SELECT * FROM channel_knowledge_base
                 WHERE channel_id = ? AND (
                     title LIKE ? OR content LIKE ? OR tags LIKE ?
-                )
+                 )
                 ORDER BY relevance_score DESC, created_at DESC
                 LIMIT ?
-            """,
+            
+""","""
                 (channel_id, f"%{query}%", f"%{query}%", f"%{query}%", limit),
-            )
+             )
 
             results = []
             for row in cursor.fetchall():
@@ -655,8 +1001,8 @@ class ChannelIntelligenceFeeds:
                         "tags": json.loads(row[9]) if row[9] else [],
                         "created_at": row[10],
                         "updated_at": row[11],
-                    }
-                )
+                     }
+                 )
 
             return results
 
@@ -665,14 +1011,30 @@ class ChannelIntelligenceFeeds:
 
 
 async def run_intelligence_monitoring():
-    """Run continuous intelligence monitoring for all channels"""
-    logger = logging.getLogger(__name__)
+    """
+Run continuous intelligence monitoring for all channels
 
+   
+""""""
+
+    logger = logging.getLogger(__name__)
+   
+
+    
+   
+"""
     while True:
         try:
             async with ChannelIntelligenceFeeds() as intelligence:
                 await intelligence.monitor_all_channels()
+   """
 
+    
+   
+
+    logger = logging.getLogger(__name__)
+   
+""""""
             # Wait 1 hour before next monitoring cycle
             await asyncio.sleep(3600)
 

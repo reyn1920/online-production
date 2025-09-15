@@ -24,7 +24,8 @@ class SystemAgent(BaseAgent):
             AgentCapability.SYSTEM_MONITORING,
             AgentCapability.MAINTENANCE,
             AgentCapability.HEALTH_CHECK,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Process system tasks"""
@@ -37,7 +38,8 @@ class SystemAgent(BaseAgent):
                 "task_type": task_type,
                 "result": f"System task {task_type} completed",
                 "agent_id": self.agent_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"System task failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
@@ -51,7 +53,8 @@ class SystemAgent(BaseAgent):
                 "result": result,
                 "agent_id": self.agent_id,
                 "execution_time": time.time(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Task execution failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
@@ -64,7 +67,8 @@ class SystemAgent(BaseAgent):
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrase accuracy"""
         # Simple validation - check if key elements are present
         task_type = original_task.get("type", "")
@@ -85,7 +89,8 @@ class ResearchAgent(BaseAgent):
             AgentCapability.WEB_SEARCH,
             AgentCapability.DATA_ANALYSIS,
             AgentCapability.RESEARCH,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Process research tasks"""
@@ -98,7 +103,8 @@ class ResearchAgent(BaseAgent):
                 "task_type": task_type,
                 "result": f"Research task {task_type} completed",
                 "agent_id": self.agent_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Research task failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
@@ -112,7 +118,8 @@ class ResearchAgent(BaseAgent):
                 "result": result,
                 "agent_id": self.agent_id,
                 "execution_time": time.time(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Task execution failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
@@ -125,7 +132,8 @@ class ResearchAgent(BaseAgent):
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrase accuracy"""
         task_type = original_task.get("type", "")
         return task_type.lower() in rephrased.lower() if task_type else True
@@ -145,7 +153,8 @@ class ContentAgent(BaseAgent):
             AgentCapability.CONTENT_CREATION,
             AgentCapability.TEXT_PROCESSING,
             AgentCapability.MEDIA_PROCESSING,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Process content tasks"""
@@ -158,7 +167,8 @@ class ContentAgent(BaseAgent):
                 "task_type": task_type,
                 "result": f"Content task {task_type} completed",
                 "agent_id": self.agent_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Content task failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
@@ -172,7 +182,8 @@ class ContentAgent(BaseAgent):
                 "result": result,
                 "agent_id": self.agent_id,
                 "execution_time": time.time(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Task execution failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
@@ -185,7 +196,8 @@ class ContentAgent(BaseAgent):
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrase accuracy"""
         task_type = original_task.get("type", "")
         return task_type.lower() in rephrased.lower() if task_type else True
@@ -205,7 +217,8 @@ class MarketingAgent(BaseAgent):
             AgentCapability.MARKETING,
             AgentCapability.SOCIAL_MEDIA,
             AgentCapability.ANALYTICS,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Process marketing tasks"""
@@ -218,7 +231,8 @@ class MarketingAgent(BaseAgent):
                 "task_type": task_type,
                 "result": f"Marketing task {task_type} completed",
                 "agent_id": self.agent_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Marketing task failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
@@ -232,7 +246,8 @@ class MarketingAgent(BaseAgent):
                 "result": result,
                 "agent_id": self.agent_id,
                 "execution_time": time.time(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Task execution failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
@@ -245,7 +260,8 @@ class MarketingAgent(BaseAgent):
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrase accuracy"""
         task_type = original_task.get("type", "")
         return task_type.lower() in rephrased.lower() if task_type else True
@@ -265,7 +281,8 @@ class QAAgent(BaseAgent):
             AgentCapability.TESTING,
             AgentCapability.QUALITY_ASSURANCE,
             AgentCapability.VALIDATION,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Process QA tasks"""
@@ -278,7 +295,8 @@ class QAAgent(BaseAgent):
                 "task_type": task_type,
                 "result": f"QA task {task_type} completed",
                 "agent_id": self.agent_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"QA task failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
@@ -292,7 +310,8 @@ class QAAgent(BaseAgent):
                 "result": result,
                 "agent_id": self.agent_id,
                 "execution_time": time.time(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Task execution failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
@@ -305,7 +324,8 @@ class QAAgent(BaseAgent):
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrase accuracy"""
         task_type = original_task.get("type", "")
         return task_type.lower() in rephrased.lower() if task_type else True

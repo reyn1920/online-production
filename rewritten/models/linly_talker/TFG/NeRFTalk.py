@@ -129,7 +129,8 @@ class NeRFTalk:
             fp16=opt.fp16,
             metrics=metrics,
             use_checkpoint=opt.ckpt,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def predict(self, asr_wav):
         opt.aud = asr_wav

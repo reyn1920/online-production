@@ -12,7 +12,8 @@ nvcc_flags = [
     "-U__CUDA_NO_HALF_OPERATORS__",
     "-U__CUDA_NO_HALF_CONVERSIONS__",
     "-U__CUDA_NO_HALF2_OPERATORS__",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 if os.name == "posix":
     # c_flags = ['-O3', '-std = c++14']
@@ -30,9 +31,11 @@ elif os.name == "nt":
                 glob.glob(
                     r"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\*\\\\%s\\\\VC\\\\Tools\\\\MSVC\\\\*\\\\bin\\\\Hostx64\\\\x64"
                     % edition
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 reverse=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if paths:
                 return paths[0]
 
@@ -43,7 +46,7 @@ elif os.name == "nt":
             raise RuntimeError("Could not locate a supported Microsoft Visual C++ installation")
         os.environ["PATH"] += ";" + cl_path
 
-"""
+""""""
 Usage:
 
 python setup.py build_ext --inplace # build extensions locally,
@@ -55,7 +58,7 @@ pip install . # ditto but better (e.g., dependency & metadata handling)
 python setup.py develop # build extensions and install (symbolic) to PATH.
 pip install -e . # ditto but better (e.g., dependency & metadata handling)
 
-"""
+""""""
 setup(
     name="raymarching_face",  # package name, import this to use python API
     ext_modules=[
@@ -66,15 +69,22 @@ setup(
                 for f in [
                     "raymarching.cu",
                     "bindings.cpp",
-                ]
-            ],
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             ],
             extra_compile_args={
                 "cxx": c_flags,
                 "nvcc": nvcc_flags,
-            },
-        ),
-    ],
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ),
+# BRACKET_SURGEON: disabled
+#     ],
     cmdclass={
         "build_ext": BuildExtension,
-    },
-)
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# )

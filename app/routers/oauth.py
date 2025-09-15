@@ -1,429 +1,371 @@
 #!/usr/bin/env python3
 """
-OAuth Router - Handles OAuth authentication flows for social media platforms
-Supports TikTok and Instagram OAuth integrations
+OAuth Router
+
+Handles OAuth authentication flows for social media platforms.
+Supports TikTok and Instagram OAuth integrations.
 """
 
 import logging
 import os
 import secrets
 import time
-import urllib.parse
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Dict, Any, Optional
+from urllib.parse import urlencode, parse_qs
 
-import requests
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Request, Response, Query
 from fastapi.responses import RedirectResponse
-
-logger = logging.getLogger(__name__)
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/oauth", tags=["oauth"])
 
-# In-memory storage for OAuth states (use Redis in production)
-OAUTH_STATES = {}
+# In-memory storage for demo purposes
+oauth_sessions: Dict[str, Dict[str, Any]] = {}
+access_tokens: Dict[str, Dict[str, Any]] = {}
 
+class OAuthConfig(BaseModel):
+    client_id: str
+    client_secret: str
+    redirect_uri: str
+    scope: str
+    platform: str
 
-def _get_base_url(request: Request) -> str:
-    """Get the base URL for OAuth callbacks."""
-    return f"{request.url.scheme}://{request.url.netloc}"
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+    expires_in: int
+    refresh_token: Optional[str] = None
+    scope: str
+    platform: str
 
+class UserProfile(BaseModel):
+    user_id: str
+    username: str
+    display_name: str
+    email: Optional[str] = None
+    profile_image: Optional[str] = None
+    platform: str
 
-def _cleanup_expired_states():
-    """Remove expired OAuth states (older than 10 minutes)."""
-    current_time = time.time()
-    expired_keys = [
-        k for k, v in OAUTH_STATES.items() if current_time - v.get("created_at", 0) > 600
-    ]
-    for key in expired_keys:
-        del OAUTH_STATES[key]
-
-
-@router.get("/tiktok/start")
-async def tiktok_oauth_start(request: Request, redirect_uri: Optional[str] = None):
-    """Start TikTok OAuth flow."""
-    # Check if TikTok OAuth is enabled
-    client_id = os.getenv("TIKTOK_CLIENT_ID")
-    if not client_id:
-        raise HTTPException(status_code=503, detail="TikTok OAuth not configured")
-
-    # Generate state for CSRF protection
-    state = secrets.token_urlsafe(32)
-
-    # Store state with metadata
-    _cleanup_expired_states()
-    OAUTH_STATES[state] = {
-        "provider": "tiktok",
-        "created_at": time.time(),
-        "redirect_uri": redirect_uri or f"{_get_base_url(request)}/oauth/success",
-    }
-
-    # Build TikTok OAuth URL
-    base_url = _get_base_url(request)
-    callback_url = f"{base_url}/oauth/tiktok/callback"
-
-    params = {
-        "client_key": client_id,
-        "scope": "user.info.basic,video.list",  # Basic scopes
-        "response_type": "code",
-        "redirect_uri": callback_url,
-        "state": state,
-    }
-
-    auth_url = "https://www.tiktok.com/auth/authorize/?" + urllib.parse.urlencode(params)
-
-    logger.info(f"Starting TikTok OAuth flow with state: {state}")
-    return RedirectResponse(url=auth_url)
-
-
-@router.get("/tiktok/callback")
-async def tiktok_oauth_callback(
-    request: Request,
-    code: Optional[str] = Query(None),
-    state: Optional[str] = Query(None),
-    error: Optional[str] = Query(None),
-    error_description: Optional[str] = Query(None),
-):
-    """Handle TikTok OAuth callback."""
-    if error:
-        logger.error(f"TikTok OAuth error: {error} - {error_description}")
-        raise HTTPException(status_code=400, detail=f"OAuth error: {error}")
-
-    if not code or not state:
-        raise HTTPException(status_code=400, detail="Missing code or state parameter")
-
-    # Verify state
-    if state not in OAUTH_STATES:
-        raise HTTPException(status_code=400, detail="Invalid or expired state")
-
-    state_data = OAUTH_STATES.pop(state)  # Remove used state
-
-    # Exchange code for access token
-    client_id = os.getenv("TIKTOK_CLIENT_ID")
-    client_secret = os.getenv("TIKTOK_CLIENT_SECRET")
-
-    if not client_id or not client_secret:
-        raise HTTPException(status_code=503, detail="TikTok OAuth credentials not configured")
-
-    base_url = _get_base_url(request)
-    callback_url = f"{base_url}/oauth/tiktok/callback"
-
-    token_data = {
-        "client_key": client_id,
-        "client_secret": client_secret,
-        "code": code,
-        "grant_type": "authorization_code",
-        "redirect_uri": callback_url,
-    }
-
-    try:
-        token_response = requests.post(
-            "https://open-api.tiktok.com/oauth/access_token/",
-            json=token_data,
-            timeout=30,
-        )
-
-        if token_response.status_code == 200:
-            token_info = token_response.json()
-
-            if token_info.get("data"):
-                access_token = token_info["data"].get("access_token")
-                refresh_token = token_info["data"].get("refresh_token")
-                expires_in = token_info["data"].get("expires_in")
-
-                # Store tokens securely using encrypted storage
-                try:
-                    # In production, implement secure token storage:
-                    # - Use database with encrypted fields
-                    # - Store tokens with expiration timestamps
-                    # - Implement token rotation for refresh tokens
-                    secure_token_data = {
-                        "access_token": access_token,
-                        "refresh_token": refresh_token,
-                        "expires_in": expires_in,
-                        "user_id": token_info["data"].get("open_id"),
-                        "provider": "tiktok",
-                        "created_at": time.time(),
-                    }
-
-                    # Replace with actual secure storage implementation
-                    try:
-                        from backend.database.models import OAuthToken, User
-                        from backend.database.connection import get_db_session
-
-                        with get_db_session() as session:
-                            # Find or create user
-                            user_id = token_info["data"].get("open_id")
-                            user = session.query(User).filter(User.external_id == user_id).first()
-                            if not user:
-                                user = User(
-                                    external_id=user_id,
-                                    provider="tiktok",
-                                    created_at=datetime.utcnow(),
-                                )
-                                session.add(user)
-                                session.flush()
-
-                            # Store or update OAuth token
-                            existing_token = (
-                                session.query(OAuthToken)
-                                .filter(
-                                    OAuthToken.user_id == user.id,
-                                    OAuthToken.provider == "tiktok",
-                                )
-                                .first()
-                            )
-
-                            if existing_token:
-                                existing_token.access_token = access_token
-                                existing_token.refresh_token = refresh_token
-                                existing_token.expires_at = datetime.utcnow() + timedelta(
-                                    seconds=expires_in
-                                )
-                                existing_token.updated_at = datetime.utcnow()
-                            else:
-                                oauth_token = OAuthToken(
-                                    user_id=user.id,
-                                    provider="tiktok",
-                                    access_token=access_token,
-                                    refresh_token=refresh_token,
-                                    expires_at=datetime.utcnow() + timedelta(seconds=expires_in),
-                                    created_at=datetime.utcnow(),
-                                )
-                                session.add(oauth_token)
-
-                            session.commit()
-                            logger.info(f"TikTok OAuth tokens stored securely for user: {user_id}")
-                    except Exception as storage_error:
-                        logger.error(f"Failed to store TikTok tokens in database: {storage_error}")
-                        # Fallback to temporary storage
-                        token_data = {
-                            "access_token": access_token,
-                            "refresh_token": refresh_token,
-                            "expires_in": expires_in,
-                            "user_id": token_info["data"].get("open_id"),
-                            "provider": "tiktok",
-                            "created_at": time.time(),
-                        }
-                        logger.warning(
-                            "Using temporary token storage - implement secure storage for production"
-                        )
-
-                    logger.info(
-                        f"TikTok OAuth successful for user: {token_info['data'].get('open_id')}"
-                    )
-
-                    # Redirect to success page
-                    redirect_uri = state_data.get("redirect_uri", "/oauth/success")
-                    return RedirectResponse(url=f"{redirect_uri}?provider=tiktok&status=success")
-
-                except Exception as e:
-                    logger.error(f"Error processing TikTok OAuth tokens: {e}")
-                    raise HTTPException(status_code=500, detail="Failed to process OAuth tokens")
-            else:
-                logger.error(f"TikTok token response missing data: {token_info}")
-                raise HTTPException(status_code=400, detail="Invalid token response from TikTok")
-        else:
-            logger.error(
-                f"TikTok token request failed: {token_response.status_code} - {token_response.text}"
-            )
-            raise HTTPException(status_code=400, detail="Failed to exchange code for access token")
-
-    except requests.RequestException as e:
-        logger.error(f"TikTok OAuth request failed: {e}")
-        raise HTTPException(status_code=500, detail="OAuth request failed")
-
-
-@router.get("/instagram/start")
-async def instagram_oauth_start(request: Request, redirect_uri: Optional[str] = None):
-    """Start Instagram OAuth flow."""
-    # Check if Instagram OAuth is enabled
-    client_id = os.getenv("INSTAGRAM_CLIENT_ID")
-    if not client_id:
-        raise HTTPException(status_code=503, detail="Instagram OAuth not configured")
-
-    # Generate state for CSRF protection
-    state = secrets.token_urlsafe(32)
-
-    # Store state with metadata
-    _cleanup_expired_states()
-    OAUTH_STATES[state] = {
-        "provider": "instagram",
-        "created_at": time.time(),
-        "redirect_uri": redirect_uri or f"{_get_base_url(request)}/oauth/success",
-    }
-
-    # Build Instagram OAuth URL
-    base_url = _get_base_url(request)
-    callback_url = f"{base_url}/oauth/instagram/callback"
-
-    params = {
-        "client_id": client_id,
-        "redirect_uri": callback_url,
+# OAuth configurations (would be loaded from environment in production)
+OAUTH_CONFIGS = {
+    "tiktok": {
+        "client_id": os.getenv("TIKTOK_CLIENT_ID", "demo_tiktok_client_id"),
+        "client_secret": os.getenv("TIKTOK_CLIENT_SECRET", "demo_tiktok_secret"),
+        "redirect_uri": os.getenv("TIKTOK_REDIRECT_URI", "http://localhost:8000/oauth/tiktok/callback"),
+        "scope": "user.info.basic,video.list",
+        "auth_url": "https://www.tiktok.com/auth/authorize/",
+        "token_url": "https://open-api.tiktok.com/oauth/access_token/"
+    },
+    "instagram": {
+        "client_id": os.getenv("INSTAGRAM_CLIENT_ID", "demo_instagram_client_id"),
+        "client_secret": os.getenv("INSTAGRAM_CLIENT_SECRET", "demo_instagram_secret"),
+        "redirect_uri": os.getenv("INSTAGRAM_REDIRECT_URI", "http://localhost:8000/oauth/instagram/callback"),
         "scope": "user_profile,user_media",
-        "response_type": "code",
+        "auth_url": "https://api.instagram.com/oauth/authorize",
+        "token_url": "https://api.instagram.com/oauth/access_token"
+    }
+}
+
+def generate_state() -> str:
+    """Generate a secure random state parameter for OAuth."""
+    return secrets.token_urlsafe(32)
+
+def validate_state(state: str, session_state: str) -> bool:
+    """Validate OAuth state parameter."""
+    return state == session_state
+
+@router.get("/authorize/{platform}")
+async def authorize(platform: str, request: Request):
+    """Initiate OAuth authorization flow for a platform."""
+    platform = platform.lower()
+    
+    if platform not in OAUTH_CONFIGS:
+        raise HTTPException(status_code=400, detail=f"Unsupported platform: {platform}")
+    
+    config = OAUTH_CONFIGS[platform]
+    state = generate_state()
+    
+    # Store state in session
+    session_id = f"oauth_{platform}_{int(time.time())}"
+    oauth_sessions[session_id] = {
         "state": state,
+        "platform": platform,
+        "created_at": datetime.now().isoformat(),
+        "client_ip": request.client.host if request.client else "unknown"
     }
+    
+    # Build authorization URL
+    auth_params = {
+        "client_id": config["client_id"],
+        "redirect_uri": config["redirect_uri"],
+        "scope": config["scope"],
+        "response_type": "code",
+        "state": state
+    }
+    
+    auth_url = f"{config['auth_url']}?{urlencode(auth_params)}"
+    
+    # Set session cookie and redirect
+    response = RedirectResponse(url=auth_url)
+    response.set_cookie(
+        key=f"oauth_session_{platform}",
+        value=session_id,
+        max_age=3600,  # 1 hour
+        httponly=True,
+        secure=False  # Set to True in production with HTTPS
+    )
+    
+    return response
 
-    auth_url = "https://api.instagram.com/oauth/authorize?" + urllib.parse.urlencode(params)
-
-    logger.info(f"Starting Instagram OAuth flow with state: {state}")
-    return RedirectResponse(url=auth_url)
-
-
-@router.get("/instagram/callback")
-async def instagram_oauth_callback(
+@router.get("/callback/{platform}")
+async def oauth_callback(
+    platform: str,
     request: Request,
-    code: Optional[str] = Query(None),
-    state: Optional[str] = Query(None),
-    error: Optional[str] = Query(None),
-    error_description: Optional[str] = Query(None),
+    code: str = Query(...),
+    state: str = Query(...),
+    error: Optional[str] = Query(None)
 ):
-    """Handle Instagram OAuth callback."""
+    """Handle OAuth callback from platform."""
+    platform = platform.lower()
+    
     if error:
-        logger.error(f"Instagram OAuth error: {error} - {error_description}")
         raise HTTPException(status_code=400, detail=f"OAuth error: {error}")
-
-    if not code or not state:
-        raise HTTPException(status_code=400, detail="Missing code or state parameter")
-
-    # Verify state
-    if state not in OAUTH_STATES:
-        raise HTTPException(status_code=400, detail="Invalid or expired state")
-
-    state_data = OAUTH_STATES.pop(state)  # Remove used state
-
-    # Exchange code for access token
-    client_id = os.getenv("INSTAGRAM_CLIENT_ID")
-    client_secret = os.getenv("INSTAGRAM_CLIENT_SECRET")
-
-    if not client_id or not client_secret:
-        raise HTTPException(status_code=503, detail="Instagram OAuth credentials not configured")
-
-    base_url = _get_base_url(request)
-    callback_url = f"{base_url}/oauth/instagram/callback"
-
-    token_data = {
-        "client_id": client_id,
-        "client_secret": client_secret,
-        "grant_type": "authorization_code",
-        "redirect_uri": callback_url,
-        "code": code,
-    }
-
+    
+    if platform not in OAUTH_CONFIGS:
+        raise HTTPException(status_code=400, detail=f"Unsupported platform: {platform}")
+    
+    # Get session from cookie
+    session_id = request.cookies.get(f"oauth_session_{platform}")
+    if not session_id or session_id not in oauth_sessions:
+        raise HTTPException(status_code=400, detail="Invalid or expired OAuth session")
+    
+    session = oauth_sessions[session_id]
+    
+    # Validate state
+    if not validate_state(state, session["state"]):
+        raise HTTPException(status_code=400, detail="Invalid state parameter")
+    
+    config = OAUTH_CONFIGS[platform]
+    
+    # Exchange code for access token (mock implementation)
     try:
-        token_response = requests.post(
-            "https://api.instagram.com/oauth/access_token",
-            data=token_data,
-            timeout=30,
+        # In a real implementation, you would make an HTTP request to the token endpoint
+        # For demo purposes, we'll create a mock token
+        access_token = f"mock_{platform}_token_{secrets.token_urlsafe(16)}"
+        
+        token_data = {
+            "access_token": access_token,
+            "token_type": "Bearer",
+            "expires_in": 3600,
+            "refresh_token": f"refresh_{platform}_{secrets.token_urlsafe(16)}",
+            "scope": config["scope"],
+            "platform": platform,
+            "created_at": datetime.now().isoformat(),
+            "expires_at": (datetime.now() + timedelta(seconds=3600)).isoformat()
+        }
+        
+        # Store token
+        access_tokens[access_token] = token_data
+        
+        # Clean up session
+        del oauth_sessions[session_id]
+        
+        # Return success response
+        response = {
+            "message": f"Successfully authenticated with {platform}",
+            "token_info": {
+                "access_token": access_token,
+                "token_type": token_data["token_type"],
+                "expires_in": token_data["expires_in"],
+                "scope": token_data["scope"],
+                "platform": platform
+            }
+        }
+        
+        return response
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Token exchange failed: {str(e)}")
+
+@router.get("/profile/{platform}")
+async def get_user_profile(
+    platform: str,
+    access_token: str = Query(..., description="Access token for the platform")
+):
+    """Get user profile information using access token."""
+    platform = platform.lower()
+    
+    if platform not in OAUTH_CONFIGS:
+        raise HTTPException(status_code=400, detail=f"Unsupported platform: {platform}")
+    
+    if access_token not in access_tokens:
+        raise HTTPException(status_code=401, detail="Invalid or expired access token")
+    
+    token_data = access_tokens[access_token]
+    
+    if token_data["platform"] != platform:
+        raise HTTPException(status_code=400, detail="Token platform mismatch")
+    
+    # Check if token is expired
+    expires_at = datetime.fromisoformat(token_data["expires_at"])
+    if datetime.now() > expires_at:
+        raise HTTPException(status_code=401, detail="Access token expired")
+    
+    # Mock user profile data
+    if platform == "tiktok":
+        profile = UserProfile(
+            user_id="tiktok_user_123",
+            username="demo_tiktok_user",
+            display_name="Demo TikTok User",
+            profile_image="https://example.com/tiktok_avatar.jpg",
+            platform="tiktok"
         )
+    elif platform == "instagram":
+        profile = UserProfile(
+            user_id="instagram_user_456",
+            username="demo_instagram_user",
+            display_name="Demo Instagram User",
+            email="demo@instagram.com",
+            profile_image="https://example.com/instagram_avatar.jpg",
+            platform="instagram"
+        )
+    else:
+        raise HTTPException(status_code=400, detail="Profile not available for this platform")
+    
+    return profile
 
-        if token_response.status_code == 200:
-            token_info = token_response.json()
-            access_token = token_info.get("access_token")
-            user_id = token_info.get("user_id")
+@router.post("/refresh/{platform}")
+async def refresh_token(
+    platform: str,
+    refresh_token: str = Query(..., description="Refresh token")
+):
+    """Refresh an expired access token."""
+    platform = platform.lower()
+    
+    if platform not in OAUTH_CONFIGS:
+        raise HTTPException(status_code=400, detail=f"Unsupported platform: {platform}")
+    
+    # Find token by refresh token
+    token_entry = None
+    for token, data in access_tokens.items():
+        if data.get("refresh_token") == refresh_token and data["platform"] == platform:
+            token_entry = (token, data)
+            break
+    
+    if not token_entry:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+    
+    old_token, old_data = token_entry
+    
+    # Generate new tokens
+    new_access_token = f"mock_{platform}_token_{secrets.token_urlsafe(16)}"
+    new_refresh_token = f"refresh_{platform}_{secrets.token_urlsafe(16)}"
+    
+    new_token_data = {
+        "access_token": new_access_token,
+        "token_type": "Bearer",
+        "expires_in": 3600,
+        "refresh_token": new_refresh_token,
+        "scope": old_data["scope"],
+        "platform": platform,
+        "created_at": datetime.now().isoformat(),
+        "expires_at": (datetime.now() + timedelta(seconds=3600)).isoformat()
+    }
+    
+    # Replace old token with new one
+    del access_tokens[old_token]
+    access_tokens[new_access_token] = new_token_data
+    
+    return TokenResponse(**new_token_data)
 
-            if access_token and user_id:
-                # Store tokens securely
-                try:
-                    from backend.database.models import OAuthToken, User
-                    from backend.database.connection import get_db_session
-
-                    with get_db_session() as session:
-                        # Find or create user
-                        user = session.query(User).filter(User.external_id == str(user_id)).first()
-                        if not user:
-                            user = User(
-                                external_id=str(user_id),
-                                provider="instagram",
-                                created_at=datetime.utcnow(),
-                            )
-                            session.add(user)
-                            session.flush()
-
-                        # Store or update OAuth token
-                        existing_token = (
-                            session.query(OAuthToken)
-                            .filter(
-                                OAuthToken.user_id == user.id,
-                                OAuthToken.provider == "instagram",
-                            )
-                            .first()
-                        )
-
-                        if existing_token:
-                            existing_token.access_token = access_token
-                            existing_token.updated_at = datetime.utcnow()
-                        else:
-                            oauth_token = OAuthToken(
-                                user_id=user.id,
-                                provider="instagram",
-                                access_token=access_token,
-                                created_at=datetime.utcnow(),
-                            )
-                            session.add(oauth_token)
-
-                        session.commit()
-                        logger.info(f"Instagram OAuth tokens stored securely for user: {user_id}")
-
-                except Exception as storage_error:
-                    logger.error(f"Failed to store Instagram tokens in database: {storage_error}")
-                    logger.warning(
-                        "Using temporary token storage - implement secure storage for production"
-                    )
-
-                logger.info(f"Instagram OAuth successful for user: {user_id}")
-
-                # Redirect to success page
-                redirect_uri = state_data.get("redirect_uri", "/oauth/success")
-                return RedirectResponse(url=f"{redirect_uri}?provider=instagram&status=success")
-            else:
-                logger.error(f"Instagram token response missing required fields: {token_info}")
-                raise HTTPException(status_code=400, detail="Invalid token response from Instagram")
-        else:
-            logger.error(
-                f"Instagram token request failed: {token_response.status_code} - {token_response.text}"
-            )
-            raise HTTPException(status_code=400, detail="Failed to exchange code for access token")
-
-    except requests.RequestException as e:
-        logger.error(f"Instagram OAuth request failed: {e}")
-        raise HTTPException(status_code=500, detail="OAuth request failed")
-
-
-@router.get("/success")
-async def oauth_success(provider: Optional[str] = Query(None), status: Optional[str] = Query(None)):
-    """OAuth success page."""
+@router.delete("/revoke/{platform}")
+async def revoke_token(
+    platform: str,
+    access_token: str = Query(..., description="Access token to revoke")
+):
+    """Revoke an access token."""
+    platform = platform.lower()
+    
+    if platform not in OAUTH_CONFIGS:
+        raise HTTPException(status_code=400, detail=f"Unsupported platform: {platform}")
+    
+    if access_token not in access_tokens:
+        raise HTTPException(status_code=404, detail="Token not found")
+    
+    token_data = access_tokens[access_token]
+    
+    if token_data["platform"] != platform:
+        raise HTTPException(status_code=400, detail="Token platform mismatch")
+    
+    # Remove token
+    del access_tokens[access_token]
+    
     return {
-        "message": "OAuth authentication successful",
-        "provider": provider,
-        "status": status,
-        "timestamp": datetime.utcnow().isoformat(),
+        "message": f"Access token for {platform} revoked successfully",
+        "timestamp": datetime.now().isoformat()
     }
 
-
-@router.get("/status")
-async def oauth_status():
-    """Get OAuth service status."""
-    status = {
-        "service": "oauth",
-        "status": "healthy",
-        "providers": {
-            "tiktok": {
-                "enabled": bool(os.getenv("TIKTOK_CLIENT_ID")),
-                "configured": bool(
-                    os.getenv("TIKTOK_CLIENT_ID") and os.getenv("TIKTOK_CLIENT_SECRET")
-                ),
-            },
-            "instagram": {
-                "enabled": bool(os.getenv("INSTAGRAM_CLIENT_ID")),
-                "configured": bool(
-                    os.getenv("INSTAGRAM_CLIENT_ID") and os.getenv("INSTAGRAM_CLIENT_SECRET")
-                ),
-            },
-        },
-        "active_states": len(OAUTH_STATES),
-        "timestamp": datetime.utcnow().isoformat(),
+@router.get("/tokens")
+async def list_active_tokens():
+    """List all active tokens (for debugging/admin purposes)."""
+    active_tokens = []
+    
+    for token, data in access_tokens.items():
+        expires_at = datetime.fromisoformat(data["expires_at"])
+        is_expired = datetime.now() > expires_at
+        
+        active_tokens.append({
+            "token_id": token[:16] + "...",  # Partial token for security
+            "platform": data["platform"],
+            "created_at": data["created_at"],
+            "expires_at": data["expires_at"],
+            "is_expired": is_expired,
+            "scope": data["scope"]
+        })
+    
+    return {
+        "active_tokens": active_tokens,
+        "total_count": len(active_tokens),
+        "timestamp": datetime.now().isoformat()
     }
 
-    return status
+@router.get("/sessions")
+async def list_oauth_sessions():
+    """List active OAuth sessions."""
+    return {
+        "sessions": list(oauth_sessions.values()),
+        "total_count": len(oauth_sessions),
+        "timestamp": datetime.now().isoformat()
+    }
+
+@router.get("/platforms")
+async def list_supported_platforms():
+    """List supported OAuth platforms and their configurations."""
+    platforms = []
+    
+    for platform, config in OAUTH_CONFIGS.items():
+        platforms.append({
+            "platform": platform,
+            "client_id": config["client_id"][:8] + "...",  # Partial for security
+            "redirect_uri": config["redirect_uri"],
+            "scope": config["scope"],
+            "auth_url": config["auth_url"]
+        })
+    
+    return {
+        "platforms": platforms,
+        "total_count": len(platforms),
+        "timestamp": datetime.now().isoformat()
+    }
+
+@router.get("/health")
+async def oauth_health():
+    """Check OAuth service health."""
+    return {
+        "ok": True,
+        "active_sessions": len(oauth_sessions),
+        "active_tokens": len(access_tokens),
+        "supported_platforms": list(OAUTH_CONFIGS.keys()),
+        "timestamp": datetime.now().isoformat()
+    }

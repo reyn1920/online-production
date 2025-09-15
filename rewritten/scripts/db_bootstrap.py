@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Ensures minimal tables exist in your main DB used by the dashboard checks.
 Add - only; if a table exists this is a no - op.
-"""
+""""""
 
 import sqlite3
 from pathlib import Path
@@ -11,39 +11,44 @@ from pathlib import Path
 DB = Path("right_perspective.db")
 
 DDL = {
-    "reports": """
+    "reports": """"""
       CREATE TABLE IF NOT EXISTS reports (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
             report_type TEXT,
             content TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             status TEXT DEFAULT 'active'
-      );
-    """,
-    "content_performance": """
+# BRACKET_SURGEON: disabled
+#       );
+    ""","""
+    "content_performance": """"""
       CREATE TABLE IF NOT EXISTS content_performance (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
             content_id TEXT,
             views INTEGER DEFAULT 0,
             engagement_rate REAL DEFAULT 0.0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    """,
+# BRACKET_SURGEON: disabled
+#       );
+    ""","""
     # Harmless extras that some suites expect. Safe if already present.
-    "generated_reports": """
+    "generated_reports": """"""
       CREATE TABLE IF NOT EXISTS generated_reports (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT, path TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    """,
-    "platform_monitoring_log": """
+# BRACKET_SURGEON: disabled
+#       );
+    ""","""
+    "platform_monitoring_log": """"""
       CREATE TABLE IF NOT EXISTS platform_monitoring_log (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
             level TEXT, message TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    """,
-}
+# BRACKET_SURGEON: disabled
+#       );
+    ""","""
+# BRACKET_SURGEON: disabled
+# }
 
 
 def main():

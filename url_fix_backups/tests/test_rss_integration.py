@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 RSS Intelligence System Integration Test
 
 This script tests the end - to - end integration of the RSS intelligence system
@@ -7,7 +7,7 @@ with the existing agent architecture, verifying all components work together.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -29,7 +29,8 @@ from backend.agents.specialized_agents import ContentAgent, ResearchAgent
 from backend.database.hypocrisy_db_manager import (
     HypocrisyDatabaseManager,
     HypocrisyFinding,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from backend.task_queue_manager import TaskQueueManager
 
@@ -48,7 +49,8 @@ class RSSIntegrationTester:
             "success": success,
             "details": details,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.test_results.append(result)
         status = "✓ PASS" if success else "✗ FAIL"
         print(f"{status}: {test_name}")
@@ -72,7 +74,8 @@ class RSSIntegrationTester:
                 "RSS Feeds Configuration",
                 len(feeds) > 0,
                 f"Configured {len(feeds)} RSS feeds",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test trending topics retrieval
             trending_topics = news_watcher.get_trending_topics()
@@ -80,7 +83,8 @@ class RSSIntegrationTester:
                 "Trending Topics Retrieval",
                 True,
                 f"Retrieved {len(trending_topics)} topics",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test intelligence briefing
             briefing = news_watcher.get_latest_intelligence_briefing()
@@ -88,7 +92,8 @@ class RSSIntegrationTester:
                 "Intelligence Briefing",
                 briefing is not None,
                 "Generated intelligence briefing",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return news_watcher
 
@@ -105,7 +110,8 @@ class RSSIntegrationTester:
                 "HypocrisyDatabaseManager Initialization",
                 True,
                 "Successfully initialized",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test database schema creation
             hypocrisy_db._initialize_database()
@@ -140,14 +146,16 @@ class RSSIntegrationTester:
                 media_coverage_count=5,
                 social_media_mentions=100,
                 fact_check_results={"status": "confirmed"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             finding_id = hypocrisy_db.store_finding(sample_finding)
             self.log_test(
                 "Store Hypocrisy Finding",
                 finding_id is not None,
                 f"Stored finding with ID: {finding_id}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test retrieving content opportunities
             opportunities = hypocrisy_db.get_content_opportunities(limit=5)
@@ -155,7 +163,8 @@ class RSSIntegrationTester:
                 "Retrieve Content Opportunities",
                 len(opportunities) > 0,
                 f"Retrieved {len(opportunities)} opportunities",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test statistics
             stats = hypocrisy_db.get_statistics()
@@ -176,7 +185,8 @@ class RSSIntegrationTester:
                 "PlannerAgent Initialization",
                 True,
                 "Successfully initialized with RSS intelligence",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test RSS intelligence retrieval
             rss_intelligence = planner._get_rss_intelligence()
@@ -184,7 +194,8 @@ class RSSIntegrationTester:
                 "RSS Intelligence Retrieval",
                 rss_intelligence is not None,
                 f"Retrieved intelligence: {list(rss_intelligence.keys())}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test trending topics integration
             trending_topics = rss_intelligence.get("trending_topics", [])
@@ -192,7 +203,8 @@ class RSSIntegrationTester:
                 "Trending Topics Integration",
                 len(trending_topics) >= 0,
                 f"Found {len(trending_topics)} trending topics",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test content opportunities identification
             content_opportunities = rss_intelligence.get("content_opportunities", [])
@@ -200,7 +212,8 @@ class RSSIntegrationTester:
                 "Content Opportunities",
                 len(content_opportunities) >= 0,
                 f"Identified {len(content_opportunities)} opportunities",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test topic momentum calculation
             topic_momentum = rss_intelligence.get("topic_momentum", {})
@@ -208,7 +221,8 @@ class RSSIntegrationTester:
                 "Topic Momentum Calculation",
                 isinstance(topic_momentum, dict),
                 f"Calculated momentum for {len(topic_momentum)} topics",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return planner
 
@@ -227,26 +241,30 @@ class RSSIntegrationTester:
             if (
                 hasattr(research_agent, "research_tools")
                 and "news_watcher" in research_agent.research_tools
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 news_watcher = research_agent.research_tools["news_watcher"]
                 if hasattr(news_watcher, "hypocrisy_db"):
                     self.log_test(
                         "Research - Hypocrisy Integration",
                         True,
                         "Hypocrisy database integrated in research tools",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     self.log_test(
                         "Research - Hypocrisy Integration",
                         False,
                         "Hypocrisy database not found in research tools",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
             else:
                 self.log_test(
                     "Research - Hypocrisy Integration",
                     False,
                     "Breaking news watcher not found in research agent",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             return research_agent
 
@@ -270,19 +288,23 @@ class RSSIntegrationTester:
                     "source": "rss_intelligence",
                     "urgency": "trending",
                     "agent_type": "ContentAgent",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "metadata": {
                     "created_by": "rss_integration_test",
                     "source_system": "breaking_news_watcher",
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             task_id = task_queue.add_task(**sample_task)
             self.log_test(
                 "RSS - Driven Task Creation",
                 task_id is not None,
                 f"Created task with ID: {task_id}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test task retrieval
             tasks = task_queue.get_tasks(status="pending", limit=10)
@@ -290,7 +312,8 @@ class RSSIntegrationTester:
                 "Task Queue Retrieval",
                 len(tasks) >= 0,
                 f"Retrieved {len(tasks)} pending tasks",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return task_queue
 
@@ -328,7 +351,8 @@ class RSSIntegrationTester:
                 "OODA Loop Integration",
                 "trending_topics" in market_conditions,
                 "RSS intelligence integrated in OODA loop",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Step 3: Test dynamic content scheduling
             if hasattr(planner, "content_scheduling"):
@@ -337,7 +361,8 @@ class RSSIntegrationTester:
                     "Dynamic Content Scheduling",
                     len(scheduling_rules) > 0,
                     f"Scheduling rules configured: {list(scheduling_rules.keys())}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Step 4: Test hypocrisy content opportunities
             if news_watcher and hasattr(news_watcher, "get_hypocrisy_content_opportunities"):
@@ -346,7 +371,8 @@ class RSSIntegrationTester:
                     "Hypocrisy Content Integration",
                     len(hypocrisy_opportunities) >= 0,
                     f"Retrieved {len(hypocrisy_opportunities)} hypocrisy opportunities",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             self.log_test("End - to - End Workflow", True, "Complete workflow tested successfully")
             return True
@@ -396,13 +422,16 @@ class RSSIntegrationTester:
                 "duration_seconds": duration.total_seconds(),
                 "start_time": self.start_time.isoformat(),
                 "end_time": end_time.isoformat(),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "test_results": self.test_results,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         report_file = (
             f"rss_integration_test_report_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         with open(report_file, "w") as f:
             json.dump(report_data, f, indent=2)
 

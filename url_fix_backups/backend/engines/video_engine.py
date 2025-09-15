@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Video Engine - Comprehensive Video Generation and Processing System
 
 This module provides a unified interface for video generation, processing,
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import logging
@@ -109,7 +109,8 @@ class VideoEngine:
                 capture_output=True,
                 text=True,
                 timeout=10,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result.returncode == 0
         except Exception as e:
             self.logger.warning(f"FFmpeg not available: {e}")
@@ -145,7 +146,8 @@ class VideoEngine:
             if result.success:
                 self.logger.info(
                     f"Video generation completed in {generation_time:.2f}s: {result.video_path}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 self.logger.error(f"Video generation failed: {result.error_message}")
 
@@ -157,18 +159,21 @@ class VideoEngine:
                 success=False,
                 error_message=str(e),
                 generation_time=(datetime.now() - start_time).total_seconds(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _generate_video_with_audio(
         self, request: VideoGenerationRequest, output_path: Path
-    ) -> VideoGenerationResult:
+# BRACKET_SURGEON: disabled
+#     ) -> VideoGenerationResult:
         """Generate video with audio track"""
         try:
             if not self.ffmpeg_available:
                 return VideoGenerationResult(
                     success=False,
                     error_message="FFmpeg not available for video generation",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Create background image if not provided
             background_path = request.background_image
@@ -193,12 +198,14 @@ class VideoEngine:
                     "yuv420p",
                     "-y",  # Overwrite output file
                     str(output_path),
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 # Execute ffmpeg command
                 result = subprocess.run(
                     cmd, capture_output=True, text=True, timeout=300  # 5 minute timeout
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             if result.returncode == 0 and output_path.exists():
                 file_size = output_path.stat().st_size
@@ -208,20 +215,24 @@ class VideoEngine:
                     file_size=file_size,
                     format=request.format.value,
                     metadata={"method": "audio_video", "background": background_path},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return VideoGenerationResult(
                     success=False, error_message=f"FFmpeg failed: {result.stderr}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return VideoGenerationResult(
                 success=False, error_message=f"Audio video generation failed: {str(e)}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _generate_video_from_script(
         self, request: VideoGenerationRequest, output_path: Path
-    ) -> VideoGenerationResult:
+# BRACKET_SURGEON: disabled
+#     ) -> VideoGenerationResult:
         """Generate video from script (text - to - speech + video)"""
         try:
             # For now, create a basic video with script as subtitle
@@ -242,8 +253,10 @@ class VideoEngine:
                     metadata={
                         "method": "placeholder",
                         "script_length": len(request.script or ""),
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Create video with text overlay
             cmd = [
@@ -262,7 +275,8 @@ class VideoEngine:
                 "yuv420p",
                 "-y",
                 str(output_path),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
 
@@ -276,22 +290,27 @@ class VideoEngine:
                     metadata={
                         "method": "script_video",
                         "script_length": len(request.script or ""),
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return VideoGenerationResult(
                     success=False,
                     error_message=f"Script video generation failed: {result.stderr}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return VideoGenerationResult(
                 success=False, error_message=f"Script video generation failed: {str(e)}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _generate_basic_video(
         self, request: VideoGenerationRequest, output_path: Path
-    ) -> VideoGenerationResult:
+# BRACKET_SURGEON: disabled
+#     ) -> VideoGenerationResult:
         """Generate basic video with title card"""
         try:
             background_path = request.background_image
@@ -307,7 +326,8 @@ class VideoEngine:
                     file_size=output_path.stat().st_size if output_path.exists() else 0,
                     format=request.format.value,
                     metadata={"method": "placeholder"},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Create basic video
             cmd = [
@@ -324,7 +344,8 @@ class VideoEngine:
                 "yuv420p",
                 "-y",
                 str(output_path),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
 
@@ -336,17 +357,20 @@ class VideoEngine:
                     file_size=file_size,
                     format=request.format.value,
                     metadata={"method": "basic_video"},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return VideoGenerationResult(
                     success=False,
                     error_message=f"Basic video generation failed: {result.stderr}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return VideoGenerationResult(
                 success=False, error_message=f"Basic video generation failed: {str(e)}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _create_default_background(self, title: str) -> str:
         """Create a default background image"""
@@ -366,7 +390,8 @@ class VideoEngine:
                     "1",
                     "-y",
                     str(background_path),
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
@@ -384,7 +409,8 @@ class VideoEngine:
 
     async def _create_placeholder_video(
         self, output_path: Path, title: str, script: Optional[str] = None
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Create a placeholder video file"""
         try:
             # Create a minimal MP4 file as placeholder
@@ -430,7 +456,8 @@ class VideoEngine:
                 "size": file_size,
                 "size_mb": round(file_size / (1024 * 1024), 2),
                 "exists": True,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             if self.ffmpeg_available:
                 try:
@@ -444,7 +471,8 @@ class VideoEngine:
                         "-show_format",
                         "-show_streams",
                         video_path,
-                    ]
+# BRACKET_SURGEON: disabled
+#                     ]
 
                     result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
@@ -502,8 +530,10 @@ class VideoEngine:
                 "basic_video_generation": True,
                 "batch_processing": True,
                 "video_info_extraction": self.ffmpeg_available,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Convenience functions for backward compatibility
@@ -511,7 +541,8 @@ class VideoEngine:
 
 async def generate_video(
     title: str, script: Optional[str] = None, audio_path: Optional[str] = None, **kwargs
-) -> VideoGenerationResult:
+# BRACKET_SURGEON: disabled
+# ) -> VideoGenerationResult:
     """Generate a video with simplified interface"""
     engine = VideoEngine()
     request = VideoGenerationRequest(title=title, script=script, audio_path=audio_path, **kwargs)
@@ -532,4 +563,5 @@ __all__ = [
     "VideoQuality",
     "generate_video",
     "create_video_engine",
-]
+# BRACKET_SURGEON: disabled
+# ]

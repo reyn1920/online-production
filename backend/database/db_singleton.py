@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
-"""
+""""""
 Database Singleton Manager
+"""""""""
 
 This module provides singleton instances of database managers to prevent
+
+
 redundant initialization across multiple modules.
 
+""""""
+
+
+
+
+
 Features:
+
+
+"""
 - Singleton pattern for HypocrisyDatabaseManager
 - Thread - safe initialization
 - Lazy loading
@@ -14,6 +26,7 @@ Features:
 Author: TRAE.AI System
 Version: 1.0.0
 """
+
 
 import logging
 import threading
@@ -27,7 +40,9 @@ except ImportError:
 
 
 class DatabaseSingleton:
-    """Singleton manager for database instances"""
+    
+Singleton manager for database instances
+"""
 
     _instance = None
     _lock = threading.Lock()
@@ -52,11 +67,11 @@ class DatabaseSingleton:
                             self._hypocrisy_db_manager = HypocrisyDatabaseManager()
                             self.logger.info(
                                 "Hypocrisy database manager initialized successfully (singleton)"
-                            )
+                             )
                         except Exception as e:
                             self.logger.error(
                                 f"Failed to initialize hypocrisy database manager: {e}"
-                            )
+                             )
                             return None
                     else:
                         self.logger.warning("HypocrisyDatabaseManager not available")
@@ -65,20 +80,64 @@ class DatabaseSingleton:
         return self._hypocrisy_db_manager
 
     def reset_hypocrisy_db_manager(self):
-        """Reset the hypocrisy database manager (for testing)"""
+        """
+Reset the hypocrisy database manager (for testing)
+
         with self._hypocrisy_db_lock:
+           
+""""""
+
             self._hypocrisy_db_manager = None
+           
+
+            
+           
+""""""
+
+
+            
+
+           
+
+            self._hypocrisy_db_manager = None
+           
+""""""
+
 
 
 # Global singleton instance
+
+""""""
 _db_singleton = DatabaseSingleton()
+
+# Global singleton instance
+"""
+
 
 
 def get_hypocrisy_db_manager() -> Optional[HypocrisyDatabaseManager]:
-    """Get the singleton HypocrisyDatabaseManager instance"""
+        """
+        Get the singleton HypocrisyDatabaseManager instance
+        """"""
+
+    return _db_singleton.get_hypocrisy_db_manager()
+    
+
+   
+""""""
+
+    
+
+
     return _db_singleton.get_hypocrisy_db_manager()
 
+    
+""""""
+
+    
+   
 
 def reset_db_singletons():
-    """Reset all database singletons (for testing)"""
+    
+"""Reset all database singletons (for testing)"""
     _db_singleton.reset_hypocrisy_db_manager()

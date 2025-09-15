@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Unified API Router for TRAE.AI Online Production System
 
 This module provides a centralized API routing system that integrates all discovered
@@ -19,7 +19,7 @@ Integrated Services:
 Author: TRAE.AI Integration System
 Version: 1.0.0
 Date: 2024
-"""
+""""""
 
 import asyncio
 import json
@@ -50,7 +50,9 @@ from core_ai_integration import (
 
     core_ai, ask_ai, ask_all_ai, ai_integrated, get_ai_context,
         AIPlatform, AIRequest, AIResponse
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 # Import integrated components
 try:
@@ -115,9 +117,9 @@ class AIValidationRequest(BaseModel):
 
 
 class UnifiedAPIRouter:
-    """
+    """"""
     Unified API router that integrates all system components
-    """
+    """"""
 
 
     def __init__(self, config: Optional[IntegrationConfig] = None):
@@ -131,7 +133,9 @@ class UnifiedAPIRouter:
                 version="1.0.0",
                 docs_url="/docs",
                 redoc_url="/redoc",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Setup CORS
         self.app.add_middleware(
@@ -140,7 +144,9 @@ class UnifiedAPIRouter:
             allow_credentials = True,
                 allow_methods=["*"],
                 allow_headers=["*"],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Initialize components
         self.master_integration = get_master_integration(self.config)
@@ -153,9 +159,11 @@ class UnifiedAPIRouter:
 
         # Initialize AI integration
         self.core_ai = core_ai
-        self.logger.info("AI Integration (ChatGPT,
+        self.logger.info("AI Integration (ChatGPT,"
     Gemini,
-    Abacus AI) initialized in API router")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     Abacus AI) initialized in API router")
 
         # Setup static files and templates
         self._setup_static_files()
@@ -174,7 +182,9 @@ class UnifiedAPIRouter:
         logging.basicConfig(
             level = logging.INFO,
                 format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         return logging.getLogger(__name__)
 
 
@@ -186,13 +196,17 @@ class UnifiedAPIRouter:
                 ("outputs", "/outputs"),
                 ("content", "/content"),
                 ("assets", "/assets"),
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for directory, mount_path in static_dirs:
             if Path(directory).exists():
                 self.app.mount(
                     mount_path, StaticFiles(directory = directory), name = directory
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def _setup_templates(self):
@@ -264,7 +278,9 @@ class UnifiedAPIRouter:
                         components = status["components"],
                         timestamp = status["timestamp"],
                         details = status,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             except Exception as e:
                 self.logger.error(f"Status check failed: {e}")
                 raise HTTPException(status_code = 500, detail = str(e))
@@ -284,7 +300,9 @@ class UnifiedAPIRouter:
                 if auth_request.username and auth_request.password:
                     token = (
                         f"token_{auth_request.username}_{datetime.now().timestamp()}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return {"access_token": token, "token_type": "bearer"}
                 else:
                     raise HTTPException(status_code = 401, detail="Invalid credentials")
@@ -296,7 +314,8 @@ class UnifiedAPIRouter:
 
         async def logout(
             credentials: HTTPAuthorizationCredentials = Depends(self.security),
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
             """User logout endpoint"""
             return {"message": "Logged out successfully"}
 
@@ -305,7 +324,8 @@ class UnifiedAPIRouter:
 
         async def get_profile(
             credentials: HTTPAuthorizationCredentials = Depends(self.security),
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
             """Get user profile"""
             if not credentials:
                 raise HTTPException(status_code = 401, detail="Authentication required")
@@ -316,7 +336,8 @@ class UnifiedAPIRouter:
                     "username": "demo_user",
                     "role": "user",
                     "permissions": ["content_creation", "dashboard_access"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def _register_task_routes(self):
@@ -331,7 +352,9 @@ class UnifiedAPIRouter:
                 if not self.master_integration.task_queue:
                     raise HTTPException(
                         status_code = 503, detail="Task queue not available"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 # Map string priority to enum
                 priority_map = {
@@ -339,7 +362,8 @@ class UnifiedAPIRouter:
                         "MEDIUM": TaskPriority.MEDIUM,
                         "HIGH": TaskPriority.HIGH,
                         "URGENT": TaskPriority.HIGH,  # Map URGENT to HIGH
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 # Map string task type to enum
                 type_map = {
@@ -348,14 +372,17 @@ class UnifiedAPIRouter:
                         "SYSTEM_MAINTENANCE": TaskType.SYSTEM,
                         "USER_REQUEST": TaskType.USER,
                         "ANALYTICS": TaskType.ANALYTICS,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 task_type = type_map.get(task_request.task_type, TaskType.USER)
                 priority = priority_map.get(task_request.priority, TaskPriority.MEDIUM)
 
                 task_id = await self.master_integration.task_queue.add_task(
                     task_type = task_type, payload = task_request.payload, priority = priority
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 return {"task_id": task_id, "status": "created"}
             except Exception as e:
@@ -371,11 +398,15 @@ class UnifiedAPIRouter:
                 if not self.master_integration.task_queue:
                     raise HTTPException(
                         status_code = 503, detail="Task queue not available"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 pending_tasks = (
                     await self.master_integration.task_queue.get_pending_tasks()
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return {"tasks": pending_tasks, "count": len(pending_tasks)}
             except Exception as e:
                 self.logger.error(f"Task listing failed: {e}")
@@ -390,14 +421,17 @@ class UnifiedAPIRouter:
                 if not self.master_integration.task_queue:
                     raise HTTPException(
                         status_code = 503, detail="Task queue not available"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 # This would need to be implemented in the task queue manager
                 return {
                     "task_id": task_id,
                         "status": "pending",
                         "message": "Task details not implemented",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
             except Exception as e:
                 raise HTTPException(status_code = 500, detail = str(e))
 
@@ -414,13 +448,16 @@ class UnifiedAPIRouter:
                 task_id = await self.master_integration.create_content_pipeline_task(
                     content_type = content_request.content_type,
                         parameters = content_request.parameters,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 return {
                     "task_id": task_id,
                         "content_type": content_request.content_type,
                         "status": "queued",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
             except Exception as e:
                 self.logger.error(f"Content generation failed: {e}")
                 raise HTTPException(status_code = 500, detail = str(e))
@@ -442,8 +479,11 @@ class UnifiedAPIRouter:
                             "name": template_file.stem,
                                 "filename": template_file.name,
                                 "path": str(template_file),
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 return {"templates": templates}
             except Exception as e:
@@ -461,7 +501,9 @@ class UnifiedAPIRouter:
                         "outputs / videos",
                         "outputs / pdfs",
                         "outputs / images",
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
 
                 for output_dir in output_dirs:
                     dir_path = Path(output_dir)
@@ -486,13 +528,15 @@ class UnifiedAPIRouter:
                 try:
                     return self.templates.TemplateResponse(
                         "dashboard.html", {"request": {}}
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 except Exception:
                     pass
 
             # Fallback HTML if template not available
             return HTMLResponse(
-                """
+                """"""
             <!DOCTYPE html>
             <html>
             <head>
@@ -505,7 +549,8 @@ class UnifiedAPIRouter:
                     .header { text - align: center; margin - bottom: 30px; }
                     .status - grid { display: grid; grid - template - columns: repeat(auto - fit,
     minmax(300px,
-    1fr)); gap: 20px; }
+# BRACKET_SURGEON: disabled
+#     1fr)); gap: 20px; }
                     .status - card { padding: 20px; border: 1px solid #ddd; border - radius: 8px; }
                     .status - card h3 { margin - top: 0; color: #333; }
                     .api - links { margin - top: 30px; }
@@ -550,8 +595,10 @@ class UnifiedAPIRouter:
                 </div>
             </body>
             </html>
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         @self.app.get("/api / dashboard / data")
 
@@ -572,12 +619,16 @@ class UnifiedAPIRouter:
                         "database": status.get("components", {}).get("database", False),
                             "task_queue": status.get("components", {}).get(
                             "task_queue", False
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             "websockets": status.get("components", {}).get(
                             "websockets", False
-                        ),
-                            },
-                        }
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         }
 
                 return dashboard_data
             except Exception as e:
@@ -605,7 +656,8 @@ class UnifiedAPIRouter:
                         "type": "chat_response",
                             "message": f"Echo: {message_data.get('message', '')}",
                             "timestamp": datetime.now().isoformat(),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     await websocket.send_text(json.dumps(response))
 
@@ -626,7 +678,9 @@ class UnifiedAPIRouter:
                     status = await self.master_integration.get_system_status()
                     await websocket.send_text(
                         json.dumps({"type": "system_update", "data": status})
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     await asyncio.sleep(30)  # Update every 30 seconds
 
             except WebSocketDisconnect:
@@ -649,7 +703,9 @@ class UnifiedAPIRouter:
                 else:
                     raise HTTPException(
                         status_code = 503, detail="System agent not available"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             except Exception as e:
                 raise HTTPException(status_code = 500, detail = str(e))
 
@@ -665,12 +721,15 @@ class UnifiedAPIRouter:
                         "query": query,
                             "status": "processed",
                             "agent": "research_agent",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     return result
                 else:
                     raise HTTPException(
                         status_code = 503, detail="Research agent not available"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             except Exception as e:
                 raise HTTPException(status_code = 500, detail = str(e))
 
@@ -686,12 +745,15 @@ class UnifiedAPIRouter:
                         "request": request,
                             "status": "generated",
                             "agent": "content_agent",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     return result
                 else:
                     raise HTTPException(
                         status_code = 503, detail="Content agent not available"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             except Exception as e:
                 raise HTTPException(status_code = 500, detail = str(e))
 
@@ -711,14 +773,17 @@ class UnifiedAPIRouter:
                         "cpu_usage": 0.0,  # Would implement actual metrics
                         "memory_usage": 0.0,
                             "disk_usage": 0.0,
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "application": {
                         "active_connections": len(self.active_connections),
                             "total_requests": 0,  # Would implement request counter
                         "error_rate": 0.0,
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "components": await self.master_integration.get_system_status(),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 return metrics
             except Exception as e:
                 raise HTTPException(status_code = 500, detail = str(e))
@@ -734,14 +799,17 @@ class UnifiedAPIRouter:
                         "python_version": sys.version,
                             "platform": sys.platform,
                             "working_directory": os.getcwd(),
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "component_status": await self.master_integration.get_system_status(),
                         "configuration": {
                         "host": self.config.host,
                             "port": self.config.port,
                             "debug": self.config.debug,
-                            },
-                        }
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         }
                 return diagnostics
             except Exception as e:
                 raise HTTPException(status_code = 500, detail = str(e))
@@ -770,8 +838,11 @@ class UnifiedAPIRouter:
                                 "modified": datetime.fromtimestamp(
                                 item.stat().st_mtime
                             ).isoformat(),
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 return {"directory": directory, "files": files}
             except Exception as e:
@@ -807,14 +878,17 @@ class UnifiedAPIRouter:
                     'total_requests': len(self.ai_router.routing_history),
                     'ai_insights_count': len(self.ai_router.ai_insights.get('optimization_suggestions', [])),
                     'timestamp': datetime.now().isoformat()
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 return JSONResponse(content={'success': True, 'status': status})
             except Exception as e:
                 self.logger.error(f"AI router status error: {e}")
                 return JSONResponse(
                     content={'success': False, 'error': str(e)},
                     status_code = 500
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         @self.app.get("/api / router / metrics")
         async def get_ai_router_metrics():
@@ -831,14 +905,17 @@ class UnifiedAPIRouter:
                     'ai_insights': self.ai_router.ai_insights,
                     'traffic_patterns': [asdict(p) for p in self.ai_router.traffic_patterns],
                     'timestamp': datetime.now().isoformat()
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 return JSONResponse(content={'success': True, 'metrics': metrics})
             except Exception as e:
                 self.logger.error(f"AI router metrics error: {e}")
                 return JSONResponse(
                     content={'success': False, 'error': str(e)},
                     status_code = 500
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         @self.app.post("/api / router / route")
         async def route_intelligent_request(request_data: Dict[str, Any]):
@@ -851,13 +928,17 @@ class UnifiedAPIRouter:
                 return JSONResponse(content={
                     'success': True,
                     'routing_decision': asdict(decision)
-                })
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 })
             except Exception as e:
                 self.logger.error(f"AI routing error: {e}")
                 return JSONResponse(
                     content={'success': False, 'error': str(e)},
                     status_code = 500
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         @self.app.get("/api / router / predictions")
         async def get_traffic_predictions():
@@ -871,13 +952,17 @@ class UnifiedAPIRouter:
                     'success': True,
                     'predictions': [asdict(p) for p in patterns],
                     'generated_at': datetime.now().isoformat()
-                })
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 })
             except Exception as e:
                 self.logger.error(f"Traffic prediction error: {e}")
                 return JSONResponse(
                     content={'success': False, 'error': str(e)},
                     status_code = 500
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         @self.app.post("/api / router / optimize")
         async def optimize_ai_routing():
@@ -888,13 +973,17 @@ class UnifiedAPIRouter:
                     'success': True,
                     'optimization': optimization_result,
                     'timestamp': datetime.now().isoformat()
-                })
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 })
             except Exception as e:
                 self.logger.error(f"Routing optimization error: {e}")
                 return JSONResponse(
                     content={'success': False, 'error': str(e)},
                     status_code = 500
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         @self.app.post("/api / router / strategy")
         async def update_routing_strategy(strategy_data: Dict[str, str]):
@@ -911,21 +1000,28 @@ class UnifiedAPIRouter:
                         'success': True,
                         'message': f'Routing strategy updated to {strategy}',
                         'current_strategy': self.ai_router.current_strategy.value
-                    })
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     })
                 else:
                     return JSONResponse(
                         content={
                             'success': False,
                             'error': f'Invalid strategy. Available: {[s.value for s in RoutingStrategy]}'
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         status_code = 400
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             except Exception as e:
                 self.logger.error(f"Strategy update error: {e}")
                 return JSONResponse(
                     content={'success': False, 'error': str(e)},
                     status_code = 500
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         @self.app.get("/api / router / load - balance")
         async def get_load_balance_status():
@@ -940,13 +1036,17 @@ class UnifiedAPIRouter:
                     'server_states': server_states,
                     'algorithm': self.ai_router.load_balancing_algorithm.value,
                     'timestamp': datetime.now().isoformat()
-                })
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 })
             except Exception as e:
                 self.logger.error(f"Load balance status error: {e}")
                 return JSONResponse(
                     content={'success': False, 'error': str(e)},
                     status_code = 500
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     def _register_ai_routes(self):
         """Register AI - powered API routes for intelligent request processing"""
@@ -961,33 +1061,43 @@ class UnifiedAPIRouter:
                     platform = AIPlatform.CHATGPT if not request.platforms else AIPlatform.CHATGPT,
                     task_type = request.analysis_type,
                     context="API endpoint analysis request"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if request.platforms and len(request.platforms) > 1:
                     # Multi - platform analysis
                     results = await ask_all_ai(request.content,
-    context = request.analysis_type)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     context = request.analysis_type)
                     return {
                         "analysis_type": request.analysis_type,
                         "multi_platform_results": results,
                         "timestamp": datetime.now().isoformat(),
                         "platforms_used": request.platforms \
-    or ["chatgpt", "gemini", "abacus"]
-                    }
+#     or ["chatgpt", "gemini", "abacus"]
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     # Single platform analysis
                     result = await ask_ai(request.content,
-    context = request.analysis_type)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     context = request.analysis_type)
                     return {
                         "analysis_type": request.analysis_type,
                         "result": result,
                         "timestamp": datetime.now().isoformat(),
                         "platform_used": "chatgpt"
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             except Exception as e:
                 self.logger.error(f"AI analysis error: {e}")
                 raise HTTPException(status_code = 500,
-    detail = f"AI analysis failed: {str(e)}")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail = f"AI analysis failed: {str(e)}")
 
         @self.app.post("/api / ai / recommend")
         async def ai_recommendations(request: AIRecommendationRequest):
@@ -999,7 +1109,9 @@ class UnifiedAPIRouter:
                     platform = AIPlatform.GEMINI,  # Use Gemini for recommendations
                     task_type = request.task_type,
                     context="API recommendation request"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 result = await self.core_ai.process_request(ai_request)
 
@@ -1010,11 +1122,14 @@ class UnifiedAPIRouter:
                     "task_type": request.task_type,
                     "confidence_score": result.confidence_score,
                     "timestamp": datetime.now().isoformat()
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as e:
                 self.logger.error(f"AI recommendation error: {e}")
                 raise HTTPException(status_code = 500,
-    detail = f"AI recommendation failed: {str(e)}")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail = f"AI recommendation failed: {str(e)}")
 
         @self.app.get("/api / ai / platforms / status")
         async def ai_platforms_status():
@@ -1026,26 +1141,31 @@ class UnifiedAPIRouter:
                     "total_platforms": len(status),
                     "active_platforms": len([p for p in status.values() if p["status"] == "available"]),
                     "timestamp": datetime.now().isoformat()
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as e:
                 self.logger.error(f"AI platform status error: {e}")
                 raise HTTPException(status_code = 500,
-    detail = f"Platform status check failed: {str(e)}")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail = f"Platform status check failed: {str(e)}")
 
         @self.app.post("/api / ai / validate")
         async def ai_validate_request(request: dict):
             """AI - powered request validation and enhancement"""
             try:
                 # Use AI to validate and enhance incoming requests
-                validation_prompt = f"Validate \
-    and enhance this API request: {json.dumps(request)}"
+                validation_prompt = f"Validate \"
+#     and enhance this API request: {json.dumps(request)}"
 
                 ai_request = AIRequest(
                     prompt = validation_prompt,
                     platform = AIPlatform.ABACUS,  # Use Abacus for data validation
                     task_type="validation",
                     context="API request validation"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 result = await self.core_ai.process_request(ai_request)
 
@@ -1055,19 +1175,22 @@ class UnifiedAPIRouter:
                     "is_valid": True,  # Enhanced logic would parse AI response
                     "suggestions": result.content,
                     "timestamp": datetime.now().isoformat()
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as e:
                 self.logger.error(f"AI validation error: {e}")
                 raise HTTPException(status_code = 500,
-    detail = f"AI validation failed: {str(e)}")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail = f"AI validation failed: {str(e)}")
 
         @self.app.get("/api / ai / insights")
         async def ai_system_insights():
             """Get AI - powered system insights and analytics"""
             try:
                 # Generate system insights using AI
-                insights_prompt = "Analyze current system performance \
-    and provide actionable insights"
+                insights_prompt = "Analyze current system performance \"
+#     and provide actionable insights"
 
                 result = await ask_ai(insights_prompt, context="system_analytics")
 
@@ -1081,12 +1204,17 @@ class UnifiedAPIRouter:
                         "Optimize database queries",
                         "Implement caching strategies",
                         "Scale resources based on usage patterns"
-                    ]
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as e:
                 self.logger.error(f"AI insights error: {e}")
                 raise HTTPException(status_code = 500,
-    detail = f"AI insights generation failed: {str(e)}")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail = f"AI insights generation failed: {str(e)}")
 
         @self.app.middleware("http")
         async def ai_request_middleware(request, call_next):
@@ -1099,7 +1227,8 @@ class UnifiedAPIRouter:
                 "url": str(request.url),
                 "headers": dict(request.headers),
                 "timestamp": start_time.isoformat()
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Process request with AI insights (in background)
             if request.url.path.startswith("/api/"):
@@ -1177,4 +1306,6 @@ if __name__ == "__main__":
             port = config.port,
             reload = config.debug,
             log_level="info",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )

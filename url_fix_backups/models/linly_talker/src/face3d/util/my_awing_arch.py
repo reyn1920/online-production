@@ -50,9 +50,9 @@ class AddCoordsTh(nn.Module):
         self.with_boundary = with_boundary
 
     def forward(self, input_tensor, heatmap=None):
-        """
+        """"""
         input_tensor: (batch, c, x_dim, y_dim)
-        """
+        """"""
         batch_size_tensor = input_tensor.shape[0]
 
         xx_ones = torch.ones([1, self.y_dim], dtype=torch.int32, device=input_tensor.device)
@@ -115,11 +115,13 @@ class CoordConvTh(nn.Module):
 
     def __init__(
         self, x_dim, y_dim, with_r, with_boundary, in_channels, first_one=False, *args, **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(CoordConvTh, self).__init__()
         self.addcoords = AddCoordsTh(
             x_dim=x_dim, y_dim=y_dim, with_r=with_r, with_boundary=with_boundary
-        )
+# BRACKET_SURGEON: disabled
+#         )
         in_channels += 2
         if with_r:
             in_channels += 1
@@ -144,7 +146,8 @@ def conv3x3(in_planes, out_planes, strd=1, padding=1, bias=False, dilation=1):
         padding=padding,
         bias=bias,
         dilation=dilation,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 class BasicBlock(nn.Module):
@@ -192,7 +195,8 @@ class ConvBlock(nn.Module):
                 nn.BatchNorm2d(in_planes),
                 nn.ReLU(True),
                 nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=1, bias=False),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             self.downsample = None
 
@@ -238,7 +242,8 @@ class HourGlass(nn.Module):
             kernel_size=1,
             stride=1,
             padding=0,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self._generate_network(self.depth)
 
     def _generate_network(self, level):
@@ -288,7 +293,8 @@ class FAN(nn.Module):
         gray_scale=False,
         num_landmarks=68,
         device="cuda",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(FAN, self).__init__()
         self.device = device
         self.num_modules = num_modules
@@ -308,7 +314,8 @@ class FAN(nn.Module):
                 kernel_size=7,
                 stride=2,
                 padding=3,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             self.conv1 = CoordConvTh(
                 x_dim=256,
@@ -320,7 +327,8 @@ class FAN(nn.Module):
                 kernel_size=7,
                 stride=2,
                 padding=3,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         self.bn1 = nn.BatchNorm2d(64)
         self.conv2 = ConvBlock(64, 128)
         self.conv3 = ConvBlock(128, 128)
@@ -337,22 +345,26 @@ class FAN(nn.Module):
             self.add_module(
                 "conv_last" + str(hg_module),
                 nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.add_module("bn_end" + str(hg_module), nn.BatchNorm2d(256))
             self.add_module(
                 "l" + str(hg_module),
                 nn.Conv2d(256, num_landmarks + 1, kernel_size=1, stride=1, padding=0),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if hg_module < self.num_modules - 1:
                 self.add_module(
                     "bl" + str(hg_module),
                     nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.add_module(
                     "al" + str(hg_module),
                     nn.Conv2d(num_landmarks + 1, 256, kernel_size=1, stride=1, padding=0),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
     def forward(self, x):
         x, _ = self.conv1(x)
@@ -376,7 +388,8 @@ class FAN(nn.Module):
             ll = F.relu(
                 self._modules["bn_end" + str(i)](self._modules["conv_last" + str(i)](ll)),
                 True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Predict heatmaps
             tmp_out = self._modules["l" + str(i)](ll)

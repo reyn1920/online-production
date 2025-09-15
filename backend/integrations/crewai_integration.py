@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI CrewAI Agent Framework Integration
-
+""""""
 Provides seamless integration between CrewAI multi - agent framework
 and the TRAE.AI ecosystem for coordinated agent collaboration.
+"""
+
+TRAE.AI CrewAI Agent Framework Integration
+
+
+
+""""""
+
 
 Features:
+
+
+
 - CrewAI agent creation and management
 - Multi - agent task coordination
 - Role - based agent specialization
@@ -15,6 +26,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import asyncio
@@ -72,7 +84,7 @@ except ImportError:
             expected_output: str = None,
             agent=None,
             **kwargs,
-        ):
+#         ):
             self.description = description or "Generic task"
             self.expected_output = expected_output or "Task completion"
             self.agent = agent
@@ -156,7 +168,9 @@ class CrewStatus(Enum):
 
 @dataclass
 class AgentConfig:
-    """Configuration for a CrewAI agent."""
+    """
+Configuration for a CrewAI agent.
+
 
     role: str
     goal: str
@@ -167,12 +181,20 @@ class AgentConfig:
     max_execution_time: Optional[int] = None
     verbose: bool = True
     allow_delegation: bool = True
+   
+""""""
+
     memory: bool = True
+   
 
-
+    
+   
+"""
 @dataclass
 class TaskConfig:
-    """Configuration for a CrewAI task."""
+    """
+Configuration for a CrewAI task.
+
 
     description: str
     expected_output: str
@@ -180,9 +202,15 @@ class TaskConfig:
     tools: List[str] = None
     context: List[str] = None
     output_file: Optional[str] = None
+   
+""""""
+
     callback: Optional[str] = None
+   
 
-
+    
+   
+"""
 @dataclass
 class CrewConfig:
     """Configuration for a CrewAI crew."""
@@ -200,7 +228,9 @@ class CrewConfig:
 
 @dataclass
 class CrewExecution:
-    """Represents a crew execution instance."""
+    """
+Represents a crew execution instance.
+
 
     id: str
     crew_name: str
@@ -209,11 +239,19 @@ class CrewExecution:
     finished_at: Optional[datetime] = None
     results: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
+   
+""""""
+
     metrics: Optional[Dict[str, Any]] = None
+   
 
-
+    
+   
+"""
 class TraeAITool(BaseTool):
-    """Custom tool that bridges CrewAI with TRAE.AI capabilities."""
+    """
+Custom tool that bridges CrewAI with TRAE.AI capabilities.
+
 
     def __init__(self, name: str, description: str, func: Callable, **kwargs):
         super().__init__(**kwargs)
@@ -222,23 +260,66 @@ class TraeAITool(BaseTool):
         self.func = func
 
     def _run(self, *args, **kwargs):
-        """Execute the tool function."""
+        
+"""Execute the tool function."""
+
+        
+
         try:
+        
+""""""
+
+        
+       
+
             return self.func(*args, **kwargs)
         except Exception as e:
+        
+"""
+        try:
+        """"""
             return f"Error executing {self.name}: {str(e)}"
 
     async def _arun(self, *args, **kwargs):
-        """Async execution of the tool function."""
+        """
+Async execution of the tool function.
+
+        
+"""
+        return self._run(*args, **kwargs)
+        """"""
+        """
+
+
         return self._run(*args, **kwargs)
 
+        
+
+       
+""""""
 
 class CrewAIIntegration:
-    """
+   
+
+    
+   
+"""
+    TODO: Add documentation
+   """
+
+    
+   
+
     Comprehensive CrewAI framework integration with TRAE.AI
     for multi - agent coordination and collaborative task execution.
-    """
+   
+""""""
 
+   
+
+    
+   
+"""
     def __init__(self, secrets_db_path: str = "data/secrets.sqlite"):
         self.logger = setup_logger("crewai_integration")
         self.secret_store = SecretStore(secrets_db_path)
@@ -272,16 +353,27 @@ class CrewAIIntegration:
         self.logger.info("CrewAI integration initialized successfully")
 
     def _load_credentials(self) -> Dict[str, str]:
-        """Load API credentials for LLM providers."""
+        """
+Load API credentials for LLM providers.
+
         try:
+            
+"""
             with self.secret_store as store:
+            """
                 credentials = {
                     "openai_api_key": store.get_secret("OPENAI_API_KEY"),
                     "anthropic_api_key": store.get_secret("ANTHROPIC_API_KEY"),
                     "google_api_key": store.get_secret("GOOGLE_API_KEY"),
                     "huggingface_api_key": store.get_secret("HUGGINGFACE_API_KEY"),
-                }
+                 }
+            """
 
+            with self.secret_store as store:
+            
+
+           
+""""""
                 # Set environment variables for CrewAI
                 for key, value in credentials.items():
                     if value:
@@ -294,13 +386,26 @@ class CrewAIIntegration:
             return {}
 
     def _init_database(self):
-        """Initialize CrewAI execution tracking database."""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        """
+Initialize CrewAI execution tracking database.
 
+       
+""""""
+
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+       
+
+        
+       
+"""
         with sqlite3.connect(self.db_path) as conn:
             # Crew executions table
             conn.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS crew_executions (
                     id TEXT PRIMARY KEY,
                         crew_name TEXT NOT NULL,
@@ -311,13 +416,33 @@ class CrewAIIntegration:
                         error TEXT,
                         metrics TEXT,
                         config TEXT
-                )
-            """
-            )
+                 )
+            
+""""""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+        
+       """
+
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+       
+
+        
+       
+"""
             # Agent performance table
             conn.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS agent_performance (
                     id TEXT PRIMARY KEY,
                         execution_id TEXT,
@@ -330,13 +455,25 @@ class CrewAIIntegration:
                         execution_time REAL,
                         tokens_used INTEGER,
                         FOREIGN KEY (execution_id) REFERENCES crew_executions (id)
-                )
+                 )
+            
+""""""
+
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
             # Task tracking table
             conn.execute(
-                """
+               
+""""""
                 CREATE TABLE IF NOT EXISTS task_tracking (
                     id TEXT PRIMARY KEY,
                         execution_id TEXT,
@@ -349,20 +486,45 @@ class CrewAIIntegration:
                         output TEXT,
                         dependencies TEXT,
                         FOREIGN KEY (execution_id) REFERENCES crew_executions (id)
-                )
+                 )
+            """"""
+
+            
+
+             
+            
+"""
+             )
+            """"""
+             
             """
-            )
+
+             )
+            
+
+             
+            
+""""""
+
+
+            
+
+           
 
             conn.commit()
+           
+""""""
 
     def _register_default_tools(self):
-        """Register default tools for CrewAI agents."""
+        """
+        Register default tools for CrewAI agents.
+        """
         # Research tools
         self.register_tool(
             "web_search",
             "Search the web for information on a given topic",
             self._web_search_tool,
-        )
+         )
 
         self.register_tool("file_writer", "Write content to a file", self._file_writer_tool)
 
@@ -370,70 +532,70 @@ class CrewAIIntegration:
             "data_analyzer",
             "Analyze data and generate insights",
             self._data_analyzer_tool,
-        )
+         )
 
         self.register_tool(
             "content_generator",
             "Generate various types of content",
             self._content_generator_tool,
-        )
+         )
 
         self.register_tool(
             "api_caller", "Make API calls to external services", self._api_caller_tool
-        )
+         )
 
     def _init_default_agents(self):
         """Initialize default agent configurations."""
         default_agents = {
             AgentRole.RESEARCHER: AgentConfig(
                 role="Senior Research Analyst",
-                goal="Conduct comprehensive research \
-    and provide accurate, well - sourced information",
-                backstory="You are a seasoned research analyst with expertise in gathering, analyzing, \
-    and synthesizing information from multiple sources. You excel at identifying trends, patterns, \
-    and insights that others might miss.",
+                goal="Conduct comprehensive research \"
+#     and provide accurate, well - sourced information",
+                backstory="You are a seasoned research analyst with expertise in gathering, analyzing, \"
+#     and synthesizing information from multiple sources. You excel at identifying trends, patterns, \
+#     and insights that others might miss.",
                 tools=["web_search", "data_analyzer"],
                 allow_delegation=True,
-            ),
+             ),
             AgentRole.CONTENT_CREATOR: AgentConfig(
                 role="Creative Content Specialist",
-                goal="Create engaging, high - quality content across multiple formats \
-    and platforms",
-                backstory="You are a versatile content creator with a talent for crafting compelling narratives, engaging copy, \
-    and multimedia content that resonates with target audiences.",
+                goal="Create engaging, high - quality content across multiple formats \"
+#     and platforms",
+                backstory="You are a versatile content creator with a talent for crafting compelling narratives, engaging copy, \"
+#     and multimedia content that resonates with target audiences.",
                 tools=["content_generator", "file_writer"],
                 allow_delegation=False,
-            ),
+             ),
             AgentRole.MARKETING_SPECIALIST: AgentConfig(
                 role="Digital Marketing Strategist",
-                goal="Develop \
-    and execute effective marketing strategies to maximize reach \
-    and engagement",
-                backstory="You are a data - driven marketing professional with deep understanding of digital channels, audience psychology, \
-    and conversion optimization.",
+                goal="Develop \"
+#     and execute effective marketing strategies to maximize reach \
+#     and engagement",
+                backstory="You are a data - driven marketing professional with deep understanding of digital channels, audience psychology, \"
+#     and conversion optimization.",
                 tools=["web_search", "data_analyzer", "api_caller"],
                 allow_delegation=True,
-            ),
+             ),
             AgentRole.DATA_ANALYST: AgentConfig(
                 role="Senior Data Scientist",
-                goal="Extract actionable insights from complex datasets \
-    and provide data - driven recommendations",
-                backstory="You are an experienced data scientist with expertise in statistical analysis, machine learning, \
-    and data visualization. You excel at turning raw data into strategic insights.",
+                goal="Extract actionable insights from complex datasets \"
+#     and provide data - driven recommendations",
+                backstory="You are an experienced data scientist with expertise in statistical analysis, machine learning, \"
+#     and data visualization. You excel at turning raw data into strategic insights.",
                 tools=["data_analyzer", "file_writer"],
                 allow_delegation=False,
-            ),
+             ),
             AgentRole.PROJECT_MANAGER: AgentConfig(
                 role="Agile Project Manager",
-                goal="Coordinate team efforts, manage timelines, \
-    and ensure successful project delivery",
-                backstory="You are an experienced project manager with a track record of delivering complex projects on time \
-    and within budget. You excel at resource allocation \
-    and risk management.",
+                goal="Coordinate team efforts, manage timelines, \"
+#     and ensure successful project delivery",
+                backstory="You are an experienced project manager with a track record of delivering complex projects on time \"
+#     and within budget. You excel at resource allocation \
+#     and risk management.",
                 tools=["file_writer", "api_caller"],
                 allow_delegation=True,
-            ),
-        }
+             ),
+         }
 
         for role, config in default_agents.items():
             self.register_agent_config(role.value, config)
@@ -477,7 +639,7 @@ class CrewAIIntegration:
                     model="gpt - 4",
                     temperature=0.7,
                     openai_api_key=self.credentials["openai_api_key"],
-                )
+                 )
 
             agent = Agent(
                 role=config.role,
@@ -490,7 +652,7 @@ class CrewAIIntegration:
                 verbose=config.verbose,
                 allow_delegation=config.allow_delegation,
                 memory=config.memory,
-            )
+             )
 
             self.logger.info(f"Created agent: {config.role}")
             return agent
@@ -521,7 +683,7 @@ class CrewAIIntegration:
                 context=config.context,
                 output_file=config.output_file,
                 callback=config.callback,
-            )
+             )
 
             self.logger.info(f"Created task: {config.description[:50]}...")
             return task
@@ -578,14 +740,14 @@ class CrewAIIntegration:
                 cache=config.cache,
                 max_rpm=config.max_rpm,
                 language=config.language,
-            )
+             )
 
             # Register crew
             self.crews_registry[config.name] = crew
 
             self.logger.info(
                 f"Created crew: {config.name} with {len(agents)} agents and {len(tasks)} tasks"
-            )
+             )
             return crew
 
         except Exception as e:
@@ -595,9 +757,22 @@ class CrewAIIntegration:
     async def execute_crew(
         self, crew_name: str, inputs: Optional[Dict[str, Any]] = None
     ) -> Optional[CrewExecution]:
-        """Execute a crew asynchronously."""
+        """
+Execute a crew asynchronously.
+
+        
+"""
         try:
+        """
+
             crew = self.crews_registry.get(crew_name)
+        
+
+        try:
+        
+""""""
+        
+       """
             if not crew:
                 self.logger.error(f"Crew not found: {crew_name}")
                 return None
@@ -608,7 +783,7 @@ class CrewAIIntegration:
                 crew_name=crew_name,
                 status=CrewStatus.EXECUTING,
                 started_at=datetime.now(),
-            )
+             )
 
             # Store execution
             self.executions_cache[execution_id] = execution
@@ -628,27 +803,63 @@ class CrewAIIntegration:
             return None
 
     def _execute_crew_sync(self, crew: Crew, inputs: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute crew synchronously in thread."""
+        """
+Execute crew synchronously in thread.
+
+        
+"""
         try:
+        """
+
             result = crew.kickoff(inputs=inputs)
+        
+
+        try:
+        
+""""""
+        
+       """
             return {
                 "success": True,
                 "result": result,
                 "timestamp": datetime.now().isoformat(),
-            }
+             }
         except Exception as e:
             return {
                 "success": False,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+             }
 
     async def _monitor_crew_execution(self, execution_id: str, future):
-        """Monitor crew execution progress."""
-        try:
-            # Wait for completion
-            result = await asyncio.get_event_loop().run_in_executor(None, future.result)
+        """
+Monitor crew execution progress.
 
+        try:
+           
+""""""
+
+            # Wait for completion
+           
+
+            
+           
+""""""
+
+            
+           
+
+            result = await asyncio.get_event_loop().run_in_executor(None, future.result)
+           
+""""""
+
+           
+
+            
+           
+"""
+            # Wait for completion
+           """"""
             # Update execution
             execution = self.executions_cache.get(execution_id)
             if execution:
@@ -666,7 +877,7 @@ class CrewAIIntegration:
 
                 self.logger.info(
                     f"Crew execution {execution_id} completed with status: {execution.status.value}"
-                )
+                 )
 
         except Exception as e:
             self.logger.error(f"Error monitoring crew execution {execution_id}: {e}")
@@ -680,15 +891,23 @@ class CrewAIIntegration:
                 await self._store_execution(execution)
 
     async def get_execution(self, execution_id: str) -> Optional[CrewExecution]:
-        """Get crew execution status and results."""
-        return self.executions_cache.get(execution_id)
+        """
+Get crew execution status and results.
 
+        
+"""
+        return self.executions_cache.get(execution_id)
+        """"""
     async def _store_execution(self, execution: CrewExecution):
-        """Store execution in database."""
+        """
+Store execution in database.
+
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                   
+""""""
+
                     INSERT OR REPLACE INTO crew_executions
                     (id,
     crew_name,
@@ -697,9 +916,11 @@ class CrewAIIntegration:
     finished_at,
     results,
     error,
-    metrics)
+#     metrics)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+,
+"""
                     (
                         execution.id,
                         execution.crew_name,
@@ -709,20 +930,44 @@ class CrewAIIntegration:
                         json.dumps(execution.results) if execution.results else None,
                         execution.error,
                         json.dumps(execution.metrics) if execution.metrics else None,
-                    ),
-                )
+                     ),
+                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing execution: {e}")
+        """
+
+        return self.executions_cache.get(execution_id)
+        
+
+       
+""""""
 
     # Tool implementations
 
     def _web_search_tool(self, query: str) -> str:
-        """Web search tool implementation."""
+        
+Web search tool implementation.
+"""
         try:
+           """
+
+            
+           
+
             # This would integrate with actual search APIs
+           
+""""""
             return f"Search results for: {query}\\n[Placeholder for actual search results]"
         except Exception as e:
+           """
+
+            
+           
+
+            # This would integrate with actual search APIs
+           
+""""""
             return f"Search error: {str(e)}"
 
     def _file_writer_tool(self, filename: str, content: str) -> str:
@@ -736,27 +981,81 @@ class CrewAIIntegration:
             return f"File write error: {str(e)}"
 
     def _data_analyzer_tool(self, data: str) -> str:
-        """Data analyzer tool implementation."""
+        """
+Data analyzer tool implementation.
+
         try:
+           
+""""""
+
             # This would integrate with actual data analysis capabilities
+           
+
+            
+           
+"""
             return f"Analysis of data: {data[:100]}...\\n[Placeholder for actual analysis]"
         except Exception as e:
+           """
+
+            
+           
+
+            # This would integrate with actual data analysis capabilities
+           
+""""""
             return f"Analysis error: {str(e)}"
 
     def _content_generator_tool(self, content_type: str, topic: str) -> str:
-        """Content generator tool implementation."""
+        """
+Content generator tool implementation.
+
         try:
+           
+""""""
+
             # This would integrate with actual content generation
+           
+
+            
+           
+"""
             return f"Generated {content_type} about {topic}\\n[Placeholder for actual content]"
         except Exception as e:
+           """
+
+            
+           
+
+            # This would integrate with actual content generation
+           
+""""""
             return f"Content generation error: {str(e)}"
 
     def _api_caller_tool(self, url: str, method: str = "GET", data: Optional[Dict] = None) -> str:
-        """API caller tool implementation."""
+        """
+API caller tool implementation.
+
         try:
+           
+""""""
+
             # This would make actual API calls
+           
+
+            
+           
+"""
             return f"API call to {url} with method {method}\\n[Placeholder for actual response]"
         except Exception as e:
+           """
+
+            
+           
+
+            # This would make actual API calls
+           
+""""""
             return f"API call error: {str(e)}"
 
 
@@ -775,27 +1074,27 @@ if __name__ == "__main__":
                     goal="Research AI trends for 2024",
                     backstory="Expert AI researcher",
                     tools=["web_search", "data_analyzer"],
-                ),
+                 ),
                 AgentConfig(
                     role="content_creator",
                     goal="Create engaging content from research",
                     backstory="Creative content specialist",
                     tools=["content_generator", "file_writer"],
-                ),
-            ],
+                 ),
+             ],
             tasks=[
                 TaskConfig(
                     description="Research the latest AI trends for 2024",
                     expected_output="Comprehensive report on AI trends",
                     agent_role="researcher",
-                ),
+                 ),
                 TaskConfig(
                     description="Create a blog post from the research findings",
                     expected_output="Engaging blog post about AI trends",
                     agent_role="content_creator",
-                ),
-            ],
-        )
+                 ),
+             ],
+         )
 
         crew = crewai.create_crew(crew_config)
         if crew:

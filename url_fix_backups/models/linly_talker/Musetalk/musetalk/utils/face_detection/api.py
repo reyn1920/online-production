@@ -21,14 +21,14 @@ from .utils import *
 
 
 class LandmarksType(Enum):
-    """Enum class defining the type of landmarks to detect.
+    """Enum class defining the type of landmarks to detect."""
 
     ``_2D`` - the detected points ``(x,y)`` are detected in a 2D space \
-    and follow the visible contour of the face
+#     and follow the visible contour of the face
     ``_2halfD`` - this points represent the projection of the 3D points into 3D
     ``_3D`` - detect the points ``(x,y,z)``` in a 3D space
 
-    """
+    """"""
 
     _2D = 1
     _2halfD = 2
@@ -63,7 +63,8 @@ class FaceAlignment:
             flip_input = False,
             face_detector="sfd",
             verbose = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.device = device
         self.flip_input = flip_input
         self.landmarks_type = landmarks_type
@@ -86,11 +87,15 @@ class FaceAlignment:
                 locals(),
                 [face_detector],
                 0,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.face_detector = face_detector_module.FaceDetector(
             device = device, verbose = verbose
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def get_detections_for_batch(self, images):
@@ -119,7 +124,8 @@ class YOLOv8_face:
             path="face_detection / weights / yolov8n - face.onnx",
             conf_thres = 0.2,
             iou_thres = 0.5,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.conf_threshold = conf_thres
         self.iou_threshold = iou_thres
         self.class_names = ["face"]
@@ -136,9 +142,13 @@ class YOLOv8_face:
             (
                 math.ceil(self.input_height / self.strides[i]),
                     math.ceil(self.input_width / self.strides[i]),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             for i in range(len(self.strides))
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         self.anchors = self.make_anchors(self.feats_hw)
 
 
@@ -179,7 +189,8 @@ class YOLOv8_face:
                         self.input_width - neww - left,
                         cv2.BORDER_CONSTANT,
                         value=(0, 0, 0),
-                        )  # add border
+# BRACKET_SURGEON: disabled
+#                         )  # add border
             else:
                 newh, neww = int(self.input_height * hw_scale), self.input_width
                 img = cv2.resize(srcimg, (neww, newh), interpolation = cv2.INTER_AREA)
@@ -192,20 +203,26 @@ class YOLOv8_face:
                         0,
                         cv2.BORDER_CONSTANT,
                         value=(0, 0, 0),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
         else:
             img = cv2.resize(
                 srcimg,
                     (self.input_width, self.input_height),
                     interpolation = cv2.INTER_AREA,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         return img, newh, neww, top, left
 
 
     def detect(self, srcimg):
         input_img, newh, neww, padh, padw = self.resize_image(
             cv2.cvtColor(srcimg, cv2.COLOR_BGR2RGB)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         scale_h, scale_w = srcimg.shape[0]/newh, srcimg.shape[1]/neww
         input_img = input_img.astype(np.float32)/255.0
 
@@ -219,7 +236,9 @@ class YOLOv8_face:
         # Perform inference on the image
         det_bboxes, det_conf, det_classid, landmarks = self.post_process(
             outputs, scale_h, scale_w, padh, padw
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return det_bboxes, det_conf, det_classid, landmarks
 
 
@@ -233,12 +252,15 @@ class YOLOv8_face:
             cls = 1 / (1 + np.exp(-pred[..., self.reg_max * 4 : -15])).reshape((-1, 1))
             kpts = pred[..., -15:].reshape(
                 (-1, 15)
-            )  ### x1,y1,score1, ..., x5,y5,score5
+# BRACKET_SURGEON: disabled
+#             )  ### x1,y1,score1, ..., x5,y5,score5
 
             # tmp = box.reshape(self.feats_hw[i][0],
     self.feats_hw[i][1],
     4,
-    self.reg_max)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     self.reg_max)
             tmp = box.reshape(-1, 4, self.reg_max)
             bbox_pred = self.softmax(tmp, axis=-1)
             bbox_pred = np.dot(bbox_pred, self.project).reshape((-1, 4))
@@ -248,17 +270,23 @@ class YOLOv8_face:
                     self.anchors[stride],
                         bbox_pred,
                         max_shape=(self.input_height, self.input_width),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 * stride
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             kpts[:, 0::3] = (
                 kpts[:, 0::3] * 2.0
                 + (self.anchors[stride][:, 0].reshape((-1, 1)) - 0.5)
-            ) * stride
+# BRACKET_SURGEON: disabled
+#             ) * stride
             kpts[:, 1::3] = (
                 kpts[:, 1::3] * 2.0
                 + (self.anchors[stride][:, 1].reshape((-1, 1)) - 0.5)
-            ) * stride
+# BRACKET_SURGEON: disabled
+#             ) * stride
             kpts[:, 2::3] = 1 / (1 + np.exp(-kpts[:, 2::3]))
 
             bbox -= np.array([[padw, padh, padw, padh]])  ###合理使用广播法则
@@ -290,7 +318,9 @@ class YOLOv8_face:
                 confidences.tolist(),
                 self.conf_threshold,
                 self.iou_threshold,
-                ).flatten()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).flatten()
         if len(indices) > 0:
             mlvl_bboxes = bboxes_wh[indices]
             confidences = confidences[indices]
@@ -328,7 +358,9 @@ class YOLOv8_face:
                     1,
                     (0, 0, 255),
                     thickness = 2,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             for i in range(5):
                 cv2.circle(
                     image,
@@ -336,15 +368,20 @@ class YOLOv8_face:
                         4,
                         (0, 255, 0),
                         thickness=-1,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 # cv2.putText(image,
     str(i), (int(kp[i * 3]),
     int(kp[i * 3 + 1]) - 10),
     cv2.FONT_HERSHEY_SIMPLEX,
     1, (255,
     0,
-    0),
-    thickness = 1)
+# BRACKET_SURGEON: disabled
+#     0),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     thickness = 1)
         return image
 
 ROOT = os.path.dirname(os.path.abspath(__file__))

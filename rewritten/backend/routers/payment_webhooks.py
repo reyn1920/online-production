@@ -90,7 +90,8 @@ def verify_paypal_signature(payload: bytes, headers: Dict[str, str]) -> bool:
         "paypal - transmission - id",
         "paypal - cert - id",
         "paypal - transmission - sig",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     return all(header.lower() in [h.lower() for h in headers.keys()] for header in required_headers)
 
 
@@ -98,7 +99,8 @@ def verify_paypal_signature(payload: bytes, headers: Dict[str, str]) -> bool:
 async def stripe_webhook(
     request: Request,
     stripe_signature: Optional[str] = Header(None, alias="stripe - signature"),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Handle Stripe webhook events with signature verification and idempotency"""
     try:
         # Get raw payload
@@ -108,7 +110,8 @@ async def stripe_webhook(
         stripe_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
         if stripe_secret and not verify_stripe_signature(
             payload, stripe_signature or "", stripe_secret
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             raise HTTPException(status_code=400, detail="Invalid signature")
 
         # Parse event
@@ -134,7 +137,8 @@ async def stripe_webhook(
             "event_id": event_id,
             "event_type": event_type,
             "result": result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON payload")
@@ -177,7 +181,8 @@ async def paypal_webhook(request: Request):
             "event_id": event_id,
             "event_type": event_type,
             "result": result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON payload")
@@ -256,9 +261,11 @@ async def handle_successful_payment(provider: str, payment_data: Dict[str, Any])
                             .filter(
                                 Subscription.user_id == user.id,
                                 Subscription.payment_id == payment_id,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             .first()
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         if subscription:
                             subscription.status = "active"
                             subscription.last_payment_date = datetime.utcnow()
@@ -280,7 +287,8 @@ async def handle_successful_payment(provider: str, payment_data: Dict[str, Any])
                     "amount": amount,
                     "currency": currency,
                     "date": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 await email_service.send_payment_confirmation(customer_id, email_data)
                 print(f"Confirmation email sent to customer {customer_id}")
         except Exception as email_error:
@@ -295,7 +303,8 @@ async def handle_successful_payment(provider: str, payment_data: Dict[str, Any])
             "currency": currency,
             "customer_id": customer_id,
             "status": "completed",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         print(f"Transaction logged: {transaction_log}")
         try:
             from backend.database.models import TransactionLog
@@ -311,7 +320,8 @@ async def handle_successful_payment(provider: str, payment_data: Dict[str, Any])
                     customer_id=customer_id,
                     status="completed",
                     raw_data=json.dumps(payment_data),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 session.add(log_entry)
                 session.commit()
                 print(f"Transaction logged to database: {payment_id}")
@@ -329,7 +339,8 @@ async def handle_successful_payment(provider: str, payment_data: Dict[str, Any])
         "amount": payment_data.get("amount")
         or payment_data.get("amount_with_breakdown", {}).get("gross_amount", {}).get("value"),
         "processed_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 async def handle_failed_payment(provider: str, payment_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -357,7 +368,8 @@ async def handle_failed_payment(provider: str, payment_data: Dict[str, Any]) -> 
                     "failure_reason": failure_reason,
                     "amount": amount,
                     "date": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 await email_service.send_payment_failure_notification(customer_id, failure_data)
                 print(f"Failure notification sent to customer {customer_id}")
             except Exception as email_error:
@@ -378,9 +390,11 @@ async def handle_failed_payment(provider: str, payment_data: Dict[str, Any]) -> 
                             .filter(
                                 Subscription.user_id == user.id,
                                 Subscription.payment_id == payment_id,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             .first()
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         if subscription:
                             subscription.status = "payment_failed"
                             subscription.failure_reason = failure_reason
@@ -399,7 +413,8 @@ async def handle_failed_payment(provider: str, payment_data: Dict[str, Any]) -> 
             "customer_id": customer_id,
             "amount": amount,
             "status": "failed",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         print(f"Failure logged: {failure_log}")
         try:
             from backend.database.models import PaymentFailureLog
@@ -414,7 +429,8 @@ async def handle_failed_payment(provider: str, payment_data: Dict[str, Any]) -> 
                     customer_id=customer_id,
                     amount=float(amount) if amount else 0.0,
                     raw_data=json.dumps(payment_data),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 session.add(failure_entry)
                 session.commit()
                 print(f"Payment failure logged to database: {payment_id}")
@@ -426,14 +442,16 @@ async def handle_failed_payment(provider: str, payment_data: Dict[str, Any]) -> 
         return {
             "status": "error",
             "message": f"Failed to process payment failure: {str(e)}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     return {
         "action": "payment_failed",
         "provider": provider,
         "payment_id": payment_data.get("id"),
         "processed_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 async def handle_subscription_created(
@@ -466,7 +484,8 @@ async def handle_subscription_created(
                             email=subscription_data.get("customer_email", ""),
                             created_at=datetime.utcnow(),
                             status="active",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         session.add(user)
                         session.flush()  # Get user.id
                         print(f"Created new user account for customer {customer_id}")
@@ -479,7 +498,8 @@ async def handle_subscription_created(
                         plan_id=plan_id,
                         status=status,
                         created_at=datetime.utcnow(),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     session.add(subscription)
                     session.commit()
                     print(f"Subscription linked to user {user.id}")
@@ -494,7 +514,8 @@ async def handle_subscription_created(
             "plan_id": plan_id,
             "status": status,
             "created_at": datetime.utcnow().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         print(f"Subscription record: {subscription_record}")
 
         # Send welcome email
@@ -510,7 +531,8 @@ async def handle_subscription_created(
                     "plan_id": plan_id,
                     "status": status,
                     "created_date": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 await email_service.send_welcome_email(customer_id, welcome_data)
                 print(f"Welcome email sent to customer {customer_id}")
             except Exception as email_error:
@@ -521,14 +543,16 @@ async def handle_subscription_created(
         return {
             "status": "error",
             "message": f"Failed to process subscription creation: {str(e)}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     return {
         "action": "subscription_created",
         "provider": provider,
         "subscription_id": subscription_data.get("id"),
         "processed_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 async def handle_subscription_cancelled(
@@ -545,7 +569,8 @@ async def handle_subscription_cancelled(
         # Log subscription cancellation
         print(
             f"Subscription cancelled: {provider} - {subscription_id} - Reason: {cancellation_reason}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Update subscription status
         print(f"Updating subscription status to cancelled: {subscription_id}")
@@ -563,16 +588,19 @@ async def handle_subscription_cancelled(
                             .filter(
                                 Subscription.user_id == user.id,
                                 Subscription.subscription_id == subscription_id,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             .first()
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         if subscription:
                             subscription.status = "cancelled"
                             subscription.cancelled_at = (
                                 datetime.fromisoformat(effective_date.replace("Z", "+00:00"))
                                 if isinstance(effective_date, str)
                                 else effective_date
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             subscription.cancellation_reason = cancellation_reason
                             session.commit()
                             print(f"Subscription {subscription_id} marked as cancelled")
@@ -591,7 +619,8 @@ async def handle_subscription_cancelled(
                 subscription_id=subscription_id,
                 cancellation_date=effective_date,
                 cancellation_reason=cancellation_reason,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if refund_calculation.get("eligible", False):
                 refund_amount = refund_calculation.get("amount", 0.0)
@@ -601,7 +630,8 @@ async def handle_subscription_cancelled(
                         subscription_id=subscription_id,
                         amount=refund_amount,
                         reason=cancellation_reason,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     print(f"Refund processed: {refund_amount} - Result: {refund_result}")
         except Exception as refund_error:
             print(f"Refund processing failed: {refund_error}")
@@ -620,7 +650,8 @@ async def handle_subscription_cancelled(
                     "effective_date": effective_date,
                     "refund_amount": refund_amount,
                     "final_billing_date": datetime.utcnow().strftime("%Y-%m-%d"),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 await email_service.send_cancellation_confirmation(customer_id, cancellation_data)
                 print(f"Cancellation confirmation sent to customer {customer_id}")
             except Exception as email_error:
@@ -635,7 +666,8 @@ async def handle_subscription_cancelled(
             "cancellation_reason": cancellation_reason,
             "effective_date": effective_date,
             "refund_amount": refund_amount,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         print(f"Cancellation logged: {cancellation_log}")
         try:
             from backend.database.models import CancellationLog
@@ -652,10 +684,12 @@ async def handle_subscription_cancelled(
                         datetime.fromisoformat(effective_date.replace("Z", "+00:00"))
                         if isinstance(effective_date, str)
                         else effective_date
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     refund_amount=refund_amount,
                     raw_data=json.dumps(subscription_data),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 session.add(cancellation_entry)
                 session.commit()
                 print(f"Cancellation logged to analytics database: {subscription_id}")
@@ -667,14 +701,16 @@ async def handle_subscription_cancelled(
         return {
             "status": "error",
             "message": f"Failed to process subscription cancellation: {str(e)}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     return {
         "action": "subscription_cancelled",
         "provider": provider,
         "subscription_id": subscription_data.get("id"),
         "processed_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/health")
@@ -684,4 +720,5 @@ async def webhook_health():
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
         "processed_webhooks_count": len(load_processed_webhooks()),
-    }
+# BRACKET_SURGEON: disabled
+#     }

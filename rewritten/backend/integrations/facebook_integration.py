@@ -20,7 +20,8 @@ class FacebookClient:
             page_access_token = os.getenv("FB_PAGE_ACCESS_TOKEN"),
                 app_id = os.getenv("FB_APP_ID"),
                 app_secret = os.getenv("FB_APP_SECRET"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
 
     def ready(self) -> bool:
@@ -31,6 +32,7 @@ class FacebookClient:
 
 
         def post_message(self, message: str, media_url: str = "") -> Dict[str, Any]:
+            pass
         if not self.ready():
             raise RuntimeError("Facebook not configured")
         return {
@@ -38,7 +40,8 @@ class FacebookClient:
                 "id": "fb_post_stub",
                 "message": message,
                 "media": media_url,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def post_photo(self, caption: str, photo_url: str) -> Dict[str, Any]:
@@ -49,7 +52,8 @@ class FacebookClient:
                 "id": "fb_photo_stub",
                 "caption": caption,
                 "media": photo_url,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def insights(self) -> Dict[str, Any]:

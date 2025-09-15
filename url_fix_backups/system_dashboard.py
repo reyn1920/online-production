@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI System Management Dashboard
 Provides a web interface to monitor and control all system services.
-"""
+""""""
 
 import json
 import os
@@ -65,37 +65,43 @@ class SystemMonitor:
                 "ollama": self.is_service_running("ollama"),
                 "chrome": self.is_service_running("chrome"),
                 "dashboard": self.is_service_running("system_dashboard"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return {
                 "cpu": {
                     "percent": cpu_percent,
                     "count": psutil.cpu_count(),
                     "freq": psutil.cpu_freq()._asdict() if psutil.cpu_freq() else None,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "memory": {
                     "total": memory.total,
                     "available": memory.available,
                     "percent": memory.percent,
                     "used": memory.used,
                     "free": memory.free,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "disk": {
                     "total": disk.total,
                     "used": disk.used,
                     "free": disk.free,
                     "percent": (disk.used / disk.total) * 100,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "network": {
                     "bytes_sent": network.bytes_sent,
                     "bytes_recv": network.bytes_recv,
                     "packets_sent": network.packets_sent,
                     "packets_recv": network.packets_recv,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "uptime": str(uptime).split(".")[0],
                 "boot_time": boot_time.strftime("%Y-%m-%d %H:%M:%S"),
                 "services": services,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {"error": str(e)}
 
@@ -108,7 +114,8 @@ class SystemMonitor:
                     "pid": None,
                     "uptime": None,
                     "health": "unknown",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             with open(self.pid_file, "r") as f:
                 pid = int(f.read().strip())
@@ -133,21 +140,24 @@ class SystemMonitor:
                         "memory_info": process.memory_info()._asdict(),
                         "num_threads": process.num_threads(),
                         "create_time": create_time.strftime("%Y-%m-%d %H:%M:%S"),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     return {
                         "status": "stopped",
                         "pid": None,
                         "uptime": None,
                         "health": "down",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             except psutil.NoSuchProcess:
                 return {
                     "status": "stopped",
                     "pid": None,
                     "uptime": None,
                     "health": "down",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception as e:
             return {"status": "error", "error": str(e), "health": "unknown"}
 
@@ -188,7 +198,8 @@ class SystemMonitor:
 
         for proc in psutil.process_iter(
             ["pid", "name", "cmdline", "cpu_percent", "memory_percent"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             try:
                 cmdline = " ".join(proc.info["cmdline"] or [])
                 if any(keyword in cmdline.lower() for keyword in keywords):
@@ -199,8 +210,10 @@ class SystemMonitor:
                             "cmdline": (cmdline[:100] + "..." if len(cmdline) > 100 else cmdline),
                             "cpu_percent": proc.info["cpu_percent"],
                             "memory_percent": proc.info["memory_percent"],
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 continue
 
@@ -228,7 +241,8 @@ class SystemMonitor:
                     "status": "./start_app.sh status",
                     "install - service": "./start_app.sh install - service",
                     "uninstall - service": "./start_app.sh uninstall - service",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 if command not in allowed_commands:
                     return {"error": "Command not allowed"}
@@ -240,14 +254,16 @@ class SystemMonitor:
                     capture_output=True,
                     text=True,
                     timeout=30,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return {
                     "success": result.returncode == 0,
                     "returncode": result.returncode,
                     "stdout": result.stdout,
                     "stderr": result.stderr,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             elif service == "ollama":
                 if command == "start":
@@ -256,18 +272,21 @@ class SystemMonitor:
                             ["ollama", "serve"],
                             stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         return {
                             "success": True,
                             "stdout": "Ollama service started",
                             "stderr": "",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                     else:
                         return {
                             "success": True,
                             "stdout": "Ollama is already running",
                             "stderr": "",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 elif command == "stop":
                     subprocess.run(["pkill", "-f", "ollama serve"], capture_output=True)
@@ -275,7 +294,8 @@ class SystemMonitor:
                         "success": True,
                         "stdout": "Ollama service stopped",
                         "stderr": "",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                 elif command == "restart":
                     subprocess.run(["pkill", "-f", "ollama serve"], capture_output=True)
@@ -284,12 +304,14 @@ class SystemMonitor:
                         ["ollama", "serve"],
                         stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return {
                         "success": True,
                         "stdout": "Ollama service restarted",
                         "stderr": "",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             elif service == "chrome":
                 if command == "start":
@@ -303,20 +325,23 @@ class SystemMonitor:
                             "https://github.com",
                             "https://netlify.com",
                             "https://openai.com",
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
                         for site in essential_sites:
                             subprocess.Popen(["open", "-u", site])
                         return {
                             "success": True,
                             "stdout": "Chrome started with essential tabs",
                             "stderr": "",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                     else:
                         return {
                             "success": True,
                             "stdout": "Chrome is already running",
                             "stderr": "",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 elif command == "stop":
                     subprocess.run(["pkill", "-f", "Google Chrome"], capture_output=True)
@@ -339,7 +364,7 @@ templates_dir = Path(__file__).parent / "templates"
 templates_dir.mkdir(exist_ok=True)
 
 # Create the dashboard HTML template
-dashboard_html = """
+dashboard_html = """"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -358,7 +383,7 @@ dashboard_html = """
                 <div>
                     <h1 class="text - 3xl font - bold text - gray - 800">TRAE.AI System Dashboard</h1>
                     <p class="text - gray - 600 mt - 2">Monitor \
-    and manage your TRAE.AI application</p>
+#     and manage your TRAE.AI application</p>
                 </div>
                 <div class="flex space - x-2">
                     <button @click="refreshData()" class="bg - blue - 500 hover:bg - blue - 600 text - white px - 4 py - 2 rounded - lg">
@@ -589,15 +614,18 @@ dashboard_html = """
                     system: [],
                         service: [],
                         error: []
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                     currentLogType: 'system',
                     lastUpdate: '',
 
                 init() {
                     this.refreshData();
                     setInterval(() => this.refreshData(),
-    5000); // Auto - refresh every 5 seconds
-                },
+# BRACKET_SURGEON: disabled
+#     5000); // Auto - refresh every 5 seconds
+# BRACKET_SURGEON: disabled
+#                 },
 
                 async refreshData() {
                     try {
@@ -609,7 +637,8 @@ dashboard_html = """
                                 fetch('/api / service'),
                                 fetch('/api / processes'),
                                 fetch('/api / logs')
-                        ]);
+# BRACKET_SURGEON: disabled
+#                         ]);
 
                         this.systemInfo = await systemResponse.json();
                         this.serviceStatus = await serviceResponse.json();
@@ -618,8 +647,10 @@ dashboard_html = """
                         this.lastUpdate = new Date().toLocaleTimeString();
                     } catch (error) {
                         console.error('Failed to refresh data:', error);
-                    }
-                },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 },
 
                 async executeCommand(command, service = 'main') {
                     try {
@@ -627,23 +658,28 @@ dashboard_html = """
                             method: 'POST',
                                 headers: {
                                 'Content - Type': 'application / json'
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                                 body: JSON.stringify({ command, service })
-                        });
+# BRACKET_SURGEON: disabled
+#                         });
 
                         const result = await response.json();
                         if (result.success) {
                             alert(`${service} service ${command} executed successfully`);
                         } else {
                             alert(`${service} service ${command} failed: ` + (result.stderr || result.error));
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                         // Refresh data after command
                             setTimeout(() => this.refreshData(), 1000);
                     } catch (error) {
                         alert('Failed to execute command: ' + error.message);
-                    }
-                },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 },
 
                 formatBytes(bytes) {
                     if (!bytes) return 'N / A';
@@ -652,13 +688,16 @@ dashboard_html = """
                     const i = Math.floor(Math.log(bytes)/Math.log(1024));
                     return Math.round(bytes / Math.pow(1024,
     i) * 100) / 100 + ' ' + sizes[i];
-                }
-            }
-        }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
     </script>
 </body>
 </html>
-"""
+""""""
 
 # Write the HTML template
 with open(templates_dir / "dashboard.html", "w") as f:
@@ -699,7 +738,8 @@ async def get_logs():
         "system": monitor.get_log_tail(monitor.log_file),
         "service": monitor.get_log_tail(monitor.service_log),
         "error": monitor.get_log_tail(monitor.error_log),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @app.post("/api / command")

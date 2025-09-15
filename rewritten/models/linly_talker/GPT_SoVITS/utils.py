@@ -30,7 +30,8 @@ def load_checkpoint(checkpoint_path, model, optimizer = None, skip_optimizer = F
         optimizer is not None
         and not skip_optimizer
         and checkpoint_dict["optimizer"] is not None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         optimizer.load_state_dict(checkpoint_dict["optimizer"])
     saved_state_dict = checkpoint_dict["model"]
     if hasattr(model, "module"):
@@ -46,12 +47,15 @@ def load_checkpoint(checkpoint_path, model, optimizer = None, skip_optimizer = F
             assert saved_state_dict[k].shape == v.shape, (
                 saved_state_dict[k].shape,
                     v.shape,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception:
             traceback.print_exc()
             print(
                 "error, %s is not in the checkpoint" % k
-            )  # shape不对也会，比如text_embedding当cleaner修改时
+# BRACKET_SURGEON: disabled
+#             )  # shape不对也会，比如text_embedding当cleaner修改时
             new_state_dict[k] = v
     if hasattr(model, "module"):
         model.module.load_state_dict(new_state_dict)
@@ -60,7 +64,9 @@ def load_checkpoint(checkpoint_path, model, optimizer = None, skip_optimizer = F
     print("load ")
     logger.info(
         "Loaded checkpoint '{}' (iteration {})".format(checkpoint_path, iteration)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return model, optimizer, learning_rate, iteration
 
 
@@ -68,8 +74,12 @@ def save_checkpoint(model, optimizer, learning_rate, iteration, checkpoint_path)
     logger.info(
         "Saving model and optimizer state at iteration {} to {}".format(
             iteration, checkpoint_path
-        )
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     if hasattr(model, "module"):
         state_dict = model.module.state_dict()
     else:
@@ -80,9 +90,12 @@ def save_checkpoint(model, optimizer, learning_rate, iteration, checkpoint_path)
                 "iteration": iteration,
                 "optimizer": optimizer.state_dict(),
                 "learning_rate": learning_rate,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             checkpoint_path,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
 def summarize(
@@ -93,7 +106,8 @@ def summarize(
         images={},
         audios={},
         audio_sampling_rate = 22050,
-):
+# BRACKET_SURGEON: disabled
+# ):
     for k, v in scalars.items():
         writer.add_scalar(k, v, global_step)
     for k, v in histograms.items():
@@ -157,7 +171,9 @@ def plot_alignment_to_numpy(alignment, info = None):
     fig, ax = plt.subplots(figsize=(6, 4))
     im = ax.imshow(
         alignment.transpose(), aspect="auto", origin="lower", interpolation="none"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     fig.colorbar(im, ax = ax)
     xlabel = "Decoder timestep"
     if info is not None:
@@ -192,10 +208,14 @@ def get_hparams(init = True, stage = 1):
             type = str,
             default="./configs/s2.json",
             help="JSON file for configuration",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "-p", "--pretrain", type = str, required = False, default = None, help="pretrain dir"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "-rs",
             "--resume_step",
@@ -203,16 +223,24 @@ def get_hparams(init = True, stage = 1):
             required = False,
             default = None,
             help="resume step",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     # parser.add_argument('-e', '--exp_dir',
     type = str,
-    required = False,default = None,help='experiment directory')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     required = False,default = None,help='experiment directory')
     # parser.add_argument('-g', '--pretrained_s2G',
     type = str,
-    required = False,default = None,help='pretrained sovits gererator weights')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     required = False,default = None,help='pretrained sovits gererator weights')
     # parser.add_argument('-d', '--pretrained_s2D',
     type = str,
-    required = False,default = None,help='pretrained sovits discriminator weights')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     required = False,default = None,help='pretrained sovits discriminator weights')
 
     args = parser.parse_args()
 
@@ -241,15 +269,16 @@ def get_hparams(init = True, stage = 1):
 
 def clean_checkpoints(path_to_models="logs/44k/",
     n_ckpts_to_keep = 2,
-    sort_by_time = True):
-    """Freeing up space by deleting saved ckpts
+# BRACKET_SURGEON: disabled
+#     sort_by_time = True):
+    """Freeing up space by deleting saved ckpts"""
 
     Arguments:
     path_to_models    --  Path to the model directory
     n_ckpts_to_keep   --  Number of ckpts to keep, excluding G_0.pth and D_0.pth
     sort_by_time      --  True -> chronologically delete ckpts
                           False -> lexicographically delete ckpts
-    """
+    """"""
 
     import re
 
@@ -257,18 +286,24 @@ def clean_checkpoints(path_to_models="logs/44k/",
         f
         for f in os.listdir(path_to_models)
         if os.path.isfile(os.path.join(path_to_models, f))
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
     name_key = lambda _f: int(re.compile("._(\\d+)\\.pth").match(_f).group(1))
     time_key = lambda _f: os.path.getmtime(os.path.join(path_to_models, _f))
     sort_key = time_key if sort_by_time else name_key
     x_sorted = lambda _x: sorted(
         [f for f in ckpts_files if f.startswith(_x) and not f.endswith("_0.pth")],
             key = sort_key,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     to_del = [
         os.path.join(path_to_models, fn)
         for fn in (x_sorted("G")[:-n_ckpts_to_keep] + x_sorted("D")[:-n_ckpts_to_keep])
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
     del_info = lambda fn: logger.info(f".. Free up space by deleting ckpt {fn}")
     del_routine = lambda x: [os.remove(x), del_info(x)]
     rs = [del_routine(fn) for fn in to_del]
@@ -298,11 +333,15 @@ def check_git_hash(model_dir):
     source_dir = os.path.dirname(os.path.realpath(__file__))
     if not os.path.exists(os.path.join(source_dir, ".git")):
         logger.warn(
-            "{} is not a git repository,
-    therefore hash value comparison will be ignored.".format(
+            "{} is not a git repository,"
+    therefore hash value comparison will be ignored.".format("
                 source_dir
-            )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return
 
     cur_hash = subprocess.getoutput("git rev - parse HEAD")
@@ -314,8 +353,12 @@ def check_git_hash(model_dir):
             logger.warn(
                 "git hash values are different. {}(saved) != {}(current)".format(
                     saved_hash[:8], cur_hash[:8]
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     else:
         open(path, "w").write(cur_hash)
 
@@ -380,5 +423,9 @@ if __name__ == "__main__":
     print(
         load_wav_to_torch(
             "/home/fish/wenetspeech/dataset_vq/Y0000022499_wHFSeHEx9CM/S00261.flac"
-        )
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )

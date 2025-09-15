@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 AI Browser Automation Service
 Automated interaction with web-based AI platforms using Puppeteer MCP
-"""
+""""""
 
 import asyncio
 import logging
@@ -69,7 +69,8 @@ class AIBrowserAutomation:
                 "loading_selector": ".result-streaming",
                 "new_chat_selector": 'a[href="/"]',
                 "conversation_selector": ".conversation-turn",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             BrowserAIService.GEMINI_WEB: {
                 "url": "https://gemini.google.com/app",
                 "input_selector": '.ql-editor[contenteditable="true"]',
@@ -78,7 +79,8 @@ class AIBrowserAutomation:
                 "loading_selector": ".loading-indicator",
                 "new_chat_selector": 'button[aria-label="New chat"]',
                 "conversation_selector": ".conversation-turn",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             BrowserAIService.ABACUS_WEB: {
                 "url": "https://apps.abacus.ai/chatllm/?appId=1024a18ebe",
                 "input_selector": 'textarea[placeholder*="message"]',
@@ -87,8 +89,10 @@ class AIBrowserAutomation:
                 "loading_selector": ".typing-indicator",
                 "new_chat_selector": 'button[aria-label="New conversation"]',
                 "conversation_selector": ".message",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def initialize_browser(self, headless: bool = True) -> bool:
         """Initialize browser with security settings"""
@@ -103,8 +107,10 @@ class AIBrowserAutomation:
                     "--no-first-run",
                     "--no-zygote",
                     "--disable-gpu",
-                ],
-            }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             }
 
             # Navigate to a blank page to initialize
             result = await self.mcp_client.call_tool(
@@ -114,8 +120,10 @@ class AIBrowserAutomation:
                     "url": "about:blank",
                     "launchOptions": launch_options,
                     "allowDangerous": True,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.get("success", False):
                 self.browser_launched = True
@@ -124,7 +132,8 @@ class AIBrowserAutomation:
             else:
                 logger.error(
                     f"Failed to initialize browser: {result.get('error', 'Unknown error')}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return False
 
         except Exception as e:
@@ -144,7 +153,8 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_navigate",
                 {"url": config["url"]},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.get("success", False):
                 # Wait for page to load
@@ -154,7 +164,8 @@ class AIBrowserAutomation:
             else:
                 logger.error(
                     f"Failed to navigate to {service.value}: {result.get('error', 'Unknown error')}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return False
 
         except Exception as e:
@@ -163,7 +174,8 @@ class AIBrowserAutomation:
 
     async def send_message_to_chatgpt(
         self, prompt: str, screenshot: bool = False
-    ) -> BrowserAIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> BrowserAIResponse:
         """Send message to ChatGPT web interface"""
         start_time = time.time()
         service = BrowserAIService.CHATGPT_WEB
@@ -177,7 +189,8 @@ class AIBrowserAutomation:
                     response_text="",
                     error_message="Failed to navigate to ChatGPT",
                     response_time=time.time() - start_time,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Wait for input field to be available
             await asyncio.sleep(2)
@@ -187,28 +200,32 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["input_selector"]},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Clear existing content
             await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_evaluate",
                 {"script": f'document.querySelector("{config["input_selector"]}").value = "";'},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Fill the prompt
             await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_fill",
                 {"selector": config["input_selector"], "value": prompt},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Click send button
             await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["send_button_selector"]},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Wait for response
             response_text = await self._wait_for_response(service, timeout=60)
@@ -220,7 +237,8 @@ class AIBrowserAutomation:
                     "mcp.config.usrlocalmcp.Puppeteer",
                     "puppeteer_screenshot",
                     {"name": f"chatgpt_response_{int(time.time())}", "encoded": True},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 screenshot_data = screenshot_result.get("data")
 
             return BrowserAIResponse(
@@ -229,7 +247,8 @@ class AIBrowserAutomation:
                 screenshot_data=screenshot_data,
                 response_time=time.time() - start_time,
                 tokens_estimated=len(response_text.split()) * 1.3,  # Rough estimation
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"ChatGPT automation error: {str(e)}")
@@ -238,11 +257,13 @@ class AIBrowserAutomation:
                 response_text="",
                 error_message=str(e),
                 response_time=time.time() - start_time,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def send_message_to_gemini(
         self, prompt: str, screenshot: bool = False
-    ) -> BrowserAIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> BrowserAIResponse:
         """Send message to Gemini web interface"""
         start_time = time.time()
         service = BrowserAIService.GEMINI_WEB
@@ -256,7 +277,8 @@ class AIBrowserAutomation:
                     response_text="",
                     error_message="Failed to navigate to Gemini",
                     response_time=time.time() - start_time,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Wait for input field to be available
             await asyncio.sleep(3)
@@ -266,7 +288,8 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["input_selector"]},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Clear existing content and enter prompt
             await self.mcp_client.call_tool(
@@ -274,15 +297,18 @@ class AIBrowserAutomation:
                 "puppeteer_evaluate",
                 {
                     "script": f'document.querySelector("{config["input_selector"]}").innerHTML = "{prompt}";'
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             # Click send button
             await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["send_button_selector"]},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Wait for response
             response_text = await self._wait_for_response(service, timeout=60)
@@ -294,7 +320,8 @@ class AIBrowserAutomation:
                     "mcp.config.usrlocalmcp.Puppeteer",
                     "puppeteer_screenshot",
                     {"name": f"gemini_response_{int(time.time())}", "encoded": True},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 screenshot_data = screenshot_result.get("data")
 
             return BrowserAIResponse(
@@ -303,7 +330,8 @@ class AIBrowserAutomation:
                 screenshot_data=screenshot_data,
                 response_time=time.time() - start_time,
                 tokens_estimated=len(response_text.split()) * 1.3,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Gemini automation error: {str(e)}")
@@ -312,11 +340,13 @@ class AIBrowserAutomation:
                 response_text="",
                 error_message=str(e),
                 response_time=time.time() - start_time,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def send_message_to_abacus(
         self, prompt: str, screenshot: bool = False
-    ) -> BrowserAIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> BrowserAIResponse:
         """Send message to Abacus.AI web interface"""
         start_time = time.time()
         service = BrowserAIService.ABACUS_WEB
@@ -330,7 +360,8 @@ class AIBrowserAutomation:
                     response_text="",
                     error_message="Failed to navigate to Abacus.AI",
                     response_time=time.time() - start_time,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Wait for input field to be available
             await asyncio.sleep(3)
@@ -340,14 +371,16 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_fill",
                 {"selector": config["input_selector"], "value": prompt},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Click send button
             await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["send_button_selector"]},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Wait for response
             response_text = await self._wait_for_response(service, timeout=60)
@@ -359,7 +392,8 @@ class AIBrowserAutomation:
                     "mcp.config.usrlocalmcp.Puppeteer",
                     "puppeteer_screenshot",
                     {"name": f"abacus_response_{int(time.time())}", "encoded": True},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 screenshot_data = screenshot_result.get("data")
 
             return BrowserAIResponse(
@@ -368,7 +402,8 @@ class AIBrowserAutomation:
                 screenshot_data=screenshot_data,
                 response_time=time.time() - start_time,
                 tokens_estimated=len(response_text.split()) * 1.3,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Abacus.AI automation error: {str(e)}")
@@ -377,7 +412,8 @@ class AIBrowserAutomation:
                 response_text="",
                 error_message=str(e),
                 response_time=time.time() - start_time,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _wait_for_response(self, service: BrowserAIService, timeout: int = 60) -> str:
         """Wait for AI service to complete response"""
@@ -395,7 +431,8 @@ class AIBrowserAutomation:
                     "mcp.config.usrlocalmcp.Puppeteer",
                     "puppeteer_evaluate",
                     {"script": f'document.querySelector("{config["loading_selector"]}") !== null'},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if not loading_check.get("result", False):
                     # Loading complete, get response
@@ -403,16 +440,19 @@ class AIBrowserAutomation:
                         "mcp.config.usrlocalmcp.Puppeteer",
                         "puppeteer_evaluate",
                         {
-                            "script": f"""
+                            "script": f""""""
                             const elements = document.querySelectorAll("{config["response_selector"]}");
                             if (elements.length > 0) {{
                                 const lastElement = elements[elements.length - 1];
                                 return lastElement.innerText || lastElement.textContent || "";
-                            }}
+# BRACKET_SURGEON: disabled
+#                             }}
                             return "";
-                        """
-                        },
-                    )
+                        """"""
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
 
                     response_text = response_result.get("result", "").strip()
                     if response_text:
@@ -430,16 +470,19 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_evaluate",
                 {
-                    "script": f"""
+                    "script": f""""""
                     const elements = document.querySelectorAll("{config["response_selector"]}");
                     if (elements.length > 0) {{
                         const lastElement = elements[elements.length - 1];
                         return lastElement.innerText || lastElement.textContent || "Timeout: Partial response";
-                    }}
+# BRACKET_SURGEON: disabled
+#                     }}
                     return "Timeout: No response found";
-                """
-                },
-            )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
             return response_result.get("result", "Timeout: No response available")
 
         except Exception:
@@ -459,7 +502,8 @@ class AIBrowserAutomation:
                     success=False,
                     response_text="",
                     error_message=f"Unsupported service: {request.service.value}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             logger.error(f"Browser request processing error: {str(e)}")
@@ -475,7 +519,8 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["new_chat_selector"]},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             await asyncio.sleep(2)
             logger.info(f"Started new conversation for {service.value}")
@@ -494,7 +539,7 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_evaluate",
                 {
-                    "script": f"""
+                    "script": f""""""
                     const conversations = document.querySelectorAll("{config["conversation_selector"]}");
                     const history = [];
                     conversations.forEach((conv, index) => {{
@@ -504,13 +549,18 @@ class AIBrowserAutomation:
                                 index: index,
                                 text: text.trim(),
                                 timestamp: new Date().toISOString()
-                            }});
-                        }}
-                    }});
+# BRACKET_SURGEON: disabled
+#                             }});
+# BRACKET_SURGEON: disabled
+#                         }}
+# BRACKET_SURGEON: disabled
+#                     }});
                     return history;
-                """
-                },
-            )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             return history_result.get("result", [])
 
@@ -529,7 +579,8 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_screenshot",
                 {"name": screenshot_name, "encoded": True},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return result.get("data")
 
@@ -561,7 +612,8 @@ class BrowserAIServiceManager:
         prompt: str,
         preferred_service: Optional[BrowserAIService] = None,
         screenshot: bool = False,
-    ) -> BrowserAIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> BrowserAIResponse:
         """Send prompt to the best available browser service"""
         services_to_try = (
             [preferred_service]
@@ -570,8 +622,10 @@ class BrowserAIServiceManager:
                 BrowserAIService.CHATGPT_WEB,
                 BrowserAIService.GEMINI_WEB,
                 BrowserAIService.ABACUS_WEB,
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         for service in services_to_try:
             if service is None:
@@ -589,8 +643,10 @@ class BrowserAIServiceManager:
                     "prompt": prompt[:100] + "..." if len(prompt) > 100 else prompt,
                     "success": response.success,
                     "response_time": response.response_time,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.success:
                 return response
@@ -600,7 +656,8 @@ class BrowserAIServiceManager:
         # All services failed
         return BrowserAIResponse(
             success=False, response_text="", error_message="All browser services failed"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     async def get_service_status(self) -> Dict[str, Any]:
         """Get status of all browser services"""
@@ -609,7 +666,8 @@ class BrowserAIServiceManager:
             "active_sessions": len(self.active_sessions),
             "total_requests": len(self.request_history),
             "recent_requests": (self.request_history[-10:] if self.request_history else []),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return status
 

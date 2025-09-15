@@ -53,7 +53,9 @@ try:
 except ImportError as e:
     logging.warning(
         f"Selenium not available: {e}. Browser automation features will be limited."
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     webdriver = None
     By = None
     Keys = None
@@ -110,7 +112,7 @@ class AutomationAction:
     delay_after: float = 0.0  # Delay after action
     retry_count: int = 3
     timeout: float = 10.0
-    stealth_params: Dict[str, Any] = field(default_factory = dict)
+    stealth_params: Dict[str, Any] = field(default_factory = dict):
 
 @dataclass
 
@@ -124,7 +126,7 @@ class AutomationSequence:
     actions: List[AutomationAction]
     stealth_level: StealthLevel = StealthLevel.MODERATE
     max_retries: int = 3
-    created_at: datetime = field(default_factory = datetime.now)
+    created_at: datetime = field(default_factory = datetime.now):
     last_executed: Optional[datetime] = None
     success_rate: float = 0.0
     execution_count: int = 0
@@ -135,7 +137,7 @@ class AutomationSequence:
 class StealthProfile:
     """Configuration for stealth operations"""
 
-    mouse_speed: Tuple[float, float] = (0.5, 2.0)  # Min, max speed
+    mouse_speed: Tuple[float, float] = (0.5, 2.0): # Min, max speed
     click_delay: Tuple[float, float] = (0.1, 0.5)  # Min, max delay
     typing_speed: Tuple[float, float] = (0.05, 0.2)  # Min, max per character
     scroll_speed: Tuple[float, float] = (0.3, 1.0)  # Min, max speed
@@ -160,7 +162,9 @@ class StealthOperations:
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0",
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Configure pyautogui for stealth
         if pyautogui:
@@ -178,7 +182,9 @@ class StealthOperations:
                     human_errors = False,
                     mouse_jitter = False,
                     random_pauses = False,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         elif self.stealth_level == StealthLevel.MODERATE:
             return StealthProfile(
@@ -188,7 +194,9 @@ class StealthOperations:
                     human_errors = True,
                     mouse_jitter = True,
                     random_pauses = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         else:  # MAXIMUM
             return StealthProfile(
@@ -200,12 +208,15 @@ class StealthOperations:
                     random_pauses = True,
                     user_agent_rotation = True,
                     viewport_randomization = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     async def stealth_delay(
         self, base_delay: float = 1.0, variance: float = 0.5
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Add randomized delay with human - like patterns"""
         if not self.profile.random_pauses:
             await asyncio.sleep(base_delay)
@@ -224,7 +235,8 @@ class StealthOperations:
 
     def stealth_mouse_move(
         self, x: int, y: int, duration: Optional[float] = None
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Move mouse with human - like behavior"""
         if not pyautogui:
             return
@@ -233,7 +245,8 @@ class StealthOperations:
         if duration is None:
             distance = (
                 (x - pyautogui.position()[0]) ** 2 + (y - pyautogui.position()[1]) ** 2
-            ) ** 0.5
+# BRACKET_SURGEON: disabled
+#             ) ** 0.5
             base_duration = distance/1000  # Base speed
             duration = base_duration * random.uniform(*self.profile.mouse_speed)
 
@@ -280,7 +293,8 @@ class StealthOperations:
                 self.profile.human_errors
                 and random.random() < 0.02  # 2% chance
                 and char.isalpha()
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
                 # Type wrong character
                 wrong_char = random.choice("abcdefghijklmnopqrstuvwxyz")
@@ -315,7 +329,9 @@ class StealthOperations:
                 (1600, 900),
                 (1024, 768),
                 (1280, 1024),
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         return random.choice(common_resolutions)
 
 
@@ -375,7 +391,8 @@ class SpecheloPro:
             text: str,
             voice_name: str = "default",
             output_filename: str = "voiceover.mp3",
-            ) -> bool:
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
         """Create a voiceover using Spechelo Pro"""
         try:
             if not self.is_running:
@@ -485,7 +502,9 @@ class ThumbnailBlaster:
             options = ChromeOptions()
             options.add_argument(
                 f"--user - agent={self.stealth_ops.get_random_user_agent()}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if self.stealth_ops.profile.viewport_randomization:
                 width, height = self.stealth_ops.get_random_viewport()
@@ -502,7 +521,9 @@ class ThumbnailBlaster:
             # Execute script to remove webdriver property
             self.browser_driver.execute_script(
                 "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self.is_initialized = True
             self.logger.info("Browser initialized for Thumbnail Blaster")
@@ -515,7 +536,8 @@ class ThumbnailBlaster:
 
     async def navigate_to_thumbnail_blaster(
         self, url: str = "https://thumbnailblaster.com"
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Navigate to Thumbnail Blaster website"""
         try:
             if not self.is_initialized:
@@ -542,7 +564,9 @@ class ThumbnailBlaster:
             # Find username field
             username_field = wait.until(
                 EC.presence_of_element_located((By.NAME, "username"))
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Clear and enter username with stealth typing
             username_field.clear()
@@ -568,12 +592,16 @@ class ThumbnailBlaster:
             # Click login button
             login_button = self.browser_driver.find_element(
                 By.XPATH, "//button[@type='submit']"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Scroll to button if needed
             self.browser_driver.execute_script(
                 "arguments[0].scrollIntoView();", login_button
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             await self.stealth_ops.stealth_delay(0.5)
 
             # Click with ActionChains for more human - like behavior
@@ -599,7 +627,8 @@ class ThumbnailBlaster:
             template_name: str,
             title_text: str,
             background_image: Optional[str] = None,
-            ) -> bool:
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
         """Create a thumbnail using Thumbnail Blaster"""
         try:
             # Navigate to thumbnail creation page
@@ -637,14 +666,18 @@ class ThumbnailBlaster:
             # Look for template selection area
             templates = self.browser_driver.find_elements(
                 By.CLASS_NAME, "template - item"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             for template in templates:
                 if template_name.lower() in template.get_attribute("data - name").lower():
                     # Scroll to template
                     self.browser_driver.execute_script(
                         "arguments[0].scrollIntoView();", template
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     await self.stealth_ops.stealth_delay(0.5)
 
                     # Click template
@@ -703,7 +736,9 @@ class ThumbnailBlaster:
             # Scroll to button
             self.browser_driver.execute_script(
                 "arguments[0].scrollIntoView();", generate_button
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             await self.stealth_ops.stealth_delay(0.5)
 
             # Click generate
@@ -772,9 +807,11 @@ class AffiliateSignupAutomator:
                         "confirm_password": "input[name='confirmPassword']",
                         "country": "select[name='country']",
                         "agree_terms": "input[name='agreeToTerms']",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "submit_button": "button[type='submit']",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "commission_junction": {
                 "url": "https://signup.cj.com/member/signup",
                     "fields": {
@@ -785,9 +822,11 @@ class AffiliateSignupAutomator:
                         "email": "input[name='email']",
                         "password": "input[name='password']",
                         "phone": "input[name='phone']",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "submit_button": "input[type='submit']",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "shareasale": {
                 "url": "https://www.shareasale.com/shareasale.cfm?task = affiliatesignup",
                     "fields": {
@@ -797,15 +836,19 @@ class AffiliateSignupAutomator:
                         "password": "input[name='password']",
                         "website_url": "input[name='website']",
                         "company_name": "input[name='company']",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "submit_button": "input[value='Submit Application']",
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def signup_for_affiliate_program(
         self, program_name: str, user_data: Dict[str, str]
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Sign up for an affiliate program"""
         try:
             if program_name not in self.signup_templates:
@@ -859,12 +902,15 @@ class AffiliateSignupAutomator:
         # Remove webdriver property
         self.browser_driver.execute_script(
             "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     async def _fill_signup_form(
         self, template: Dict[str, Any], user_data: Dict[str, str]
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Fill out the signup form"""
         wait = WebDriverWait(self.browser_driver, 10)
 
@@ -876,12 +922,16 @@ class AffiliateSignupAutomator:
                 # Wait for field to be present
                 field = wait.until(
                     EC.presence_of_element_located((By.CSS_SELECTOR, selector))
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Scroll to field
                 self.browser_driver.execute_script(
                     "arguments[0].scrollIntoView();", field
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 await self.stealth_ops.stealth_delay(0.5)
 
                 # Handle different field types
@@ -920,12 +970,16 @@ class AffiliateSignupAutomator:
         try:
             submit_button = self.browser_driver.find_element(
                 By.CSS_SELECTOR, template["submit_button"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Scroll to submit button
             self.browser_driver.execute_script(
                 "arguments[0].scrollIntoView();", submit_button
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             await self.stealth_ops.stealth_delay(1.0)
 
             # Click submit with human - like behavior
@@ -954,7 +1008,9 @@ class AffiliateSignupAutomator:
                 "confirmation",
                 "verify",
                 "check your email",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         if any(indicator in page_source for indicator in success_indicators):
             self.logger.info(f"Signup appears successful for {program_name}")
@@ -990,7 +1046,9 @@ class WebAutomationAgent:
 
         self.logger.info(
             f"Web Automation Agent initialized with {stealth_level.value} stealth level"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     async def execute_sequence(self, sequence: AutomationSequence) -> bool:
@@ -1006,7 +1064,9 @@ class WebAutomationAgent:
             for i, action in enumerate(sequence.actions):
                 self.logger.debug(
                     f"Executing action {i + 1}/{len(sequence.actions)}: {action.action_type.value}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Pre - action delay
                 if action.delay_before > 0:
@@ -1020,12 +1080,16 @@ class WebAutomationAgent:
                 else:
                     self.logger.warning(
                         f"Action {i + 1} failed: {action.action_type.value}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Retry if configured
                     for retry in range(action.retry_count):
-                        self.logger.info(f"Retrying action {i + 1},
-    attempt {retry + 1}")
+                        self.logger.info(f"Retrying action {i + 1},"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     attempt {retry + 1}")
                         await self.stealth_ops.stealth_delay(1.0)
 
                         if await self._execute_action(action):
@@ -1036,7 +1100,9 @@ class WebAutomationAgent:
                     if not action_success:
                         self.logger.error(
                             f"Action {i + 1} failed after {action.retry_count} retries"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         break
 
                 # Post - action delay
@@ -1053,7 +1119,9 @@ class WebAutomationAgent:
             else:
                 self.logger.error(
                     f"Sequence '{sequence.name}' failed (success rate: {sequence.success_rate:.2%})"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return success
 
@@ -1106,7 +1174,8 @@ class WebAutomationAgent:
             target_app: AutomationTarget,
             actions: List[AutomationAction],
             stealth_level: StealthLevel = StealthLevel.MODERATE,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Create a new automation sequence"""
         sequence_id = f"seq_{int(time.time())}_{random.randint(1000, 9999)}"
 
@@ -1116,7 +1185,9 @@ class WebAutomationAgent:
                 target_app = target_app,
                 actions = actions,
                 stealth_level = stealth_level,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.sequences[sequence_id] = sequence
 
@@ -1126,21 +1197,25 @@ class WebAutomationAgent:
 
     async def create_voiceover_with_spechelo(
         self, text: str, voice: str = "default", output_file: str = "voiceover.mp3"
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Create voiceover using Spechelo Pro"""
         return await self.spechelo.create_voiceover(text, voice, output_file)
 
 
     async def create_thumbnail_with_blaster(
         self, template: str, title: str, background_image: Optional[str] = None
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Create thumbnail using Thumbnail Blaster"""
         # Login first (credentials would need to be provided)
         # await self.thumbnail_blaster.login(username, password)
 
         return await self.thumbnail_blaster.create_thumbnail(
             template, title, background_image
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     async def signup_for_affiliates(
@@ -1158,7 +1233,9 @@ class WebAutomationAgent:
 
             success = await self.affiliate_automator.signup_for_affiliate_program(
                 program, user_data
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             results[program] = success
 
             if success:
@@ -1185,9 +1262,11 @@ class WebAutomationAgent:
                 "success_rate": sequence.success_rate,
                 "last_executed": (
                 sequence.last_executed.isoformat() if sequence.last_executed else None
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "created_at": sequence.created_at.isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def cleanup(self) -> None:
@@ -1217,7 +1296,9 @@ if __name__ == "__main__":
                 text="Welcome to our amazing product demonstration. This is a test of the Spechelo Pro automation system.",
                     voice="default",
                     output_file="test_voiceover.mp3",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             print(f"Spechelo automation result: {success}")
         except Exception as e:
             print(f"Spechelo test failed: {e}")
@@ -1229,7 +1310,9 @@ if __name__ == "__main__":
                 template="modern_tech",
                     title="Amazing AI Tool Review",
                     background_image = None,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             print(f"Thumbnail Blaster automation result: {success}")
         except Exception as e:
             print(f"Thumbnail Blaster test failed: {e}")
@@ -1246,7 +1329,8 @@ if __name__ == "__main__":
                     "website_url": "https://digitalmarketingpro.com",
                     "phone": "+1 - 555 - 123 - 4567",
                     "country": "United States",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             programs = ["clickbank", "commission_junction"]
             results = await agent.signup_for_affiliates(programs, user_data)
@@ -1264,23 +1348,30 @@ if __name__ == "__main__":
             actions = [
                 AutomationAction(
                     action_type = ActionType.WAIT, target="startup_delay", value="2.0"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     AutomationAction(
                     action_type = ActionType.SCREENSHOT,
                         target="desktop",
                         value="test_screenshot.png",
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                     AutomationAction(
                     action_type = ActionType.WAIT, target="completion_delay", value="1.0"
-                ),
-                    ]
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             sequence_id = agent.create_sequence(
                 name="Test Sequence",
                     target_app = AutomationTarget.DESKTOP_APP,
                     actions = actions,
                     stealth_level = StealthLevel.MODERATE,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             sequence = agent.sequences[sequence_id]
             success = await agent.execute_sequence(sequence)

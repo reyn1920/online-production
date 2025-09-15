@@ -28,13 +28,26 @@ class TikTokTokens:
 
 
 class TikTokClient:
-    """
-    Official TikTok Open API v2 (Developers) client.
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
+    Official TikTok Open API v2 (Developers) client.:
     Supports OAuth (authorization_code & refresh) and Content Posting API:
       - Direct Post (PULL_FROM_URL) -> publish_id
       - Status polling
-    """
+   
 
+    
+   
+""""""
+    
+   """
     def __init__(
         self,
         client_key: str,
@@ -44,7 +57,7 @@ class TikTokClient:
         scopes=("video.upload", "video.publish"),
         enabled: bool = False,
         session: Optional[requests.Session] = None,
-    ):
+#     ):
         self.client_key = client_key or ""
         self.client_secret = client_secret or ""
         self.redirect_uri = redirect_uri or ""
@@ -62,7 +75,7 @@ class TikTokClient:
             s.strip()
             for s in os.getenv("TIKTOK_SCOPES", "video.upload,video.publish").split(",")
             if s.strip()
-        ]
+         ]
         return cls(
             client_key=os.getenv("TIKTOK_CLIENT_KEY", ""),
             client_secret=os.getenv("TIKTOK_CLIENT_SECRET", ""),
@@ -70,17 +83,30 @@ class TikTokClient:
             token_path=os.getenv("TIKTOK_TOKEN_FILE", "./config/tiktok.tokens.json"),
             scopes=scopes,
             enabled=enabled,
-        )
+         )
 
     # ---------- status/light helpers ----------
 
     def status_light(self) -> Tuple[str, Dict]:
-        """
+       """
+
+        
+       
+
+    TODO: Add documentation
+   
+""""""
         Returns ("green" | "purple" | "red", meta)
         - purple: missing keys/disabled
         - red: enabled but not authenticated/token invalid
         - green: authenticated & ready
-        """
+        """"""
+
+       
+
+        
+       
+"""
         meta = {"enabled": self.enabled}
         if not self.enabled:
             return ("purple", {**meta, "reason": "disabled"})
@@ -91,7 +117,7 @@ class TikTokClient:
         return (
             "green",
             {**meta, "open_id": self._tokens.open_id, "scopes": self._tokens.scope},
-        )
+         )
 
     def ready(self) -> bool:
         color, _ = self.status_light()
@@ -110,7 +136,7 @@ class TikTokClient:
                     expires_at=int(data.get("expires_at", 0)),
                     open_id=data.get("open_id"),
                     scope=data.get("scope"),
-                )
+                 )
         except Exception:
             self._tokens = None
 
@@ -124,10 +150,10 @@ class TikTokClient:
                     "expires_at": tokens.expires_at,
                     "open_id": tokens.open_id,
                     "scope": tokens.scope,
-                },
+                 },
                 f,
                 indent=2,
-            )
+             )
         self._tokens = tokens
 
     def _expired(self) -> bool:
@@ -143,21 +169,26 @@ class TikTokClient:
             "scope": scope_str,
             "redirect_uri": self.redirect_uri,
             "state": state,
-        }
+         }
         return f"{TIKTOK_AUTH_URL}?{urllib.parse.urlencode(q)}"
 
     def exchange_code(self, code: str) -> TikTokTokens:
-        """
+        """"""
+
         Exchange authorization code for tokens.
         Docs: open.tiktokapis.com/v2/oauth/token/(grant_type = authorization_code)
-        """
+       
+
+        
+       
+"""
         payload = {
             "client_key": self.client_key,
             "client_secret": self.client_secret,
             "code": code,
             "grant_type": "authorization_code",
             "redirect_uri": self.redirect_uri,
-        }
+         }
         r = self.http.post(TIKTOK_TOKEN_URL, json=payload, timeout=30)
         r.raise_for_status()
         data = r.json().get("data") or {}
@@ -172,7 +203,7 @@ class TikTokClient:
             expires_at=_now() + expires_in,
             open_id=open_id,
             scope=scope,
-        )
+         )
         self._save_tokens(tokens)
         return tokens
 
@@ -184,7 +215,7 @@ class TikTokClient:
             "client_secret": self.client_secret,
             "grant_type": "refresh_token",
             "refresh_token": self._tokens.refresh_token,
-        }
+         }
         r = self.http.post(TIKTOK_TOKEN_URL, json=payload, timeout=30)
         r.raise_for_status()
         data = r.json().get("data") or {}
@@ -199,7 +230,7 @@ class TikTokClient:
             expires_at=_now() + expires_in,
             open_id=open_id,
             scope=scope,
-        )
+         )
         self._save_tokens(tokens)
         return tokens
 
@@ -217,19 +248,24 @@ class TikTokClient:
     # ---------- Content Posting (Direct Post) ----------
 
     def direct_post_from_url(self, video_url: str, caption: str) -> Dict:
-        """
+        """"""
+
         Direct Post (PULL_FROM_URL).
         Requires scopes: video.upload + video.publish.
         Returns {publish_id, status_hint}
-        """
+       
+
+        
+       
+"""
         headers = {
             **self._auth_headers(),
             "Content - Type": "application/json; charset = UTF - 8",
-        }
+         }
         payload = {
             "source_info": {"source": "PULL_FROM_URL", "video_url": video_url},
             "post_info": {"title": caption},
-        }
+         }
         r = self.http.post(TIKTOK_DIRECT_POST_INIT, headers=headers, json=payload, timeout=60)
         r.raise_for_status()
         j = r.json()
@@ -240,19 +276,19 @@ class TikTokClient:
         return {
             "publish_id": publish_id,
             "hint": "use/tiktok/status?publish_id=... to poll",
-        }
+         }
 
     def fetch_status(self, publish_id: str) -> Dict:
         headers = {
             **self._auth_headers(),
             "Content - Type": "application/json; charset = UTF - 8",
-        }
+         }
         r = self.http.post(
             TIKTOK_STATUS_FETCH,
             headers=headers,
             json={"publish_id": publish_id},
             timeout=30,
-        )
+         )
         r.raise_for_status()
         return r.json()
 

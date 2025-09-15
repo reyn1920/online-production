@@ -54,7 +54,8 @@ def patch_right_perspective_firewall():
             r"class\s+RightPerspectiveFirewall\s*(?:\([^)]*\))?\s*:\s*(?:\n\s+\"\"\".*?\"\"\"\s*)?",
             txt,
             re.S,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if not class_match:
             class_match = re.search(r"class\\s + RightPerspectiveFirewall\\s*:\\s*", txt)
         if not class_match:
@@ -73,7 +74,8 @@ def patch_right_perspective_firewall():
                 r"(def\\s + __init__\\s*\\([^)]*\\)\\s*:)(.*?)(?=\\n\\s * def|\\n\\s * class|\\Z)",
                 txt,
                 re.S,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if init_match:
                 init_body = init_match.group(2)
                 if "self._rule_cache" not in init_body:
@@ -93,9 +95,10 @@ def patch_right_perspective_firewall():
                             # Look for first non - empty line in __init__ body
                             if (
                                 line.strip()
-                                and not line.strip().startswith('"""')
-                                and not line.strip().startswith("'''")
-                            ):
+                                and not line.strip().startswith('"""')"""
+                                and not line.strip().startswith("'''")'''
+# BRACKET_SURGEON: disabled
+#                             ):
                                 # Add cache initialization before this line
                                 cache_line = " " * (init_indent + 4) + "self._rule_cache = {}"
                                 new_lines.insert(-1, cache_line)
@@ -111,24 +114,30 @@ def patch_right_perspective_firewall():
                                 "file": str(path),
                                 "patched": True,
                                 "reason": "added_cache_to_init",
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
                     else:
                         details.append(
                             {
                                 "file": str(path),
                                 "patched": False,
                                 "reason": "could_not_locate_init_body",
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
                 else:
                     details.append(
                         {
                             "file": str(path),
                             "patched": False,
                             "reason": "cache_already_in_init",
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
         else:
             # Add __init__ method with _rule_cache
             class_start = class_match.end()
@@ -140,7 +149,8 @@ def patch_right_perspective_firewall():
 
             init_method = (
                 f"\\n{method_indent}def __init__(self):\\n{body_indent}self._rule_cache = {{}}\\n"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             new_txt = txt[:class_start] + init_method + txt[class_start:]
             backup_file(path)
@@ -171,7 +181,8 @@ def patch_content_agent():
             r"^\\s * import\\s + shutil\\s*$|^\\s * from\\s+\\S+\\s + import\\s+.*shutil",
             txt,
             re.M,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if has_shutil_usage and not has_shutil_import:
             # Add shutil import
@@ -188,13 +199,15 @@ def patch_content_agent():
                     and (
                         lines[i - 1].strip().startswith("import ")
                         or lines[i - 1].strip().startswith("from ")
-                    )
-                ):
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ):
                     # Insert after import block
                     lines.insert(i, "import shutil")
                     import_inserted = True
                     break
-                elif not line.strip().startswith("#") and line.strip() != "":
+                elif not line.strip().startswith("#") and line.strip() != "":"
                     # Insert before first non - import, non - comment line
                     lines.insert(i, "import shutil")
                     import_inserted = True
@@ -204,7 +217,7 @@ def patch_content_agent():
                 # Fallback: insert at the beginning after shebang/encoding
                 insert_pos = 0
                 for i, line in enumerate(lines[:5]):
-                    if line.startswith("#!"):
+                    if line.startswith("#!"):"
                         insert_pos = i + 1
                     elif "coding:" in line or "encoding:" in line:
                         insert_pos = i + 1
@@ -237,7 +250,8 @@ def patch_database(db_path: Path):
         # Check if api_discovery_tasks table exists
         cursor.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='api_discovery_tasks';"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         table_exists = cursor.fetchone() is not None
 
         if table_exists:
@@ -262,7 +276,7 @@ def patch_database(db_path: Path):
                 # Drop and recreate table
                 cursor.execute("DROP TABLE api_discovery_tasks;")
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE api_discovery_tasks (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             task_type TEXT DEFAULT 'general',
@@ -270,9 +284,11 @@ def patch_database(db_path: Path):
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             data TEXT
-                    );
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     );
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Restore data with proper column mapping
                 if existing_data:
@@ -283,14 +299,16 @@ def patch_database(db_path: Path):
                             cursor.execute(
                                 "INSERT INTO api_discovery_tasks (id, task_type, status, created_at, updated_at, data) VALUES (?, ?, ?, ?, ?, ?);",
                                 row[:6],
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                         else:
                             # Pad with defaults if row is shorter
                             padded_row = list(row) + [None] * (6 - len(row))
                             cursor.execute(
                                 "INSERT INTO api_discovery_tasks (id, task_type, status, created_at, updated_at, data) VALUES (?, ?, ?, ?, ?, ?);",
                                 padded_row[:6],
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                 conn.commit()
                 conn.close()
@@ -301,7 +319,7 @@ def patch_database(db_path: Path):
         else:
             # Create table with correct schema
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE api_discovery_tasks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         task_type TEXT DEFAULT 'general',
@@ -309,9 +327,11 @@ def patch_database(db_path: Path):
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         data TEXT
-                );
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 );
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
             conn.close()
             return {"patched": True, "reason": "created_table"}

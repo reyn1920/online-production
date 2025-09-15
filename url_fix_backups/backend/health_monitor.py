@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 Health Monitor Module for API & Affiliate Command Center
 
 This module provides health monitoring capabilities for external services,
 including APIs and affiliate programs registered in the system.
-"""
+""""""
 
 import asyncio
 import json
@@ -86,7 +86,7 @@ class HealthMonitor:
         with sqlite3.connect(self.db_path) as conn:
             # Create health check logs table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS health_check_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         service_id INTEGER NOT NULL,
@@ -98,17 +98,20 @@ class HealthMonitor:
                         error_message TEXT,
                         checked_at TEXT NOT NULL,
                         details TEXT
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create index for efficient queries
             conn.execute(
-                """
+                """"""
                 CREATE INDEX IF NOT EXISTS idx_health_logs_service_time
                 ON health_check_logs(service_id, checked_at)
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -116,7 +119,8 @@ class HealthMonitor:
         """Async context manager entry"""
         connector = aiohttp.TCPConnector(
             ssl=ssl.create_default_context(), limit=100, limit_per_host=10
-        )
+# BRACKET_SURGEON: disabled
+#         )
         timeout = aiohttp.ClientTimeout(total=30)
         self.session = aiohttp.ClientSession(connector=connector, timeout=timeout)
         return self
@@ -135,12 +139,13 @@ class HealthMonitor:
 
             # Get active APIs
             api_cursor = conn.execute(
-                """
+                """"""
                 SELECT id, service_name, api_url, signup_url, is_active
                 FROM api_registry
                 WHERE is_active = 1
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             for row in api_cursor.fetchall():
                 services.append(
@@ -154,17 +159,20 @@ class HealthMonitor:
                         timeout=10,
                         expected_status_codes=[200, 201, 202],
                         is_active=bool(row["is_active"]),
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Get active affiliate programs
             affiliate_cursor = conn.execute(
-                """
+                """"""
                 SELECT id, program_name, program_url, signup_url, is_active
                 FROM affiliate_programs
                 WHERE is_active = 1
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             for row in affiliate_cursor.fetchall():
                 services.append(
@@ -178,8 +186,10 @@ class HealthMonitor:
                         timeout=15,
                         expected_status_codes=[200, 301, 302],
                         is_active=bool(row["is_active"]),
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return services
 
@@ -199,7 +209,8 @@ class HealthMonitor:
                 service.health_check_url,
                 headers=service.headers,
                 timeout=aiohttp.ClientTimeout(total=service.timeout),
-            ) as response:
+# BRACKET_SURGEON: disabled
+#             ) as response:
                 response_time = time.time() - start_time
 
                 # Determine health status
@@ -222,7 +233,8 @@ class HealthMonitor:
                     details = {
                         "response_size": len(response_text),
                         "content_type": response.headers.get("content - type", "unknown"),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 except Exception:
                     details = {"response_size": 0, "content_type": "unknown"}
 
@@ -236,7 +248,8 @@ class HealthMonitor:
                     error_message=error_message,
                     checked_at=datetime.now(timezone.utc),
                     details=details,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except asyncio.TimeoutError:
             return HealthCheckResult(
@@ -249,7 +262,8 @@ class HealthMonitor:
                 error_message="Request timeout",
                 checked_at=datetime.now(timezone.utc),
                 details={"timeout": service.timeout},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             return HealthCheckResult(
@@ -262,7 +276,8 @@ class HealthMonitor:
                 error_message=str(e),
                 checked_at=datetime.now(timezone.utc),
                 details={"error_type": type(e).__name__},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _load_api_key(self, service_name: str) -> Optional[str]:
         """Load API key from secure storage"""
@@ -271,7 +286,8 @@ class HealthMonitor:
                 cursor = conn.execute(
                     "SELECT encrypted_value FROM secrets WHERE service_name = ?",
                     (service_name,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 row = cursor.fetchone()
                 if row:
                     # In a real implementation, this would decrypt the value
@@ -285,12 +301,12 @@ class HealthMonitor:
         """Save health check result to database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT INTO health_check_logs (
                     service_id, service_name, service_type, status,
                         response_time, status_code, error_message, checked_at, details
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     result.service_id,
                     result.service_name,
@@ -301,28 +317,32 @@ class HealthMonitor:
                     result.error_message,
                     result.checked_at.isoformat(),
                     json.dumps(result.details),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             # Update the service's last health status
             if result.service_type == ServiceType.API:
                 conn.execute(
-                    """
+                    """"""
                     UPDATE api_registry
                     SET last_health_status = ?
                     WHERE id = ?
-                """,
+                ""","""
                     (result.status.value, result.service_id),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 conn.execute(
-                    """
+                    """"""
                     UPDATE affiliate_programs
                     SET last_health_status = ?
                     WHERE id = ?
-                """,
+                ""","""
                     (result.status.value, result.service_id),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             conn.commit()
 
@@ -356,7 +376,8 @@ class HealthMonitor:
                 unhealthy_count += 1
                 logger.warning(
                     f"Service {result.service_name} is {result.status.value}: {result.error_message}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         summary = {
             "total_services": len(services),
@@ -370,11 +391,14 @@ class HealthMonitor:
                     "status": r.status.value,
                     "response_time": r.response_time,
                     "error_message": r.error_message,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for r in results
                 if isinstance(r, HealthCheckResult)
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info(f"Health check completed: {healthy_count} healthy, {unhealthy_count} unhealthy")
 
@@ -385,14 +409,15 @@ class HealthMonitor:
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
-                """
+                """"""
                 SELECT * FROM health_check_logs
                 WHERE service_id = ?
                 ORDER BY checked_at DESC
                 LIMIT ?
-            """,
+            ""","""
                 (service_id, limit),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return [dict(row) for row in cursor.fetchall()]
 
@@ -403,7 +428,7 @@ class HealthMonitor:
 
             # Get latest status for each service
             cursor = conn.execute(
-                """
+                """"""
                 SELECT
                     service_name,
                         service_type,
@@ -415,10 +440,12 @@ class HealthMonitor:
                     SELECT MAX(checked_at)
                     FROM health_check_logs h2
                     WHERE h2.service_id = h1.service_id
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 ORDER BY service_name
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             services = [dict(row) for row in cursor.fetchall()]
 
@@ -427,7 +454,8 @@ class HealthMonitor:
             healthy_services = len([s for s in services if s["status"] == "HEALTHY"])
             avg_response_time = sum(s["response_time"] or 0 for s in services) / max(
                 total_services, 1
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "total_services": total_services,
@@ -437,7 +465,8 @@ class HealthMonitor:
                 "average_response_time": avg_response_time,
                 "services": services,
                 "last_updated": datetime.now(timezone.utc).isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 # Example usage and testing

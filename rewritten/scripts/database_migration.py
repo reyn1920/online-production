@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Database Migration and Production Setup Script
 
 This script helps migrate from SQLite to PostgreSQL and verifies
@@ -13,7 +13,7 @@ Usage:
 Author: TRAE.AI System
 Version: 1.0.0
 Date: 2024
-"""
+""""""
 
 import argparse
 import json
@@ -32,7 +32,7 @@ try:
 
 except ImportError as e:
     print(f"Error importing database modules: {e}")
-    print("Make sure you're running from the project root directory")
+    print("Make sure you're running from the project root directory")'
     sys.exit(1)
 
 
@@ -53,7 +53,8 @@ class DatabaseMigrationManager:
             "health_check": None,
             "tables": [],
             "recommendations": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Perform health check
         try:
@@ -70,17 +71,20 @@ class DatabaseMigrationManager:
                 if result["database_type"] == "sqlite":
                     cursor = conn.execute(
                         "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     cursor = conn.execute(
                         "SELECT table_name FROM information_schema.tables WHERE table_schema='public'"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 tables = [row[0] for row in cursor.fetchall()]
                 result["tables"] = tables
                 print(
                     f"📊 Found {len(tables)} tables: {', '.join(tables[:5])}{'...' if len(tables) > 5 else ''}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         except Exception as e:
             print(f"⚠️ Could not list tables: {e}")
 
@@ -99,7 +103,8 @@ class DatabaseMigrationManager:
             "connection_test": None,
             "schema_validation": None,
             "recommendations": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Test production database connection if URL is provided
         if self.production_db_url:
@@ -116,7 +121,8 @@ class DatabaseMigrationManager:
                 else:
                     print(
                         f"❌ Production database connection failed: {health.get('error', 'Unknown error')}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             except Exception as e:
                 result["connection_test"] = {"status": "error", "error": str(e)}
@@ -145,7 +151,8 @@ class DatabaseMigrationManager:
             "dry_run": dry_run,
             "steps": [],
             "success": False,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Step 1: Validate source database
@@ -155,7 +162,8 @@ class DatabaseMigrationManager:
                 raise Exception("Source database is not healthy")
             result["steps"].append(
                 {"step": 1, "status": "completed", "description": "Source validation"}
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Step 2: Setup target database
             print("🎯 Step 2: Setting up target database...")
@@ -166,20 +174,24 @@ class DatabaseMigrationManager:
                     raise Exception(f"Target database setup failed: {target_health.get('error')}")
             result["steps"].append(
                 {"step": 2, "status": "completed", "description": "Target setup"}
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Step 3: Export data
             print("📤 Step 3: Exporting data from source...")
             exported_data = (
                 self._export_sqlite_data() if not dry_run else {"tables": source_check["tables"]}
-            )
+# BRACKET_SURGEON: disabled
+#             )
             result["steps"].append(
                 {
                     "step": 3,
                     "status": "completed",
                     "description": f'Data export ({len(exported_data.get("tables", []))} tables)',
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
             # Step 4: Import data
             print("📥 Step 4: Importing data to target...")
@@ -198,8 +210,10 @@ class DatabaseMigrationManager:
                     "step": 5,
                     "status": "completed",
                     "description": "Migration validation",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
             result["success"] = True
             print("🎉 Migration completed successfully!")
@@ -227,7 +241,8 @@ class DatabaseMigrationManager:
             "DB_NAME",
             "DB_USER",
             "DB_PASSWORD",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         result = {"missing": [], "present": [], "recommendations": []}
 
@@ -240,7 +255,8 @@ class DatabaseMigrationManager:
         if result["missing"]:
             result["recommendations"].append(
                 f"Set missing environment variables: {', '.join(result['missing'])}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return result
 
@@ -271,7 +287,8 @@ class DatabaseMigrationManager:
                 cursor = conn.cursor()
                 cursor.execute(
                     "SELECT table_name FROM information_schema.tables WHERE table_schema='public'"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 tables = [row[0] for row in cursor.fetchall()]
 
                 return {"success": True, "tables_found": len(tables), "tables": tables}
@@ -287,7 +304,8 @@ class DatabaseMigrationManager:
             with get_db_connection() as conn:
                 cursor = conn.execute(
                     "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 tables = [row[0] for row in cursor.fetchall()]
 
                 for table in tables:
@@ -298,8 +316,10 @@ class DatabaseMigrationManager:
                             "name": table,
                             "row_count": len(rows),
                             "data": [dict(row) for row in rows],
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
         except Exception as e:
             exported["error"] = str(e)
 
@@ -335,7 +355,8 @@ class DatabaseMigrationManager:
                 cursor = conn.cursor()
                 cursor.execute(
                     "SELECT table_name FROM information_schema.tables WHERE table_schema='public'"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 target_tables = [row[0] for row in cursor.fetchall()]
 
             source_tables = source_check.get("tables", [])
@@ -345,7 +366,8 @@ class DatabaseMigrationManager:
                 "source_tables": len(source_tables),
                 "target_tables": len(target_tables),
                 "missing_tables": list(set(source_tables) - set(target_tables)),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {"success": False, "error": str(e)}
 
@@ -389,7 +411,8 @@ def main():
     parser.add_argument("--check", action="store_true", help="Check current database")
     parser.add_argument(
         "--verify - production", action="store_true", help="Verify production setup"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument("--migrate", action="store_true", help="Migrate to production database")
     parser.add_argument("--dry - run", action="store_true", help="Run migration in dry - run mode")
     parser.add_argument("--output", help="Output results to JSON file")

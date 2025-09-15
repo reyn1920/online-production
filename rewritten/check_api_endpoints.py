@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 Check Available API Endpoints
-"""
+""""""
 
 
 import requests
@@ -54,7 +54,8 @@ def main():
         "/dashboard/api/system - info",
         "/docs",
         "/openapi.json",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for endpoint in test_endpoints:
         try:

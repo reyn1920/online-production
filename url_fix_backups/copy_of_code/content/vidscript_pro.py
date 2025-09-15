@@ -1,9 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 VidScriptPro Framework - AI - Powered Multi - Stage Scriptwriting System
 
 This module provides a comprehensive scriptwriting framework that uses local Ollama LLM
 for generating professional video scripts through a structured multi - stage process:
+    pass
 1. Logline Development
 2. Synopsis Creation
 3. Character Development
@@ -12,7 +13,7 @@ for generating professional video scripts through a structured multi - stage pro
 
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -102,14 +103,17 @@ class OllamaLLMClient:
                     "num_predict": max_tokens,
                     "temperature": 0.7,
                     "top_p": 0.9,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self.session.post(
                 f"{self.base_url}/api / generate",
                 json=payload,
                 headers={"Content - Type": "application / json"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 result = response.json()
@@ -149,7 +153,7 @@ class VidScriptPro:
     def _load_script_templates(self) -> Dict[str, str]:
         """Load scriptwriting templates and prompts."""
         return {
-            "logline_prompt": """
+            "logline_prompt": """"""
 You are a professional screenwriter. Create a compelling logline for a video script.
 
 A logline is a one - sentence summary that captures:
@@ -164,8 +168,8 @@ Target Duration: {duration} minutes
 Target Audience: {audience}
 
 Write a single, powerful logline that would make someone want to watch this video.
-""",
-            "synopsis_prompt": """
+""","""
+            "synopsis_prompt": """"""
 You are a professional screenwriter. Expand the following logline into a detailed synopsis.
 
 Logline: {logline}
@@ -177,8 +181,8 @@ Create a 3 - 4 paragraph synopsis that includes:
 - Emotional journey and themes
 
 Keep it engaging and visual, suitable for a {duration}-minute video.
-""",
-            "character_prompt": """
+""","""
+            "character_prompt": """"""
 You are a professional character developer. Create detailed character profiles for this script.
 
 Synopsis: {synopsis}
@@ -191,8 +195,8 @@ For each main character, provide:
 - Character arc throughout the story
 
 Focus on characters that will drive the narrative forward.
-""",
-            "scene_breakdown_prompt": """
+""","""
+            "scene_breakdown_prompt": """"""
 You are a professional screenwriter. Break down this story into scenes.
 
 Synopsis: {synopsis}
@@ -208,8 +212,8 @@ Create a scene - by - scene breakdown with:
 - Estimated duration
 
 Aim for {target_scenes} scenes total.
-""",
-            "script_prompt": """
+""","""
+            "script_prompt": """"""
 You are a professional screenwriter. Write the full script for this scene.
 
 Scene Details:
@@ -226,8 +230,9 @@ Write in proper screenplay format with:
 - Parentheticals when needed
 
 Make it engaging, visual, and true to the characters.
-""",
-        }
+""","""
+# BRACKET_SURGEON: disabled
+#         }
 
     def create_logline(
         self,
@@ -235,13 +240,15 @@ Make it engaging, visual, and true to the characters.
         genre: str = "Drama",
         duration: int = 10,
         audience: str = "General",
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate a compelling logline for the video script."""
         logger.info(f"Creating logline for topic: {topic}")
 
         prompt = self.script_templates["logline_prompt"].format(
             topic=topic, genre=genre, duration=duration, audience=audience
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         system_prompt = "You are an expert screenwriter specializing in compelling loglines."
 
@@ -289,8 +296,10 @@ Make it engaging, visual, and true to the characters.
                     background="Unknown",
                     motivation="To overcome challenges",
                     arc="Growth through adversity",
-                )
-            ]
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             ]
 
         # Parse character text into Character objects
         characters = self._parse_characters(character_text)
@@ -313,7 +322,7 @@ Make it engaging, visual, and true to the characters.
                 # Extract character name (usually first line)
                 name_line = lines[0]
                 name = name_line.split(":")[0].strip() if ":" in name_line else name_line
-                name = name.replace("**", "").replace("#", "").strip()
+                name = name.replace("**", "").replace("#", "").strip()"
 
                 # Combine remaining lines as description
                 description = " ".join(lines[1:])[:200]  # Limit length
@@ -325,7 +334,8 @@ Make it engaging, visual, and true to the characters.
                     background="Developed through story context",
                     motivation="Drives narrative forward",
                     arc="Evolves throughout story",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 characters.append(character)
 
         # Ensure at least one character
@@ -338,8 +348,10 @@ Make it engaging, visual, and true to the characters.
                     background="Contextually appropriate",
                     motivation="Story - driven goals",
                     arc="Meaningful character growth",
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         return characters[:4]  # Limit to 4 main characters
 
@@ -357,11 +369,13 @@ Make it engaging, visual, and true to the characters.
             characters=", ".join(character_names),
             duration=duration,
             target_scenes=target_scenes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         system_prompt = (
             "You are an expert script supervisor who creates well - paced scene breakdowns."
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         scene_text = self.llm.generate(prompt, system_prompt, max_tokens=1200)
 
@@ -387,7 +401,8 @@ Make it engaging, visual, and true to the characters.
                 dialogue=[],
                 action=["Action description"],
                 duration_estimate=duration * 60 // num_scenes,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             scenes.append(scene)
 
         return scenes
@@ -418,7 +433,8 @@ Make it engaging, visual, and true to the characters.
                 elif len(line) > 30 and not any(
                     keyword in line.lower()
                     for keyword in ["scene", "location", "time", "character"]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     description = line[:200]  # Use first substantial line as description
                     break
 
@@ -431,7 +447,8 @@ Make it engaging, visual, and true to the characters.
                 dialogue=[],
                 action=["Action to be developed"],
                 duration_estimate=total_duration * 60 // len(scene_sections[1:]),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             scenes.append(scene)
 
         # Ensure at least 3 scenes
@@ -446,8 +463,10 @@ Make it engaging, visual, and true to the characters.
                     dialogue=[],
                     action=["Action description"],
                     duration_estimate=total_duration * 60 // 3,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         return scenes
 
@@ -457,19 +476,21 @@ Make it engaging, visual, and true to the characters.
 
         character_info = "\\n".join([f"{char.name}: {char.description}" for char in characters])
 
-        scene_details = f"""
+        scene_details = f""""""
 Scene {scene.number}: {scene.location} - {scene.time_of_day}
 Characters: {', '.join(scene.characters)}
 Description: {scene.description}
-"""
+""""""
 
         prompt = self.script_templates["script_prompt"].format(
             scene_details=scene_details, characters=character_info
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         system_prompt = (
             "You are a professional screenwriter who writes engaging, properly formatted scripts."
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         script_text = self.llm.generate(prompt, system_prompt, max_tokens=1500)
 
@@ -525,7 +546,8 @@ Description: {scene.description}
         genre: str = "Drama",
         duration: int = 10,
         audience: str = "General",
-    ) -> Script:
+# BRACKET_SURGEON: disabled
+#     ) -> Script:
         """Generate complete script through all stages."""
         logger.info(f"Starting full script generation for: {topic}")
 
@@ -565,7 +587,8 @@ Description: {scene.description}
                 target_audience=audience,
                 created_at=datetime.now(),
                 version="1.0",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             logger.info(f"Successfully generated script: {script.title}")
             return script
@@ -636,11 +659,13 @@ Description: {scene.description}
             "character_dialogue_distribution": character_dialogue_count,
             "average_scene_duration": (
                 script.total_duration // len(script.scenes) if script.scenes else 0
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "genre": script.genre,
             "target_audience": script.target_audience,
             "created_at": script.created_at.isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Example usage and testing
@@ -659,7 +684,8 @@ if __name__ == "__main__":
                 genre="Slice of Life",
                 duration=5,
                 audience="General",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Print statistics
             stats = scriptwriter.get_script_statistics(script)

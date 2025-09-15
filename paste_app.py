@@ -133,7 +133,8 @@ def create_paste():
             "content": content,
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "created_at": time.time(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # In a real app, you'd save to database
         # For now, just return the created paste
@@ -143,10 +144,13 @@ def create_paste():
                     "success": True,
                     "paste": paste,
                     "message": "Paste created successfully",
-                }
-            ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ),
             201,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         return jsonify({"error": f"Failed to create paste: {str(e)}"}), 500
@@ -182,10 +186,13 @@ def upload_file():
                         "filename": filename,
                         "filepath": filepath,
                         "message": "File uploaded successfully",
-                    }
-                ),
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 ),
                 201,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             return jsonify({"error": "File type not allowed"}), 400
 
@@ -210,8 +217,10 @@ def list_downloads():
                         "name": file_path.name,
                         "size": file_path.stat().st_size,
                         "modified": file_path.stat().st_mtime,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return jsonify({"files": files})
 
@@ -244,16 +253,20 @@ def process_downloads_file():
                     "filename": filename,
                     "content": content[:1000],  # First 1000 chars
                     "message": "File processed successfully",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
         except UnicodeDecodeError:
             return jsonify(
                 {
                     "success": True,
                     "filename": filename,
                     "message": "Binary file detected - content not displayed",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
     except Exception as e:
         return jsonify({"error": f"Failed to process file: {str(e)}"}), 500
@@ -284,15 +297,18 @@ def paste_avatar():
             "color": f"#{hash_hex[:6]}",
             "initials": content[:2].upper() if len(content) >= 2 else "PA",
             "hash": hash_hex[:8],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return jsonify(
             {
                 "success": True,
                 "avatar": avatar,
                 "message": "Avatar generated successfully",
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         return jsonify({"error": f"Failed to generate avatar: {str(e)}"}), 500
@@ -306,20 +322,22 @@ _OSM_TAGS = {
     "pharmacy": {"amenity": "pharmacy"},
     "pet_store": {"shop": "pet"},
     "dog_park": {"leisure": "dog_park"},
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def _overpass_query(lat, lng, radius_m, tag_key, tag_val, limit):
     """Build Overpass API query"""
-    query = f"""
+    query = f""""""
     [out:json][timeout:25];
     (
       node["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
       way["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
       relation["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
-    );
+# BRACKET_SURGEON: disabled
+#     );
     out center {limit};
-    """
+    """"""
     return query.strip()
 
 
@@ -352,8 +370,10 @@ def _elements_to_items(js):
                 "lng": lng,
                 "address": address,
                 "tags": tags,
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
     return items
 
 
@@ -394,16 +414,19 @@ def places_search():
                     "lat": lat,
                     "lng": lng,
                     "radius_m": radius_m,
-                },
-            }
-        )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         return jsonify({"error": f"Search failed: {str(e)}"}), 500
 
 
 # HTML templates for the locator interfaces
-_LOCATOR_HTML = """
+_LOCATOR_HTML = """"""
 <!doctype html>
 <html lang="en">
 <head>
@@ -461,17 +484,19 @@ _LOCATOR_HTML = """
         if(!x.lat || !x.lng) return;
       const html = `<b>${x.name||'Unnamed'}</b><br/>${x.address||''}`;
       cluster.addLayer(L.marker([x.lat,x.lng]).bindPopup(html));
-    });
+# BRACKET_SURGEON: disabled
+#     });
     badge.textContent = `${(js.items||[]).length} found via ${js.provider}`;
-  }
+# BRACKET_SURGEON: disabled
+#   }
   btn.addEventListener('click', runSearch);
   runSearch();
 </script>
 </body>
 </html>
-"""
+""""""
 
-_MINI_LOCATOR_HTML = """
+_MINI_LOCATOR_HTML = """"""
 <!doctype html>
 <html lang="en">
 <head>
@@ -512,14 +537,16 @@ _MINI_LOCATOR_HTML = """
           if(!x.lat || !x.lng) return;
         const html = `<b>${x.name||'Unnamed'}</b><br/>${x.address||''}`;
         cluster.addLayer(L.marker([x.lat,x.lng]).bindPopup(html));
-      });
+# BRACKET_SURGEON: disabled
+#       });
       badge.textContent = `${(js.items||[]).length} ${cat} — ${js.provider}`;
-    }
+# BRACKET_SURGEON: disabled
+#     }
     load();
   </script>
 </body>
 </html>
-"""
+""""""
 
 
 @app.get("/places")
@@ -536,7 +563,7 @@ def mini_locator():
 
 
 # Main paste app interface
-_PASTE_HTML = """
+_PASTE_HTML = """"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -568,12 +595,15 @@ _PASTE_HTML = """
                     id: Date.now(),
                     content: content,
                     timestamp: new Date().toLocaleString()
-                };
+# BRACKET_SURGEON: disabled
+#                 };
                 pastes.unshift(paste);
                 document.getElementById('content').value = '';
                 renderPastes();
-            }
-        });
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         });
         function renderPastes() {
             const container = document.getElementById('pastes');
             container.innerHTML = pastes.map(paste => `
@@ -582,11 +612,12 @@ _PASTE_HTML = """
                     <pre>${paste.content}</pre>
                 </div>
             `).join('');
-        }
+# BRACKET_SURGEON: disabled
+#         }
     </script>
 </body>
 </html>
-"""
+""""""
 
 
 @app.route("/")

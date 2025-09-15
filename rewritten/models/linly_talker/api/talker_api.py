@@ -45,13 +45,15 @@ async def clear_memory():
         torch.cuda.ipc_collect()
         logger.info(
             f"GPU memory usage after clearing: {torch.cuda.memory_allocated()/(1024 ** 2):.2f} MB"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @app.post("/talker_change_model/")
 async def change_model(
     model_name: str = Query(..., description="Name of the Talker model to load")
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Change digital human conversation model and load corresponding resources."""
     global talker
 
@@ -62,7 +64,8 @@ async def change_model(
         raise HTTPException(
             status_code=400,
             detail="Other models are not integrated yet. Please wait for updates.",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     try:
         if model_name == "SadTalker":
@@ -81,7 +84,8 @@ async def change_model(
             talker = Wav2Lipv2("checkpoints/wav2lipv2.pth")
             logger.info(
                 "Wav2Lipv2 model loaded successfully, capable of generating higher quality results"
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif model_name == "NeRFTalk":
             from TFG import NeRFTalk
 
@@ -90,7 +94,8 @@ async def change_model(
             logger.info("NeRFTalk model loaded successfully")
             logger.warning(
                 "NeRFTalk model is trained only for a single person, built - in with the Obama model, uploading other images is ineffective."
-            )
+# BRACKET_SURGEON: disabled
+#             )
     except Exception as e:
         logger.error(f"Failed to load {model_name} model: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to load {model_name} model: {e}")
@@ -114,8 +119,10 @@ async def talker_response(
     source_image: UploadFile = File(..., description="The source image file"),
     driven_audio: UploadFile = File(
         ..., description="The audio file that will drive the talking head"
-    ),
-):
+# BRACKET_SURGEON: disabled
+#     ),
+# BRACKET_SURGEON: disabled
+# ):
     """Handle digital human conversation requests and generate video."""
     global talker
 
@@ -123,7 +130,8 @@ async def talker_response(
         raise HTTPException(
             status_code=400,
             detail="Talker model not loaded. Please load a model first.",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     # Assemble the request data into the TalkerRequest model
     request = TalkerRequest(
@@ -138,7 +146,8 @@ async def talker_response(
         blink_every=blink_every,
         talker_method=talker_method,
         fps=fps,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     # print(request)
 
     # Temporary file paths
@@ -171,7 +180,8 @@ async def talker_response(
                 AUDIO_LENGTH,
                 request.blink_every,
                 request.fps,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif request.talker_method == "Wav2Lip":
             video_path = talker.predict(temp_image_path, temp_audio_path, request.batch_size)
         elif request.talker_method == "Wav2Lipv2":
@@ -187,7 +197,8 @@ async def talker_response(
                 video_path,
                 media_type="video/mp4",
                 filename=os.path.basename(video_path),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             raise HTTPException(status_code=404, detail="Video file not found")
     except Exception as e:

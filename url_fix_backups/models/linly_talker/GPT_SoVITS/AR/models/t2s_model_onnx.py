@@ -19,7 +19,8 @@ default_config = {
     "vocab_size": 1024 + 1,
     "phoneme_vocab_size": 512,
     "EOS": 1024,
-}
+# BRACKET_SURGEON: disabled
+# }
 
 inf_tensor_value = torch.FloatTensor([-float("Inf")]).float()
 
@@ -31,7 +32,8 @@ def logits_to_probs(
     top_k=None,
     top_p=None,
     repetition_penalty: float = 1.0,
-):
+# BRACKET_SURGEON: disabled
+# ):
     previous_tokens = previous_tokens.squeeze()
     if previous_tokens is not None and repetition_penalty != 1.0:
         previous_tokens = previous_tokens.long()
@@ -46,7 +48,8 @@ def logits_to_probs(
         sorted_indices_to_remove[0] = False  # keep at least one option
         indices_to_remove = sorted_indices_to_remove.scatter(
             dim=0, index=sorted_indices, src=sorted_indices_to_remove
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logits = logits.masked_fill(indices_to_remove, -float("Inf"))
 
     logits = logits / max(temperature, 1e-5)
@@ -62,7 +65,8 @@ def logits_to_probs(
 
 def multinomial_sample_one_no_sync(
     probs_sort,
-):  # Does multinomial sampling without a cuda synchronization
+# BRACKET_SURGEON: disabled
+# ):  # Does multinomial sampling without a cuda synchronization
     q = torch.randn_like(probs_sort)
     return torch.argmax(probs_sort / q, dim=-1, keepdim=True).to(dtype=torch.int)
 
@@ -71,7 +75,8 @@ def sample(
     logits,
     previous_tokens,
     **sampling_kwargs,
-):
+# BRACKET_SURGEON: disabled
+# ):
     probs = logits_to_probs(logits=logits, previous_tokens=previous_tokens, **sampling_kwargs)
     idx_next = multinomial_sample_one_no_sync(probs)
     return idx_next, probs
@@ -102,7 +107,8 @@ class T2SFirstStageDecoder(nn.Module):
         top_k,
         early_stop_num,
         num_layers,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.ar_audio_embedding = ar_audio_embedding
         self.ar_audio_position = ar_audio_position
@@ -125,7 +131,8 @@ class T2SFirstStageDecoder(nn.Module):
             "y_emb": None,
             "first_infer": 1,
             "stage": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         y_emb = self.ar_audio_embedding(y)
 
@@ -138,10 +145,12 @@ class T2SFirstStageDecoder(nn.Module):
         x_attn_mask = torch.matmul(x_example.transpose(0, 1), x_example).bool()
         y_attn_mask = torch.ones_like(
             torch.matmul(y_example.transpose(0, 1), y_example), dtype=torch.int64
-        )
+# BRACKET_SURGEON: disabled
+#         )
         y_attn_mask = torch.cumsum(y_attn_mask, dim=1) - torch.cumsum(
             torch.ones_like(y_example.transpose(0, 1), dtype=torch.int64), dim=0
-        )
+# BRACKET_SURGEON: disabled
+#         )
         y_attn_mask = y_attn_mask > 0
 
         x_y_pad = torch.matmul(x_example.transpose(0, 1), y_example).bool()
@@ -153,12 +162,14 @@ class T2SFirstStageDecoder(nn.Module):
             torch.matmul(x_attn_mask_pad[0].float().unsqueeze(-1), torch.zeros((1, 512)))
             .unsqueeze(1)
             .repeat(self.num_layers, 1, 1, 1)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         cache["v"] = (
             torch.matmul(x_attn_mask_pad[0].float().unsqueeze(-1), torch.zeros((1, 512)))
             .unsqueeze(1)
             .repeat(self.num_layers, 1, 1, 1)
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         xy_dec = self.h(xy_pos, mask=xy_attn_mask, cache=cache)
         logits = self.ar_predict_layer(xy_dec[:, -1])
@@ -183,7 +194,8 @@ class T2SStageDecoder(nn.Module):
         top_k,
         early_stop_num,
         num_layers,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.ar_audio_embedding = ar_audio_embedding
         self.ar_audio_position = ar_audio_position
@@ -203,7 +215,8 @@ class T2SStageDecoder(nn.Module):
             "y_emb": y_emb,
             "first_infer": 0,
             "stage": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         y_emb = torch.cat([cache["y_emb"], self.ar_audio_embedding(y[:, -1:])], 1)
         cache["y_emb"] = y_emb
@@ -244,16 +257,20 @@ class Text2SemanticDecoder(nn.Module):
         self.bert_proj = nn.Linear(1024, self.embedding_dim)
         self.ar_text_embedding = TokenEmbedding(
             self.embedding_dim, self.phoneme_vocab_size, self.p_dropout
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.ar_text_position = SinePositionalEmbedding(
             self.embedding_dim, dropout=0.1, scale=False, alpha=True
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.ar_audio_embedding = TokenEmbedding(
             self.embedding_dim, self.vocab_size, self.p_dropout
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.ar_audio_position = SinePositionalEmbedding(
             self.embedding_dim, dropout=0.1, scale=False, alpha=True
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.h = TransformerEncoder(
             TransformerEncoderLayer(
                 d_model=self.model_dim,
@@ -262,10 +279,12 @@ class Text2SemanticDecoder(nn.Module):
                 dropout=0.1,
                 batch_first=True,
                 norm_first=norm_first,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             num_layers=self.num_layers,
             norm=LayerNorm(self.model_dim) if norm_first else None,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.ar_predict_layer = nn.Linear(self.model_dim, self.vocab_size, bias=False)
         self.loss_fct = nn.CrossEntropyLoss(reduction="sum")
         self.ar_accuracy_metric = MulticlassAccuracy(
@@ -274,14 +293,16 @@ class Text2SemanticDecoder(nn.Module):
             average="micro",
             multidim_average="global",
             ignore_index=self.EOS,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.top_k = torch.LongTensor([1])
         self.early_stop_num = torch.LongTensor([-1])
 
     def init_onnx(self):
         self.onnx_encoder = OnnxEncoder(
             self.ar_text_embedding, self.bert_proj, self.ar_text_position
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.first_stage_decoder = T2SFirstStageDecoder(
             self.ar_audio_embedding,
             self.ar_audio_position,
@@ -292,7 +313,8 @@ class Text2SemanticDecoder(nn.Module):
             self.top_k,
             self.early_stop_num,
             self.num_layers,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.stage_decoder = T2SStageDecoder(
             self.ar_audio_embedding,
             self.ar_audio_position,
@@ -303,7 +325,8 @@ class Text2SemanticDecoder(nn.Module):
             self.top_k,
             self.early_stop_num,
             self.num_layers,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, x, prompts, bert_feature):
         early_stop_num = self.early_stop_num
@@ -346,7 +369,8 @@ class Text2SemanticDecoder(nn.Module):
             "y_emb": None,
             "first_infer": 1,
             "stage": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         for idx in range(1500):
             if cache["first_infer"] == 1:
                 y_emb = self.ar_audio_embedding(y)
@@ -365,7 +389,8 @@ class Text2SemanticDecoder(nn.Module):
                     torch.triu(torch.ones(y_len, y_len, dtype=torch.bool), diagonal=1),
                     (x_len, 0),
                     value=False,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 xy_attn_mask = torch.concat([x_attn_mask_pad, y_attn_mask], dim=0)
             else:
                 xy_attn_mask = torch.zeros((1, x_len + y_len), dtype=torch.bool)

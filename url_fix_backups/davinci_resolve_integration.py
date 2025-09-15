@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 DaVinci Resolve Voice Cloning Integration
 Provides voice synthesis capabilities for DaVinci Resolve workflows
 Supports sample - based voice generation and batch processing
-"""
+""""""
 
 import asyncio
 import json
@@ -22,7 +22,9 @@ from davinci_voice_cloning import DaVinciVoiceCloner, VoiceSample
 # Configure logging
 logging.basicConfig(
     level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -41,11 +43,14 @@ class DaVinciResolveVoiceIntegration:
             "wav": {"codec": "pcm_s24le", "sample_rate": 48000},
                 "aiff": {"codec": "pcm_s24be", "sample_rate": 48000},
                 "mp3": {"codec": "mp3", "bitrate": "320k"},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         logger.info(
             f"🎬 DaVinci Resolve Voice Integration initialized for project: {project_name}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def create_voice_project(self, script_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -58,7 +63,8 @@ class DaVinciResolveVoiceIntegration:
                 "voice_tracks": [],
                 "total_duration": 0,
                 "output_format": "wav",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         logger.info(f"📝 Created voice project: {self.project_name}")
         return project_info
@@ -81,13 +87,16 @@ class DaVinciResolveVoiceIntegration:
                     voice_sample_name = voice_name,
                     engine_name="local",
                     **voice_params,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if not result["success"]:
                 return {
                     "success": False,
                         "error": result.get("error", "Voice cloning failed"),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             # Convert to DaVinci Resolve compatible format
             source_path = result["output_path"]
@@ -96,7 +105,9 @@ class DaVinciResolveVoiceIntegration:
 
             conversion_result = await self._convert_audio_format(
                 source_path, target_path, output_format
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if conversion_result["success"]:
                 track_info = {
@@ -108,7 +119,8 @@ class DaVinciResolveVoiceIntegration:
                         "duration": result.get("duration", 0),
                         "metadata": result.get("metadata", {}),
                         "davinci_compatible": True,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 logger.info(f"🎤 Generated voice track: {track_name} ({output_format})")
                 return {"success": True, "track_info": track_info}
@@ -116,7 +128,8 @@ class DaVinciResolveVoiceIntegration:
                 return {
                     "success": False,
                         "error": conversion_result.get("error", "Format conversion failed"),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         except Exception as e:
             logger.error(f"❌ Voice track generation failed: {e}")
@@ -131,7 +144,9 @@ class DaVinciResolveVoiceIntegration:
         try:
             format_config = self.supported_formats.get(
                 target_format, self.supported_formats["wav"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Build ffmpeg command
                 cmd = [
@@ -144,7 +159,9 @@ class DaVinciResolveVoiceIntegration:
                     str(format_config["sample_rate"]),
                     "-y",
                     target_path,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             # Add bitrate for MP3
             if target_format == "mp3":
@@ -153,7 +170,9 @@ class DaVinciResolveVoiceIntegration:
             # Execute conversion
             process = await asyncio.create_subprocess_exec(
                 *cmd, stdout = asyncio.subprocess.PIPE, stderr = asyncio.subprocess.PIPE
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             stdout, stderr = await process.communicate()
 
@@ -196,7 +215,9 @@ class DaVinciResolveVoiceIntegration:
                         voice_name = voice_name,
                         track_name = track_name,
                         output_format = output_format,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 if result["success"]:
                     voice_tracks.append(result["track_info"])
@@ -205,8 +226,11 @@ class DaVinciResolveVoiceIntegration:
                         {
                             "track_name": track_name,
                                 "error": result.get("error", "Unknown error"),
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             except Exception as e:
                 logger.error(f"❌ Failed to generate track {track_name}: {e}")
@@ -217,7 +241,9 @@ class DaVinciResolveVoiceIntegration:
         project_info["failed_tracks"] = failed_tracks
         project_info["total_duration"] = sum(
             track.get("duration", 0) for track in voice_tracks
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         project_info["success_rate"] = len(voice_tracks) / len(script) if script else 0
 
         # Save project file
@@ -227,7 +253,9 @@ class DaVinciResolveVoiceIntegration:
 
         logger.info(
             f"✅ Script voice generation completed: {len(voice_tracks)}/{len(script)} successful"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         logger.info(f"📁 Project saved: {project_file}")
 
         return project_info
@@ -236,7 +264,7 @@ class DaVinciResolveVoiceIntegration:
     def create_davinci_resolve_xml(self, project_info: Dict[str, Any]) -> str:
         """Create DaVinci Resolve compatible XML timeline"""
 
-        xml_content = f"""<?xml version="1.0" encoding="UTF - 8"?>
+        xml_content = f"""<?xml version="1.0" encoding="UTF - 8"?>"""
 <xmeml version="4">
   <project>
     <name>{project_info["project_name"]}</name>
@@ -249,11 +277,11 @@ class DaVinciResolveVoiceIntegration:
         </rate>
         <media>
           <audio>
-"""
+""""""
 
         # Add audio tracks
         for i, track in enumerate(project_info.get("voice_tracks", [])):
-            xml_content += f"""            <track>
+            xml_content += f"""            <track>"""
               <clipitem id="{track["track_name"]}">
                 <name>{track["track_name"]}</name>
                 <file id="{track["track_name"]}_file">
@@ -278,14 +306,14 @@ class DaVinciResolveVoiceIntegration:
                 <out>{int(track.get("duration", 5) * 25)}</out>
               </clipitem>
             </track>
-"""
+""""""
 
-        xml_content += """          </audio>
+        xml_content += """          </audio>"""
         </media>
       </sequence>
     </children>
   </project>
-</xmeml>"""
+</xmeml>""""""
 
         # Save XML file
         xml_file = self.output_dir / f"{project_info['project_name']}_timeline.xml"
@@ -309,7 +337,8 @@ class DaVinciResolveVoiceIntegration:
                 "supported_formats": list(self.supported_formats.keys()),
                 "available_engines": self.voice_cloner.get_available_engines(),
                 "output_directory": str(self.output_dir),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
 async def demo_davinci_integration():
@@ -334,25 +363,32 @@ async def demo_davinci_integration():
             "track_name": "intro",
                 "text": "Welcome to our DaVinci Resolve voice integration demonstration.",
                 "voice": "narrator",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "track_name": "explanation",
                 "text": "This system allows you to generate professional voice tracks from text.",
                 "voice": "assistant",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "track_name": "conclusion",
                 "text": "Thank you for watching this demonstration of our voice cloning technology.",
                 "voice": "presenter",
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
     print(f"\\n🎤 Generating voices for {len(demo_script)} script segments...")
 
     # Generate voices for script
     project_result = await integration.generate_script_voices(
         script = demo_script, output_format="wav"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     print(f"\\n✅ Voice generation completed:")
     print(f"Success rate: {project_result['success_rate']:.1%}")

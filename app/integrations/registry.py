@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Integration Registry - Provider Management System
 
 Manages provider configurations, status tracking, and integration metadata.
-"""
+""""""
 
 import json
 import logging
@@ -81,7 +81,8 @@ class IntegrationRegistry:
                 "status": "green",
                 "docs_url": "https://nominatim.org/release-docs/develop/api/Overview/",
                 "base_url": "https://nominatim.openstreetmap.org",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "opencage",
                 "name": "OpenCage Geocoding",
@@ -93,7 +94,8 @@ class IntegrationRegistry:
                 "signup_url": "https://opencagedata.com/users/sign_up",
                 "key_env": "OPENCAGE_API_KEY",
                 "base_url": "https://api.opencagedata.com",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "overpass_main",
                 "name": "Overpass API (Main)",
@@ -103,7 +105,8 @@ class IntegrationRegistry:
                 "status": "green",
                 "docs_url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
                 "base_url": "https://overpass-api.de/api",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "overpass_kumi",
                 "name": "Overpass API (Kumi)",
@@ -113,7 +116,8 @@ class IntegrationRegistry:
                 "status": "green",
                 "docs_url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
                 "base_url": "https://overpass.kumi.systems/api",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "overpass_fr",
                 "name": "Overpass API (France)",
@@ -123,7 +127,8 @@ class IntegrationRegistry:
                 "status": "green",
                 "docs_url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
                 "base_url": "https://overpass.openstreetmap.fr/api",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "foursquare",
                 "name": "Foursquare Places",
@@ -135,7 +140,8 @@ class IntegrationRegistry:
                 "signup_url": "https://developer.foursquare.com/",
                 "key_env": "FOURSQUARE_API_KEY",
                 "base_url": "https://api.foursquare.com",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "google_places",
                 "name": "Google Places",
@@ -147,7 +153,8 @@ class IntegrationRegistry:
                 "signup_url": "https://console.cloud.google.com/",
                 "key_env": "GOOGLE_PLACES_API_KEY",
                 "base_url": "https://maps.googleapis.com",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "yelp",
                 "name": "Yelp Fusion",
@@ -159,8 +166,10 @@ class IntegrationRegistry:
                 "signup_url": "https://www.yelp.com/developers/v3/manage_app",
                 "key_env": "YELP_API_KEY",
                 "base_url": "https://api.yelp.com",
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         for provider_data in default_providers:
             provider = Provider(**provider_data)
@@ -184,7 +193,8 @@ class IntegrationRegistry:
 
     def update_provider_status(
         self, provider_id: str, status: str, error_message: Optional[str] = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Update provider status"""
         if provider_id in self.providers:
             self.providers[provider_id].status = status

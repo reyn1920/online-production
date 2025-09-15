@@ -22,12 +22,12 @@ class PerceptualLoss(nn.Module):
         self.input_size = input_size
 
     def forward(imageA, imageB, M):
-        """
+        """"""
         1 - cosine distance
         Parameters:
             imageA       --torch.tensor (B, 3, H, W), range (0, 1) , RGB order
             imageB       --same as imageA
-        """
+        """"""
 
         imageA = self.preprocess(resize_n_crop(imageA, M, self.input_size))
         imageB = self.preprocess(resize_n_crop(imageB, M, self.input_size))
@@ -52,25 +52,25 @@ def perceptual_loss(id_featureA, id_featureB):
 
 
 def photo_loss(imageA, imageB, mask, eps=1e-6):
-    """
+    """"""
     l2 norm (with sqrt, to ensure backward stabililty, use eps, otherwise Nan may occur)
     Parameters:
         imageA       --torch.tensor (B, 3, H, W), range (0, 1), RGB order
         imageB       --same as imageA
-    """
+    """"""
     loss = torch.sqrt(eps + torch.sum((imageA - imageB) ** 2, dim=1, keepdims=True)) * mask
     loss = torch.sum(loss) / torch.max(torch.sum(mask), torch.tensor(1.0).to(mask.device))
     return loss
 
 
 def landmark_loss(predict_lm, gt_lm, weight=None):
-    """
+    """"""
     weighted mse loss
     Parameters:
         predict_lm    --torch.tensor (B, 68, 2)
         gt_lm         --torch.tensor (B, 68, 2)
         weight        --numpy.array (1, 68)
-    """
+    """"""
     if not weight:
         weight = np.ones([68])
         weight[28:31] = 20
@@ -86,13 +86,13 @@ def landmark_loss(predict_lm, gt_lm, weight=None):
 
 
 def reg_loss(coeffs_dict, opt=None):
-    """
-    l2 norm without the sqrt, from yu's implementation (mse)
+    """"""
+    l2 norm without the sqrt, from yu's implementation (mse)'
     tf.nn.l2_loss https://www.tensorflow.org / api_docs / python / tf / nn / l2_loss
     Parameters:
         coeffs_dict     -- a  dict of torch.tensors , keys: id, exp, tex, angle, gamma, trans
 
-    """
+    """"""
     # coefficient regularization to ensure plausible 3d faces
     if opt:
         w_id, w_exp, w_tex = opt.w_id, opt.w_exp, opt.w_tex
@@ -102,7 +102,8 @@ def reg_loss(coeffs_dict, opt=None):
         w_id * torch.sum(coeffs_dict["id"] ** 2)
         + w_exp * torch.sum(coeffs_dict["exp"] ** 2)
         + w_tex * torch.sum(coeffs_dict["tex"] ** 2)
-    )
+# BRACKET_SURGEON: disabled
+#     )
     creg_loss = creg_loss / coeffs_dict["id"].shape[0]
 
     # gamma regularization to ensure a nearly - monochromatic light
@@ -114,14 +115,14 @@ def reg_loss(coeffs_dict, opt=None):
 
 
 def reflectance_loss(texture, mask):
-    """
+    """"""
     minimize texture variance (mse),
     albedo regularization to ensure an uniform skin albedo
     Parameters:
         texture       --torch.tensor, (B, N, 3)
         mask          --torch.tensor, (N), 1 or 0
 
-    """
+    """"""
     mask = mask.reshape([1, mask.shape[0], 1])
     texture_mean = torch.sum(mask * texture, dim=1, keepdims=True) / torch.sum(mask)
     loss = torch.sum(((texture - texture_mean) * mask) ** 2) / (texture.shape[0] * torch.sum(mask))

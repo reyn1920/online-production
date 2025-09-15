@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Manifest Contract Test
 Verifies API endpoints conform to expected schemas and contracts.
-"""
+""""""
 
 import sys
 
@@ -10,7 +10,7 @@ import requests
 
 
 def validate_version_endpoint(base_url: str) -> bool:
-    """
+    """"""
     Validate/api/version endpoint contract.
 
     Expected schema:
@@ -20,8 +20,9 @@ def validate_version_endpoint(base_url: str) -> bool:
             "commit": str,
             "build_time": str,
             "python_version": str
-    }
-    """
+# BRACKET_SURGEON: disabled
+#     }
+    """"""
     try:
         response = requests.get(f"{base_url}/api/version", timeout=5)
 
@@ -37,7 +38,8 @@ def validate_version_endpoint(base_url: str) -> bool:
             "commit",
             "build_time",
             "python_version",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         for field in required_fields:
             if field not in data:
                 print(f"❌ Version endpoint missing field: {field}")
@@ -55,7 +57,7 @@ def validate_version_endpoint(base_url: str) -> bool:
 
 
 def validate_metrics_schema(base_url: str) -> bool:
-    """
+    """"""
     Validate/api/metrics endpoint schema.
 
     Expected top - level structure:
@@ -67,8 +69,9 @@ def validate_metrics_schema(base_url: str) -> bool:
             "agents": [...],
             "errors": {...},
             "timestamp": float
-    }
-    """
+# BRACKET_SURGEON: disabled
+#     }
+    """"""
     try:
         response = requests.get(f"{base_url}/api/metrics", timeout=10)
 
@@ -121,9 +124,9 @@ def validate_metrics_schema(base_url: str) -> bool:
 
 
 def validate_dashboard_schema(base_url: str) -> bool:
-    """
+    """"""
     Validate/api/dashboard endpoint schema.
-    """
+    """"""
     try:
         response = requests.get(f"{base_url}/api/dashboard", timeout=10)
 
@@ -154,9 +157,9 @@ def validate_dashboard_schema(base_url: str) -> bool:
 
 
 def validate_readiness_endpoint(base_url: str) -> bool:
-    """
+    """"""
     Validate readiness/health endpoint.
-    """
+    """"""
     try:
         # Try common health check endpoints
         endpoints = ["/health", "/ready", "/api/health", "/api/ready"]
@@ -185,7 +188,7 @@ def validate_readiness_endpoint(base_url: str) -> bool:
 
 
 def run_manifest_tests(base_url: str = "http://127.0.0.1:8083") -> bool:
-    """
+    """"""
     Run all manifest contract tests.
 
     Args:
@@ -193,7 +196,7 @@ def run_manifest_tests(base_url: str = "http://127.0.0.1:8083") -> bool:
 
     Returns:
         bool: True if all tests pass
-    """
+    """"""
     print(f"Running manifest contract tests against {base_url}")
     print("=" * 50)
 
@@ -202,7 +205,8 @@ def run_manifest_tests(base_url: str = "http://127.0.0.1:8083") -> bool:
         ("Metrics Schema", lambda: validate_metrics_schema(base_url)),
         ("Dashboard Schema", lambda: validate_dashboard_schema(base_url)),
         ("Readiness Check", lambda: validate_readiness_endpoint(base_url)),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     results = []
     for test_name, test_func in tests:

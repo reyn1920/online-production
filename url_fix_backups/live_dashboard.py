@@ -17,7 +17,8 @@ class LiveDashboard:
             title="Live Dashboard",
             description="Real - time monitoring and control dashboard",
             version="1.0.0",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Add CORS middleware
         self.app.add_middleware(
@@ -26,7 +27,8 @@ class LiveDashboard:
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Setup routes
         self.setup_routes()
@@ -37,7 +39,7 @@ class LiveDashboard:
         @self.app.get("/", response_class=HTMLResponse)
         async def dashboard_home():
             """Main dashboard page"""
-            return """
+            return """"""
             <!DOCTYPE html>
             <html>
             <head>
@@ -52,39 +54,47 @@ class LiveDashboard:
                         background: linear - gradient(135deg, #667eea 0%, #764ba2 100%);
                         color: white;
                         min - height: 100vh;
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .container {
                         max - width: 1200px;
                         margin: 0 auto;
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .header {
                         text - align: center;
                         margin - bottom: 40px;
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .header h1 {
                         font - size: 3rem;
                         margin: 0;
                         text - shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .status - grid {
                         display: grid;
                         grid - template - columns: repeat(auto - fit,
     minmax(300px,
-    1fr));
+# BRACKET_SURGEON: disabled
+#     1fr));
                         gap: 20px;
                         margin - bottom: 40px;
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .status - card {
                         background: rgba(255,255,255,0.1);
                         backdrop - filter: blur(10px);
                         border - radius: 15px;
                         padding: 25px;
                         border: 1px solid rgba(255,255,255,0.2);
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .status - card h3 {
                         margin: 0 0 15px 0;
                         font - size: 1.2rem;
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .status - indicator {
                         display: inline - block;
                         width: 12px;
@@ -93,22 +103,26 @@ class LiveDashboard:
                         background: #4CAF50;
                         margin - right: 8px;
                         animation: pulse 2s infinite;
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     @keyframes pulse {
                         0% { opacity: 1; }
                         50% { opacity: 0.5; }
                         100% { opacity: 1; }
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .metric {
                         display: flex;
                         justify - content: space - between;
                         margin: 10px 0;
                         padding: 8px 0;
                         border - bottom: 1px solid rgba(255,255,255,0.1);
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .metric:last - child {
                         border - bottom: none;
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .refresh - btn {
                         background: rgba(255,255,255,0.2);
                         border: 1px solid rgba(255,255,255,0.3);
@@ -118,11 +132,13 @@ class LiveDashboard:
                         cursor: pointer;
                         font - size: 1rem;
                         transition: all 0.3s ease;
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     .refresh - btn:hover {
                         background: rgba(255,255,255,0.3);
                         transform: translateY(-2px);
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 </style>
             </head>
             <body>
@@ -170,15 +186,15 @@ class LiveDashboard:
                             <h3><span class="status - indicator"></span > API Endpoints</h3>
                             <div class="metric">
                                 <span > Health Check:</span>
-                                <span><a href="/health" style="color: #4CAF50;">/health</a></span>
+                                <span><a href="/health" style="color: #4CAF50;">/health</a></span>"
                             </div>
                             <div class="metric">
                                 <span > Status API:</span>
-                                <span><a href="/api / status" style="color: #4CAF50;">/api / status</a></span>
+                                <span><a href="/api / status" style="color: #4CAF50;">/api / status</a></span>"
                             </div>
                             <div class="metric">
                                 <span > Metrics API:</span>
-                                <span><a href="/api / metrics" style="color: #4CAF50;">/api / metrics</a></span>
+                                <span><a href="/api / metrics" style="color: #4CAF50;">/api / metrics</a></span>"
                             </div>
                         </div>
                     </div>
@@ -191,11 +207,14 @@ class LiveDashboard:
                             .then(response => response.json())
                             .then(data => {
                                 document.getElementById('uptime').textContent = data.uptime || 'Unknown';
-                            })
+# BRACKET_SURGEON: disabled
+#                             })
                             .catch(error => {
                                 document.getElementById('uptime').textContent = 'Error loading';
-                            });
-                    }
+# BRACKET_SURGEON: disabled
+#                             });
+# BRACKET_SURGEON: disabled
+#                     }
 
                     // Update uptime on load and every 30 seconds
                     updateUptime();
@@ -203,7 +222,7 @@ class LiveDashboard:
                 </script>
             </body>
             </html>
-            """
+            """"""
 
         @self.app.get("/health")
         async def health_check():
@@ -213,21 +232,24 @@ class LiveDashboard:
                 "timestamp": datetime.now().isoformat(),
                 "service": "Live Dashboard",
                 "version": "1.0.0",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         @self.app.get("/api / status")
         async def get_status():
             """Get system status"""
             uptime = datetime.now() - datetime.now().replace(
                 hour=0, minute=0, second=0, microsecond=0
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return {
                 "status": "online",
                 "uptime": str(uptime).split(".")[0],  # Remove microseconds
                 "timestamp": datetime.now().isoformat(),
                 "port_detection": "automatic",
                 "environment": os.getenv("ENVIRONMENT", "development"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         @self.app.get("/api / metrics")
         async def get_metrics():
@@ -239,7 +261,8 @@ class LiveDashboard:
                 "active_connections": 1,
                 "requests_per_minute": 0,
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Autonomous Financial Management Agent
 
 Analyzes profitability across all channels and automatically reallocates
@@ -7,7 +7,7 @@ resources to maximize ROI and ensure sustainable growth.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -122,35 +122,45 @@ class AutonomousFinancialAgent(BaseAgent):
         self.db_path = config.get("db_path", "right_perspective.db")
         self.ollama_client = OllamaIntegration(
             config.get("ollama_config", {"endpoint": "http://localhost:11434"})
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Financial thresholds and parameters
         self.min_roi_threshold = config.get(
             "min_roi_threshold", 0.15
-        )  # 15% minimum ROI
+# BRACKET_SURGEON: disabled
+#         )  # 15% minimum ROI
         self.profit_margin_target = config.get(
             "profit_margin_target", 0.25
-        )  # 25% target margin
+# BRACKET_SURGEON: disabled
+#         )  # 25% target margin
         self.reallocation_threshold = config.get(
             "reallocation_threshold", 0.1
-        )  # 10% change trigger
+# BRACKET_SURGEON: disabled
+#         )  # 10% change trigger
         self.analysis_frequency = config.get(
             "analysis_frequency", 86400
-        )  # Daily analysis
+# BRACKET_SURGEON: disabled
+#         )  # Daily analysis
         self.emergency_cash_reserve = config.get(
             "emergency_reserve", 0.2
-        )  # 20% cash reserve
+# BRACKET_SURGEON: disabled
+#         )  # 20% cash reserve
 
         # Risk management
         self.max_single_channel_allocation = config.get(
             "max_channel_allocation", 0.4
-        )  # 40% max
+# BRACKET_SURGEON: disabled
+#         )  # 40% max
         self.diversification_target = config.get(
             "diversification_target", 5
-        )  # Min 5 channels
+# BRACKET_SURGEON: disabled
+#         )  # Min 5 channels
         self.risk_tolerance = config.get(
             "risk_tolerance", "balanced"
-        )  # conservative / balanced / aggressive
+# BRACKET_SURGEON: disabled
+#         )  # conservative / balanced / aggressive
 
         self.logger = logging.getLogger(__name__)
         self._init_database()
@@ -164,7 +174,7 @@ class AutonomousFinancialAgent(BaseAgent):
 
                 # Channel financials table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS channel_financials (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             channel_id TEXT NOT NULL,
@@ -181,13 +191,17 @@ class AutonomousFinancialAgent(BaseAgent):
                             opportunity_score REAL DEFAULT 0,
                             analysis_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             status TEXT DEFAULT 'active'
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Resource allocations table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS resource_allocations (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             resource_type TEXT NOT NULL,
@@ -203,13 +217,17 @@ class AutonomousFinancialAgent(BaseAgent):
                             status TEXT DEFAULT 'pending',
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             implemented_at TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Financial forecasts table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS financial_forecasts (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             period TEXT NOT NULL,
@@ -223,13 +241,17 @@ class AutonomousFinancialAgent(BaseAgent):
                             risk_factors TEXT,
                             forecast_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             accuracy_score REAL
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Financial alerts table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS financial_alerts (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             alert_type TEXT NOT NULL,
@@ -241,13 +263,17 @@ class AutonomousFinancialAgent(BaseAgent):
                             status TEXT DEFAULT 'active',
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             resolved_at TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Budget tracking table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS budget_tracking (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             period TEXT NOT NULL,
@@ -258,13 +284,17 @@ class AutonomousFinancialAgent(BaseAgent):
                             variance_percentage REAL DEFAULT 0,
                             notes TEXT,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Performance metrics table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS performance_metrics (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             metric_name TEXT NOT NULL,
@@ -273,13 +303,17 @@ class AutonomousFinancialAgent(BaseAgent):
                             channel_id TEXT,
                             category TEXT,
                             measurement_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Allocation history table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS allocation_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             allocation_id TEXT NOT NULL,
@@ -289,23 +323,35 @@ class AutonomousFinancialAgent(BaseAgent):
                             change_reason TEXT,
                             changed_by TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Create indexes
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_financials_channel ON channel_financials(channel_id)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_allocations_resource ON resource_allocations(resource_type)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_alerts_type ON financial_alerts(alert_type)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_metrics_name ON performance_metrics(metric_name)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 conn.commit()
         except Exception as e:
@@ -336,7 +382,9 @@ class AutonomousFinancialAgent(BaseAgent):
                     roi = (net_profit / total_expenses) if total_expenses > 0 else 0
                     profit_margin = (
                         (net_profit / total_revenue) if total_revenue > 0 else 0
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Calculate growth rate
                     growth_rate = self._calculate_growth_rate(channel["id"])
@@ -344,10 +392,14 @@ class AutonomousFinancialAgent(BaseAgent):
                     # Assess risk and opportunity
                     risk_score = self._assess_channel_risk(
                         channel, revenue_data, expense_data
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     opportunity_score = self._assess_channel_opportunity(
                         channel, revenue_data, expense_data
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Create channel financial object
                     channel_financial = ChannelFinancials(
@@ -355,7 +407,8 @@ class AutonomousFinancialAgent(BaseAgent):
                             channel_name = channel["name"],
                             revenue_streams={
                             RevenueStream(k): v for k, v in revenue_data.items()
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                             expenses={ResourceType(k): v for k,
     v in expense_data.items()},
                             total_revenue = total_revenue,
@@ -366,7 +419,9 @@ class AutonomousFinancialAgent(BaseAgent):
                             growth_rate = growth_rate,
                             risk_score = risk_score,
                             opportunity_score = opportunity_score,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     channel_financials.append(channel_financial)
 
@@ -402,7 +457,9 @@ class AutonomousFinancialAgent(BaseAgent):
             # Calculate optimal allocations using AI - powered analysis
             optimal_allocations = self._calculate_optimal_allocations(
                 channel_financials, current_allocations
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Generate allocation recommendations
             for resource_type, allocation_data in optimal_allocations.items():
@@ -415,7 +472,8 @@ class AutonomousFinancialAgent(BaseAgent):
                     abs(change / current) >= self.reallocation_threshold
                     if current > 0
                     else abs(change) > 100
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     allocation = ResourceAllocation(
                         resource_type = ResourceType(resource_type),
                             current_allocation = current,
@@ -426,7 +484,9 @@ class AutonomousFinancialAgent(BaseAgent):
                             justification = allocation_data["justification"],
                             priority = allocation_data["priority"],
                             implementation_timeline = allocation_data["timeline"],
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     allocations.append(allocation)
                     self._store_resource_allocation(allocation)
@@ -436,7 +496,9 @@ class AutonomousFinancialAgent(BaseAgent):
 
             self.logger.info(
                 f"Generated {len(allocations)} resource allocation recommendations"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return allocations
 
         except Exception as e:
@@ -456,7 +518,8 @@ class AutonomousFinancialAgent(BaseAgent):
                 "total_reallocation": 0,
                 "expected_roi_improvement": 0,
                 "details": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         for allocation in allocations:
             try:
@@ -467,10 +530,14 @@ class AutonomousFinancialAgent(BaseAgent):
                     implementation_results["successful"] += 1
                     implementation_results["total_reallocation"] += abs(
                         allocation.allocation_change
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     implementation_results[
                         "expected_roi_improvement"
-                    ] += allocation.expected_roi_impact
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ] += allocation.expected_roi_impact
 
                     # Update database
                     self._update_allocation_status(allocation, "implemented")
@@ -484,13 +551,18 @@ class AutonomousFinancialAgent(BaseAgent):
                             "change": allocation.allocation_change,
                             "success": success,
                             "expected_impact": allocation.expected_roi_impact,
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             except Exception as e:
                 self.logger.error(
                     f"Failed to implement allocation for {allocation.resource_type}: {e}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 implementation_results["failed"] += 1
 
         return implementation_results
@@ -498,7 +570,8 @@ class AutonomousFinancialAgent(BaseAgent):
 
     def generate_financial_forecast(
         self, period: str = "quarterly"
-    ) -> FinancialForecast:
+# BRACKET_SURGEON: disabled
+#     ) -> FinancialForecast:
         """Generate financial forecast using AI and historical data."""
         self.logger.info(f"Generating {period} financial forecast")
 
@@ -518,19 +591,24 @@ class AutonomousFinancialAgent(BaseAgent):
                     period = period,
                         revenue_projection={
                         RevenueStream(k): v for k, v in forecast_data["revenue"].items()
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                         expense_projection={
                         ResourceType(k): v for k, v in forecast_data["expenses"].items()
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                         net_profit_projection = forecast_data["net_profit"],
                         roi_projection = forecast_data["roi"],
                         confidence_interval=(
                         forecast_data["confidence_lower"],
                             forecast_data["confidence_upper"],
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                         key_assumptions = forecast_data["assumptions"],
                         risk_factors = forecast_data["risks"],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Store forecast
                 self._store_financial_forecast(forecast)
@@ -551,20 +629,24 @@ class AutonomousFinancialAgent(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT AVG(total_revenue) as avg_revenue,
     AVG(total_expenses) as avg_expenses
                     FROM channel_financials
                     WHERE analysis_date > datetime('now', '-90 days')
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 result = cursor.fetchone()
                 avg_revenue = result[0] or 5000.0
                 avg_expenses = result[1] or 3000.0
         except Exception as e:
             self.logger.error(
                 f"Failed to get historical data for default forecast: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             # Use conservative defaults
             avg_revenue = 5000.0
             avg_expenses = 3000.0
@@ -572,7 +654,9 @@ class AutonomousFinancialAgent(BaseAgent):
         # Calculate basic projections with conservative growth
         growth_factor = (
             1.05 if period == "monthly" else 1.15 if period == "quarterly" else 1.25
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         projected_revenue = avg_revenue * growth_factor
             projected_expenses = avg_expenses * 1.03  # Assume 3% expense growth
         net_profit = projected_revenue - projected_expenses
@@ -584,14 +668,16 @@ class AutonomousFinancialAgent(BaseAgent):
                 RevenueStream.SPONSORED_CONTENT: projected_revenue * 0.3,
                 RevenueStream.ADVERTISING_REVENUE: projected_revenue * 0.2,
                 RevenueStream.PRODUCT_SALES: projected_revenue * 0.1,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         expense_projection = {
             ResourceType.CONTENT_CREATION: projected_expenses * 0.4,
                 ResourceType.ADVERTISING_SPEND: projected_expenses * 0.3,
                 ResourceType.TOOL_SUBSCRIPTIONS: projected_expenses * 0.2,
                 ResourceType.INFRASTRUCTURE: projected_expenses * 0.1,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return FinancialForecast(
             period = period,
@@ -604,13 +690,19 @@ class AutonomousFinancialAgent(BaseAgent):
                 "Conservative growth estimates based on historical averages",
                     "Stable market conditions assumed",
                     "No major platform algorithm changes",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 risk_factors=[
                 "Platform dependency risk",
                     "Market volatility",
                     "Competition increase",
-                    ],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def monitor_financial_health(self) -> Dict[str, Any]:
@@ -625,7 +717,8 @@ class AutonomousFinancialAgent(BaseAgent):
                 "active_alerts": [],
                 "recommendations": [],
                 "key_metrics": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         try:
             # Calculate overall financial health score
@@ -651,7 +744,9 @@ class AutonomousFinancialAgent(BaseAgent):
             # Generate recommendations
             recommendations = self._generate_financial_recommendations(
                 health_score, cash_flow_status, risk_level
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             health_report["recommendations"] = recommendations
 
             # Collect key metrics
@@ -673,13 +768,15 @@ class AutonomousFinancialAgent(BaseAgent):
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT DISTINCT channel_id as id, channel_name as name
                     FROM content_performance
                     WHERE created_at > datetime('now', '-90 days')
                     AND status = 'active'
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return [dict(row) for row in cursor.fetchall()]
         except Exception as e:
             self.logger.error(f"Failed to get active channels: {e}")
@@ -690,7 +787,9 @@ class AutonomousFinancialAgent(BaseAgent):
                     {"id": "instagram_business", "name": "Instagram Business"},
                     {"id": "linkedin_professional", "name": "LinkedIn Professional"},
                     {"id": "twitter_brand", "name": "Twitter Brand"},
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
 
     def _collect_channel_revenue(self, channel_id: str) -> Dict[str, float]:
@@ -708,23 +807,31 @@ class AutonomousFinancialAgent(BaseAgent):
                 if affiliate_revenue > 0:
                     revenue_streams[RevenueStream.AFFILIATE_COMMISSIONS.value] = (
                         affiliate_revenue
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 # Collect advertising revenue (YouTube, Google AdSense)
                 ad_revenue = self._fetch_advertising_revenue(channel_id, store)
                 if ad_revenue > 0:
                     revenue_streams[RevenueStream.ADVERTISING_REVENUE.value] = (
                         ad_revenue
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 # Collect sponsored content revenue
                 sponsored_revenue = self._fetch_sponsored_content_revenue(
                     channel_id, store
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if sponsored_revenue > 0:
                     revenue_streams[RevenueStream.SPONSORED_CONTENT.value] = (
                         sponsored_revenue
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 # Collect product sales (Stripe, PayPal)
                 product_revenue = self._fetch_product_sales_revenue(channel_id, store)
@@ -734,11 +841,15 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Collect subscription revenue
                 subscription_revenue = self._fetch_subscription_revenue(
                     channel_id, store
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if subscription_revenue > 0:
                     revenue_streams[RevenueStream.SUBSCRIPTION_REVENUE.value] = (
                         subscription_revenue
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 # Store revenue data in database
                 self._store_revenue_data(channel_id, revenue_streams)
@@ -769,14 +880,18 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Collect content creation expenses
                 content_expenses = self._fetch_content_creation_expenses(
                     channel_id, store
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if content_expenses > 0:
                     expenses[ResourceType.CONTENT_CREATION.value] = content_expenses
 
                 # Collect tool subscription costs
                 tool_expenses = self._fetch_tool_subscription_expenses(
                     channel_id, store
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if tool_expenses > 0:
                     expenses[ResourceType.TOOL_SUBSCRIPTIONS.value] = tool_expenses
 
@@ -798,7 +913,9 @@ class AutonomousFinancialAgent(BaseAgent):
         except Exception as e:
             self.logger.error(
                 f"Error collecting expenses for channel {channel_id}: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             # Return empty dict on error - no fallback to mock data
             return {}
 
@@ -809,24 +926,28 @@ class AutonomousFinancialAgent(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT AVG(revenue_generated) as current_revenue
                     FROM content_performance
                     WHERE channel_id = ? AND created_at > datetime('now', '-30 days')
-                """,
+                ""","""
                     (channel_id,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 current = cursor.fetchone()[0] or 0
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT AVG(revenue_generated) as previous_revenue
                     FROM content_performance
                     WHERE channel_id = ?
                     AND created_at BETWEEN datetime('now', '-60 days') AND datetime('now', '-30 days')
-                """,
+                ""","""
                     (channel_id,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 previous = cursor.fetchone()[0] or 0
 
                 if previous > 0:
@@ -840,7 +961,8 @@ class AutonomousFinancialAgent(BaseAgent):
 
     def _assess_channel_risk(
         self, channel: Dict, revenue_data: Dict, expense_data: Dict
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Assess risk score for a channel (0.0 = low risk, 1.0 = high risk)."""
         risk_factors = []
 
@@ -890,9 +1012,11 @@ class AutonomousFinancialAgent(BaseAgent):
 
     def _assess_channel_opportunity(
         self, channel: Dict, revenue_data: Dict, expense_data: Dict
-    ) -> float:
-        """Assess opportunity score for a channel (0.0 = low opportunity,
-    1.0 = high opportunity)."""
+# BRACKET_SURGEON: disabled
+#     ) -> float:
+        """Assess opportunity score for a channel (0.0 = low opportunity,"""
+# BRACKET_SURGEON: disabled
+#     1.0 = high opportunity).""""""
         opportunity_factors = []
 
         # Growth potential based on current performance
@@ -951,13 +1075,15 @@ class AutonomousFinancialAgent(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT resource_type, SUM(current_allocation) as total
                     FROM resource_allocations
                     WHERE status = 'active'
                     GROUP BY resource_type
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return {row[0]: row[1] for row in cursor.fetchall()}
         except Exception as e:
             self.logger.error(f"Failed to get current allocations: {e}")
@@ -985,16 +1111,21 @@ class AutonomousFinancialAgent(BaseAgent):
                             "opportunity_score": cf.opportunity_score,
                             "revenue": cf.total_revenue,
                             "expenses": cf.total_expenses,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     for cf in channel_financials
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "current_allocations": current_allocations,
                     "constraints": {
                     "min_roi_threshold": self.min_roi_threshold,
                         "max_single_channel": self.max_single_channel_allocation,
                         "risk_tolerance": self.risk_tolerance,
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Generate optimization prompt
             optimization_prompt = self._generate_optimization_prompt(analysis_data)
@@ -1021,13 +1152,17 @@ class AutonomousFinancialAgent(BaseAgent):
         # Sort channels by ROI
         sorted_channels = sorted(channel_financials,
     key = lambda x: x.roi,
-    reverse = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     reverse = True)
 
         for resource_type, current_amount in current_allocations.items():
             # Allocate more to high - ROI, low - risk channels
             top_channels = [
                 ch for ch in sorted_channels if ch.roi > self.min_roi_threshold
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             if top_channels:
                 # Calculate recommended allocation
@@ -1046,9 +1181,11 @@ class AutonomousFinancialAgent(BaseAgent):
                             1
                             if resource_type == ResourceType.CONTENT_CREATION.value
                             else 2
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             "timeline": "immediate",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
         return optimal_allocations
 
@@ -1105,7 +1242,9 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Log results
                 self.logger.info(
                     f"Advertising budget adjustment: {success_count}/{total_platforms} platforms updated successfully"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Store allocation change in database
                 self._store_allocation_change(allocation)
@@ -1151,7 +1290,9 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Log results
                 self.logger.info(
                     f"Content budget adjustment: {success_operations}/{total_operations} operations completed successfully"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Store allocation change in database
                 self._store_allocation_change(allocation)
@@ -1197,7 +1338,9 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Log results
                 self.logger.info(
                     f"Tool subscription adjustment: {success_adjustments}/{total_adjustments} adjustments completed successfully"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Store allocation change in database
                 self._store_allocation_change(allocation)
@@ -1212,12 +1355,15 @@ class AutonomousFinancialAgent(BaseAgent):
 
     def _generic_allocation_implementation(
         self, allocation: ResourceAllocation
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Generic allocation implementation with real database operations."""
         try:
             self.logger.info(
                 f"Implementing {allocation.resource_type.value} allocation change: ${allocation.allocation_change:.2f}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Store allocation in database
             with sqlite3.connect(self.db_path) as conn:
@@ -1225,14 +1371,16 @@ class AutonomousFinancialAgent(BaseAgent):
 
                 # Update or insert allocation record
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO resource_allocations (
                         resource_type, channel_id, current_allocation,
                             recommended_allocation, allocation_change,
                             expected_roi_impact, risk_assessment, justification,
                             priority, implementation_timeline, status, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)
+                ""","""
                     (
                         allocation.resource_type.value,
                             "global",  # Generic allocations are global
@@ -1245,23 +1393,31 @@ class AutonomousFinancialAgent(BaseAgent):
                             allocation.priority,
                             allocation.implementation_timeline,
                             datetime.now().isoformat(),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Log allocation change for audit trail
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO allocation_history (
                         resource_type, allocation_amount, change_reason, created_at
-                    ) VALUES (?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?)
+                ""","""
                     (
                         allocation.resource_type.value,
                             allocation.allocation_change,
                             allocation.justification,
                             datetime.now().isoformat(),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 conn.commit()
 
@@ -1272,30 +1428,37 @@ class AutonomousFinancialAgent(BaseAgent):
                         channel_id="global",
                         severity=(
                         "medium" if abs(allocation.allocation_change) < 5000 else "high"
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         message = f"Significant {allocation.resource_type.value} allocation change: ${allocation.allocation_change:.2f}",
                         data = json.dumps(
                         {
                             "resource_type": allocation.resource_type.value,
                                 "change_amount": allocation.allocation_change,
                                 "expected_roi_impact": allocation.expected_roi_impact,
-                                }
-                    ),
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                     ),
                         action_required = f"Monitor {allocation.resource_type.value} performance after implementation",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             return True
 
         except Exception as e:
             self.logger.error(
                 f"Failed to implement {allocation.resource_type.value} allocation: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return False
 
 
     def _generate_optimization_prompt(self, analysis_data: Dict) -> str:
         """Generate prompt for AI - powered resource optimization."""
-        return f"""
+        return f""""""
 Optimize resource allocation for maximum ROI based on the following financial analysis:
 
 Channels Performance:
@@ -1318,7 +1481,7 @@ Provide optimal resource allocation recommendations including:
 6. Implementation timeline
 
 Format as JSON with resource types as keys.
-"""
+""""""
 
 
     def _parse_optimization_response(self, ai_response: str) -> Dict[str, Dict]:
@@ -1341,13 +1504,15 @@ Format as JSON with resource types as keys.
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO channel_financials (
                         channel_id, channel_name, revenue_streams, expenses,
                             total_revenue, total_expenses, net_profit, roi,
                             profit_margin, growth_rate, risk_score, opportunity_score
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ""","""
                     (
                         channel_financial.channel_id,
                             channel_financial.channel_name,
@@ -1355,11 +1520,14 @@ Format as JSON with resource types as keys.
                             {
                                 k.value: v
                                 for k, v in channel_financial.revenue_streams.items()
-                            }
-                        ),
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         ),
                             json.dumps(
                             {k.value: v for k, v in channel_financial.expenses.items()}
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             channel_financial.total_revenue,
                             channel_financial.total_expenses,
                             channel_financial.net_profit,
@@ -1368,8 +1536,11 @@ Format as JSON with resource types as keys.
                             channel_financial.growth_rate,
                             channel_financial.risk_score,
                             channel_financial.opportunity_score,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to store channel financials: {e}")
@@ -1387,8 +1558,11 @@ Format as JSON with resource types as keys.
                         "severity": "high",
                         "message": f"Channel {channel_financial.channel_name} ROI ({channel_financial.roi:.1%}) below threshold ({self.min_roi_threshold:.1%})",
                         "channel_id": channel_financial.channel_id,
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Revenue decline alert
         if channel_financial.growth_rate < -0.1:  # 10% decline
@@ -1398,22 +1572,29 @@ Format as JSON with resource types as keys.
                         "severity": "medium",
                         "message": f"Channel {channel_financial.channel_name} revenue declining at {channel_financial.growth_rate:.1%}",
                         "channel_id": channel_financial.channel_id,
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Opportunity detected alert
         if (
             channel_financial.opportunity_score > 0.8
             and channel_financial.roi > self.min_roi_threshold
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             alerts.append(
                 {
                     "type": FinancialAlert.OPPORTUNITY_DETECTED,
                         "severity": "low",
                         "message": f"High opportunity detected for {channel_financial.channel_name} (score: {channel_financial.opportunity_score:.2f})",
                         "channel_id": channel_financial.channel_id,
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Store alerts
         for alert in alerts:
@@ -1426,19 +1607,24 @@ Format as JSON with resource types as keys.
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO financial_alerts (
                         alert_type, channel_id, severity, message, action_required
-                    ) VALUES (?, ?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?)
+                ""","""
                     (
                         alert_data["type"].value,
                             alert_data.get("channel_id"),
                             alert_data["severity"],
                             alert_data["message"],
                             "Review and adjust resource allocation",
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to create financial alert: {e}")
@@ -1453,50 +1639,62 @@ Format as JSON with resource types as keys.
 
                 # Get latest channel performance
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM channel_financials
                     WHERE analysis_date > datetime('now', '-7 days')
                     ORDER BY roi DESC
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 channel_performance = [dict(row) for row in cursor.fetchall()]
 
                 # Get active allocations
                 cursor.execute(
-                    """
+                    """"""
                     SELECT resource_type,
     SUM(recommended_allocation) as total_allocation,
                         AVG(expected_roi_impact) as avg_roi_impact
                     FROM resource_allocations
                     WHERE status = 'implemented'
                     GROUP BY resource_type
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 resource_allocations = [dict(row) for row in cursor.fetchall()]
 
                 # Get recent alerts
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM financial_alerts
                     WHERE status = 'active'
                     ORDER BY created_at DESC
                     LIMIT 10
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 recent_alerts = [dict(row) for row in cursor.fetchall()]
 
                 # Calculate summary metrics
                 total_revenue = sum(
                     float(ch.get("total_revenue", 0)) for ch in channel_performance
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 total_expenses = sum(
                     float(ch.get("total_expenses", 0)) for ch in channel_performance
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 overall_roi = (
                     (total_revenue - total_expenses) / total_expenses
                     if total_expenses > 0
                     else 0
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 return {
                     "timestamp": datetime.now().isoformat(),
@@ -1507,12 +1705,14 @@ Format as JSON with resource types as keys.
                             "overall_roi": overall_roi,
                             "active_channels": len(channel_performance),
                             "active_alerts": len(recent_alerts),
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "channel_performance": channel_performance,
                         "resource_allocations": resource_allocations,
                         "recent_alerts": recent_alerts,
                         "status": "active",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
         except Exception as e:
             self.logger.error(f"Failed to generate financial dashboard: {e}")
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
@@ -1532,18 +1732,23 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {amazon_key}",
                             "Content - Type": "application / json",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Get commission data for last 30 days
                     start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     end_date = datetime.now().strftime("%Y-%m-%d")
 
                     response = requests.get(
                         f"https://webservices.amazon.com / paapi5 / getreports?startDate={start_date}&endDate={end_date}&reportType = earnings",
                             headers = headers,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1570,26 +1775,35 @@ Format as JSON with resource types as keys.
                     timestamp = str(int(time.time()))
                     sig_string = (
                         f"{shareasale_key}:{timestamp}:{affiliate_id}:{api_secret}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     signature = hmac.new(
                         api_secret.encode(), sig_string.encode(), hashlib.sha256
-                    ).hexdigest()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ).hexdigest()
 
                     headers = {
                         "x - ShareASale - Date": timestamp,
                             "x - ShareASale - Authentication": signature,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Get commission data
                     start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%m/%d/%Y"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     end_date = datetime.now().strftime("%m/%d/%Y")
 
                     response = requests.get(
                         f"https://api.shareasale.com / w.cfm?XMLFormat = 1&affiliateId={affiliate_id}&token={shareasale_key}&requestType = commissionDetail&dateStart={start_date}&dateEnd={end_date}",
                             headers = headers,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if response.status_code == 200:
                         # Parse XML response and extract commission total
@@ -1600,7 +1814,9 @@ Format as JSON with resource types as keys.
                         total_commissions = sum(
                             float(comm.find("commission").text or 0)
                             for comm in root.findall(".//commissiondetail")
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         commissions["shareasale"] = total_commissions
                     else:
                         commissions["shareasale"] = 0.0
@@ -1616,25 +1832,32 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {cj_key}",
                             "Content - Type": "application / json",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Get commission data for last 30 days
                     start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     end_date = datetime.now().strftime("%Y-%m-%d")
 
                     response = requests.get(
                         f"https://commission - detail.api.cj.com / v3 / commissions?date - type = event&start - date={start_date}&end - date={end_date}",
                             headers = headers,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if response.status_code == 200:
                         data = response.json()
                         total_commissions = sum(
                             float(comm.get("commission_amount", 0))
                             for comm in data.get("commissions", [])
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         commissions["cj_affiliate"] = total_commissions
                     else:
                         commissions["cj_affiliate"] = 0.0
@@ -1660,7 +1883,8 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {adsense_key}",
                             "Content - Type": "application / json",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Get AdSense account ID
                     account_id = store.get_secret("GOOGLE_ADSENSE_ACCOUNT_ID")
@@ -1668,13 +1892,17 @@ Format as JSON with resource types as keys.
                     # Get earnings for last 30 days
                     start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     end_date = datetime.now().strftime("%Y-%m-%d")
 
                     response = requests.get(
                         f"https://adsense.googleapis.com / v2 / accounts/{account_id}/reports:generate?dateRange.startDate={start_date}&dateRange.endDate={end_date}&metrics = ESTIMATED_EARNINGS",
                             headers = headers,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1682,7 +1910,9 @@ Format as JSON with resource types as keys.
                             data.get("rows", [{}])[0]
                             .get("cells", [{}])[0]
                             .get("value", 0)
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         revenue["google_adsense"] = earnings
                     else:
                         revenue["google_adsense"] = 0.0
@@ -1698,7 +1928,8 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {youtube_key}",
                             "Content - Type": "application / json",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Get channel ID
                     channel_id = store.get_secret("YOUTUBE_CHANNEL_ID")
@@ -1706,19 +1937,25 @@ Format as JSON with resource types as keys.
                     # Get analytics data for revenue
                     start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     end_date = datetime.now().strftime("%Y-%m-%d")
 
                     response = requests.get(
                         f"https://youtubeanalytics.googleapis.com / v2 / reports?ids = channel=={channel_id}&startDate={start_date}&endDate={end_date}&metrics = estimatedRevenue&dimensions = day",
                             headers = headers,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if response.status_code == 200:
                         data = response.json()
                         total_revenue = sum(
                             float(row[1]) for row in data.get("rows", [])
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         revenue["youtube_partner"] = total_revenue
                     else:
                         revenue["youtube_partner"] = 0.0
@@ -1744,25 +1981,32 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {aspire_key}",
                             "Content - Type": "application / json",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Get campaign earnings for last 30 days
                     start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     end_date = datetime.now().strftime("%Y-%m-%d")
 
                     response = requests.get(
                         f"https://api.aspireiq.com / v1 / campaigns / earnings?start_date={start_date}&end_date={end_date}",
                             headers = headers,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if response.status_code == 200:
                         data = response.json()
                         total_earnings = sum(
                             float(campaign.get("earnings", 0))
                             for campaign in data.get("campaigns", [])
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         revenue["aspireiq_partnerships"] = total_earnings
                     else:
                         revenue["aspireiq_partnerships"] = 0.0
@@ -1775,11 +2019,13 @@ Format as JSON with resource types as keys.
             # This would be stored in the database from manual input
             cursor = self.db_connection.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT SUM(amount) FROM sponsored_content_payments
                 WHERE payment_date >= date('now', '-30 days')
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             manual_partnerships = cursor.fetchone()[0] or 0.0
             revenue["direct_partnerships"] = float(manual_partnerships)
 
@@ -1801,24 +2047,31 @@ Format as JSON with resource types as keys.
                     headers = {
                         "X - Shopify - Access - Token": shopify_key,
                             "Content - Type": "application / json",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Get orders from last 30 days
                     start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%d"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     response = requests.get(
                         f"https://{shop_domain}.myshopify.com / admin / api / 2023 - 10 / orders.json?status = any&created_at_min={start_date}T00:00:00Z&financial_status = paid",
                             headers = headers,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if response.status_code == 200:
                         data = response.json()
                         total_sales = sum(
                             float(order.get("total_price", 0))
                             for order in data.get("orders", [])
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         revenue["shopify_sales"] = total_sales
                     else:
                         revenue["shopify_sales"] = 0.0
@@ -1840,27 +2093,36 @@ Format as JSON with resource types as keys.
                     # Basic auth for WooCommerce REST API
                     credentials = base64.b64encode(
                         f"{woo_key}:{woo_secret}".encode()
-                    ).decode()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ).decode()
                     headers = {
                         "Authorization": f"Basic {credentials}",
                             "Content - Type": "application / json",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Get orders from last 30 days
                     start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%dT % H:%M:%S"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     response = requests.get(
                         f"{site_url}/wp - json / wc / v3 / orders?status = completed&after={start_date}&per_page = 100",
                             headers = headers,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if response.status_code == 200:
                         data = response.json()
                         total_sales = sum(
                             float(order.get("total", 0)) for order in data
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         revenue["woocommerce_sales"] = total_sales
                     else:
                         revenue["woocommerce_sales"] = 0.0
@@ -1886,17 +2148,22 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {stripe_key}",
                             "Content - Type": "application / json",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Get subscription invoices from last 30 days
                     start_timestamp = int(
                         (datetime.now() - timedelta(days = 30)).timestamp()
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     response = requests.get(
                         f"https://api.stripe.com / v1 / invoices?status = paid&created[gte]={start_timestamp}&limit = 100",
                             headers = headers,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1905,7 +2172,9 @@ Format as JSON with resource types as keys.
                             / 100  # Stripe amounts are in cents
                             for invoice in data.get("data", [])
                             if invoice.get("subscription")
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         revenue["stripe_subscriptions"] = subscription_revenue
                     else:
                         revenue["stripe_subscriptions"] = 0.0
@@ -1921,18 +2190,23 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {paypal_key}",
                             "Content - Type": "application / json",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     # Get subscription transactions from last 30 days
                     start_date = (datetime.now() - timedelta(days = 30)).strftime(
                         "%Y-%m-%dT % H:%M:%S.000Z"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     end_date = datetime.now().strftime("%Y-%m-%dT % H:%M:%S.000Z")
 
                     response = requests.get(
                         f"https://api.paypal.com / v1 / billing / subscriptions / transactions?start_time={start_date}&end_time={end_date}",
                             headers = headers,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1941,10 +2215,14 @@ Format as JSON with resource types as keys.
                                 transaction.get("amount_with_breakdown", {})
                                 .get("gross_amount", {})
                                 .get("value", 0)
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             for transaction in data.get("transactions", [])
                             if transaction.get("status") == "COMPLETED"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         revenue["paypal_subscriptions"] = subscription_revenue
                     else:
                         revenue["paypal_subscriptions"] = 0.0
@@ -1965,13 +2243,15 @@ Format as JSON with resource types as keys.
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO resource_allocations
                     (resource_type, current_allocation, recommended_allocation,
                         allocation_change, expected_roi_impact, risk_assessment,
-                         justification, priority, implementation_timeline, status, created_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          justification, priority, implementation_timeline, status, created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'implemented', ?)
-                """,
+                ""","""
                     (
                         allocation.resource_type.value,
                             allocation.current_allocation,
@@ -1983,8 +2263,11 @@ Format as JSON with resource types as keys.
                             allocation.priority,
                             allocation.implementation_timeline,
                             datetime.now().isoformat(),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing allocation change: {e}")
@@ -2007,7 +2290,8 @@ Format as JSON with resource types as keys.
 
     def _adjust_facebook_ads_budget(
         self, allocation: ResourceAllocation, store
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Adjust Facebook Ads budget via Facebook Marketing API."""
         try:
             facebook_token = store.get_secret("FACEBOOK_ACCESS_TOKEN")
@@ -2035,7 +2319,8 @@ Format as JSON with resource types as keys.
 
     def _adjust_linkedin_ads_budget(
         self, allocation: ResourceAllocation, store
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Adjust LinkedIn Ads budget via LinkedIn Marketing API."""
         try:
             linkedin_token = store.get_secret("LINKEDIN_ACCESS_TOKEN")
@@ -2073,7 +2358,8 @@ Format as JSON with resource types as keys.
 
     def _adjust_content_tool_budgets(
         self, allocation: ResourceAllocation, store
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Adjust content production tool budgets."""
         try:
             # Adobe Creative Cloud API
@@ -2096,7 +2382,8 @@ Format as JSON with resource types as keys.
 
     def _update_content_scheduling_budget(
         self, allocation: ResourceAllocation, store
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Update content scheduling and resource allocation."""
         try:
             # Hootsuite API
@@ -2119,7 +2406,8 @@ Format as JSON with resource types as keys.
 
     def _adjust_content_software_budgets(
         self, allocation: ResourceAllocation, store
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Adjust software subscription allocations for content creation."""
         try:
             # Implementation for various content software APIs
@@ -2133,7 +2421,8 @@ Format as JSON with resource types as keys.
 
     def _adjust_subscription_billing_limits(
         self, allocation: ResourceAllocation, store
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Adjust subscription billing limits via payment processors."""
         try:
             stripe_key = store.get_secret("STRIPE_API_KEY")
@@ -2149,7 +2438,8 @@ Format as JSON with resource types as keys.
 
     def _update_service_tier_allocations(
         self, allocation: ResourceAllocation, store
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Update service tier allocations for various tools."""
         try:
             # Implementation for service tier management
@@ -2171,7 +2461,8 @@ Format as JSON with resource types as keys.
 
     def _update_subscription_management(
         self, allocation: ResourceAllocation, store
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Update subscription management via APIs."""
         try:
             # Implementation for subscription management APIs

@@ -19,14 +19,16 @@ class GitHubAPI(BaseAPI):
                 requests_per_hour=4000,
                 requests_per_day=50000,
                 burst_limit=10,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             rate_config = RateLimitConfig(
                 requests_per_minute=1,  # Very conservative for unauthenticated
                 requests_per_hour=50,
                 requests_per_day=1000,
                 burst_limit=2,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         super().__init__(rate_config)
         self.token = token
@@ -37,8 +39,10 @@ class GitHubAPI(BaseAPI):
                 {
                     "Authorization": f"token {self.token}",
                     "Accept": "application / vnd.github.v3 + json",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
     async def health_check(self) -> bool:
         """Check if GitHub API is accessible"""
@@ -66,24 +70,28 @@ class GitHubAPI(BaseAPI):
                     datetime.fromtimestamp(core_rate.get("reset", 0)).isoformat()
                     if core_rate.get("reset")
                     else None
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "search_limit": search_rate.get("limit", 0),
                 "search_remaining": search_rate.get("remaining", 0),
                 "search_reset": (
                     datetime.fromtimestamp(search_rate.get("reset", 0)).isoformat()
                     if search_rate.get("reset")
                     else None
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "local_daily_used": self.rate_limiter.daily_count,
                 "local_hourly_used": self.rate_limiter.hourly_count,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {
                 "service": "GitHub API",
                 "error": str(e),
                 "local_daily_used": self.rate_limiter.daily_count,
                 "local_hourly_used": self.rate_limiter.hourly_count,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def search_repositories(
         self,
@@ -102,12 +110,14 @@ class GitHubAPI(BaseAPI):
             "order": order,
             "per_page": min(per_page, 100),  # GitHub max is 100
             "page": page,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             response = await self._make_request(
                 "GET", f"{self.base_url}/search / repositories", params=params
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             repositories = []
             for repo in response.get("items", []):
@@ -130,13 +140,17 @@ class GitHubAPI(BaseAPI):
                         "topics": repo.get("topics", []),
                         "license": (
                             repo.get("license", {}).get("name") if repo.get("license") else None
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "owner": {
                             "login": repo["owner"]["login"],
                             "type": repo["owner"]["type"],
-                        },
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return {
                 "total_count": response.get("total_count", 0),
@@ -145,7 +159,8 @@ class GitHubAPI(BaseAPI):
                 "query": query,
                 "page": page,
                 "per_page": per_page,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to search repositories: {e}")
@@ -175,7 +190,8 @@ class GitHubAPI(BaseAPI):
         try:
             result = await self.search_repositories(
                 query=query, sort="stars", order="desc", per_page=limit
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Add trending metrics
             trending_repos = []
@@ -192,7 +208,8 @@ class GitHubAPI(BaseAPI):
                     stars_per_day * 0.6
                     + forks_per_day * 0.3
                     + (repo["watchers"] / max(days_old, 1)) * 0.1
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 repo.update(
                     {
@@ -200,8 +217,10 @@ class GitHubAPI(BaseAPI):
                         "stars_per_day": round(stars_per_day, 2),
                         "forks_per_day": round(forks_per_day, 2),
                         "trending_score": round(trending_score, 2),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
                 trending_repos.append(repo)
 
@@ -240,7 +259,8 @@ class GitHubAPI(BaseAPI):
                 "topics": response.get("topics", []),
                 "license": (
                     response.get("license", {}).get("name") if response.get("license") else None
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "default_branch": response["default_branch"],
                 "network_count": response.get("network_count", 0),
                 "subscribers_count": response.get("subscribers_count", 0),
@@ -248,8 +268,10 @@ class GitHubAPI(BaseAPI):
                     "login": response["owner"]["login"],
                     "type": response["owner"]["type"],
                     "html_url": response["owner"]["html_url"],
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to get repository details: {e}")
@@ -261,7 +283,8 @@ class GitHubAPI(BaseAPI):
         try:
             response = await self._make_request(
                 "GET", f"{self.base_url}/repos/{owner}/{repo}/languages"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Calculate percentages
             total_bytes = sum(response.values())
@@ -274,8 +297,10 @@ class GitHubAPI(BaseAPI):
                         "language": language,
                         "bytes": bytes_count,
                         "percentage": round(percentage, 2),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Sort by percentage
             languages.sort(key=lambda x: x["percentage"], reverse=True)
@@ -284,7 +309,8 @@ class GitHubAPI(BaseAPI):
                 "total_bytes": total_bytes,
                 "languages": languages,
                 "primary_language": languages[0]["language"] if languages else None,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to get repository languages: {e}")
@@ -300,7 +326,8 @@ class GitHubAPI(BaseAPI):
                 "GET",
                 f"{self.base_url}/repos/{owner}/{repo}/contributors",
                 params={"per_page": min(limit, 100)},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             contributors = []
             for contributor in response:
@@ -311,8 +338,10 @@ class GitHubAPI(BaseAPI):
                         "html_url": contributor["html_url"],
                         "avatar_url": contributor["avatar_url"],
                         "type": contributor["type"],
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return contributors
 
@@ -330,7 +359,8 @@ class GitHubAPI(BaseAPI):
                 # Search for repositories using this technology
                 repo_data = await self.search_repositories(
                     query=f"language:{tech}", sort="updated", per_page=100
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if repo_data["repositories"]:
                     repos = repo_data["repositories"]
@@ -348,7 +378,8 @@ class GitHubAPI(BaseAPI):
                         for repo in repos
                         if datetime.fromisoformat(repo["updated_at"].replace("Z", "+00:00"))
                         > now - timedelta(days=30)
-                    ]
+# BRACKET_SURGEON: disabled
+#                     ]
 
                     activity_score = len(recent_repos) / len(repos) * 100
 
@@ -364,13 +395,16 @@ class GitHubAPI(BaseAPI):
                         "trending_score": round(
                             (avg_stars * 0.4) + (avg_forks * 0.3) + (activity_score * 0.3),
                             2,
-                        ),
-                    }
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     results[tech] = {
                         "total_repositories": 0,
                         "error": "No repositories found",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                 # Add delay between requests to respect rate limits
                 await asyncio.sleep(1)
@@ -380,15 +414,18 @@ class GitHubAPI(BaseAPI):
                 [(tech, data) for tech, data in results.items() if "trending_score" in data],
                 key=lambda x: x[1]["trending_score"],
                 reverse=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "technologies": results,
                 "ranked_technologies": [
                     {"technology": tech, **data} for tech, data in ranked_techs
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "analysis_timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to analyze technology trends: {e}")
@@ -402,7 +439,8 @@ class GitHubAPI(BaseAPI):
                 "GET",
                 f"{self.base_url}/users/{username}/repos",
                 params={"sort": "updated", "per_page": min(limit, 100)},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             repositories = []
             for repo in response:
@@ -419,8 +457,10 @@ class GitHubAPI(BaseAPI):
                         "updated_at": repo["updated_at"],
                         "topics": repo.get("topics", []),
                         "private": repo["private"],
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return repositories
 

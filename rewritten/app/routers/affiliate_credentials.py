@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Affiliate Credentials Router
 
 Manages affiliate dashboard credentials and authentication.
-"""
+""""""
 
 import logging
 import os
@@ -64,7 +64,7 @@ class AffiliateCredentialsService:
 
                 # Get all affiliate dashboards
                 cursor.execute(
-                    """
+                    """"""
                     SELECT
                         id,
                         platform_name,
@@ -80,8 +80,9 @@ class AffiliateCredentialsService:
                         COALESCE(is_active, 1) as is_active
                     FROM affiliate_dashboards
                     ORDER BY platform_name
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 rows = cursor.fetchall()
 
@@ -93,7 +94,8 @@ class AffiliateCredentialsService:
                     # Determine status based on recent activity
                     status = self._determine_status(
                         row["last_login_attempt"], row["login_success_rate"]
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     credential = {
                         "id": row["id"],
@@ -109,7 +111,8 @@ class AffiliateCredentialsService:
                         "createdAt": row["created_at"],
                         "updatedAt": row["updated_at"],
                         "isActive": bool(row["is_active"]),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     credentials.append(credential)
 
                 # Calculate stats
@@ -119,7 +122,8 @@ class AffiliateCredentialsService:
                     "credentials": credentials,
                     "stats": stats,
                     "total": len(credentials),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except sqlite3.Error as e:
             logger.error(f"Database error: {e}")
@@ -194,7 +198,8 @@ class AffiliateCredentialsService:
             "inactiveCredentials": total - active,
             "lastAccess": last_access,
             "securityScore": security_score,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def test_credential_login(self, credential_id: str) -> Dict[str, Any]:
         """Test login for a specific credential"""
@@ -205,13 +210,14 @@ class AffiliateCredentialsService:
 
                 # Get credential details
                 cursor.execute(
-                    """
+                    """"""
                     SELECT platform_name, login_url, username, encrypted_password
                     FROM affiliate_dashboards
                     WHERE id = ?
-                """,
+                ""","""
                     (credential_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 row = cursor.fetchone()
                 if not row:
@@ -226,34 +232,38 @@ class AffiliateCredentialsService:
                     login_url=row["login_url"],
                     username=row["username"],
                     password=decrypted_password,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Attempt login test
                 test_result = dashboard.test_login()
 
                 # Update database with test results
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE affiliate_dashboards
                     SET last_login_attempt = ?,
                         login_success_rate = COALESCE(login_success_rate, 0) * 0.9 + ? * 0.1,
                         updated_at = ?
                     WHERE id = ?
-                """,
+                ""","""
                     (
                         datetime.now().isoformat(),
                         100 if test_result["success"] else 0,
                         datetime.now().isoformat(),
                         credential_id,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
                 return {
                     "success": test_result["success"],
                     "message": test_result.get("message", "Login test completed"),
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except sqlite3.Error as e:
             logger.error(f"Database error during login test: {e}")

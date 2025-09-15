@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 Check the status of the strategic project task in the task queue.
-"""
+""""""
 
 import os
 import sys
@@ -66,7 +66,8 @@ def main():
         for task in all_tasks:
             if task.get("task_type") == "STRATEGIC_PROJECT_EXECUTION" or (
                 task.get("payload", {}).get("goal", "").find("Right Perspective Q4 2025") != -1
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 strategic_task = task
                 break
 

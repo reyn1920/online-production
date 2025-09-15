@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 SecretStore Bridge - Enhanced version with CLI integration and env fallback
 Provides secure credential management for TRAE.AI system
-"""
+""""""
 
 import json
 import logging
@@ -28,7 +28,8 @@ class SecretStoreBridge:
             "/usr / local / bin / secrets_cli",
             "~/.local / bin / secrets_cli",
             "secrets_cli",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for path in possible_paths:
             expanded_path = Path(path).expanduser()
@@ -39,7 +40,8 @@ class SecretStoreBridge:
         try:
             result = subprocess.run(
                 ["which", "secrets_cli"], capture_output=True, text=True, timeout=5
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if result.returncode == 0:
                 return result.stdout.strip()
         except (subprocess.TimeoutExpired, FileNotFoundError):
@@ -59,7 +61,8 @@ class SecretStoreBridge:
                 capture_output=True,
                 text=True,
                 timeout=10,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if result.returncode == 0:
                 logger.info(f"SecretStore CLI available at {self.cli_path}")
                 return True
@@ -78,7 +81,8 @@ class SecretStoreBridge:
                     capture_output=True,
                     text=True,
                     timeout=30,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if result.returncode == 0:
                     secret = result.stdout.strip()
                     if secret:
@@ -108,7 +112,8 @@ class SecretStoreBridge:
                 capture_output=True,
                 text=True,
                 timeout=30,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if result.returncode == 0:
                 logger.info(f"Secret '{key}' set successfully")
                 return True
@@ -125,7 +130,8 @@ class SecretStoreBridge:
             "cli_available": self.available,
             "cli_path": self.cli_path,
             "keys": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if self.available:
             try:
@@ -134,7 +140,8 @@ class SecretStoreBridge:
                     capture_output=True,
                     text=True,
                     timeout=30,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if result.returncode == 0:
                     output = result.stdout.strip()
                     if output:
@@ -149,8 +156,10 @@ class SecretStoreBridge:
             if any(
                 pattern in key.upper()
                 for pattern in ["API_KEY", "SECRET", "TOKEN", "PASSWORD", "CREDENTIAL"]
-            )
-        ]
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         ]
         secrets_info["env_keys"] = env_secrets
 
         return secrets_info
@@ -178,8 +187,10 @@ class SecretStoreBridge:
             "blender_path": self.get_secret(
                 "BLENDER_PATH",
                 "/Applications / Blender.app / Contents / MacOS / Blender",
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         return credentials
 

@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 First Content Generator for The Right Perspective Channel
 Generates audio - only content using the configured voice profile
-"""
+""""""
 
 import json
 import logging
@@ -46,54 +46,54 @@ class FirstContentGenerator:
         today = datetime.now()
         episode_date = today.strftime("%Y-%m-%d")
 
-        sample_script = f"""
+        sample_script = f""""""
 # The Right Perspective - Episode 1
 ## {episode_date} - Welcome to The Right Perspective
 
 ### Introduction (60 seconds)
-Welcome to The Right Perspective, where we cut through the mainstream media noise to bring you unfiltered conservative political commentary. I'm your host, \
-    and today we're launching something special - a daily dose of truth that the establishment doesn't want you to hear.
+Welcome to The Right Perspective, where we cut through the mainstream media noise to bring you unfiltered conservative political commentary. I'm your host, \'
+#     and today we're launching something special - a daily dose of truth that the establishment doesn't want you to hear.
 
-Today's episode is all about setting the foundation for what this channel represents \
-    and why your voice matters in today's political landscape.
+Today's episode is all about setting the foundation for what this channel represents \'
+#     and why your voice matters in today's political landscape.
 
 ### Main Content (12 minutes)
 
 #### Segment 1: Why The Right Perspective Matters (4 minutes)
-In a world where mainstream media has become nothing more than a propaganda machine for the left, we need voices that aren't afraid to tell the truth. This channel is inspired by the fearless commentary style of Greg Gutfeld \
-    and Jesse Watters - we're going to tackle the issues that matter to real Americans.
+In a world where mainstream media has become nothing more than a propaganda machine for the left, we need voices that aren't afraid to tell the truth. This channel is inspired by the fearless commentary style of Greg Gutfeld \'
+#     and Jesse Watters - we're going to tackle the issues that matter to real Americans.
 
 We're not here to play nice with the establishment. We're here to call out the hypocrisy, expose the lies, \
-    and give you the perspective that Fox News \
-    and other conservative outlets are bringing to light every single day.
+#     and give you the perspective that Fox News \
+#     and other conservative outlets are bringing to light every single day.
 
 #### Segment 2: What You Can Expect (4 minutes)
-Every day at 6 PM Eastern, we'll be diving deep into the stories that are shaping our nation. From breaking down the latest political theater in Washington to exposing the radical agenda being pushed in our schools \
-    and communities.
+Every day at 6 PM Eastern, we'll be diving deep into the stories that are shaping our nation. From breaking down the latest political theater in Washington to exposing the radical agenda being pushed in our schools \'
+#     and communities.
 
-We'll be covering:
+We'll be covering:'
 - Daily political analysis with a conservative lens
 - Breakdown of mainstream media bias and misinformation
 - Real stories from real Americans who are fighting back
 - Actionable insights on how you can make a difference
 
 #### Segment 3: Building Our Community (4 minutes)
-This isn't just a one - way conversation. This is about building a community of patriots who refuse to be silenced. We want to hear from you - your stories, your concerns, your victories.
+This isn't just a one - way conversation. This is about building a community of patriots who refuse to be silenced. We want to hear from you - your stories, your concerns, your victories.'
 
-We'll be featuring listener submissions, highlighting local conservative victories, \
-    and connecting like - minded Americans who are ready to take back our country from the radical left.
+We'll be featuring listener submissions, highlighting local conservative victories, \'
+#     and connecting like - minded Americans who are ready to take back our country from the radical left.
 
 ### Conclusion (2 minutes)
-So that's what The Right Perspective is all about - giving you the unfiltered truth that the mainstream media won't tell you. We're going to be your daily source for conservative commentary that cuts through the noise.
+So that's what The Right Perspective is all about - giving you the unfiltered truth that the mainstream media won't tell you. We're going to be your daily source for conservative commentary that cuts through the noise.'
 
 Make sure to subscribe \
-    and hit that notification bell so you never miss an episode. We're publishing daily at 6 PM Eastern, \
-    and trust me, you won't want to miss what we have planned.
+#     and hit that notification bell so you never miss an episode. We're publishing daily at 6 PM Eastern, \
+#     and trust me, you won't want to miss what we have planned.
 
-Tomorrow, we're diving into the latest developments in the ongoing battle for election integrity - something the mainstream media continues to ignore but that every American should be paying attention to.
+Tomorrow, we're diving into the latest developments in the ongoing battle for election integrity - something the mainstream media continues to ignore but that every American should be paying attention to.'
 
 This is The Right Perspective, where your voice matters \
-    and the truth always wins. See you tomorrow at 6 PM Eastern.
+#     and the truth always wins. See you tomorrow at 6 PM Eastern.
 
 ---
 
@@ -101,9 +101,9 @@ This is The Right Perspective, where your voice matters \
 - Voice: Matthew (Speechelo) - Authoritative tone
 - Background: Subtle patriotic music (low volume)
 - Duration Target: 15 minutes
-- Call - to - Action: Subscribe, notifications, tomorrow's preview
+- Call - to - Action: Subscribe, notifications, tomorrow's preview'
 - Monetization: Mention merchandise store launch coming soon
-"""
+""""""
 
         script_file = self.scripts_dir / f"episode_001_{episode_date}.md"
         with open(script_file, "w") as f:
@@ -135,7 +135,8 @@ This is The Right Perspective, where your voice matters \
             "word_count": len(spoken_content.split()),
             "estimated_duration": f"{len(spoken_content.split())/150:.1f} minutes",  # ~150 WPM average
             "status": "ready_for_tts_generation",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Save metadata
         metadata_file = self.output_dir / "episode_001_metadata.json"
@@ -158,7 +159,7 @@ This is The Right Perspective, where your voice matters \
         lines = script_content.split("\\n")
         spoken_lines = []
 
-        skip_sections = ["## Production Notes", "---", "###"]
+        skip_sections = ["## Production Notes", "---", "###"]"
         in_skip_section = False
 
         for line in lines:
@@ -168,18 +169,18 @@ This is The Right Perspective, where your voice matters \
                 continue
 
             # Skip empty lines and markdown formatting
-            if line.strip() == "" or line.startswith("#") or line.startswith("-"):
+            if line.strip() == "" or line.startswith("#") or line.startswith("-"):"
                 continue
 
             # Skip production notes section
-            if "Production Notes" in line or line.startswith("##"):
+            if "Production Notes" in line or line.startswith("##"):"
                 in_skip_section = True
                 continue
 
             if not in_skip_section and line.strip():
                 # Clean up any remaining markdown
                 clean_line = line.replace("**", "").replace("*", "").strip()
-                if clean_line and not clean_line.startswith("####"):
+                if clean_line and not clean_line.startswith("####"):"
                     spoken_lines.append(clean_line)
 
         return "\\n\\n".join(spoken_lines)
@@ -199,7 +200,8 @@ This is The Right Perspective, where your voice matters \
                 "status": "planned" if i > 0 else "in_production",
                 "duration_target": "12 - 15 minutes",
                 "content_focus": self.get_content_focus(i + 1),
-            }
+# BRACKET_SURGEON: disabled
+#             }
             schedule.append(episode_info)
 
         schedule_file = self.base_dir / f"{self.channel_dir}_production_schedule.json"
@@ -209,10 +211,12 @@ This is The Right Perspective, where your voice matters \
                     "channel": self.channel_name,
                     "schedule_created": today.isoformat(),
                     "episodes": schedule,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 f,
                 indent=2,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         logger.info(f"Production schedule created: {schedule_file}")
         return schedule
@@ -222,12 +226,13 @@ This is The Right Perspective, where your voice matters \
         titles = {
             1: "Welcome to The Right Perspective",
             2: "Election Integrity: The Battle Continues",
-            3: "Media Bias Exposed: This Week's Biggest Lies",
-            4: "Border Crisis: What They Don't Want You to Know",
+            3: "Media Bias Exposed: This Week's Biggest Lies",'
+            4: "Border Crisis: What They Don't Want You to Know",'
             5: "Economic Reality Check: Inflation vs. Propaganda",
             6: "Education Under Attack: Fighting for Our Children",
             7: "Week in Review: Conservative Wins You Missed",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return titles.get(episode_num, f"Daily Conservative Commentary")
 
     def get_content_focus(self, episode_num):
@@ -240,7 +245,8 @@ This is The Right Perspective, where your voice matters \
             5: "Economic policy and inflation impact",
             6: "Education policy and parental rights",
             7: "Weekly roundup of conservative victories",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return focuses.get(episode_num, "Daily political commentary")
 
     def generate_first_content(self):
@@ -265,7 +271,8 @@ This is The Right Perspective, where your voice matters \
                     "script_file": str(script_file),
                     "audio_metadata": audio_metadata,
                     "status": "ready_for_voice_generation",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "production_schedule": f"{self.channel_dir}_production_schedule.json",
                 "next_steps": [
                     "Generate audio using Speechelo with Matthew voice profile",
@@ -273,14 +280,17 @@ This is The Right Perspective, where your voice matters \
                     "Upload to YouTube channel",
                     "Schedule for 6 PM EST publication",
                     "Prepare episode 2 script",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "files_created": [
                     str(script_file),
                     str(self.output_dir / "episode_001_metadata.json"),
                     str(self.output_dir / "episode_001_content.txt"),
                     f"{self.channel_dir}_production_schedule.json",
-                ],
-            }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             }
 
             report_file = self.base_dir / f"{self.channel_dir}_first_content_report.json"
             with open(report_file, "w") as f:

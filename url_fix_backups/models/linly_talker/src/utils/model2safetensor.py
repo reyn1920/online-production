@@ -14,7 +14,9 @@ from src.audio2pose_models.audio2pose import Audio2Pose
 from src.face3d.models import networks
 from src.facerender.modules.generator import (OcclusionAwareGenerator,
 
-    OcclusionAwareSPADEGenerator)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     OcclusionAwareSPADEGenerator)
 
 from src.facerender.modules.keypoint_detector import HEEstimator, KPDetector
 from src.facerender.modules.mapping import MappingNet
@@ -28,7 +30,9 @@ current_root_path = "."
 path_of_net_recon_model = os.path.join(current_root_path, "checkpoints", "epoch_20.pth")
 net_recon = networks.define_net_recon(
     net_recon="resnet50", use_last_fc = False, init_path=""
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 checkpoint = torch.load(path_of_net_recon_model, map_location="cpu")
 net_recon.load_state_dict(checkpoint["net_recon"])
 
@@ -38,15 +42,21 @@ with open(config_path) as f:
 generator = OcclusionAwareSPADEGenerator(
     **config["model_params"]["generator_params"],
         **config["model_params"]["common_params"]
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 kp_extractor = KPDetector(
     **config["model_params"]["kp_detector_params"],
         **config["model_params"]["common_params"]
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 he_estimator = HEEstimator(
     **config["model_params"]["he_estimator_params"],
         **config["model_params"]["common_params"]
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 mapping = MappingNet(**config["model_params"]["mapping_params"])
 
 
@@ -61,7 +71,8 @@ def load_cpk_facevid2vid(
         optimizer_kp_detector = None,
         optimizer_he_estimator = None,
         device="cpu",
-):
+# BRACKET_SURGEON: disabled
+# ):
 
     checkpoint = torch.load(checkpoint_path, map_location = torch.device(device))
     if generator is not None:
@@ -76,18 +87,24 @@ def load_cpk_facevid2vid(
         except Exception:
             print(
                 "No discriminator in the state - dict. Dicriminator will be randomly initialized"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     if optimizer_generator is not None:
         optimizer_generator.load_state_dict(checkpoint["optimizer_generator"])
     if optimizer_discriminator is not None:
         try:
             optimizer_discriminator.load_state_dict(
                 checkpoint["optimizer_discriminator"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except RuntimeError as e:
             print(
                 "No discriminator optimizer in the state - dict. Optimizer will be not initialized"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     if optimizer_kp_detector is not None:
         optimizer_kp_detector.load_state_dict(checkpoint["optimizer_kp_detector"])
     if optimizer_he_estimator is not None:
@@ -98,7 +115,8 @@ def load_cpk_facevid2vid(
 
 def load_cpk_facevid2vid_safetensor(
     checkpoint_path, generator = None, kp_detector = None, he_estimator = None, device="cpu"
-):
+# BRACKET_SURGEON: disabled
+# ):
 
     checkpoint = safetensors.torch.load_file(checkpoint_path)
 
@@ -127,26 +145,36 @@ free_view_checkpoint = (
     "/apdcephfs / private_shadowcun / SadTalker / checkpoints / facevid2vid_"
     + str(size)
     + "-model.pth.tar"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 load_cpk_facevid2vid(
     free_view_checkpoint,
         kp_detector = kp_extractor,
         generator = generator,
         he_estimator = he_estimator,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 wav2lip_checkpoint = os.path.join(current_root_path, "checkpoints", "wav2lip.pth")
 
 audio2pose_checkpoint = os.path.join(
     current_root_path, "checkpoints", "auido2pose_00140 - model.pth"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 audio2pose_yaml_path = os.path.join(
     current_root_path, "src", "config", "auido2pose.yaml"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 audio2exp_checkpoint = os.path.join(
     current_root_path, "checkpoints", "auido2exp_00300 - model.pth"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 audio2exp_yaml_path = os.path.join(current_root_path, "src", "config", "auido2exp.yaml")
 
 fcfg_pose = open(audio2pose_yaml_path)
@@ -178,7 +206,9 @@ model = SadTalker(kp_extractor, generator, netG, audio2pose_model, net_recon)
 # here, we want to convert it to safetensor
 save_file(
     model.state_dict(), "checkpoints / SadTalker_V0.0.2_" + str(size) + ".safetensors"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 ### test
 load_cpk_facevid2vid_safetensor(
@@ -186,4 +216,6 @@ load_cpk_facevid2vid_safetensor(
         kp_detector = kp_extractor,
         generator = generator,
         he_estimator = None,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )

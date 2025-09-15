@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Pipeline Debug Test
 Simple test to verify CI/CD pipeline functionality
-"""
+""""""
 
 import json
 import os
@@ -30,7 +30,8 @@ def test_environment():
             capture_output=True,
             text=True,
             check=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"✅ Git repository: {result.stdout.strip()}")
     except subprocess.CalledProcessError:
         print("❌ Not a git repository")
@@ -48,7 +49,8 @@ def test_required_files():
         "main.py",
         ".github/workflows/ci - cd.yml",
         ".github/workflows/deploy.yml",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     all_exist = True
     for file_path in required_files:
@@ -69,7 +71,8 @@ def test_workflow_syntax():
         ".github/workflows/ci - cd.yml",
         ".github/workflows/deploy.yml",
         ".github/workflows/ci.yml",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for workflow in workflow_files:
         if Path(workflow).exists():
@@ -123,11 +126,13 @@ def generate_pipeline_report():
             "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
             "working_directory": os.getcwd(),
             "platform": sys.platform,
-        },
+# BRACKET_SURGEON: disabled
+#         },
         "git_status": {},
         "files_check": {},
         "dependencies": {},
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Git status
     try:
@@ -136,20 +141,24 @@ def generate_pipeline_report():
             capture_output=True,
             text=True,
             check=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         report["git_status"]["current_branch"] = branch.stdout.strip()
 
         commit = subprocess.run(
             ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
-        )
+# BRACKET_SURGEON: disabled
+#         )
         report["git_status"]["latest_commit"] = commit.stdout.strip()[:8]
 
         status = subprocess.run(
             ["git", "status", "--porcelain"], capture_output=True, text=True, check=True
-        )
+# BRACKET_SURGEON: disabled
+#         )
         report["git_status"]["uncommitted_changes"] = (
             len(status.stdout.strip().split("\n")) if status.stdout.strip() else 0
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except subprocess.CalledProcessError as e:
         report["git_status"]["error"] = str(e)
@@ -172,7 +181,8 @@ def main():
         ("Required Files", test_required_files),
         ("Workflow Syntax", test_workflow_syntax),
         ("Dependencies", test_dependencies),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     results = []
     for test_name, test_func in tests:
@@ -184,7 +194,7 @@ def main():
             results.append((test_name, False))
 
     # Generate report
-    report = generate_pipeline_report()
+    generate_pipeline_report()
 
     # Summary
     print("\\n" + "=" * 40)

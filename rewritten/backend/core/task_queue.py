@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Task Queue System - Database - Backed Resilient Operations Management
 
 A robust, database - backed task queue system designed for resilience and
@@ -14,7 +14,7 @@ Key Features:
 - Task dependencies and workflows
 - Real - time monitoring and metrics
 - Agent coordination and load balancing
-"""
+""""""
 
 import json
 import logging
@@ -136,13 +136,14 @@ class TaskQueue:
             TaskPriority.HIGH: queue.PriorityQueue(),
             TaskPriority.MEDIUM: queue.PriorityQueue(),
             TaskPriority.LOW: queue.PriorityQueue(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def initialize_database(self):
         """Initialize task queue database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS tasks (
                     task_id TEXT PRIMARY KEY,
                         task_type TEXT NOT NULL,
@@ -161,12 +162,14 @@ class TaskQueue:
                         metadata TEXT NOT NULL,
                         created_at TIMESTAMP NOT NULL,
                         updated_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS agent_workers (
                     worker_id TEXT PRIMARY KEY,
                         agent_type TEXT NOT NULL,
@@ -177,12 +180,14 @@ class TaskQueue:
                         capabilities TEXT NOT NULL,
                         max_concurrent_tasks INTEGER NOT NULL,
                         current_load INTEGER NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS task_dependencies (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         task_id TEXT NOT NULL,
@@ -190,12 +195,14 @@ class TaskQueue:
                         created_at TIMESTAMP NOT NULL,
                         FOREIGN KEY (task_id) REFERENCES tasks (task_id),
                         FOREIGN KEY (dependency_id) REFERENCES tasks (task_id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS task_execution_log (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         task_id TEXT NOT NULL,
@@ -204,9 +211,11 @@ class TaskQueue:
                         details TEXT,
                         timestamp TIMESTAMP NOT NULL,
                         FOREIGN KEY (task_id) REFERENCES tasks (task_id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create indexes for performance
             conn.execute("CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks (status)")
@@ -214,10 +223,12 @@ class TaskQueue:
             conn.execute("CREATE INDEX IF NOT EXISTS idx_tasks_agent_type ON tasks (agent_type)")
             conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_tasks_scheduled_at ON tasks (scheduled_at)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_workers_agent_type ON agent_workers (agent_type)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             conn.execute("CREATE INDEX IF NOT EXISTS idx_workers_status ON agent_workers (status)")
 
     def start(self):
@@ -262,7 +273,8 @@ class TaskQueue:
         max_retries: int = 3,
         scheduled_at: datetime = None,
         metadata: Dict[str, Any] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Submit a new task to the queue"""
 
         task_id = str(uuid.uuid4())
@@ -294,7 +306,8 @@ class TaskQueue:
             metadata=metadata,
             created_at=datetime.now(),
             updated_at=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self._save_task(task)
 
@@ -319,7 +332,8 @@ class TaskQueue:
                 priority=TaskPriority(step.get("priority", TaskPriority.MEDIUM.value)),
                 max_retries=step.get("max_retries", 3),
                 metadata=step.get("metadata", {}),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             task_ids.append(task_id)
             task_map[step["step_id"]] = task_id
 
@@ -338,7 +352,8 @@ class TaskQueue:
         agent_instance: Any,
         capabilities: List[str] = None,
         max_concurrent_tasks: int = 1,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Register an agent worker"""
         worker_id = f"{agent_type}_{uuid.uuid4().hex[:8]}"
 
@@ -355,7 +370,8 @@ class TaskQueue:
             capabilities=capabilities,
             max_concurrent_tasks=max_concurrent_tasks,
             current_load=0,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.agent_registry[worker_id] = {"worker": worker, "instance": agent_instance}
 
@@ -388,7 +404,8 @@ class TaskQueue:
                 "error_message": task["error_message"],
                 "retry_count": task["retry_count"],
                 "max_retries": task["max_retries"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
         return None
 
     def cancel_task(self, task_id: str) -> bool:
@@ -427,7 +444,8 @@ class TaskQueue:
                 "max_concurrent_tasks": worker.max_concurrent_tasks,
                 "last_heartbeat": worker.last_heartbeat.isoformat(),
                 "capabilities": worker.capabilities,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return status
 
@@ -530,7 +548,8 @@ class TaskQueue:
             self._update_task_completion(task_id, result, execution_time)
             self._log_task_execution(
                 task_id, worker_id, "completed", {"execution_time": execution_time}
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Update worker
             worker.status = "active"
@@ -564,17 +583,20 @@ class TaskQueue:
                 worker_id,
                 "failed_retry_scheduled",
                 {"error": error_message, "retry_delay": retry_delay},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.logger.warning(
                 f"Task failed, scheduling retry {retry_count}/{task['max_retries']}: {task_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             # Move to dead letter queue
             self._update_task_status(task_id, TaskStatus.DEAD_LETTER)
             self._log_task_execution(
                 task_id, worker_id, "moved_to_dead_letter", {"error": error_message}
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.logger.error(f"Task moved to dead letter queue: {task_id}")
 
@@ -593,23 +615,25 @@ class TaskQueue:
                 cutoff_date = datetime.now() - timedelta(days=7)
                 with sqlite3.connect(self.db_path) as conn:
                     conn.execute(
-                        """
+                        """"""
                         DELETE FROM tasks
                         WHERE status = 'completed' AND completed_at < ?
-                    """,
+                    ""","""
                         (cutoff_date.isoformat(),),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Clean up old execution logs
                 log_cutoff_date = datetime.now() - timedelta(days=30)
                 with sqlite3.connect(self.db_path) as conn:
                     conn.execute(
-                        """
+                        """"""
                         DELETE FROM task_execution_log
                         WHERE timestamp < ?
-                    """,
+                    ""","""
                         (log_cutoff_date.isoformat(),),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Remove offline workers
                 timeout_cutoff = datetime.now() - timedelta(seconds=self.heartbeat_timeout)
@@ -644,13 +668,14 @@ class TaskQueue:
         """Save task to database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO tasks
                 (task_id, task_type, agent_type, priority, payload, dependencies,
                     max_retries, retry_count, status, scheduled_at, started_at,
-                     completed_at, error_message, result, metadata, created_at, updated_at)
+# BRACKET_SURGEON: disabled
+#                      completed_at, error_message, result, metadata, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     task.task_id,
                     task.task_type,
@@ -669,8 +694,10 @@ class TaskQueue:
                     json.dumps(task.metadata),
                     task.created_at.isoformat(),
                     task.updated_at.isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
     def _get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
         """Get task from database"""
@@ -686,62 +713,69 @@ class TaskQueue:
         """Update task status"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 UPDATE tasks
                 SET status = ?, updated_at = ?
                 WHERE task_id = ?
-            """,
+            ""","""
                 (status.value, datetime.now().isoformat(), task_id),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _update_task_completion(self, task_id: str, result: Dict[str, Any], execution_time: float):
         """Update task with completion data"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 UPDATE tasks
                 SET status = 'completed', completed_at = ?, result = ?, updated_at = ?
                 WHERE task_id = ?
-            """,
+            ""","""
                 (
                     datetime.now().isoformat(),
                     json.dumps(result),
                     datetime.now().isoformat(),
                     task_id,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
     def _update_task_retry(
         self, task_id: str, retry_count: int, error_message: str, retry_time: datetime
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Update task for retry"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 UPDATE tasks
                 SET status = 'retrying', retry_count = ?, error_message = ?,
                     scheduled_at = ?, updated_at = ?
                 WHERE task_id = ?
-            """,
+            ""","""
                 (
                     retry_count,
                     error_message,
                     retry_time.isoformat(),
                     datetime.now().isoformat(),
                     task_id,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
     def _save_agent_worker(self, worker: AgentWorker):
         """Save agent worker to database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO agent_workers
                 (worker_id, agent_type, status, current_task_id, tasks_completed,
-                    last_heartbeat, capabilities, max_concurrent_tasks, current_load)
+# BRACKET_SURGEON: disabled
+#                     last_heartbeat, capabilities, max_concurrent_tasks, current_load)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     worker.worker_id,
                     worker.agent_type,
@@ -752,28 +786,33 @@ class TaskQueue:
                     json.dumps(worker.capabilities),
                     worker.max_concurrent_tasks,
                     worker.current_load,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
     def _log_task_execution(
         self, task_id: str, worker_id: str, action: str, details: Dict[str, Any] = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Log task execution event"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT INTO task_execution_log
                 (task_id, worker_id, action, details, timestamp)
                 VALUES (?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     task_id,
                     worker_id,
                     action,
                     json.dumps(details) if details else None,
                     datetime.now().isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
     def _are_dependencies_satisfied(self, task_id: str) -> bool:
         """Check if task dependencies are satisfied"""
@@ -798,15 +837,16 @@ class TaskQueue:
         """Get next available task for agent type"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
-                """
+                """"""
                 SELECT task_id FROM tasks
                 WHERE agent_type = ? AND status = 'pending'
                 AND scheduled_at <= ?
                 ORDER BY priority ASC, scheduled_at ASC
                 LIMIT 1
-            """,
+            ""","""
                 (agent_type, datetime.now().isoformat()),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             row = cursor.fetchone()
             if row:
@@ -826,12 +866,13 @@ class TaskQueue:
         """Check for tasks that need to be retried"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
-                """
+                """"""
                 SELECT task_id FROM tasks
                 WHERE status = 'retrying' AND scheduled_at <= ?
-            """,
+            ""","""
                 (datetime.now().isoformat(),),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             for row in cursor.fetchall():
                 task_id = row[0]
@@ -843,12 +884,13 @@ class TaskQueue:
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
-                """
+                """"""
                 SELECT task_id FROM tasks
                 WHERE status = 'running' AND started_at < ?
-            """,
+            ""","""
                 (stuck_timeout.isoformat(),),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             for row in cursor.fetchall():
                 task_id = row[0]
@@ -860,11 +902,12 @@ class TaskQueue:
         with sqlite3.connect(self.db_path) as conn:
             # Get task counts by status
             cursor = conn.execute(
-                """
+                """"""
                 SELECT status, COUNT(*) FROM tasks
                 GROUP BY status
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             status_counts = dict(cursor.fetchall())
 
@@ -876,24 +919,26 @@ class TaskQueue:
 
             # Calculate average execution time
             cursor = conn.execute(
-                """
+                """"""
                 SELECT AVG(julianday(completed_at) - julianday(started_at)) * 86400
                 FROM tasks
                 WHERE status = 'completed' AND started_at IS NOT NULL
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             avg_execution_time = cursor.fetchone()[0] or 0
 
             # Calculate throughput (tasks per hour in last 24 hours)
             last_24h = datetime.now() - timedelta(hours=24)
             cursor = conn.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM tasks
                 WHERE status = 'completed' AND completed_at > ?
-            """,
+            ""","""
                 (last_24h.isoformat(),),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             completed_last_24h = cursor.fetchone()[0]
             throughput_per_hour = completed_last_24h / 24
@@ -908,7 +953,8 @@ class TaskQueue:
                 "average_execution_time": avg_execution_time,
                 "success_rate": success_rate,
                 "throughput_per_hour": throughput_per_hour,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.last_metrics_update = datetime.now()
 
@@ -934,35 +980,38 @@ class TaskQueue:
         with sqlite3.connect(self.db_path) as conn:
             # Update task record
             conn.execute(
-                """
+                """"""
                 UPDATE tasks SET dependencies = ?, updated_at = ?
                 WHERE task_id = ?
-            """,
+            ""","""
                 (json.dumps(dependencies), datetime.now().isoformat(), task_id),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Add dependency records
             for dep_id in dependencies:
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR IGNORE INTO task_dependencies
                     (task_id, dependency_id, created_at)
                     VALUES (?, ?, ?)
-                """,
+                ""","""
                     (task_id, dep_id, datetime.now().isoformat()),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
     def _update_agent_heartbeat(self, worker_id: str):
         """Update agent heartbeat"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 UPDATE agent_workers
                 SET last_heartbeat = ?
                 WHERE worker_id = ?
-            """,
+            ""","""
                 (datetime.now().isoformat(), worker_id),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _remove_offline_worker(self, worker_id: str):
         """Remove offline worker"""
@@ -1000,7 +1049,8 @@ if __name__ == "__main__":
             agent_type="TestAgent",
             payload={"data": f"test_data_{i}"},
             priority=TaskPriority.MEDIUM,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         task_ids.append(task_id)
 
     # Submit a workflow
@@ -1012,16 +1062,20 @@ if __name__ == "__main__":
                 "agent_type": "TestAgent",
                 "payload": {"data": "workflow_step_1"},
                 "priority": TaskPriority.HIGH.value,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "step_id": "step2",
                 "task_type": "test_task",
                 "agent_type": "TestAgent",
                 "payload": {"data": "workflow_step_2"},
                 "depends_on": ["step1"],
-            },
-        ]
-    }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     }
 
     workflow_task_ids = task_queue.submit_workflow(workflow)
 
@@ -1031,7 +1085,8 @@ if __name__ == "__main__":
             metrics = task_queue.get_queue_metrics()
             print(
                 f"Queue metrics: {metrics.pending_tasks} pending, {metrics.completed_tasks} completed"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             time.sleep(1)
     except KeyboardInterrupt:
         pass

@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Final Integration Status Report
 Comprehensive check of all system integrations
-"""
+""""""
 
 import json
 from pathlib import Path
@@ -22,7 +22,8 @@ def check_integration_endpoints():
         "/integrations / providers / active",
         "/integrations / affiliates",
         "/integrations / test - call",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     working = 0
     total = len(integration_endpoints)
@@ -55,18 +56,21 @@ def check_provider_integrations():
                 # Check active providers
                 active_response = requests.get(
                     "http://localhost:8000 / integrations / providers / active"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if active_response.status_code == 200:
                     active_providers = active_response.json()
                     active_count = (
                         len(active_providers) if isinstance(active_providers, list) else 0
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     print(f"  Active Providers: {active_count}")
                     print(
                         f"  Activation Rate: {(active_count / len(providers)*100):.1f}%"
                         if len(providers) > 0
                         else "  Activation Rate: 0%"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return True
             else:
                 print(f"  Providers data: {type(providers)}")
@@ -138,7 +142,8 @@ def check_dashboard_integrations():
         "/dashboard / api / metrics",
         "/dashboard / api / services",
         "/dashboard / api / system - info",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     working = 0
     total = len(dashboard_endpoints)
@@ -176,7 +181,8 @@ def check_folder_structure():
         "scripts",
         "config",
         "data",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     existing = [f for f in critical_folders if Path(f).exists()]
     missing = [f for f in critical_folders if not Path(f).exists()]
@@ -209,11 +215,13 @@ def main():
     # Calculate overall scores
     integration_score = (
         (integration_working / integration_total * 100) if integration_total > 0 else 0
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     print(
         f"  🔗 Integration Endpoints: {integration_working}/{integration_total} ({integration_score:.1f}%)"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(f"  🔌 Provider Integrations: {'✅ ACTIVE' if providers_ok else '❌ ISSUES'}")
     print(f"  💼 Affiliate Integrations: {'✅ ACTIVE' if affiliates_ok else '❌ ISSUES'}")
     print(f"  📺 Channel Integrations: {'✅ COMPLETE' if channels_ok else '❌ INCOMPLETE'}")

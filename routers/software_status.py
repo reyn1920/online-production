@@ -23,23 +23,23 @@ def software_status():
     """Check availability of creative software tools"""
     return {
         "blender": ok(
-            "blender", 
-            shutil.which("blender") is not None, 
+            "blender",
+            shutil.which("blender") is not None,
             reason=None if shutil.which("blender") else "binary_not_found"
         ),
         "resolve": ok(
-            "resolve", 
-            bool(os.getenv("RESOLVE_SDK")), 
+            "resolve",
+            bool(os.getenv("RESOLVE_SDK")),
             reason=None if os.getenv("RESOLVE_SDK") else "sdk_not_configured"
         ),
         "ffmpeg": ok(
-            "ffmpeg", 
+            "ffmpeg",
             shutil.which("ffmpeg") is not None,
             reason=None if shutil.which("ffmpeg") else "binary_not_found"
         ),
         "davinci": ok(
-            "davinci", 
-            False, 
+            "davinci",
+            False,
             reason="not_connected"
         )
     }
@@ -49,9 +49,9 @@ def blender_validate():
     """Validate Blender installation"""
     blender_path = shutil.which("blender")
     return ok(
-        "blender", 
-        bool(blender_path), 
-        None if blender_path else "binary_not_found", 
+        "blender",
+        bool(blender_path),
+        None if blender_path else "binary_not_found",
         {"path": blender_path} if blender_path else None
     )
 
@@ -60,8 +60,8 @@ def resolve_validate():
     """Validate DaVinci Resolve SDK configuration"""
     sdk_path = os.getenv("RESOLVE_SDK")
     return ok(
-        "resolve", 
-        bool(sdk_path), 
+        "resolve",
+        bool(sdk_path),
         None if sdk_path else "sdk_not_configured",
         {"sdk_path": sdk_path} if sdk_path else None
     )
@@ -81,10 +81,10 @@ def creative_toolchain_status():
         "resolve_sdk": bool(os.getenv("RESOLVE_SDK")),
         "davinci_connected": False  # Always false for now
     }
-    
+
     available_count = sum(tools.values())
     total_count = len(tools)
-    
+
     return {
         "toolchain_status": "partial" if available_count > 0 else "unavailable",
         "available_tools": available_count,

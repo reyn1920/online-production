@@ -26,7 +26,8 @@ class SyncNet_color(nn.Module):
             Conv2d(512, 512, kernel_size=3, stride=2, padding=1),
             Conv2d(512, 512, kernel_size=3, stride=1, padding=0),
             Conv2d(512, 512, kernel_size=1, stride=1, padding=0),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.audio_encoder = nn.Sequential(
             Conv2d(1, 32, kernel_size=3, stride=1, padding=1),
@@ -43,7 +44,8 @@ class SyncNet_color(nn.Module):
             Conv2d(256, 256, kernel_size=3, stride=1, padding=1, residual=True),
             Conv2d(256, 512, kernel_size=3, stride=1, padding=0),
             Conv2d(512, 512, kernel_size=1, stride=1, padding=0),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, audio_sequences, face_sequences):  # audio_sequences := (B, dim, T)
         face_embedding = self.face_encoder(face_sequences)

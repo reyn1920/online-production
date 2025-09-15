@@ -20,11 +20,14 @@ class Conv2d(nn.Module):
             leakyReLU = False,
             *args,
             **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__(*args, **kwargs)
         self.conv_block = nn.Sequential(
             nn.Conv2d(cin, cout, kernel_size, stride, padding), nn.BatchNorm2d(cout)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if leakyReLU:
             self.act = nn.LeakyReLU(0.02)
         else:
@@ -52,49 +55,58 @@ class AudioEncoder(nn.Module):
     kernel_size = 3,
     stride = 1,
     padding = 1,
-    residual = True),
+# BRACKET_SURGEON: disabled
+#     residual = True),
                 Conv2d(32,
     32,
     kernel_size = 3,
     stride = 1,
     padding = 1,
-    residual = True),
+# BRACKET_SURGEON: disabled
+#     residual = True),
                 Conv2d(32, 64, kernel_size = 3, stride=(3, 1), padding = 1),
                 Conv2d(64,
     64,
     kernel_size = 3,
     stride = 1,
     padding = 1,
-    residual = True),
+# BRACKET_SURGEON: disabled
+#     residual = True),
                 Conv2d(64,
     64,
     kernel_size = 3,
     stride = 1,
     padding = 1,
-    residual = True),
+# BRACKET_SURGEON: disabled
+#     residual = True),
                 Conv2d(64, 128, kernel_size = 3, stride = 3, padding = 1),
                 Conv2d(128,
     128,
     kernel_size = 3,
     stride = 1,
     padding = 1,
-    residual = True),
+# BRACKET_SURGEON: disabled
+#     residual = True),
                 Conv2d(128,
     128,
     kernel_size = 3,
     stride = 1,
     padding = 1,
-    residual = True),
+# BRACKET_SURGEON: disabled
+#     residual = True),
                 Conv2d(128, 256, kernel_size = 3, stride=(3, 2), padding = 1),
                 Conv2d(256,
     256,
     kernel_size = 3,
     stride = 1,
     padding = 1,
-    residual = True),
+# BRACKET_SURGEON: disabled
+#     residual = True),
                 Conv2d(256, 512, kernel_size = 3, stride = 1, padding = 0),
                 Conv2d(512, 512, kernel_size = 1, stride = 1, padding = 0),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def forward(self, x):
@@ -119,7 +131,8 @@ class AudioAttNet(nn.Module):
     kernel_size = 3,
     stride = 1,
     padding = 1,
-    bias = True),
+# BRACKET_SURGEON: disabled
+#     bias = True),
                 nn.LeakyReLU(0.02, True),
                 nn.Conv1d(16, 8, kernel_size = 3, stride = 1, padding = 1, bias = True),
                 nn.LeakyReLU(0.02, True),
@@ -129,13 +142,18 @@ class AudioAttNet(nn.Module):
                 nn.LeakyReLU(0.02, True),
                 nn.Conv1d(2, 1, kernel_size = 3, stride = 1, padding = 1, bias = True),
                 nn.LeakyReLU(0.02, True),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.attentionNet = nn.Sequential(
             nn.Linear(in_features = self.seq_len,
     out_features = self.seq_len,
-    bias = True),
+# BRACKET_SURGEON: disabled
+#     bias = True),
                 nn.Softmax(dim = 1),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def forward(self, x):
@@ -158,26 +176,34 @@ class AudioNet(nn.Module):
         self.encoder_conv = nn.Sequential(  # n x 29 x 16
             nn.Conv1d(
                 dim_in, 32, kernel_size = 3, stride = 2, padding = 1, bias = True
-            ),  # n x 32 x 8
+# BRACKET_SURGEON: disabled
+#             ),  # n x 32 x 8
             nn.LeakyReLU(0.02, True),
                 nn.Conv1d(
                 32, 32, kernel_size = 3, stride = 2, padding = 1, bias = True
-            ),  # n x 32 x 4
+# BRACKET_SURGEON: disabled
+#             ),  # n x 32 x 4
             nn.LeakyReLU(0.02, True),
                 nn.Conv1d(
                 32, 64, kernel_size = 3, stride = 2, padding = 1, bias = True
-            ),  # n x 64 x 2
+# BRACKET_SURGEON: disabled
+#             ),  # n x 64 x 2
             nn.LeakyReLU(0.02, True),
                 nn.Conv1d(
                 64, 64, kernel_size = 3, stride = 2, padding = 1, bias = True
-            ),  # n x 64 x 1
+# BRACKET_SURGEON: disabled
+#             ),  # n x 64 x 1
             nn.LeakyReLU(0.02, True),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.encoder_fc1 = nn.Sequential(
             nn.Linear(64, 64),
                 nn.LeakyReLU(0.02, True),
                 nn.Linear(64, dim_aud),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def forward(self, x):
@@ -205,8 +231,12 @@ class MLP(nn.Module):
                     self.dim_in if l == 0 else self.dim_hidden,
                         self.dim_out if l == num_layers - 1 else self.dim_hidden,
                         bias = False,
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.net = nn.ModuleList(net)
 
@@ -236,7 +266,9 @@ class AudioNet_ave(nn.Module):
                 nn.Linear(256, 128),
                 nn.LeakyReLU(0.02, True),
                 nn.Linear(128, dim_aud),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def forward(self, x):
@@ -255,7 +287,8 @@ class NeRFNetwork(NeRFRenderer):
             opt,
             audio_dim = 32,
             # torso net (hard coded for now)
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__(opt)
 
         # audio embedding
@@ -299,7 +332,9 @@ class NeRFNetwork(NeRFRenderer):
                 base_resolution = 64,
                 log2_hashmap_size = 14,
                 desired_resolution = 512 * self.bound,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.encoder_yz, self.in_dim_yz = get_encoder(
             "hashgrid",
                 input_dim = 2,
@@ -308,7 +343,9 @@ class NeRFNetwork(NeRFRenderer):
                 base_resolution = 64,
                 log2_hashmap_size = 14,
                 desired_resolution = 512 * self.bound,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.encoder_xz, self.in_dim_xz = get_encoder(
             "hashgrid",
                 input_dim = 2,
@@ -317,7 +354,9 @@ class NeRFNetwork(NeRFRenderer):
                 base_resolution = 64,
                 log2_hashmap_size = 14,
                 desired_resolution = 512 * self.bound,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.in_dim = self.in_dim_xy + self.in_dim_yz + self.in_dim_xz
 
@@ -332,7 +371,9 @@ class NeRFNetwork(NeRFRenderer):
                 1 + self.geo_feat_dim,
                 self.hidden_dim,
                 self.num_layers,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         ## color network
         self.num_layers_color = 2
         self.hidden_dim_color = 64
@@ -342,7 +383,9 @@ class NeRFNetwork(NeRFRenderer):
                 3,
                 self.hidden_dim_color,
                 self.num_layers_color,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.unc_net = MLP(self.in_dim, 1, 32, 2)
 
@@ -360,13 +403,22 @@ class NeRFNetwork(NeRFRenderer):
                             [0.01, 0.01, 0.1, 1],
                                 [-0.1, -0.1, 0.1, 1],
                                 [0.1, -0.1, 0.1, 1],
-                                ]
-                    )
-                ),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             self.torso_deform_encoder, self.torso_deform_in_dim = get_encoder(
                 "frequency", input_dim = 2, multires = 8
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             # self.torso_deform_encoder,
     self.torso_deform_in_dim = get_encoder('tiledgrid',
     input_dim = 2,
@@ -374,10 +426,14 @@ class NeRFNetwork(NeRFRenderer):
     level_dim = 1,
     base_resolution = 16,
     log2_hashmap_size = 16,
-    desired_resolution = 512)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     desired_resolution = 512)
             self.anchor_encoder, self.anchor_in_dim = get_encoder(
                 "frequency", input_dim = 6, multires = 3
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.torso_deform_net = MLP(
                 self.torso_deform_in_dim
                 + self.anchor_in_dim
@@ -385,7 +441,9 @@ class NeRFNetwork(NeRFRenderer):
                     2,
                     32,
                     3,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # torso color network
             self.torso_encoder, self.torso_in_dim = get_encoder(
@@ -396,7 +454,9 @@ class NeRFNetwork(NeRFRenderer):
                     base_resolution = 16,
                     log2_hashmap_size = 16,
                     desired_resolution = 2048,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             self.torso_net = MLP(
                 self.torso_in_dim
                 + self.torso_deform_in_dim
@@ -405,7 +465,9 @@ class NeRFNetwork(NeRFRenderer):
                     4,
                     32,
                     3,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def forward_torso(self, x, poses, c = None):
@@ -419,10 +481,14 @@ class NeRFNetwork(NeRFRenderer):
         # deformation - based
         wrapped_anchor = (
             self.anchor_points[None, ...] @ poses.permute(0, 2, 1).inverse()
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         wrapped_anchor = (
             wrapped_anchor[:, :, :2]/wrapped_anchor[:, :, 3, None]/wrapped_anchor[:, :, 2, None]
-        ).view(1, -1)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).view(1, -1)
         # print(wrapped_anchor)
         # enc_pose = self.pose_encoder(poses)
         enc_anchor = self.anchor_encoder(wrapped_anchor)
@@ -432,7 +498,9 @@ class NeRFNetwork(NeRFRenderer):
             h = torch.cat(
                 [enc_x, enc_anchor.repeat(x.shape[0], 1), c.repeat(x.shape[0], 1)],
                     dim=-1,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             h = torch.cat([enc_x, enc_anchor.repeat(x.shape[0], 1)], dim=-1)
 
@@ -559,7 +627,8 @@ class NeRFNetwork(NeRFRenderer):
                 "geo_feat": geo_feat,
                 "ambient_aud": aud_ch_att.norm(dim=-1, keepdim = True),
                 "ambient_eye": eye_att,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
     # optimizer utils
 
@@ -574,19 +643,24 @@ class NeRFNetwork(NeRFRenderer):
                     "params": self.torso_deform_encoder.parameters(),
                         "lr": lr,
                         "weight_decay": wd,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "params": self.torso_net.parameters(),
                         "lr": lr_net,
                         "weight_decay": wd,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "params": self.torso_deform_net.parameters(),
                         "lr": lr_net,
                         "weight_decay": wd,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {"params": self.anchor_points, "lr": lr_net, "weight_decay": wd},
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             if self.individual_dim_torso > 0:
                 params.append(
@@ -594,8 +668,11 @@ class NeRFNetwork(NeRFRenderer):
                         "params": self.individual_codes_torso,
                             "lr": lr_net,
                             "weight_decay": wd,
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return params
 
@@ -607,21 +684,28 @@ class NeRFNetwork(NeRFRenderer):
                 # {'params': self.encoder_xyz.parameters(), 'lr': lr},
                 {"params": self.sigma_net.parameters(), "lr": lr_net, "weight_decay": wd},
                 {"params": self.color_net.parameters(), "lr": lr_net, "weight_decay": wd},
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         if self.att > 0:
             params.append(
                 {
                     "params": self.audio_att_net.parameters(),
                         "lr": lr_net * 5,
                         "weight_decay": 0.0001,
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         if self.emb:
             params.append({"params": self.embedding.parameters(), "lr": lr})
         if self.individual_dim > 0:
             params.append(
                 {"params": self.individual_codes, "lr": lr_net, "weight_decay": wd}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         if self.train_camera:
             params.append({"params": self.camera_dT, "lr": 1e-5, "weight_decay": 0})
             params.append({"params": self.camera_dR, "lr": 1e-5, "weight_decay": 0})
@@ -631,13 +715,20 @@ class NeRFNetwork(NeRFRenderer):
                 "params": self.aud_ch_att_net.parameters(),
                     "lr": lr_net,
                     "weight_decay": wd,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         params.append(
             {"params": self.unc_net.parameters(), "lr": lr_net, "weight_decay": wd}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         params.append(
             {"params": self.eye_att_net.parameters(), "lr": lr_net, "weight_decay": wd}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return params

@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 API Integration Service
-
+""""""
 Integrates all discovery services and updates the API management table with
 discovered APIs, login information, and cost tracking.
+"""""""""
+
+API Integration Service
+
+
+
 """
 
 import json
@@ -25,7 +31,9 @@ from .web_search_service import WebSearchService
 
 @dataclass
 class APIEntry:
-    """Complete API entry for the management table."""
+    """
+Complete API entry for the management table.
+
 
     category: str
     api_name: str
@@ -42,9 +50,15 @@ class APIEntry:
     quality_score: float
     notes: str
     last_updated: datetime
+   
+""""""
+
     auto_discovered: bool = False
+   
 
-
+    
+   
+"""
 class APIIntegrationService:
     """Service for integrating all API discovery and management functionality."""
 
@@ -65,14 +79,25 @@ class APIIntegrationService:
         self._load_existing_apis()
 
     def _init_database(self):
-        """Initialize the integration database."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Initialize the integration database.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 # Main API management table
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     CREATE TABLE IF NOT EXISTS api_management (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             category TEXT NOT NULL,
@@ -92,13 +117,29 @@ class APIIntegrationService:
                             last_updated TEXT NOT NULL,
                             auto_discovered BOOLEAN DEFAULT 0,
                             UNIQUE(category, api_name, provider)
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+                
+""""""
+
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
                 """
-                )
+
+                 
+                
 
                 # Login credentials table (encrypted in production)
                 cursor.execute(
-                    """
+                   
+""""""
                     CREATE TABLE IF NOT EXISTS api_credentials (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             api_id INTEGER NOT NULL,
@@ -110,10 +151,29 @@ class APIIntegrationService:
                             created_at TEXT NOT NULL,
                             updated_at TEXT NOT NULL,
                             FOREIGN KEY (api_id) REFERENCES api_management (id)
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+                """"""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 conn.commit()
                 self.logger.info("API integration database initialized")
 
@@ -121,11 +181,29 @@ class APIIntegrationService:
             self.logger.error(f"Error initializing database: {e}")
 
     def _load_existing_apis(self):
-        """Load existing APIs from the management table."""
+        """
+Load existing APIs from the management table.
+
         try:
+           
+""""""
+
             # Pre - populate with known free APIs from conversation history
+           
+
+            
+           
+"""
             existing_apis = [
                 APIEntry(
+           """
+
+            
+           
+
+            # Pre - populate with known free APIs from conversation history
+           
+""""""
                     category="AI & Language Models",
                     api_name="OpenAI GPT - 4 Free Tier",
                     provider="OpenAI",
@@ -141,7 +219,7 @@ class APIIntegrationService:
                     quality_score=0.95,
                     notes="Free tier with limited requests. Upgrade for production use.",
                     last_updated=datetime.now(),
-                ),
+                 ),
                 APIEntry(
                     category="AI & Language Models",
                     api_name="Hugging Face Inference API",
@@ -158,7 +236,7 @@ class APIIntegrationService:
                     quality_score=0.85,
                     notes="Free tier for testing. Many open - source models available.",
                     last_updated=datetime.now(),
-                ),
+                 ),
                 APIEntry(
                     category="Email Marketing",
                     api_name="Mailgun Free Tier",
@@ -175,7 +253,7 @@ class APIIntegrationService:
                     quality_score=0.90,
                     notes="Reliable email delivery with good free tier.",
                     last_updated=datetime.now(),
-                ),
+                 ),
                 APIEntry(
                     category="SMS Marketing",
                     api_name="Twilio Free Trial",
@@ -192,7 +270,7 @@ class APIIntegrationService:
                     quality_score=0.92,
                     notes="Industry standard for SMS. Free trial credit included.",
                     last_updated=datetime.now(),
-                ),
+                 ),
                 APIEntry(
                     category="Social Media Platforms",
                     api_name="YouTube Data API v3",
@@ -209,7 +287,7 @@ class APIIntegrationService:
                     quality_score=0.88,
                     notes="Official YouTube API with generous free tier.",
                     last_updated=datetime.now(),
-                ),
+                 ),
                 APIEntry(
                     category="Social Media Platforms",
                     api_name="Instagram Basic Display API",
@@ -219,7 +297,9 @@ class APIIntegrationService:
                     environment_variables=[
                         "INSTAGRAM_ACCESS_TOKEN",
                         "INSTAGRAM_CLIENT_ID",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ],
                     signup_url="https://developers.facebook.com/apps",
                     login_url="https://www.facebook.com/login",
                     documentation_url="https://developers.facebook.com/docs/instagram - basic - display - api",
@@ -229,8 +309,10 @@ class APIIntegrationService:
                     quality_score=0.75,
                     notes="Basic access to Instagram data. Limited functionality.",
                     last_updated=datetime.now(),
-                ),
-            ]
+                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             ]
 
             # Save to database
             for api in existing_apis:
@@ -246,7 +328,9 @@ class APIIntegrationService:
         try:
             self.logger.info(
                 f"Starting API discovery and integration for channel: {channel}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Step 1: Run auto - discovery
             discovery_result = self.auto_discovery.discover_apis_for_channel(channel)
@@ -288,14 +372,18 @@ class APIIntegrationService:
                         "status": api.status,
                         "signup_url": api.signup_url,
                         "quality_score": api.quality_score,
-                    }
+                     }
                     for api in integrated_apis
-                ],
-            }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
+             }
 
             self.logger.info(
                 f"Successfully integrated {len(integrated_apis)} APIs for {channel}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             return result
 
         except Exception as e:
@@ -303,8 +391,18 @@ class APIIntegrationService:
             return {"success": False, "error": str(e)}
 
     def _convert_candidate_to_entry(self, candidate, channel: str) -> APIEntry:
-        """Convert an API candidate to a complete API entry."""
+        """
+Convert an API candidate to a complete API entry.
+
+       
+""""""
+
         # Map channel to category
+       
+
+        
+       
+"""
         category_mapping = {
             "youtube": "Social Media Platforms",
             "tiktok": "Social Media Platforms",
@@ -312,14 +410,23 @@ class APIIntegrationService:
             "email": "Email Marketing",
             "sms": "SMS Marketing",
             "ai_content": "AI & Language Models",
-        }
+         }
+       """
 
+        
+       
+
+        # Map channel to category
+       
+""""""
         category = category_mapping.get(channel.lower(), "Other Services")
 
         # Generate environment variables
         env_vars = self._generate_environment_variables(
             candidate.name, candidate.provider
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         # Generate login URL from signup URL
         login_url = self._generate_login_url(candidate.signup_url)
@@ -341,14 +448,39 @@ class APIIntegrationService:
             notes=f"Auto - discovered API. {candidate.pricing_model.title()} pricing model.",
             last_updated=datetime.now(),
             auto_discovered=True,
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
     def _enhance_with_login_info(self, api_entry: APIEntry) -> APIEntry:
-        """Enhance API entry with login information and credentials."""
-        try:
-            # Common login URL patterns
-            base_domain = self._extract_base_domain(api_entry.signup_url)
+        """
+Enhance API entry with login information and credentials.
 
+        try:
+           
+""""""
+
+            # Common login URL patterns
+           
+
+            
+           
+""""""
+
+            
+           
+
+            base_domain = self._extract_base_domain(api_entry.signup_url)
+           
+""""""
+
+           
+
+            
+           
+"""
+            # Common login URL patterns
+           """"""
             if not api_entry.login_url or api_entry.login_url == api_entry.signup_url:
                 # Generate likely login URL
                 login_patterns = [
@@ -356,7 +488,9 @@ class APIIntegrationService:
                     f"{base_domain}/signin",
                     f"{base_domain}/auth/login",
                     f"{base_domain}/account/login",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ]
 
                 # Use the first pattern (in production, verify these exist)
                 api_entry.login_url = login_patterns[0]
@@ -373,9 +507,27 @@ class APIIntegrationService:
     def _generate_environment_variables(
         self, api_name: str, provider: str
     ) -> List[str]:
-        """Generate likely environment variable names for an API."""
+        """
+Generate likely environment variable names for an API.
+
+       
+""""""
+
         # Clean names for environment variables
+       
+
+        
+       
+"""
         clean_provider = re.sub(r"[^a - zA - Z0 - 9]", "_", provider.upper())
+       """
+
+        
+       
+
+        # Clean names for environment variables
+       
+""""""
         clean_api = re.sub(r"[^a - zA - Z0 - 9]", "_", api_name.upper())
 
         # Common patterns
@@ -383,15 +535,30 @@ class APIIntegrationService:
             f"{clean_provider}_API_KEY",
             f"{clean_provider}_SECRET_KEY",
             f"{clean_api}_API_KEY",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         ]
 
         # Remove duplicates and return
         return list(set(env_vars))
 
     def _generate_login_url(self, signup_url: str) -> str:
-        """Generate login URL from signup URL."""
+        """
+Generate login URL from signup URL.
+
+        
+"""
         try:
+        """
+
             base_domain = self._extract_base_domain(signup_url)
+        
+
+        try:
+        
+""""""
+        
+       """
             return f"{base_domain}/login"
         except Exception:
             return signup_url
@@ -405,12 +572,22 @@ class APIIntegrationService:
         return f"{parsed.scheme}://{parsed.netloc}"
 
     def _extract_monthly_cost(self, cost_estimate: Optional[str]) -> float:
-        """Extract monthly cost from cost estimate string."""
+        """
+Extract monthly cost from cost estimate string.
+
         if not cost_estimate:
+            
+"""
             return 0.0
-
+            """"""
         # Look for dollar amounts
+            """
 
+            return 0.0
+            
+
+           
+""""""
         import re
 
         match = re.search(r"\$([0-9,]+(?:\.[0-9]{2})?)", cost_estimate)
@@ -426,19 +603,32 @@ class APIIntegrationService:
             # For now, just log the environment variables needed
             self.logger.info(
                 f"API {api_entry.api_name} requires: {', '.join(api_entry.environment_variables)}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         except Exception as e:
             self.logger.error(f"Error adding credential info: {e}")
 
     def _save_api_entry(self, api_entry: APIEntry):
-        """Save API entry to database."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Save API entry to database.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     INSERT OR REPLACE INTO api_management
                     (category,
     api_name,
@@ -447,9 +637,13 @@ class APIIntegrationService:
     cost_monthly,
     environment_variables,
                         signup_url, login_url, documentation_url, api_url, features, rate_limits,
-                         quality_score, notes, last_updated, auto_discovered)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          quality_score, notes, last_updated, auto_discovered)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+""","""
+
                     (
                         api_entry.category,
                         api_entry.api_name,
@@ -467,39 +661,96 @@ class APIIntegrationService:
                         api_entry.notes,
                         api_entry.last_updated.isoformat(),
                         api_entry.auto_discovered,
-                    ),
-                )
+                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """
+
+                 
+                
 
                 conn.commit()
+                
+""""""
 
+                 )
+                
+
+                 
+                
+"""
         except Exception as e:
             self.logger.error(f"Error saving API entry: {e}")
 
     def _track_api_costs(self, api_entry: APIEntry):
-        """Track API costs using the cost tracking service."""
+        """
+Track API costs using the cost tracking service.
+
+        
+"""
         try:
+        """"""
             if api_entry.cost_monthly > 0:
                 # This would integrate with the cost tracking service
                 self.logger.info(
                     f"Tracking costs for {api_entry.api_name}: ${api_entry.cost_monthly}/month"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
+        """
 
+        try:
+        
+
+       
+""""""
         except Exception as e:
             self.logger.error(f"Error tracking API costs: {e}")
 
     def _update_management_table_file(self):
-        """Update the API management table markdown file."""
-        try:
-            # Get all APIs from database
-            apis = self._get_all_apis()
+        """
+Update the API management table markdown file.
 
+        try:
+           
+""""""
+
+            # Get all APIs from database
+           
+
+            
+           
+""""""
+
+            
+           
+
+            apis = self._get_all_apis()
+           
+""""""
+
+           
+
+            
+           
+"""
+            # Get all APIs from database
+           """"""
             # Generate markdown content
             markdown_content = self._generate_markdown_table(apis)
 
             # Write to file
             table_file_path = (
                 "/Users/thomasbrianreynolds/online production/api_management_table.md"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             with open(table_file_path, "w") as f:
                 f.write(markdown_content)
@@ -510,21 +761,41 @@ class APIIntegrationService:
             self.logger.error(f"Error updating management table file: {e}")
 
     def _get_all_apis(self) -> List[APIEntry]:
-        """Get all APIs from the database."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Get all APIs from the database.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     SELECT category, api_name, provider, status, cost_monthly, environment_variables,
                         signup_url, login_url, documentation_url, api_url, features, rate_limits,
                                quality_score, notes, last_updated, auto_discovered
                     FROM api_management
                     ORDER BY category, quality_score DESC
-                """
-                )
+                
+""""""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
                 apis = []
                 for row in cursor.fetchall():
                     api = APIEntry(
@@ -544,7 +815,9 @@ class APIIntegrationService:
                         notes=row[13],
                         last_updated=datetime.fromisoformat(row[14]),
                         auto_discovered=bool(row[15]),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
                     apis.append(api)
 
                 return apis
@@ -555,10 +828,12 @@ class APIIntegrationService:
 
     def _generate_markdown_table(self, apis: List[APIEntry]) -> str:
         """Generate markdown table from API entries."""
-        content = "# API Management Table\\n\\n"
+        content = "# API Management Table\\n\\n""
         content += "*Last updated: {}*\\n\\n".format(
             datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         # Group by category
         categories = {}
@@ -568,7 +843,7 @@ class APIIntegrationService:
             categories[api.category].append(api)
 
         for category, category_apis in categories.items():
-            content += f"## {category}\\n\\n"
+            content += f"## {category}\\n\\n""
 
             # Table header
             content += "| API Name | Provider | Status | Cost/Month | Signup | Login | Documentation | Environment Variables | Rate Limits | Quality Score | Notes |\\n"
@@ -579,20 +854,22 @@ class APIIntegrationService:
                 status_badge = self._get_status_badge(api.status)
                 cost_display = (
                     f"${api.cost_monthly:.2f}" if api.cost_monthly > 0 else "Free"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 env_vars = ", ".join(api.environment_variables[:2])  # Show first 2
                 if len(api.environment_variables) > 2:
                     env_vars += "..."
 
                 quality_display = f"{api.quality_score:.2f}⭐"
 
-                content += f"| [{api.api_name}]({api.api_url}) | {api.provider} | {status_badge} | {cost_display} | [Signup]({api.signup_url}) | [Login]({api.login_url}) | [Docs]({api.documentation_url}) | `{env_vars}` | {api.rate_limits \
-    or 'N/A'} | {quality_display} | {api.notes[:50]}{'...' if len(api.notes) > 50 else ''} |\\n"
+                content += f"| [{api.api_name}]({api.api_url}) | {api.provider} | {status_badge} | {cost_display} | [Signup]({api.signup_url}) | [Login]({api.login_url}) | [Docs]({api.documentation_url}) | `{env_vars}` | {api.rate_limits \"
+#     or 'N/A'} | {quality_display} | {api.notes[:50]}{'...' if len(api.notes) > 50 else ''} |\\n"
 
             content += "\\n"
 
         # Add summary section
-        content += "## Summary\\n\\n"
+        content += "## Summary\\n\\n""
 
         total_apis = len(apis)
         free_apis = len([api for api in apis if api.status == "free"])
@@ -609,7 +886,7 @@ class APIIntegrationService:
         content += f"- **Total Monthly Cost**: ${total_cost:.2f}\\n\\n"
 
         # Add environment variables checklist
-        content += "## Environment Variables Checklist\\n\\n"
+        content += "## Environment Variables Checklist\\n\\n""
         all_env_vars = set()
         for api in apis:
             all_env_vars.update(api.environment_variables)
@@ -617,18 +894,22 @@ class APIIntegrationService:
         for env_var in sorted(all_env_vars):
             content += f"- [ ] `{env_var}`\\n"
 
-        content += "\\n## Cost Management Strategy\\n\\n"
+        content += "\\n## Cost Management Strategy\\n\\n""
         content += "1. **Free Tier First**: Always start with free tiers to test functionality\\n"
         content += (
             "2. **Monitor Usage**: Track API usage to avoid unexpected charges\\n"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         content += "3. **Set Alerts**: Configure billing alerts for paid services\\n"
         content += "4. **Regular Review**: Review and optimize API usage monthly\\n"
         content += (
             "5. **Budget Limits**: Set strict budget limits for each service\\n\\n"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
-        content += "## Action Items\\n\\n"
+        content += "## Action Items\\n\\n""
         content += "- [ ] Set up environment variables for all APIs\\n"
         content += "- [ ] Configure billing alerts for paid services\\n"
         content += "- [ ] Test all free tier APIs\\n"
@@ -644,17 +925,40 @@ class APIIntegrationService:
             "freemium": "🟡 Freemium",
             "paid": "🔴 Paid",
             "disabled": "⚫ Disabled",
-        }
+         }
         return badges.get(status, status)
 
     def add_channel_and_discover(
         self, channel_name: str, budget_limit: float = 25.0
     ) -> Dict[str, Any]:
-        """Add a new channel and automatically discover APIs for it."""
-        try:
-            # Add channel to auto - discovery service
-            success = self.auto_discovery.add_channel(channel_name)
+        """
+Add a new channel and automatically discover APIs for it.
 
+        try:
+           
+""""""
+
+            # Add channel to auto - discovery service
+           
+
+            
+           
+""""""
+
+            
+           
+
+            success = self.auto_discovery.add_channel(channel_name)
+           
+""""""
+
+           
+
+            
+           
+"""
+            # Add channel to auto - discovery service
+           """"""
             if success:
                 # Run discovery and integration
                 result = self.discover_and_integrate_apis(channel_name)
@@ -667,10 +971,17 @@ class APIIntegrationService:
             return {"success": False, "error": str(e)}
 
     def get_integration_stats(self) -> Dict[str, Any]:
-        """Get integration statistics."""
-        try:
-            apis = self._get_all_apis()
+        """
+Get integration statistics.
 
+        
+"""
+        try:
+        """"""
+            apis = self._get_all_apis()
+           """"""
+        try:
+        """"""
             stats = {
                 "total_apis": len(apis),
                 "by_status": {},
@@ -678,26 +989,30 @@ class APIIntegrationService:
                 "total_monthly_cost": sum(api.cost_monthly for api in apis),
                 "auto_discovered_count": len(
                     [api for api in apis if api.auto_discovered]
-                ),
+                 ),
                 "average_quality_score": (
                     sum(api.quality_score for api in apis) / len(apis) if apis else 0
-                ),
+                 ),
                 "last_updated": (
                     max(api.last_updated for api in apis).isoformat() if apis else None
-                ),
-            }
+                 ),
+             }
 
             # Count by status
             for api in apis:
                 stats["by_status"][api.status] = (
                     stats["by_status"].get(api.status, 0) + 1
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
             # Count by category
             for api in apis:
                 stats["by_category"][api.category] = (
                     stats["by_category"].get(api.category, 0) + 1
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
             return stats
 
@@ -716,7 +1031,9 @@ if __name__ == "__main__":
         "--action",
         choices=["discover", "add - channel", "update - table", "stats"],
         required=True,
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+     )
     parser.add_argument("--channel", help="Channel name")
     parser.add_argument("--budget", type=float, default=25.0, help="Budget limit")
 

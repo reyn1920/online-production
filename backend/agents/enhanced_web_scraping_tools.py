@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Enhanced Web Scraping Tools Module
-
+""""""
 Implements comprehensive web scraping capabilities with:
 - Advanced error handling and retry mechanisms
 - Proxy rotation and anti - detection measures
@@ -9,6 +9,8 @@ Implements comprehensive web scraping capabilities with:
 - Multiple parsing strategies (BeautifulSoup, Selenium, requests - html)
 - Data extraction pipelines with validation
 - Caching and performance optimization
+""""""
+Enhanced Web Scraping Tools Module
 """
 
 import asyncio
@@ -100,7 +102,9 @@ class DataFormat(Enum):
 
 @dataclass
 class ProxyConfig:
-    """Proxy configuration"""
+    """
+Proxy configuration
+
 
     host: str
     port: int
@@ -109,12 +113,20 @@ class ProxyConfig:
     password: Optional[str] = None
     is_active: bool = True
     success_rate: float = 1.0
+   
+""""""
+
     last_used: Optional[datetime] = None
+   
 
-
+    
+   
+"""
 @dataclass
 class ScrapingConfig:
-    """Configuration for scraping operations"""
+    """
+Configuration for scraping operations
+
 
     method: ScrapingMethod = ScrapingMethod.REQUESTS
     max_retries: int = 3
@@ -129,12 +141,20 @@ class ScrapingConfig:
     javascript_enabled: bool = False
     headless: bool = True
     custom_headers: Dict[str, str] = field(default_factory=dict)
+   
+""""""
+
     cookies: Dict[str, str] = field(default_factory=dict)
+   
 
-
+    
+   
+"""
 @dataclass
 class ExtractionRule:
-    """Rule for extracting data from HTML"""
+    """
+Rule for extracting data from HTML
+
 
     name: str
     selector: str  # CSS selector or XPath
@@ -143,12 +163,20 @@ class ExtractionRule:
     is_list: bool = False  # Extract multiple elements
     required: bool = True  # Fail if not found
     default_value: Any = None
+   
+""""""
+
     post_process: Optional[Callable] = None  # Function to process extracted data
+   
 
-
+    
+   
+"""
 @dataclass
 class ScrapingResult:
-    """Result of a scraping operation"""
+    """
+Result of a scraping operation
+
 
     url: str
     status_code: int
@@ -159,9 +187,15 @@ class ScrapingResult:
     response_time: float = 0.0
     timestamp: datetime = field(default_factory=datetime.now)
     method_used: Optional[ScrapingMethod] = None
+   
+""""""
+
     proxy_used: Optional[str] = None
+   
 
-
+    
+   
+"""
 class EnhancedWebScraper:
     """Enhanced web scraper with advanced features"""
 
@@ -184,19 +218,29 @@ class EnhancedWebScraper:
             self._load_proxies()
 
     def _init_session(self) -> None:
-        """Initialize requests session with retry strategy"""
+        """
+Initialize requests session with retry strategy
+
         if not requests:
+            
+"""
             return
-
+            """"""
         self.session = requests.Session()
+            """
 
+            return
+            
+
+           
+""""""
         # Configure retry strategy
         retry_strategy = Retry(
             total=self.config.max_retries,
             backoff_factor=self.config.retry_delay,
             status_forcelist=[429, 500, 502, 503, 504],
             allowed_methods=["HEAD", "GET", "OPTIONS"],
-        )
+         )
 
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self.session.mount("http://", adapter)
@@ -210,8 +254,8 @@ class EnhancedWebScraper:
                 "Accept - Encoding": "gzip, deflate",
                 "Connection": "keep - alive",
                 "Upgrade - Insecure - Requests": "1",
-            }
-        )
+             }
+         )
 
         # Add custom headers
         if self.config.custom_headers:
@@ -230,12 +274,30 @@ class EnhancedWebScraper:
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15",
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
             "Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0",
-        ]
+         ]
 
     def _load_proxies(self) -> None:
-        """Load proxy configurations from file or environment"""
+        """
+Load proxy configurations from file or environment
+
+       
+""""""
+
         # Try to load from environment variable
+       
+
+        
+       
+"""
         proxy_list = os.getenv("SCRAPING_PROXIES")
+       """
+
+        
+       
+
+        # Try to load from environment variable
+       
+""""""
         if proxy_list:
             try:
                 proxy_data = json.loads(proxy_list)
@@ -261,10 +323,19 @@ class EnhancedWebScraper:
         return hashlib.md5(key_data.encode()).hexdigest()
 
     def _get_cached_response(self, cache_key: str) -> Optional[Dict]:
-        """Get cached response if available and not expired"""
+        """
+Get cached response if available and not expired
+
         if not self.config.cache_responses:
+            
+"""
+            return None
+            """"""
+            """
+
             return None
 
+            """
         cache_file = self.cache_dir / f"{cache_key}.pkl"
         if not cache_file.exists():
             return None
@@ -276,7 +347,7 @@ class EnhancedWebScraper:
             # Check if cache is expired
             if datetime.now() - cached_data["timestamp"] > timedelta(
                 seconds=self.config.cache_duration
-            ):
+#             ):
                 cache_file.unlink()  # Remove expired cache
                 return None
 
@@ -285,10 +356,19 @@ class EnhancedWebScraper:
             return None
 
     def _cache_response(self, cache_key: str, data: Dict) -> None:
-        """Cache response data"""
+        """
+Cache response data
+
         if not self.config.cache_responses:
+            
+"""
+            return
+            """"""
+            """
+
             return
 
+            """
         cache_file = self.cache_dir / f"{cache_key}.pkl"
         try:
             with open(cache_file, "wb") as f:
@@ -297,10 +377,19 @@ class EnhancedWebScraper:
             self.logger.warning(f"Failed to cache response for key: {cache_key}")
 
     def _get_random_proxy(self) -> Optional[Dict[str, str]]:
-        """Get a random active proxy"""
+        """
+Get a random active proxy
+
         if not self.proxies:
+            
+"""
+            return None
+            """"""
+            """
+
             return None
 
+            """
         active_proxies = [p for p in self.proxies if p.is_active]
         if not active_proxies:
             return None
@@ -317,14 +406,41 @@ class EnhancedWebScraper:
         return {"http": proxy_url, "https": proxy_url}
 
     def _get_random_user_agent(self) -> str:
-        """Get a random user agent"""
+        """
+Get a random user agent
+
+        
+"""
         return random.choice(self.user_agents)
-
+        """"""
     async def _respect_rate_limit(self) -> None:
-        """Ensure rate limiting is respected"""
-        current_time = time.time()
-        time_since_last = current_time - self.last_request_time
+        """
+Ensure rate limiting is respected
 
+        
+"""
+        return random.choice(self.user_agents)
+        """
+
+        current_time = time.time()
+       
+
+        
+       
+"""
+        time_since_last = current_time - self.last_request_time
+       """"""
+
+        
+
+       """
+
+        time_since_last = current_time - self.last_request_time
+       
+
+        
+       
+"""
         if time_since_last < self.config.rate_limit:
             sleep_time = self.config.rate_limit - time_since_last
             await asyncio.sleep(sleep_time)
@@ -340,7 +456,7 @@ class EnhancedWebScraper:
                 success=False,
                 data={},
                 error_message="requests library not available",
-            )
+             )
 
         start_time = time.time()
         proxy_used = None
@@ -375,7 +491,7 @@ class EnhancedWebScraper:
                 response_time=response_time,
                 method_used=ScrapingMethod.REQUESTS,
                 proxy_used=proxy_used,
-            )
+             )
 
         except requests.RequestException as e:
             response_time = time.time() - start_time
@@ -383,14 +499,14 @@ class EnhancedWebScraper:
                 url=url,
                 status_code=(
                     getattr(e.response, "status_code", 0) if hasattr(e, "response") else 0
-                ),
+                 ),
                 success=False,
                 data={},
                 error_message=str(e),
                 response_time=response_time,
                 method_used=ScrapingMethod.REQUESTS,
                 proxy_used=proxy_used,
-            )
+             )
 
     async def _scrape_with_selenium(self, url: str) -> ScrapingResult:
         """Scrape using Selenium WebDriver"""
@@ -401,7 +517,7 @@ class EnhancedWebScraper:
                 success=False,
                 data={},
                 error_message="Selenium not available",
-            )
+             )
 
         start_time = time.time()
         driver = None
@@ -442,7 +558,7 @@ class EnhancedWebScraper:
             if self.config.javascript_enabled:
                 WebDriverWait(driver, 10).until(
                     lambda d: d.execute_script("return document.readyState") == "complete"
-                )
+                 )
 
             html = driver.page_source
             response_time = time.time() - start_time
@@ -456,7 +572,7 @@ class EnhancedWebScraper:
                 response_time=response_time,
                 method_used=ScrapingMethod.SELENIUM,
                 proxy_used=proxy_used,
-            )
+             )
 
         except Exception as e:
             response_time = time.time() - start_time
@@ -468,7 +584,7 @@ class EnhancedWebScraper:
                 error_message=str(e),
                 response_time=response_time,
                 method_used=ScrapingMethod.SELENIUM,
-            )
+             )
         finally:
             if driver:
                 driver.quit()
@@ -482,7 +598,7 @@ class EnhancedWebScraper:
                 success=False,
                 data={},
                 error_message="requests - html not available",
-            )
+             )
 
         start_time = time.time()
 
@@ -512,7 +628,7 @@ class EnhancedWebScraper:
                 raw_html=html,
                 response_time=response_time,
                 method_used=ScrapingMethod.REQUESTS_HTML,
-            )
+             )
 
         except Exception as e:
             response_time = time.time() - start_time
@@ -524,14 +640,32 @@ class EnhancedWebScraper:
                 error_message=str(e),
                 response_time=response_time,
                 method_used=ScrapingMethod.REQUESTS_HTML,
-            )
+             )
 
     async def scrape_url(
         self, url: str, extraction_rules: Optional[List[ExtractionRule]] = None
-    ) -> ScrapingResult:
-        """Scrape a single URL with the configured method"""
+#     ) -> ScrapingResult:
+        """
+Scrape a single URL with the configured method
+
+       
+""""""
+
         # Check cache first
+       
+
+        
+       
+"""
         cache_key = self._get_cache_key(url, self.config.method)
+       """
+
+        
+       
+
+        # Check cache first
+       
+""""""
         cached_result = self._get_cached_response(cache_key)
         if cached_result:
             self.logger.info(f"Using cached result for {url}")
@@ -572,7 +706,7 @@ class EnhancedWebScraper:
                 "timestamp": result.timestamp,
                 "method_used": result.method_used,
                 "proxy_used": result.proxy_used,
-            }
+             }
             self._cache_response(cache_key, cache_data)
 
         return result
@@ -613,12 +747,30 @@ class EnhancedWebScraper:
         return extracted_data
 
     def _extract_element_value(self, element, rule: ExtractionRule) -> Any:
-        """Extract value from a single element"""
+        """
+Extract value from a single element
+
         if rule.attribute:
             value = element.get(rule.attribute)
         else:
-            value = element.get_text(strip=True)
+           
+""""""
 
+            value = element.get_text(strip=True)
+           
+
+            
+           
+""""""
+
+
+            
+
+           
+
+            value = element.get_text(strip=True)
+           
+""""""
         if value and rule.regex_pattern:
             import re
 
@@ -639,11 +791,29 @@ class EnhancedWebScraper:
         extraction_rules: Optional[List[ExtractionRule]] = None,
         max_concurrent: int = 5,
     ) -> List[ScrapingResult]:
-        """Scrape multiple URLs concurrently"""
-        semaphore = asyncio.Semaphore(max_concurrent)
+        """
+Scrape multiple URLs concurrently
 
+       
+""""""
+
+        semaphore = asyncio.Semaphore(max_concurrent)
+       
+
+        
+       
+"""
         async def scrape_with_semaphore(url: str) -> ScrapingResult:
             async with semaphore:
+       """
+
+        
+       
+
+        semaphore = asyncio.Semaphore(max_concurrent)
+       
+""""""
+
                 return await self.scrape_url(url, extraction_rules)
 
         tasks = [scrape_with_semaphore(url) for url in urls]
@@ -660,8 +830,8 @@ class EnhancedWebScraper:
                         success=False,
                         data={},
                         error_message=str(result),
-                    )
-                )
+                     )
+                 )
             else:
                 final_results.append(result)
 
@@ -669,10 +839,23 @@ class EnhancedWebScraper:
 
     def export_results(
         self, results: List[ScrapingResult], format_type: DataFormat, output_file: str
-    ) -> bool:
-        """Export scraping results to file"""
+#     ) -> bool:
+        
+Export scraping results to file
+""""""
+
         try:
+        
+
+       
+""""""
+
             if format_type == DataFormat.JSON:
+        
+
+        try:
+        
+"""
                 data = [
                     {
                         "url": r.url,
@@ -684,9 +867,9 @@ class EnhancedWebScraper:
                         "timestamp": r.timestamp.isoformat(),
                         "method_used": r.method_used.value if r.method_used else None,
                         "proxy_used": r.proxy_used,
-                    }
+                     }
                     for r in results
-                ]
+                 ]
 
                 with open(output_file, "w", encoding="utf - 8") as f:
                     json.dump(data, f, indent=2, ensure_ascii=False)
@@ -725,9 +908,9 @@ class EnhancedWebScraper:
                                 "timestamp": result.timestamp.isoformat(),
                                 "method_used": (
                                     result.method_used.value if result.method_used else None
-                                ),
+                                 ),
                                 "proxy_used": result.proxy_used,
-                            }
+                             }
                             row.update(result.data)
                             writer.writerow(row)
 
@@ -738,10 +921,19 @@ class EnhancedWebScraper:
             return False
 
     def get_statistics(self, results: List[ScrapingResult]) -> Dict[str, Any]:
-        """Get statistics from scraping results"""
+        """
+Get statistics from scraping results
+
         if not results:
+            
+"""
+            return {}
+            """"""
+            """
+
             return {}
 
+            """
         successful = [r for r in results if r.success]
         failed = [r for r in results if not r.success]
 
@@ -755,7 +947,7 @@ class EnhancedWebScraper:
             "methods_used": {},
             "status_codes": {},
             "error_types": {},
-        }
+         }
 
         # Method statistics
         for result in results:
@@ -777,10 +969,28 @@ class EnhancedWebScraper:
         return stats
 
     def cleanup(self) -> None:
-        """Clean up resources"""
-        if self.session:
-            self.session.close()
+        """
+Clean up resources
 
+        if self.session:
+           
+""""""
+
+            self.session.close()
+           
+
+            
+           
+""""""
+
+
+            
+
+           
+
+            self.session.close()
+           
+""""""
         if self.driver:
             self.driver.quit()
 
@@ -791,16 +1001,51 @@ class EnhancedWebScraper:
 if __name__ == "__main__":
 
     async def test_enhanced_scraper():
-        """Test the enhanced web scraper"""
+        """
+Test the enhanced web scraper
+
+       
+""""""
+
         # Configure scraper
+       
+
+        
+       
+"""
         config = ScrapingConfig(
+       """
+
+        
+       
+
+        # Configure scraper
+       
+""""""
+
             method=ScrapingMethod.REQUESTS,
             max_retries=3,
             rate_limit=1.0,
             cache_responses=True,
             rotate_user_agents=True,
-        )
+        
 
+         
+        
+"""
+         )
+        """"""
+
+         
+
+        """
+
+         )
+        
+
+         
+        
+"""
         scraper = EnhancedWebScraper(config)
 
         # Define extraction rules
@@ -812,16 +1057,16 @@ if __name__ == "__main__":
                 attribute="content",
                 required=False,
                 default_value="No description",
-            ),
+             ),
             ExtractionRule(name="headings", selector="h1, h2, h3", is_list=True, required=False),
-        ]
+         ]
 
         # Test URLs
         test_urls = [
             "https://httpbin.org/html",
             "https://httpbin.org/json",
             "https://example.com",
-        ]
+         ]
 
         try:
             # Scrape multiple URLs

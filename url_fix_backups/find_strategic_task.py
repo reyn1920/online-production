@@ -1,7 +1,7 @@
 #!/usr / bin / env python3
-"""
+""""""
 Find the specific strategic project task by ID.
-"""
+""""""
 
 import os
 import sys

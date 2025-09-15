@@ -65,15 +65,18 @@ class Audio2Pose(nn.Module):
                 batch["ref"].unsqueeze(1).shape,
                 dtype=batch["ref"].dtype,
                 device=batch["ref"].device,
-            )
-        ]
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         ]
 
         for i in range(div):
             z = torch.randn(bs, self.latent_dim).to(ref.device)
             batch["z"] = z
             audio_emb = self.audio_encoder(
                 indiv_mels_use[:, i * self.seq_len : (i + 1) * self.seq_len, :, :, :]
-            )  # bs seq_len 512
+# BRACKET_SURGEON: disabled
+#             )  # bs seq_len 512
             batch["audio_emb"] = audio_emb
             batch = self.netG.test(batch)
             pose_motion_pred_list.append(batch["pose_motion_pred"])  # list of bs seq_len 6
@@ -83,7 +86,8 @@ class Audio2Pose(nn.Module):
             batch["z"] = z
             audio_emb = self.audio_encoder(
                 indiv_mels_use[:, -1 * self.seq_len :, :, :, :]
-            )  # bs seq_len  512
+# BRACKET_SURGEON: disabled
+#             )  # bs seq_len  512
             if audio_emb.shape[1] != self.seq_len:
                 pad_dim = self.seq_len - audio_emb.shape[1]
                 pad_audio_emb = audio_emb[:, :1].repeat(1, pad_dim, 1)

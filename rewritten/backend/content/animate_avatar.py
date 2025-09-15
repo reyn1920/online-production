@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""
+""""""
 Animate Avatar - Talking Head Video Generation System
 
 This module implements avatar animation using Linly - Talker \
-    or similar open - source models
+#     or similar open - source models
 to generate talking head videos from a source image and audio file. It supports
 batch processing, quality settings, and integration with the content pipeline.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import hashlib
 import json
@@ -78,7 +78,7 @@ class AnimationConfig:
     model: AnimationModel = AnimationModel.LINLY_TALKER
     quality: AnimationQuality = AnimationQuality.MEDIUM
     fps: int = 25
-    resolution: Tuple[int, int] = (1280, 720)
+    resolution: Tuple[int, int] = (1280, 720):
     enhance_face: bool = True
     stabilize_video: bool = True
     audio_sync_threshold: float = 0.1
@@ -176,7 +176,8 @@ class LinlyTalkerEngine:
         audio_file: str,
         output_path: str,
         config: AnimationConfig,
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Generate talking head video using Linly - Talker with advanced features."""
         if not self.is_initialized:
             if not self.initialize():
@@ -201,7 +202,8 @@ class LinlyTalkerEngine:
             # Run the command with progress monitoring
             process = subprocess.Popen(
                 cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             stdout, stderr = process.communicate(timeout=600)  # 10 minute timeout
 
@@ -209,13 +211,15 @@ class LinlyTalkerEngine:
                 # Post - process the generated video
                 if self._post_process_video(output_path, config):
                     self.logger.info(
-                        "Linly - Talker generation \
-    and post - processing completed successfully"
-                    )
+                        "Linly - Talker generation \"
+#     and post - processing completed successfully"
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     self.logger.warning(
                         "Linly - Talker generation completed but post - processing failed"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 return True
             else:
                 self.logger.error(f"Linly - Talker failed: {stderr}")
@@ -278,7 +282,8 @@ class LinlyTalkerEngine:
             Path(output_path).stem,
             "--device",
             self.device,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Quality and enhancement settings
         if config.quality == AnimationQuality.HIGH:
@@ -294,8 +299,10 @@ class LinlyTalkerEngine:
                     "realesrgan",
                     "--upscale",
                     "2",
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
             if not self.gpu_available:
                 cmd.append("--cpu")
 
@@ -306,7 +313,8 @@ class LinlyTalkerEngine:
                 EmotionType.SAD: "-0.5",
                 EmotionType.ANGRY: "0.6",
                 EmotionType.SURPRISED: "0.7",
-            }
+# BRACKET_SURGEON: disabled
+#             }
             if config.emotion in emotion_mapping:
                 cmd.extend(["--expression_scale", emotion_mapping[config.emotion]])
 
@@ -353,7 +361,8 @@ class LinlyTalkerEngine:
                     "-f",
                     "null",
                     "-",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 apply_cmd = [
                     "ffmpeg",
@@ -364,7 +373,8 @@ class LinlyTalkerEngine:
                     "-c:a",
                     "copy",
                     stabilized_path,
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 try:
                     subprocess.run(stabilize_cmd, capture_output=True, check=True)
@@ -409,7 +419,8 @@ class FallbackEngine:
         audio_file: str,
         output_path: str,
         config: AnimationConfig,
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Generate basic video with static image and audio."""
         try:
             # Get audio duration
@@ -442,7 +453,8 @@ class FallbackEngine:
                 "-s",
                 f"{config.resolution[0]}x{config.resolution[1]}",
                 output_path,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             self.logger.info(f"Creating fallback video: {' '.join(cmd)}")
 
@@ -471,7 +483,8 @@ class FallbackEngine:
                 "-of",
                 "csv = p = 0",
                 audio_file,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             result = subprocess.run(cmd, capture_output=True, text=True)
             return float(result.stdout.strip())
         except Exception:
@@ -530,7 +543,8 @@ class QualityAnalyzer:
             # Basic face detection using OpenCV
             face_cascade = cv2.CascadeClassifier(
                 cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(gray, 1.1, 4)
 
@@ -541,7 +555,8 @@ class QualityAnalyzer:
                     "face_center": (x + w // 2, y + h // 2),
                     "face_area": w * h,
                     "confidence": 0.8,  # Simplified confidence
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             return None
 
@@ -561,7 +576,8 @@ class CacheManager:
 
     def _generate_cache_key(
         self, source_image: str, audio_file: str, config: AnimationConfig
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate unique cache key for animation parameters."""
         # Create hash from file contents and config
         hasher = hashlib.md5()
@@ -602,7 +618,8 @@ class CacheManager:
         audio_file: str,
         config: AnimationConfig,
         result_path: str,
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Cache animation result."""
         try:
             cache_key = self._generate_cache_key(source_image, audio_file, config)
@@ -650,7 +667,8 @@ class AnimateAvatar:
         self.linly_engine = LinlyTalkerEngine(
             model_path=self.config.model_path,
             device="cuda" if self.config.use_gpu else "cpu",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.fallback_engine = FallbackEngine()
 
         # Initialize advanced components
@@ -686,7 +704,8 @@ class AnimateAvatar:
         output_path: str,
         job_id: Optional[str] = None,
         config: Optional[AnimationConfig] = None,
-    ) -> AnimationJob:
+# BRACKET_SURGEON: disabled
+#     ) -> AnimationJob:
         """Create a new animation job."""
         if job_id is None:
             job_id = f"anim_{int(time.time())}_{len(self.active_jobs)}"
@@ -711,8 +730,10 @@ class AnimateAvatar:
                 "created_at": datetime.now().isoformat(),
                 "source_image_size": self._get_image_info(source_image),
                 "audio_duration": self._get_audio_info(audio_file),
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Animation job created: {job_id}")
@@ -736,7 +757,8 @@ class AnimateAvatar:
             if self.cache_manager:
                 cached_result = self.cache_manager.get_cached_result(
                     job.source_image, job.audio_file, job.config
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if cached_result:
                     shutil.copy2(cached_result, job.output_path)
                     job.progress = 100.0
@@ -767,7 +789,8 @@ class AnimateAvatar:
             if job.config.model == AnimationModel.LINLY_TALKER:
                 success = self.linly_engine.generate_video(
                     processed_image, processed_audio, job.output_path, job.config
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 job.progress = 70.0
 
             # Fallback to basic video generation if primary fails
@@ -775,14 +798,16 @@ class AnimateAvatar:
                 self.logger.warning(f"Primary engine failed, using fallback for job {job_id}")
                 success = self.fallback_engine.generate_video(
                     processed_image, processed_audio, job.output_path, job.config
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 job.progress = 70.0
 
             if success:
                 # Analyze quality of generated video
                 quality_score = self.quality_analyzer.analyze_lip_sync_quality(
                     job.output_path, job.audio_file
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 job.metadata["quality_score"] = quality_score
                 job.progress = 85.0
 
@@ -790,7 +815,8 @@ class AnimateAvatar:
                 if quality_score < job.config.quality_threshold:
                     self.logger.warning(
                         f"Quality below threshold ({quality_score:.2f} < {job.config.quality_threshold:.2f}) for job {job_id}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     # Could trigger re - processing with different settings here
 
                 # Post - process video
@@ -801,7 +827,8 @@ class AnimateAvatar:
                 if self.cache_manager:
                     self.cache_manager.cache_result(
                         job.source_image, job.audio_file, job.config, job.output_path
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 job.progress = 100.0
                 job.status = "completed"
@@ -809,7 +836,8 @@ class AnimateAvatar:
 
                 self.logger.info(
                     f"Animation job completed: {job_id} (quality: {quality_score:.2f})"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return True
             else:
                 job.status = "failed"
@@ -850,7 +878,8 @@ class AnimateAvatar:
         output_path: str,
         job_id: Optional[str] = None,
         config: Optional[AnimationConfig] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Submit job for asynchronous processing."""
         if not self.config.real_time_processing:
             raise RuntimeError("Real - time processing not enabled")
@@ -886,7 +915,8 @@ class AnimateAvatar:
             # Save processed image
             processed_path = (
                 self.temp_dir / f"processed_emotion_{config.emotion.value}_{Path(image_path).name}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             cv2.imwrite(str(processed_path), image)
 
             return str(processed_path)
@@ -998,7 +1028,8 @@ class AnimateAvatar:
                 "-c:a",
                 "pcm_s16le",
                 str(processed_path),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True, text=True)
 
@@ -1064,7 +1095,8 @@ class AnimateAvatar:
                 "-f",
                 "null",
                 "-",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             subprocess.run(cmd, capture_output=True)
 
@@ -1076,7 +1108,8 @@ class AnimateAvatar:
                 "-vf",
                 "vidstabtransform = input = transforms.trf:zoom = 0:smoothing = 10",
                 temp_path,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True)
 
@@ -1111,7 +1144,8 @@ class AnimateAvatar:
                 "-movflags",
                 "+faststart",
                 temp_path,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True)
 
@@ -1130,7 +1164,8 @@ class AnimateAvatar:
                     "height": img.height,
                     "format": img.format,
                     "mode": img.mode,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception:
             return {}
 
@@ -1146,7 +1181,8 @@ class AnimateAvatar:
                 "-show_format",
                 "-show_streams",
                 audio_path,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             result = subprocess.run(cmd, capture_output=True, text=True)
 
             if result.returncode == 0:
@@ -1155,7 +1191,8 @@ class AnimateAvatar:
                     "duration": float(info.get("format", {}).get("duration", 0)),
                     "bit_rate": info.get("format", {}).get("bit_rate"),
                     "format_name": info.get("format", {}).get("format_name"),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception:
             pass
         return {}
@@ -1212,7 +1249,8 @@ if __name__ == "__main__":
         resolution=(1280, 720),
         enhance_face=True,
         stabilize_video=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     animator = AnimateAvatar(config)
 
@@ -1223,7 +1261,8 @@ if __name__ == "__main__":
             source_image="./assets/avatar.jpg",
             audio_file="./assets/speech.wav",
             output_path="./output/animated_avatar.mp4",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         print(f"Animation job created: {job.job_id}")
 

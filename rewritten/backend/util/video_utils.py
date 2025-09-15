@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 Video processing utilities for TRAE.AI System
-"""
+""""""
 
 import subprocess
 from datetime import datetime
@@ -29,7 +29,7 @@ class VideoProcessor:
 
 
 def create_video_from_script(script_data: Dict[str, Any], output_path: str) -> Dict[str, Any]:
-    """
+    """"""
     Create a video file from script data
 
     Args:
@@ -38,14 +38,14 @@ def create_video_from_script(script_data: Dict[str, Any], output_path: str) -> D
 
     Returns:
         Dictionary with creation status and metadata
-    """
+    """"""
     try:
         # Simulate video creation (in real implementation, this would use ffmpeg or similar)
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
 
         # Create a placeholder video file (text - based simulation)
-        video_content = f"""
+        video_content = f""""""
 # Video File: {output_file.name}
 # Created: {datetime.now().isoformat()}
 # Script Data: {script_data.get('title', 'Untitled')}
@@ -55,7 +55,7 @@ In production, this would be an actual MP4 file generated from:
 - Script: {script_data.get('script', 'No script provided')}
 - Duration: {script_data.get('duration', '60')} seconds
 - Resolution: {script_data.get('resolution', '1920x1080')}
-"""
+""""""
 
         with open(output_path + ".txt", "w") as f:
             f.write(video_content)
@@ -67,14 +67,15 @@ In production, this would be an actual MP4 file generated from:
             "resolution": script_data.get("resolution", "1920x1080"),
             "created_at": datetime.now().isoformat(),
             "file_size": len(video_content),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         return {"status": "error", "error": str(e), "output_path": output_path}
 
 
 def generate_video_thumbnail(video_path: str, timestamp: str = "00:00:01") -> Dict[str, Any]:
-    """
+    """"""
     Generate a thumbnail image from a video file
 
     Args:
@@ -83,20 +84,20 @@ def generate_video_thumbnail(video_path: str, timestamp: str = "00:00:01") -> Di
 
     Returns:
         Dictionary with thumbnail generation status
-    """
+    """"""
     try:
         video_file = Path(video_path)
         thumbnail_path = video_file.parent / f"{video_file.stem}_thumbnail.jpg"
 
         # Simulate thumbnail generation
-        thumbnail_content = f"""
+        thumbnail_content = f""""""
 # Thumbnail for: {video_file.name}
 # Generated at: {timestamp}
 # Created: {datetime.now().isoformat()}
 
 This is a simulated thumbnail file.
 In production, this would be an actual JPEG image extracted from the video.
-"""
+""""""
 
         with open(str(thumbnail_path) + ".txt", "w") as f:
             f.write(thumbnail_content)
@@ -107,19 +108,20 @@ In production, this would be an actual JPEG image extracted from the video.
             "timestamp": timestamp,
             "created_at": datetime.now().isoformat(),
             "file_size": len(thumbnail_content),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         return {"status": "error", "error": str(e), "video_path": video_path}
 
 
 def check_ffmpeg_available() -> bool:
-    """
+    """"""
     Check if ffmpeg is available on the system
 
     Returns:
         True if ffmpeg is available, False otherwise
-    """
+    """"""
     try:
         result = subprocess.run(["ffmpeg", "-version"], capture_output=True, text=True, timeout=5)
         return result.returncode == 0
@@ -128,7 +130,7 @@ def check_ffmpeg_available() -> bool:
 
 
 def get_video_info(video_path: str) -> Dict[str, Any]:
-    """
+    """"""
     Get information about a video file
 
     Args:
@@ -136,7 +138,7 @@ def get_video_info(video_path: str) -> Dict[str, Any]:
 
     Returns:
         Dictionary with video information
-    """
+    """"""
     try:
         video_file = Path(video_path)
         if not video_file.exists():
@@ -144,7 +146,8 @@ def get_video_info(video_path: str) -> Dict[str, Any]:
                 "status": "error",
                 "error": "Video file not found",
                 "path": video_path,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Simulate video info extraction
         return {
@@ -156,7 +159,8 @@ def get_video_info(video_path: str) -> Dict[str, Any]:
             "resolution": "1920x1080",  # Simulated resolution
             "codec": "h264",  # Simulated codec
             "created_at": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         return {"status": "error", "error": str(e), "path": video_path}
@@ -169,4 +173,5 @@ __all__ = [
     "generate_video_thumbnail",
     "check_ffmpeg_available",
     "get_video_info",
-]
+# BRACKET_SURGEON: disabled
+# ]

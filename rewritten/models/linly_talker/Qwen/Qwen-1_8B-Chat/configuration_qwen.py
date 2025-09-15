@@ -40,7 +40,8 @@ class QWenConfig(PretrainedConfig):
             use_cache_kernel = False,
             softmax_in_fp32 = False,
             **kwargs,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.vocab_size = vocab_size
         self.hidden_size = hidden_size
         self.intermediate_size = intermediate_size
@@ -69,4 +70,5 @@ class QWenConfig(PretrainedConfig):
         super().__init__(
             tie_word_embeddings = tie_word_embeddings,
                 **kwargs
-        )
+# BRACKET_SURGEON: disabled
+#         )

@@ -107,7 +107,8 @@ LANGUAGES = {
         "ba": "bashkir",
         "jw": "javanese",
         "su": "sundanese",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # language code lookup by name, with a few language aliases
 TO_LANGUAGE_CODE = {
@@ -123,7 +124,8 @@ TO_LANGUAGE_CODE = {
         "moldovan": "ro",
         "sinhalese": "si",
         "castilian": "es",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 @dataclass(frozen = True)
 
@@ -142,16 +144,17 @@ class Tokenizer:
 
     def decode(
         self, token_ids: Union[int, List[int], np.ndarray, torch.Tensor], **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         return self.tokenizer.decode(token_ids, **kwargs)
 
 
     def decode_with_timestamps(self, tokens) -> str:
-        """
-        Timestamp tokens are above the special tokens' id range \
-    and are ignored by `decode()`.
+        """"""
+        Timestamp tokens are above the special tokens' id range \'
+#     and are ignored by `decode()`.
         This method decodes given tokens with timestamps tokens annotated, e.g. "<|1.08|>".
-        """
+        """"""
         outputs = [[]]
         for token in tokens:
             if token >= self.timestamp_begin:
@@ -162,7 +165,9 @@ class Tokenizer:
                 outputs[-1].append(token)
         outputs = [
             s if isinstance(s, str) else self.tokenizer.decode(s) for s in outputs
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         return "".join(outputs)
 
     @property
@@ -227,8 +232,12 @@ class Tokenizer:
             zip(
                 self.tokenizer.additional_special_tokens,
                     self.tokenizer.additional_special_tokens_ids,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         candidate = f"<|{self.language}|>"
         if candidate in additional_tokens:
             return additional_tokens[candidate]
@@ -244,7 +253,8 @@ class Tokenizer:
         for token, token_id in zip(
             self.tokenizer.additional_special_tokens,
                 self.tokenizer.additional_special_tokens_ids,
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
             if token.strip("<|>") in LANGUAGES:
                 result.append(token_id)
         return tuple(result)
@@ -268,9 +278,9 @@ class Tokenizer:
 
 
     def non_speech_tokens(self) -> Tuple[int]:
-        """
+        """"""
         Returns the list of tokens to suppress in order to avoid any speaker tags \
-    or non - speech
+#     or non - speech
         annotations, to prevent sampling texts that are not actually spoken in the audio, e.g.
 
         - ♪♪♪
@@ -278,30 +288,34 @@ class Tokenizer:
         - [DAVID] Hey there,
 
         keeping basic punctuations like commas, periods, question marks, exclamation points, etc.
-        """
+        """"""
         symbols = list('"#()*+/:;<=>@[\\\\]^_`{|}~「」『』')
         symbols += (
-            "<< >> <<< >>> -- --- -( -[ (' (\\" (( )) ((( ))) [[ ]] {{ }} ♪♪ ♪♪♪".split()
-        )
+            "<< >> <<< >>> -- --- -( -[ (' (\\" (( )) ((( ))) [[ ]] {{ }} ♪♪ ♪♪♪".split()'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # symbols that may be a single token \
-    or multiple tokens depending on the tokenizer.
+#     or multiple tokens depending on the tokenizer.
         # In case they're multiple tokens, suppress the first token, which is safe because:
         # These are between U + 2640 \
-    and U + 267F miscellaneous symbols that are okay to suppress
+#     and U + 267F miscellaneous symbols that are okay to suppress
         # in generations, \
-    and in the 3 - byte UTF - 8 representation they share the first two bytes.
+#     and in the 3 - byte UTF - 8 representation they share the first two bytes.
         miscellaneous = set("♩♪♫♬♭♮♯")
         assert all(0x2640 <= ord(c) <= 0x267F for c in miscellaneous)
 
         # allow hyphens "-" \
-    and single quotes "'" between words, but not at the beginning of a word
-        result = {self.tokenizer.encode(" -")[0], self.tokenizer.encode(" '")[0]}
+#     and single quotes "'" between words, but not at the beginning of a word
+        result = {self.tokenizer.encode(" -")[0], self.tokenizer.encode(" '")[0]}'
         for symbol in symbols + list(miscellaneous):
             for tokens in [
                 self.tokenizer.encode(symbol),
                     self.tokenizer.encode(" " + symbol),
-                    ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]:
                 if len(tokens) == 1 or symbol in miscellaneous:
                     result.add(tokens[0])
 
@@ -330,7 +344,9 @@ def build_tokenizer(name: str = "gpt2"):
             "<|startofprev|>",
             "<|nospeech|>",
             "<|notimestamps|>",
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
     tokenizer.add_special_tokens(dict(additional_special_tokens = specials))
     return tokenizer
@@ -343,7 +359,8 @@ def get_tokenizer(
         *,
         task: Optional[str] = None,  # Literal["transcribe", "translate", None]
     language: Optional[str] = None,
-) -> Tokenizer:
+# BRACKET_SURGEON: disabled
+# ) -> Tokenizer:
     if language is not None:
         language = language.lower()
         if language not in LANGUAGES:
@@ -376,4 +393,6 @@ def get_tokenizer(
 
     return Tokenizer(
         tokenizer = tokenizer, language = language, sot_sequence = tuple(sot_sequence)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )

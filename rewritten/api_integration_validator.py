@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Integration Validator
 Comprehensive validation system for 100+ APIs
 
@@ -12,7 +12,7 @@ Features:
 
 Usage:
     python api_integration_validator.py
-"""
+""""""
 
 import json
 import os
@@ -58,7 +58,8 @@ class APIIntegrationValidator:
             r"sk-[A-Za-z0-9]{48}",  # OpenAI keys
             r"xoxb-[A-Za-z0-9-]+",  # Slack tokens
             r"ghp_[A-Za-z0-9]{36}",  # GitHub tokens
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Comprehensive API registry with validation endpoints
         self.validation_registry = {
@@ -72,7 +73,8 @@ class APIIntegrationValidator:
                 "validation_field": "data",
                 "rate_limit": 60,  # requests per minute
                 "security_requirements": ["https", "bearer_auth"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "anthropic": {
                 "name": "Anthropic Claude",
                 "env_var": "ANTHROPIC_API_KEY",
@@ -82,7 +84,8 @@ class APIIntegrationValidator:
                 "validation_field": "error",
                 "rate_limit": 50,
                 "security_requirements": ["https", "api_key_header"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "google_ai": {
                 "name": "Google AI Gemini",
                 "env_var": "GOOGLE_AI_API_KEY",
@@ -92,7 +95,8 @@ class APIIntegrationValidator:
                 "validation_field": "models",
                 "rate_limit": 60,
                 "security_requirements": ["https"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "huggingface": {
                 "name": "Hugging Face",
                 "env_var": "HUGGINGFACE_API_KEY",
@@ -102,7 +106,8 @@ class APIIntegrationValidator:
                 "validation_field": "name",
                 "rate_limit": 1000,
                 "security_requirements": ["https", "bearer_auth"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "groq": {
                 "name": "Groq",
                 "env_var": "GROQ_API_KEY",
@@ -112,7 +117,8 @@ class APIIntegrationValidator:
                 "validation_field": "data",
                 "rate_limit": 30,
                 "security_requirements": ["https", "bearer_auth"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Social Media & Communication
             "youtube": {
                 "name": "YouTube Data API",
@@ -123,7 +129,8 @@ class APIIntegrationValidator:
                 "validation_field": "error",
                 "rate_limit": 100,
                 "security_requirements": ["https"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "twitter": {
                 "name": "Twitter/X API",
                 "env_var": "TWITTER_BEARER_TOKEN",
@@ -133,7 +140,8 @@ class APIIntegrationValidator:
                 "validation_field": "errors",
                 "rate_limit": 300,
                 "security_requirements": ["https", "bearer_auth"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "reddit": {
                 "name": "Reddit API",
                 "env_var": "REDDIT_CLIENT_ID",
@@ -143,7 +151,8 @@ class APIIntegrationValidator:
                 "validation_field": "message",
                 "rate_limit": 60,
                 "security_requirements": ["https", "oauth"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Development & Productivity
             "github": {
                 "name": "GitHub API",
@@ -154,7 +163,8 @@ class APIIntegrationValidator:
                 "validation_field": "login",
                 "rate_limit": 5000,
                 "security_requirements": ["https", "bearer_auth"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "netlify": {
                 "name": "Netlify API",
                 "env_var": "NETLIFY_ACCESS_TOKEN",
@@ -164,7 +174,8 @@ class APIIntegrationValidator:
                 "validation_field": "email",
                 "rate_limit": 500,
                 "security_requirements": ["https", "bearer_auth"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Email & Communication
             "sendgrid": {
                 "name": "SendGrid",
@@ -175,7 +186,8 @@ class APIIntegrationValidator:
                 "validation_field": "username",
                 "rate_limit": 600,
                 "security_requirements": ["https", "bearer_auth"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Weather & Location
             "openweather": {
                 "name": "OpenWeather",
@@ -186,7 +198,8 @@ class APIIntegrationValidator:
                 "validation_field": "message",
                 "rate_limit": 60,
                 "security_requirements": ["https"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Media & Content
             "unsplash": {
                 "name": "Unsplash",
@@ -197,7 +210,8 @@ class APIIntegrationValidator:
                 "validation_field": "errors",
                 "rate_limit": 50,
                 "security_requirements": ["https"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Pet Care APIs
             "dog_api": {
                 "name": "Dog API",
@@ -208,7 +222,8 @@ class APIIntegrationValidator:
                 "validation_field": None,  # Array response
                 "rate_limit": 1000,
                 "security_requirements": ["https"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "cat_api": {
                 "name": "Cat API",
                 "env_var": "CAT_API_KEY",
@@ -218,7 +233,8 @@ class APIIntegrationValidator:
                 "validation_field": None,  # Array response
                 "rate_limit": 1000,
                 "security_requirements": ["https"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Business & Analytics
             "stripe": {
                 "name": "Stripe",
@@ -229,7 +245,8 @@ class APIIntegrationValidator:
                 "validation_field": "object",
                 "rate_limit": 100,
                 "security_requirements": ["https", "basic_auth"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Additional APIs (expanding to 100+)
             "news_api": {
                 "name": "News API",
@@ -240,7 +257,8 @@ class APIIntegrationValidator:
                 "validation_field": "sources",
                 "rate_limit": 1000,
                 "security_requirements": ["https"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "alpha_vantage": {
                 "name": "Alpha Vantage",
                 "env_var": "ALPHA_VANTAGE_API_KEY",
@@ -250,7 +268,8 @@ class APIIntegrationValidator:
                 "validation_field": "Error Message",
                 "rate_limit": 5,
                 "security_requirements": ["https"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "polygon": {
                 "name": "Polygon.io",
                 "env_var": "POLYGON_API_KEY",
@@ -260,7 +279,8 @@ class APIIntegrationValidator:
                 "validation_field": "results",
                 "rate_limit": 5,
                 "security_requirements": ["https"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "coinbase": {
                 "name": "Coinbase",
                 "env_var": "COINBASE_API_KEY",
@@ -270,7 +290,8 @@ class APIIntegrationValidator:
                 "validation_field": "data",
                 "rate_limit": 10000,
                 "security_requirements": ["https"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "twilio": {
                 "name": "Twilio",
                 "env_var": "TWILIO_AUTH_TOKEN",
@@ -280,8 +301,10 @@ class APIIntegrationValidator:
                 "validation_field": "accounts",
                 "rate_limit": 1000,
                 "security_requirements": ["https", "basic_auth"],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def validate_api_key_format(self, api_key: str, api_name: str) -> Tuple[bool, List[str]]:
         """Validate API key format and security"""
@@ -315,7 +338,8 @@ class APIIntegrationValidator:
         no_exposed_secrets = True  # Check response for leaked secrets
         rate_limiting = (
             hasattr(response, "headers") and "x - ratelimit" in str(response.headers).lower()
-        )
+# BRACKET_SURGEON: disabled
+#         )
         input_validation = True  # Assume good unless proven otherwise
 
         # Check response for exposed secrets
@@ -345,7 +369,8 @@ class APIIntegrationValidator:
             rate_limiting=rate_limiting,
             input_validation=input_validation,
             score=score,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def make_authenticated_request(
         self, api_config: Dict, api_key: str
@@ -395,7 +420,8 @@ class APIIntegrationValidator:
                 params=params,
                 auth=auth,
                 timeout=10,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response_time = time.time() - start_time
 
             return response, None
@@ -452,9 +478,11 @@ class APIIntegrationValidator:
             "has_cache_headers": "cache - control" in response.headers,
             "has_rate_limit_headers": any(
                 "ratelimit" in h.lower() for h in response.headers.keys()
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "content_type": response.headers.get("content - type", "unknown"),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def generate_recommendations(
         self,
@@ -508,7 +536,8 @@ class APIIntegrationValidator:
                 error_details=f"Environment variable {env_var} not set",
                 recommendations=[f"Set {env_var} environment variable"],
                 timestamp=datetime.now().isoformat(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Validate API key format
         key_valid, key_issues = self.validate_api_key_format(actual_api_key, api_key)
@@ -530,7 +559,8 @@ class APIIntegrationValidator:
                 error_details=error,
                 recommendations=["Check network connectivity and API endpoint"],
                 timestamp=datetime.now().isoformat(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check security
         security_check = self.check_security_requirements(api_config, response)
@@ -564,7 +594,8 @@ class APIIntegrationValidator:
             error_details=(None if status == "valid" else f"{len(all_issues)} issues found"),
             recommendations=recommendations,
             timestamp=datetime.now().isoformat(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def validate_all_apis(self, max_workers: int = 5) -> List[ValidationResult]:
         """Validate all APIs with parallel processing"""
@@ -577,7 +608,8 @@ class APIIntegrationValidator:
             future_to_api = {
                 executor.submit(self.validate_single_api, api_key, api_config): api_key
                 for api_key, api_config in self.validation_registry.items()
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Collect results as they complete
             for i, future in enumerate(as_completed(future_to_api), 1):
@@ -597,7 +629,8 @@ class APIIntegrationValidator:
 
                     print(
                         f"[{i}/{len(self.validation_registry)}] {status_emoji} {result.api_name}: {result.status}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 except Exception as e:
                     print(f"❌ Error validating {api_key}: {str(e)}")
@@ -659,12 +692,14 @@ class APIIntegrationValidator:
                 "success_rate": ((valid_count / total_apis * 100) if total_apis > 0 else 0),
                 "avg_response_time": round(avg_response_time, 3),
                 "avg_security_score": round(avg_security_score, 1),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "top_issues": top_issues,
             "top_recommendations": top_recommendations,
             "detailed_results": [asdict(r) for r in self.results],
             "generated_at": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def save_report(self, report: Dict, filename: str = None):
         """Save validation report to file"""

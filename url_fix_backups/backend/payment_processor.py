@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Comprehensive Payment Processing System
 Supports multiple payment providers with fraud protection and security
-"""
+""""""
 
 import hashlib
 import json
@@ -87,7 +87,8 @@ class PaymentProcessor:
                 "suspicious_countries": ["XX", "YY"],  # ISO country codes
             "velocity_threshold": 5,  # transactions per minute
             "amount_threshold": 500.0,  # single transaction limit
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def _init_providers(self):
@@ -97,25 +98,30 @@ class PaymentProcessor:
                 "api_key": os.getenv("STRIPE_SECRET_KEY"),
                     "webhook_secret": os.getenv("STRIPE_WEBHOOK_SECRET"),
                     "enabled": bool(os.getenv("STRIPE_SECRET_KEY")),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 PaymentProvider.PAYPAL: {
                 "client_id": os.getenv("PAYPAL_CLIENT_ID"),
                     "client_secret": os.getenv("PAYPAL_CLIENT_SECRET"),
                     "sandbox": os.getenv("PAYPAL_SANDBOX", "true").lower() == "true",
                     "enabled": bool(os.getenv("PAYPAL_CLIENT_ID")),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 PaymentProvider.SQUARE: {
                 "access_token": os.getenv("SQUARE_ACCESS_TOKEN"),
                     "application_id": os.getenv("SQUARE_APPLICATION_ID"),
                     "sandbox": os.getenv("SQUARE_SANDBOX", "true").lower() == "true",
                     "enabled": bool(os.getenv("SQUARE_ACCESS_TOKEN")),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 PaymentProvider.RAZORPAY: {
                 "key_id": os.getenv("RAZORPAY_KEY_ID"),
                     "key_secret": os.getenv("RAZORPAY_KEY_SECRET"),
                     "enabled": bool(os.getenv("RAZORPAY_KEY_ID")),
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Initialize Stripe if available
         if self.providers[PaymentProvider.STRIPE]["enabled"]:
@@ -129,7 +135,7 @@ class PaymentProcessor:
 
         # Payments table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS payments (
                 payment_id TEXT PRIMARY KEY,
                     provider TEXT NOT NULL,
@@ -144,13 +150,17 @@ class PaymentProcessor:
                     metadata TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Fraud detection logs
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS fraud_logs (
                 log_id TEXT PRIMARY KEY,
                     payment_id TEXT,
@@ -162,13 +172,17 @@ class PaymentProcessor:
                     action_taken TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (payment_id) REFERENCES payments (payment_id)
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Payment attempts tracking
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS payment_attempts (
                 attempt_id TEXT PRIMARY KEY,
                     customer_email TEXT,
@@ -178,13 +192,17 @@ class PaymentProcessor:
                     provider TEXT,
                     success BOOLEAN,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Refunds table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS refunds (
                 refund_id TEXT PRIMARY KEY,
                     payment_id TEXT NOT NULL,
@@ -194,9 +212,13 @@ class PaymentProcessor:
                     provider_refund_id TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (payment_id) REFERENCES payments (payment_id)
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         conn.commit()
         conn.close()
@@ -218,9 +240,11 @@ class PaymentProcessor:
                         "name": provider.value.title(),
                             "supported_currencies": self._get_supported_currencies(
                             provider
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             "features": self._get_provider_features(provider),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
             return jsonify({"success": True, "providers": available})
 
@@ -233,7 +257,9 @@ class PaymentProcessor:
                 data = request.get_json()
                 customer_ip = request.environ.get(
                     "HTTP_X_FORWARDED_FOR", request.remote_addr
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Validate required fields
                 required_fields = [
@@ -242,7 +268,9 @@ class PaymentProcessor:
                         "customer_email",
                         "payment_method",
                         "provider",
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
                 for field in required_fields:
                     if field not in data:
                         return (
@@ -250,10 +278,14 @@ class PaymentProcessor:
                                 {
                                     "success": False,
                                         "error": f"Missing required field: {field}",
-                                        }
-                            ),
+# BRACKET_SURGEON: disabled
+#                                         }
+# BRACKET_SURGEON: disabled
+#                             ),
                                 400,
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                 # Create payment request
                 payment_request = PaymentRequest(
@@ -263,7 +295,9 @@ class PaymentProcessor:
                         payment_method = data["payment_method"],
                         provider = PaymentProvider(data["provider"]),
                         metadata = data.get("metadata", {}),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Generate payment ID
                 payment_id = f"pay_{int(time.time())}_{hash(payment_request.customer_email) % 10000}"
@@ -274,12 +308,16 @@ class PaymentProcessor:
                 # Perform fraud detection
                 fraud_check = self._perform_fraud_detection(
                     payment_request, customer_ip
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if fraud_check.blocked:
                     self._log_fraud_detection(
                         payment_id, payment_request, customer_ip, fraud_check, "BLOCKED"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return (
                         jsonify(
                             {
@@ -287,15 +325,21 @@ class PaymentProcessor:
                                     "error": "Payment blocked due to fraud detection",
                                     "fraud_score": fraud_check.score,
                                     "risk_level": fraud_check.risk_level.value,
-                                    }
-                        ),
+# BRACKET_SURGEON: disabled
+#                                     }
+# BRACKET_SURGEON: disabled
+#                         ),
                             403,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # Process payment with selected provider
                 result = self._process_with_provider(
                     payment_request, payment_id, customer_ip, fraud_check
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 return jsonify(result)
 
@@ -313,14 +357,16 @@ class PaymentProcessor:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT payment_id, provider, provider_payment_id, amount, currency,
                         customer_email, status, fraud_score, fraud_risk_level,
                                metadata, created_at, updated_at
                     FROM payments WHERE payment_id = ?
-                """,
+                ""","""
                     (payment_id,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 result = cursor.fetchone()
                 if not result:
@@ -328,7 +374,9 @@ class PaymentProcessor:
                     return (
                         jsonify({"success": False, "error": "Payment not found"}),
                             404,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 payment_data = {
                     "payment_id": result[0],
@@ -343,7 +391,8 @@ class PaymentProcessor:
                         "metadata": json.loads(result[9]) if result[9] else {},
                         "created_at": result[10],
                         "updated_at": result[11],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 conn.close()
 
@@ -368,12 +417,14 @@ class PaymentProcessor:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT provider, provider_payment_id, amount, currency, status
                     FROM payments WHERE payment_id = ?
-                """,
+                ""","""
                     (payment_id,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 result = cursor.fetchone()
                 if not result:
@@ -381,11 +432,15 @@ class PaymentProcessor:
                     return (
                         jsonify({"success": False, "error": "Payment not found"}),
                             404,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 provider, provider_payment_id, original_amount, currency, status = (
                     result
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if status != "completed":
                     conn.close()
@@ -394,10 +449,14 @@ class PaymentProcessor:
                             {
                                 "success": False,
                                     "error": "Can only refund completed payments",
-                                    }
-                        ),
+# BRACKET_SURGEON: disabled
+#                                     }
+# BRACKET_SURGEON: disabled
+#                         ),
                             400,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # Validate refund amount
                 if refund_amount is None:
@@ -409,10 +468,14 @@ class PaymentProcessor:
                             {
                                 "success": False,
                                     "error": "Refund amount cannot exceed original amount",
-                                    }
-                        ),
+# BRACKET_SURGEON: disabled
+#                                     }
+# BRACKET_SURGEON: disabled
+#                         ),
                             400,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # Process refund with provider
                 refund_result = self._process_refund_with_provider(
@@ -420,23 +483,27 @@ class PaymentProcessor:
                         provider_payment_id,
                         refund_amount,
                         reason,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 if refund_result["success"]:
                     # Record refund in database
                     refund_id = f"ref_{int(time.time())}_{hash(payment_id) % 1000}"
 
                     cursor.execute(
-                        """
+                        """"""
                         INSERT INTO refunds
                         (refund_id,
     payment_id,
     amount,
     reason,
     status,
-    provider_refund_id)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     provider_refund_id)
                         VALUES (?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             refund_id,
                                 payment_id,
@@ -444,18 +511,23 @@ class PaymentProcessor:
                                 reason,
                                 "completed",
                                 refund_result.get("refund_id"),
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Update payment status if full refund
                     if refund_amount == original_amount:
                         cursor.execute(
-                            """
+                            """"""
                             UPDATE payments SET status = 'refunded', updated_at = ?
                             WHERE payment_id = ?
-                        """,
+                        ""","""
                             (datetime.now().isoformat(), payment_id),
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                     conn.commit()
 
@@ -485,10 +557,14 @@ class PaymentProcessor:
                             {
                                 "success": False,
                                     "error": "Webhook not supported for this provider",
-                                    }
-                        ),
+# BRACKET_SURGEON: disabled
+#                                     }
+# BRACKET_SURGEON: disabled
+#                         ),
                             400,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             except Exception as e:
                 logger.error(f"Error handling webhook: {e}")
@@ -497,7 +573,8 @@ class PaymentProcessor:
 
     def _perform_fraud_detection(
         self, payment_request: PaymentRequest, customer_ip: str
-    ) -> FraudCheck:
+# BRACKET_SURGEON: disabled
+#     ) -> FraudCheck:
         """Perform comprehensive fraud detection"""
         risk_factors = []
         risk_score = 0.0
@@ -505,7 +582,9 @@ class PaymentProcessor:
         # Check transaction velocity
         velocity_score = self._check_transaction_velocity(
             payment_request.customer_email, customer_ip
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if velocity_score > 0:
             risk_factors.append(f"High transaction velocity: {velocity_score}")
             risk_score += velocity_score * 0.4
@@ -513,7 +592,9 @@ class PaymentProcessor:
         # Check amount patterns
         amount_score = self._check_amount_patterns(
             payment_request.amount, payment_request.customer_email
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if amount_score > 0:
             risk_factors.append(f"Suspicious amount pattern: {amount_score}")
             risk_score += amount_score * 0.3
@@ -555,12 +636,15 @@ class PaymentProcessor:
                 score = risk_score,
                 reasons = risk_factors,
                 blocked = blocked,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def _check_transaction_velocity(
         self, customer_email: str, customer_ip: str
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Check transaction velocity for fraud detection"""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -570,13 +654,15 @@ class PaymentProcessor:
             one_hour_ago = (datetime.now() - timedelta(hours = 1)).isoformat()
 
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM payment_attempts
                 WHERE (customer_email = ? OR customer_ip = ?)
                 AND created_at > ?
-            """,
+            ""","""
                 (customer_email, customer_ip, one_hour_ago),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             count = cursor.fetchone()[0]
             conn.close()
@@ -620,7 +706,8 @@ class PaymentProcessor:
         # Check for localhost / private IPs in production
         if customer_ip in ["127.0.0.1", "localhost"] or customer_ip.startswith(
             "192.168."
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             score += 0.3
 
         # Add more sophisticated IP reputation checks here
@@ -662,13 +749,16 @@ class PaymentProcessor:
             payment_id: str,
             customer_ip: str,
             fraud_check: FraudCheck,
-            ) -> Dict:
+# BRACKET_SURGEON: disabled
+#             ) -> Dict:
         """Process payment with the specified provider"""
         try:
             # Store payment record
             self._store_payment_record(
                 payment_request, payment_id, customer_ip, fraud_check
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if payment_request.provider == PaymentProvider.STRIPE:
                 return self._process_stripe_payment(payment_request, payment_id)
@@ -688,7 +778,8 @@ class PaymentProcessor:
 
     def _process_stripe_payment(
         self, payment_request: PaymentRequest, payment_id: str
-    ) -> Dict:
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
         """Process payment with Stripe"""
         try:
             # Create payment intent
@@ -699,8 +790,10 @@ class PaymentProcessor:
                     customer_email = payment_request.customer_email,
                     confirm = True,
                     metadata={"payment_id": payment_id, **(payment_request.metadata \
-    or {})},
-                    )
+#     or {})},
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Update payment record
             self._update_payment_status(payment_id, intent.status, intent.id)
@@ -711,7 +804,8 @@ class PaymentProcessor:
                     "provider_payment_id": intent.id,
                     "status": intent.status,
                     "client_secret": intent.client_secret,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except stripe.error.StripeError as e:
             logger.error(f"Stripe error: {e}")
@@ -721,7 +815,8 @@ class PaymentProcessor:
 
     def _process_paypal_payment(
         self, payment_request: PaymentRequest, payment_id: str
-    ) -> Dict:
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
         """Process payment with PayPal"""
         # PayPal integration would go here
         return {"success": False, "error": "PayPal integration not implemented"}
@@ -729,7 +824,8 @@ class PaymentProcessor:
 
     def _process_square_payment(
         self, payment_request: PaymentRequest, payment_id: str
-    ) -> Dict:
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
         """Process payment with Square"""
         # Square integration would go here
         return {"success": False, "error": "Square integration not implemented"}
@@ -737,7 +833,8 @@ class PaymentProcessor:
 
     def _process_razorpay_payment(
         self, payment_request: PaymentRequest, payment_id: str
-    ) -> Dict:
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
         """Process payment with Razorpay"""
         # Razorpay integration would go here
         return {"success": False, "error": "Razorpay integration not implemented"}
@@ -749,18 +846,21 @@ class PaymentProcessor:
             payment_id: str,
             customer_ip: str,
             fraud_check: FraudCheck,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Store payment record in database"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT INTO payments
             (payment_id, provider, amount, currency, customer_email, customer_ip,
-                status, fraud_score, fraud_risk_level, metadata)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 status, fraud_score, fraud_risk_level, metadata)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
+        ""","""
             (
                 payment_id,
                     payment_request.provider.value,
@@ -772,8 +872,11 @@ class PaymentProcessor:
                     fraud_check.score,
                     fraud_check.risk_level.value,
                     json.dumps(payment_request.metadata or {}),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         conn.commit()
         conn.close()
@@ -781,29 +884,34 @@ class PaymentProcessor:
 
     def _update_payment_status(
         self, payment_id: str, status: str, provider_payment_id: str = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Update payment status in database"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
         if provider_payment_id:
             cursor.execute(
-                """
+                """"""
                 UPDATE payments
                 SET status = ?, provider_payment_id = ?, updated_at = ?
                 WHERE payment_id = ?
-            """,
+            ""","""
                 (status, provider_payment_id, datetime.now().isoformat(), payment_id),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             cursor.execute(
-                """
+                """"""
                 UPDATE payments
                 SET status = ?, updated_at = ?
                 WHERE payment_id = ?
-            """,
+            ""","""
                 (status, datetime.now().isoformat(), payment_id),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         conn.commit()
         conn.close()
@@ -811,7 +919,8 @@ class PaymentProcessor:
 
     def _record_payment_attempt(
         self, payment_request: PaymentRequest, customer_ip: str, payment_id: str
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Record payment attempt for fraud tracking"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -820,11 +929,12 @@ class PaymentProcessor:
 
         import random
 
-        attempt_id = f"att_{int(time.time() * 1000000)}_{hash(payment_id) % 10000}_{random.randint(1000,
-    9999)}"
+        attempt_id = f"att_{int(time.time() * 1000000)}_{hash(payment_id) % 10000}_{random.randint(1000,"
+# BRACKET_SURGEON: disabled
+#     9999)}""
 
         cursor.execute(
-            """
+            """"""
             INSERT INTO payment_attempts
             (attempt_id,
     customer_email,
@@ -832,9 +942,11 @@ class PaymentProcessor:
     amount,
     currency,
     provider,
-    success)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     success)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """,
+        ""","""
             (
                 attempt_id,
                     payment_request.customer_email,
@@ -843,8 +955,11 @@ class PaymentProcessor:
                     payment_request.currency,
                     payment_request.provider.value,
                     False,  # Will be updated on success
-            ),
-                )
+# BRACKET_SURGEON: disabled
+#             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         conn.commit()
         conn.close()
@@ -857,7 +972,8 @@ class PaymentProcessor:
             customer_ip: str,
             fraud_check: FraudCheck,
             action: str,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Log fraud detection results"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -865,12 +981,14 @@ class PaymentProcessor:
         log_id = f"fraud_{int(time.time())}_{hash(payment_id) % 1000}"
 
         cursor.execute(
-            """
+            """"""
             INSERT INTO fraud_logs
             (log_id, payment_id, customer_email, customer_ip, risk_level,
-                fraud_score, reasons, action_taken)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 fraud_score, reasons, action_taken)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """,
+        ""","""
             (
                 log_id,
                     payment_id,
@@ -880,8 +998,11 @@ class PaymentProcessor:
                     fraud_check.score,
                     json.dumps(fraud_check.reasons),
                     action,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         conn.commit()
         conn.close()
@@ -894,7 +1015,8 @@ class PaymentProcessor:
                 PaymentProvider.PAYPAL: ["USD", "EUR", "GBP", "CAD", "AUD"],
                 PaymentProvider.SQUARE: ["USD", "CAD", "GBP", "AUD"],
                 PaymentProvider.RAZORPAY: ["INR", "USD"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return currency_map.get(provider, ["USD"])
 
 
@@ -906,24 +1028,33 @@ class PaymentProcessor:
                     "Digital Wallets",
                     "Bank Transfers",
                     "Subscriptions",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 PaymentProvider.PAYPAL: [
                 "PayPal Account",
                     "Credit Cards",
                     "Digital Wallets",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 PaymentProvider.SQUARE: [
                 "Credit Cards",
                     "Digital Wallets",
                     "In - Person Payments",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 PaymentProvider.RAZORPAY: [
                 "Credit Cards",
                     "UPI",
                     "Net Banking",
                     "Digital Wallets",
-                    ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
         return features_map.get(provider, [])
 
 
@@ -937,7 +1068,9 @@ class PaymentProcessor:
                 payload,
                     sig_header,
                     self.providers[PaymentProvider.STRIPE]["webhook_secret"],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except ValueError:
             return jsonify({"success": False, "error": "Invalid payload"}), 400
         except stripe.error.SignatureVerificationError:
@@ -950,7 +1083,9 @@ class PaymentProcessor:
             if payment_id:
                 self._update_payment_status(
                     payment_id, "completed", payment_intent["id"]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         elif event["type"] == "payment_intent.payment_failed":
             payment_intent = event["data"]["object"]
@@ -973,7 +1108,8 @@ class PaymentProcessor:
             provider_payment_id: str,
             amount: float,
             reason: str,
-            ) -> Dict:
+# BRACKET_SURGEON: disabled
+#             ) -> Dict:
         """Process refund with the specified provider"""
         if provider == PaymentProvider.STRIPE:
             try:
@@ -981,14 +1117,17 @@ class PaymentProcessor:
                     payment_intent = provider_payment_id,
                         amount = int(amount * 100),  # Convert to cents
                     reason="requested_by_customer",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 return {
                     "success": True,
                         "refund_id": refund.id,
                         "status": refund.status,
                         "amount": amount,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             except stripe.error.StripeError as e:
                 return {"success": False, "error": str(e)}

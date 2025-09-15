@@ -52,11 +52,15 @@ def extract_landmarks(ori_imgs_dir):
     try:
         fa = face_alignment.FaceAlignment(
             face_alignment.LandmarksType._2D, flip_input = False
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     except Exception:
         fa = face_alignment.FaceAlignment(
             face_alignment.LandmarksType.TWO_D, flip_input = False
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     image_paths = glob.glob(os.path.join(ori_imgs_dir, "*.jpg"))
     for image_path in tqdm.tqdm(image_paths):
         input = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)  # [H, W, 3]
@@ -88,12 +92,16 @@ def extract_background(base_dir, ori_imgs_dir):
     for image_path in tqdm.tqdm(image_paths):
         parse_img = cv2.imread(
             image_path.replace("ori_imgs", "parsing").replace(".jpg", ".png")
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         bg = (
             (parse_img[..., 0] == 255)
             & (parse_img[..., 1] == 255)
             & (parse_img[..., 2] == 255)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         fg_xys = np.stack(np.nonzero(~bg)).transpose(1, 0)
         nbrs = NearestNeighbors(n_neighbors = 1, algorithm="kd_tree").fit(fg_xys)
         dists, _ = nbrs.kneighbors(all_xys)
@@ -150,7 +158,9 @@ def extract_torso_and_gt(base_dir, ori_imgs_dir):
         # read semantics
         seg = cv2.imread(
             image_path.replace("ori_imgs", "parsing").replace(".jpg", ".png")
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         head_part = (seg[..., 0] == 255) & (seg[..., 1] == 0) & (seg[..., 2] == 0)
         neck_part = (seg[..., 0] == 0) & (seg[..., 1] == 255) & (seg[..., 2] == 0)
         torso_part = (seg[..., 0] == 0) & (seg[..., 1] == 0) & (seg[..., 2] == 255)
@@ -166,7 +176,8 @@ def extract_torso_and_gt(base_dir, ori_imgs_dir):
         torso_image[head_part] = bg_image[head_part]
         torso_alpha = 255 * np.ones(
             (gt_image.shape[0], gt_image.shape[1], 1), dtype = np.uint8
-        )  # alpha
+# BRACKET_SURGEON: disabled
+#         )  # alpha
 
         # torso part "vertical" in - painting...
         L = 8 + 1
@@ -178,7 +189,9 @@ def extract_torso_and_gt(base_dir, ori_imgs_dir):
         # choose the top pixel for each column
         u, uid, ucnt = np.unique(
             torso_coords[:, 1], return_index = True, return_counts = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         top_torso_coords = torso_coords[uid]  # [m, 2]
         # only keep top - is - head pixels
         top_torso_coords_up = top_torso_coords.copy() - np.array([1, 0])
@@ -193,14 +206,18 @@ def extract_torso_and_gt(base_dir, ori_imgs_dir):
                 [-np.arange(L), np.zeros(L, dtype = np.int32)], axis=-1
             )[
                 :, None
-            ]  # [L, 1, 2]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]  # [L, 1, 2]
             inpaint_torso_coords += inpaint_offsets
             inpaint_torso_coords = inpaint_torso_coords.reshape(-1, 2)  # [Lm, 2]
             inpaint_torso_colors = top_torso_colors[None].repeat(L, 0)  # [L, m, 3]
             darken_scaler = 0.98 ** np.arange(L).reshape(L, 1, 1)  # [L, 1, 1]
             inpaint_torso_colors = (inpaint_torso_colors * darken_scaler).reshape(
                 -1, 3
-            )  # [Lm, 3]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [Lm, 3]
             # set color
                 torso_image[tuple(inpaint_torso_coords.T)] = inpaint_torso_colors
 
@@ -217,7 +234,9 @@ def extract_torso_and_gt(base_dir, ori_imgs_dir):
             neck_part,
                 structure = np.array([[0, 1, 0], [0, 1, 0], [0, 1, 0]], dtype = bool),
                 iterations = 3,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         neck_coords = np.stack(np.nonzero(neck_part), axis=-1)  # [M, 2]
         # lexsort: sort 2D coords first by y then by x,
@@ -227,7 +246,9 @@ def extract_torso_and_gt(base_dir, ori_imgs_dir):
         # choose the top pixel for each column
         u, uid, ucnt = np.unique(
             neck_coords[:, 1], return_index = True, return_counts = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         top_neck_coords = neck_coords[uid]  # [m, 2]
         # only keep top - is - head pixels
         top_neck_coords_up = top_neck_coords.copy() - np.array([1, 0])
@@ -245,14 +266,18 @@ def extract_torso_and_gt(base_dir, ori_imgs_dir):
             [-np.arange(L), np.zeros(L, dtype = np.int32)], axis=-1
         )[
             :, None
-        ]  # [L, 1, 2]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]  # [L, 1, 2]
         inpaint_neck_coords += inpaint_offsets
         inpaint_neck_coords = inpaint_neck_coords.reshape(-1, 2)  # [Lm, 2]
         inpaint_neck_colors = top_neck_colors[None].repeat(L, 0)  # [L, m, 3]
         darken_scaler = 0.98 ** np.arange(L).reshape(L, 1, 1)  # [L, 1, 1]
         inpaint_neck_colors = (inpaint_neck_colors * darken_scaler).reshape(
             -1, 3
-        )  # [Lm, 3]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # [Lm, 3]
         # set color
             torso_image[tuple(inpaint_neck_coords.T)] = inpaint_neck_colors
 
@@ -275,7 +300,9 @@ def extract_torso_and_gt(base_dir, ori_imgs_dir):
         cv2.imwrite(
             image_path.replace("ori_imgs", "torso_imgs").replace(".jpg", ".png"),
                 np.concatenate([torso_image, torso_alpha], axis=-1),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     print(f"[INFO] ===== extracted torso and gt images =====")
 
@@ -322,34 +349,47 @@ def save_transforms(base_dir, ori_imgs_dir):
         psi = euler_angle[:, 2].reshape(-1, 1, 1)
         one = torch.ones(
             (batch_size, 1, 1), dtype = torch.float32, device = euler_angle.device
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         zero = torch.zeros(
             (batch_size, 1, 1), dtype = torch.float32, device = euler_angle.device
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         rot_x = torch.cat(
             (
                 torch.cat((one, zero, zero), 1),
                     torch.cat((zero, theta.cos(), theta.sin()), 1),
                     torch.cat((zero, -theta.sin(), theta.cos()), 1),
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 2,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         rot_y = torch.cat(
             (
                 torch.cat((phi.cos(), zero, -phi.sin()), 1),
                     torch.cat((zero, one, zero), 1),
                     torch.cat((phi.sin(), zero, phi.cos()), 1),
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 2,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         rot_z = torch.cat(
             (
                 torch.cat((psi.cos(), -psi.sin(), zero), 1),
                     torch.cat((psi.sin(), psi.cos(), zero), 1),
                     torch.cat((zero, zero, one), 1),
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 2,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         return torch.bmm(rot_x, torch.bmm(rot_y, rot_z))
 
     # train_val_split = int(valid_num * 0.5)
@@ -401,7 +441,9 @@ if __name__ == "__main__":
     parser.add_argument("--task", type = int, default=-1, help="-1 means all")
     parser.add_argument(
         "--asr", type = str, default="deepspeech", help="wav2vec or deepspeech"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     opt = parser.parse_args()
 

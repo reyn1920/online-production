@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Content Automation Pipeline - Integrated News - to - Video System
 
 This module creates a complete automation pipeline that:
@@ -11,7 +11,7 @@ This module creates a complete automation pipeline that:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -128,7 +128,8 @@ class ContentAutomationPipeline:
                     "ai_optimization": True,
                     "quality_threshold": 0.85,
                     "engagement_optimization": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "article": {
                 "word_count_range": (800, 1500),
                     "tone": "analytical",
@@ -136,15 +137,18 @@ class ContentAutomationPipeline:
                     "ai_seo_optimization": True,
                     "readability_target": "professional",
                     "fact_checking": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "social_post": {
                 "character_limit": 280,
                     "hashtag_count": 3,
                     "include_media": True,
                     "viral_optimization": True,
                     "sentiment_analysis": True,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         # AI - powered content analysis settings
         self.ai_analysis_settings = {
@@ -156,18 +160,21 @@ class ContentAutomationPipeline:
                 "competitor_analysis": True,
                 "audience_insights": True,
                 "performance_prediction": True
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info("AI - Enhanced Content Automation Pipeline initialized")
 
     def _optimize_content_with_ai(self,
     content: str,
     content_type: str,
-    opportunity: ContentOpportunity) -> str:
+# BRACKET_SURGEON: disabled
+#     opportunity: ContentOpportunity) -> str:
         """Apply AI - powered content optimization."""
         try:
-            optimization_prompt = f"""
+            optimization_prompt = f""""""
             Optimize this {content_type} content for maximum engagement and quality:
 
             Original Content:
@@ -183,14 +190,16 @@ class ContentAutomationPipeline:
             - Clarity and readability
             - Emotional impact
             - Call - to - action effectiveness
-            """
+            """"""
 
             optimized_content = self.automated_author.ollama.generate(
                 optimization_prompt,
-                "You are an AI content optimization specialist with expertise in engagement \
-    and conversion.",
+                "You are an AI content optimization specialist with expertise in engagement \"
+#     and conversion.",
                 temperature = 0.6
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return optimized_content
 
@@ -238,10 +247,11 @@ class ContentAutomationPipeline:
     def _enhance_content_quality(self,
     content: str,
     content_type: str,
-    current_score: float) -> str:
+# BRACKET_SURGEON: disabled
+#     current_score: float) -> str:
         """Enhance content quality to meet threshold."""
         try:
-            enhancement_prompt = f"""
+            enhancement_prompt = f""""""
             Enhance this {content_type} content to improve quality score from {current_score:.2f}:
 
             Content:
@@ -253,13 +263,15 @@ class ContentAutomationPipeline:
             - Clear call - to - action
             - Improved readability
             - More engaging language
-            """
+            """"""
 
             enhanced_content = self.automated_author.ollama.generate(
                 enhancement_prompt,
                 "You are a content quality enhancement specialist.",
                 temperature = 0.7
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return enhanced_content
 
@@ -270,7 +282,7 @@ class ContentAutomationPipeline:
     def _optimize_content_seo(self, content: str, keywords: List[str]) -> str:
         """Optimize content for SEO."""
         try:
-            seo_prompt = f"""
+            seo_prompt = f""""""
             Optimize this content for SEO using these keywords: {', '.join(keywords[:5])}
 
             Content:
@@ -282,13 +294,15 @@ class ContentAutomationPipeline:
             - Header structure optimization
             - Internal linking opportunities
             - Semantic keyword variations
-            """
+            """"""
 
             seo_optimized = self.automated_author.ollama.generate(
                 seo_prompt,
                 "You are an SEO content optimization expert.",
                 temperature = 0.6
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return seo_optimized
 
@@ -299,7 +313,7 @@ class ContentAutomationPipeline:
     def _ai_fact_check_content(self, content: str) -> str:
         """Apply AI - powered fact checking to content."""
         try:
-            fact_check_prompt = f"""
+            fact_check_prompt = f""""""
             Review this content for factual accuracy and add fact - checking notes:
 
             Content:
@@ -310,14 +324,16 @@ class ContentAutomationPipeline:
             - Fact - checking disclaimers where appropriate
             - Balanced perspective notes
             - Accuracy confidence indicators
-            """
+            """"""
 
             fact_checked = self.automated_author.ollama.generate(
                 fact_check_prompt,
-                "You are a fact - checking specialist focused on accuracy \
-    and verification.",
+                "You are a fact - checking specialist focused on accuracy \"
+#     and verification.",
                 temperature = 0.4
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return fact_checked
 
@@ -328,7 +344,7 @@ class ContentAutomationPipeline:
     def _optimize_readability(self, content: str, target_level: str) -> str:
         """Optimize content readability for target audience."""
         try:
-            readability_prompt = f"""
+            readability_prompt = f""""""
             Optimize this content for {target_level} readability level:
 
             Content:
@@ -340,13 +356,15 @@ class ContentAutomationPipeline:
             - Paragraph structure
             - Transition improvements
             - Clarity enhancements
-            """
+            """"""
 
             readable_content = self.automated_author.ollama.generate(
                 readability_prompt,
                 f"You are a readability optimization expert targeting {target_level} audience.",
                 temperature = 0.6
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return readable_content
 
@@ -356,10 +374,11 @@ class ContentAutomationPipeline:
 
     def _optimize_for_virality(self,
     content: str,
-    opportunity: ContentOpportunity) -> str:
+# BRACKET_SURGEON: disabled
+#     opportunity: ContentOpportunity) -> str:
         """Optimize social media content for viral potential."""
         try:
-            viral_prompt = f"""
+            viral_prompt = f""""""
             Optimize this social media post for maximum viral potential:
 
             Post:
@@ -374,13 +393,15 @@ class ContentAutomationPipeline:
             - Urgency indicators
             - Shareability factors
             - Trending hashtags
-            """
+            """"""
 
             viral_content = self.automated_author.ollama.generate(
                 viral_prompt,
                 "You are a viral content specialist with expertise in social media engagement.",
                 temperature = 0.8
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return viral_content
 
@@ -391,7 +412,7 @@ class ContentAutomationPipeline:
     def _optimize_sentiment(self, content: str, target_sentiment: str) -> str:
         """Optimize content sentiment for target emotion."""
         try:
-            sentiment_prompt = f"""
+            sentiment_prompt = f""""""
             Adjust the sentiment of this content to be more {target_sentiment}:
 
             Content:
@@ -402,14 +423,16 @@ class ContentAutomationPipeline:
             - Emotional language
             - Engagement triggers
             - Audience connection
-            """
+            """"""
 
             sentiment_optimized = self.automated_author.ollama.generate(
                 sentiment_prompt,
-                f"You are a sentiment analysis \
-    and optimization expert targeting {target_sentiment} emotions.",
+                f"You are a sentiment analysis \"
+#     and optimization expert targeting {target_sentiment} emotions.",
                 temperature = 0.7
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return sentiment_optimized
 
@@ -437,11 +460,14 @@ class ContentAutomationPipeline:
                         "hypocrisy",
                         "contradiction",
                         "exposed",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "content_formats": ["video", "article", "social_post"],
                     "auto_publish": False,
                     "quality_threshold": 0.7,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             with open(self.config_path, "w") as f:
                 json.dump(default_config, f, indent = 2)
@@ -456,7 +482,7 @@ class ContentAutomationPipeline:
 
         # Content opportunities table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS content_opportunities (
                 id TEXT PRIMARY KEY,
                     topic TEXT NOT NULL,
@@ -470,13 +496,17 @@ class ContentAutomationPipeline:
                     status TEXT DEFAULT 'pending',
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     metadata TEXT
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Content projects table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS content_projects (
                 id TEXT PRIMARY KEY,
                     opportunity_id TEXT,
@@ -490,13 +520,17 @@ class ContentAutomationPipeline:
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (opportunity_id) REFERENCES content_opportunities (id)
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Content performance tracking
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS content_performance (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     project_id TEXT,
@@ -508,9 +542,13 @@ class ContentAutomationPipeline:
                     published_at TIMESTAMP,
                     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (project_id) REFERENCES content_projects (id)
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         conn.commit()
         conn.close()
@@ -569,7 +607,8 @@ class ContentAutomationPipeline:
             if any(
                 keyword in trend.keyword.lower()
                 for keyword in self.config["priority_keywords"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 priority = ContentPriority.HIGH
             if engagement_score > 0.8:
                 priority = ContentPriority.URGENT
@@ -599,8 +638,11 @@ class ContentAutomationPipeline:
                     "trend_score": trend.trend_score,
                         "frequency": trend.frequency,
                         "sources": trend.sources,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return opportunity
 
@@ -616,14 +658,16 @@ class ContentAutomationPipeline:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 SELECT * FROM hypocrisy_tracker
                 WHERE created_at > datetime('now', '-7 days')
                 AND content_used = FALSE
                 ORDER BY severity_score DESC, confidence_score DESC
                 LIMIT 10
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             results = cursor.fetchall()
             columns = [desc[0] for desc in cursor.description]
@@ -658,7 +702,7 @@ class ContentAutomationPipeline:
             subject = hyp_data.get("subject_name", "Unknown")
             contradiction_type = hyp_data.get("contradiction_type", "direct")
 
-            angle = f"Exposing {subject}'s {contradiction_type} contradiction: A detailed analysis"
+            angle = f"Exposing {subject}'s {contradiction_type} contradiction: A detailed analysis"'
 
             opportunity = ContentOpportunity(
                 id = hashlib.md5(
@@ -671,7 +715,9 @@ class ContentAutomationPipeline:
                     source_articles=[
                     hyp_data.get("source_1", ""),
                         hyp_data.get("source_2", ""),
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     keywords=[subject, "hypocrisy", "contradiction", contradiction_type],
                     estimated_engagement = engagement_score,
                     deadline = datetime.now() + timedelta(hours = 12),  # Urgent for hypocrisy
@@ -681,8 +727,11 @@ class ContentAutomationPipeline:
                         "severity_score": severity,
                         "confidence_score": confidence,
                         "subject_type": hyp_data.get("subject_type", "unknown"),
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return opportunity
 
@@ -694,20 +743,24 @@ class ContentAutomationPipeline:
     def _generate_content_angle(self, topic: str, sources: List[str]) -> str:
         """Generate a compelling content angle for a topic."""
         angles = [
-            f"Breaking: What the mainstream media isn't telling you about {topic}",
+            f"Breaking: What the mainstream media isn't telling you about {topic}",'
                 f"The hidden truth behind {topic} - An investigative analysis",
                 f"Why {topic} matters more than you think - A deep dive",
                 f"Exposing the real story behind {topic}",
                 f"The {topic} controversy: Facts vs. Fiction",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Simple selection based on topic characteristics
         if "scandal" in topic.lower() or "controversy" in topic.lower():
             return f"Exposing the real story behind {topic}"
         elif "breaking" in topic.lower():
             return (
-                f"Breaking: What the mainstream media isn't telling you about {topic}"
-            )
+                f"Breaking: What the mainstream media isn't telling you about {topic}"'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             return f"The hidden truth behind {topic} - An investigative analysis"
 
@@ -726,12 +779,16 @@ class ContentAutomationPipeline:
 
             logger.info(
                 f"Generated {len(projects)} content projects for opportunity: {opportunity.topic}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             logger.error(
                 f"Error generating content from opportunity {opportunity.id}: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return projects
 
@@ -743,7 +800,9 @@ class ContentAutomationPipeline:
         try:
             project_id = hashlib.md5(
                 f"{opportunity.id}_{content_format.value}_{datetime.now().isoformat()}".encode()
-            ).hexdigest()[:12]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).hexdigest()[:12]
 
             # Generate title based on format
             if content_format == ContentFormat.VIDEO:
@@ -767,10 +826,13 @@ class ContentAutomationPipeline:
                         "keywords": opportunity.keywords,
                         "source_articles": opportunity.source_articles,
                         "estimated_engagement": opportunity.estimated_engagement,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     created_at = datetime.now(),
                     updated_at = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Store project in database
             self._store_content_project(project)
@@ -787,7 +849,8 @@ class ContentAutomationPipeline:
 
     def _generate_project_script(
         self, project: ContentProject, opportunity: ContentOpportunity
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Generate script/content for a project."""
         try:
             if project.format == ContentFormat.VIDEO:
@@ -816,7 +879,7 @@ class ContentAutomationPipeline:
         """Generate AI - optimized video script using content agent."""
         try:
             # AI - enhanced script generation with optimization
-            prompt = f"""
+            prompt = f""""""
             Create a compelling, AI - optimized video script for: {opportunity.angle}
 
             Topic: {opportunity.topic}
@@ -839,14 +902,16 @@ class ContentAutomationPipeline:
             6. Use SEO - optimized language
 
             Format as a proper video script with timing cues.
-            """
+            """"""
 
             # Generate using automated author with AI enhancements
             script = self.automated_author.ollama.generate(
                 prompt,
                 "You are an expert AI - powered video script writer for investigative journalism with advanced engagement optimization.",
                 temperature = 0.7,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Apply AI optimizations if enabled
             if self.generation_settings['video']['ai_optimization']:
@@ -876,13 +941,17 @@ class ContentAutomationPipeline:
                 persona_name="investigative_journalist",
                 topic = opportunity.topic,
                 key_themes = opportunity.keywords,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Generate AI - optimized content
             if project.chapters:
                 content = self.automated_author.write_chapter(
                     project, project.chapters[0]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Apply AI enhancements
                 if self.generation_settings['article']['ai_seo_optimization']:
@@ -893,7 +962,9 @@ class ContentAutomationPipeline:
 
                 # Ensure readability target
                 content = self._optimize_readability(content,
-    self.generation_settings['article']['readability_target'])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     self.generation_settings['article']['readability_target'])
 
                 return content
 
@@ -907,7 +978,7 @@ class ContentAutomationPipeline:
     def _generate_social_post(self, opportunity: ContentOpportunity) -> str:
         """Generate AI - optimized social media post with viral potential."""
         try:
-            prompt = f"""
+            prompt = f""""""
             Create a compelling, AI - optimized social media post about: {opportunity.topic}
 
             Angle: {opportunity.angle}
@@ -921,15 +992,17 @@ class ContentAutomationPipeline:
             - Maintain credibility
             - Optimize for virality: {self.generation_settings['social_post']['viral_optimization']}
             - Include media suggestion: {self.generation_settings['social_post']['include_media']}
-            """
+            """"""
 
             post = self.automated_author.ollama.generate(
                 prompt,
-                "You are an AI - powered social media expert focused on viral news content \
-    and engagement optimization.",
+                "You are an AI - powered social media expert focused on viral news content \"
+#     and engagement optimization.",
                 temperature = 0.8,
                 max_tokens = 100,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Apply AI optimizations
             if self.generation_settings['social_post']['viral_optimization']:
@@ -973,7 +1046,9 @@ class ContentAutomationPipeline:
                     background_image = str(background_path),
                     title_text = project.title[:50],  # Truncate for display
                 subtitle_text = f"Analysis by TRAE.AI",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if success:
                 project.output_files.append(str(video_path))
@@ -1007,7 +1082,9 @@ class ContentAutomationPipeline:
                     int(20 + alpha * 30),
                         int(30 + alpha * 40),
                         int(50 + alpha * 60),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 draw.line([(0, y), (1920, y)], fill = color)
 
             # Add title overlay
@@ -1064,12 +1141,14 @@ class ContentAutomationPipeline:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO content_opportunities
                 (id, topic, angle, priority, formats, source_articles, keywords,
-                    estimated_engagement, deadline, metadata)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     estimated_engagement, deadline, metadata)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     opportunity.id,
                         opportunity.topic,
@@ -1081,8 +1160,11 @@ class ContentAutomationPipeline:
                         opportunity.estimated_engagement,
                         opportunity.deadline.isoformat(),
                         json.dumps(opportunity.metadata),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
             conn.close()
@@ -1098,12 +1180,14 @@ class ContentAutomationPipeline:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO content_projects
                 (id, opportunity_id, title, format, status, script, assets,
-                    output_files, metadata, updated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     output_files, metadata, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     project.id,
                         project.opportunity_id,
@@ -1115,8 +1199,11 @@ class ContentAutomationPipeline:
                         json.dumps(project.output_files),
                         json.dumps(project.metadata),
                         project.updated_at.isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
             conn.close()
@@ -1177,22 +1264,28 @@ class ContentAutomationPipeline:
             # Count opportunities
             cursor.execute(
                 "SELECT COUNT(*) FROM content_opportunities WHERE status = 'pending'"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             pending_opportunities = cursor.fetchone()[0]
 
             # Count projects by status
             cursor.execute(
                 "SELECT status, COUNT(*) FROM content_projects GROUP BY status"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             project_stats = dict(cursor.fetchall())
 
             # Recent activity
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM content_projects
                 WHERE created_at > datetime('now', '-24 hours')
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             recent_projects = cursor.fetchone()[0]
 
             conn.close()
@@ -1203,7 +1296,8 @@ class ContentAutomationPipeline:
                     "project_stats": project_stats,
                     "recent_projects_24h": recent_projects,
                     "last_updated": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             logger.error(f"Error getting pipeline status: {e}")

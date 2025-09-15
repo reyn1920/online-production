@@ -26,14 +26,17 @@ PROVIDER_STATUS = {
         "color": "green",
         "last_error": None,
         "requires_key": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "nominatim": {
         "name": "OpenStreetMap Nominatim",
         "color": "green",
         "last_error": None,
         "requires_key": False,
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 
 class PasteCreate(BaseModel):
@@ -55,7 +58,8 @@ async def api_status():
         "status": "healthy",
         "providers": PROVIDER_STATUS,
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/health")
@@ -82,7 +86,8 @@ async def create_paste(paste_data: PasteCreate):
         "content": paste_data.content,
         "title": paste_data.title,
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     pastes_storage.append(new_paste)
     return new_paste
@@ -113,25 +118,28 @@ _OSM_TAGS = {
     "pharmacy": {"amenity": "pharmacy"},
     "pet_store": {"shop": "pet"},
     "dog_park": {"leisure": "dog_park"},
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def _overpass_query(lat, lng, radius_m, tag_key, tag_val, limit):
     """Query Overpass API for places"""
-    query = f"""
+    query = f""""""
     [out:json][timeout:25];
     (
         node["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
       way["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
       relation["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
-    );
+# BRACKET_SURGEON: disabled
+#     );
     out center {limit};
-    """
+    """"""
 
     try:
         response = requests.post(
             "https://overpass - api.de / api / interpreter", data=query, timeout=30
-        )
+# BRACKET_SURGEON: disabled
+#         )
         response.raise_for_status()
         return response.json()
     except Exception as e:
@@ -174,7 +182,8 @@ async def places_search(
     lng: float = -74.0060,
     radius_m: int = 5000,
     limit: int = 50,
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Search for places using OpenStreetMap data"""
     if category not in _OSM_TAGS:
         raise HTTPException(status_code=400, detail=f"Unknown category: {category}")
@@ -198,14 +207,16 @@ async def places_search(
                 "lng": lng,
                 "radius_m": radius_m,
                 "limit": limit,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
 
 
 # HTML Templates
-PASTE_HTML_TEMPLATE = """
+PASTE_HTML_TEMPLATE = """"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -226,7 +237,7 @@ PASTE_HTML_TEMPLATE = """
     <div class="container">
         <h1 > Paste App</h1>
         <form id="pasteForm">
-            <input type="text" id="title" placeholder="Optional title..." style="width: 100%; margin - bottom: 10px; padding: 8px; border: 1px solid #ddd; border - radius: 4px;">
+            <input type="text" id="title" placeholder="Optional title..." style="width: 100%; margin - bottom: 10px; padding: 8px; border: 1px solid #ddd; border - radius: 4px;">"
             <textarea id="content" placeholder="Enter your text here..."></textarea><br>
             <button type="submit">Save Paste</button>
             <button type="button" onclick="loadPastes()">Refresh</button>
@@ -249,12 +260,15 @@ PASTE_HTML_TEMPLATE = """
                         method: 'POST',
                             headers: {
                             'Content - Type': 'application / json',
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             body: JSON.stringify({
                             content: content,
                                 title: title || null
-                        })
-                    });
+# BRACKET_SURGEON: disabled
+#                         })
+# BRACKET_SURGEON: disabled
+#                     });
 
                     if (response.ok) {
                         document.getElementById('content').value = '';
@@ -262,12 +276,16 @@ PASTE_HTML_TEMPLATE = """
                         loadPastes();
                     } else {
                         alert('Failed to save paste');
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 } catch (error) {
                     alert('Error saving paste: ' + error.message);
-                }
-            }
-        });
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         });
 
         async function loadPastes() {
             try {
@@ -275,11 +293,14 @@ PASTE_HTML_TEMPLATE = """
                 if (response.ok) {
                     pastes = await response.json();
                     renderPastes();
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             } catch (error) {
                 console.error('Error loading pastes:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         function renderPastes() {
             const container = document.getElementById('pastes');
@@ -292,14 +313,15 @@ PASTE_HTML_TEMPLATE = """
                     <pre>${paste.content}</pre>
                 </div>
             `).join('');
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         // Load pastes on page load
         loadPastes();
     </script>
 </body>
 </html>
-"""
+""""""
 
 
 @router.get("/", response_class=HTMLResponse)

@@ -11,10 +11,11 @@ def dashboard_action(
     doc: str = "",
     public: bool = False,
     background: bool = False,
-):
-    """
+# BRACKET_SURGEON: disabled
+# ):
+    """"""
     Set background = True for long-running actions: returns {accepted: true, job_id: ...}
-    """
+    """"""
 
     def deco(fn: Callable):
         fn._dash_action = {
@@ -23,7 +24,8 @@ def dashboard_action(
             "doc": doc.strip(),
             "public": public,
             "background": background,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         @wraps(fn)
         def _w(*a, **k):
@@ -97,7 +99,8 @@ class ActionRegistry:
                             target=lambda: fn(**args),
                             daemon=True,
                             name=f"action:{meta['name']}:{job_id}",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         t.start()
                         return jsonify({"ok": True, "accepted": True, "job_id": job_id})
                     try:
@@ -113,7 +116,8 @@ class ActionRegistry:
                 f"act_{agent_name}_{meta['name']}",
                 mk(),
                 methods=[meta["method"]],
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.logger.info(f"[actions] {meta['method']} {route}")
             added += 1
         self.logger.info(f"[actions] {agent_name}: {added} actions")
@@ -150,7 +154,8 @@ class ActionRegistry:
                         target=lambda: fn(**args),
                         daemon=True,
                         name=f"action:{meta['name']}:{job_id}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     t.start()
                     return jsonify({"ok": True, "accepted": True, "job_id": job_id})
                 try:
@@ -166,7 +171,8 @@ class ActionRegistry:
             f"act_{agent_name}_{meta['name']}",
             mk(),
             methods=[meta["method"]],
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.logger.info(f"[actions] {meta['method']} {route}")
         return 1
 
@@ -179,7 +185,8 @@ class ActionRegistry:
                 return {
                     "ok": False,
                     "error": f"Action {action} not found for agent {agent}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Execute the action
             result = self._actions[action_key](**data)
@@ -218,4 +225,5 @@ class ActionRegistry:
         return {
             "ok": True,
             "message": f"Actions cleared for {agent if agent else 'all agents'}",
-        }
+# BRACKET_SURGEON: disabled
+#         }

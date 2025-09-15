@@ -70,7 +70,8 @@ def _report_usage(
     error: Optional[str] = None,
     took_ms: Optional[int] = None,
     quota_remaining: Optional[int] = None,
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Report usage metrics to the integrations registry."""
     try:
         payload = {"key": provider_key, "success": success, "took_ms": took_ms}
@@ -97,14 +98,16 @@ def _fetch_thecatapi_images(limit: int, api_key: Optional[str] = None) -> Dict[s
         "format": "json",
         "has_breeds": "true",
         "order": "RANDOM",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     resp = http_get_with_backoff(
         "https://api.thecatapi.com/v1/images/search",
         headers=headers,
         params=params,
         timeout=TIMEOUT_S,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -128,26 +131,32 @@ def _fetch_thecatapi_images(limit: int, api_key: Optional[str] = None) -> Dict[s
                             "description": breed_info.get("description"),
                             "life_span": breed_info.get("life_span"),
                             "weight": breed_info.get("weight", {}).get("metric"),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         if breed_info
                         else None
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "source": "thecatapi",
                     "provider": "thecatapi",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "success": True,
             "pets": pets,
             "total": len(pets),
             "quota_remaining": None,  # TheCatAPI doesn't provide quota info
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         return {
             "success": False,
             "error": f"TheCatAPI error: {resp.status_code} - {resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def _fetch_thedogapi_images(limit: int, api_key: Optional[str] = None) -> Dict[str, Any]:
@@ -163,14 +172,16 @@ def _fetch_thedogapi_images(limit: int, api_key: Optional[str] = None) -> Dict[s
         "format": "json",
         "has_breeds": "true",
         "order": "RANDOM",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     resp = http_get_with_backoff(
         "https://api.thedogapi.com/v1/images/search",
         headers=headers,
         params=params,
         timeout=TIMEOUT_S,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -197,26 +208,32 @@ def _fetch_thedogapi_images(limit: int, api_key: Optional[str] = None) -> Dict[s
                             "height": breed_info.get("height", {}).get("metric"),
                             "bred_for": breed_info.get("bred_for"),
                             "breed_group": breed_info.get("breed_group"),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         if breed_info
                         else None
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "source": "thedogapi",
                     "provider": "thedogapi",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "success": True,
             "pets": pets,
             "total": len(pets),
             "quota_remaining": None,  # TheDogAPI doesn't provide quota info
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         return {
             "success": False,
             "error": f"TheDogAPI error: {resp.status_code} - {resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def _get_petfinder_token(api_key: str, secret: str) -> Optional[str]:
@@ -226,11 +243,13 @@ def _get_petfinder_token(api_key: str, secret: str) -> Optional[str]:
             "grant_type": "client_credentials",
             "client_id": api_key,
             "client_secret": secret,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         resp = requests.post(
             "https://api.petfinder.com/v2/oauth2/token", data=data, timeout=TIMEOUT_S
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if resp.status_code == 200:
             token_data = resp.json()
@@ -259,14 +278,16 @@ def _fetch_petfinder_animals(
         "limit": min(limit, 100),  # Petfinder max is 100
         "status": "adoptable",
         "sort": "random",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     resp = http_get_with_backoff(
         "https://api.petfinder.com/v2/animals",
         headers=headers,
         params=params,
         timeout=TIMEOUT_S,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -298,25 +319,30 @@ def _fetch_petfinder_animals(
                         "secondary": animal.get("breeds", {}).get("secondary"),
                         "mixed": animal.get("breeds", {}).get("mixed"),
                         "unknown": animal.get("breeds", {}).get("unknown"),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "attributes": animal.get("attributes", {}),
                     "environment": animal.get("environment", {}),
                     "source": "petfinder",
                     "provider": "petfinder",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "success": True,
             "pets": pets,
             "total": data.get("pagination", {}).get("total_count", len(pets)),
             "quota_remaining": None,  # Petfinder doesn't provide quota info
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         return {
             "success": False,
             "error": f"Petfinder API error: {resp.status_code} - {resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def fetch_pets(pet_type: str = "random", limit: int = 10, max_retries: int = 1) -> Dict[str, Any]:
@@ -340,7 +366,8 @@ def fetch_pets(pet_type: str = "random", limit: int = 10, max_retries: int = 1) 
                     False,
                     error_msg,
                     int((time.time() - start_time) * 1000),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return {"provider": provider_key, "ok": False, "error": error_msg}
 
             # Call appropriate provider
@@ -351,27 +378,31 @@ def fetch_pets(pet_type: str = "random", limit: int = 10, max_retries: int = 1) 
                 else:
                     result = {
                         "success": False,
-                        "error": f"TheCatAPI doesn't support {pet_type}",
-                    }
+                        "error": f"TheCatAPI doesn't support {pet_type}",'
+# BRACKET_SURGEON: disabled
+#                     }
             elif provider_key == "thedogapi":
                 if pet_type in ["dog", "random"]:
                     result = _fetch_thedogapi_images(limit, creds.get("api_key"))
                 else:
                     result = {
                         "success": False,
-                        "error": f"TheDogAPI doesn't support {pet_type}",
-                    }
+                        "error": f"TheDogAPI doesn't support {pet_type}",'
+# BRACKET_SURGEON: disabled
+#                     }
             elif provider_key == "petfinder" and "api_key" in creds and "secret" in creds:
                 # Petfinder supports multiple animal types
                 animal_type = pet_type if pet_type != "random" else "dog"
                 result = _fetch_petfinder_animals(
                     limit, creds["api_key"], creds["secret"], animal_type
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 result = {
                     "success": False,
                     "error": f"No adapter implementation for {provider_key}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             took_ms = int((time.time() - start_time) * 1000)
 
@@ -384,7 +415,8 @@ def fetch_pets(pet_type: str = "random", limit: int = 10, max_retries: int = 1) 
                     "data": result["pets"],
                     "total": result.get("total", len(result["pets"])),
                     "took_ms": took_ms,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 # Failure - report and potentially rotate
                 error_msg = result.get("error", "Unknown error")
@@ -396,7 +428,8 @@ def fetch_pets(pet_type: str = "random", limit: int = 10, max_retries: int = 1) 
                         logger.info(f"Rotating from failed provider {provider_key}")
                         rotate_resp = requests.post(
                             f"{BASE}/integrations/rotate?category = pets", timeout=10
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         if rotate_resp.status_code == 200:
                             rotation_data = rotate_resp.json()
                             logger.info(f"Rotated to {rotation_data.get('rotated_to', 'unknown')}")
@@ -412,7 +445,8 @@ def fetch_pets(pet_type: str = "random", limit: int = 10, max_retries: int = 1) 
                     "ok": False,
                     "error": error_msg,
                     "took_ms": took_ms,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             took_ms = int((time.time() - start_time) * 1000)
@@ -431,7 +465,8 @@ def fetch_pets(pet_type: str = "random", limit: int = 10, max_retries: int = 1) 
                 "ok": False,
                 "error": error_msg,
                 "took_ms": took_ms,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     # Should not reach here
     return {
@@ -439,7 +474,8 @@ def fetch_pets(pet_type: str = "random", limit: int = 10, max_retries: int = 1) 
         "ok": False,
         "error": "Max retries exceeded",
         "took_ms": int((time.time() - start_time) * 1000),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Convenience functions for backward compatibility

@@ -6,7 +6,11 @@ from time import time
 from typing import Optional
 
 DB_PATH = Path("data/trae.db")
+"""
+
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+
 
 
 def _cx():
@@ -18,17 +22,23 @@ def _cx():
 def ensure_settings_schema() -> None:
     with _cx() as cx:
         cx.execute(
-            """
+           
+""""""
         CREATE TABLE IF NOT EXISTS settings(
             k TEXT PRIMARY KEY,
                 v TEXT NOT NULL,
                 mtime REAL NOT NULL
-        );
-        """
-        )
+#         );
+        """"""
+
+         )
+       
+
+        
+       
+"""
         cx.commit()
-
-
+       """"""
 def get_setting(key: str, default: Optional[str] = None) -> str:
     ensure_settings_schema()
     with _cx() as cx:
@@ -43,5 +53,5 @@ def set_setting(key: str, value: str) -> None:
         cx.execute(
             "INSERT OR REPLACE INTO settings(k,v,mtime) VALUES(?,?,?)",
             (key, value, time()),
-        )
+         )
         cx.commit()

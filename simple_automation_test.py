@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Simple Automation Systems Validation Test
 
 This script performs focused tests on the core automation systems:
@@ -9,7 +9,7 @@ This script performs focused tests on the core automation systems:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import logging
 import os
@@ -21,7 +21,9 @@ from pathlib import Path
 # Setup logging
 logging.basicConfig(
     level = logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -45,7 +47,8 @@ class SimpleAutomationValidator:
                 "success": success,
                 "message": message,
                 "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.test_results.append(result)
 
         if success:
@@ -61,7 +64,9 @@ class SimpleAutomationValidator:
         databases = [
             "/Users/thomasbrianreynolds/online production/data/performance_analytics.db",
                 "/Users/thomasbrianreynolds/online production/collaboration_outreach.db",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for db_path in databases:
             db_name = Path(db_path).name
@@ -71,7 +76,9 @@ class SimpleAutomationValidator:
                         f"database_exists_{db_name}",
                             False,
                             f"Database file not found: {db_path}",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     continue
 
                 # Test database integrity
@@ -90,18 +97,24 @@ class SimpleAutomationValidator:
                         f"database_integrity_{db_name}",
                             True,
                             f"Database OK with {len(tables)} tables",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 else:
                     self.log_result(
                         f"database_integrity_{db_name}",
                             False,
                             f"Integrity check failed: {result}",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             except Exception as e:
                 self.log_result(
                     f"database_test_{db_name}", False, f"Database test failed: {e}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def test_agent_imports(self):
@@ -113,14 +126,18 @@ class SimpleAutomationValidator:
                 ("collaboration_outreach", "backend.agents.collaboration_outreach_agent"),
                 ("evolution_agent", "backend.agents.evolution_agent"),
                 ("financial_agent", "backend.agents.financial_agent"),
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for agent_name, module_path in agents_to_test:
             try:
                 __import__(module_path)
                 self.log_result(
                     f"import_{agent_name}", True, f"Successfully imported {module_path}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except ImportError as e:
                 self.log_result(f"import_{agent_name}", False, f"Import failed: {e}")
             except Exception as e:
@@ -142,27 +159,35 @@ class SimpleAutomationValidator:
                     "collaboration_capabilities",
                         True,
                         f"Agent has required capabilities: {capabilities}",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 self.log_result(
                     "collaboration_capabilities",
                         False,
                         f"Missing required capabilities: {capabilities}",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             # Test creator discovery (non - async)
             creators = agent.discover_creators("tech", "youtube", 10000)
             if creators and len(creators) > 0:
                 self.log_result(
                     "collaboration_discovery", True, f"Found {len(creators)} creators"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.log_result("collaboration_discovery", False, "No creators found")
 
         except Exception as e:
             self.log_result(
                 "collaboration_agent_test", False, f"Agent test failed: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def test_monetization_agent_basic(self):
@@ -179,10 +204,12 @@ class SimpleAutomationValidator:
             try:
                 agent = MonetizationServicesAgent()
                 print(
-                    f"DEBUG: Agent initialized successfully,
+                    f"DEBUG: Agent initialized successfully,"
     type: {type(agent)},
-    agent: {agent}"
-                )
+    agent: {agent}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 print(f"DEBUG: Agent has attributes: {dir(agent) if agent else 'None'}")
             except Exception as init_error:
                 print(f"DEBUG: Error during agent initialization: {init_error}")
@@ -193,9 +220,11 @@ class SimpleAutomationValidator:
             try:
                 capabilities = agent.capabilities
                 print(
-                    f"DEBUG: capabilities type: {type(capabilities)},
-    value: {capabilities}"
-                )
+                    f"DEBUG: capabilities type: {type(capabilities)},"
+    value: {capabilities}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as cap_error:
                 print(f"DEBUG: Error getting capabilities: {cap_error}")
                 raise cap_error
@@ -205,11 +234,15 @@ class SimpleAutomationValidator:
                     "monetization_capabilities",
                         True,
                         f"Agent has {len(capabilities)} capabilities",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 self.log_result(
                     "monetization_capabilities", False, "No capabilities found"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Test service packages
             try:
@@ -221,20 +254,26 @@ class SimpleAutomationValidator:
                         "monetization_packages",
                             True,
                             f"Found {package_count} service packages",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 else:
                     self.log_result(
                         "monetization_packages",
                             False,
                             f"No service packages found. Got: {packages}",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
             except Exception as pkg_error:
                 print(f"DEBUG: Error in get_service_packages: {pkg_error}")
                 self.log_result(
                     "monetization_packages",
                         False,
                         f"Error getting packages: {pkg_error}",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         except Exception as e:
             self.log_result("monetization_agent_test", False, f"Agent test failed: {e}")
@@ -258,13 +297,17 @@ class SimpleAutomationValidator:
                     "evolution_capabilities",
                         True,
                         f"Agent has key capabilities: {found_caps}",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 self.log_result(
                     "evolution_capabilities",
                         False,
                         f"Missing key capabilities. Found: {capabilities}",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             # Test status
             status = agent.get_status()
@@ -273,7 +316,9 @@ class SimpleAutomationValidator:
                     "evolution_status",
                         True,
                         f"Agent status available: {status.get('agent_type')}",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 self.log_result("evolution_status", False, "Agent status not available")
 
@@ -290,7 +335,9 @@ class SimpleAutomationValidator:
                 "/Users/thomasbrianreynolds/online production/backend/agents/collaboration_outreach_agent.py",
                 "/Users/thomasbrianreynolds/online production/backend/agents/evolution_agent.py",
                 "/Users/thomasbrianreynolds/online production/backend/agents/financial_agent.py",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for file_path in critical_files:
             file_name = Path(file_path).name
@@ -298,11 +345,15 @@ class SimpleAutomationValidator:
                 file_size = Path(file_path).stat().st_size
                 self.log_result(
                     f"file_exists_{file_name}", True, f"File exists ({file_size} bytes)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.log_result(
                     f"file_exists_{file_name}", False, f"File missing: {file_path}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def run_all_tests(self):
@@ -366,7 +417,8 @@ class SimpleAutomationValidator:
                 "success_rate": success_rate,
                 "status": status,
                 "production_ready": success_rate >= 75,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
 def main():
@@ -379,13 +431,17 @@ def main():
         print(f"\\n✅ Automation systems validation completed successfully!")
         print(
             f"Status: {results['status']} ({results['success_rate']:.1f}% success rate)"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         sys.exit(0)
     else:
         print(f"\\n❌ Automation systems validation found issues.")
         print(
             f"Status: {results['status']} ({results['success_rate']:.1f}% success rate)"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         sys.exit(1)
 
 if __name__ == "__main__":

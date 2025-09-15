@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Check All System Integrations Status
 Verifies that all folders and components are properly integrated
-"""
+""""""
 
 import json
 from pathlib import Path
@@ -29,7 +29,8 @@ def check_software_integrations():
                 f"  Integration Rate: {(available / total * 100):.1f}%"
                 if total > 0
                 else "  Integration Rate: 0%"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Group by integration type
             types = {}
@@ -103,7 +104,8 @@ def check_folder_structure():
         "scripts",
         "config",
         "data",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     existing_folders = []
     missing_folders = []
@@ -134,7 +136,8 @@ def check_api_endpoints():
         "/dashboard / api / system - info",
         "/system - software / status",
         "/integrations / status",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     working_endpoints = []
     failed_endpoints = []

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Progressive Self - Repair System Agent
 
 Implements intelligent, tiered escalation for component failures:
@@ -9,7 +9,7 @@ Implements intelligent, tiered escalation for component failures:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -74,7 +74,9 @@ class ProgressiveSelfRepairAgent(BaseAgent):
         self.db_path = config.get("db_path", "right_perspective.db")
         self.ollama_client = OllamaClient(
             config.get("ollama_endpoint", "http://localhost:11434")
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.max_tier1_attempts = config.get("max_tier1_attempts", 3)
         self.max_tier2_attempts = config.get("max_tier2_attempts", 2)
         self.failure_threshold = config.get("failure_threshold", 5)
@@ -90,8 +92,11 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     "venv_path": config.get("venv_path", "./venv"),
                     "project_root": config.get("project_root", "."),
                     "max_snapshots": config.get("max_snapshots", 10),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self._init_database()
 
@@ -105,7 +110,7 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                 # The repair_log table is already defined in right_perspective_schema.sql
                 # Just ensure it exists with the correct structure
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS repair_log (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             component_name TEXT NOT NULL,
@@ -116,13 +121,17 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                             execution_details TEXT,
                             attempt_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             resolution_time_seconds INTEGER
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Create component_health table for tracking component status
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS component_health (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             component_name TEXT NOT NULL UNIQUE,
@@ -133,14 +142,20 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                             last_failure_at TIMESTAMP,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 conn.commit()
                 self.logger.info(
                     "Progressive Self - Repair database initialized successfully"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except Exception as e:
             self.logger.error(f"Failed to initialize repair database: {e}")
             raise
@@ -151,9 +166,10 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             component_name: str,
             error_message: str,
             error_context: Optional[Dict] = None,
-            ) -> bool:
-        """Main entry point for handling component failures with enhanced pre - repair validation \
-    and Safe Mode protection."""
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
+        """Main entry point for handling component failures with enhanced pre - repair validation \"""
+#     and Safe Mode protection.""""""
         snapshot = None
         try:
             self.logger.info(f"Handling failure for component: {component_name}")
@@ -161,23 +177,31 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             # Enhanced pre - repair validation
             validation_result = self._perform_pre_repair_validation(
                 component_name, error_message
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if not validation_result["can_proceed"]:
                 self.logger.error(
                     f"Pre - repair validation failed: {validation_result['reason']}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self._update_component_health(component_name, ComponentStatus.CRITICAL)
                 return False
 
             # Create environment snapshot before attempting repair
             snapshot = self.safe_mode.create_snapshot(
                 f"Pre - repair snapshot for {component_name} failure"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if not snapshot:
                 self.logger.warning(
                     "Failed to create pre - repair snapshot - proceeding without Safe Mode"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.logger.info(f"Created pre - repair snapshot: {snapshot.snapshot_id}")
 
@@ -197,15 +221,21 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             if repair_tier == RepairTier.RESTART:
                 success = self._execute_tier1_repair(
                     component_name, error_message, error_context
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             elif repair_tier == RepairTier.DEPENDENCY_CHECK:
                 success = self._execute_tier2_repair(
                     component_name, error_message, error_context
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             elif repair_tier == RepairTier.AI_RESEARCH:
                 success = self._execute_tier3_repair(
                     component_name, error_message, error_context, repair_history
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             repair_duration = time.time() - repair_start_time
 
@@ -213,51 +243,71 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             if success:
                 post_repair_validation = self._perform_post_repair_validation(
                     component_name, repair_duration
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if not post_repair_validation["stable"]:
                     self.logger.warning(
                         f"Post - repair validation failed: {post_repair_validation['issues']}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     if snapshot:
                         self.logger.info(
                             "Initiating automatic rollback due to validation failure"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         rollback_result = self.safe_mode.rollback_to_snapshot(
                             snapshot.snapshot_id,
                                 f"Post - repair validation failed for {component_name}: {post_repair_validation['issues']}",
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                         if rollback_result.success:
                             success = False
                             self.logger.info(
                                 "Automatic rollback completed successfully"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             self._log_rollback_event(
                                 component_name,
                                     snapshot.snapshot_id,
                                     "validation_failure",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                         else:
                             self.logger.error(
                                 f"Automatic rollback failed: {rollback_result.error_message}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             self._log_rollback_event(
                                 component_name, snapshot.snapshot_id, "rollback_failed"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             # Update component health based on final outcome
             if success:
                 self._update_component_health(component_name, ComponentStatus.HEALTHY)
                 self.logger.info(
                     f"Component {component_name} successfully repaired and validated"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self._update_component_health(component_name, ComponentStatus.CRITICAL)
                 self.logger.error(
                     f"Component {component_name} repair failed or was rolled back"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return success
 
@@ -271,20 +321,28 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     rollback_result = self.safe_mode.rollback_to_snapshot(
                         snapshot.snapshot_id,
                             f"Emergency rollback - Exception during {component_name} repair: {str(e)}",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     if rollback_result.success:
                         self.logger.info("Emergency rollback completed successfully")
                         self._log_rollback_event(
                             component_name, snapshot.snapshot_id, "exception_recovery"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     else:
                         self.logger.error(
                             f"Emergency rollback failed: {rollback_result.error_message}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 except Exception as rollback_error:
                     self.logger.error(
                         f"Emergency rollback failed with exception: {rollback_error}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self._update_component_health(component_name, ComponentStatus.CRITICAL)
             return False
@@ -292,7 +350,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
 
     def _determine_repair_tier(
         self, component_name: str, repair_history: List[Dict]
-    ) -> RepairTier:
+# BRACKET_SURGEON: disabled
+#     ) -> RepairTier:
         """Determine which repair tier to use based on history."""
         if not repair_history:
             return RepairTier.RESTART
@@ -303,7 +362,9 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             attempt
             for attempt in repair_history
             if datetime.fromisoformat(attempt["created_at"]) > recent_cutoff
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         tier1_attempts = len([a for a in recent_attempts if a["repair_tier"] == 1])
         tier2_attempts = len([a for a in recent_attempts if a["repair_tier"] == 2])
@@ -318,7 +379,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
 
     def _execute_tier1_repair(
         self, component_name: str, error_message: str, error_context: Optional[Dict]
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Tier 1: Simple component restart."""
         start_time = time.time()
         repair_action = f"Restarting component: {component_name}"
@@ -347,15 +409,20 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     execution_details = execution_details,
                     error_context = error_context,
                     duration = time.time() - start_time,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return success
 
 
     def _execute_tier2_repair(
         self, component_name: str, error_message: str, error_context: Optional[Dict]
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Tier 2: Dependency verification and repair."""
         start_time = time.time()
         repair_action = f"Checking dependencies for: {component_name}"
@@ -375,7 +442,9 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     success = False
                     execution_details = (
                         f"Failed to fix dependencies: {dependency_issues}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             else:
                 # No dependency issues found, try restart anyway
                 success = self._restart_component(component_name)
@@ -400,8 +469,12 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     execution_details = execution_details,
                     error_context = error_context,
                     duration = time.time() - start_time,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return success
 
@@ -412,7 +485,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             error_message: str,
             error_context: Optional[Dict],
             repair_history: List[Dict],
-            ) -> bool:
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
         """Tier 3: AI - powered research and novel solution generation."""
         start_time = time.time()
         repair_action = f"AI - powered repair research for: {component_name}"
@@ -421,7 +495,9 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             # Generate AI prompt using the repair history directly
             prompt = self._generate_ai_repair_prompt(
                 component_name, error_message, repair_history
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Get AI - generated solution
             ai_response = self.ollama_client.generate_completion(prompt)
@@ -437,12 +513,16 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     success = self._execute_ai_solution(component_name, executable_code)
                     execution_details = (
                         f"AI solution executed: {executable_code[:200]}..."
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     success = False
                     execution_details = (
                         f"No executable code found in AI response: {solution[:200]}..."
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             else:
                 success = False
                 execution_details = "Failed to get AI response"
@@ -466,22 +546,29 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     execution_details = execution_details,
                     error_context = error_context,
                     duration = time.time() - start_time,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return success
 
 
     def _generate_ai_repair_prompt(
         self, component_name: str, error_message: str, repair_history: List[Dict]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate prompt for AI - powered repair research using the exact format specified in the Progressive Self - Repair Protocol."""
         # Format repair history as specified in the protocol
         if repair_history:
             failed_repairs = [
                 f"Tier {r['repair_tier']}: {r['repair_action']} - {r['outcome']}"
                 for r in repair_history[-10:]
-            ]  # Last 10 attempts
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]  # Last 10 attempts
             history_summary = ", ".join(failed_repairs)
         else:
             history_summary = "None"
@@ -491,19 +578,22 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             "linly_talker",
                 "blender_compositor",
                 "creative_pipeline",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         creative_context = ""
         if is_creative:
-            creative_context = " Note: This component uses an isolated Python virtual environment (venv_creative) with creative dependencies (torch,
+            creative_context = " Note: This component uses an isolated Python virtual environment (venv_creative) with creative dependencies (torch,"
     opencv - python,
     librosa,
-    etc.). Use 'source activate_creative.sh' before executing Python commands."
+# BRACKET_SURGEON: disabled
+#     etc.). Use 'source activate_creative.sh' before executing Python commands.""
 
         # Use the exact prompt format from the Progressive Self - Repair Protocol specification
-        return f"""
+        return f""""""
 I am an autonomous system. The component '[{component_name}]' is failing with the error: '[{error_message}]'. I have already tried the following repairs: [{history_summary}].{creative_context} Based on this error, research \
-    and suggest a new, different command - line or Python - based repair strategy. Formulate the solution as executable code.
+#     and suggest a new, different command - line or Python - based repair strategy. Formulate the solution as executable code.
 
 Provide your response in this format:
 ```python
@@ -515,7 +605,7 @@ OR
 ```bash
 # Your shell commands here
 ```
-"""
+""""""
 
 
     def _extract_executable_code(self, ai_response: str) -> Optional[str]:
@@ -546,18 +636,22 @@ OR
                 "linly_talker",
                     "blender_compositor",
                     "creative_pipeline",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             # Determine if it's Python or shell code
             if any(
                 keyword in code for keyword in ["import ", "def ", "class ", "print("]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 # Execute as Python with proper environment
                 if is_creative:
                     # Create a temporary file for the solution
                     with tempfile.NamedTemporaryFile(
                         mode="w", suffix=".py", delete = False
-                    ) as f:
+# BRACKET_SURGEON: disabled
+#                     ) as f:
                         f.write(code)
                         temp_file = f.name
 
@@ -567,14 +661,18 @@ OR
                             "bash",
                                 "-c",
                                 f"source activate_creative.sh && python {temp_file}",
-                                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ]
                         result = subprocess.run(
                             cmd,
                                 capture_output = True,
                                 text = True,
                                 timeout = 300,
                                 cwd = os.getcwd(),
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         os.unlink(temp_file)
                         return result.returncode == 0
                     except Exception:
@@ -588,11 +686,14 @@ OR
             else:
                 # Execute as shell command
                     if is_creative and "python" in code:
+                        pass
                     # Wrap shell command with creative environment activation
                     code = f"source activate_creative.sh && {code}"
                 result = subprocess.run(
                     code, shell = True, capture_output = True, text = True, timeout = 60
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return result.returncode == 0
         except Exception as e:
             self.logger.error(f"Failed to execute AI solution: {e}")
@@ -609,22 +710,27 @@ OR
                 "database": 'sqlite3 right_perspective.db "PRAGMA integrity_check;"',
                 "linly_talker": "source activate_creative.sh && python -c \\"from backend.content.animate_avatar import LinlyTalkerEngine; engine = LinlyTalkerEngine(); print('Linly - Talker restarted')\\"",
                 "blender_compositor": "source activate_creative.sh && python -c \\"from backend.content.blender_compositor import BlenderCompositor; compositor = BlenderCompositor(); print('Blender compositor restarted')\\"",
-                "creative_pipeline": "source activate_creative.sh && python -c \\"import torch,
+                "creative_pipeline": "source activate_creative.sh && python -c \\"import torch,"
     cv2,
-    librosa; print('Creative pipeline dependencies verified')\\"",
-                }
+    librosa; print('Creative pipeline dependencies verified')\\"","
+# BRACKET_SURGEON: disabled
+#                 }
 
         command = restart_commands.get(component_name)
         if not command:
             self.logger.warning(
                 f"No restart command defined for component: {component_name}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return False
 
         try:
             result = subprocess.run(
                 command, shell = True, capture_output = True, text = True, timeout = 30
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return result.returncode == 0
         except Exception as e:
             self.logger.error(f"Failed to restart {component_name}: {e}")
@@ -669,7 +775,9 @@ OR
             "linly_talker",
                 "blender_compositor",
                 "creative_pipeline",
-                ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]:
             # Check creative environment
             creative_env_path = "venv_creative"
             if not os.path.exists(creative_env_path):
@@ -681,14 +789,18 @@ OR
                         [
                             f"{creative_env_path}/bin / python",
                                 "-c",
-                                'import torch,
+                                'import torch,'
     cv2,
-    librosa; print("Creative dependencies OK")',
-                                ],
+    librosa; print("Creative dependencies OK")','
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
                             capture_output = True,
                             text = True,
                             timeout = 30,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     if result.returncode != 0:
                         issues.append("creative_dependencies_missing")
                 except Exception:
@@ -706,7 +818,9 @@ OR
                 if issue == "ollama_not_running":
                     subprocess.run("brew services start ollama",
     shell = True,
-    timeout = 30)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 30)
                 elif issue == "database_file_missing":
                     # Recreate database from schema
                     with open("schema.sql", "r") as f:
@@ -716,7 +830,9 @@ OR
                 elif issue == "missing_youtube_api_key":
                     self.logger.error(
                         "YouTube API key missing - manual intervention required"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     success = False
                 elif issue == "creative_environment_missing":
                     # Recreate creative environment
@@ -724,14 +840,18 @@ OR
                         ["python", "scripts / setup_creative_environment.py"],
                             check = True,
                             timeout = 300,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 elif issue == "creative_dependencies_missing":
                     # Reinstall creative dependencies
                     result = subprocess.run(
                         ["python", "scripts / setup_creative_environment.py", "--update"],
                             check = True,
                             timeout = 300,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 elif issue == "creative_environment_corrupted":
                     # Remove and recreate creative environment
                     subprocess.run(["rm", "-rf", "venv_creative"], check = True)
@@ -739,7 +859,9 @@ OR
                         ["python", "scripts / setup_creative_environment.py"],
                             check = True,
                             timeout = 300,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 # Add more dependency fixes as needed
             except Exception as e:
                 self.logger.error(f"Failed to fix dependency {issue}: {e}")
@@ -755,14 +877,16 @@ OR
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM repair_log
                     WHERE component_name = ?
                     ORDER BY attempt_timestamp DESC
                     LIMIT ?
-                """,
+                ""","""
                     (component_name, limit),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 return [dict(row) for row in cursor.fetchall()]
         except Exception as e:
             self.logger.error(f"Failed to get repair history: {e}")
@@ -771,7 +895,8 @@ OR
 
     def _log_repair_attempt(
         self, attempt: RepairAttempt, snapshot_id: Optional[str] = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Log a repair attempt to the database using the master schema structure with snapshot information."""
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -785,12 +910,14 @@ OR
                     cursor.execute("ALTER TABLE repair_log ADD COLUMN snapshot_id TEXT")
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO repair_log (
                         component_name, error_message, repair_action, repair_tier,
                             outcome, execution_details, resolution_time_seconds, snapshot_id
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ""","""
                     (
                         attempt.component_name,
                             attempt.error_message,
@@ -803,19 +930,28 @@ OR
                                     "error_type": attempt.error_type,
                                         "error_context": attempt.error_context,
                                         "execution_details": attempt.execution_details,
-                                        }
-                            )
+# BRACKET_SURGEON: disabled
+#                                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             if attempt.execution_details or attempt.error_context
                             else None
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             int(attempt.duration) if attempt.duration else None,
                             snapshot_id,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 conn.commit()
                 self.logger.info(
                     f"Logged repair attempt for {attempt.component_name}: {attempt.repair_action}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except Exception as e:
             self.logger.error(f"Failed to log repair attempt: {e}")
 
@@ -830,7 +966,9 @@ OR
                 cursor.execute(
                     "SELECT id, consecutive_failures, total_failures FROM component_health WHERE component_name = ?",
                         (component_name,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 existing = cursor.fetchone()
 
                 if existing:
@@ -844,31 +982,36 @@ OR
                         total_failures += 1
 
                     cursor.execute(
-                        """
+                        """"""
                         UPDATE component_health
                         SET status = ?, last_check = CURRENT_TIMESTAMP,
                             consecutive_failures = ?, total_failures = ?,
                                 last_failure_at = CASE WHEN ? != 'healthy' THEN CURRENT_TIMESTAMP ELSE last_failure_at END,
                                 updated_at = CURRENT_TIMESTAMP
                         WHERE component_name = ?
-                    """,
+                    ""","""
                         (
                             status.value,
                                 consecutive_failures,
                                 total_failures,
                                 status.value,
                                 component_name,
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 else:
                     # Insert new record
                     cursor.execute(
-                        """
+                        """"""
                         INSERT INTO component_health (
                             component_name, status, consecutive_failures, total_failures,
                                 last_failure_at
-                        ) VALUES (?, ?, ?, ?, ?)
-                    """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) VALUES (?, ?, ?, ?, ?)
+                    ""","""
                         (
                             component_name,
                                 status.value,
@@ -878,9 +1021,13 @@ OR
                                 datetime.now().isoformat()
                                 if status != ComponentStatus.HEALTHY
                                 else None
-                            ),
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                             ),
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 conn.commit()
         except Exception as e:
@@ -896,37 +1043,44 @@ OR
 
                 # Get component health summary
                 cursor.execute(
-                    """
+                    """"""
                     SELECT status, COUNT(*) as count
                     FROM component_health
                     GROUP BY status
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 health_summary = {
                     row["status"]: row["count"] for row in cursor.fetchall()
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 # Get recent repair activity
                 cursor.execute(
-                    """
+                    """"""
                     SELECT repair_tier, repair_outcome, COUNT(*) as count
                     FROM repair_log
                     WHERE created_at > datetime('now', '-24 hours')
                     GROUP BY repair_tier, repair_outcome
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 repair_activity = [dict(row) for row in cursor.fetchall()]
 
                 # Get most problematic components
                 cursor.execute(
-                    """
+                    """"""
                     SELECT component_name, consecutive_failures, total_failures, status
                     FROM component_health
                     WHERE status != 'healthy'
                     ORDER BY consecutive_failures DESC, total_failures DESC
                     LIMIT 10
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 problematic_components = [dict(row) for row in cursor.fetchall()]
 
                 return {
@@ -938,8 +1092,10 @@ OR
                         "healthy"
                         if health_summary.get("critical", 0) == 0
                         else "degraded"
-                    ),
-                        }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                         }
         except Exception as e:
             self.logger.error(f"Failed to generate health report: {e}")
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
@@ -954,7 +1110,8 @@ OR
                 "reason": None,
                 "risk_level": "low",
                 "recommendations": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         try:
             # Check system resources
@@ -989,7 +1146,9 @@ OR
                     validation_result["risk_level"] = "high"
                     validation_result["recommendations"].append(
                         "Consider scheduling repair during low usage"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Check error pattern for known dangerous scenarios
             dangerous_patterns = ["corruption", "segfault", "memory leak", "deadlock"]
@@ -997,11 +1156,15 @@ OR
                 validation_result["risk_level"] = "high"
                 validation_result["recommendations"].append(
                     "High - risk error detected - proceed with caution"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             self.logger.info(
                 f"Pre - repair validation for {component_name}: {validation_result['risk_level']} risk"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return validation_result
 
         except Exception as e:
@@ -1020,7 +1183,8 @@ OR
                 "issues": [],
                 "performance_impact": "none",
                 "recommendations": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         try:
             # Basic system stability checks
@@ -1038,61 +1202,81 @@ OR
                 validation_result["stable"] = False
                 validation_result["issues"].append(
                     f"Database integrity compromised: {str(db_error)}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Component - specific post - repair validation
             if component_name == "ollama_service":
                 try:
                     response = requests.get(
                         "http://localhost:11434 / api / tags", timeout = 10
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     if response.status_code != 200:
                         validation_result["stable"] = False
                         validation_result["issues"].append(
                             "Ollama service not responding correctly"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 except Exception as ollama_error:
                     validation_result["stable"] = False
                     validation_result["issues"].append(
                         f"Ollama connectivity failed: {str(ollama_error)}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             elif component_name in [
                 "linly_talker",
                     "blender_compositor",
                     "creative_pipeline",
-                    ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]:
                 # Validate creative environment
                 try:
                     result = subprocess.run(
                         [
                             "venv_creative / bin / python",
                                 "-c",
-                                'import torch,
+                                'import torch,'
     cv2,
-    librosa; print("Creative environment OK")',
-                                ],
+    librosa; print("Creative environment OK")','
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
                             capture_output = True,
                             text = True,
                             timeout = 30,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     if result.returncode != 0:
                         validation_result["stable"] = False
                         validation_result["issues"].append(
                             "Creative environment validation failed"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 except Exception as creative_error:
                     validation_result["stable"] = False
                     validation_result["issues"].append(
                         f"Creative environment error: {str(creative_error)}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Performance impact assessment
             if repair_duration > 60:
                 validation_result["performance_impact"] = "high"
                 validation_result["recommendations"].append(
                     "Long repair duration may indicate underlying issues"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             elif repair_duration > 30:
                 validation_result["performance_impact"] = "moderate"
 
@@ -1101,10 +1285,14 @@ OR
             if memory_usage > 85:
                 validation_result["issues"].append(
                     f"High memory usage after repair: {memory_usage}%"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 validation_result["recommendations"].append(
                     "Monitor memory usage closely"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Check for new error patterns
             time.sleep(2)  # Allow time for any immediate post - repair issues
@@ -1115,7 +1303,9 @@ OR
 
             self.logger.info(
                 f"Post - repair validation for {component_name}: {'STABLE' if validation_result['stable'] else 'UNSTABLE'}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return validation_result
 
         except Exception as e:
@@ -1133,13 +1323,15 @@ OR
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM repair_log
                     WHERE attempt_timestamp > ?
                     ORDER BY attempt_timestamp DESC
-                """,
+                ""","""
                     (cutoff_time.isoformat(),),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 return [dict(row) for row in cursor.fetchall()]
         except Exception as e:
             self.logger.error(f"Failed to get recent repair attempts: {e}")
@@ -1153,7 +1345,9 @@ OR
                 # Check for active database connections
                 result = subprocess.run(
                     ["lsof", self.db_path], capture_output = True, text = True
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return len(result.stdout.strip()) > 0
             elif component_name == "ollama_service":
                 # Check for active Ollama processes
@@ -1174,7 +1368,9 @@ OR
                 try:
                     response = requests.get(
                         "http://localhost:11434 / api / tags", timeout = 5
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     if response.status_code >= 400:
                         errors.append(f"Ollama HTTP error: {response.status_code}")
                 except requests.exceptions.RequestException as e:
@@ -1191,7 +1387,8 @@ OR
 
     def _log_rollback_event(
         self, component_name: str, snapshot_id: str, rollback_reason: str
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Log rollback events for audit and analysis."""
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -1199,31 +1396,41 @@ OR
 
                 # Create rollback_log table if it doesn't exist
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS rollback_log (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             component_name TEXT NOT NULL,
                             snapshot_id TEXT NOT NULL,
                             rollback_reason TEXT NOT NULL,
                             rollback_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO rollback_log (component_name,
     snapshot_id,
-    rollback_reason)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     rollback_reason)
                     VALUES (?, ?, ?)
-                """,
+                ""","""
                     (component_name, snapshot_id, rollback_reason),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 conn.commit()
                 self.logger.info(
                     f"Logged rollback event for {component_name}: {rollback_reason}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except Exception as e:
             self.logger.error(f"Failed to log rollback event: {e}")
 

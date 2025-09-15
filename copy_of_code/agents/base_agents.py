@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Base Agentic Framework
 
 This module defines the foundational base classes for the TRAE.AI agentic system.
@@ -14,7 +14,7 @@ Base Classes:
 Author: TRAE.AI System
 Version: 1.0.0
 Date: 2024
-"""
+""""""
 
 import abc
 import asyncio
@@ -69,22 +69,22 @@ class AgentCapability(Enum):
 
 
 class BaseAgent(abc.ABC):
-    """
+    """"""
     Abstract base class for all TRAE.AI agents.
 
     This class provides the foundational structure and common functionality
     that all agents in the TRAE.AI system must implement.
-    """
+    """"""
 
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
-        """
+        """"""
         Initialize the base agent.
 
         Args:
             agent_id: Unique identifier for the agent
             name: Human - readable name for the agent
-        """
+        """"""
         self.agent_id = agent_id or str(uuid.uuid4())
         self.name = name or self.__class__.__name__
         self.status = AgentStatus.IDLE
@@ -96,7 +96,8 @@ class BaseAgent(abc.ABC):
                 "tasks_failed": 0,
                 "average_execution_time": 0.0,
                 "success_rate": 0.0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Initialize logger and secret store
         self.logger = get_logger(f"agent.{self.name.lower()}")
@@ -109,12 +110,12 @@ class BaseAgent(abc.ABC):
 
 
     def capabilities(self) -> List[AgentCapability]:
-        """
+        """"""
         Return the list of capabilities this agent possesses.
 
         Returns:
             List of AgentCapability enums
-        """
+        """"""
         pass
 
     @property
@@ -126,31 +127,35 @@ class BaseAgent(abc.ABC):
             AgentStatus.IDLE,
                 AgentStatus.COMPLETED,
                 AgentStatus.FAILED,
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
     @property
 
 
     def uptime(self) -> float:
-        """Get the agent's uptime in seconds."""
+        """Get the agent's uptime in seconds."""'
         return (datetime.now() - self.created_at).total_seconds()
 
 
     def update_status(self, status: AgentStatus, message: Optional[str] = None):
-        """
-        Update the agent's status.
+        """"""
+        Update the agent's status.'
 
         Args:
             status: New status for the agent
             message: Optional status message
-        """
+        """"""
         old_status = self.status
         self.status = status
         self.last_activity = datetime.now()
 
         log_message = (
             f"Agent {self.name} status changed: {old_status.value} -> {status.value}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if message:
             log_message += f" - {message}"
 
@@ -163,8 +168,9 @@ class BaseAgent(abc.ABC):
             success: bool,
             execution_time: float,
             details: Optional[Dict] = None,
-            ):
-        """
+# BRACKET_SURGEON: disabled
+#             ):
+        """"""
         Record the completion of a task for performance tracking.
 
         Args:
@@ -172,14 +178,15 @@ class BaseAgent(abc.ABC):
             success: Whether the task was completed successfully
             execution_time: Time taken to execute the task in seconds
             details: Optional additional details about the task
-        """
+        """"""
         task_record = {
             "task_id": task_id,
                 "success": success,
                 "execution_time": execution_time,
                 "timestamp": datetime.now().isoformat(),
                 "details": details or {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         self.task_history.append(task_record)
 
@@ -192,32 +199,40 @@ class BaseAgent(abc.ABC):
         total_tasks = (
             self.performance_metrics["tasks_completed"]
             + self.performance_metrics["tasks_failed"]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.performance_metrics["success_rate"] = (
             self.performance_metrics["tasks_completed"]/total_tasks
             if total_tasks > 0
             else 0.0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Update average execution time
         if len(self.task_history) > 0:
             total_time = sum(record["execution_time"] for record in self.task_history)
             self.performance_metrics["average_execution_time"] = total_time/len(
                 self.task_history
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.logger.info(
             f"Task {task_id} recorded: success={success}, time={execution_time:.2f}s"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def get_performance_summary(self) -> Dict[str, Any]:
-        """
-        Get a summary of the agent's performance metrics.
+        """"""
+        Get a summary of the agent's performance metrics.'
 
         Returns:
             Dictionary containing performance statistics
-        """
+        """"""
         return {
             "agent_id": self.agent_id,
                 "agent_name": self.name,
@@ -226,13 +241,14 @@ class BaseAgent(abc.ABC):
                 "capabilities": [cap.value for cap in self.capabilities],
                 "performance_metrics": self.performance_metrics.copy(),
                 "recent_tasks": self.task_history[-10:] if self.task_history else [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
     @abc.abstractmethod
 
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Process a task assigned to this agent.
 
         Args:
@@ -240,7 +256,7 @@ class BaseAgent(abc.ABC):
 
         Returns:
             Dictionary containing task results
-        """
+        """"""
         pass
 
 
@@ -249,26 +265,27 @@ class BaseAgent(abc.ABC):
 
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(agent_id='{self.agent_id}',
+        return f"{self.__class__.__name__}(agent_id='{self.agent_id}',"
     name='{self.name}',
-    status='{self.status.value}')"
+    status='{self.status.value}')""
 
 
 class PlannerAgent(BaseAgent):
-    """
+    """"""
     PlannerAgent implements the OODA loop (Observe,
     Orient,
     Decide,
-    Act) strategic doctrine.
+# BRACKET_SURGEON: disabled
+#     Act) strategic doctrine.
 
-    This agent serves as the system's brain, using the OODA loop methodology to:
+    This agent serves as the system's brain, using the OODA loop methodology to:'
     - Observe: Gather data from ResearchAgent and system state
     - Orient: Analyze and synthesize information to understand the situation
     - Decide: Formulate strategic plans and tactical decisions
     - Act: Populate task_queue with specific jobs for other agents
 
     The OODA loop enables rapid, adaptive decision - making in dynamic environments.
-    """
+    """"""
 
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
@@ -277,7 +294,8 @@ class PlannerAgent(BaseAgent):
             "default": "sequential",
                 "parallel_threshold": 3,
                 "priority_weighting": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # OODA Loop state management
         self.ooda_state = {
@@ -289,7 +307,8 @@ class PlannerAgent(BaseAgent):
                 "orientation_data": {},
                 "decisions": [],
                 "actions_taken": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Strategic context
         self.strategic_context = {
@@ -299,7 +318,8 @@ class PlannerAgent(BaseAgent):
                 "performance_metrics": {},
                 "risk_assessment": {},
                 "opportunity_matrix": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Planning templates and frameworks
         self.planning_frameworks = {
@@ -307,7 +327,8 @@ class PlannerAgent(BaseAgent):
                 "marketing_campaign": self._create_marketing_campaign_template(),
                 "research_agenda": self._create_research_agenda_template(),
                 "quality_assurance": self._create_qa_template(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Active plans and history
         self.active_plans: Dict[str, Dict[str, Any]] = {}
@@ -321,7 +342,7 @@ class PlannerAgent(BaseAgent):
 
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Process a planning task.
 
         Args:
@@ -329,7 +350,7 @@ class PlannerAgent(BaseAgent):
 
         Returns:
             Dictionary containing the execution plan
-        """
+        """"""
         start_time = time.time()
         task_id = task.get("id", str(uuid.uuid4()))
 
@@ -350,7 +371,9 @@ class PlannerAgent(BaseAgent):
                 if not validation_result["valid"]:
                     raise ValueError(
                         f"Plan validation failed: {validation_result['errors']}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 result = {
                     "success": True,
@@ -358,14 +381,19 @@ class PlannerAgent(BaseAgent):
                         "validation": validation_result,
                         "planning_time": timer.elapsed_time,
                         "agent_id": self.agent_id,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 self.update_status(
                     AgentStatus.COMPLETED, f"Planning completed for task {task_id}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.record_task_completion(
                     task_id, True, time.time() - start_time, result
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 return result
 
@@ -375,13 +403,16 @@ class PlannerAgent(BaseAgent):
                     "error": str(e),
                     "planning_time": time.time() - start_time,
                     "agent_id": self.agent_id,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             self.logger.error(f"Planning failed for task {task_id}: {e}")
             self.update_status(AgentStatus.FAILED, f"Planning failed: {e}")
             self.record_task_completion(
                 task_id, False, time.time() - start_time, error_result
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return error_result
 
@@ -389,7 +420,7 @@ class PlannerAgent(BaseAgent):
     async def _create_execution_plan(
         self, requirements: Dict[str, Any], priority: TaskPriority
     ) -> Dict[str, Any]:
-        """
+        """"""
         Create an execution plan based on requirements.
 
         Args:
@@ -398,7 +429,7 @@ class PlannerAgent(BaseAgent):
 
         Returns:
             Execution plan dictionary
-        """
+        """"""
         # Placeholder implementation - to be expanded based on specific requirements
         plan = {
             "id": str(uuid.uuid4()),
@@ -410,7 +441,8 @@ class PlannerAgent(BaseAgent):
                 "required_agents": [],
                 "dependencies": [],
                 "resources": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Analyze requirements and create steps
         task_type = requirements.get("type", "generic")
@@ -422,20 +454,25 @@ class PlannerAgent(BaseAgent):
                         "action": "research_topic",
                         "agent": "ResearchAgent",
                         "duration": 300,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 2,
                         "action": "create_content",
                         "agent": "ContentAgent",
                         "duration": 600,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 3,
                         "action": "quality_check",
                         "agent": "QAAgent",
                         "duration": 180,
-                        },
-                    ]
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             plan["required_agents"] = ["ResearchAgent", "ContentAgent", "QAAgent"]
             plan["estimated_duration"] = 1080
 
@@ -446,20 +483,25 @@ class PlannerAgent(BaseAgent):
                         "action": "system_check",
                         "agent": "SystemAgent",
                         "duration": 120,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 2,
                         "action": "perform_maintenance",
                         "agent": "SystemAgent",
                         "duration": 300,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 3,
                         "action": "verify_system",
                         "agent": "SystemAgent",
                         "duration": 60,
-                        },
-                    ]
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             plan["required_agents"] = ["SystemAgent"]
             plan["estimated_duration"] = 480
 
@@ -471,20 +513,25 @@ class PlannerAgent(BaseAgent):
                         "action": "analyze_task",
                         "agent": "SystemAgent",
                         "duration": 60,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 2,
                         "action": "execute_task",
                         "agent": "ExecutorAgent",
                         "duration": 300,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 3,
                         "action": "audit_result",
                         "agent": "AuditorAgent",
                         "duration": 120,
-                        },
-                    ]
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             plan["required_agents"] = ["SystemAgent", "ExecutorAgent", "AuditorAgent"]
             plan["estimated_duration"] = 480
 
@@ -500,7 +547,8 @@ class PlannerAgent(BaseAgent):
                 "resource_availability": self._assess_resource_availability(),
                 "current_workload": len(self.active_plans),
                 "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return observations
 
 
@@ -514,8 +562,10 @@ class PlannerAgent(BaseAgent):
                 "strategic_alignment": self._check_strategic_alignment(requirements),
                 "risk_factors": self._identify_risks(requirements, observations),
                 "opportunities": self._identify_opportunities(requirements,
-    observations),
-                }
+# BRACKET_SURGEON: disabled
+#     observations),
+# BRACKET_SURGEON: disabled
+#                 }
         return orientation
 
 
@@ -533,20 +583,25 @@ class PlannerAgent(BaseAgent):
                         "action": "research_topic",
                         "agent": "ResearchAgent",
                         "duration": 300,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 2,
                         "action": "create_content",
                         "agent": "ContentAgent",
                         "duration": 600,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 3,
                         "action": "quality_check",
                         "agent": "QAAgent",
                         "duration": 180,
-                        },
-                    ]
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             duration = 1080
         elif task_type == "system_maintenance":
             tasks = [
@@ -555,20 +610,25 @@ class PlannerAgent(BaseAgent):
                         "action": "system_check",
                         "agent": "SystemAgent",
                         "duration": 120,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 2,
                         "action": "perform_maintenance",
                         "agent": "SystemAgent",
                         "duration": 300,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 3,
                         "action": "verify_system",
                         "agent": "SystemAgent",
                         "duration": 60,
-                        },
-                    ]
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             duration = 480
         else:
             tasks = [
@@ -577,20 +637,25 @@ class PlannerAgent(BaseAgent):
                         "action": "analyze_task",
                         "agent": "SystemAgent",
                         "duration": 60,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 2,
                         "action": "execute_task",
                         "agent": "ExecutorAgent",
                         "duration": 300,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "id": 3,
                         "action": "audit_result",
                         "agent": "AuditorAgent",
                         "duration": 120,
-                        },
-                    ]
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             duration = 480
 
         decisions = {
@@ -598,7 +663,8 @@ class PlannerAgent(BaseAgent):
                 "dependencies": self._calculate_dependencies(tasks),
                 "duration": duration,
                 "execution_strategy": "sequential" if complexity == "high" else "parallel",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return decisions
 
 
@@ -608,7 +674,8 @@ class PlannerAgent(BaseAgent):
             "active_agents": 5,  # Placeholder
             "system_load": 0.6,  # Placeholder
             "available_resources": "high",  # Placeholder
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def _assess_resource_availability(self) -> Dict[str, Any]:
@@ -617,7 +684,8 @@ class PlannerAgent(BaseAgent):
             "compute_resources": "available",
                 "agent_capacity": "medium",
                 "storage": "sufficient",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _assess_task_complexity(self, requirements: Dict[str, Any]) -> str:
@@ -647,7 +715,8 @@ class PlannerAgent(BaseAgent):
             "aligned": True,
                 "strategic_value": "medium",
                 "business_impact": "positive",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _identify_risks(
@@ -661,8 +730,11 @@ class PlannerAgent(BaseAgent):
                     "type": "time_pressure",
                         "severity": "high",
                         "mitigation": "allocate_additional_resources",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         return risks
 
 
@@ -677,8 +749,11 @@ class PlannerAgent(BaseAgent):
                     "type": "parallel_execution",
                         "benefit": "faster_completion",
                         "feasibility": "high",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         return opportunities
 
 
@@ -690,7 +765,9 @@ class PlannerAgent(BaseAgent):
         for i, task in enumerate(tasks[1:], 1):
             dependencies.append(
                 {"task_id": task["id"], "depends_on": [tasks[i - 1]["id"]]}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         return dependencies
 
 
@@ -701,7 +778,8 @@ class PlannerAgent(BaseAgent):
                 "phases": ["research", "creation", "review", "publication"],
                 "default_duration": 2400,  # 40 minutes
             "required_agents": ["ResearchAgent", "ContentAgent", "QAAgent"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _create_marketing_campaign_template(self) -> Dict[str, Any]:
@@ -715,8 +793,11 @@ class PlannerAgent(BaseAgent):
                     "ContentAgent",
                     "MarketingAgent",
                     "AnalyticsAgent",
-                    ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _create_research_agenda_template(self) -> Dict[str, Any]:
@@ -728,10 +809,13 @@ class PlannerAgent(BaseAgent):
                     "data_gathering",
                     "analysis",
                     "reporting",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "default_duration": 3600,  # 1 hour
             "required_agents": ["ResearchAgent", "AnalyticsAgent"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _create_qa_template(self) -> Dict[str, Any]:
@@ -741,7 +825,8 @@ class PlannerAgent(BaseAgent):
                 "phases": ["preparation", "testing", "validation", "reporting"],
                 "default_duration": 1800,  # 30 minutes
             "required_agents": ["QAAgent", "AuditorAgent"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def create_plan(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
@@ -766,8 +851,10 @@ class PlannerAgent(BaseAgent):
                 "observations": observations,
                     "orientation": orientation,
                     "decisions": decisions,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Add to active plans
         self.active_plans[plan_id] = plan
@@ -777,17 +864,22 @@ class PlannerAgent(BaseAgent):
                     "plan_id": plan_id,
                     "timestamp": datetime.now().isoformat(),
                     "ooda_cycle": self.ooda_state["cycle_count"],
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.logger.info(
             f"Created OODA - based plan {plan_id} with {len(plan['tasks'])} tasks"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return plan
 
 
     def execute_ooda_cycle(self, task_queue_manager) -> Dict[str, Any]:
-        """
+        """"""
         Execute a complete OODA loop cycle.
 
         Args:
@@ -795,7 +887,7 @@ class PlannerAgent(BaseAgent):
 
         Returns:
             Dictionary containing cycle results
-        """
+        """"""
         cycle_start = datetime.now()
         self.ooda_state["cycle_count"] += 1
 
@@ -827,11 +919,14 @@ class PlannerAgent(BaseAgent):
                     "decisions_made": len(decisions),
                     "actions_taken": len(actions),
                     "status": "completed",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             self.logger.info(
                 f"OODA cycle {self.ooda_state['cycle_count']} completed in {cycle_result['duration']:.2f}s"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return cycle_result
 
         except Exception as e:
@@ -840,13 +935,14 @@ class PlannerAgent(BaseAgent):
                 "cycle_id": self.ooda_state["cycle_count"],
                     "status": "failed",
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def _observe_system_state(self, task_queue_manager) -> Dict[str, Any]:
-        """
+        """"""
         OODA Loop - Observe: Gather comprehensive system data.
-        """
+        """"""
         observations = {
             "timestamp": datetime.now().isoformat(),
                 "observation_id": str(uuid.uuid4()),
@@ -856,7 +952,8 @@ class PlannerAgent(BaseAgent):
                 "market_conditions": self._observe_market_conditions(),
                 "content_performance": self._observe_content_performance(),
                 "resource_utilization": self._observe_resource_utilization(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Update OODA state with observations
         self.ooda_state["last_observation"] = observations
@@ -866,33 +963,40 @@ class PlannerAgent(BaseAgent):
         if len(self.ooda_state["observation_history"]) > 10:
             self.ooda_state["observation_history"] = self.ooda_state[
                 "observation_history"
-            ][-10:]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ][-10:]
 
         return observations
 
 
     def _orient_strategic_context(self, observations: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         OODA Loop - Orient: Analyze observations and update strategic context.
-        """
+        """"""
         orientation = {
             "situation_assessment": self._assess_current_situation(observations),
                 "trend_analysis": self._analyze_trends(observations),
                 "opportunity_identification": self._identify_strategic_opportunities(
                 observations
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "threat_assessment": self._assess_threats(observations),
                 "resource_optimization": self._optimize_resource_allocation(observations),
                 "performance_gaps": self._identify_performance_gaps(observations),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Update strategic context
         self.strategic_context.update(
             {
                 "last_updated": datetime.now().isoformat(),
                     "orientation_data": orientation,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return orientation
 
@@ -900,9 +1004,9 @@ class PlannerAgent(BaseAgent):
     def _decide_actions(
         self, orientation: Dict[str, Any], observations: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
-        """
+        """"""
         OODA Loop - Decide: Make strategic decisions based on orientation.
-        """
+        """"""
         decision_id = str(uuid.uuid4())
         decisions = []
 
@@ -921,7 +1025,9 @@ class PlannerAgent(BaseAgent):
         # Web automation decisions
         automation_decisions = self._decide_automation_actions(
             orientation, observations
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         decisions.extend(automation_decisions)
 
         # System optimization decisions
@@ -938,7 +1044,8 @@ class PlannerAgent(BaseAgent):
                 "timestamp": datetime.now().isoformat(),
                 "decisions_count": len(decisions),
                 "decision_types": list(set([d.get("type", "unknown") for d in decisions])),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Maintain decision history (last 5 decisions)
         if "decision_history" not in self.ooda_state:
@@ -953,9 +1060,9 @@ class PlannerAgent(BaseAgent):
     def _act_on_decisions(
         self, decisions: List[Dict[str, Any]], task_queue_manager
     ) -> List[Dict[str, Any]]:
-        """
+        """"""
         OODA Loop - Act: Execute decisions by creating tasks in the queue.
-        """
+        """"""
         actions_taken = []
 
         for decision in decisions:
@@ -966,7 +1073,9 @@ class PlannerAgent(BaseAgent):
                         payload = decision["payload"],
                         assigned_agent = decision.get("assigned_agent"),
                         scheduled_at = decision.get("scheduled_at"),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 actions_taken.append(
                     {
@@ -975,21 +1084,29 @@ class PlannerAgent(BaseAgent):
                             "action_type": decision["task_type"],
                             "status": "created",
                             "timestamp": datetime.now().isoformat(),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             except Exception as e:
                 self.logger.error(
                     f"Failed to create task for decision {decision.get('id')}: {str(e)}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 actions_taken.append(
                     {
                         "decision_id": decision.get("id"),
                             "status": "failed",
                             "error": str(e),
                             "timestamp": datetime.now().isoformat(),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return actions_taken
 
@@ -1002,7 +1119,9 @@ class PlannerAgent(BaseAgent):
             pending_tasks = task_queue_manager.get_tasks(status="pending")
             in_progress_tasks = task_queue_manager.get_tasks(status="in_progress")
             completed_tasks = task_queue_manager.get_tasks(status="completed",
-    limit = 50)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     limit = 50)
 
             return {
                 "pending_count": len(pending_tasks),
@@ -1012,10 +1131,14 @@ class PlannerAgent(BaseAgent):
                         t
                         for t in completed_tasks
                         if self._is_today(t.get("completed_at"))
-                    ]
-                ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ),
                     "queue_health": "healthy" if len(pending_tasks) < 20 else "congested",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
         except Exception as e:
             return {"error": str(e), "status": "unavailable"}
 
@@ -1027,7 +1150,8 @@ class PlannerAgent(BaseAgent):
             "average_task_completion_time": 300,  # 5 minutes
             "success_rate": 0.95,
                 "bottlenecks": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _observe_system_metrics(self) -> Dict[str, Any]:
@@ -1037,7 +1161,8 @@ class PlannerAgent(BaseAgent):
                 "memory_usage": 0.4,
                 "disk_usage": 0.3,
                 "network_latency": 50,  # ms
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def _observe_market_conditions(self) -> Dict[str, Any]:
@@ -1046,7 +1171,8 @@ class PlannerAgent(BaseAgent):
             "trending_topics": ["AI", "automation", "productivity"],
                 "competitor_activity": "moderate",
                 "market_sentiment": "positive",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _observe_content_performance(self) -> Dict[str, Any]:
@@ -1055,7 +1181,8 @@ class PlannerAgent(BaseAgent):
             "recent_engagement": 0.8,
                 "content_quality_score": 0.9,
                 "publication_frequency": "optimal",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _observe_resource_utilization(self) -> Dict[str, Any]:
@@ -1064,7 +1191,8 @@ class PlannerAgent(BaseAgent):
             "compute_resources": "available",
                 "storage_capacity": "sufficient",
                 "api_quotas": "within_limits",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _assess_current_situation(self, observations: Dict[str, Any]) -> Dict[str, Any]:
@@ -1082,7 +1210,8 @@ class PlannerAgent(BaseAgent):
             "overall_status": situation,
                 "priority_areas": ["task_queue_management", "resource_optimization"],
                 "immediate_actions_needed": situation != "normal",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _analyze_trends(self, observations: Dict[str, Any]) -> Dict[str, Any]:
@@ -1091,7 +1220,8 @@ class PlannerAgent(BaseAgent):
             "task_completion_trend": "stable",
                 "resource_usage_trend": "increasing",
                 "content_performance_trend": "improving",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _identify_strategic_opportunities(
@@ -1108,8 +1238,11 @@ class PlannerAgent(BaseAgent):
                         "description": "Create AI - focused content",
                         "priority": "high",
                         "estimated_impact": "high",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return opportunities
 
@@ -1126,8 +1259,11 @@ class PlannerAgent(BaseAgent):
                         "description": "Task queue congestion",
                         "severity": "medium",
                         "mitigation": "increase_processing_capacity",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return threats
 
@@ -1140,7 +1276,8 @@ class PlannerAgent(BaseAgent):
             "recommended_adjustments": [],
                 "priority_reallocation": "content_creation",
                 "efficiency_improvements": ["parallel_processing"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _identify_performance_gaps(
@@ -1157,8 +1294,11 @@ class PlannerAgent(BaseAgent):
                         "current_performance": agent_performance.get("success_rate"),
                         "target_performance": 0.95,
                         "improvement_actions": ["error_handling_enhancement"],
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return gaps
 
@@ -1180,10 +1320,14 @@ class PlannerAgent(BaseAgent):
                         "action": "monitor_breaking_news",
                             "focus_sectors": orientation.get("target_markets", []),
                             "alert_threshold": 0.8,
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "assigned_agent": "ResearchAgent",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Competitor analysis
         last_competitor_scan = observations.get("last_competitor_analysis")
@@ -1197,10 +1341,14 @@ class PlannerAgent(BaseAgent):
                         "action": "analyze_competitors",
                             "competitors": orientation.get("key_competitors", []),
                             "analysis_depth": "comprehensive",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "assigned_agent": "ResearchAgent",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return decisions
 
@@ -1223,10 +1371,14 @@ class PlannerAgent(BaseAgent):
                         "action": "automate_affiliate_signups",
                             "platforms": pending_signups,
                             "stealth_level": "high",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "assigned_agent": "WebAutomationAgent",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Content tool automation
         if observations.get("content_backlog", 0) > 10:
@@ -1239,10 +1391,14 @@ class PlannerAgent(BaseAgent):
                         "action": "automate_content_tools",
                             "tools": ["spechelo_pro", "thumbnail_blaster"],
                             "batch_size": 5,
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "assigned_agent": "WebAutomationAgent",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return decisions
 
@@ -1266,10 +1422,14 @@ class PlannerAgent(BaseAgent):
                                 "topic": opportunity.get("description"),
                                 "target_audience": "general",
                                 "content_type": "article",
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             "assigned_agent": "ContentAgent",
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return decisions
 
@@ -1294,10 +1454,14 @@ class PlannerAgent(BaseAgent):
                         "action": "optimize_campaigns",
                             "focus_areas": market_conditions.get("trending_topics", []),
                             "budget_allocation": "increase",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "assigned_agent": "MarketingAgent",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Twitter promotion for new content
         if content_performance.get("new_videos_count", 0) > 0:
@@ -1310,11 +1474,16 @@ class PlannerAgent(BaseAgent):
                         "action": "twitter_promotion",
                             "promotion_type": "youtube_upload",
                             "content_count": content_performance.get("new_videos_count",
-    0),
-                            },
+# BRACKET_SURGEON: disabled
+#     0),
+# BRACKET_SURGEON: disabled
+#                             },
                         "assigned_agent": "MarketingAgent",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Twitter engagement for community building
         trending_topics = market_conditions.get("trending_topics", [])
@@ -1329,10 +1498,14 @@ class PlannerAgent(BaseAgent):
                             "engagement_type": "topic_monitoring",
                             "topics": trending_topics[:3],  # Focus on top 3 trending topics
                         "engagement_goal": "community_building",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "assigned_agent": "MarketingAgent",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Daily Twitter engagement cycle
         current_hour = datetime.now().hour
@@ -1347,12 +1520,17 @@ class PlannerAgent(BaseAgent):
                             "engagement_type": "conversation_search",
                             "search_keywords": market_conditions.get(
                             "trending_topics", ["AI", "automation", "productivity"]
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             "engagement_goal": "thought_leadership",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "assigned_agent": "MarketingAgent",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return decisions
 
@@ -1375,10 +1553,14 @@ class PlannerAgent(BaseAgent):
                             "action": "optimize_performance",
                                 "target_area": "task_queue",
                                 "optimization_type": threat.get("mitigation"),
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             "assigned_agent": "SystemAgent",
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return decisions
 
@@ -1401,10 +1583,14 @@ class PlannerAgent(BaseAgent):
                             "action": "quality_audit",
                                 "focus_area": gap.get("area"),
                                 "target_improvement": gap.get("target_performance"),
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             "assigned_agent": "QAAgent",
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return decisions
 
@@ -1421,7 +1607,7 @@ class PlannerAgent(BaseAgent):
 
 
     async def _validate_plan(self, plan: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Validate an execution plan.
 
         Args:
@@ -1429,7 +1615,7 @@ class PlannerAgent(BaseAgent):
 
         Returns:
             Validation result dictionary
-        """
+        """"""
         errors = []
         warnings = []
 
@@ -1463,16 +1649,17 @@ class PlannerAgent(BaseAgent):
                 "errors": errors,
                 "warnings": warnings,
                 "validated_at": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
 class ExecutorAgent(BaseAgent):
-    """
+    """"""
     ExecutorAgent handles task execution and implementation.
 
     This agent takes execution plans from PlannerAgent and carries out
     the actual work required to complete tasks using all integrated tools.
-    """
+    """"""
 
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
@@ -1495,13 +1682,17 @@ class ExecutorAgent(BaseAgent):
 
                 CrossPromotionManager,
                                                             DayOneBlitzStrategy,
-                                                            RelentlessOptimizationLoop)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                                             RelentlessOptimizationLoop)
             # Research Tools
 
             from backend.agents.research_tools import (BreakingNewsWatcher,
 
                 CompetitorAnalyzer,
-                                                           MarketValidator)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                                            MarketValidator)
             # Web Automation Tools
 
             from backend.agents.web_automation_tools import (AffiliateSignupAutomator,
@@ -1509,7 +1700,9 @@ class ExecutorAgent(BaseAgent):
                 SpecheloPro,
                                                                  StealthOperations,
                                                                  ThumbnailBlaster,
-                                                                 WebAutomationAgent)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                                                  WebAutomationAgent)
 
             from backend.content.ai_inpainting import AIInpainting
             from backend.content.ai_video_editor import AIVideoEditor
@@ -1544,7 +1737,8 @@ class ExecutorAgent(BaseAgent):
                     "thumbnail_blaster": ThumbnailBlaster(StealthOperations()),
                     "affiliate_signup": AffiliateSignupAutomator(StealthOperations()),
                     "web_automation": WebAutomationAgent(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             self.logger.info(f"Initialized {len(self.tools)} tools for ExecutorAgent")
 
@@ -1561,11 +1755,13 @@ class ExecutorAgent(BaseAgent):
                 AgentCapability.CONTENT_CREATION,
                 AgentCapability.RESEARCH,
                 AgentCapability.MARKETING,
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Process an execution task.
 
         Args:
@@ -1573,7 +1769,7 @@ class ExecutorAgent(BaseAgent):
 
         Returns:
             Dictionary containing execution results
-        """
+        """"""
         start_time = time.time()
         task_id = task.get("id", str(uuid.uuid4()))
 
@@ -1584,13 +1780,16 @@ class ExecutorAgent(BaseAgent):
             if len(self.current_tasks) >= self.max_concurrent_tasks:
                 raise RuntimeError(
                     f"Agent at maximum capacity ({self.max_concurrent_tasks} tasks)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             self.current_tasks.append(task_id)
 
             with PerformanceTimer(
                 f"planner_task_{task.get('type', 'unknown')}"
-            ) as timer:
+# BRACKET_SURGEON: disabled
+#             ) as timer:
                 # Extract execution plan
                 plan = task.get("plan", {})
                 if not plan:
@@ -1604,14 +1803,19 @@ class ExecutorAgent(BaseAgent):
                         "execution_result": execution_result,
                         "execution_time": timer.elapsed_time,
                         "agent_id": self.agent_id,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 self.update_status(
                     AgentStatus.COMPLETED, f"Execution completed for task {task_id}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.record_task_completion(
                     task_id, True, time.time() - start_time, result
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 return result
 
@@ -1621,13 +1825,16 @@ class ExecutorAgent(BaseAgent):
                     "error": str(e),
                     "execution_time": time.time() - start_time,
                     "agent_id": self.agent_id,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             self.logger.error(f"Execution failed for task {task_id}: {e}")
             self.update_status(AgentStatus.FAILED, f"Execution failed: {e}")
             self.record_task_completion(
                 task_id, False, time.time() - start_time, error_result
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return error_result
 
@@ -1638,7 +1845,7 @@ class ExecutorAgent(BaseAgent):
 
 
     async def _execute_plan(self, plan: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Execute a plan by running its steps.
 
         Args:
@@ -1646,7 +1853,7 @@ class ExecutorAgent(BaseAgent):
 
         Returns:
             Execution result dictionary
-        """
+        """"""
         steps = plan.get("steps", [])
         step_results = []
 
@@ -1671,8 +1878,11 @@ class ExecutorAgent(BaseAgent):
                         "success": step_result.get("success", True),
                         "duration": step_duration,
                         "result": step_result,
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # If step failed, stop execution
             if not step_result.get("success", True):
@@ -1685,11 +1895,12 @@ class ExecutorAgent(BaseAgent):
                 "total_steps": len(steps),
                 "step_results": step_results,
                 "overall_success": all(result["success"] for result in step_results),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def _execute_step(self, step: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Execute a single step using integrated tools.
 
         Args:
@@ -1697,7 +1908,7 @@ class ExecutorAgent(BaseAgent):
 
         Returns:
             Step execution result
-        """
+        """"""
         action = step.get("action")
         tool_name = step.get("tool")
         parameters = step.get("parameters", {})
@@ -1717,7 +1928,8 @@ class ExecutorAgent(BaseAgent):
                     "tool": tool_name,
                     "message": f"Successfully executed {action}",
                     "data": result,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Step execution failed for {action}: {str(e)}")
@@ -1727,7 +1939,8 @@ class ExecutorAgent(BaseAgent):
                     "tool": tool_name,
                     "error": str(e),
                     "data": {},
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _execute_tool_action(
@@ -1742,13 +1955,15 @@ class ExecutorAgent(BaseAgent):
                 return await tool.create_project(parameters)
             elif (
                 hasattr(tool, "create_animation_job") and "animation" in action.lower()
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 return await tool.create_animation_job(parameters)
             elif hasattr(tool, "create_inpainting_job") and "inpaint" in action.lower():
                 return await tool.create_inpainting_job(parameters)
             elif (
                 hasattr(tool, "create_composite_job") and "composite" in action.lower()
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 return await tool.create_composite_job(parameters)
             elif hasattr(tool, "create_audio_job") and "audio" in action.lower():
                 return await tool.create_audio_job(parameters)
@@ -1773,14 +1988,16 @@ class ExecutorAgent(BaseAgent):
             elif (
                 hasattr(tool, "generate_cross_promotion")
                 and "promotion" in action.lower()
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 return await tool.generate_cross_promotion(parameters)
 
             # Web Automation Tools
             elif (
                 hasattr(tool, "execute_stealth_operation")
                 and "stealth" in action.lower()
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 return await tool.execute_stealth_operation(parameters)
             elif hasattr(tool, "automate_workflow") and "automate" in action.lower():
                 return await tool.automate_workflow(parameters)
@@ -1796,12 +2013,15 @@ class ExecutorAgent(BaseAgent):
                             await method(parameters)
                             if asyncio.iscoroutinefunction(method)
                             else method(parameters)
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 return {
                     "message": f"Action {action} executed on {tool.__class__.__name__}",
                         "parameters": parameters,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         except Exception as e:
             raise Exception(f"Tool execution failed: {str(e)}")
@@ -1810,7 +2030,7 @@ class ExecutorAgent(BaseAgent):
     async def _execute_generic_action(
         self, action: str, parameters: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Execute generic actions that don't require specific tools."""
+        """Execute generic actions that don't require specific tools."""'
         # Simulate work for generic actions
         await asyncio.sleep(0.1)
 
@@ -1818,16 +2038,17 @@ class ExecutorAgent(BaseAgent):
             "message": f"Generic action {action} completed",
                 "parameters": parameters,
                 "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def _simulate_work(self, duration: float):
-        """
+        """"""
         Simulate work by waiting for the specified duration.
 
         Args:
             duration: Duration to wait in seconds
-        """
+        """"""
 
         import asyncio
 
@@ -1836,12 +2057,12 @@ class ExecutorAgent(BaseAgent):
 
 
 class AuditorAgent(BaseAgent):
-    """
+    """"""
     AuditorAgent performs quality assurance and compliance checking.
 
     This agent reviews completed tasks, ensures they meet quality standards,
         and verifies compliance with system rules and regulations.
-    """
+    """"""
 
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
@@ -1851,7 +2072,8 @@ class AuditorAgent(BaseAgent):
                 "compliance_checks": True,
                 "performance_validation": True,
                 "security_scan": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.audit_history: List[Dict[str, Any]] = []
 
     @property
@@ -1862,7 +2084,7 @@ class AuditorAgent(BaseAgent):
 
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Process an audit task.
 
         Args:
@@ -1870,7 +2092,7 @@ class AuditorAgent(BaseAgent):
 
         Returns:
             Dictionary containing audit results
-        """
+        """"""
         start_time = time.time()
         task_id = task.get("id", str(uuid.uuid4()))
 
@@ -1879,7 +2101,8 @@ class AuditorAgent(BaseAgent):
 
             with PerformanceTimer(
                 f"executor_task_{task.get('type', 'unknown')}"
-            ) as timer:
+# BRACKET_SURGEON: disabled
+#             ) as timer:
                 # Extract audit target
                 audit_target = task.get("audit_target", {})
                 if not audit_target:
@@ -1894,7 +2117,8 @@ class AuditorAgent(BaseAgent):
                         "audit_result": audit_result,
                         "timestamp": datetime.now().isoformat(),
                         "auditor_id": self.agent_id,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 self.audit_history.append(audit_record)
 
                 result = {
@@ -1902,14 +2126,19 @@ class AuditorAgent(BaseAgent):
                         "audit_result": audit_result,
                         "audit_time": timer.elapsed_time,
                         "agent_id": self.agent_id,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 self.update_status(
                     AgentStatus.COMPLETED, f"Audit completed for task {task_id}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.record_task_completion(
                     task_id, True, time.time() - start_time, result
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 return result
 
@@ -1919,19 +2148,22 @@ class AuditorAgent(BaseAgent):
                     "error": str(e),
                     "audit_time": time.time() - start_time,
                     "agent_id": self.agent_id,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             self.logger.error(f"Audit failed for task {task_id}: {e}")
             self.update_status(AgentStatus.FAILED, f"Audit failed: {e}")
             self.record_task_completion(
                 task_id, False, time.time() - start_time, error_result
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return error_result
 
 
     async def _perform_audit(self, audit_target: Dict[str, Any]) -> Dict[str, Any]:
-        """
+        """"""
         Perform a comprehensive audit of the target.
 
         Args:
@@ -1939,7 +2171,7 @@ class AuditorAgent(BaseAgent):
 
         Returns:
             Audit result dictionary
-        """
+        """"""
         audit_results = {
             "overall_score": 0.0,
                 "quality_score": 0.0,
@@ -1949,7 +2181,8 @@ class AuditorAgent(BaseAgent):
                 "issues": [],
                 "recommendations": [],
                 "passed": False,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Quality audit
         quality_result = await self._audit_quality(audit_target)
@@ -1977,23 +2210,31 @@ class AuditorAgent(BaseAgent):
                 audit_results["compliance_score"],
                 audit_results["performance_score"],
                 audit_results["security_score"],
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         audit_results["overall_score"] = sum(scores)/len(scores)
 
         # Determine if audit passed
         audit_results["passed"] = (
             audit_results["overall_score"] >= self.audit_criteria["quality_threshold"]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Generate recommendations
         if not audit_results["passed"]:
             audit_results["recommendations"] = await self._generate_recommendations(
                 audit_results
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.logger.info(
             f"Audit completed with overall score: {audit_results['overall_score']:.2f}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return audit_results
 
 
@@ -2007,7 +2248,9 @@ class AuditorAgent(BaseAgent):
             if target.get("status") != "completed":
                 issues.append(
                     f"Task status is '{target.get('status')}', expected 'completed'"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 quality_score -= 0.3
 
             # Validate required outputs
@@ -2029,7 +2272,9 @@ class AuditorAgent(BaseAgent):
             if expected_time > 0 and execution_time > expected_time * 3:
                 issues.append(
                     f"Execution time ({execution_time}s) significantly exceeds estimate ({expected_time}s)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 quality_score -= 0.1
 
             # Validate output quality metrics
@@ -2040,7 +2285,9 @@ class AuditorAgent(BaseAgent):
                         if isinstance(value, (int, float)) and value < 0.7:
                             issues.append(
                                 f"Quality metric '{metric}' below threshold: {value}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             quality_score -= 0.1
 
             # Check for error indicators
@@ -2063,9 +2310,12 @@ class AuditorAgent(BaseAgent):
                         min(1.0, expected_time/max(1, execution_time))
                         if expected_time > 0
                         else 1.0
-                    ),
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Quality audit failed: {str(e)}")
@@ -2092,7 +2342,9 @@ class AuditorAgent(BaseAgent):
             for output_key, output_value in outputs.items():
                 validation_result = self._validate_output_format(
                     output_key, output_value
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if not validation_result["valid"]:
                     issues.extend(validation_result["issues"])
                     compliance_score -= 0.1
@@ -2104,7 +2356,9 @@ class AuditorAgent(BaseAgent):
                     if not step.get("completed"):
                         issues.append(
                             f"Workflow step not completed: {step.get('name', 'Unknown')}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         compliance_score -= 0.15
 
             # Validate approval requirements
@@ -2132,7 +2386,9 @@ class AuditorAgent(BaseAgent):
 
             self.logger.info(
                 f"Compliance audit completed with score: {compliance_score:.2f}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return {
                 "score": compliance_score,
                     "issues": issues,
@@ -2149,10 +2405,15 @@ class AuditorAgent(BaseAgent):
                             "pending"
                             if target.get("requires_approval")
                             else "not_required"
-                        )
-                    ),
-                        },
-                    }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Compliance audit failed: {str(e)}")
@@ -2160,7 +2421,8 @@ class AuditorAgent(BaseAgent):
                 "score": 0.0,
                     "issues": [f"Audit error: {str(e)}"],
                     "compliance_checks": {},
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _audit_performance(self, target: Dict[str, Any]) -> Dict[str, Any]:
@@ -2178,12 +2440,16 @@ class AuditorAgent(BaseAgent):
                 if time_ratio > 2.0:
                     issues.append(
                         f"Execution time ({execution_time}s) significantly exceeded estimate ({estimated_time}s)"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     performance_score -= 0.3
                 elif time_ratio > 1.5:
                     issues.append(
                         f"Execution time ({execution_time}s) moderately exceeded estimate ({estimated_time}s)"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     performance_score -= 0.1
 
             # Check resource utilization
@@ -2209,15 +2475,20 @@ class AuditorAgent(BaseAgent):
                     sum(quality_metrics.values())/len(quality_metrics)
                     if quality_metrics
                     else 0
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 efficiency_ratio = avg_quality/(
                     execution_time/60
-                )  # Quality per minute
+# BRACKET_SURGEON: disabled
+#                 )  # Quality per minute
 
                 if efficiency_ratio < 0.1:
                     issues.append(
                         f"Low efficiency ratio: {efficiency_ratio:.3f} quality/minute"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     performance_score -= 0.15
 
             # Check for performance bottlenecks
@@ -2239,14 +2510,18 @@ class AuditorAgent(BaseAgent):
                 if concurrency_efficiency < 0.7:
                     issues.append(
                         f"Low concurrency efficiency: {concurrency_efficiency:.2f}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     performance_score -= 0.1
 
             performance_score = max(0.0, performance_score)
 
             self.logger.info(
                 f"Performance audit completed with score: {performance_score:.2f}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return {
                 "score": performance_score,
                     "issues": issues,
@@ -2256,14 +2531,18 @@ class AuditorAgent(BaseAgent):
                         min(1.0, estimated_time/max(1, execution_time))
                         if estimated_time > 0
                         else 1.0
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "resource_efficiency": (
                         1.0 - (cpu_usage/100) * 0.5 if cpu_usage else 1.0
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "retry_rate": retry_count,
                         "bottleneck_count": len(bottlenecks),
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Performance audit failed: {str(e)}")
@@ -2271,7 +2550,8 @@ class AuditorAgent(BaseAgent):
                 "score": 0.0,
                     "issues": [f"Audit error: {str(e)}"],
                     "performance_metrics": {},
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _audit_security(self, target: Dict[str, Any]) -> Dict[str, Any]:
@@ -2286,7 +2566,9 @@ class AuditorAgent(BaseAgent):
                 if self._contains_sensitive_data(output_value):
                     issues.append(
                         f"Potential sensitive data exposure in output: {output_key}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     security_score -= 0.3
 
             # Validate input sanitization
@@ -2301,7 +2583,9 @@ class AuditorAgent(BaseAgent):
                 if not target.get("authenticated_user"):
                     issues.append(
                         "Task requires authentication but no user authenticated"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     security_score -= 0.4
 
                 user_permissions = target.get("user_permissions", [])
@@ -2328,7 +2612,8 @@ class AuditorAgent(BaseAgent):
             # Validate access logging
             if not target.get("access_logged", False) and target.get(
                 "requires_audit_trail", False
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 issues.append("Task requires audit trail but access not logged")
                 security_score -= 0.1
 
@@ -2359,7 +2644,9 @@ class AuditorAgent(BaseAgent):
 
             self.logger.info(
                 f"Security audit completed with score: {security_score:.2f}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return {
                 "score": security_score,
                     "issues": issues,
@@ -2368,20 +2655,26 @@ class AuditorAgent(BaseAgent):
                         "authenticated"
                         if target.get("authenticated_user")
                         else "anonymous"
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "encryption_status": (
                         "encrypted" if target.get("encrypted") else "unencrypted"
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "external_calls_secure": all(
                         call.get("url", "").startswith("https://")
                         for call in external_calls
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "audit_trail_enabled": target.get("access_logged", False),
                         "sensitive_data_protected": not any(
                         self._contains_sensitive_data(v) for v in outputs.values()
-                    ),
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Security audit failed: {str(e)}")
@@ -2389,7 +2682,8 @@ class AuditorAgent(BaseAgent):
                 "score": 0.0,
                     "issues": [f"Audit error: {str(e)}"],
                     "security_checks": {},
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _generate_recommendations(
@@ -2411,7 +2705,7 @@ class AuditorAgent(BaseAgent):
 
 
     def get_audit_history(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """
+        """"""
         Get recent audit history.
 
         Args:
@@ -2419,7 +2713,7 @@ class AuditorAgent(BaseAgent):
 
         Returns:
             List of recent audit records
-        """
+        """"""
         return self.audit_history[-limit:] if self.audit_history else []
 
 
@@ -2433,10 +2727,13 @@ class AuditorAgent(BaseAgent):
                 "system_component",
                     "maintenance_type",
                     "completion_status",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "quality_assurance": ["test_cases", "test_results", "pass_criteria"],
                 "planning": ["objectives", "timeline", "resources", "deliverables"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return field_requirements.get(task_type, ["id", "type", "status", "created_at"])
 
 
@@ -2450,7 +2747,8 @@ class AuditorAgent(BaseAgent):
         # Check for empty or null outputs
         if output_value is None or (
             isinstance(output_value, str) and not output_value.strip()
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             issues.append(f"Output '{output_key}' is empty or null")
             valid = False
 
@@ -2459,14 +2757,17 @@ class AuditorAgent(BaseAgent):
             if len(output_value) < 10:
                 issues.append(
                     f"Content output too short: {len(output_value)} characters"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 valid = False
 
         elif output_key == "url" and isinstance(output_value, str):
             if not (
                 output_value.startswith("http://")
                 or output_value.startswith("https://")
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 issues.append(f"Invalid URL format: {output_value}")
                 valid = False
 
@@ -2499,7 +2800,9 @@ class AuditorAgent(BaseAgent):
             r"\\b[A - Za - z0 - 9._%+-]+@[A - Za - z0 - 9.-]+\\.[A - Z|a - z]{2,}\\b",  # Email addresses
             r"\\b(?:password|pwd|pass|secret|key|token)\\s*[:=]\\s*\\S+\\b",  # Passwords/keys
             r"\\b(?:api[_-]?key|access[_-]?token|auth[_-]?token)\\s*[:=]\\s*\\S+\\b",  # API keys
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         import re
 
@@ -2522,7 +2825,9 @@ class AuditorAgent(BaseAgent):
             r"on\\w+\\s*=",  # Event handlers
             r"\\b(union|select|insert|update|delete|drop|create|alter)\\b",  # SQL keywords
             r"[\\'\\";]",  # SQL injection characters
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         import re
 
@@ -2540,12 +2845,14 @@ class AuditorAgent(BaseAgent):
 
         # Look for unparameterized queries with user input
         risky_patterns = [
-            r"'\\s*\\+\\s*",  # String concatenation
-            r'"\\s*\\+\\s*',  # String concatenation
+            r"'\\s*\\+\\s*",  # String concatenation'
+            r'"\\s*\\+\\s*',  # String concatenation"
             r"\\$\\{.*?\\}",  # Template literals
             r"%s.*%s",  # Python string formatting
             r"\\?.*\\?",  # Suspicious parameter patterns
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         import re
 
@@ -2562,7 +2869,7 @@ class AuditorAgent(BaseAgent):
         operation_type = operation.get("type", "")
 
         # Check for directory traversal
-        if "../" in path or "..\\\\" in path:
+        if "../" in path or "..\\\\" in path:"
             return False
 
         # Check for access to sensitive system files
@@ -2575,7 +2882,9 @@ class AuditorAgent(BaseAgent):
                 "/proc/",
                 "/sys/",
                 "/dev/",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for sensitive_path in sensitive_paths:
             if path.startswith(sensitive_path):
@@ -2589,7 +2898,9 @@ class AuditorAgent(BaseAgent):
                     "/usr/bin/",
                     "/usr/sbin/",
                     "C:\\\\Program Files",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             for sys_dir in system_dirs:
                 if path.startswith(sys_dir):
                     return False
@@ -2605,11 +2916,13 @@ class AuditorAgent(BaseAgent):
         xss_patterns = [
             r"<script[^>]*>.*?</script>",
                 r"javascript:",
-                r'on\\w+\\s*=\\s*["\\'][^"\\'>]*["\\']',
+                r'on\\w+\\s*=\\s*["\\'][^"\\'>]*["\\']',"
                 r"<iframe[^>]*>.*?</iframe>",
                 r"<object[^>]*>.*?</object>",
                 r"<embed[^>]*>.*?</embed>",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         import re
 

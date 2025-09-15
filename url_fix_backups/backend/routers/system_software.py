@@ -58,10 +58,12 @@ SOFTWARE_REGISTRY = {
             "rendering",
             "video_editing",
             "scripting",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "creative",
         "file_formats": [".blend", ".fbx", ".obj", ".dae", ".ply"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "davinci_resolve": {
         "name": "DaVinci Resolve",
         "path": "/Applications / DaVinci Resolve / DaVinci Resolve.app",
@@ -71,10 +73,12 @@ SOFTWARE_REGISTRY = {
             "audio_editing",
             "vfx",
             "rendering",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "creative",
         "file_formats": [".drp", ".mp4", ".mov", ".avi", ".mkv"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "gimp": {
         "name": "GIMP",
         "path": "/Applications / GIMP.app",
@@ -84,10 +88,12 @@ SOFTWARE_REGISTRY = {
             "photo_manipulation",
             "graphics_design",
             "scripting",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "creative",
         "file_formats": [".xcf", ".png", ".jpg", ".gif", ".tiff"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "inkscape": {
         "name": "Inkscape",
         "path": "/Applications / Inkscape.app",
@@ -97,17 +103,20 @@ SOFTWARE_REGISTRY = {
             "svg_editing",
             "illustration",
             "logo_design",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "creative",
         "file_formats": [".svg", ".eps", ".pdf", ".ai"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "filmora": {
         "name": "Wondershare Filmora",
         "path": "/Applications / Wondershare Filmora Mac.app",
         "capabilities": ["video_editing", "effects", "transitions", "audio_editing"],
         "integration_type": "creative",
         "file_formats": [".wfp", ".mp4", ".mov", ".avi"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     # Development Tools
     "xcode": {
         "name": "Xcode",
@@ -119,10 +128,12 @@ SOFTWARE_REGISTRY = {
             "swift",
             "objective_c",
             "debugging",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "development",
         "file_formats": [".xcodeproj", ".xcworkspace", ".swift", ".m", ".h"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "cursor": {
         "name": "Cursor",
         "path": "/Applications / Cursor.app",
@@ -131,10 +142,12 @@ SOFTWARE_REGISTRY = {
             "ai_assistance",
             "debugging",
             "git_integration",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "development",
         "file_formats": [".*"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "sublime_text": {
         "name": "Sublime Text",
         "path": "/Applications / Sublime Text.app",
@@ -142,7 +155,8 @@ SOFTWARE_REGISTRY = {
         "capabilities": ["text_editing", "code_editing", "multiple_cursors", "plugins"],
         "integration_type": "development",
         "file_formats": [".*"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "github_desktop": {
         "name": "GitHub Desktop",
         "path": "/Applications / GitHub Desktop.app",
@@ -151,10 +165,12 @@ SOFTWARE_REGISTRY = {
             "repository_management",
             "branch_management",
             "pull_requests",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "development",
         "file_formats": [],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     # AI and Machine Learning
     "ollama": {
         "name": "Ollama",
@@ -165,10 +181,12 @@ SOFTWARE_REGISTRY = {
             "model_management",
             "api_server",
             "chat_interface",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "ai",
         "file_formats": [],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "jan": {
         "name": "Jan",
         "path": "/Applications / Jan.app",
@@ -177,10 +195,12 @@ SOFTWARE_REGISTRY = {
             "model_management",
             "chat_interface",
             "privacy_focused",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "ai",
         "file_formats": [],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     # System and Utilities
     "docker": {
         "name": "Docker",
@@ -191,17 +211,20 @@ SOFTWARE_REGISTRY = {
             "deployment",
             "microservices",
             "orchestration",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "system",
         "file_formats": ["Dockerfile", "docker - compose.yml"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "google_drive": {
         "name": "Google Drive",
         "path": "/Applications / Google Drive.app",
         "capabilities": ["cloud_storage", "file_sync", "collaboration", "backup"],
         "integration_type": "productivity",
         "file_formats": [".*"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     # Command Line Tools
     "git": {
         "name": "Git",
@@ -209,7 +232,8 @@ SOFTWARE_REGISTRY = {
         "capabilities": ["version_control", "branching", "merging", "collaboration"],
         "integration_type": "development",
         "file_formats": [],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "ffmpeg": {
         "name": "FFmpeg",
         "cli_path": "/opt / homebrew / bin / ffmpeg",
@@ -218,10 +242,12 @@ SOFTWARE_REGISTRY = {
             "audio_conversion",
             "streaming",
             "codec_support",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "media",
         "file_formats": [".mp4", ".avi", ".mkv", ".mp3", ".wav", ".flac"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "imagemagick": {
         "name": "ImageMagick",
         "cli_path": "/Users / thomasbrianreynolds / homebrew / bin / convert",
@@ -230,10 +256,12 @@ SOFTWARE_REGISTRY = {
             "image_manipulation",
             "batch_processing",
             "format_support",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "media",
         "file_formats": [".png", ".jpg", ".gif", ".tiff", ".bmp", ".svg"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "node": {
         "name": "Node.js",
         "cli_path": "/Users / thomasbrianreynolds/.nvm / versions / node / v22.17.1 / bin / node",
@@ -242,10 +270,12 @@ SOFTWARE_REGISTRY = {
             "npm_packages",
             "web_development",
             "api_development",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "development",
         "file_formats": [".js", ".json", ".ts"],
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "python": {
         "name": "Python",
         "cli_path": "/Users / thomasbrianreynolds / online production / venv / bin / python3",
@@ -254,11 +284,14 @@ SOFTWARE_REGISTRY = {
             "data_science",
             "machine_learning",
             "web_development",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "integration_type": "development",
         "file_formats": [".py", ".ipynb", ".pyx"],
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 # Helper Functions
 
@@ -278,7 +311,8 @@ async def check_software_availability(software_key: str) -> bool:
         return (
             os.path.exists(software["cli_path"])
             or shutil.which(software["cli_path"].split("/")[-1]) is not None
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     return False
 
@@ -296,7 +330,8 @@ async def execute_command(command: str, args: list = None, cwd: str = None) -> D
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
             cwd=cwd,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         stdout, stderr = await process.communicate()
 
@@ -305,7 +340,8 @@ async def execute_command(command: str, args: list = None, cwd: str = None) -> D
             "returncode": process.returncode,
             "stdout": stdout.decode("utf - 8", errors="ignore"),
             "stderr": stderr.decode("utf - 8", errors="ignore"),
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         return {"success": False, "error": str(e), "stdout": "", "stderr": ""}
 
@@ -323,13 +359,15 @@ async def get_system_software_status():
             "available": is_available,
             "integration_type": software["integration_type"],
             "capabilities": software["capabilities"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     return {
         "total_software": len(SOFTWARE_REGISTRY),
         "available_count": sum(1 for s in status.values() if s["available"]),
         "software": status,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/software/{software_key}", response_model=SoftwareInfo)
@@ -347,7 +385,8 @@ async def get_software_info(software_key: str):
         status="available" if is_available else "unavailable",
         capabilities=software["capabilities"],
         integration_type=software["integration_type"],
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.post("/execute")
@@ -373,7 +412,8 @@ async def execute_software_command(request: CommandRequest):
         # Direct CLI execution
         result = await execute_command(
             executable, [request.command] + request.args, request.working_directory
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     return result
 
@@ -384,7 +424,8 @@ async def blender_render(
     blend_file: str,
     output_path: str,
     frame_range: Optional[str] = None,
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Render a Blender project"""
     if not await check_software_availability("blender"):
         raise HTTPException(status_code=404, detail="Blender not available")
@@ -441,7 +482,8 @@ async def git_operation(operation: str, args: List[str] = None, repository_path:
 
     result = await execute_command(
         SOFTWARE_REGISTRY["git"]["cli_path"], command_args, repository_path
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return result
 
 
@@ -474,7 +516,8 @@ async def ollama_chat(model: str, prompt: str, system_prompt: Optional[str] = No
         # Use ollama run command
         result = await execute_command(
             SOFTWARE_REGISTRY["ollama"]["cli_path"], ["run", model, prompt]
-        )
+# BRACKET_SURGEON: disabled
+#         )
     return result
 
 
@@ -491,8 +534,10 @@ async def create_automation_workflow(task: AutomationTask, background_tasks: Bac
                     "step": step,
                     "success": False,
                     "error": f"Software {software_key} not found",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
             continue
 
         if not await check_software_availability(software_key):
@@ -501,8 +546,10 @@ async def create_automation_workflow(task: AutomationTask, background_tasks: Bac
                     "step": step,
                     "success": False,
                     "error": f"Software {software_key} not available",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
             continue
 
         # Execute the step based on software type
@@ -516,12 +563,14 @@ async def create_automation_workflow(task: AutomationTask, background_tasks: Bac
                     software["cli_path"],
                     [command] + args,
                     step.get("working_directory"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 # For GUI apps, use open command
                 result = await execute_command(
                     "open", ["-a", software["path"]], step.get("working_directory")
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             workflow_results.append({"step": step, "success": result["success"], "result": result})
         except Exception as e:
@@ -532,7 +581,8 @@ async def create_automation_workflow(task: AutomationTask, background_tasks: Bac
         "total_steps": len(task.steps),
         "successful_steps": sum(1 for r in workflow_results if r["success"]),
         "results": workflow_results,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/integrations / creative")
@@ -540,7 +590,8 @@ async def get_creative_software():
     """Get all creative software integrations"""
     creative_software = {
         k: v for k, v in SOFTWARE_REGISTRY.items() if v["integration_type"] == "creative"
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     status = {}
     for key, software in creative_software.items():
@@ -550,7 +601,8 @@ async def get_creative_software():
             "available": is_available,
             "capabilities": software["capabilities"],
             "file_formats": software.get("file_formats", []),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     return status
 
@@ -560,7 +612,8 @@ async def get_development_software():
     """Get all development software integrations"""
     dev_software = {
         k: v for k, v in SOFTWARE_REGISTRY.items() if v["integration_type"] == "development"
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     status = {}
     for key, software in dev_software.items():
@@ -570,7 +623,8 @@ async def get_development_software():
             "available": is_available,
             "capabilities": software["capabilities"],
             "file_formats": software.get("file_formats", []),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     return status
 
@@ -587,7 +641,8 @@ async def get_ai_software():
             "name": software["name"],
             "available": is_available,
             "capabilities": software["capabilities"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     return status
 
@@ -604,7 +659,8 @@ async def creative_pipeline(input_files: List[str], output_directory: str, pipel
             if input_file.endswith(".blend"):
                 blender_result = await blender_render(
                     None, input_file, f"{output_directory}/blender_output.mov"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 results.append({"step": "blender_render", "result": blender_result})
 
             # Step 2: FFmpeg conversion
@@ -612,7 +668,8 @@ async def creative_pipeline(input_files: List[str], output_directory: str, pipel
                 input_file,
                 f"{output_directory}/final_output.mp4",
                 ["-c:v", "libx264", "-crf", "23"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
             results.append({"step": "ffmpeg_convert", "result": ffmpeg_result})
 
         return {"pipeline": "video_production", "results": results}
@@ -627,7 +684,8 @@ async def creative_pipeline(input_files: List[str], output_directory: str, pipel
                 input_file,
                 f"{output_directory}/processed_{os.path.basename(input_file)}",
                 ["-resize", "1920x1080", "-quality", "90"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
             results.append({"step": "imagemagick_convert", "result": convert_result})
 
         return {"pipeline": "image_processing", "results": results}

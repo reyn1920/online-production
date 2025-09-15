@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Enterprise-Grade Authentication & Authorization Manager
 Implements JWT authentication, RBAC authorization, and comprehensive security controls
-"""
+""""""
 
 import jwt
 import bcrypt
@@ -81,7 +81,7 @@ class User:
     username: str
     password_hash: str
     role: UserRole
-    permissions: Set[Permission] = field(default_factory=set)
+    permissions: Set[Permission] = field(default_factory=set):
     is_active: bool = True
     is_verified: bool = False
     created_at: datetime = field(default_factory=datetime.utcnow)
@@ -124,7 +124,8 @@ class SecurityManager:
                 Permission.USE_FREE_APIS,
                 Permission.CREATE_CONTENT,
                 Permission.EDIT_CONTENT,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             UserRole.PREMIUM: {
                 Permission.READ_BASIC,
                 Permission.WRITE_BASIC,
@@ -137,7 +138,8 @@ class SecurityManager:
                 Permission.EDIT_VIDEO,
                 Permission.RENDER_4K,
                 Permission.USE_AI_VOICES,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             UserRole.BUSINESS: {
                 Permission.READ_BASIC,
                 Permission.WRITE_BASIC,
@@ -155,7 +157,8 @@ class SecurityManager:
                 Permission.USE_AI_VOICES,
                 Permission.VIEW_ANALYTICS,
                 Permission.MANAGE_TEAM,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             UserRole.ENTERPRISE: {
                 Permission.READ_BASIC,
                 Permission.WRITE_BASIC,
@@ -174,10 +177,12 @@ class SecurityManager:
                 Permission.VIEW_ANALYTICS,
                 Permission.MANAGE_TEAM,
                 Permission.BILLING_ACCESS,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             UserRole.ADMIN: set(Permission),  # All permissions
             UserRole.SUPER_ADMIN: set(Permission),  # All permissions
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # In-memory user store (replace with database in production)
         self.users: Dict[str, User] = {}
@@ -187,7 +192,8 @@ class SecurityManager:
             "login": {"requests": 5, "window": 300},  # 5 attempts per 5 minutes
             "api": {"requests": 1000, "window": 3600},  # 1000 requests per hour
             "premium_api": {"requests": 10000, "window": 3600},  # 10k requests per hour
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def hash_password(self, password: str) -> str:
         """Hash password using bcrypt"""
@@ -204,7 +210,8 @@ class SecurityManager:
 
     def create_user(
         self, email: str, username: str, password: str, role: UserRole = UserRole.USER
-    ) -> User:
+# BRACKET_SURGEON: disabled
+#     ) -> User:
         """Create new user with security validations"""
         # Validate email uniqueness
         for user in self.users.values():
@@ -225,7 +232,8 @@ class SecurityManager:
             password_hash=password_hash,
             role=role,
             permissions=self.role_permissions.get(role, set()),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.users[user_id] = user
         logger.info(f"User created: {email} with role {role.value}")
@@ -239,7 +247,7 @@ class SecurityManager:
         has_upper = any(c.isupper() for c in password)
         has_lower = any(c.islower() for c in password)
         has_digit = any(c.isdigit() for c in password)
-        has_special = any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password)
+        has_special = any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password)"
 
         return has_upper and has_lower and has_digit and has_special
 
@@ -291,7 +299,8 @@ class SecurityManager:
             "exp": datetime.utcnow() + self.access_token_expire,
             "iat": datetime.utcnow(),
             "type": "access",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         token = jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
 
@@ -301,7 +310,8 @@ class SecurityManager:
                 f"token:{user.id}:{hashlib.sha256(token.encode()).hexdigest()[:16]}",
                 int(self.access_token_expire.total_seconds()),
                 "valid",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return token
 
@@ -312,7 +322,8 @@ class SecurityManager:
             "exp": datetime.utcnow() + self.refresh_token_expire,
             "iat": datetime.utcnow(),
             "type": "refresh",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
 
@@ -382,7 +393,8 @@ class SecurityManager:
             # Clean old entries
             self._memory_store[key] = [
                 timestamp for timestamp in self._memory_store[key] if timestamp > window_start
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             if len(self._memory_store[key]) >= limit_config["requests"]:
                 return False
@@ -408,7 +420,8 @@ def create_auth_dependency(security_manager: SecurityManager):
 
     async def get_current_user(
         credentials: HTTPAuthorizationCredentials = security,
-    ) -> User:
+# BRACKET_SURGEON: disabled
+#     ) -> User:
         """Get current authenticated user"""
         token = credentials.credentials
         payload = security_manager.verify_token(token)
@@ -442,7 +455,8 @@ def require_permissions(*permissions: Permission):
                     raise HTTPException(
                         status_code=403,
                         detail=f"Permission required: {permission.value}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             return await func(*args, **kwargs)
 
@@ -461,7 +475,8 @@ def require_role(min_role: UserRole):
         UserRole.ENTERPRISE: 4,
         UserRole.ADMIN: 5,
         UserRole.SUPER_ADMIN: 6,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     def decorator(func):
         @wraps(func)
@@ -473,7 +488,8 @@ def require_role(min_role: UserRole):
             if role_hierarchy.get(user.role, 0) < role_hierarchy.get(min_role, 0):
                 raise HTTPException(
                     status_code=403, detail=f"Role required: {min_role.value} or higher"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             return await func(*args, **kwargs)
 
@@ -495,14 +511,16 @@ if __name__ == "__main__":
         username="admin",
         password="AdminPass123!",
         role=UserRole.ADMIN,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     premium_user = security_manager.create_user(
         email="premium@example.com",
         username="premium",
         password="PremiumPass123!",
         role=UserRole.PREMIUM,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Test authentication
     auth_user = security_manager.authenticate_user("admin@example.com", "AdminPass123!")

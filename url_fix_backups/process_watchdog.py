@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Process Watchdog for TRAE.AI Production
 Monitors critical services and restarts them if they become unresponsive
-"""
+""""""
 
 import json
 import logging
@@ -25,7 +25,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("watchdog.log"), logging.StreamHandler()],
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -71,7 +72,8 @@ class ProcessWatchdog:
                 health_check_url="http://localhost:8000 / health",
                 process_match_pattern="minimal_server.py",
                 critical=True,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "monitoring_system": ServiceConfig(
                 name="monitoring_system",
                 command=["python3", "monitoring_system.py"],
@@ -79,8 +81,10 @@ class ProcessWatchdog:
                 process_match_pattern="monitoring_system.py",
                 critical=False,
                 max_restarts_per_hour=5,
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     def _signal_handler(self, signum, frame):
         """Handle shutdown signals"""
@@ -156,7 +160,8 @@ class ProcessWatchdog:
             restart_time
             for restart_time in self.restart_history[service_name]
             if restart_time > cutoff_time
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Check if we're under the restart limit
         return len(self.restart_history[service_name]) < config.max_restarts_per_hour
@@ -174,7 +179,8 @@ class ProcessWatchdog:
                 cwd=config.working_dir,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Convert to psutil process for better monitoring
             psutil_proc = psutil.Process(proc.pid)
@@ -256,7 +262,8 @@ class ProcessWatchdog:
             "healthy": False,
             "action_taken": None,
             "restart_count_last_hour": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Check if process is running
@@ -320,7 +327,8 @@ class ProcessWatchdog:
                 monitoring_report = {
                     "timestamp": datetime.now().isoformat(),
                     "services": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 # Monitor each service
                 for service_name in self.services:
@@ -332,7 +340,8 @@ class ProcessWatchdog:
                     f"{name}: {status['action_taken']}"
                     for name, status in monitoring_report["services"].items()
                     if status.get("action_taken") and status["action_taken"] != "none"
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 if actions_taken:
                     logger.info(f"📊 Watchdog actions: {', '.join(actions_taken)}")
@@ -366,14 +375,16 @@ class ProcessWatchdog:
             "watchdog_running": self.running,
             "timestamp": datetime.now().isoformat(),
             "services": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for service_name in self.services:
             service_status = {
                 "running": self._is_process_running(service_name),
                 "healthy": self._check_service_health(service_name),
                 "restart_count_last_hour": len(self.restart_history.get(service_name, [])),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             if service_name in self.service_processes:
                 proc = self.service_processes[service_name]

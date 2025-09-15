@@ -7,10 +7,10 @@ __all__ = ["MobileNetV2", "mobilenetv2"]
 
 
 class Block(nn.Module):
-    """
+    """"""
     Bottleneck Residual Block
 
-    """
+    """"""
 
     def __init__(self, in_channels, out_channels, expansion=1, stride=1):
         super(Block, self).__init__()
@@ -24,12 +24,14 @@ class Block(nn.Module):
                     1,
                     groups=in_channels,
                     bias=False,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.BatchNorm2d(in_channels),
                 nn.ReLU6(inplace=True),
                 nn.Conv2d(in_channels, out_channels, 1, 1, 0, bias=False),
                 nn.BatchNorm2d(out_channels),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             channels = expansion * in_channels
             self.conv = nn.Sequential(
@@ -41,7 +43,8 @@ class Block(nn.Module):
                 nn.ReLU6(inplace=True),
                 nn.Conv2d(channels, out_channels, 1, 1, 0, bias=False),
                 nn.BatchNorm2d(out_channels),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         self.residual = (stride == 1) and (in_channels == out_channels)
 
     def forward(self, x):
@@ -60,13 +63,16 @@ class MobileNetV2(nn.Module):
                 nn.Conv2d(3, in_channels, 3, 2, 1, bias=False),
                 nn.BatchNorm2d(in_channels),
                 nn.ReLU6(inplace=True),
-            )
-        ]
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         ]
         for expansion, out_channels, blocks, stride in config[1:]:
             for i in range(blocks):
                 features.append(
                     Block(in_channels, out_channels, expansion, stride if i == 0 else 1)
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 in_channels = out_channels
         self.features = nn.Sequential(*features)
 
@@ -79,10 +85,10 @@ class MobileNetV2(nn.Module):
 
 
 def mobilenetv2(pretrained=False, **kwargs):
-    """Constructs a MobileNetv2 model.
+    """Constructs a MobileNetv2 model."""
     Args:
         pretrained (bool): If True, returns a model pre - trained on ImageNet
-    """
+    """"""
     config = [
         (1, 32, 1, 1),
         (1, 16, 1, 1),
@@ -90,7 +96,8 @@ def mobilenetv2(pretrained=False, **kwargs):
         (6, 32, 3, 2),
         (6, 64, 4, 2),
         (6, 96, 3, 1),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     model = MobileNetV2(config, **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls["mobilenetv2"]), strict=False)

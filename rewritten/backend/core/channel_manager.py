@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Scalable Channel Management System
 Supports 100+ channels with preserved core functionality
 Maintains first 4 channels as information and marketing channels
-"""
+""""""
 
 import asyncio
 import logging
@@ -21,7 +21,8 @@ from sqlalchemy import (
     Boolean,
     Text,
     JSON,
-)
+# BRACKET_SURGEON: disabled
+# )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from pydantic import BaseModel, validator
@@ -204,8 +205,10 @@ class ChannelManager:
                     ai_generation=True,
                     research_tools=True,
                     collaboration=True,
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "channel_002": {
                 "name": "Marketing Central",
                 "description": "Marketing campaigns, content, and automation",
@@ -215,8 +218,10 @@ class ChannelManager:
                     social_integration=True,
                     analytics=True,
                     automation=True,
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "channel_003": {
                 "name": "Content Production",
                 "description": "Video, audio, and multimedia content creation",
@@ -226,8 +231,10 @@ class ChannelManager:
                     audio_production=True,
                     ai_generation=True,
                     content_creation=True,
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "channel_004": {
                 "name": "Analytics & Insights",
                 "description": "Data analysis, reporting, and business intelligence",
@@ -237,9 +244,12 @@ class ChannelManager:
                     revenue_tracking=True,
                     research_tools=True,
                     api_access=True,
-                ),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         self.channel_templates = self._initialize_channel_templates()
         self.initialize_core_channels()
@@ -256,14 +266,17 @@ class ChannelManager:
                     "content_approval": True,
                     "hashtag_suggestions": True,
                     "engagement_tracking": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "capabilities": ChannelCapabilities(
                     social_integration=True,
                     marketing_tools=True,
                     analytics=True,
                     automation=True,
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "revenue_stream": {
                 "name_template": "Revenue - {stream_name}",
                 "description_template": "Revenue tracking and optimization for {stream_name}",
@@ -273,14 +286,17 @@ class ChannelManager:
                     "conversion_optimization": True,
                     "a_b_testing": True,
                     "payment_integration": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "capabilities": ChannelCapabilities(
                     revenue_tracking=True,
                     analytics=True,
                     marketing_tools=True,
                     automation=True,
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "ai_automation": {
                 "name_template": "AI Automation - {purpose}",
                 "description_template": "AI-powered automation for {purpose}",
@@ -290,11 +306,14 @@ class ChannelManager:
                     "workflow_automation": True,
                     "smart_scheduling": True,
                     "performance_optimization": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "capabilities": ChannelCapabilities(
                     ai_generation=True, automation=True, analytics=True, api_access=True
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "research_lab": {
                 "name_template": "Research Lab - {topic}",
                 "description_template": "Research and development for {topic}",
@@ -304,15 +323,19 @@ class ChannelManager:
                     "trend_analysis": True,
                     "competitive_intelligence": True,
                     "market_research": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "capabilities": ChannelCapabilities(
                     research_tools=True,
                     analytics=True,
                     ai_generation=True,
                     collaboration=True,
-                ),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_db(self) -> Session:
         """Get database session"""
@@ -342,13 +365,16 @@ class ChannelManager:
                             "protected": True,
                             "system_managed": True,
                             "capabilities": config["capabilities"].__dict__,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         metadata={
                             "core_channel": True,
                             "initialization_date": datetime.utcnow().isoformat(),
                             "version": "1.0",
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
                     db.add(channel)
 
             db.commit()
@@ -372,7 +398,8 @@ class ChannelManager:
             if channel_count >= 100:
                 raise HTTPException(
                     status_code=400, detail="Maximum number of channels (100) reached"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Create channel
             channel = Channel(
@@ -387,7 +414,8 @@ class ChannelManager:
                 tags=channel_data.tags,
                 is_core_channel=False,
                 priority=channel_count + 1,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             db.add(channel)
             db.commit()
@@ -404,7 +432,8 @@ class ChannelManager:
                 "created_at": channel.created_at.isoformat(),
                 "settings": channel.settings,
                 "metadata": channel.metadata,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             db.rollback()
@@ -435,7 +464,8 @@ class ChannelManager:
                 "tags": channel.tags,
                 "is_core_channel": channel.is_core_channel,
                 "priority": channel.priority,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         finally:
             db.close()
 
@@ -474,9 +504,11 @@ class ChannelManager:
                     "is_core_channel": channel.is_core_channel,
                     "priority": channel.priority,
                     "tags": channel.tags,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for channel in channels
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
         finally:
             db.close()
 
@@ -499,7 +531,8 @@ class ChannelManager:
                         raise HTTPException(
                             status_code=403,
                             detail=f"Cannot modify {field} on core channel",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
             # Apply updates
             for field, value in update_data.dict(exclude_unset=True).items():
@@ -571,7 +604,8 @@ class ChannelManager:
                 author_id=author_id,
                 metadata=content_data.metadata,
                 tags=content_data.tags,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             db.add(content)
             db.commit()
@@ -589,7 +623,8 @@ class ChannelManager:
                 "author_id": content.author_id,
                 "metadata": content.metadata,
                 "tags": content.tags,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             db.rollback()
@@ -608,7 +643,8 @@ class ChannelManager:
                 .order_by(ChannelContent.created_at.desc())
                 .limit(limit)
                 .all()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return [
                 {
@@ -621,9 +657,11 @@ class ChannelManager:
                     "author_id": item.author_id,
                     "tags": item.tags,
                     "version": item.version,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for item in content_items
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
         finally:
             db.close()
 
@@ -649,8 +687,10 @@ class ChannelManager:
                 "template": template_name,
                 "parameters": parameters,
                 "capabilities": template["capabilities"].__dict__,
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         return await self.create_channel(channel_data, owner_id)
 
@@ -665,23 +705,27 @@ class ChannelManager:
             # Get content statistics
             content_count = (
                 db.query(ChannelContent).filter(ChannelContent.channel_id == channel_id).count()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             content_by_type = (
                 db.query(ChannelContent.content_type, db.func.count(ChannelContent.id))
                 .filter(ChannelContent.channel_id == channel_id)
                 .group_by(ChannelContent.content_type)
                 .all()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             recent_activity = (
                 db.query(ChannelContent)
                 .filter(
                     ChannelContent.channel_id == channel_id,
                     ChannelContent.created_at >= datetime.utcnow() - timedelta(days=30),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 .count()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "channel_id": channel_id,
@@ -691,7 +735,8 @@ class ChannelManager:
                 "channel_age_days": (datetime.utcnow() - channel.created_at).days,
                 "last_updated": channel.updated_at.isoformat(),
                 "status": channel.status,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         finally:
             db.close()
 
@@ -712,7 +757,8 @@ class ChannelManager:
                     channel_id = operation.get("channel_id")
                     result = await self.update_channel(
                         channel_id, ChannelUpdate(**op_data), user_id
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif op_type == "delete":
                     channel_id = operation.get("channel_id")
                     result = await self.delete_channel(channel_id, user_id)
@@ -742,7 +788,8 @@ async def demo_channel_operations():
         # Create a new channel from template
         social_channel = await channel_manager.create_from_template(
             "social_media", {"platform": "Instagram"}, "demo_user"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Created social media channel: {social_channel['id']}")
 
         # Create content in the channel
@@ -753,9 +800,11 @@ async def demo_channel_operations():
                 content="Welcome to our Instagram channel!",
                 content_type=ContentType.SOCIAL_POST.value,
                 tags=["welcome", "introduction"],
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "demo_user",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Created content: {content['id']}")
 
         # Get channel analytics

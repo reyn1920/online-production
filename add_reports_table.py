@@ -56,7 +56,17 @@ def add_reports_table():
             {
                 "report_type": "daily_performance",
                 "title": "Daily Performance Report - Sample",
-                "content": "# Daily Performance Report\\n\\n## Key Metrics\\n- Total Views: 1,250\\n- Engagement Rate: 4.2%\\n- Revenue: $45.30\\n\\n## Top Performing Content\\n1. Tech Review Video - 450 views\\n2. Tutorial Series - 320 views\\n3. News Commentary - 280 views",
+                "content": """# Daily Performance Report
+
+## Key Metrics
+- Total Views: 1,250
+- Engagement Rate: 4.2%
+- Revenue: $45.30
+
+## Top Performing Content
+1. Tech Review Video - 450 views
+2. Tutorial Series - 320 views
+3. News Commentary - 280 views""",
                 "key_headline": "Daily performance shows 15% growth in viewership with tech content leading",
                 "date_range_start": "2024 - 01 - 20",
                 "date_range_end": "2024 - 01 - 20",
@@ -68,7 +78,17 @@ def add_reports_table():
             {
                 "report_type": "weekly_growth",
                 "title": "Weekly Growth Analysis - Sample",
-                "content": "# Weekly Growth Analysis\\n\\n## Growth Summary\\n- Subscriber Growth: +127 new subscribers\\n- View Growth: +23% compared to last week\\n- Revenue Growth: +18%\\n\\n## Channel Performance\\n- Tech Channel: Leading with 40% of total views\\n- News Channel: Steady growth at 25%\\n- Tutorial Channel: 35% of views",
+                "content": """# Weekly Growth Analysis
+
+## Growth Summary
+- Subscriber Growth: +127 new subscribers
+- View Growth: +23% compared to last week
+- Revenue Growth: +18%
+
+## Channel Performance
+- Tech Channel: Leading with 40% of total views
+- News Channel: Steady growth at 25%
+- Tutorial Channel: 35% of views""",
                 "key_headline": "Weekly growth accelerating with 23% increase in views, tech channel dominating",
                 "date_range_start": "2024 - 01 - 14",
                 "date_range_end": "2024 - 01 - 20",
@@ -83,13 +103,8 @@ def add_reports_table():
             cursor.execute(
                 """
                 INSERT INTO generated_reports
-                (report_type,
-    title,
-    content,
-    key_headline,
-    date_range_start,
-    date_range_end,
-                    generated_by, generation_parameters, file_size_bytes, tags)
+                (report_type, title, content, key_headline, date_range_start, date_range_end,
+                 generated_by, generation_parameters, file_size_bytes, tags)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
@@ -103,7 +118,7 @@ def add_reports_table():
                     report["generation_parameters"],
                     report["file_size_bytes"],
                     report["tags"],
-                ),
+                )
             )
 
         conn.commit()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Conservative Research System - Environment Validator
 
 This script validates the production environment setup including:
@@ -11,7 +11,7 @@ This script validates the production environment setup including:
 
 Author: Conservative Research System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -31,8 +31,12 @@ logging.basicConfig(
         handlers=[
         logging.FileHandler("environment_validation.log"),
             logging.StreamHandler(),
-            ],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -102,10 +106,11 @@ class EnvironmentValidator:
         """Validate Python environment"""
         try:
             python_version = sys.version_info
-            version_str = f"{
+            version_str = f"{"
                 python_version.major}.{
                     python_version.minor}.{
-                    python_version.micro}"
+# BRACKET_SURGEON: disabled
+#                     python_version.micro}""
 
             if python_version.major >= 3 and python_version.minor >= 8:
                 self.results.append(
@@ -114,8 +119,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.PASSED,
                             message = f"Python {version_str} is compatible",
                             details={"version": version_str, "executable": sys.executable},
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.results.append(
                     ValidationResult(
@@ -123,8 +132,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.FAILED,
                             message = f"Python {version_str} is too old. Requires Python 3.8+",
                             fix_command="Install Python 3.8 or higher",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.results.append(
@@ -132,8 +145,12 @@ class EnvironmentValidator:
                     name="Python Environment",
                         status = ValidationStatus.FAILED,
                         message = f"Python validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_nodejs_environment(self):
@@ -142,7 +159,9 @@ class EnvironmentValidator:
             # Check if Node.js is installed
             result = subprocess.run(
                 ["node", "--version"], capture_output = True, text = True, timeout = 10
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if result.returncode == 0:
                 version = result.stdout.strip().lstrip("v")
@@ -156,18 +175,27 @@ class EnvironmentValidator:
                                 status = ValidationStatus.PASSED,
                                 message = f"Node.js v{version} is compatible",
                                 details={"version": version, "path": shutil.which("node")},
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     self.results.append(
                         ValidationResult(
                             name="Node.js Environment",
                                 status = ValidationStatus.FAILED,
-                                message = f"Node.js v{version} is too old. Requires v{
-                                self.required_node_version}+",
+                                message = f"Node.js v{version} is too old. Requires v{"
+# BRACKET_SURGEON: disabled
+#                                 self.required_node_version}+","
                                     fix_command="Install Node.js v18+ from https://nodejs.org",
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             else:
                 self.results.append(
                     ValidationResult(
@@ -175,8 +203,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.FAILED,
                             message="Node.js is not installed or not in PATH",
                             fix_command="Install Node.js from https://nodejs.org",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except subprocess.TimeoutExpired:
             self.results.append(
@@ -184,16 +216,24 @@ class EnvironmentValidator:
                     name="Node.js Environment",
                         status = ValidationStatus.FAILED,
                         message="Node.js command timed out",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="Node.js Environment",
                         status = ValidationStatus.FAILED,
                         message = f"Node.js validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_npm_environment(self):
@@ -202,7 +242,9 @@ class EnvironmentValidator:
             # Check npm version
             result = subprocess.run(
                 ["npm", "--version"], capture_output = True, text = True, timeout = 10
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if result.returncode == 0:
                 version = result.stdout.strip()
@@ -216,7 +258,9 @@ class EnvironmentValidator:
                             capture_output = True,
                             text = True,
                             timeout = 10,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     self.results.append(
                         ValidationResult(
@@ -229,19 +273,29 @@ class EnvironmentValidator:
             "config_valid": config_result.returncode == 0,
         except Exception as e:
             pass
-        },
-                                )
-                    )
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     self.results.append(
                         ValidationResult(
                             name="npm Environment",
                                 status = ValidationStatus.FAILED,
-                                message = f"npm v{version} is too old. Requires v{
-                                self.required_npm_version}+",
+                                message = f"npm v{version} is too old. Requires v{"
+# BRACKET_SURGEON: disabled
+#                                 self.required_npm_version}+","
                                     fix_command="Update npm: npm install -g npm@latest",
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             else:
                 self.results.append(
                     ValidationResult(
@@ -249,8 +303,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.FAILED,
                             message="npm is not installed or not in PATH",
                             fix_command="Install Node.js (includes npm) from https://nodejs.org",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.results.append(
@@ -258,8 +316,12 @@ class EnvironmentValidator:
                     name="npm Environment",
                         status = ValidationStatus.FAILED,
                         message = f"npm validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_netlify_cli(self):
@@ -268,7 +330,9 @@ class EnvironmentValidator:
             # Check if Netlify CLI is installed
             result = subprocess.run(
                 ["netlify", "--version"], capture_output = True, text = True, timeout = 10
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if result.returncode == 0:
                 version = result.stdout.strip()
@@ -276,7 +340,9 @@ class EnvironmentValidator:
                 # Check authentication status
                 auth_result = subprocess.run(
                     ["netlify", "status"], capture_output = True, text = True, timeout = 10
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if "Not logged in" in auth_result.stdout or auth_result.returncode != 0:
                     self.results.append(
@@ -286,18 +352,26 @@ class EnvironmentValidator:
                                 message = f"Netlify CLI {version} installed but not authenticated",
                                 details={"version": version, "authenticated": False},
                                 fix_command="Run: netlify login",
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     self.results.append(
                         ValidationResult(
                             name="Netlify CLI",
                                 status = ValidationStatus.PASSED,
-                                message = f"Netlify CLI {version} installed \
-    and authenticated",
+                                message = f"Netlify CLI {version} installed \"
+#     and authenticated",
                                 details={"version": version, "authenticated": True},
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             else:
                 self.results.append(
                     ValidationResult(
@@ -305,8 +379,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.FAILED,
                             message="Netlify CLI is not installed",
                             fix_command="Install: npm install -g netlify - cli",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.results.append(
@@ -314,8 +392,12 @@ class EnvironmentValidator:
                     name="Netlify CLI",
                         status = ValidationStatus.FAILED,
                         message = f"Netlify CLI validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_project_structure(self):
@@ -340,23 +422,32 @@ class EnvironmentValidator:
                             status = ValidationStatus.PASSED,
                             message="All required project files and directories exist",
                             details={"existing_files": existing_files},
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Project Structure",
                             status = ValidationStatus.WARNING,
-                            message = f"Missing project files: {
-                            ', '.join(missing_files)}",
+                            message = f"Missing project files: {"
+                            ', '.join(missing_files)}","
                                 details={
             "missing_files": missing_files,
             "existing_files": existing_files,
         except Exception as e:
             pass
-        },
-                            )
-                )
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.results.append(
@@ -364,8 +455,12 @@ class EnvironmentValidator:
                     name="Project Structure",
                         status = ValidationStatus.FAILED,
                         message = f"Project structure validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_package_json(self):
@@ -380,8 +475,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.FAILED,
                             message="package.json not found",
                             fix_command="Run: npm init -y",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return
 
             with open(package_json_path, "r") as f:
@@ -391,7 +490,9 @@ class EnvironmentValidator:
             required_fields = ["name", "version", "scripts"]
             missing_fields = [
                 field for field in required_fields if field not in package_data
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             # Check build script
             has_build_script = "build" in package_data.get("scripts", {})
@@ -408,9 +509,14 @@ class EnvironmentValidator:
             "has_build_script": has_build_script,
         except Exception as e:
             pass
-        },
-                            )
-                )
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 issues = []
                 if missing_fields:
@@ -424,8 +530,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.WARNING,
                             message = f"package.json issues: {'; '.join(issues)}",
                             details={"issues": issues},
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except json.JSONDecodeError as e:
             self.results.append(
@@ -433,16 +543,24 @@ class EnvironmentValidator:
                     name="package.json",
                         status = ValidationStatus.FAILED,
                         message = f"package.json is not valid JSON: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except Exception as e:
             self.results.append(
                 ValidationResult(
                     name="package.json",
                         status = ValidationStatus.FAILED,
                         message = f"package.json validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_environment_files(self):
@@ -464,8 +582,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.PASSED,
                             message="Environment configuration files found",
                             details={"found_files": found_files},
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.results.append(
                     ValidationResult(
@@ -474,8 +596,12 @@ class EnvironmentValidator:
                             message="No .env.example template found",
                             details={"found_files": found_files},
                             fix_command="Create .env.example with required environment variables",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.results.append(
@@ -483,8 +609,12 @@ class EnvironmentValidator:
                     name="Environment Files",
                         status = ValidationStatus.FAILED,
                         message = f"Environment files validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_file_permissions(self):
@@ -510,18 +640,26 @@ class EnvironmentValidator:
                         name="File Permissions",
                             status = ValidationStatus.PASSED,
                             message="Sensitive files have secure permissions",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="File Permissions",
                             status = ValidationStatus.WARNING,
-                            message = f"Insecure file permissions: {
-                            ', '.join(permission_issues)}",
+                            message = f"Insecure file permissions: {"
+                            ', '.join(permission_issues)}","
                                 fix_command="Run: chmod 600 .env*",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.results.append(
@@ -529,8 +667,12 @@ class EnvironmentValidator:
                     name="File Permissions",
                         status = ValidationStatus.FAILED,
                         message = f"File permissions validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_git_configuration(self):
@@ -546,8 +688,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.WARNING,
                             message="No .gitignore file found",
                             fix_command="Create .gitignore file",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return
 
             with open(gitignore_path, "r") as f:
@@ -567,18 +713,26 @@ class EnvironmentValidator:
                         name="Git Configuration",
                             status = ValidationStatus.PASSED,
                             message="Git configuration is secure",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Git Configuration",
                             status = ValidationStatus.WARNING,
-                            message = f"Missing .gitignore patterns: {
-                            ', '.join(missing_patterns)}",
+                            message = f"Missing .gitignore patterns: {"
+                            ', '.join(missing_patterns)}","
                                 details={"missing_patterns": missing_patterns},
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.results.append(
@@ -586,8 +740,12 @@ class EnvironmentValidator:
                     name="Git Configuration",
                         status = ValidationStatus.FAILED,
                         message = f"Git configuration validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_environment_variables(self):
@@ -610,13 +768,17 @@ class EnvironmentValidator:
                     ValidationStatus.PASSED
                     if not missing_vars
                     else ValidationStatus.WARNING
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 message = (
                     "Environment variables configured"
                     if not missing_vars
-                    else f"Some environment variables missing: {
-                        ', '.join(missing_vars)}"
-                )
+                    else f"Some environment variables missing: {"
+                        ', '.join(missing_vars)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 self.results.append(
                     ValidationResult(
@@ -624,18 +786,26 @@ class EnvironmentValidator:
                             status = status,
                             message = message,
                             details={"present": present_vars, "missing": missing_vars},
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.results.append(
                     ValidationResult(
                         name="Environment Variables",
                             status = ValidationStatus.FAILED,
-                            message = f"Critical environment variables missing: {
-                            ', '.join(missing_vars)}",
+                            message = f"Critical environment variables missing: {"
+                            ', '.join(missing_vars)}","
                                 details={"missing": missing_vars},
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.results.append(
@@ -643,8 +813,12 @@ class EnvironmentValidator:
                     name="Environment Variables",
                         status = ValidationStatus.FAILED,
                         message = f"Environment variables validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_dependencies(self):
@@ -658,8 +832,12 @@ class EnvironmentValidator:
                         name="Dependencies",
                             status = ValidationStatus.SKIPPED,
                             message="No package.json found, skipping dependency validation",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return
 
             # Check if node_modules exists
@@ -672,8 +850,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.FAILED,
                             message="Dependencies not installed",
                             fix_command="Run: npm install",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return
 
             # Check for package - lock.json (security)
@@ -686,8 +868,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.PASSED,
                             message="Dependencies installed with lock file",
                             details={"has_lock_file": True},
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.results.append(
                     ValidationResult(
@@ -696,8 +882,12 @@ class EnvironmentValidator:
                             message="Dependencies installed but no lock file found",
                             details={"has_lock_file": False},
                             fix_command="Run: npm install to generate package - lock.json",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.results.append(
@@ -705,8 +895,12 @@ class EnvironmentValidator:
                     name="Dependencies",
                         status = ValidationStatus.FAILED,
                         message = f"Dependencies validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _validate_build_tools(self):
@@ -718,7 +912,9 @@ class EnvironmentValidator:
                     "vite.config.ts",
                     "webpack.config.js",
                     "rollup.config.js",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             found_configs = []
             for config in build_configs:
@@ -733,8 +929,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.PASSED,
                             message = f"Build configuration found: {', '.join(found_configs)}",
                             details={"configs": found_configs},
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.results.append(
                     ValidationResult(
@@ -742,8 +942,12 @@ class EnvironmentValidator:
                             status = ValidationStatus.WARNING,
                             message="No build tool configuration found",
                             details={"configs": []},
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.results.append(
@@ -751,8 +955,12 @@ class EnvironmentValidator:
                     name="Build Tools",
                         status = ValidationStatus.FAILED,
                         message = f"Build tools validation failed: {str(e)}",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _generate_validation_report(self) -> Dict[str, any]:
@@ -782,7 +990,8 @@ class EnvironmentValidator:
             "failed": failed,
             "warnings": warnings,
             "skipped": skipped,
-        },
+# BRACKET_SURGEON: disabled
+#         },
             "results": [
                 {
             "name": r.name,
@@ -790,16 +999,23 @@ class EnvironmentValidator:
             "message": r.message,
             "details": r.details,
             "fix_command": r.fix_command,
-        }
+# BRACKET_SURGEON: disabled
+#         }
                 for r in self.results
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "recommendations": self._generate_recommendations(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         logging.getLogger(__name__).info(
-            f"✅ Environment validation completed: {overall_status} ({
-                success_rate:.1f}% success rate)"
-        )
+            f"✅ Environment validation completed: {overall_status} ({"
+# BRACKET_SURGEON: disabled
+#                 success_rate:.1f}% success rate)""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return report
 
 
@@ -809,10 +1025,14 @@ class EnvironmentValidator:
 
         failed_results = [
             r for r in self.results if r.status == ValidationStatus.FAILED
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         warning_results = [
             r for r in self.results if r.status == ValidationStatus.WARNING
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         if failed_results:
             recommendations.append("🚨 Critical Issues Found:")
@@ -831,7 +1051,9 @@ class EnvironmentValidator:
         if not failed_results and not warning_results:
             recommendations.append(
                 "🎉 Environment is fully validated and ready for production!"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return recommendations
 
@@ -847,7 +1069,8 @@ class EnvironmentValidator:
             if (
                 result.status in [ValidationStatus.FAILED, ValidationStatus.WARNING]
                 and result.fix_command
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                 try:
                     if auto_fix:
                         logging.getLogger(__name__).info(f"Fixing: {result.name}")
@@ -857,10 +1080,13 @@ class EnvironmentValidator:
                         fixed_issues.append(result.name)
                     else:
                         logging.getLogger(__name__).info(
-                            f"Fix available for {
+                            f"Fix available for {"
                                 result.name}: {
-                                    result.fix_command}"
-                        )
+# BRACKET_SURGEON: disabled
+#                                     result.fix_command}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 except Exception as e:
                     logging.getLogger(__name__).error(f"Failed to fix {result.name}: {str(e)}")
@@ -872,8 +1098,10 @@ class EnvironmentValidator:
             "failed_fixes": failed_fixes,
             "manual_fixes_required": len(
                 [r for r in self.results if r.fix_command and not auto_fix]
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
 # CLI Interface
 if __name__ == "__main__":
@@ -882,14 +1110,20 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="Conservative Research System - Environment Validator"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--project - root", default=".", help="Project root directory")
     parser.add_argument(
         "--output", choices=["json", "text"], default="text", help="Output format"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--fix",
     action="store_true",
-    help="Attempt to auto - fix issues")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     help="Attempt to auto - fix issues")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 
     args = parser.parse_args()

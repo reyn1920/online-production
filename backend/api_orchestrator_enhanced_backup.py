@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Enhanced API Orchestrator - Intelligent API Management System
-
+""""""
 This module implements the core intelligence for managing 100+ APIs with:
 - Automatic failover when APIs fail
 - Load balancing across similar APIs
 - Health monitoring and priority - based selection
 - Usage tracking and daily limit management
+""""""
+Enhanced API Orchestrator - Intelligent API Management System
 """
 
 import asyncio
@@ -44,7 +46,9 @@ class RequestStatus(Enum):
 
 
 class APIEndpoint:
-    """Represents an API endpoint with all its metadata"""
+    """
+Represents an API endpoint with all its metadata
+
 
     id: int
     service_name: str
@@ -63,44 +67,95 @@ class APIEndpoint:
     authentication_type: str
     supported_methods: str
     error_count: int
+   
+""""""
+
     last_error_message: Optional[str]
+   
 
-
+    
+   
+"""
     def is_available(self) -> bool:
-        """Check if API is available for use"""
+        """
+Check if API is available for use
+
         if not self.is_active:
             return False
         if self.health_status == APIHealthStatus.UNHEALTHY.value:
             return False
         if self.daily_limit and self.daily_usage_count >= self.daily_limit:
             return False
+        
+"""
+        return True
+        """"""
+        """
+
+
         return True
 
+        
+
+       
+""""""
 
     def get_load_factor(self) -> float:
-        """Calculate load factor for load balancing (lower is better)"""
+        """
+        Calculate load factor for load balancing (lower is better)
+        """
         if not self.daily_limit:
             return self.daily_usage_count/1000.0  # Arbitrary scaling
+        """
+
         return self.daily_usage_count/self.daily_limit
+        
+
+       
+""""""
+
+        
+
+
+        return self.daily_usage_count/self.daily_limit
+
+        
+""""""
+
+        
+       
 
 @dataclass
 
 
 class OrchestrationRequest:
-    """Represents a request to the orchestrator"""
+    
+"""Represents a request to the orchestrator"""
+
 
     request_id: str
     capability: str
     payload: Dict[str, Any]
     timeout_seconds: int = 30
     max_retries: int = 3
+   
+
+    
+   
+"""
     prefer_free: bool = True
+   """
+
+    
+   
 
 @dataclass
 
 
 class OrchestrationResult:
-    """Result of an orchestration request"""
+    
+"""Result of an orchestration request"""
+
 
     request_id: str
     status: RequestStatus
@@ -109,13 +164,22 @@ class OrchestrationResult:
     total_attempts: int
     total_time_ms: int
     error_message: Optional[str]
-    fallback_apis_tried: List[int]
+   
 
+    
+   
+"""
+    fallback_apis_tried: List[int]
+   """
+
+    
+   
 
 class EnhancedAPIOrchestrator:
-    """Enhanced API Orchestrator with intelligent failover and load balancing"""
-
-
+    """
+    Enhanced API Orchestrator with intelligent failover and load balancing
+    """
+    
     def __init__(self, db_path: str = "right_perspective.db"):
         self.db_path = db_path
         self.session = None
@@ -128,49 +192,132 @@ class EnhancedAPIOrchestrator:
             conn.execute("PRAGMA foreign_keys = ON")
             # Tables should already exist from schema, but we can add indexes
             conn.execute(
-                """
+                """"""
+
                 CREATE INDEX IF NOT EXISTS idx_api_registry_capability
                 ON api_registry(capability, is_active, priority)
-            """
-            )
+           
+
+            
+           
+"""
+             )
             conn.execute(
-                """
+                """"""
+
                 CREATE INDEX IF NOT EXISTS idx_api_registry_health
                 ON api_registry(health_status, last_health_check)
-            """
-            )
-            conn.commit()
+           
 
+            
+           
+"""
+             )
+           """
+
+            
+           
+
+            conn.commit()
+           
+""""""
+
+           
+
+
+            
+
+           
+"""
+            conn.commit()
+           """
+
+            
+           
 
     async def __aenter__(self):
-        """Async context manager entry"""
+        
+"""Async context manager entry""""""
         self.session = aiohttp.ClientSession()
+       """"""
         return self
+        """"""
+        self.session = aiohttp.ClientSession()
+       """
 
+        
+       
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Async context manager exit"""
+        
+"""Async context manager exit"""
+
         if self.session:
+           
+
+            
+           
+"""
             await self.session.close()
+           """"""
 
+            
 
+           """
+
+            await self.session.close()
+           
+
+            
+           
+"""
     def get_apis_for_capability(
         self, capability: str, limit: int = 10
     ) -> List[APIEndpoint]:
-        """Get available APIs for a specific capability, sorted by priority and load"""
+        """
+Get available APIs for a specific capability, sorted by priority and load
+
         with sqlite3.connect(self.db_path) as conn:
+           
+""""""
+
             conn.row_factory = sqlite3.Row
+           
+
+            
+           
+"""
             cursor = conn.execute(
-                """
+               """
+
+                
+               
+
                 SELECT * FROM api_registry
                 WHERE capability = ? AND is_active = 1
                 AND (health_status != 'unhealthy' OR health_status IS NULL)
                 ORDER BY priority ASC, daily_usage_count ASC
                 LIMIT ?
-            """,
-                (capability, limit),
-                    )
+            
+""","""
 
+                (capability, limit),
+                    
+
+                     
+                    
+"""
+                     )
+                    """"""
+            
+           """
+
+            conn.row_factory = sqlite3.Row
+           
+
+            
+           
+"""
             apis = []
             for row in cursor.fetchall():
                 api = APIEndpoint(**dict(row))
@@ -186,30 +333,73 @@ class EnhancedAPIOrchestrator:
             success: bool,
             response_time_ms: int,
             error_message: str = None,
-            ):
-        """Update API usage statistics"""
-        with sqlite3.connect(self.db_path) as conn:
-            now = datetime.now(timezone.utc).isoformat()
+#             ):
+        """
+Update API usage statistics
 
+        
+"""
+        with sqlite3.connect(self.db_path) as conn:
+        """"""
+            now = datetime.now(timezone.utc).isoformat()
+           """"""
+        with sqlite3.connect(self.db_path) as conn:
+        """"""
             if success:
                 conn.execute(
-                    """
+                   """"""
+                    
+                   """
+
                     UPDATE api_registry SET
+                   
+
+                    
+                   
+"""
                         usage_count = usage_count + 1,
+                   """
+
+                    
+                   
+
+                    UPDATE api_registry SET
+                   
+""""""
+
                             daily_usage_count = daily_usage_count + 1,
                             response_time_ms = ?,
                             success_rate = (success_rate * usage_count + 1.0)/(usage_count + 1),
                             last_used = ?,
                             updated_at = ?
                     WHERE id = ?
-                """,
+                
+,
+"""
                     (response_time_ms, now, now, api_id),
-                        )
+                         )
             else:
                 conn.execute(
-                    """
+                   """"""
+                    
+                   """
+
                     UPDATE api_registry SET
+                   
+
+                    
+                   
+"""
                         usage_count = usage_count + 1,
+                   """
+
+                    
+                   
+
+                    UPDATE api_registry SET
+                   
+""""""
+
                             daily_usage_count = daily_usage_count + 1,
                             error_count = error_count + 1,
                             last_error_message = ?,
@@ -217,13 +407,37 @@ class EnhancedAPIOrchestrator:
                             success_rate = (success_rate * usage_count)/(usage_count + 1),
                             updated_at = ?
                     WHERE id = ?
-                """,
+                
+,
+"""
                     (error_message, now, now, api_id),
-                        )
+                        """
 
+                         
+                        
+
+                         )
+                        
+""""""
+
+           
+
+
+            
+
+           
+"""
             conn.commit()
+           """"""
+                         
+                        """
 
+                         )
+                        
 
+                         
+                        
+"""
     def log_orchestration_attempt(
         self,
             request_id: str,
@@ -234,16 +448,22 @@ class EnhancedAPIOrchestrator:
             total_attempts: int = 1,
             total_time_ms: int = 0,
             failure_reasons: List[str] = None,
-            ):
-        """Log orchestration attempt for analytics"""
+#             ):
+        """
+Log orchestration attempt for analytics
+
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               
+""""""
+
                 INSERT INTO api_orchestration_log
                 (request_id, capability_requested, primary_api_id, fallback_apis,
-                    successful_api_id, total_attempts, total_response_time_ms, failure_reasons)
+#                     successful_api_id, total_attempts, total_response_time_ms, failure_reasons)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            
+,
+"""
                 (
                     request_id,
                         capability,
@@ -253,19 +473,52 @@ class EnhancedAPIOrchestrator:
                         total_attempts,
                         total_time_ms,
                         json.dumps(failure_reasons or []),
-                        ),
-                    )
-            conn.commit()
+                         ),
+                     )
+           """
 
+            
+           
+
+            conn.commit()
+           
+""""""
+
+           
+
+
+            
+
+           
+"""
+            conn.commit()
+           """
+
+            
+           
 
     async def make_api_request(
         self, api: APIEndpoint, payload: Dict[str, Any], timeout: int = 30
     ) -> Tuple[bool, Optional[Dict], int, Optional[str]]:
-        """Make a request to a specific API endpoint"""
+        
+"""Make a request to a specific API endpoint""""""
         start_time = time.time()
+       """
+
+        
+       
 
         try:
             # Prepare headers
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
             headers = {"Content - Type": "application/json"}
 
             # Add authentication if required
@@ -285,7 +538,7 @@ class EnhancedAPIOrchestrator:
                     params = payload if method == "GET" else None,
                     headers = headers,
                     timeout = aiohttp.ClientTimeout(total = timeout),
-                    ) as response:
+#                     ) as response:
                 response_time_ms = int((time.time() - start_time) * 1000)
 
                 if response.status == 200:
@@ -300,7 +553,7 @@ class EnhancedAPIOrchestrator:
                             None,
                             response_time_ms,
                             f"HTTP {response.status}: {error_text}",
-                            )
+                             )
 
         except asyncio.TimeoutError:
             response_time_ms = int((time.time() - start_time) * 1000)
@@ -312,11 +565,28 @@ class EnhancedAPIOrchestrator:
 
     async def orchestrate_request(
         self, request: OrchestrationRequest
-    ) -> OrchestrationResult:
-        """Main orchestration method with intelligent failover and load balancing"""
-        start_time = time.time()
+#     ) -> OrchestrationResult:
+        """
+Main orchestration method with intelligent failover and load balancing
 
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         # Get available APIs for the requested capability
+       """
+
+        
+       
+
+        start_time = time.time()
+       
+""""""
         available_apis = self.get_apis_for_capability(request.capability)
 
         if not available_apis:
@@ -329,10 +599,11 @@ class EnhancedAPIOrchestrator:
                     total_time_ms = 0,
                     error_message = f"No available APIs for capability: {request.capability}",
                     fallback_apis_tried=[],
-                    )
+                     )
 
         # Apply load balancing - sort by load factor
             if len(available_apis) > 1:
+                pass
             available_apis.sort(key = lambda api: (api.priority, api.get_load_factor()))
 
         primary_api = available_apis[0]
@@ -349,13 +620,13 @@ class EnhancedAPIOrchestrator:
 
             logger.info(
                 f"Attempting request {request.request_id} with {api.service_name} (attempt {attempts})"
-            )
+             )
 
             success, response_data, response_time, error_msg = (
                 await self.make_api_request(
                     api, request.payload, request.timeout_seconds
-                )
-            )
+                 )
+             )
 
             # Update API statistics
             self.update_api_usage(api.id, success, response_time, error_msg)
@@ -372,7 +643,7 @@ class EnhancedAPIOrchestrator:
                         api.id,
                         attempts,
                         total_time_ms,
-                        )
+                         )
 
                 return OrchestrationResult(
                     request_id = request.request_id,
@@ -383,7 +654,7 @@ class EnhancedAPIOrchestrator:
                         total_time_ms = total_time_ms,
                         error_message = None,
                         fallback_apis_tried = apis_tried[:-1],  # Exclude the successful one
-                )
+                 )
             else:
                 failure_reasons.append(f"{api.service_name}: {error_msg}")
                 logger.warning(f"API {api.service_name} failed: {error_msg}")
@@ -401,7 +672,7 @@ class EnhancedAPIOrchestrator:
                 attempts,
                 total_time_ms,
                 failure_reasons,
-                )
+                 )
 
         return OrchestrationResult(
             request_id = request.request_id,
@@ -412,7 +683,7 @@ class EnhancedAPIOrchestrator:
                 total_time_ms = total_time_ms,
                 error_message = f"All APIs failed. Reasons: {'; '.join(failure_reasons)}",
                 fallback_apis_tried = apis_tried,
-                )
+                 )
 
 
     def reset_daily_usage_counts(self):
@@ -424,13 +695,44 @@ class EnhancedAPIOrchestrator:
 
 
     def get_orchestration_analytics(self, days: int = 7) -> Dict[str, Any]:
-        """Get orchestration analytics for the past N days"""
+        """
+Get orchestration analytics for the past N days
+
         with sqlite3.connect(self.db_path) as conn:
+           
+""""""
+
             conn.row_factory = sqlite3.Row
+           
+
+            
+           
+""""""
+
+
+            
+
+           
 
             # Get request statistics
+           
+""""""
+
+           
+
+            
+           
+"""
+            conn.row_factory = sqlite3.Row
+           """
+
+            
+           
+
             cursor = conn.execute(
-                """
+               
+""""""
+
                 SELECT
                     capability_requested,
                         COUNT(*) as total_requests,
@@ -440,11 +742,19 @@ class EnhancedAPIOrchestrator:
                 FROM api_orchestration_log
                 WHERE created_at >= datetime('now', '-{} days')
                 GROUP BY capability_requested
-            """.format(
+            
+.format(
+"""
                 days
-                )
-            )
+                 )
+            """
 
+             
+            
+
+             )
+            
+""""""
             capability_stats = {}
             for row in cursor.fetchall():
                 stats = dict(row)
@@ -452,12 +762,13 @@ class EnhancedAPIOrchestrator:
                     stats["successful_requests"]/stats["total_requests"]
                     if stats["total_requests"] > 0
                     else 0
-                )
+                 )
                 capability_stats[row["capability_requested"]] = stats
 
             # Get API performance
             cursor = conn.execute(
-                """
+                """"""
+
                 SELECT
                     ar.service_name,
                         ar.capability,
@@ -470,33 +781,59 @@ class EnhancedAPIOrchestrator:
                 WHERE aol.created_at >= datetime('now', '-{} days') OR aol.created_at IS NULL
                 GROUP BY ar.id
                 ORDER BY requests_handled DESC
-            """.format(
+            
+.format(
+"""
                 days
-                )
-            )
+                 )
+            """
 
+             
+            
+
+             )
+            
+""""""
             api_performance = [dict(row) for row in cursor.fetchall()]
 
             return {
                 "capability_statistics": capability_stats,
                     "api_performance": api_performance,
                     "analysis_period_days": days,
-                    }
+                     }
 
 # Example usage and testing
 
 
 async def example_usage():
-    """Example of how to use the Enhanced API Orchestrator"""
+    """
+Example of how to use the Enhanced API Orchestrator
+
     async with EnhancedAPIOrchestrator() as orchestrator:
+       
+""""""
+
         # Create a sample request
+       
+
+        
+       
+"""
         request = OrchestrationRequest(
+       """
+
+        
+       
+
+        # Create a sample request
+       
+""""""
             request_id = str(uuid.uuid4()),
                 capability="text - generation",
                 payload={"prompt": "Hello, world!", "max_tokens": 100},
                 timeout_seconds = 30,
                 max_retries = 3,
-                )
+                 )
 
         # Execute the request
         result = await orchestrator.orchestrate_request(request)
@@ -505,7 +842,7 @@ async def example_usage():
         print(f"Status: {result.status.value}")
         print(
             f"API Used: {result.api_used.service_name if result.api_used else 'None'}"
-        )
+         )
         print(f"Total Attempts: {result.total_attempts}")
         print(f"Total Time: {result.total_time_ms}ms")
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Free API Catalog Service
 Comprehensive catalog of 100+ free APIs with intelligent routing and advanced features
-"""
+""""""
 
 import aiohttp
 import logging
@@ -87,14 +87,16 @@ class FreeAPICatalog:
                 "question_answering": "/models/deepset/roberta-base-squad2",
                 "image_classification": "/models/google/vit-base-patch16-224",
                 "object_detection": "/models/facebook/detr-resnet-50",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=1000,
             requires_key=True,
             key_signup_url="https://huggingface.co/settings/tokens",
             quality_score=9,
             reliability_score=9,
             features=["text_generation", "nlp", "computer_vision", "audio_processing"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["openai_compatible"] = FreeAPI(
             name="OpenAI Compatible APIs",
@@ -105,12 +107,14 @@ class FreeAPICatalog:
                 "chat_completions": "/v1/chat/completions",
                 "completions": "/v1/completions",
                 "embeddings": "/v1/embeddings",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=60,
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["replicate"] = FreeAPI(
             name="Replicate API",
@@ -122,7 +126,8 @@ class FreeAPICatalog:
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Content & Media APIs (20+)
         apis["unsplash"] = FreeAPI(
@@ -135,12 +140,14 @@ class FreeAPICatalog:
                 "search": "/search/photos",
                 "random": "/photos/random",
                 "collections": "/collections",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=50,
             requires_key=True,
             quality_score=9,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["pixabay"] = FreeAPI(
             name="Pixabay API",
@@ -152,7 +159,8 @@ class FreeAPICatalog:
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["pexels"] = FreeAPI(
             name="Pexels API",
@@ -163,12 +171,14 @@ class FreeAPICatalog:
                 "search": "/v1/search",
                 "curated": "/v1/curated",
                 "videos": "/videos/search",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=200,
             requires_key=True,
             quality_score=9,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["lorem_picsum"] = FreeAPI(
             name="Lorem Picsum",
@@ -179,12 +189,14 @@ class FreeAPICatalog:
                 "random": "/{width}/{height}",
                 "specific": "/id/{id}/{width}/{height}",
                 "list": "/v2/list",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=None,
             requires_key=False,
             quality_score=7,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # News & Information APIs (10+)
         apis["newsapi"] = FreeAPI(
@@ -196,12 +208,14 @@ class FreeAPICatalog:
                 "top_headlines": "/v2/top-headlines",
                 "everything": "/v2/everything",
                 "sources": "/v2/sources",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=1000,
             requires_key=True,
             quality_score=9,
             reliability_score=8,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["guardian"] = FreeAPI(
             name="The Guardian API",
@@ -213,7 +227,8 @@ class FreeAPICatalog:
             requires_key=True,
             quality_score=8,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Weather APIs (5+)
         apis["openweather"] = FreeAPI(
@@ -225,12 +240,14 @@ class FreeAPICatalog:
                 "current": "/data/2.5/weather",
                 "forecast": "/data/2.5/forecast",
                 "onecall": "/data/3.0/onecall",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=60,
             requires_key=True,
             quality_score=9,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["weatherapi"] = FreeAPI(
             name="WeatherAPI",
@@ -241,12 +258,14 @@ class FreeAPICatalog:
                 "current": "/v1/current.json",
                 "forecast": "/v1/forecast.json",
                 "history": "/v1/history.json",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=100,
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Finance APIs (8+)
         apis["alpha_vantage"] = FreeAPI(
@@ -258,12 +277,14 @@ class FreeAPICatalog:
                 "quote": "/query?function=GLOBAL_QUOTE",
                 "intraday": "/query?function=TIME_SERIES_INTRADAY",
                 "daily": "/query?function=TIME_SERIES_DAILY",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=5,
             requires_key=True,
             quality_score=8,
             reliability_score=7,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["coinapi"] = FreeAPI(
             name="CoinAPI",
@@ -274,12 +295,14 @@ class FreeAPICatalog:
                 "assets": "/v1/assets",
                 "rates": "/v1/exchangerate/{asset_id_base}/{asset_id_quote}",
                 "ohlcv": "/v1/ohlcv/{symbol_id}/history",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=100,
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Utilities & Tools APIs (15+)
         apis["httpbin"] = FreeAPI(
@@ -294,12 +317,14 @@ class FreeAPICatalog:
                 "delete": "/delete",
                 "status": "/status/{code}",
                 "delay": "/delay/{delay}",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=None,
             requires_key=False,
             quality_score=9,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["qrserver"] = FreeAPI(
             name="QR Server",
@@ -311,7 +336,8 @@ class FreeAPICatalog:
             requires_key=False,
             quality_score=8,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["ipapi"] = FreeAPI(
             name="IP-API",
@@ -323,7 +349,8 @@ class FreeAPICatalog:
             requires_key=False,
             quality_score=8,
             reliability_score=8,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Translation APIs (5+)
         apis["mymemory"] = FreeAPI(
@@ -336,7 +363,8 @@ class FreeAPICatalog:
             requires_key=False,
             quality_score=7,
             reliability_score=8,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["libretranslate"] = FreeAPI(
             name="LibreTranslate",
@@ -347,12 +375,14 @@ class FreeAPICatalog:
                 "translate": "/translate",
                 "languages": "/languages",
                 "detect": "/detect",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=None,
             requires_key=False,
             quality_score=7,
             reliability_score=7,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Entertainment APIs (10+)
         apis["tvmaze"] = FreeAPI(
@@ -364,12 +394,14 @@ class FreeAPICatalog:
                 "search": "/search/shows",
                 "show": "/shows/{id}",
                 "episodes": "/shows/{id}/episodes",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=20,
             requires_key=False,
             quality_score=8,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["omdb"] = FreeAPI(
             name="OMDb API",
@@ -380,12 +412,14 @@ class FreeAPICatalog:
                 "search": "/",
                 "by_id": "/?i={imdb_id}",
                 "by_title": "/?t={title}",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=1000,
             requires_key=True,
             quality_score=8,
             reliability_score=8,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Social & Communication APIs (8+)
         apis["jsonplaceholder"] = FreeAPI(
@@ -399,12 +433,14 @@ class FreeAPICatalog:
                 "users": "/users",
                 "albums": "/albums",
                 "photos": "/photos",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=None,
             requires_key=False,
             quality_score=9,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Data & Analytics APIs (10+)
         apis["worldbank"] = FreeAPI(
@@ -416,12 +452,14 @@ class FreeAPICatalog:
                 "countries": "/v2/country",
                 "indicators": "/v2/indicator",
                 "data": "/v2/country/{country}/indicator/{indicator}",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=None,
             requires_key=False,
             quality_score=8,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         apis["restcountries"] = FreeAPI(
             name="REST Countries",
@@ -432,12 +470,14 @@ class FreeAPICatalog:
                 "all": "/v3.1/all",
                 "name": "/v3.1/name/{name}",
                 "code": "/v3.1/alpha/{code}",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             rate_limit=None,
             requires_key=False,
             quality_score=9,
             reliability_score=9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Add more APIs to reach 100+...
         # This is a condensed version showing the structure
@@ -454,7 +494,8 @@ class FreeAPICatalog:
             self.apis.values(),
             key=lambda x: (x.quality_score, x.reliability_score),
             reverse=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return sorted_apis[:limit]
 
     def search_apis(self, query: str, category: Optional[APICategory] = None) -> List[FreeAPI]:
@@ -471,8 +512,10 @@ class FreeAPICatalog:
                 or query_lower in api.description.lower()
                 or (
                     api.features and any(query_lower in feature.lower() for feature in api.features)
-                )
-            ):
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             ):
                 results.append(api)
 
         return sorted(results, key=lambda x: x.quality_score, reverse=True)
@@ -487,7 +530,8 @@ class FreeAPICatalog:
             api
             for api in self.apis.values()
             if api.category == target_api.category and api.name != target_api.name
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         return sorted(alternatives, key=lambda x: x.quality_score, reverse=True)
 
@@ -512,8 +556,10 @@ class FreeAPICatalog:
                 "avg_reliability": 0,
                 "free_apis": 0,
                 "categories": set(),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         total_quality = 0
         total_reliability = 0
@@ -530,8 +576,10 @@ class FreeAPICatalog:
                         "rate_limit": api.rate_limit,
                         "requires_key": api.requires_key,
                         "features": api.features or [],
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
                 total_quality += api.quality_score
                 total_reliability += api.reliability_score
@@ -558,8 +606,10 @@ class FreeAPICatalog:
             "reliability_stats": {
                 "avg_reliability": 0,
                 "highly_reliable": 0,  # 8+ score
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         category_counts = {}
         total_reliability = 0
@@ -591,7 +641,8 @@ class FreeAPICatalog:
         stats["by_category"] = category_counts
         stats["top_categories"] = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[
             :5
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         stats["reliability_stats"]["avg_reliability"] = total_reliability / len(self.apis)
 
         return stats
@@ -673,14 +724,16 @@ class FreeAPIRouter:
                         "data": result,
                         "api_used": api.name,
                         "response_time": response_time,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     return {
                         "success": False,
                         "error": f"HTTP {response.status}",
                         "api_used": api.name,
                         "response_time": response_time,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             return {
@@ -688,7 +741,8 @@ class FreeAPIRouter:
                 "error": str(e),
                 "api_used": api.name,
                 "response_time": time.time() - start_time,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _get_api_key(self, api_name: str) -> str:
         """Get API key from environment (placeholder)"""
@@ -710,7 +764,8 @@ class FreeAPIRouter:
                 "failure_count": 0,
                 "avg_response_time": 0,
                 "total_response_time": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         metrics = self.performance_metrics[api_name]
         metrics["success_count"] += 1
@@ -725,7 +780,8 @@ class FreeAPIRouter:
                 "failure_count": 0,
                 "avg_response_time": 0,
                 "total_response_time": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         self.performance_metrics[api_name]["failure_count"] += 1
         logger.warning(f"API {api_name} failed: {error}")
@@ -735,10 +791,12 @@ class FreeAPIRouter:
         report = {
             "total_requests": sum(
                 m["success_count"] + m["failure_count"] for m in self.performance_metrics.values()
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "success_rate": 0,
             "api_performance": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         total_success = sum(m["success_count"] for m in self.performance_metrics.values())
         total_requests = report["total_requests"]
@@ -752,7 +810,8 @@ class FreeAPIRouter:
                 (metrics["success_count"] / total_api_requests * 100)
                 if total_api_requests > 0
                 else 0
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             report["api_performance"].append(
                 {
@@ -760,8 +819,10 @@ class FreeAPIRouter:
                     "success_rate": api_success_rate,
                     "avg_response_time": metrics["avg_response_time"],
                     "total_requests": total_api_requests,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Sort by success rate
         report["api_performance"].sort(key=lambda x: x["success_rate"], reverse=True)
@@ -783,7 +844,8 @@ class FreeAPIOrchestrator:
             "steps": steps,
             "created_at": datetime.now(),
             "execution_count": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return True
 
     async def execute_workflow(self, name: str, input_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -799,22 +861,26 @@ class FreeAPIOrchestrator:
             for i, step in enumerate(workflow["steps"]):
                 step_result = await router.smart_request(
                     step["requirement"], current_data, step.get("preferred_apis", [])
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 results.append(
                     {
                         "step": i + 1,
                         "requirement": step["requirement"],
                         "result": step_result,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if not step_result["success"]:
                     return {
                         "success": False,
                         "error": f'Step {i + 1} failed: {step_result.get("error")}',
                         "partial_results": results,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                 # Pass data to next step if specified
                 if step.get("pass_data_to_next"):
@@ -827,7 +893,8 @@ class FreeAPIOrchestrator:
             "workflow_name": name,
             "results": results,
             "execution_time": datetime.now(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Convenience functions
@@ -856,18 +923,22 @@ def compare_with_paid_services(requirement: str) -> Dict[str, Any]:
                 "quality_score": api.quality_score,
                 "features": api.features or [],
                 "rate_limit": api.rate_limit,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             for api in free_options[:5]
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "advantages_over_paid": [
             "No subscription costs",
             "Multiple fallback options",
             "Community-driven development",
             "Transparent usage limits",
             "Easy integration and testing",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "total_catalog_size": len(catalog.apis),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 if __name__ == "__main__":

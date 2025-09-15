@@ -1,355 +1,513 @@
 #!/usr/bin/env python3
 """
-Paste Router - Handles paste functionality and place search integration
-Provides endpoints for creating, retrieving, and managing text pastes
+Paste Router
+
+Handles paste/clipboard functionality and text sharing.
+Provides endpoints for creating, retrieving, and managing text pastes.
 """
 
-from datetime import datetime
-from typing import List, Optional
+import logging
+import os
+import secrets
+import time
+from datetime import datetime, timedelta
+from typing import Dict, Any, Optional, List
+from urllib.parse import quote, unquote
 
-import requests
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, Request, Query, Form
+from fastapi.responses import HTMLResponse, JSONResponse
+from pydantic import BaseModel, Field
 
-router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+router = APIRouter(prefix="/paste", tags=["paste"])
 
-# In-memory storage for pastes (in production, use a database)
-pastes_storage = []
-
-# Provider status for places functionality
-PROVIDER_STATUS = {
-    "overpass": {
-        "name": "OpenStreetMap Overpass",
-        "color": "green",
-        "last_error": None,
-        "requires_key": False,
-    },
-    "nominatim": {
-        "name": "OpenStreetMap Nominatim",
-        "color": "green",
-        "last_error": None,
-        "requires_key": False,
-    },
-}
-
+# In-memory storage for demo purposes
+pastes: Dict[str, Dict[str, Any]] = {}
+paste_stats: Dict[str, int] = {"total_created": 0, "total_views": 0}
 
 class PasteCreate(BaseModel):
-    content: str
-    title: Optional[str] = None
-
+    content: str = Field(..., min_length=1, max_length=100000, description="Paste content")
+    title: Optional[str] = Field(None, max_length=200, description="Optional paste title")
+    language: Optional[str] = Field("text", max_length=50, description="Programming language for syntax highlighting")
+    expires_in: Optional[int] = Field(3600, description="Expiration time in seconds (default: 1 hour)")
+    password: Optional[str] = Field(None, max_length=100, description="Optional password protection")
+    is_private: bool = Field(False, description="Whether the paste is private")
 
 class PasteResponse(BaseModel):
-    id: int
-    content: str
+    paste_id: str
     title: Optional[str]
-    timestamp: str
+    content: str
+    language: str
+    created_at: str
+    expires_at: Optional[str]
+    view_count: int
+    is_private: bool
+    has_password: bool
 
+class PasteInfo(BaseModel):
+    paste_id: str
+    title: Optional[str]
+    language: str
+    created_at: str
+    expires_at: Optional[str]
+    view_count: int
+    content_length: int
+    is_private: bool
+    has_password: bool
 
-@router.get("/status")
-async def api_status():
-    """API status endpoint"""
+def generate_paste_id() -> str:
+    """Generate a unique paste ID."""
+    return secrets.token_urlsafe(8)
+
+def is_paste_expired(paste_data: Dict[str, Any]) -> bool:
+    """Check if a paste has expired."""
+    if not paste_data.get("expires_at"):
+        return False
+    
+    expires_at = datetime.fromisoformat(paste_data["expires_at"])
+    return datetime.now() > expires_at
+
+def cleanup_expired_pastes():
+    """Remove expired pastes from storage."""
+    expired_ids = []
+    for paste_id, paste_data in pastes.items():
+        if is_paste_expired(paste_data):
+            expired_ids.append(paste_id)
+    
+    for paste_id in expired_ids:
+        del pastes[paste_id]
+    
+    return len(expired_ids)
+
+def validate_password(paste_data: Dict[str, Any], provided_password: Optional[str]) -> bool:
+    """Validate paste password if required."""
+    if not paste_data.get("password"):
+        return True
+    
+    return paste_data["password"] == provided_password
+
+@router.post("/create", response_model=dict)
+async def create_paste(paste: PasteCreate):
+    """Create a new paste."""
+    # Clean up expired pastes
+    cleanup_expired_pastes()
+    
+    # Generate unique paste ID
+    paste_id = generate_paste_id()
+    while paste_id in pastes:
+        paste_id = generate_paste_id()
+    
+    # Calculate expiration time
+    expires_at = None
+    if paste.expires_in and paste.expires_in > 0:
+        expires_at = (datetime.now() + timedelta(seconds=paste.expires_in)).isoformat()
+    
+    # Create paste data
+    paste_data = {
+        "paste_id": paste_id,
+        "title": paste.title,
+        "content": paste.content,
+        "language": paste.language or "text",
+        "created_at": datetime.now().isoformat(),
+        "expires_at": expires_at,
+        "view_count": 0,
+        "is_private": paste.is_private,
+        "password": paste.password,
+        "content_length": len(paste.content)
+    }
+    
+    # Store paste
+    pastes[paste_id] = paste_data
+    paste_stats["total_created"] += 1
+    
     return {
-        "status": "healthy",
-        "providers": PROVIDER_STATUS,
-        "timestamp": datetime.now().isoformat(),
+        "paste_id": paste_id,
+        "url": f"/paste/{paste_id}",
+        "raw_url": f"/paste/{paste_id}/raw",
+        "expires_at": expires_at,
+        "message": "Paste created successfully"
     }
 
+@router.get("/{paste_id}", response_model=PasteResponse)
+async def get_paste(
+    paste_id: str,
+    password: Optional[str] = Query(None, description="Password for protected pastes")
+):
+    """Retrieve a paste by ID."""
+    # Clean up expired pastes
+    cleanup_expired_pastes()
+    
+    if paste_id not in pastes:
+        raise HTTPException(status_code=404, detail="Paste not found")
+    
+    paste_data = pastes[paste_id]
+    
+    # Check if paste is expired
+    if is_paste_expired(paste_data):
+        del pastes[paste_id]
+        raise HTTPException(status_code=404, detail="Paste has expired")
+    
+    # Check password if required
+    if not validate_password(paste_data, password):
+        raise HTTPException(status_code=401, detail="Invalid password")
+    
+    # Increment view count
+    paste_data["view_count"] += 1
+    paste_stats["total_views"] += 1
+    
+    return PasteResponse(
+        paste_id=paste_data["paste_id"],
+        title=paste_data["title"],
+        content=paste_data["content"],
+        language=paste_data["language"],
+        created_at=paste_data["created_at"],
+        expires_at=paste_data["expires_at"],
+        view_count=paste_data["view_count"],
+        is_private=paste_data["is_private"],
+        has_password=bool(paste_data.get("password"))
+    )
+
+@router.get("/{paste_id}/raw")
+async def get_paste_raw(
+    paste_id: str,
+    password: Optional[str] = Query(None, description="Password for protected pastes")
+):
+    """Get paste content as plain text."""
+    # Clean up expired pastes
+    cleanup_expired_pastes()
+    
+    if paste_id not in pastes:
+        raise HTTPException(status_code=404, detail="Paste not found")
+    
+    paste_data = pastes[paste_id]
+    
+    # Check if paste is expired
+    if is_paste_expired(paste_data):
+        del pastes[paste_id]
+        raise HTTPException(status_code=404, detail="Paste has expired")
+    
+    # Check password if required
+    if not validate_password(paste_data, password):
+        raise HTTPException(status_code=401, detail="Invalid password")
+    
+    # Increment view count
+    paste_data["view_count"] += 1
+    paste_stats["total_views"] += 1
+    
+    return paste_data["content"]
+
+@router.get("/{paste_id}/info", response_model=PasteInfo)
+async def get_paste_info(
+    paste_id: str,
+    password: Optional[str] = Query(None, description="Password for protected pastes")
+):
+    """Get paste metadata without content."""
+    # Clean up expired pastes
+    cleanup_expired_pastes()
+    
+    if paste_id not in pastes:
+        raise HTTPException(status_code=404, detail="Paste not found")
+    
+    paste_data = pastes[paste_id]
+    
+    # Check if paste is expired
+    if is_paste_expired(paste_data):
+        del pastes[paste_id]
+        raise HTTPException(status_code=404, detail="Paste has expired")
+    
+    # For info endpoint, we don't require password but show limited info
+    return PasteInfo(
+        paste_id=paste_data["paste_id"],
+        title=paste_data["title"],
+        language=paste_data["language"],
+        created_at=paste_data["created_at"],
+        expires_at=paste_data["expires_at"],
+        view_count=paste_data["view_count"],
+        content_length=paste_data["content_length"],
+        is_private=paste_data["is_private"],
+        has_password=bool(paste_data.get("password"))
+    )
+
+@router.delete("/{paste_id}")
+async def delete_paste(
+    paste_id: str,
+    password: Optional[str] = Query(None, description="Password for protected pastes")
+):
+    """Delete a paste."""
+    if paste_id not in pastes:
+        raise HTTPException(status_code=404, detail="Paste not found")
+    
+    paste_data = pastes[paste_id]
+    
+    # Check password if required
+    if not validate_password(paste_data, password):
+        raise HTTPException(status_code=401, detail="Invalid password")
+    
+    # Delete paste
+    del pastes[paste_id]
+    
+    return {
+        "message": "Paste deleted successfully",
+        "paste_id": paste_id,
+        "timestamp": datetime.now().isoformat()
+    }
+
+@router.get("/list/recent")
+async def list_recent_pastes(
+    limit: int = Query(10, ge=1, le=100, description="Number of pastes to return"),
+    include_private: bool = Query(False, description="Include private pastes")
+):
+    """List recent public pastes."""
+    # Clean up expired pastes
+    cleanup_expired_pastes()
+    
+    # Filter and sort pastes
+    filtered_pastes = []
+    for paste_data in pastes.values():
+        if not include_private and paste_data["is_private"]:
+            continue
+        
+        filtered_pastes.append({
+            "paste_id": paste_data["paste_id"],
+            "title": paste_data["title"],
+            "language": paste_data["language"],
+            "created_at": paste_data["created_at"],
+            "expires_at": paste_data["expires_at"],
+            "view_count": paste_data["view_count"],
+            "content_length": paste_data["content_length"],
+            "has_password": bool(paste_data.get("password"))
+        })
+    
+    # Sort by creation time (newest first)
+    filtered_pastes.sort(key=lambda x: x["created_at"], reverse=True)
+    
+    return {
+        "pastes": filtered_pastes[:limit],
+        "total_count": len(filtered_pastes),
+        "timestamp": datetime.now().isoformat()
+    }
+
+@router.get("/search")
+async def search_pastes(
+    query: str = Query(..., min_length=1, description="Search query"),
+    language: Optional[str] = Query(None, description="Filter by language"),
+    limit: int = Query(10, ge=1, le=100, description="Number of results to return")
+):
+    """Search pastes by content or title."""
+    # Clean up expired pastes
+    cleanup_expired_pastes()
+    
+    query_lower = query.lower()
+    results = []
+    
+    for paste_data in pastes.values():
+        # Skip private pastes and password-protected pastes
+        if paste_data["is_private"] or paste_data.get("password"):
+            continue
+        
+        # Filter by language if specified
+        if language and paste_data["language"] != language:
+            continue
+        
+        # Search in title and content
+        title_match = paste_data.get("title") and query_lower in paste_data["title"].lower()
+        content_match = query_lower in paste_data["content"].lower()
+        
+        if title_match or content_match:
+            results.append({
+                "paste_id": paste_data["paste_id"],
+                "title": paste_data["title"],
+                "language": paste_data["language"],
+                "created_at": paste_data["created_at"],
+                "expires_at": paste_data["expires_at"],
+                "view_count": paste_data["view_count"],
+                "content_length": paste_data["content_length"],
+                "match_type": "title" if title_match else "content"
+            })
+    
+    # Sort by creation time (newest first)
+    results.sort(key=lambda x: x["created_at"], reverse=True)
+    
+    return {
+        "results": results[:limit],
+        "query": query,
+        "total_matches": len(results),
+        "timestamp": datetime.now().isoformat()
+    }
+
+@router.post("/cleanup")
+async def cleanup_pastes():
+    """Manually trigger cleanup of expired pastes."""
+    cleaned_count = cleanup_expired_pastes()
+    
+    return {
+        "message": "Cleanup completed",
+        "expired_pastes_removed": cleaned_count,
+        "active_pastes": len(pastes),
+        "timestamp": datetime.now().isoformat()
+    }
+
+@router.get("/stats")
+async def get_paste_stats():
+    """Get paste service statistics."""
+    # Clean up expired pastes
+    cleanup_expired_pastes()
+    
+    # Calculate language distribution
+    language_stats = {}
+    for paste_data in pastes.values():
+        lang = paste_data["language"]
+        language_stats[lang] = language_stats.get(lang, 0) + 1
+    
+    # Calculate expiration stats
+    expiring_soon = 0  # Within next hour
+    never_expires = 0
+    
+    for paste_data in pastes.values():
+        if not paste_data.get("expires_at"):
+            never_expires += 1
+        else:
+            expires_at = datetime.fromisoformat(paste_data["expires_at"])
+            if expires_at <= datetime.now() + timedelta(hours=1):
+                expiring_soon += 1
+    
+    return {
+        "total_pastes": len(pastes),
+        "total_created": paste_stats["total_created"],
+        "total_views": paste_stats["total_views"],
+        "language_distribution": language_stats,
+        "expiration_stats": {
+            "expiring_soon": expiring_soon,
+            "never_expires": never_expires
+        },
+        "timestamp": datetime.now().isoformat()
+    }
+
+@router.get("/languages")
+async def get_supported_languages():
+    """Get list of supported programming languages."""
+    languages = [
+        "text", "python", "javascript", "typescript", "java", "c", "cpp", "csharp",
+        "php", "ruby", "go", "rust", "swift", "kotlin", "scala", "html", "css",
+        "sql", "json", "xml", "yaml", "markdown", "bash", "powershell", "dockerfile"
+    ]
+    
+    return {
+        "languages": languages,
+        "total_count": len(languages),
+        "timestamp": datetime.now().isoformat()
+    }
 
 @router.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {"status": "healthy", "app": "paste_service"}
-
-
-@router.get("/providers")
-async def places_providers():
-    """Get available place search providers"""
-    return {"providers": PROVIDER_STATUS, "default": "overpass"}
-
-
-@router.post("/paste", response_model=PasteResponse)
-async def create_paste(paste_data: PasteCreate):
-    """Create a new paste"""
-    if not paste_data.content.strip():
-        raise HTTPException(status_code=400, detail="Content cannot be empty")
-
-    paste_id = len(pastes_storage) + 1
-    new_paste = {
-        "id": paste_id,
-        "content": paste_data.content,
-        "title": paste_data.title,
-        "timestamp": datetime.now().isoformat(),
+async def paste_health():
+    """Check paste service health."""
+    # Clean up expired pastes
+    cleaned_count = cleanup_expired_pastes()
+    
+    return {
+        "ok": True,
+        "active_pastes": len(pastes),
+        "total_created": paste_stats["total_created"],
+        "total_views": paste_stats["total_views"],
+        "expired_cleaned": cleaned_count,
+        "timestamp": datetime.now().isoformat()
     }
 
-    pastes_storage.append(new_paste)
-    return new_paste
-
-
-@router.get("/pastes", response_model=List[PasteResponse])
-async def get_pastes(limit: int = 10, offset: int = 0):
-    """Get all pastes with pagination"""
-    start = offset
-    end = offset + limit
-    return pastes_storage[start:end]
-
-
-@router.get("/paste/{paste_id}", response_model=PasteResponse)
-async def get_paste(paste_id: int):
-    """Get a specific paste by ID"""
-    for paste in pastes_storage:
-        if paste["id"] == paste_id:
-            return paste
-    raise HTTPException(status_code=404, detail="Paste not found")
-
-
-# OSM Tags for place search
-_OSM_TAGS = {
-    "veterinary": {"amenity": "veterinary"},
-    "clinic": {"amenity": "clinic"},
-    "hospital": {"amenity": "hospital"},
-    "pharmacy": {"amenity": "pharmacy"},
-    "pet_store": {"shop": "pet"},
-    "dog_park": {"leisure": "dog_park"},
-}
-
-
-def _overpass_query(lat, lng, radius_m, tag_key, tag_val, limit):
-    """Query Overpass API for places"""
-    query = f"""
-    [out:json][timeout:25];
-    (
-        node["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
-      way["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
-      relation["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
-    );
-    out center {limit};
-    """
-
-    try:
-        response = requests.post("https://overpass-api.de/api/interpreter", data=query, timeout=30)
-        response.raise_for_status()
-        return response.json()
-    except Exception as e:
-        PROVIDER_STATUS["overpass"]["last_error"] = str(e)
-        PROVIDER_STATUS["overpass"]["color"] = "red"
-        raise
-
-
-def _elements_to_items(js):
-    """Convert Overpass API response to standardized format"""
-    items = []
-    for el in js.get("elements", []):
-        tags = el.get("tags", {})
-        name = tags.get("name", "Unnamed")
-
-        # Get coordinates
-        if "lat" in el and "lon" in el:
-            lat, lng = el["lat"], el["lon"]
-        elif "center" in el:
-            lat, lng = el["center"]["lat"], el["center"]["lon"]
-        else:
-            continue
-
-        # Build address
-        addr_parts = []
-        for key in ["addr:housenumber", "addr:street", "addr:city"]:
-            if key in tags:
-                addr_parts.append(tags[key])
-        address = ", ".join(addr_parts) if addr_parts else ""
-
-        items.append({"name": name, "lat": lat, "lng": lng, "address": address, "tags": tags})
-
-    return items
-
-
-@router.get("/places/search")
-async def places_search(
-    category: str = "veterinary",
-    lat: float = 40.7128,
-    lng: float = -74.0060,
-    radius_m: int = 5000,
-    limit: int = 50,
-):
-    """Search for places using OpenStreetMap data"""
-    if category not in _OSM_TAGS:
-        raise HTTPException(status_code=400, detail=f"Unknown category: {category}")
-
-    tag_info = _OSM_TAGS[category]
-    tag_key, tag_val = next(iter(tag_info.items()))
-
-    try:
-        overpass_data = _overpass_query(lat, lng, radius_m, tag_key, tag_val, limit)
-        items = _elements_to_items(overpass_data)
-
-        PROVIDER_STATUS["overpass"]["color"] = "green"
-        PROVIDER_STATUS["overpass"]["last_error"] = None
-
-        return {
-            "places": items,
-            "total": len(items),
-            "provider": "overpass",
-            "query": {
-                "category": category,
-                "lat": lat,
-                "lng": lng,
-                "radius_m": radius_m,
-                "limit": limit,
-            },
-        }
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Place search failed: {str(e)}")
-
-
-PASTE_HTML_TEMPLATE = """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Paste App</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 40px; 
-            background: #f5f5f5; 
-        }
-        .container { 
-            max-width: 800px; 
-            margin: 0 auto; 
-            background: white; 
-            padding: 20px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-        }
-        h1 { 
-            color: #333; 
-            text-align: center; 
-        }
-        textarea { 
-            width: 100%; 
-            height: 300px; 
-            margin: 10px 0; 
-            padding: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
-            font-family: monospace; 
-        }
-        button { 
-            padding: 10px 20px; 
-            margin: 5px; 
-            background: #007bff; 
-            color: white; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer; 
-        }
-        button:hover { 
-            background: #0056b3; 
-        }
-        .paste-item { 
-            border: 1px solid #ddd; 
-            margin: 10px 0; 
-            padding: 15px; 
-            border-radius: 4px; 
-            background: #f9f9f9; 
-        }
-        .paste-meta { 
-            color: #666; 
-            font-size: 0.9em; 
-            margin-bottom: 10px; 
-        }
-        pre { 
-            background: #f8f9fa; 
-            padding: 10px; 
-            border-radius: 4px; 
-            overflow-x: auto; 
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Paste App</h1>
-        <form id="pasteForm">
-            <input type="text" id="title" placeholder="Optional title..." 
-                   style="width: 100%; margin-bottom: 10px; padding: 8px; 
-                          border: 1px solid #ddd; border-radius: 4px;">
-            <textarea id="content" placeholder="Enter your text here..."></textarea><br>
-            <button type="submit">Save Paste</button>
-            <button type="button" onclick="loadPastes()">Refresh</button>
-        </form>
-        <div id="pastes"></div>
-    </div>
-
-    <script>
-        let pastes = [];
-
-        document.getElementById('pasteForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const content = document.getElementById('content').value;
-            const title = document.getElementById('title').value;
-
-            if (content.trim()) {
+# Simple HTML interface for testing
+@router.get("/ui", response_class=HTMLResponse)
+async def paste_ui():
+    """Simple HTML interface for creating and viewing pastes."""
+    html_content = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Paste Service</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+            .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+            textarea { width: 100%; height: 300px; margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+            input, select { margin: 5px; padding: 8px; border: 1px solid #ddd; }
+            button { background: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+            button:hover { background: #0056b3; }
+            .result { margin: 20px 0; padding: 15px; background: #e9ecef; border-radius: 4px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Paste Service</h1>
+            <form id="pasteForm">
+                <div>
+                    <input type="text" id="title" placeholder="Paste title (optional)" style="width: 300px;">
+                    <select id="language">
+                        <option value="text">Plain Text</option>
+                        <option value="python">Python</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="html">HTML</option>
+                        <option value="css">CSS</option>
+                        <option value="json">JSON</option>
+                    </select>
+                </div>
+                <textarea id="content" placeholder="Enter your paste content here..."></textarea>
+                <div>
+                    <input type="password" id="password" placeholder="Password (optional)" style="width: 200px;">
+                    <label><input type="checkbox" id="private"> Private</label>
+                    <select id="expires">
+                        <option value="3600">1 Hour</option>
+                        <option value="86400">1 Day</option>
+                        <option value="604800">1 Week</option>
+                        <option value="0">Never</option>
+                    </select>
+                </div>
+                <button type="submit">Create Paste</button>
+            </form>
+            <div id="result" class="result" style="display: none;"></div>
+        </div>
+        
+        <script>
+            document.getElementById('pasteForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = {
+                    content: document.getElementById('content').value,
+                    title: document.getElementById('title').value || null,
+                    language: document.getElementById('language').value,
+                    password: document.getElementById('password').value || null,
+                    is_private: document.getElementById('private').checked,
+                    expires_in: parseInt(document.getElementById('expires').value)
+                };
+                
                 try {
-                    const response = await fetch('/paste/paste', {
+                    const response = await fetch('/paste/create', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            content: content,
-                            title: title || null
-                        })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
                     });
-
+                    
+                    const result = await response.json();
+                    
                     if (response.ok) {
-                        document.getElementById('content').value = '';
-                        document.getElementById('title').value = '';
-                        loadPastes();
+                        document.getElementById('result').innerHTML = `
+                            <h3>Paste Created Successfully!</h3>
+                            <p><strong>Paste ID:</strong> ${result.paste_id}</p>
+                            <p><strong>URL:</strong> <a href="${result.url}" target="_blank">${window.location.origin}${result.url}</a></p>
+                            <p><strong>Raw URL:</strong> <a href="${result.raw_url}" target="_blank">${window.location.origin}${result.raw_url}</a></p>
+                            ${result.expires_at ? `<p><strong>Expires:</strong> ${new Date(result.expires_at).toLocaleString()}</p>` : ''}
+                        `;
+                        document.getElementById('result').style.display = 'block';
+                        document.getElementById('pasteForm').reset();
                     } else {
-                        alert('Failed to save paste');
+                        throw new Error(result.detail || 'Failed to create paste');
                     }
                 } catch (error) {
-                    alert('Error saving paste: ' + error.message);
+                    document.getElementById('result').innerHTML = `
+                        <h3>Error</h3>
+                        <p style="color: red;">${error.message}</p>
+                    `;
+                    document.getElementById('result').style.display = 'block';
                 }
-            }
-        });
-
-        async function loadPastes() {
-            try {
-                const response = await fetch('/paste/pastes');
-                if (response.ok) {
-                    pastes = await response.json();
-                    renderPastes();
-                }
-            } catch (error) {
-                console.error('Error loading pastes:', error);
-            }
-        }
-
-        function renderPastes() {
-            const container = document.getElementById('pastes');
-            container.innerHTML = pastes.map(paste => `
-                <div class="paste-item">
-                    <div class="paste-meta">
-                        ${paste.title ? `<strong>${paste.title}</strong> - ` : ''}
-                        Saved: ${new Date(paste.timestamp).toLocaleString()}
-                    </div>
-                    <pre>${paste.content}</pre>
-                </div>
-            `).join('');
-        }
-
-        // Load pastes on page load
-        loadPastes();
-    </script>
-</body>
-</html>
-"""
-
-
-@router.get("/", response_class=HTMLResponse)
-async def paste_interface():
-    """Serve the paste web interface"""
-    return HTMLResponse(content=PASTE_HTML_TEMPLATE)
+            });
+        </script>
+    </body>
+    </html>
+    """
+    
+    return HTMLResponse(content=html_content)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Bootstrap Script - Zero - Cost, Live - Ready Stack
 Creates a production - ready agentic AI system with Hollywood - level creative pipeline
 and comprehensive marketing/monetization engine.
@@ -9,7 +9,7 @@ Non - negotiable principles:
 - Zero - cost stack (free tiers only)
 - Additive evolution (never break existing)
 - Secure design (no exposed secrets)
-"""
+""""""
 
 import os
 from pathlib import Path
@@ -24,7 +24,8 @@ class TraeAIBootstrap:
             "marketing_agent",
             "monetization_bundle",
             "revenue_rollup",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def create_directory_structure(self):
         """Create the complete TRAE.AI directory structure"""
@@ -39,7 +40,8 @@ class TraeAIBootstrap:
             "tests",
             "data",
             "logs",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for directory in directories:
             os.makedirs(directory, exist_ok=True)
@@ -58,9 +60,11 @@ class TraeAIBootstrap:
                         "OPENAI_API_KEY=${OPENAI_API_KEY}",
                         "YOUTUBE_API_KEY=${YOUTUBE_API_KEY}",
                         "GUMROAD_ACCESS_TOKEN=${GUMROAD_ACCESS_TOKEN}",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "restart": "unless - stopped",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "content_agent": {
                     "build": "./content_agent",
                     "volumes": ["./data:/app/data", "./logs:/app/logs"],
@@ -68,9 +72,11 @@ class TraeAIBootstrap:
                         "USE_MOCK = false",
                         "OPENAI_API_KEY=${OPENAI_API_KEY}",
                         "COQUI_API_KEY=${COQUI_API_KEY}",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "restart": "unless - stopped",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "marketing_agent": {
                     "build": "./marketing_agent",
                     "volumes": ["./data:/app/data", "./logs:/app/logs"],
@@ -78,9 +84,11 @@ class TraeAIBootstrap:
                         "USE_MOCK = false",
                         "TWITTER_API_KEY=${TWITTER_API_KEY}",
                         "MAILCHIMP_API_KEY=${MAILCHIMP_API_KEY}",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "restart": "unless - stopped",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "monetization_bundle": {
                     "build": "./monetization_bundle",
                     "volumes": ["./data:/app/data", "./logs:/app/logs"],
@@ -88,20 +96,26 @@ class TraeAIBootstrap:
                         "USE_MOCK = false",
                         "GUMROAD_ACCESS_TOKEN=${GUMROAD_ACCESS_TOKEN}",
                         "PRINTFUL_API_KEY=${PRINTFUL_API_KEY}",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "restart": "unless - stopped",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "revenue_rollup": {
                     "build": "./revenue_rollup",
                     "volumes": ["./data:/app/data", "./logs:/app/logs"],
                     "environment": [
                         "USE_MOCK = false",
                         "YOUTUBE_API_KEY=${YOUTUBE_API_KEY}",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "restart": "unless - stopped",
-                },
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         with open("docker - compose.yml", "w") as f:
             import yaml
@@ -111,7 +125,7 @@ class TraeAIBootstrap:
 
     def create_env_template(self):
         """Create environment template with all required API keys"""
-        env_template = """
+        env_template = """"""
 # TRAE.AI Environment Configuration
 # Copy to .env and fill in your API keys
 
@@ -146,7 +160,7 @@ SMTP_SERVER = smtp.gmail.com
 SMTP_PORT = 587
 SMTP_USERNAME = your_smtp_username_here
 SMTP_PASSWORD = your_smtp_password_here
-"""
+""""""
 
         with open(".env.example", "w") as f:
             f.write(env_template)
@@ -154,7 +168,7 @@ SMTP_PASSWORD = your_smtp_password_here
 
     def create_requirements(self):
         """Create comprehensive requirements.txt for all services"""
-        requirements = """
+        requirements = """"""
 # Core Framework
 fastapi == 0.104.1
 uvicorn == 0.24.0
@@ -214,7 +228,7 @@ pytest - asyncio == 0.21.1
 black == 23.11.0
 flake8 == 6.1.0
 mypy == 1.7.1
-"""
+""""""
 
         with open("requirements.txt", "w") as f:
             f.write(requirements)
@@ -222,11 +236,11 @@ mypy == 1.7.1
 
     def create_launch_script(self):
         """Create master launch script for the entire system"""
-        launch_script = '''#!/usr/bin/env python3
-"""
+        launch_script = '''#!/usr/bin/env python3'''
+""""""
 TRAE.AI Live Launch Script
 Boots the entire agentic system with all services
-"""
+""""""
 
 import os
 import sys
@@ -282,7 +296,8 @@ def launch_services():
     # Verify services are running
     result = subprocess.run(['docker - compose', 'ps'],
     capture_output = True,
-    text = True)
+# BRACKET_SURGEON: disabled
+#     text = True)
     print("📊 Service Status:")
     print(result.stdout)
 
@@ -318,7 +333,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-'''
+''''''
 
         with open("launch_live.py", "w") as f:
             f.write(launch_script)

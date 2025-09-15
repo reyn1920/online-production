@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Research Agent Tools Module
-
+""""""
 Implements comprehensive research capabilities including:
 - Breaking news monitoring via RSS feeds
 - Competitor analysis (TubeBuddy/VidIQ emulation)
 - Market validation for digital products
 - YouTube channel analysis and niche opportunity detection
+""""""
+Research Agent Tools Module
 """
 
 import asyncio
@@ -26,7 +28,7 @@ try:
     from backend.database.hypocrisy_db_manager import (
         HypocrisyDatabaseManager,
         HypocrisyFinding,
-    )
+     )
 except ImportError:
     HypocrisyDatabaseManager = None
     HypocrisyFinding = None
@@ -40,7 +42,7 @@ except ImportError:
     PerformanceAnalyticsAgent = None
     logging.warning(
         "PerformanceAnalyticsAgent not available. Performance analytics will be limited."
-    )
+     )
 
 try:
     import smtplib
@@ -66,7 +68,7 @@ try:
         Spacer,
         Table,
         TableStyle,
-    )
+     )
 
     from textblob import TextBlob
 
@@ -124,7 +126,9 @@ class CompetitorMetric(Enum):
 
 @dataclass
 class NewsItem:
-    """Represents a single news item from RSS feeds"""
+    """
+Represents a single news item from RSS feeds
+
 
     title: str
     description: str
@@ -135,12 +139,20 @@ class NewsItem:
     sentiment_score: float = 0.0
     keywords: List[str] = field(default_factory=list)
     trend_strength: TrendStrength = TrendStrength.WEAK
+   
+""""""
+
     relevance_score: float = 0.0
+   
 
-
+    
+   
+"""
 @dataclass
 class CompetitorChannel:
-    """Represents a YouTube competitor channel"""
+    """
+Represents a YouTube competitor channel
+
 
     channel_id: str
     channel_name: str
@@ -153,12 +165,20 @@ class CompetitorChannel:
     niche_keywords: List[str] = field(default_factory=list)
     content_themes: List[str] = field(default_factory=list)
     opportunity_score: float = 0.0
+   
+""""""
+
     last_analyzed: datetime = field(default_factory=datetime.now)
+   
 
-
+    
+   
+"""
 @dataclass
 class MarketOpportunity:
-    """Represents a market opportunity for digital products"""
+    """
+Represents a market opportunity for digital products
+
 
     niche: str
     keywords: List[str]
@@ -169,12 +189,20 @@ class MarketOpportunity:
     target_audience: str
     content_gaps: List[str] = field(default_factory=list)
     recommended_products: List[str] = field(default_factory=list)
+   
+""""""
+
     confidence_score: float = 0.0
+   
 
-
+    
+   
+"""
 @dataclass
 class SEOAuditResult:
-    """Represents the results of an SEO audit"""
+    """
+Represents the results of an SEO audit
+
 
     website_url: str
     audit_date: datetime
@@ -186,9 +214,15 @@ class SEOAuditResult:
     recommendations: List[str]
     priority_issues: List[str]
     opportunities: List[str]
+   
+""""""
+
     report_file_path: Optional[str] = None
+   
 
-
+    
+   
+"""
 @dataclass
 class SEOAuditRequest:
     """Represents an SEO audit request"""
@@ -226,8 +260,8 @@ class BreakingNewsWatcher:
                 "online business",
                 "SaaS",
                 "startup",
-            ],
-        )
+             ],
+         )
         self.intelligence_db_path = self.config.get("intelligence_db", "data/intelligence.db")
         self.intelligence_db = self.intelligence_db_path  # Add missing intelligence_db attribute
         self.evidence_db_path = self.config.get("evidence_db", "data/right_perspective.db")
@@ -244,26 +278,49 @@ class BreakingNewsWatcher:
         self._initialize_intelligence_db()
 
     def _load_rss_feeds(self) -> List[Dict[str, str]]:
-        """Load RSS feeds using singleton manager to prevent redundant loading"""
-        try:
-            from backend.utils.rss_singleton import get_rss_feed_manager
+        """
+Load RSS feeds using singleton manager to prevent redundant loading
 
+        
+"""
+        try:
+        """"""
+            """
+
+            from backend.utils.rss_singleton import get_rss_feed_manager
+            
+
+        
+"""
+        try:
+        """"""
             rss_manager = get_rss_feed_manager()
             return rss_manager.get_rss_feeds()
         except ImportError:
             self.logger.warning(
                 "RSS singleton manager not available, falling back to direct loading"
-            )
+             )
             return self._load_rss_feeds_direct()
 
     def _load_rss_feeds_direct(self) -> List[Dict[str, str]]:
-        """Direct RSS feed loading (fallback method)"""
+        """
+Direct RSS feed loading (fallback method)
+
+        
+"""
         try:
+        """
             rss_config_path = os.path.join(
                 os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
                 "rss_feeds_example.json",
-            )
+             )
+        """
 
+        try:
+        
+
+       
+""""""
             if os.path.exists(rss_config_path):
                 with open(rss_config_path, "r") as f:
                     config = json.load(f)
@@ -275,8 +332,8 @@ class BreakingNewsWatcher:
                                     "url": feed["url"],
                                     "category": self._map_category(feed.get("category", "general")),
                                     "name": feed.get("name", "Unknown"),
-                                }
-                            )
+                                 }
+                             )
                     self.logger.info(f"Loaded {len(feeds)} RSS feeds from configuration (direct)")
                     return feeds
             else:
@@ -300,7 +357,7 @@ class BreakingNewsWatcher:
             "health": NewsCategory.HEALTH,
             "entertainment": NewsCategory.ENTERTAINMENT,
             "general": NewsCategory.GENERAL,
-        }
+         }
         return category_map.get(category_str.lower(), NewsCategory.GENERAL)
 
     def _get_default_feeds(self) -> List[Dict[str, str]]:
@@ -310,51 +367,61 @@ class BreakingNewsWatcher:
                 "url": "https://feeds.feedburner.com/TechCrunch",
                 "category": NewsCategory.TECHNOLOGY,
                 "name": "TechCrunch",
-            },
+             },
             {
                 "url": "https://rss.cnn.com/rss/edition.rss",
                 "category": NewsCategory.GENERAL,
                 "name": "CNN",
-            },
+             },
             {
                 "url": "https://feeds.reuters.com/reuters/businessNews",
                 "category": NewsCategory.BUSINESS,
                 "name": "Reuters Business",
-            },
+             },
             {
                 "url": "https://feeds.feedburner.com/venturebeat/SZYF",
                 "category": NewsCategory.TECHNOLOGY,
                 "name": "VentureBeat",
-            },
+             },
             {
                 "url": "https://feeds.feedburner.com/Mashable",
                 "category": NewsCategory.TECHNOLOGY,
                 "name": "Mashable",
-            },
+             },
             {
                 "url": "https://feeds.feedburner.com/socialmediaexaminer",
                 "category": NewsCategory.SOCIAL_MEDIA,
                 "name": "Social Media Examiner",
-            },
+             },
             {
                 "url": "https://feeds.feedburner.com/MarketingLand",
                 "category": NewsCategory.MARKETING,
                 "name": "Marketing Land",
-            },
-        ]
+             },
+         ]
 
     def _initialize_intelligence_db(self):
-        """Initialize intelligence database for storing processed news and trends"""
+        """
+Initialize intelligence database for storing processed news and trends
+
         try:
             # Ensure data directory exists
-            os.makedirs(os.path.dirname(self.intelligence_db_path), exist_ok=True)
+           
+""""""
 
+            os.makedirs(os.path.dirname(self.intelligence_db_path), exist_ok=True)
+           
+
+            
+           
+"""
             conn = sqlite3.connect(self.intelligence_db_path)
             cursor = conn.cursor()
 
             # Create tables for intelligence data
             cursor.execute(
-                """
+                """"""
+
                 CREATE TABLE IF NOT EXISTS news_articles (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         title TEXT NOT NULL,
@@ -368,12 +435,26 @@ class BreakingNewsWatcher:
                         relevance_score REAL,
                         trend_strength TEXT,
                         processed_date DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+                 )
+           
+
+            
+           
+""""""
+
+             
+            
+
+             )
+            
+""""""
 
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 CREATE TABLE IF NOT EXISTS trend_analysis (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         keyword TEXT NOT NULL,
@@ -384,12 +465,31 @@ class BreakingNewsWatcher:
                         last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
                         analysis_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                         time_window TEXT
-                )
-            """
-            )
+                 )
+            """"""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             cursor.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS intelligence_briefings (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         topic TEXT NOT NULL,
@@ -401,13 +501,32 @@ class BreakingNewsWatcher:
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                         briefing_type TEXT
-                )
+                 )
+            
+""""""
+
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
             conn.commit()
             conn.close()
+            
+""""""
 
+             )
+            
+
+             
+            
+"""
             self.logger.info("Intelligence database initialized successfully")
 
         except Exception as e:
@@ -442,12 +561,30 @@ class BreakingNewsWatcher:
         return all_news
 
     async def _fetch_all_feeds(self) -> List[NewsItem]:
-        """Fetch news from all configured RSS feeds"""
+        """
+Fetch news from all configured RSS feeds
+
         tasks = []
         for feed_config in self.feeds:
             task = asyncio.create_task(self._fetch_feed(feed_config))
-            tasks.append(task)
+           
+""""""
 
+            tasks.append(task)
+           
+
+            
+           
+""""""
+
+
+            
+
+           
+
+            tasks.append(task)
+           
+""""""
         results = await asyncio.gather(*tasks, return_exceptions=True)
         all_news = []
 
@@ -460,9 +597,17 @@ class BreakingNewsWatcher:
         return all_news
 
     async def _fetch_feed(self, feed_config: Dict) -> List[NewsItem]:
-        """Fetch and parse a single RSS feed"""
+        """
+Fetch and parse a single RSS feed
+
+        
+"""
         try:
+        """
             feed = feedparser.parse(feed_config["url"])
+        """
+        try:
+        """
             news_items = []
 
             for entry in feed.entries:
@@ -478,7 +623,7 @@ class BreakingNewsWatcher:
                     published=pub_date,
                     source=feed.feed.get("title", feed_config["url"]),
                     category=feed_config.get("category", NewsCategory.GENERAL),
-                )
+                 )
 
                 news_items.append(news_item)
 
@@ -489,10 +634,27 @@ class BreakingNewsWatcher:
             return []
 
     def _filter_new_items(self, news_items: List[NewsItem]) -> List[NewsItem]:
-        """Filter out already processed news items"""
-        new_items = []
+        """
+Filter out already processed news items
 
+       
+""""""
+
+        new_items = []
+       
+
+        
+       
+"""
         for item in news_items:
+       """
+
+        
+       
+
+        new_items = []
+       
+""""""
             item_key = f"{item.source}:{item.title}:{item.published.isoformat()}"
             if item_key not in self.news_cache:
                 self.news_cache[item_key] = item
@@ -501,15 +663,25 @@ class BreakingNewsWatcher:
         return new_items
 
     async def _process_news_items(self, news_items: List[NewsItem]) -> List[NewsItem]:
-        """Process news items for sentiment, keywords, relevance, \
-    and continuous knowledge base enrichment"""
-        processed_items = []
+        """
+Process news items for sentiment, keywords, relevance, \
 
+#     and continuous knowledge base enrichment
+""""""
+        processed_items = []
+       """"""
         for item in news_items:
             try:
                 # Extract keywords
                 item.keywords = self._extract_keywords(item.title + " " + item.description)
+       """
 
+        
+       
+
+        processed_items = []
+       
+""""""
                 # Calculate sentiment
                 if TextBlob:
                     blob = TextBlob(item.title + " " + item.description)
@@ -539,11 +711,23 @@ class BreakingNewsWatcher:
         return processed_items
 
     async def _update_trend_analysis(self, news_items: List[NewsItem]):
-        """Update trend analysis with new news items for emerging topic detection"""
-        try:
-            import sqlite3
-            from collections import Counter
+        """
+Update trend analysis with new news items for emerging topic detection
 
+        
+"""
+        try:
+        """"""
+            import sqlite3
+            """
+
+            from collections import Counter
+            
+
+        
+"""
+        try:
+        """"""
             conn = sqlite3.connect(self.intelligence_db_path)
             cursor = conn.cursor()
 
@@ -562,13 +746,18 @@ class BreakingNewsWatcher:
                 trend_score = min(count * 0.1, 1.0)  # Cap at 1.0
 
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     INSERT OR REPLACE INTO trend_analysis
                     (keyword, frequency, trend_score, last_updated, time_window)
                     VALUES (?, ?, ?, ?, ?)
-                """,
+                
+""","""
                     (keyword, count, trend_score, current_time, "hourly"),
-                )
+                 )
 
             # Store intelligence briefing for Planner Agent
             trending_keywords = [kw for kw, count in keyword_counts.most_common(10)]
@@ -577,29 +766,32 @@ class BreakingNewsWatcher:
                 "total_articles_processed": len(news_items),
                 "high_relevance_count": len(
                     [item for item in news_items if item.relevance_score > 0.7]
-                ),
+                 ),
                 "sentiment_summary": {
                     "positive": len([item for item in news_items if item.sentiment_score > 0.1]),
                     "negative": len([item for item in news_items if item.sentiment_score < -0.1]),
                     "neutral": len(
                         [item for item in news_items if -0.1 <= item.sentiment_score <= 0.1]
-                    ),
-                },
-            }
+                     ),
+                 },
+             }
 
             cursor.execute(
-                """
+                """"""
+
                 INSERT INTO intelligence_briefings
                 (briefing_type, content, created_at, priority)
                 VALUES (?, ?, ?, ?)
-            """,
+            
+,
+"""
                 (
                     "trend_analysis",
                     json.dumps(briefing_content),
                     current_time,
                     "high" if len(trending_keywords) > 5 else "medium",
-                ),
-            )
+                 ),
+             )
 
             conn.commit()
             conn.close()
@@ -610,15 +802,31 @@ class BreakingNewsWatcher:
             self.logger.error(f"Error updating trend analysis: {e}")
 
     async def _store_news_article(self, item: NewsItem):
-        """Store news article in intelligence database for knowledge base enrichment"""
-        try:
-            import sqlite3
+        """
+Store news article in intelligence database for knowledge base enrichment
 
+        
+"""
+        try:
+        """"""
+            """
+
+            import sqlite3
+            
+
+        
+"""
+        try:
+        """"""
             conn = sqlite3.connect(self.intelligence_db_path)
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+               """
+
+                
+               
+
                 INSERT OR REPLACE INTO news_articles
                 (title,
     description,
@@ -629,9 +837,10 @@ class BreakingNewsWatcher:
     sentiment_score,
     keywords,
     relevance_score,
-    trend_strength)
+#     trend_strength)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            
+""","""
                 (
                     item.title,
                     item.description,
@@ -643,8 +852,8 @@ class BreakingNewsWatcher:
                     ",".join(item.keywords),
                     item.relevance_score,
                     item.trend_strength.value,
-                ),
-            )
+                 ),
+             )
 
             conn.commit()
             conn.close()
@@ -653,13 +862,36 @@ class BreakingNewsWatcher:
             self.logger.error(f"Error storing news article: {e}")
 
     async def _extract_and_store_evidence(self, item: NewsItem):
-        """Extract facts, statistics, \
-    and quotes from news item \
-    and store in evidence database"""
-        try:
-            import re
-            import sqlite3
+        """
+Extract facts, statistics, \
 
+#     and quotes from news item \
+
+#     and store in evidence database
+"""
+
+        
+
+        try:
+        
+""""""
+
+        
+       
+
+            import re
+            
+"""
+            import sqlite3
+            """
+
+        
+
+        try:
+        
+""""""
+        
+       """
             # Connect to right_perspective.db evidence table
             conn = sqlite3.connect("data/right_perspective.db")
             cursor = conn.cursor()
@@ -671,68 +903,77 @@ class BreakingNewsWatcher:
             statistics = re.findall(stats_pattern, full_text, re.IGNORECASE)
 
             # Extract quotes (text in quotation marks)
-            quotes_pattern = r'["\\u201c]([^"\\u201d]+)["\\u201d]'
+            quotes_pattern = r'["\\u201c]([^"\\u201d]+)["\\u201d]'"
             quotes = re.findall(quotes_pattern, full_text)
 
             # Store extracted evidence
             for stat in statistics:
                 cursor.execute(
-                    """
+                    """"""
+
                     INSERT INTO evidence (claim,
     source,
     date_added,
     category,
-    credibility_score)
+#     credibility_score)
                     VALUES (?, ?, ?, ?, ?)
-                """,
+                
+,
+"""
                     (
                         f"Statistical data: {stat}",
                         f"{item.source} - {item.link}",
                         datetime.now().isoformat(),
                         "statistics",
                         item.relevance_score,
-                    ),
-                )
+                     ),
+                 )
 
             for quote in quotes:
                 if len(quote.strip()) > 10:  # Filter out short quotes
                     cursor.execute(
-                        """
+                        """"""
+
                         INSERT INTO evidence (claim,
     source,
     date_added,
     category,
-    credibility_score)
+#     credibility_score)
                         VALUES (?, ?, ?, ?, ?)
-                    """,
+                    
+,
+"""
                         (
                             f"Quote: {quote.strip()}",
                             f"{item.source} - {item.link}",
                             datetime.now().isoformat(),
                             "quote",
                             item.relevance_score,
-                        ),
-                    )
+                         ),
+                     )
 
             # Store key facts from title and description
             if item.relevance_score > 0.7:  # Only store high - relevance facts
                 cursor.execute(
-                    """
+                    """"""
+
                     INSERT INTO evidence (claim,
     source,
     date_added,
     category,
-    credibility_score)
+#     credibility_score)
                     VALUES (?, ?, ?, ?, ?)
-                """,
+                
+,
+"""
                     (
                         item.title,
                         f"{item.source} - {item.link}",
                         datetime.now().isoformat(),
                         "fact",
                         item.relevance_score,
-                    ),
-                )
+                     ),
+                 )
 
             conn.commit()
             conn.close()
@@ -743,7 +984,7 @@ class BreakingNewsWatcher:
     def _extract_keywords(self, text: str) -> List[str]:
         """Extract relevant keywords from text"""
         # Simple keyword extraction - can be enhanced with NLP
-        words = re.findall(r"\\b\\w+\\b", text.lower())
+        re.findall(r"\\b\\w+\\b", text.lower())
 
         # Filter for relevant keywords
         relevant_keywords = []
@@ -754,24 +995,47 @@ class BreakingNewsWatcher:
         return relevant_keywords
 
     def get_trending_topics(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """Get current trending topics for Planner Agent dynamic scheduling"""
-        try:
-            import sqlite3
+        """
+Get current trending topics for Planner Agent dynamic scheduling
 
+        
+"""
+        try:
+        """"""
+            """
+
+            import sqlite3
+            
+
+        
+"""
+        try:
+        """"""
             conn = sqlite3.connect(self.intelligence_db_path)
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+               """
+
+                
+               
+
                 SELECT keyword, frequency, trend_score, last_updated
                 FROM trend_analysis
                 WHERE datetime(last_updated) > datetime('now', '-24 hours')
                 ORDER BY trend_score DESC, frequency DESC
                 LIMIT ?
-            """,
-                (limit,),
-            )
+            
+""","""
 
+                (limit,),
+            
+
+             
+            
+"""
+             )
+            """"""
             results = cursor.fetchall()
             conn.close()
 
@@ -783,8 +1047,8 @@ class BreakingNewsWatcher:
                         "frequency": row[1],
                         "trend_score": row[2],
                         "last_updated": row[3],
-                    }
-                )
+                     }
+                 )
 
             return trending_topics
 
@@ -793,34 +1057,62 @@ class BreakingNewsWatcher:
             return []
 
     def get_latest_intelligence_briefing(self, briefing_type: str = None) -> Dict[str, Any]:
-        """Get latest intelligence briefing for Content Agent live briefing prompts"""
-        try:
-            import sqlite3
+        """
+Get latest intelligence briefing for Content Agent live briefing prompts
 
+        
+"""
+        try:
+        """"""
+            """
+
+            import sqlite3
+            
+
+        
+"""
+        try:
+        """"""
             conn = sqlite3.connect(self.intelligence_db_path)
             cursor = conn.cursor()
 
             if briefing_type:
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     SELECT briefing_type, content, created_at, priority
                     FROM intelligence_briefings
                     WHERE briefing_type = ?
                     ORDER BY created_at DESC
                     LIMIT 1
-                """,
+                
+""","""
+
                     (briefing_type,),
-                )
+                 )
             else:
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT briefing_type, content, created_at, priority
                     FROM intelligence_briefings
                     ORDER BY created_at DESC
                     LIMIT 1
-                """
-                )
+                """"""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
             result = cursor.fetchone()
             conn.close()
 
@@ -830,7 +1122,7 @@ class BreakingNewsWatcher:
                     "content": json.loads(result[1]),
                     "created_at": result[2],
                     "priority": result[3],
-                }
+                 }
 
             return {}
 
@@ -839,25 +1131,42 @@ class BreakingNewsWatcher:
             return {}
 
     def get_topic_headlines(self, topic: str, limit: int = 5) -> List[Dict[str, str]]:
-        """Get latest headlines for a specific topic for Content Agent live briefing"""
-        try:
-            import sqlite3
+        """
+Get latest headlines for a specific topic for Content Agent live briefing
 
+        
+"""
+        try:
+        """"""
+            """
+
+            import sqlite3
+            
+
+        
+"""
+        try:
+        """"""
             conn = sqlite3.connect(self.intelligence_db_path)
             cursor = conn.cursor()
 
             # Search for articles containing the topic in title, description, or keywords
             cursor.execute(
-                """
+               """
+
+                
+               
+
                 SELECT title, description, source, url, published_date
                 FROM news_articles
                 WHERE (title LIKE ? OR description LIKE ? OR keywords LIKE ?)
                 AND datetime(published) > datetime('now', '-48 hours')
                 ORDER BY relevance_score DESC, published DESC
                 LIMIT ?
-            """,
+            
+""","""
                 (f"%{topic}%", f"%{topic}%", f"%{topic}%", limit),
-            )
+             )
 
             results = cursor.fetchall()
             conn.close()
@@ -871,8 +1180,8 @@ class BreakingNewsWatcher:
                         "source": row[2],
                         "link": row[3],
                         "published": row[4],
-                    }
-                )
+                     }
+                 )
 
             return headlines
 
@@ -881,10 +1190,28 @@ class BreakingNewsWatcher:
             return []
 
     def _calculate_relevance(self, item: NewsItem) -> float:
-        """Calculate relevance score based on keywords and category"""
-        score = 0.0
+        """
+Calculate relevance score based on keywords and category
 
+       
+""""""
+
+        score = 0.0
+       
+
+        
+       
+"""
         # Base score by category
+       """
+
+        
+       
+
+        score = 0.0
+       
+""""""
+
         category_scores = {
             NewsCategory.TECHNOLOGY: 0.8,
             NewsCategory.BUSINESS: 0.7,
@@ -892,7 +1219,7 @@ class BreakingNewsWatcher:
             NewsCategory.SOCIAL_MEDIA: 0.9,
             NewsCategory.AI_ML: 1.0,
             NewsCategory.GENERAL: 0.3,
-        }
+         }
 
         score += category_scores.get(item.category, 0.3)
 
@@ -912,23 +1239,75 @@ class BreakingNewsWatcher:
         return min(score, 1.0)
 
     def _assess_trend_strength(self, item: NewsItem) -> TrendStrength:
-        """Assess the trend strength of a news item"""
+        
+Assess the trend strength of a news item
+""""""
+
+        
+       
+
         # Simple heuristic - can be enhanced with social media data
+       
+""""""
+
         if item.relevance_score > 0.8 and len(item.keywords) > 3:
+       
+
+        
+       
+"""
+        # Simple heuristic - can be enhanced with social media data
+       """
+
+        
+       
+
             return TrendStrength.STRONG
         elif item.relevance_score > 0.6 and len(item.keywords) > 2:
             return TrendStrength.MODERATE
         elif item.relevance_score > 0.4:
             return TrendStrength.WEAK
         else:
+            
+"""
+            return TrendStrength.WEAK
+            """"""
+            """
+
+
             return TrendStrength.WEAK
 
+            
+
+           
+""""""
+
     def get_trending_keywords(self, hours: int = 24) -> Dict[str, int]:
-        """Get trending keywords from recent news"""
+        
+Get trending keywords from recent news
+"""
         cutoff_time = datetime.now() - timedelta(hours=hours)
+       """
+
+        
+       
+
         recent_items = [item for item in self.news_cache.values() if item.published > cutoff_time]
+       
+""""""
 
         # Count keyword occurrences
+       
+
+        
+       
+"""
+        recent_items = [item for item in self.news_cache.values() if item.published > cutoff_time]
+       """
+
+        
+       
+
         keyword_counts = {}
         for item in recent_items:
             for keyword in item.keywords:
@@ -938,16 +1317,37 @@ class BreakingNewsWatcher:
         return dict(sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True))
 
     async def scan_for_hypocrisy(self, hours_back: int = 48) -> List[Dict[str, Any]]:
-        """Proactively scan political RSS feeds for contradictory statements from public figures"""
+        
+"""Proactively scan political RSS feeds for contradictory statements from public figures"""
+
         try:
+           
+
+            
+           
+"""
             # Get recent political news items
+           """
+
+            
+           
+
             cutoff_time = datetime.now() - timedelta(hours=hours_back)
+           
+""""""
+
+            # Get recent political news items
+           
+
+            
+           
+"""
             political_items = [
                 item
                 for item in self.news_cache.values()
                 if item.published > cutoff_time
                 and ("politic" in item.title.lower() or "politic" in item.description.lower())
-            ]
+             ]
 
             hypocrisy_findings = []
 
@@ -975,9 +1375,9 @@ class BreakingNewsWatcher:
                             "date_2": contradiction["date_2"],
                             "time_gap_days": (
                                 contradiction["date_2"] - contradiction["date_1"]
-                            ).days,
+#                             ).days,
                             "discovered_at": datetime.now().isoformat(),
-                        }
+                         }
 
                         # Store in hypocrisy database
                         await self._store_hypocrisy_finding(hypocrisy_finding)
@@ -991,10 +1391,27 @@ class BreakingNewsWatcher:
             return []
 
     def _extract_public_figures(self, news_items: List[NewsItem]) -> List[str]:
-        """Extract public figure names from news items"""
-        figures = set()
+        """
+Extract public figure names from news items
 
+       
+""""""
+
+        figures = set()
+       
+
+        
+       
+"""
         # Common political figure patterns
+       """
+
+        
+       
+
+        figures = set()
+       
+""""""
         political_keywords = [
             "president",
             "senator",
@@ -1005,7 +1422,7 @@ class BreakingNewsWatcher:
             "secretary",
             "representative",
             "candidate",
-        ]
+         ]
 
         for item in news_items:
             text = f"{item.title} {item.description}".lower()
@@ -1031,10 +1448,27 @@ class BreakingNewsWatcher:
     async def _find_contradictory_statements(
         self, figure: str, recent_items: List[NewsItem]
     ) -> List[Dict[str, Any]]:
-        """Find contradictory statements for a specific public figure"""
-        contradictions = []
+        """
+Find contradictory statements for a specific public figure
 
+       
+""""""
+
+        contradictions = []
+       
+
+        
+       
+"""
         # Get statements from this figure in recent news
+       """
+
+        
+       
+
+        contradictions = []
+       
+""""""
         figure_statements = []
         for item in recent_items:
             if figure.lower() in item.title.lower() or figure.lower() in item.description.lower():
@@ -1045,8 +1479,8 @@ class BreakingNewsWatcher:
                         "date": item.published,
                         "link": item.link,
                         "title": item.title,
-                    }
-                )
+                     }
+                 )
 
         # Compare statements for contradictions
         for i, stmt1 in enumerate(figure_statements):
@@ -1063,7 +1497,7 @@ class BreakingNewsWatcher:
                         ("will", "will not"),
                         ("should", "should not"),
                         ("favor", "against"),
-                    ]
+                     ]
 
                     text1_lower = stmt1["text"].lower()
                     text2_lower = stmt2["text"].lower()
@@ -1071,7 +1505,7 @@ class BreakingNewsWatcher:
                     for pos, neg in contradiction_indicators:
                         if (pos in text1_lower and neg in text2_lower) or (
                             neg in text1_lower and pos in text2_lower
-                        ):
+#                         ):
                             contradictions.append(
                                 {
                                     "statement_1": stmt1["text"][:200],
@@ -1083,17 +1517,34 @@ class BreakingNewsWatcher:
                                     "link_1": stmt1["link"],
                                     "link_2": stmt2["link"],
                                     "common_topic": common_words,
-                                }
-                            )
+                                 }
+                             )
                             break
 
         return contradictions
 
     def _calculate_contradiction_score(self, contradiction: Dict[str, Any]) -> float:
-        """Calculate how strong/clear the contradiction is"""
-        score = 0.5  # Base score
+        """
+Calculate how strong/clear the contradiction is
 
+       
+""""""
+
+        score = 0.5  # Base score
+       
+
+        
+       
+"""
         # Time gap factor (more recent = higher score)
+       """
+
+        
+       
+
+        score = 0.5  # Base score
+       
+""""""
         time_gap = abs((contradiction["date_2"] - contradiction["date_1"]).days)
         if time_gap < 30:
             score += 0.3
@@ -1113,8 +1564,18 @@ class BreakingNewsWatcher:
         return min(score, 1.0)
 
     def _find_common_important_words(self, text1: str, text2: str) -> List[str]:
-        """Find important words common to both texts"""
+        """
+Find important words common to both texts
+
+       
+""""""
+
         # Simple keyword extraction (can be enhanced with TF - IDF)
+       
+
+        
+       
+"""
         stop_words = {
             "the",
             "a",
@@ -1134,18 +1595,25 @@ class BreakingNewsWatcher:
             "are",
             "was",
             "were",
-        }
+         }
+       """
 
+        
+       
+
+        # Simple keyword extraction (can be enhanced with TF - IDF)
+       
+""""""
         words1 = set(
-            word.lower().strip('.,!?"')
+            word.lower().strip('.,!?"')"
             for word in text1.split()
             if len(word) > 3 and word.lower() not in stop_words
-        )
+         )
         words2 = set(
-            word.lower().strip('.,!?"')
+            word.lower().strip('.,!?"')"
             for word in text2.split()
             if len(word) > 3 and word.lower() not in stop_words
-        )
+         )
 
         return list(words1.intersection(words2))
 
@@ -1157,12 +1625,23 @@ class BreakingNewsWatcher:
         return "general policy"
 
     async def _store_hypocrisy_finding(self, finding: Dict[str, Any]) -> None:
-        """Store hypocrisy finding in the database using the database manager"""
+        """
+Store hypocrisy finding in the database using the database manager
+
+        
+"""
         try:
+        """"""
             if not self.hypocrisy_db:
                 self.logger.warning("Hypocrisy database manager not available")
                 return
+        """
 
+        try:
+        
+
+       
+""""""
             # Convert finding dict to HypocrisyFinding dataclass
             hypocrisy_finding = HypocrisyFinding(
                 subject_name=finding["figure"],
@@ -1178,19 +1657,19 @@ class BreakingNewsWatcher:
                 contradiction_type="temporal",  # Policy changes over time - valid constraint value
                 severity_score=max(
                     1, min(10, int(finding["contradiction_score"] * 10) or 1)
-                ),  # Convert to 1 - 10 scale, ensure >= 1
+#                 ),  # Convert to 1 - 10 scale, ensure >= 1
                 confidence_score=finding["contradiction_score"],  # Keep as 0.0 - 1.0 range
                 verification_status="pending",
                 evidence_links=[
                     link for link in [finding.get("link_1", ""), finding.get("link_2", "")] if link
-                ],
+                 ],
                 tags=[finding["topic"]] if finding.get("topic") else [],
                 analysis_notes=f"Time gap: {finding['time_gap_days']} days",
                 public_impact_score=max(1, min(10, int(finding["contradiction_score"] * 10) or 1)),
                 media_coverage_count=1,  # At least one source
                 social_media_mentions=0,  # Default
                 fact_check_results={"status": "pending"},
-            )
+             )
 
             # Store using the database manager
             finding_id = self.hypocrisy_db.store_finding(hypocrisy_finding)
@@ -1203,31 +1682,51 @@ class BreakingNewsWatcher:
             self.logger.error(f"Error storing hypocrisy finding: {e}")
 
     def get_hypocrisy_content_opportunities(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """Get unused hypocrisy findings for content creation"""
+        """
+Get unused hypocrisy findings for content creation
+
+        
+"""
         try:
+        """"""
             if not self.hypocrisy_db:
                 self.logger.warning(
                     "Hypocrisy database manager not available, falling back to direct SQLite"
-                )
+                 )
                 # Fallback to direct SQLite access
+        """
 
+        try:
+        
+
+       
+""""""
                 import sqlite3
 
                 conn = sqlite3.connect("data/right_perspective.db")
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
+
                     SELECT id, figure, topic, contradiction_score, statement_1, statement_2,
                         source_1, source_2, date_1, date_2, time_gap_days, discovered_at
                     FROM hypocrisy_findings
                     WHERE content_used = FALSE
                     ORDER BY contradiction_score DESC, discovered_at DESC
                     LIMIT ?
-                """,
+                
+,
+"""
                     (limit,),
-                )
+                """
 
+                 
+                
+
+                 )
+                
+""""""
                 results = cursor.fetchall()
                 conn.close()
 
@@ -1247,8 +1746,8 @@ class BreakingNewsWatcher:
                             "date_2": row[9],
                             "time_gap_days": row[10],
                             "discovered_at": row[11],
-                        }
-                    )
+                         }
+                     )
 
                 return opportunities
 
@@ -1275,10 +1774,10 @@ class BreakingNewsWatcher:
                             (opp["date_2"] - opp["date_1"]).days
                             if opp["date_2"] and opp["date_1"]
                             else 0
-                        ),
+                         ),
                         "discovered_at": opp["created_at"],
-                    }
-                )
+                     }
+                 )
 
             return opportunities
 
@@ -1287,31 +1786,66 @@ class BreakingNewsWatcher:
             return []
 
     def mark_hypocrisy_content_used(self, finding_id: int) -> bool:
-        """Mark a hypocrisy finding as used for content creation"""
+        """
+Mark a hypocrisy finding as used for content creation
+
+        
+"""
         try:
+        """"""
             if not self.hypocrisy_db:
                 self.logger.warning(
                     "Hypocrisy database manager not available, falling back to direct SQLite"
-                )
+                 )
                 # Fallback to direct SQLite access
+        """
 
+        try:
+        
+
+       
+""""""
                 import sqlite3
 
                 conn = sqlite3.connect("data/right_perspective.db")
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
+
                     UPDATE hypocrisy_findings
                     SET content_used = TRUE
                     WHERE id = ?
-                """,
+                
+,
+"""
                     (finding_id,),
-                )
+                """
+
+                 
+                
+
+                 )
+                
+""""""
 
                 conn.commit()
-                conn.close()
+               
 
+                
+               
+"""
+                conn.close()
+               """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 return True
 
             # Use the new database manager
@@ -1327,10 +1861,23 @@ class BreakingNewsWatcher:
     def get_latest_news(
         self, limit: int = 10, category: Optional[NewsCategory] = None
     ) -> List[NewsItem]:
-        """Get the latest news items from the database"""
+        """
+Get the latest news items from the database
+
+        
+"""
         try:
+        """"""
             if not self.intelligence_db:
                 self.logger.warning("Intelligence database not available")
+        """
+
+        try:
+        
+
+       
+""""""
+
                 return []
 
             conn = sqlite3.connect(self.intelligence_db)
@@ -1338,25 +1885,46 @@ class BreakingNewsWatcher:
 
             # Build query based on category filter
             if category:
-                query = """
+                
+
+                query = 
+                
+"""
                     SELECT title, description, url, published_date, source, category,
                         sentiment_score, keywords, trend_strength, relevance_score
                     FROM news_articles
                     WHERE category = ?
                     ORDER BY published_date DESC
                     LIMIT ?
-                """
+                """"""
+
                 cursor.execute(query, (category.value, limit))
+            
+
             else:
-                query = """
+            
+""""""
+
+                query = 
+                
+
                     SELECT title, description, url, published_date, source, category,
                         sentiment_score, keywords, trend_strength, relevance_score
                     FROM news_articles
                     ORDER BY published_date DESC
                     LIMIT ?
-                """
-                cursor.execute(query, (limit,))
+                
+""""""
 
+               
+
+                
+               
+"""
+                cursor.execute(query, (limit,))
+               """"""
+            else:
+            """"""
             results = cursor.fetchall()
             conn.close()
 
@@ -1387,7 +1955,7 @@ class BreakingNewsWatcher:
                         keywords=keywords,
                         trend_strength=trend_strength,
                         relevance_score=float(row[9]) if row[9] else 0.0,
-                    )
+                     )
                     news_items.append(news_item)
 
                 except Exception as e:
@@ -1473,9 +2041,9 @@ class CompetitorAnalyzer:
                             "maxResults": min(20, max_results),
                             "order": "relevance",
                             "key": api_key,
-                        },
+                         },
                         timeout=10,
-                    )
+                     )
 
                     if search_response.status_code == 200:
                         search_data = search_response.json()
@@ -1492,7 +2060,7 @@ class CompetitorAnalyzer:
                     else:
                         self.logger.warning(
                             f"YouTube search API error for keyword '{keyword}': {search_response.status_code}"
-                        )
+                         )
 
                 except Exception as e:
                     self.logger.warning(f"Error searching for keyword '{keyword}': {e}")
@@ -1506,7 +2074,7 @@ class CompetitorAnalyzer:
             if not channel_ids:
                 self.logger.warning(
                     "No channels found through search, using fallback popular channels"
-                )
+                 )
                 fallback_channels = [
                     "UCBJycsmduvYEL83R_U4JriQ",  # Marques Brownlee (Tech)
                     "UCJ0 - OtVpF0wOKEqT2Z1HEtA",  # ElectroBOOM (Engineering)
@@ -1518,7 +2086,7 @@ class CompetitorAnalyzer:
                     "UCHnyfMqiRRG1u - 2MsSQLbXA",  # Veritasium (Science)
                     "UCsXVk37bltHxD1rDPwtNM8Q",  # Kurzgesagt (Science)
                     "UCR1IuLEqb6UEA_zQ81kwXfg",  # Real Engineering (Engineering)
-                ]
+                 ]
                 return fallback_channels[: min(max_results, len(fallback_channels))]
 
             return list(channel_ids)[:max_results]
@@ -1528,16 +2096,46 @@ class CompetitorAnalyzer:
             return []
 
     async def _analyze_channel(self, channel_id: str) -> Optional[CompetitorChannel]:
-        """Analyze a single YouTube channel"""
+        """
+Analyze a single YouTube channel
+
         try:
+           
+""""""
+
             # Check cache first
+           
+
+            
+           
+"""
             if channel_id in self.channels_cache:
+           """
+
+            
+           
+
+            # Check cache first
+           
+""""""
+
                 cached_channel = self.channels_cache[channel_id]
                 # Return cached data if less than 24 hours old
                 if (datetime.now() - cached_channel.last_analyzed).hours < 24:
+                    
+
                     return cached_channel
+                    
+""""""
+
+                    
+                   
 
             # Fetch real channel data using YouTube Data API
+                    
+"""
+                    return cached_channel
+                    """
             channel_data = self._fetch_channel_data(channel_id)
 
             if channel_data:
@@ -1552,7 +2150,7 @@ class CompetitorAnalyzer:
                     engagement_rate=channel_data["engagement_rate"],
                     niche_keywords=channel_data["keywords"],
                     content_themes=channel_data["themes"],
-                )
+                 )
 
                 # Cache the result
                 self.channels_cache[channel_id] = competitor_channel
@@ -1590,14 +2188,14 @@ class CompetitorAnalyzer:
                     "part": "snippet,statistics,brandingSettings",
                     "id": channel_id,
                     "key": api_key,
-                },
+                 },
                 timeout=10,
-            )
+             )
 
             if channel_response.status_code != 200:
                 self.logger.error(
                     f"YouTube API error for channel {channel_id}: {channel_response.status_code}"
-                )
+                 )
                 return None
 
             channel_data = channel_response.json()
@@ -1619,9 +2217,9 @@ class CompetitorAnalyzer:
                     "order": "date",
                     "maxResults": 50,
                     "key": api_key,
-                },
+                 },
                 timeout=10,
-            )
+             )
 
             upload_frequency = 0.0
             average_views = 0
@@ -1644,9 +2242,9 @@ class CompetitorAnalyzer:
                             "part": "statistics,snippet",
                             "id": ",".join(video_ids),
                             "key": api_key,
-                        },
+                         },
                         timeout=10,
-                    )
+                     )
 
                     if video_stats_response.status_code == 200:
                         video_stats = video_stats_response.json()
@@ -1670,7 +2268,7 @@ class CompetitorAnalyzer:
                                 # Extract keywords from video titles and descriptions
                                 video_snippet = video.get("snippet", {})
                                 title = video_snippet.get("title", "").lower()
-                                description = video_snippet.get("description", "").lower()
+                                video_snippet.get("description", "").lower()
 
                                 # Simple keyword extraction
                                 for word in title.split():
@@ -1679,10 +2277,10 @@ class CompetitorAnalyzer:
 
                             average_views = (
                                 total_views // len(video_details) if video_details else 0
-                            )
+                             )
                             engagement_rate = (
                                 total_engagement / len(video_details) if video_details else 0.0
-                            )
+                             )
 
                     # Calculate upload frequency based on recent videos
                     if len(video_items) >= 2:
@@ -1691,15 +2289,15 @@ class CompetitorAnalyzer:
                         try:
                             latest_date = datetime.fromisoformat(
                                 video_items[0]["snippet"]["publishedAt"].replace("Z", "+00:00")
-                            )
+                             )
                             oldest_date = datetime.fromisoformat(
                                 video_items[-1]["snippet"]["publishedAt"].replace("Z", "+00:00")
-                            )
+                             )
                             days_diff = (latest_date - oldest_date).days
                             if days_diff > 0:
                                 upload_frequency = (
                                     len(video_items) * 7
-                                ) / days_diff  # videos per week
+#                                 ) / days_diff  # videos per week
                         except Exception as e:
                             self.logger.warning(f"Error calculating upload frequency: {e}")
                             upload_frequency = 1.0
@@ -1735,18 +2333,27 @@ class CompetitorAnalyzer:
                 "engagement_rate": min(engagement_rate, 1.0),  # Cap at 100%
                 "keywords": keywords,
                 "themes": themes,
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Error fetching YouTube data for channel {channel_id}: {e}")
             return None
 
     def _calculate_opportunity_scores(self, channels: List[CompetitorChannel]) -> None:
-        """Calculate opportunity scores for channels"""
-        if not channels:
-            return
+        """
+Calculate opportunity scores for channels
 
+        if not channels:
+            
+"""
+            return
+            """"""
         # Normalize metrics for scoring
+            """
+
+            return
+            
+
         subscriber_counts = [c.subscriber_count for c in channels]
         engagement_rates = [c.engagement_rate for c in channels]
         upload_frequencies = [c.upload_frequency for c in channels]
@@ -1768,15 +2375,35 @@ class CompetitorAnalyzer:
             # Combine scores
             channel.opportunity_score = (
                 sub_score * 0.4 + engagement_score * 0.4 + frequency_score * 0.2
-            )
+             )
 
     def find_content_gaps(self, channels: List[CompetitorChannel]) -> List[str]:
-        """Identify content gaps in the analyzed niche"""
+        
+"""Identify content gaps in the analyzed niche"""
+
         all_themes = set()
         for channel in channels:
+           
+
+            
+           
+"""
             all_themes.update(channel.content_themes)
+           """
+
+            
+           
 
         # Common content themes that might be missing
+           
+""""""
+
+            all_themes.update(channel.content_themes)
+           
+
+            
+           
+"""
         potential_themes = [
             "Beginner Tutorials",
             "Advanced Techniques",
@@ -1790,7 +2417,7 @@ class CompetitorAnalyzer:
             "Educational Series",
             "Case Studies",
             "Interviews",
-        ]
+         ]
 
         # Find gaps
         content_gaps = [theme for theme in potential_themes if theme not in all_themes]
@@ -1798,7 +2425,9 @@ class CompetitorAnalyzer:
 
 
 class MarketValidator:
-    """Validates market opportunities for digital products"""
+    """
+Validates market opportunities for digital products
+
 
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
@@ -1806,12 +2435,34 @@ class MarketValidator:
 
     async def validate_product_idea(
         self, product_concept: str, target_keywords: List[str]
-    ) -> MarketOpportunity:
-        """Validate a digital product idea"""
-        try:
-            # Analyze search volume and competition
-            search_data = await self._analyze_search_metrics(target_keywords)
+#     ) -> MarketOpportunity:
+        
+"""Validate a digital product idea"""
 
+        try:
+           
+
+            
+           
+"""
+            # Analyze search volume and competition
+           """"""
+            
+           """
+
+            search_data = await self._analyze_search_metrics(target_keywords)
+           
+
+            
+           
+""""""
+
+            
+           
+
+            # Analyze search volume and competition
+           
+""""""
             # Assess market trends
             trend_data = await self._analyze_market_trends(product_concept, target_keywords)
 
@@ -1827,12 +2478,12 @@ class MarketValidator:
             # Generate product recommendations
             recommended_products = self._generate_product_recommendations(
                 product_concept, search_data
-            )
+             )
 
             # Calculate confidence score
             confidence_score = self._calculate_confidence_score(
                 search_data, trend_data, monetization_score
-            )
+             )
 
             opportunity = MarketOpportunity(
                 niche=product_concept,
@@ -1845,7 +2496,7 @@ class MarketValidator:
                 content_gaps=content_gaps,
                 recommended_products=recommended_products,
                 confidence_score=confidence_score,
-            )
+             )
 
             return opportunity
 
@@ -1861,7 +2512,7 @@ class MarketValidator:
                 monetization_potential=0.0,
                 target_audience="unknown",
                 confidence_score=0.0,
-            )
+             )
 
     async def _analyze_search_metrics(self, keywords: List[str]) -> Dict[str, Any]:
         """Analyze search volume and competition for keywords using Google Ads API"""
@@ -1888,7 +2539,7 @@ class MarketValidator:
                 "Authorization": f"Bearer {api_key}",
                 "developer - token": developer_token,
                 "Content - Type": "application/json",
-            }
+             }
 
             # Prepare keyword ideas request
             keyword_ideas_request = {
@@ -1897,13 +2548,13 @@ class MarketValidator:
                     "generateKeywordIdeas": {
                         "keywordSeed": {
                             "keywords": keywords[:10]  # Limit to 10 keywords per request
-                        },
+                         },
                         "geoTargetConstants": ["geoTargetConstants/2840"],  # United States
                         "language": "languageConstants/1000",  # English
                         "keywordPlanNetwork": "GOOGLE_SEARCH",
-                    }
-                },
-            }
+                     }
+                 },
+             }
 
             # Make API request to Google Ads
             response = requests.post(
@@ -1911,7 +2562,7 @@ class MarketValidator:
                 headers=headers,
                 json=keyword_ideas_request,
                 timeout=30,
-            )
+             )
 
             if response.status_code != 200:
                 self.logger.error(f"Google Ads API error: {response.status_code} - {response.text}")
@@ -1944,7 +2595,7 @@ class MarketValidator:
             # Calculate average competition
             avg_competition = (
                 sum(competition_scores) / len(competition_scores) if competition_scores else 0.5
-            )
+             )
 
             if avg_competition < 0.3:
                 competition_level = "low"
@@ -1955,14 +2606,14 @@ class MarketValidator:
 
             self.logger.info(
                 f"Retrieved search metrics for {len(keywords)} keywords: {total_volume} total volume"
-            )
+             )
 
             return {
                 "total_volume": total_volume,
                 "competition_level": competition_level,
                 "avg_competition_score": avg_competition,
                 "keyword_count": len(results),
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Error analyzing search metrics: {e}")
@@ -1971,10 +2622,18 @@ class MarketValidator:
     async def _analyze_market_trends(
         self, product_concept: str, keywords: List[str]
     ) -> Dict[str, str]:
-        """Analyze market trends using Google Trends API"""
+        """
+Analyze market trends using Google Trends API
+
+        
+"""
         try:
+        """"""
             if not requests:
                 self.logger.error("requests library not available")
+        """
+        try:
+        """
                 raise ImportError("requests library required for API calls")
 
             # Use pytrends library for Google Trends data
@@ -1984,7 +2643,7 @@ class MarketValidator:
             except ImportError:
                 self.logger.error(
                     "pytrends library not available. Install with: pip install pytrends"
-                )
+                 )
                 raise ImportError("pytrends library required for Google Trends analysis")
 
             # Initialize pytrends
@@ -2000,7 +2659,7 @@ class MarketValidator:
             # Build payload for Google Trends
             pytrends.build_payload(
                 trend_keywords, cat=0, timeframe="today 12 - m", geo="US", gprop=""
-            )
+             )
 
             # Get interest over time data
             interest_over_time = pytrends.interest_over_time()
@@ -2045,7 +2704,7 @@ class MarketValidator:
                 related_count = sum(
                     len(queries.get("top", [])) if queries.get("top") is not None else 0
                     for queries in related_queries.values()
-                )
+                 )
 
                 # Adjust confidence based on related query volume
                 if related_count > 50:
@@ -2060,7 +2719,7 @@ class MarketValidator:
 
             self.logger.info(
                 f"Trend analysis complete: {direction} trend with {confidence} confidence"
-            )
+             )
 
             return {
                 "direction": direction,
@@ -2068,7 +2727,7 @@ class MarketValidator:
                 "recent_avg": round(recent_avg, 2),
                 "older_avg": round(older_avg, 2),
                 "keywords_analyzed": len(trend_keywords),
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Error analyzing market trends: {e}")
@@ -2082,24 +2741,41 @@ class MarketValidator:
                 "remote",
                 "machine learning",
                 "blockchain",
-            ]
+             ]
             has_trending = any(
                 term in product_concept.lower()
                 or any(term in keyword.lower() for keyword in keywords)
                 for term in trending_terms
-            )
+             )
 
             return {
                 "direction": "rising" if has_trending else "stable",
                 "confidence": "low",
                 "error": str(e),
-            }
+             }
 
     def _assess_monetization_potential(self, product_concept: str, search_data: Dict) -> float:
-        """Assess the monetization potential of the product"""
-        score = 0.0
+        """
+Assess the monetization potential of the product
 
+       
+""""""
+
+        score = 0.0
+       
+
+        
+       
+"""
         # Base score from search volume
+       """
+
+        
+       
+
+        score = 0.0
+       
+""""""
         if search_data["total_volume"] > 10000:
             score += 0.3
         elif search_data["total_volume"] > 5000:
@@ -2121,17 +2797,34 @@ class MarketValidator:
             "platform",
             "service",
             "consulting",
-        ]
+         ]
         if any(term in product_concept.lower() for term in high_value_terms):
             score += 0.4
 
         return min(score, 1.0)
 
     def _identify_target_audience(self, product_concept: str, keywords: List[str]) -> str:
-        """Identify the target audience for the product"""
-        # Simple audience identification based on keywords
-        all_text = (product_concept + " " + " ".join(keywords)).lower()
+        """
+Identify the target audience for the product
 
+       
+""""""
+
+        # Simple audience identification based on keywords
+       
+
+        
+       
+"""
+        all_text = (product_concept + " " + " ".join(keywords)).lower()
+       """
+
+        
+       
+
+        # Simple audience identification based on keywords
+       
+""""""
         if any(term in all_text for term in ["business", "entrepreneur", "startup"]):
             return "Business Owners & Entrepreneurs"
         elif any(term in all_text for term in ["marketing", "social media", "content"]):
@@ -2144,10 +2837,22 @@ class MarketValidator:
             return "General Consumers"
 
     async def _identify_content_gaps(self, keywords: List[str]) -> List[str]:
-        """Identify content gaps by analyzing existing content and search queries"""
+        """
+Identify content gaps by analyzing existing content and search queries
+
+        
+"""
         try:
+        """"""
             if not requests or not BeautifulSoup:
                 self.logger.error("Required libraries not available for content gap analysis")
+        """
+
+        try:
+        
+
+       
+""""""
                 return ["Content analysis tools not available"]
 
             content_gaps = []
@@ -2158,29 +2863,14 @@ class MarketValidator:
                 try:
                     # Search for existing content on the topic
                     search_query = f"{keyword} tutorial guide how to"
-                    search_url = f"https://www.google.com/search?q={search_query.replace(' ', '+')}"
+                    f"https://www.google.com/search?q={search_query.replace(' ', '+')}"
 
                     # Use a more realistic user agent
-                    headers = {
-                        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-                    }
 
                     # Note: In production, consider using Google Custom Search API instead
                     # This is a basic implementation for content gap identification
 
                     # Analyze common content types that might be missing
-                    common_content_types = [
-                        f"Beginner's guide to {keyword}",
-                        f"Advanced {keyword} techniques",
-                        f"{keyword} case studies",
-                        f"{keyword} vs alternatives comparison",
-                        f"{keyword} best practices",
-                        f"{keyword} troubleshooting guide",
-                        f"How to integrate {keyword}",
-                        f"{keyword} ROI analysis",
-                        f"{keyword} implementation checklist",
-                        f"{keyword} common mistakes",
-                    ]
 
                     # Simulate content gap detection based on keyword analysis
                     # In a full production system, this would:
@@ -2209,7 +2899,7 @@ class MarketValidator:
                 except Exception as e:
                     self.logger.warning(
                         f"Error analyzing content gaps for keyword '{keyword}': {e}"
-                    )
+                     )
                     continue
 
             # Remove duplicates and limit results
@@ -2222,7 +2912,7 @@ class MarketValidator:
                     "Advanced implementation guides",
                     "Industry - specific case studies",
                     "Tool comparison and reviews",
-                ]
+                 ]
 
             # Limit to top 6 most relevant gaps
             return unique_gaps[:6]
@@ -2235,22 +2925,39 @@ class MarketValidator:
                 "Advanced technique guides",
                 "Practical implementation examples",
                 "Comparative analysis content",
-            ]
+             ]
 
     def _generate_product_recommendations(
         self, product_concept: str, search_data: Dict
     ) -> List[str]:
-        """Generate recommended products based on market analysis"""
-        recommendations = []
+        """
+Generate recommended products based on market analysis
 
+       
+""""""
+
+        recommendations = []
+       
+
+        
+       
+"""
         # Base recommendations on search volume and competition
+       """
+
+        
+       
+
+        recommendations = []
+       
+""""""
         if search_data["total_volume"] > 5000 and search_data["competition_level"] in [
             "low",
             "medium",
-        ]:
+#         ]:
             recommendations.extend(
                 ["Online Course", "Digital Guide/Ebook", "Video Tutorial Series"]
-            )
+             )
 
         if search_data["competition_level"] == "low":
             recommendations.extend(["SaaS Tool", "Mobile App", "Consulting Service"])
@@ -2268,11 +2975,28 @@ class MarketValidator:
 
     def _calculate_confidence_score(
         self, search_data: Dict, trend_data: Dict, monetization_score: float
-    ) -> float:
-        """Calculate overall confidence score for the opportunity"""
-        score = 0.0
+#     ) -> float:
+        """
+Calculate overall confidence score for the opportunity
 
+       
+""""""
+
+        score = 0.0
+       
+
+        
+       
+"""
         # Search volume confidence
+       """
+
+        
+       
+
+        score = 0.0
+       
+""""""
         if search_data["total_volume"] > 10000:
             score += 0.4
         elif search_data["total_volume"] > 1000:
@@ -2385,13 +3109,26 @@ class SEOAuditService:
         self._init_database()
 
     def _init_database(self):
-        """Initialize SEO audit database tables"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Initialize SEO audit database tables
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         # SEO audit requests table
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS seo_audit_requests (
                 request_id TEXT PRIMARY KEY,
                     website_url TEXT NOT NULL,
@@ -2403,13 +3140,33 @@ class SEOAuditService:
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     completed_at TIMESTAMP,
                     report_file_path TEXT
-            )
-        """
-        )
+             )
+        
+""""""
 
+        
+
+         
+        
+"""
+         )
+        """"""
+        
+       """
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         # SEO audit results table
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS seo_audit_results (
                 request_id TEXT PRIMARY KEY,
                     website_url TEXT NOT NULL,
@@ -2423,21 +3180,53 @@ class SEOAuditService:
                     opportunities TEXT,
                     audit_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (request_id) REFERENCES seo_audit_requests (request_id)
-            )
+             )
+        
+""""""
+
+        
+
+         
+        
+"""
+         )
         """
-        )
+
+         
+        
 
         conn.commit()
         conn.close()
+        
+""""""
 
+         )
+        
+
+         
+        
+"""
     async def submit_audit_request(self, request: SEOAuditRequest) -> str:
-        """Submit a new SEO audit request"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Submit a new SEO audit request
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         try:
             cursor.execute(
-                """
+               """
+
+                
+               
+
                 INSERT INTO seo_audit_requests
                 (request_id,
     website_url,
@@ -2445,9 +3234,11 @@ class SEOAuditService:
     company_name,
     industry,
     target_keywords,
-    status)
+#     status)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+            
+""","""
+
                 (
                     request.request_id,
                     request.website_url,
@@ -2456,9 +3247,23 @@ class SEOAuditService:
                     request.industry,
                     json.dumps(request.target_keywords),
                     request.status,
-                ),
-            )
+                 ),
+            
 
+             
+            
+"""
+             )
+            """"""
+        
+       """
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
             conn.commit()
             logging.info(f"SEO audit request submitted: {request.request_id}")
 
@@ -2508,10 +3313,28 @@ class SEOAuditService:
             self._update_request_status(request_id, "failed")
 
     async def _perform_seo_audit(self, website_url: str, request_data: Dict) -> SEOAuditResult:
-        """Perform comprehensive SEO audit"""
+        """
+Perform comprehensive SEO audit
+
         try:
+           
+""""""
+
             # Fetch website content
+           
+
+            
+           
+"""
             if not requests:
+           """
+
+            
+           
+
+            # Fetch website content
+           
+""""""
                 raise ImportError("requests library not available")
 
             response = requests.get(website_url, timeout=30)
@@ -2528,7 +3351,7 @@ class SEOAuditService:
             # On - Page SEO Analysis
             on_page_seo = await self._analyze_on_page_seo(
                 soup, request_data.get("target_keywords", [])
-            )
+             )
 
             # Content Analysis
             content_analysis = await self._analyze_content(soup)
@@ -2537,7 +3360,7 @@ class SEOAuditService:
             competitor_analysis = await self._analyze_competitors(
                 request_data.get("industry", ""),
                 request_data.get("target_keywords", []),
-            )
+             )
 
             # Generate recommendations
             (
@@ -2546,12 +3369,12 @@ class SEOAuditService:
                 opportunities,
             ) = self._generate_recommendations(
                 technical_seo, on_page_seo, content_analysis, competitor_analysis
-            )
+             )
 
             # Calculate overall score
             overall_score = self._calculate_overall_score(
                 technical_seo, on_page_seo, content_analysis
-            )
+             )
 
             return SEOAuditResult(
                 website_url=website_url,
@@ -2564,7 +3387,7 @@ class SEOAuditService:
                 recommendations=recommendations,
                 priority_issues=priority_issues,
                 opportunities=opportunities,
-            )
+             )
 
         except Exception as e:
             logging.error(f"Error performing SEO audit for {website_url}: {e}")
@@ -2581,7 +3404,7 @@ class SEOAuditService:
             "meta_tags": {"score": 0, "issues": []},
             "structured_data": {"score": 0, "issues": []},
             "crawlability": {"score": 0, "issues": []},
-        }
+         }
 
         # HTTPS Check
         if url.startswith("https://"):
@@ -2600,7 +3423,7 @@ class SEOAuditService:
             else:
                 technical_seo["meta_tags"]["issues"].append(
                     f"Title tag length ({len(title_tag.text)} chars) not optimal (10 - 60 chars)"
-                )
+                 )
         else:
             technical_seo["meta_tags"]["issues"].append("Missing or empty title tag")
 
@@ -2611,7 +3434,7 @@ class SEOAuditService:
             else:
                 technical_seo["meta_tags"]["issues"].append(
                     f"Meta description length ({desc_length} chars) not optimal (120 - 160 chars)"
-                )
+                 )
         else:
             technical_seo["meta_tags"]["issues"].append("Missing meta description")
 
@@ -2643,7 +3466,7 @@ class SEOAuditService:
                 technical_seo["page_speed"]["score"] = 40
                 technical_seo["page_speed"]["issues"].append(
                     f"Slow response time: {response_seconds:.2f}s"
-                )
+                 )
 
         return technical_seo
 
@@ -2657,7 +3480,7 @@ class SEOAuditService:
             "internal_linking": {"score": 0, "issues": []},
             "image_optimization": {"score": 0, "issues": []},
             "content_quality": {"score": 0, "issues": []},
-        }
+         }
 
         # Heading structure analysis
         h1_tags = soup.find_all("h1")
@@ -2668,7 +3491,7 @@ class SEOAuditService:
         else:
             on_page_seo["heading_structure"]["issues"].append(
                 f"Multiple H1 tags found ({len(h1_tags)})"
-            )
+             )
 
         # Check for proper heading hierarchy
         headings = soup.find_all(["h1", "h2", "h3", "h4", "h5", "h6"])
@@ -2686,7 +3509,7 @@ class SEOAuditService:
             if alt_ratio < 0.8:
                 on_page_seo["image_optimization"]["issues"].append(
                     f"{len(images) - len(images_with_alt)} images missing alt text"
-                )
+                 )
         else:
             on_page_seo["image_optimization"]["score"] = 50
 
@@ -2708,7 +3531,7 @@ class SEOAuditService:
                 on_page_seo["keyword_optimization"]["score"] = 20
                 on_page_seo["keyword_optimization"]["issues"].append(
                     "Target keywords not found in content"
-                )
+                 )
 
         return on_page_seo
 
@@ -2719,7 +3542,7 @@ class SEOAuditService:
             "readability": {"score": 0, "issues": []},
             "content_structure": {"score": 0, "issues": []},
             "uniqueness": {"score": 0, "issues": []},
-        }
+         }
 
         # Extract main content text
         # Remove script and style elements
@@ -2736,7 +3559,7 @@ class SEOAuditService:
         else:
             content_analysis["content_structure"]["issues"].append(
                 f"Low word count: {len(words)} words"
-            )
+             )
 
         # Basic readability analysis
         if TextBlob:
@@ -2751,7 +3574,7 @@ class SEOAuditService:
                         content_analysis["readability"]["score"] = 50
                         content_analysis["readability"]["issues"].append(
                             f"Average sentence length: {avg_sentence_length:.1f} words"
-                        )
+                         )
             except Exception as e:
                 logging.warning(f"TextBlob analysis failed: {e}")
                 content_analysis["readability"]["score"] = 50
@@ -2765,7 +3588,7 @@ class SEOAuditService:
             "top_competitors": [],
             "opportunities": [],
             "market_insights": [],
-        }
+         }
 
         # This would typically involve more sophisticated competitor research
         # For now, provide basic analysis based on industry and keywords
@@ -2775,7 +3598,7 @@ class SEOAuditService:
         if keywords:
             competitor_analysis["market_insights"].append(
                 f'Target keywords: {", ".join(keywords[:5])}'
-            )
+             )
 
             # Simulate competition analysis
             if len(keywords) > 5:
@@ -2792,13 +3615,30 @@ class SEOAuditService:
         content_analysis: Dict,
         competitor_analysis: Dict,
     ) -> Tuple[List[str], List[str], List[str]]:
-        """Generate SEO recommendations based on audit results"""
+        """
+Generate SEO recommendations based on audit results
+
         recommendations = []
         priority_issues = []
-        opportunities = []
+       
+""""""
 
+        opportunities = []
+       
+
+        
+       
+"""
         # Technical SEO recommendations
         for category, data in technical_seo.items():
+       """
+
+        
+       
+
+        opportunities = []
+       
+""""""
             if data["score"] < 70:
                 for issue in data["issues"]:
                     if data["score"] < 40:
@@ -2829,14 +3669,14 @@ class SEOAuditService:
                 "Optimize for featured snippets",
                 "Improve page loading speed",
                 "Build high - quality backlinks",
-            ]
-        )
+             ]
+         )
 
         return recommendations, priority_issues, opportunities
 
     def _calculate_overall_score(
         self, technical_seo: Dict, on_page_seo: Dict, content_analysis: Dict
-    ) -> float:
+#     ) -> float:
         """Calculate overall SEO score"""
         technical_scores = [data["score"] for data in technical_seo.values()]
         on_page_scores = [data["score"] for data in on_page_seo.values()]
@@ -2849,7 +3689,7 @@ class SEOAuditService:
             min(100, (content_analysis["word_count"] / 500) * 100)
             if content_analysis["word_count"] > 0
             else 0
-        )
+         )
 
         # Weighted average: 40% technical, 40% on - page, 20% content
         overall_score = (technical_avg * 0.4) + (on_page_avg * 0.4) + (content_score * 0.2)
@@ -2878,19 +3718,31 @@ class SEOAuditService:
             fontSize=24,
             spaceAfter=30,
             textColor=colors.darkblue,
-        )
+         )
         story.append(Paragraph("AI - Powered SEO Audit Report", title_style))
         story.append(Spacer(1, 20))
 
         # Executive Summary
         story.append(Paragraph("Executive Summary", styles["Heading2"]))
-        summary_text = f"""
+       """
+
+        
+       
+
+        summary_text = f
+       
+""""""
+
         Website: {audit_result.website_url}<br/>
         Audit Date: {audit_result.audit_date.strftime('%B %d, %Y')}<br/>
         Overall SEO Score: <b>{audit_result.overall_score}/100</b><br/>
         Priority Issues: {len(audit_result.priority_issues)}<br/>
         Recommendations: {len(audit_result.recommendations)}
-        """
+       
+
+        
+       
+"""
         story.append(Paragraph(summary_text, styles["Normal"]))
         story.append(Spacer(1, 20))
 
@@ -2906,7 +3758,7 @@ class SEOAuditService:
                 else "Needs Improvement"
                 if data["score"] >= 40
                 else "Critical"
-            )
+             )
             tech_data.append([category.replace("_", " ").title(), f"{data['score']}/100", status])
 
         tech_table = Table(tech_data)
@@ -2921,9 +3773,9 @@ class SEOAuditService:
                     ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
                     ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
                     ("GRID", (0, 0), (-1, -1), 1, colors.black),
-                ]
-            )
-        )
+                 ]
+             )
+         )
         story.append(tech_table)
         story.append(Spacer(1, 20))
 
@@ -2953,22 +3805,22 @@ class SEOAuditService:
             fontSize=14,
             textColor=colors.darkblue,
             spaceAfter=10,
-        )
+         )
         story.append(Paragraph("Ready to Improve Your SEO?", styles["Heading2"]))
         story.append(
             Paragraph(
-                "This audit has identified key areas for improvement. Our digital marketing products can help you implement these recommendations \
-    and boost your search rankings.",
+                "This audit has identified key areas for improvement. Our digital marketing products can help you implement these recommendations \"
+#     and boost your search rankings.",
                 cta_style,
-            )
-        )
+             )
+         )
         story.append(
             Paragraph(
-                "Visit our website to explore our SEO optimization tools \
-    and courses designed to help you succeed online.",
+                "Visit our website to explore our SEO optimization tools \"
+#     and courses designed to help you succeed online.",
                 styles["Normal"],
-            )
-        )
+             )
+         )
 
         # Build PDF
         doc.build(story)
@@ -2994,11 +3846,36 @@ class SEOAuditService:
             msg["Subject"] = f"Your SEO Audit Report - {request_data['website_url']}"
 
             # Email body
-            body = f"""
+           """
+
+            
+           
+
+            body = f
+           
+""""""
+
+           
+
+            
+           
+"""
             Dear {request_data.get('company_name', 'Valued Customer')},
+           """
+
+            
+           
 
             Thank you for requesting an SEO audit for {request_data['website_url']}.
+           
+""""""
 
+            Dear {request_data.get('company_name', 'Valued Customer')},
+           
+
+            
+           
+"""
             Please find your comprehensive SEO audit report attached. This report includes:
 
             • Technical SEO analysis
@@ -3008,15 +3885,14 @@ class SEOAuditService:
             • Growth opportunities
 
             Our AI - powered analysis has identified specific areas where you can improve your search engine rankings \
-    and drive more organic traffic to your website.
+#     and drive more organic traffic to your website.
 
             If you have any questions about the report \
-    or would like to learn more about our SEO optimization services, please don't hesitate to contact us.
+#     or would like to learn more about our SEO optimization services, please don't hesitate to contact us.
 
             Best regards,
                 The SEO Audit Team
-            """
-
+           """"""
             msg.attach(MIMEText(body, "plain"))
 
             # Attach PDF report
@@ -3029,19 +3905,19 @@ class SEOAuditService:
                 part.add_header(
                     "Content - Disposition",
                     f"attachment; filename= {os.path.basename(report_path)}",
-                )
+                 )
                 msg.attach(part)
 
             # Send email
             server = smtplib.SMTP(
                 self.smtp_config.get("smtp_server", ""),
                 self.smtp_config.get("smtp_port", 587),
-            )
+             )
             server.starttls()
             server.login(
                 self.smtp_config.get("username", ""),
                 self.smtp_config.get("password", ""),
-            )
+             )
             text = msg.as_string()
             server.sendmail(self.smtp_config.get("from_email", ""), request_data["email"], text)
             server.quit()
@@ -3052,32 +3928,67 @@ class SEOAuditService:
             logging.error(f"Error sending audit report email: {e}")
 
     def _update_request_status(self, request_id: str, status: str):
-        """Update request status in database"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Update request status in database
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         try:
+       """
+
+        
+       
+
+        cursor = conn.cursor()
+       
+""""""
             if status == "completed":
                 cursor.execute(
                     "UPDATE seo_audit_requests SET status = ?, completed_at = CURRENT_TIMESTAMP WHERE request_id = ?",
                     (status, request_id),
-                )
+                 )
             else:
                 cursor.execute(
                     "UPDATE seo_audit_requests SET status = ? WHERE request_id = ?",
                     (status, request_id),
-                )
+                 )
             conn.commit()
         finally:
             conn.close()
 
     def _get_request_data(self, request_id: str) -> Optional[Dict]:
-        """Get request data from database"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Get request data from database
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         try:
             cursor.execute("SELECT * FROM seo_audit_requests WHERE request_id = ?", (request_id,))
+       """
+
+        
+       
+
+        cursor = conn.cursor()
+       
+""""""
+
             row = cursor.fetchone()
 
             if row:
@@ -3089,19 +4000,34 @@ class SEOAuditService:
 
     async def _save_audit_results(
         self, request_id: str, audit_result: SEOAuditResult, report_path: str
-    ):
-        """Save audit results to database"""
+#     ):
+        
+Save audit results to database
+"""
         conn = sqlite3.connect(self.db_path)
+       """
+
+        
+       
+
         cursor = conn.cursor()
+       
+""""""
 
         try:
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 INSERT OR REPLACE INTO seo_audit_results
                 (request_id, website_url, overall_score, technical_seo, on_page_seo,
-                    content_analysis, competitor_analysis, recommendations, priority_issues, opportunities)
+#                     content_analysis, competitor_analysis, recommendations, priority_issues, opportunities)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            """
+,
+
                 (
                     request_id,
                     audit_result.website_url,
@@ -3113,26 +4039,51 @@ class SEOAuditService:
                     json.dumps(audit_result.recommendations),
                     json.dumps(audit_result.priority_issues),
                     json.dumps(audit_result.opportunities),
-                ),
-            )
+                 ),
+            
+""""""
 
+             )
+            
+
+             
+            
+""""""
+
+        
+       
+
+        cursor = conn.cursor()
+       
+""""""
             # Update request with report path
             cursor.execute(
                 "UPDATE seo_audit_requests SET report_file_path = ? WHERE request_id = ?",
                 (report_path, request_id),
-            )
+             )
 
             conn.commit()
         finally:
             conn.close()
 
     async def get_audit_status(self, request_id: str) -> Optional[Dict]:
-        """Get audit status and results"""
+        """
+Get audit status and results
+
         request_data = self._get_request_data(request_id)
         if not request_data:
+            
+"""
             return None
-
+            """"""
         # Get results if completed
+            """
+
+            return None
+            
+
+           
+""""""
         if request_data["status"] == "completed":
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -3141,7 +4092,7 @@ class SEOAuditService:
                 cursor.execute(
                     "SELECT * FROM seo_audit_results WHERE request_id = ?",
                     (request_id,),
-                )
+                 )
                 result_row = cursor.fetchone()
 
                 if result_row:

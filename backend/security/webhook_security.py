@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 Webhook Security System for ChatGPT Integration
 Implements Rule 5: Webhook Security Requirements
-"""
+
+""""""
+
 
 import asyncio
 import base64
@@ -28,7 +33,9 @@ from timeout_manager import TimeoutType, timeout_manager
 
 
 class WebhookSecurityLevel(Enum):
-    """Security levels for webhook validation"""
+    
+Security levels for webhook validation
+"""
 
     BASIC = "basic"  # HTTPS + basic validation
     STANDARD = "standard"  # + signature verification
@@ -48,7 +55,9 @@ class WebhookEventType(Enum):
 
 @dataclass
 class WebhookConfig:
-    """Webhook configuration settings"""
+    """
+Webhook configuration settings
+
 
     webhook_id: str
     url: str
@@ -61,12 +70,20 @@ class WebhookConfig:
     signature_algorithm: str
     encryption_enabled: bool
     rate_limit_per_minute: int
+   
+""""""
+
     active: bool
+   
 
-
+    
+   
+"""
 @dataclass
 class WebhookEvent:
-    """Webhook event data structure"""
+    """
+Webhook event data structure
+
 
     event_id: str
     event_type: WebhookEventType
@@ -75,12 +92,20 @@ class WebhookEvent:
     signature: Optional[str]
     source_ip: Optional[str]
     user_agent: Optional[str]
+   
+""""""
+
     webhook_id: str
+   
 
-
+    
+   
+"""
 @dataclass
 class WebhookDeliveryResult:
-    """Result of webhook delivery attempt"""
+    """
+Result of webhook delivery attempt
+
 
     event_id: str
     webhook_id: str
@@ -89,9 +114,15 @@ class WebhookDeliveryResult:
     response_time_ms: float
     attempt_number: int
     error_message: Optional[str]
+   
+""""""
+
     timestamp: str
+   
 
-
+    
+   
+"""
 class WebhookSecurityManager:
     """Comprehensive webhook security management system"""
 
@@ -133,7 +164,7 @@ class WebhookSecurityManager:
             "webhook_config_file": "/etc/trae/webhooks.json",
             "blocked_ip_threshold": 10,  # failed attempts before blocking
             "block_duration": 3600,  # 1 hour
-        }
+         }
 
     def _get_or_create_encryption_key(self) -> bytes:
         """Get or create encryption key for webhook payloads"""
@@ -149,7 +180,7 @@ class WebhookSecurityManager:
             length=32,
             salt=salt,
             iterations=100000,
-        )
+         )
         key = base64.urlsafe_b64encode(kdf.derive(password))
 
         # In production, this should be stored securely
@@ -158,9 +189,27 @@ class WebhookSecurityManager:
         return key
 
     def _load_webhook_configs(self):
-        """Load webhook configurations from file or environment"""
+        """
+Load webhook configurations from file or environment
+
+       
+""""""
+
         # Default ChatGPT integration webhook
+       
+
+        
+       
+"""
         default_webhook = WebhookConfig(
+       """
+
+        
+       
+
+        # Default ChatGPT integration webhook
+       
+""""""
             webhook_id="chatgpt_integration",
             url=os.getenv("CHATGPT_WEBHOOK_URL", "https://api.example.com/webhooks/chatgpt"),
             secret_key=os.getenv("CHATGPT_WEBHOOK_SECRET", "default_secret"),
@@ -173,15 +222,33 @@ class WebhookSecurityManager:
             encryption_enabled=self.config["encryption_enabled"],
             rate_limit_per_minute=self.config["default_rate_limit"],
             active=True,
-        )
+         )
 
         self.webhooks[default_webhook.webhook_id] = default_webhook
 
     def register_webhook(self, webhook_config: WebhookConfig) -> bool:
-        """Register a new webhook with security validation"""
+        """
+Register a new webhook with security validation
+
         try:
+           
+""""""
+
             # Validate webhook configuration
+           
+
+            
+           
+"""
             validation_result = self._validate_webhook_config(webhook_config)
+           """
+
+            
+           
+
+            # Validate webhook configuration
+           
+""""""
             if not validation_result["valid"]:
                 self.logger.error(f"Invalid webhook config: {validation_result['errors']}")
                 return False
@@ -197,8 +264,8 @@ class WebhookSecurityManager:
                     "webhook_id": webhook_config.webhook_id,
                     "url": webhook_config.url,
                     "security_level": webhook_config.security_level.value,
-                },
-            )
+                 },
+             )
 
             return True
 
@@ -207,11 +274,28 @@ class WebhookSecurityManager:
             return False
 
     def _validate_webhook_config(self, config: WebhookConfig) -> Dict[str, Any]:
-        """Validate webhook configuration for security compliance"""
-        errors = []
+        """
+Validate webhook configuration for security compliance
 
+       
+""""""
+
+        errors = []
+       
+
+        
+       
+"""
         # Validate URL
         try:
+       """
+
+        
+       
+
+        errors = []
+       
+""""""
             parsed_url = urlparse(config.url)
             if self.config["https_required"] and parsed_url.scheme != "https":
                 errors.append("HTTPS is required for webhook URLs")
@@ -253,10 +337,28 @@ class WebhookSecurityManager:
         return f"{algorithm}={signature}"
 
     def verify_signature(self, payload: str, signature: str, secret_key: str) -> bool:
-        """Verify webhook signature"""
+        """
+Verify webhook signature
+
         try:
+           
+""""""
+
             # Parse signature
+           
+
+            
+           
+"""
             if "=" not in signature:
+           """
+
+            
+           
+
+            # Parse signature
+           
+""""""
                 return False
 
             algorithm, provided_signature = signature.split("=", 1)
@@ -273,10 +375,17 @@ class WebhookSecurityManager:
             return False
 
     def validate_ip_address(self, ip_address: str, allowed_ranges: List[str]) -> bool:
-        """Validate if IP address is in allowed ranges"""
-        try:
-            client_ip = ipaddress.ip_address(ip_address)
+        """
+Validate if IP address is in allowed ranges
 
+        
+"""
+        try:
+        """"""
+            client_ip = ipaddress.ip_address(ip_address)
+           """"""
+        try:
+        """"""
             for ip_range in allowed_ranges:
                 network = ipaddress.ip_network(ip_range, strict=False)
                 if client_ip in network:
@@ -300,7 +409,7 @@ class WebhookSecurityManager:
         # Remove old timestamps
         self.rate_limit_tracker[key] = [
             timestamp for timestamp in self.rate_limit_tracker[key] if timestamp > window_start
-        ]
+         ]
 
         # Check limit
         webhook_config = self.webhooks.get(webhook_id)
@@ -315,9 +424,20 @@ class WebhookSecurityManager:
         return True
 
     def encrypt_payload(self, payload: Dict[str, Any]) -> str:
-        """Encrypt webhook payload"""
+        """
+Encrypt webhook payload
+
+        
+"""
         try:
+        """
+
             payload_json = json.dumps(payload, sort_keys=True)
+        
+
+        try:
+        
+"""
             encrypted_data = self.cipher_suite.encrypt(payload_json.encode("utf - 8"))
             return base64.urlsafe_b64encode(encrypted_data).decode("utf - 8")
         except Exception as e:
@@ -325,9 +445,17 @@ class WebhookSecurityManager:
             raise
 
     def decrypt_payload(self, encrypted_payload: str) -> Dict[str, Any]:
-        """Decrypt webhook payload"""
+        """
+Decrypt webhook payload
+
+        
+"""
         try:
+        """
             encrypted_data = base64.urlsafe_b64decode(encrypted_payload.encode("utf - 8"))
+        """
+        try:
+        """
             decrypted_data = self.cipher_suite.decrypt(encrypted_data)
             return json.loads(decrypted_data.decode("utf - 8"))
         except Exception as e:
@@ -352,8 +480,8 @@ class WebhookSecurityManager:
                 "ip_allowed": False,
                 "rate_limit_ok": False,
                 "payload_size_ok": False,
-            },
-        }
+             },
+         }
 
         try:
             # Get webhook configuration
@@ -374,7 +502,7 @@ class WebhookSecurityManager:
                     severity=AuditLevel.WARNING,
                     ip_address=source_ip,
                     additional_data={"webhook_id": webhook_id},
-                )
+                 )
                 return validation_result
 
             # Check payload size
@@ -391,7 +519,7 @@ class WebhookSecurityManager:
                     severity=AuditLevel.WARNING,
                     ip_address=source_ip,
                     additional_data={"webhook_id": webhook_id},
-                )
+                 )
             else:
                 validation_result["security_checks"]["rate_limit_ok"] = True
 
@@ -399,7 +527,7 @@ class WebhookSecurityManager:
             if webhook_config.security_level in [
                 WebhookSecurityLevel.ENHANCED,
                 WebhookSecurityLevel.MAXIMUM,
-            ]:
+#             ]:
                 if not self.validate_ip_address(source_ip, webhook_config.allowed_ips):
                     validation_result["errors"].append("IP address not allowed")
                     audit_logger.log_security_event(
@@ -407,7 +535,7 @@ class WebhookSecurityManager:
                         severity=AuditLevel.WARNING,
                         ip_address=source_ip,
                         additional_data={"webhook_id": webhook_id},
-                    )
+                     )
                 else:
                     validation_result["security_checks"]["ip_allowed"] = True
             else:
@@ -418,7 +546,7 @@ class WebhookSecurityManager:
                 WebhookSecurityLevel.STANDARD,
                 WebhookSecurityLevel.ENHANCED,
                 WebhookSecurityLevel.MAXIMUM,
-            ]:
+#             ]:
                 if not signature:
                     validation_result["errors"].append("Missing signature")
                 elif not self.verify_signature(payload, signature, webhook_config.secret_key):
@@ -430,8 +558,8 @@ class WebhookSecurityManager:
                         additional_data={
                             "webhook_id": webhook_id,
                             "signature": signature,
-                        },
-                    )
+                         },
+                     )
                 else:
                     validation_result["security_checks"]["signature_valid"] = True
             else:
@@ -450,8 +578,8 @@ class WebhookSecurityManager:
                     "valid": validation_result["valid"],
                     "errors": validation_result["errors"],
                     "user_agent": user_agent,
-                },
-            )
+                 },
+             )
 
         except Exception as e:
             validation_result["errors"].append(f"Validation error: {str(e)}")
@@ -465,7 +593,7 @@ class WebhookSecurityManager:
         event_type: WebhookEventType,
         payload: Dict[str, Any],
         custom_headers: Optional[Dict[str, str]] = None,
-    ) -> WebhookDeliveryResult:
+#     ) -> WebhookDeliveryResult:
         """Send webhook with security measures"""
 
         webhook_config = self.webhooks.get(webhook_id)
@@ -485,7 +613,7 @@ class WebhookSecurityManager:
             source_ip=None,
             user_agent="Trae - Webhook - Client/1.0",
             webhook_id=webhook_id,
-        )
+         )
 
         # Encrypt payload if required
         if webhook_config.encryption_enabled:
@@ -499,7 +627,7 @@ class WebhookSecurityManager:
         # Generate signature
         signature = self.generate_signature(
             payload_json, webhook_config.secret_key, webhook_config.signature_algorithm
-        )
+         )
 
         # Prepare headers
         headers = {
@@ -509,7 +637,7 @@ class WebhookSecurityManager:
             "X - Webhook - Event - ID": event_id,
             "X - Webhook - Timestamp": webhook_event.timestamp,
             "User - Agent": webhook_event.user_agent,
-        }
+         }
 
         if custom_headers:
             headers.update(custom_headers)
@@ -522,11 +650,11 @@ class WebhookSecurityManager:
                 async with timeout_manager.timeout_context(
                     operation_type=TimeoutType.WEBHOOK,
                     custom_timeout=webhook_config.timeout_seconds,
-                ):
+#                 ):
                     async with aiohttp.ClientSession() as session:
                         async with session.post(
                             url=webhook_config.url, data=payload_json, headers=headers
-                        ) as response:
+#                         ) as response:
                             end_time = time.time()
                             response_time_ms = (end_time - start_time) * 1000
 
@@ -541,7 +669,7 @@ class WebhookSecurityManager:
                                 attempt_number=attempt + 1,
                                 error_message=(None if success else f"HTTP {response.status}"),
                                 timestamp=datetime.utcnow().isoformat(),
-                            )
+                             )
 
                             # Log delivery result
                             audit_logger.log_api_request(
@@ -554,8 +682,8 @@ class WebhookSecurityManager:
                                     "event_type": event_type.value,
                                     "attempt": attempt + 1,
                                     "success": success,
-                                },
-                            )
+                                 },
+                             )
 
                             self.delivery_history.append(result)
 
@@ -583,7 +711,7 @@ class WebhookSecurityManager:
             attempt_number=webhook_config.retry_attempts + 1,
             error_message=str(last_exception),
             timestamp=datetime.utcnow().isoformat(),
-        )
+         )
 
         self.delivery_history.append(result)
 
@@ -595,8 +723,8 @@ class WebhookSecurityManager:
                 "event_type": event_type.value,
                 "error": str(last_exception),
                 "attempts": webhook_config.retry_attempts + 1,
-            },
-        )
+             },
+         )
 
         return result
 
@@ -607,19 +735,19 @@ class WebhookSecurityManager:
         active_webhooks = sum(1 for wh in self.webhooks.values() if wh.active)
         https_compliant = sum(
             1 for wh in self.webhooks.values() if urlparse(wh.url).scheme == "https"
-        )
+         )
 
         recent_deliveries = [
             delivery
             for delivery in self.delivery_history
             if datetime.fromisoformat(delivery.timestamp) > datetime.utcnow() - timedelta(hours=24)
-        ]
+         ]
 
         success_rate = (
             sum(1 for d in recent_deliveries if d.success) / len(recent_deliveries)
             if recent_deliveries
             else 0
-        ) * 100
+#         ) * 100
 
         report = {
             "report_id": f"webhook_security_{datetime.now().strftime('%Y % m%d_ % H%M % S')}",
@@ -630,16 +758,16 @@ class WebhookSecurityManager:
                 "https_compliance": f"{https_compliant}/{total_webhooks}",
                 "success_rate_24h": f"{success_rate:.1f}%",
                 "blocked_ips": len(self.blocked_ips),
-            },
+             },
             "security_compliance": {
                 "rule_5_https_required": https_compliant == total_webhooks,
                 "signature_verification_enabled": all(
                     wh.security_level != WebhookSecurityLevel.BASIC for wh in self.webhooks.values()
-                ),
+                 ),
                 "rate_limiting_active": True,
                 "ip_allowlisting_available": True,
                 "encryption_available": True,
-            },
+             },
             "webhook_details": {
                 wh_id: {
                     "url": wh.url,
@@ -647,15 +775,15 @@ class WebhookSecurityManager:
                     "https_enabled": urlparse(wh.url).scheme == "https",
                     "active": wh.active,
                     "rate_limit": wh.rate_limit_per_minute,
-                }
+                 }
                 for wh_id, wh in self.webhooks.items()
-            },
+             },
             "recent_activity": {
                 "deliveries_24h": len(recent_deliveries),
                 "success_count": sum(1 for d in recent_deliveries if d.success),
                 "failure_count": sum(1 for d in recent_deliveries if not d.success),
-            },
-        }
+             },
+         }
 
         return report
 
@@ -670,7 +798,7 @@ async def send_chatgpt_webhook(event_type: WebhookEventType, payload: Dict[str, 
     """Send ChatGPT integration webhook"""
     return await webhook_security.send_webhook(
         webhook_id="chatgpt_integration", event_type=event_type, payload=payload
-    )
+     )
 
 
 async def validate_chatgpt_webhook(payload: str, signature: str, source_ip: str):
@@ -680,4 +808,4 @@ async def validate_chatgpt_webhook(payload: str, signature: str, source_ip: str)
         payload=payload,
         signature=signature,
         source_ip=source_ip,
-    )
+     )

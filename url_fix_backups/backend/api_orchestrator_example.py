@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 API Orchestrator Usage Example
 
 This file demonstrates how to use the APIOrchestrator for intelligent API management
 with automatic failover, health monitoring, and request routing.
-"""
+""""""
 
 import asyncio
 import json
@@ -21,7 +21,8 @@ class ExampleService:
             db_path=db_path,
             health_check_interval=300,  # 5 minutes
             failover_strategy=FailoverStrategy.PRIORITY_BASED,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     async def initialize(self):
         """Initialize the service and start health monitoring"""
@@ -40,10 +41,12 @@ class ExampleService:
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 150,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             headers={"Content - Type": "application / json"},
             timeout=30,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         try:
             response = await self.api_orchestrator.make_request(request)
@@ -65,7 +68,8 @@ class ExampleService:
             method="GET",
             params={"q": query, "limit": 10},
             timeout=15,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         try:
             response = await self.api_orchestrator.make_request(request)
@@ -87,7 +91,8 @@ class ExampleService:
             "total_endpoints": len(self.api_orchestrator.endpoints),
             "healthy_endpoints": len(endpoints),
             "endpoints_by_service": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Group by service type
         for endpoint in self.api_orchestrator.endpoints.values():
@@ -97,7 +102,8 @@ class ExampleService:
                     "total": 0,
                     "healthy": 0,
                     "endpoints": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             status["endpoints_by_service"][service]["total"] += 1
 
@@ -110,8 +116,10 @@ class ExampleService:
                     "url": endpoint.base_url,
                     "status": endpoint.status.value,
                     "priority": endpoint.failover_priority,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return status
 
@@ -140,7 +148,8 @@ async def main():
         print("\\n🤖 Making LLM Request:")
         llm_response = await service.make_llm_request(
             "Explain the benefits of API failover in one sentence."
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Response: {llm_response}")
 
         # Example 3: Make search request with failover

@@ -21,7 +21,8 @@ def _gaussian(
     sigma_vert=None,
     mean_horz=0.5,
     mean_vert=0.5,
-):
+# BRACKET_SURGEON: disabled
+# ):
     # handle some defaults
     if width is None:
         width = size
@@ -41,8 +42,10 @@ def _gaussian(
                 -(
                     math.pow((j + 1 - center_x) / (sigma_horz * width), 2) / 2.0
                     + math.pow((i + 1 - center_y) / (sigma_vert * height), 2) / 2.0
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
     if normalize:
         gauss = gauss / np.sum(gauss)
     return gauss
@@ -59,24 +62,27 @@ def draw_gaussian(image, point, sigma):
     g_x = [
         int(max(1, -ul[0])),
         int(min(br[0], image.shape[1])) - int(max(1, ul[0])) + int(max(1, -ul[0])),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     g_y = [
         int(max(1, -ul[1])),
         int(min(br[1], image.shape[0])) - int(max(1, ul[1])) + int(max(1, -ul[1])),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     img_x = [int(max(1, ul[0])), int(min(br[0], image.shape[1]))]
     img_y = [int(max(1, ul[1])), int(min(br[1], image.shape[0]))]
     assert g_x[0] > 0 and g_y[1] > 0
     image[img_y[0] - 1 : img_y[1], img_x[0] - 1 : img_x[1]] = (
         image[img_y[0] - 1 : img_y[1], img_x[0] - 1 : img_x[1]]
         + g[g_y[0] - 1 : g_y[1], g_x[0] - 1 : g_x[1]]
-    )
+# BRACKET_SURGEON: disabled
+#     )
     image[image > 1] = 1
     return image
 
 
 def transform(point, center, scale, resolution, invert=False):
-    """Generate and affine transformation matrix.
+    """Generate and affine transformation matrix."""
 
     Given a set of points, a center, a scale and a targer resolution, the
     function generates and affine transformation matrix. If invert is ``True``
@@ -85,14 +91,14 @@ def transform(point, center, scale, resolution, invert=False):
     Arguments:
         point {torch.tensor} -- the input 2D point
         center {torch.tensor \
-    or numpy.array} -- the center around which to perform the transformations
+#     or numpy.array} -- the center around which to perform the transformations
         scale {float} -- the scale of the face / object
         resolution {float} -- the output resolution
 
     Keyword Arguments:
         invert {bool} -- define wherever the function should produce the direct or the
         inverse transformation matrix (default: {False})
-    """
+    """"""
     _pt = torch.ones(3)
     _pt[0] = point[0]
     _pt[1] = point[1]
@@ -113,7 +119,7 @@ def transform(point, center, scale, resolution, invert=False):
 
 
 def crop(image, center, scale, resolution=256.0):
-    """Center crops an image or set of heatmaps
+    """Center crops an image or set of heatmaps"""
 
     Arguments:
         image {numpy.array} -- an rgb image
@@ -125,7 +131,7 @@ def crop(image, center, scale, resolution=256.0):
 
     Returns:
         [type] -- [description]
-    """  # Crop around the center point
+    """  # Crop around the center point"""
     """ Crops the image around the center. Input is expected to be an np.ndarray """
     ul = transform([1, 1], center, scale, resolution, True)
     br = transform([resolution, resolution], center, scale, resolution, True)
@@ -144,15 +150,17 @@ def crop(image, center, scale, resolution=256.0):
     oldY = np.array([max(1, ul[1] + 1), min(br[1], ht)], dtype=np.int32)
     newImg[newY[0] - 1 : newY[1], newX[0] - 1 : newX[1]] = image[
         oldY[0] - 1 : oldY[1], oldX[0] - 1 : oldX[1], :
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     newImg = cv2.resize(
         newImg, dsize=(int(resolution), int(resolution)), interpolation=cv2.INTER_LINEAR
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return newImg
 
 
 def get_preds_fromhm(hm, center=None, scale=None):
-    """Obtain (x,y) coordinates given a set of N heatmaps. If the center
+    """Obtain (x,y) coordinates given a set of N heatmaps. If the center"""
     and the scale is provided the function will return the points also in
     the original coordinate frame.
 
@@ -162,7 +170,7 @@ def get_preds_fromhm(hm, center=None, scale=None):
     Keyword Arguments:
         center {torch.tensor} -- the center of the bounding box (default: {None})
         scale {float} -- face scale (default: {None})
-    """
+    """"""
     max, idx = torch.max(hm.view(hm.size(0), hm.size(1), hm.size(2) * hm.size(3)), 2)
     idx += 1
     preds = idx.view(idx.size(0), idx.size(1), 1).repeat(1, 1, 2).float()
@@ -178,8 +186,10 @@ def get_preds_fromhm(hm, center=None, scale=None):
                     [
                         hm_[pY, pX + 1] - hm_[pY, pX - 1],
                         hm_[pY + 1, pX] - hm_[pY - 1, pX],
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
                 preds[i, j].add_(diff.sign_().mul_(0.25))
 
     preds.add_(-0.5)
@@ -194,7 +204,7 @@ def get_preds_fromhm(hm, center=None, scale=None):
 
 
 def get_preds_fromhm_batch(hm, centers=None, scales=None):
-    """Obtain (x,y) coordinates given a set of N heatmaps. If the centers
+    """Obtain (x,y) coordinates given a set of N heatmaps. If the centers"""
     and the scales is provided the function will return the points also in
     the original coordinate frame.
 
@@ -204,7 +214,7 @@ def get_preds_fromhm_batch(hm, centers=None, scales=None):
     Keyword Arguments:
         centers {torch.tensor} -- the centers of the bounding box (default: {None})
         scales {float} -- face scales (default: {None})
-    """
+    """"""
     max, idx = torch.max(hm.view(hm.size(0), hm.size(1), hm.size(2) * hm.size(3)), 2)
     idx += 1
     preds = idx.view(idx.size(0), idx.size(1), 1).repeat(1, 1, 2).float()
@@ -220,8 +230,10 @@ def get_preds_fromhm_batch(hm, centers=None, scales=None):
                     [
                         hm_[pY, pX + 1] - hm_[pY, pX - 1],
                         hm_[pY + 1, pX] - hm_[pY - 1, pX],
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
                 preds[i, j].add_(diff.sign_().mul_(0.25))
 
     preds.add_(-0.5)
@@ -236,7 +248,7 @@ def get_preds_fromhm_batch(hm, centers=None, scales=None):
 
 
 def shuffle_lr(parts, pairs=None):
-    """Shuffle the points left - right according to the axis of symmetry
+    """Shuffle the points left - right according to the axis of symmetry"""
     of the object.
 
     Arguments:
@@ -245,7 +257,7 @@ def shuffle_lr(parts, pairs=None):
 
     Keyword Arguments:
         pairs {list of integers} -- [order of the flipped points] (default: {None})
-    """
+    """"""
     if pairs is None:
         pairs = [
             16,
@@ -316,7 +328,8 @@ def shuffle_lr(parts, pairs=None):
             67,
             66,
             65,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
     if parts.ndimension() == 3:
         parts = parts[pairs, ...]
     else:
@@ -326,15 +339,15 @@ def shuffle_lr(parts, pairs=None):
 
 
 def flip(tensor, is_label=False):
-    """Flip an image or a set of heatmaps left - right
+    """Flip an image or a set of heatmaps left - right"""
 
     Arguments:
         tensor {numpy.array or torch.tensor} -- [the input image or heatmaps]
 
     Keyword Arguments:
         is_label {bool} -- [denote wherever the input is an image \
-    or a set of heatmaps ] (default: {False})
-    """
+#     or a set of heatmaps ] (default: {False})
+    """"""
     if not torch.is_tensor(tensor):
         tensor = torch.from_numpy(tensor)
 
@@ -350,14 +363,14 @@ def flip(tensor, is_label=False):
 
 
 def appdata_dir(appname=None, roaming=False):
-    """appdata_dir(appname = None, roaming = False)
+    """appdata_dir(appname = None, roaming = False)"""
 
     Get the path to the application directory, where applications are allowed
     to write user specific files (e.g. configurations). For non - user specific
     data, consider using common_appdata_dir().
     If appname is given, a subdir is appended (and created if necessary).
     If roaming is True, will prefer a roaming directory (Windows Vista / 7).
-    """
+    """"""
 
     # Define default user directory
     userDir = os.getenv("FACEALIGNMENT_USERDIR", None)

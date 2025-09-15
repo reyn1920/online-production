@@ -22,11 +22,24 @@ def clear_scene():
 
 
 def create_basic_humanoid(name="Avatar", location=(0, 0, 0)):
-    """Create a basic humanoid figure."""
+    """
+Create a basic humanoid figure.
+
     # Create body (torso)
+    
+"""
     bpy.ops.mesh.primitive_cube_add(
+    """
+
         size = 1, location=(location[0], location[1], location[2] + 1)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+     )
+    
+
+    bpy.ops.mesh.primitive_cube_add(
+    
+"""
     body = bpy.context.active_object
     body.name = f"{name}_Body"
     body.scale = (0.8, 0.4, 1.2)
@@ -34,21 +47,27 @@ def create_basic_humanoid(name="Avatar", location=(0, 0, 0)):
     # Create head
     bpy.ops.mesh.primitive_uv_sphere_add(
         radius = 0.35, location=(location[0], location[1], location[2] + 2.2)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+     )
     head = bpy.context.active_object
     head.name = f"{name}_Head"
 
     # Create arms
     bpy.ops.mesh.primitive_cube_add(
         size = 0.3, location=(location[0] + 1, location[1], location[2] + 1.5)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+     )
     arm_right = bpy.context.active_object
     arm_right.name = f"{name}_Arm_Right"
     arm_right.scale = (1, 0.5, 2)
 
     bpy.ops.mesh.primitive_cube_add(
         size = 0.3, location=(location[0] - 1, location[1], location[2] + 1.5)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+     )
     arm_left = bpy.context.active_object
     arm_left.name = f"{name}_Arm_Left"
     arm_left.scale = (1, 0.5, 2)
@@ -56,14 +75,18 @@ def create_basic_humanoid(name="Avatar", location=(0, 0, 0)):
     # Create legs
     bpy.ops.mesh.primitive_cube_add(
         size = 0.4, location=(location[0] + 0.3, location[1], location[2] - 0.5)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+     )
     leg_right = bpy.context.active_object
     leg_right.name = f"{name}_Leg_Right"
     leg_right.scale = (0.8, 0.8, 2)
 
     bpy.ops.mesh.primitive_cube_add(
         size = 0.4, location=(location[0] - 0.3, location[1], location[2] - 0.5)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+     )
     leg_left = bpy.context.active_object
     leg_left.name = f"{name}_Leg_Left"
     leg_left.scale = (0.8, 0.8, 2)
@@ -72,10 +95,28 @@ def create_basic_humanoid(name="Avatar", location=(0, 0, 0)):
 
 
 def create_materials(avatar_parts, skin_color=(0.9, 0.8, 0.7, 1.0)):
-    """Create and apply materials to avatar parts."""
+    """
+Create and apply materials to avatar parts.
+
+   
+""""""
+
     # Skin material
+   
+
+    
+   
+"""
     skin_material = bpy.data.materials.new(name="Skin_Material")
     skin_material.use_nodes = True
+   """
+
+    
+   
+
+    # Skin material
+   
+""""""
     bsdf = skin_material.node_tree.nodes["Principled BSDF"]
     bsdf.inputs[0].default_value = skin_color  # Base Color
         bsdf.inputs[7].default_value = 0.3  # Roughness
@@ -98,12 +139,29 @@ def create_materials(avatar_parts, skin_color=(0.9, 0.8, 0.7, 1.0)):
 
 
 def setup_basic_rig(avatar_parts):
-    """Create a basic armature for the avatar."""
+    """
+Create a basic armature for the avatar.
+
     # Add armature
+   
+""""""
+
     bpy.ops.object.armature_add(location=(0, 0, 0))
+   
+
+    
+   
+"""
     armature = bpy.context.active_object
     armature.name = "Avatar_Armature"
+   """
 
+    
+   
+
+    bpy.ops.object.armature_add(location=(0, 0, 0))
+   
+""""""
     # Enter edit mode to add bones
     bpy.context.view_layer.objects.active = armature
     bpy.ops.object.mode_set(mode="EDIT")
@@ -197,11 +255,28 @@ def setup_lighting(lighting_type="studio"):
 
 
 def setup_camera(target_location=(0, 0, 1.5)):
-    """Set up camera to frame the avatar."""
+    """
+Set up camera to frame the avatar.
+
+   
+""""""
+
     bpy.ops.object.camera_add(location=(5, -5, 3))
+   
+
+    
+   
+"""
     camera = bpy.context.active_object
     camera.name = "Avatar_Camera"
+   """
 
+    
+   
+
+    bpy.ops.object.camera_add(location=(5, -5, 3))
+   
+""""""
     # Point camera at avatar
     direction = Vector(target_location) - camera.location
     camera.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
@@ -213,11 +288,36 @@ def setup_camera(target_location=(0, 0, 1.5)):
 
 
 def create_avatar_from_config(config_dict, output_path):
-    """Create avatar based on configuration dictionary."""
+    """
+Create avatar based on configuration dictionary.
+
     # Clear scene
+   
+""""""
+
     clear_scene()
+   
+
+    
+   
+""""""
+
+
+    
+
+   
 
     # Extract config values
+   
+""""""
+
+   
+
+    
+   
+"""
+    clear_scene()
+   """"""
     name = config_dict.get("name", "Avatar")
     gender = config_dict.get("gender", "neutral")
     skin_color = config_dict.get("skin_color", [0.9, 0.8, 0.7, 1.0])
@@ -258,7 +358,7 @@ def create_avatar_from_config(config_dict, output_path):
             "avatar_parts": [part.name for part in avatar_parts],
             "armature": armature.name,
             "output_path": output_path,
-            }
+             }
 
 if __name__ == "__main__":
     # Example usage
@@ -267,7 +367,7 @@ if __name__ == "__main__":
             "gender": "female",
             "skin_color": [0.9, 0.8, 0.7, 1.0],
             "lighting": "studio",
-            }
+             }
 
     output_file = "/tmp/test_avatar.blend"
     result = create_avatar_from_config(config, output_file)

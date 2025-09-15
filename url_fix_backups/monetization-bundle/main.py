@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Monetization Bundle Service
 Comprehensive revenue generation and tracking system
-"""
+""""""
 
 import asyncio
 import json
@@ -36,7 +36,8 @@ from sqlalchemy import (
     String,
     Text,
     create_engine,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
@@ -59,7 +60,8 @@ celery_app = Celery(
     "monetization",
     broker=os.getenv("CELERY_BROKER", "redis://localhost:6379 / 0"),
     backend=os.getenv("CELERY_BACKEND", "redis://localhost:6379 / 0"),
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Metrics
 revenue_counter = Counter("revenue_total", "Total revenue generated", ["source", "type"])
@@ -68,7 +70,8 @@ conversion_rate = Gauge("conversion_rate", "Conversion rate percentage", ["funne
 revenue_gauge = Gauge("revenue_current", "Current revenue", ["period", "source"])
 processing_time = Histogram(
     "processing_time_seconds", "Time spent processing requests", ["endpoint"]
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Database Models
 
@@ -268,12 +271,14 @@ class PaymentProcessor:
                 amount=int(payment_data.amount * 100),  # Convert to cents
                 currency=payment_data.currency.lower(),
                 metadata=payment_data.metadata,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return {
                 "status": "success",
                 "payment_intent_id": intent.id,
                 "client_secret": intent.client_secret,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             logger.error(f"Stripe payment failed: {e}")
             return {"status": "error", "message": str(e)}
@@ -309,7 +314,8 @@ class AnalyticsEngine:
             self.db.query(Transaction)
             .filter(Transaction.created_at >= start_date, Transaction.status == "completed")
             .all()
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         total_revenue = sum(t.amount for t in transactions)
         revenue_by_source = {}
@@ -321,15 +327,18 @@ class AnalyticsEngine:
                 self.db.query(RevenueStream)
                 .filter(RevenueStream.id == transaction.revenue_stream_id)
                 .first()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if stream:
                 revenue_by_source[stream.platform] = (
                     revenue_by_source.get(stream.platform, 0) + transaction.amount
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 revenue_by_type[stream.type] = (
                     revenue_by_type.get(stream.type, 0) + transaction.amount
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return {
             "period": period,
@@ -338,7 +347,8 @@ class AnalyticsEngine:
             "revenue_by_type": revenue_by_type,
             "transaction_count": len(transactions),
             "average_transaction": (total_revenue / len(transactions) if transactions else 0),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def get_top_performing_products(self, limit: int = 10) -> List[Dict[str, Any]]:
         """Get top performing products by revenue"""
@@ -371,12 +381,14 @@ class AffiliateManager:
                 "affiliate_link_id": affiliate_link_id,
                 "timestamp": datetime.utcnow().isoformat(),
                 "user_data": user_data,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             redis_client.setex(
                 f"click:{user_data.get('session_id', uuid.uuid4())}",
                 3600,
                 json.dumps(click_data),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return True
         return False
 
@@ -389,7 +401,8 @@ class AffiliateManager:
 
             link = (
                 self.db.query(AffiliateLink).filter(AffiliateLink.id == affiliate_link_id).first()
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if link:
                 link.conversions += 1
                 link.revenue += amount
@@ -407,8 +420,10 @@ class AffiliateManager:
                     metadata={
                         "original_amount": amount,
                         "commission_rate": link.commission_rate,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
                 self.db.add(commission_transaction)
                 self.db.commit()
 
@@ -438,7 +453,8 @@ class SubscriptionManager:
             self.db.query(Subscription)
             .filter(Subscription.status == "active", Subscription.next_billing_date <= today)
             .all()
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         results = []
         for subscription in due_subscriptions:
@@ -461,7 +477,8 @@ class SubscriptionManager:
                 customer_id=subscription.customer_id,
                 product_id=subscription.product_id,
                 platform_transaction_id=f"sub_{subscription.id}_{datetime.utcnow().strftime('%Y % m%d')}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.db.add(transaction)
 
             # Update next billing date
@@ -470,7 +487,8 @@ class SubscriptionManager:
             elif subscription.billing_cycle == "yearly":
                 subscription.next_billing_date = subscription.next_billing_date + timedelta(
                     days=365
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif subscription.billing_cycle == "weekly":
                 subscription.next_billing_date = subscription.next_billing_date + timedelta(days=7)
 
@@ -481,14 +499,16 @@ class SubscriptionManager:
                 "status": "success",
                 "subscription_id": subscription.id,
                 "amount": subscription.amount,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             logger.error(f"Subscription billing failed for {subscription.id}: {e}")
             return {
                 "status": "error",
                 "subscription_id": subscription.id,
                 "error": str(e),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 # Initialize services
@@ -508,13 +528,15 @@ async def lifespan(app: FastAPI):
         update_revenue_metrics,
         CronTrigger(minute=0),  # Every hour
         id="update_revenue_metrics",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     scheduler.add_job(
         process_recurring_subscriptions,
         CronTrigger(hour=0, minute=0),  # Daily at midnight
         id="process_recurring_subscriptions",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     yield
 
@@ -528,7 +550,8 @@ app = FastAPI(
     description="Comprehensive revenue generation and tracking system",
     version="1.0.0",
     lifespan=lifespan,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 app.add_middleware(
     CORSMiddleware,
@@ -536,7 +559,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 # Routes
@@ -611,7 +635,8 @@ async def process_stripe_payment(payment_data: PaymentRequest, db: Session = Dep
             transaction_type="sale",
             platform_transaction_id=result["payment_intent_id"],
             metadata=payment_data.metadata,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         db.add(transaction)
         db.commit()
 
@@ -631,7 +656,8 @@ async def process_paypal_payment(payment_data: PaymentRequest, db: Session = Dep
             transaction_type="sale",
             platform_transaction_id=result["transaction_id"],
             metadata=payment_data.metadata,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         db.add(transaction)
         db.commit()
 
@@ -685,7 +711,8 @@ async def track_affiliate_click(link_id: str, request: Request, db: Session = De
         "ip_address": request.client.host,
         "user_agent": request.headers.get("user - agent"),
         "session_id": request.headers.get("x - session - id", str(uuid.uuid4())),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     success = await affiliate_manager.track_click(link_id, user_data)
     if success:
@@ -697,7 +724,8 @@ async def track_affiliate_click(link_id: str, request: Request, db: Session = De
 @app.post("/api / affiliate - links / conversion")
 async def track_affiliate_conversion(
     session_id: str, transaction_id: str, amount: float, db: Session = Depends(get_db)
-):
+# BRACKET_SURGEON: disabled
+# ):
     affiliate_manager = AffiliateManager(db)
     success = await affiliate_manager.track_conversion(session_id, transaction_id, amount)
 
@@ -787,7 +815,8 @@ async def generate_revenue_report(period: str = "month", db: Session = Depends(g
         conversion_rate=conversion_rates.get("overall", 0.0),
         top_products=top_products,
         growth_rate=growth_rate,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     return report
 
@@ -801,7 +830,8 @@ async def handle_stripe_webhook(request: Request, db: Session = Depends(get_db))
     try:
         event = stripe.Webhook.construct_event(
             payload, sig_header, os.getenv("STRIPE_WEBHOOK_SECRET")
-        )
+# BRACKET_SURGEON: disabled
+#         )
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid payload")
     except stripe.error.SignatureVerificationError:
@@ -816,7 +846,8 @@ async def handle_stripe_webhook(request: Request, db: Session = Depends(get_db))
             db.query(Transaction)
             .filter(Transaction.platform_transaction_id == payment_intent["id"])
             .first()
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if transaction:
             transaction.status = "completed"
@@ -873,7 +904,8 @@ async def process_recurring_subscriptions():
 
         logger.info(
             f"Processed {len(results)} subscriptions: {successful} successful, {failed} failed"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         db.close()
     except Exception as e:

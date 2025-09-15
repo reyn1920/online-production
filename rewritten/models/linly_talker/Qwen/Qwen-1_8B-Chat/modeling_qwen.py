@@ -24,7 +24,9 @@ if TYPE_CHECKING:
 from transformers.generation.utils import GenerateOutput
 from transformers.modeling_outputs import (BaseModelOutputWithPast,
 
-    CausalLMOutputWithPast)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     CausalLMOutputWithPast)
 
 from transformers.modeling_utils import PreTrainedModel
 from transformers.utils import logging
@@ -42,12 +44,14 @@ SUPPORT_CUDA = torch.cuda.is_available()
 SUPPORT_BF16 = SUPPORT_CUDA and torch.cuda.is_bf16_supported()
 SUPPORT_FP16 = SUPPORT_CUDA and torch.cuda.get_device_capability(0)[0] >= 7
 SUPPORT_TORCH2 = hasattr(torch, '__version__') \
-    and int(torch.__version__.split(".")[0]) >= 2
+#     and int(torch.__version__.split(".")[0]) >= 2
 
 from .configuration_qwen import QWenConfig
 from .qwen_generation_utils import (HistoryType, StopWordsLogitsProcessor,
 
-    decode_tokens, get_stop_words_ids, make_context)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     decode_tokens, get_stop_words_ids, make_context)
 
 logger = logging.get_logger(__name__)
 
@@ -56,28 +60,29 @@ _CONFIG_FOR_DOC = "QWenConfig"
 
 QWen_PRETRAINED_MODEL_ARCHIVE_LIST = ["qwen - 7b"]
 
-_ERROR_BAD_CHAT_FORMAT = """\\
+_ERROR_BAD_CHAT_FORMAT = """\\"""
 We detect you are probably using the pretrained model (rather than chat model) for chatting,
     since the chat_format in generation_config is not "chatml".
 If you are directly using the model downloaded from Huggingface,
     please make sure you are using our "Qwen/Qwen - 7B - Chat" Huggingface model (rather than "Qwen/Qwen - 7B") when you call model.chat().
 我们检测到您可能在使用预训练模型（而非chat模型）进行多轮chat，因为您当前在generation_config指定的chat_format，并未设置为我们在对话中所支持的"chatml"格式。
 如果您在直接使用我们从Huggingface提供的模型，请确保您在调用model.chat()时，使用的是"Qwen/Qwen - 7B - Chat"模型（而非"Qwen/Qwen - 7B"预训练模型）。
-"""
+""""""
 
 _SENTINEL = object()
-_ERROR_STREAM_IN_CHAT = """\\
+_ERROR_STREAM_IN_CHAT = """\\"""
 Pass argument `stream` to model.chat() is buggy, deprecated, \
-    and marked for removal. Please use model.chat_stream(...) instead of model.chat(..., stream = True).
+#     and marked for removal. Please use model.chat_stream(...) instead of model.chat(..., stream = True).
 向model.chat()传入参数stream的用法可能存在Bug，该用法已被废弃，将在未来被移除。请使用model.chat_stream(...)代替model.chat(...,
-    stream = True)。
-"""
+# BRACKET_SURGEON: disabled
+#     stream = True)。
+""""""
 
-_ERROR_INPUT_CPU_QUERY_WITH_FLASH_ATTN_ACTIVATED = """\\
+_ERROR_INPUT_CPU_QUERY_WITH_FLASH_ATTN_ACTIVATED = """\\"""
 We detect you have activated flash attention support, but running model computation on CPU. Please make sure that your input data has been placed on GPU. If you actually want to run CPU computation, please following the readme \
-    and set device_map="cpu" to disable flash attention when loading the model (calling AutoModelForCausalLM.from_pretrained).
+#     and set device_map="cpu" to disable flash attention when loading the model (calling AutoModelForCausalLM.from_pretrained).
 检测到您的模型已激活了flash attention支持，但正在执行CPU运算任务。如使用flash attention，请您确认模型输入已经传到GPU上。如果您确认要执行CPU运算，请您在载入模型（调用AutoModelForCausalLM.from_pretrained）时，按照readme说法，指定device_map="cpu"以禁用flash attention。
-"""
+""""""
 
 apply_rotary_emb_func = None
 rms_norm = None
@@ -97,7 +102,9 @@ def _import_flash_attn():
         logger.warn(
             "Warning: import flash_attn rotary fail, please install FlashAttention rotary to get higher efficiency "
             "https://github.com/Dao - AILab/flash - attention/tree/main/csrc/rotary"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     try:
 
@@ -108,7 +115,9 @@ def _import_flash_attn():
         logger.warn(
             "Warning: import flash_attn rms_norm fail, please install FlashAttention layer_norm to get higher efficiency "
             "https://github.com/Dao - AILab/flash - attention/tree/main/csrc/layer_norm"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     try:
 
@@ -139,7 +148,9 @@ def _import_flash_attn():
         logger.warn(
             "Warning: import flash_attn fail, please install FlashAttention to get higher efficiency "
             "https://github.com/Dao - AILab/flash - attention"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
 def quantize_cache_v(fdata, bits, qmax, qmin):
@@ -178,14 +189,18 @@ class FlashSelfAttention(torch.nn.Module):
             causal = False,
             softmax_scale = None,
             attention_dropout = 0.0,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__()
         assert flash_attn_unpadded_func is not None, (
             "Please install FlashAttention first, " "e.g., with pip install flash - attn"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         assert (
             rearrange is not None
-        ), "Please install einops first, e.g., with pip install einops"
+# BRACKET_SURGEON: disabled
+#         ), "Please install einops first, e.g., with pip install einops"
         self.causal = causal
         self.softmax_scale = softmax_scale
         self.dropout_p = attention_dropout
@@ -199,7 +214,9 @@ class FlashSelfAttention(torch.nn.Module):
         cu_seqlens = F.pad(torch.cumsum(seqlens_in_batch,
     dim = 0,
     dtype = torch.torch.int32), (1,
-    0))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     0))
         hidden_states = hidden_states[indices]
         return hidden_states, indices, cu_seqlens, max_seqlen_in_batch
 
@@ -207,7 +224,9 @@ class FlashSelfAttention(torch.nn.Module):
     def pad_input(self, hidden_states, indices, batch, seqlen):
         output = torch.zeros(batch * seqlen, *hidden_states.shape[1:],
     device = hidden_states.device,
-            dtype = hidden_states.dtype)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             dtype = hidden_states.dtype)
         output[indices] = hidden_states
         return rearrange(output, '(b s) ... -> b s ...', b = batch)
 
@@ -226,7 +245,9 @@ class FlashSelfAttention(torch.nn.Module):
     v,
     dropout_p,
     softmax_scale = self.softmax_scale,
-    causal = self.causal)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     causal = self.causal)
             return output
 
         q, k, v = [rearrange(x, "b s ... -> (b s) ...") for x in [q, k, v]]
@@ -236,7 +257,9 @@ class FlashSelfAttention(torch.nn.Module):
                 step = seqlen_q,
                 dtype = torch.int32,
                 device = q.device,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if batch_size > 1 and attention_mask is not None:
             k, indices_k, cu_seqlens_k, seqlen_k = self.unpad_input(k, attention_mask)
@@ -252,7 +275,9 @@ class FlashSelfAttention(torch.nn.Module):
                     step = seqlen_k,
                     dtype = torch.int32,
                     device = q.device,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         if self.training:
             assert seqlen_k == seqlen_q
@@ -273,7 +298,9 @@ class FlashSelfAttention(torch.nn.Module):
                 dropout_p,
                 softmax_scale = self.softmax_scale,
                 causal = is_causal,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         if batch_size > 1 and attention_mask is not None and seqlen_q == seqlen_k:
             output = self.pad_input(output, indices_k, batch_size, seqlen_out)
         else:
@@ -304,23 +331,30 @@ class QWenAttention(nn.Module):
         assert self.projection_size % config.num_attention_heads == 0
         self.hidden_size_per_attention_head = (
             self.projection_size//config.num_attention_heads
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.c_attn = nn.Linear(config.hidden_size, 3 * self.projection_size)
 
         self.c_proj = nn.Linear(
             config.hidden_size, self.projection_size, bias = not config.no_bias
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.is_fp32 = not (config.bf16 or config.fp16)
         if (
             self.use_flash_attn
             and flash_attn_unpadded_func is not None
             and not self.is_fp32
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.core_attention_flash = FlashSelfAttention(
                 causal = True, attention_dropout = config.attn_dropout_prob
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         self.bf16 = config.bf16
 
         self.use_dynamic_ntk = config.use_dynamic_ntk
@@ -329,7 +363,9 @@ class QWenAttention(nn.Module):
         logn_list = [
             math.log(i, self.seq_length) if i > self.seq_length else 1
             for i in range(1, 32768)
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         logn_tensor = torch.tensor(logn_list)[None, :, None, None]
         self.register_buffer("logn_tensor", logn_tensor, persistent = False)
 
@@ -343,9 +379,13 @@ class QWenAttention(nn.Module):
         elif config.fp16:
             cache_dtype = torch.float16
         self.cache_qmax = torch.tensor(torch.iinfo(torch.uint8).max,
-    dtype = cache_dtype)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     dtype = cache_dtype)
         self.cache_qmin = torch.tensor(torch.iinfo(torch.uint8).min,
-    dtype = cache_dtype)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     dtype = cache_dtype)
 
         if config.use_cache_quantization and config.use_cache_kernel:
             # pre check if the support files existing
@@ -371,7 +411,8 @@ class QWenAttention(nn.Module):
     value,
     causal_mask = None,
     attention_mask = None,
-    head_mask = None):
+# BRACKET_SURGEON: disabled
+#     head_mask = None):
         device = query.device
         if self.use_cache_quantization:
             qk, qk_scale, qk_zero = key
@@ -379,13 +420,17 @@ class QWenAttention(nn.Module):
                 shape = query.shape[:-1] + (qk.shape[-2],)
                 attn_weights = torch.zeros(shape,
     dtype = torch.float16,
-    device = device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     device = device)
                 self.cache_kernels.vecquant8matmul_batched_faster_old(
                     query.contiguous() if query.dtype == torch.float16 else query.to(torch.float16).contiguous(),
                         qk.transpose(-1, -2).contiguous(),
                         attn_weights,
                         qk_scale.contiguous() if qk_scale.dtype == torch.float16 else qk_scale.to(torch.float16).contiguous(),
-                        qk_zero.contiguous()if qk_zero.dtype == torch.float16 else qk_zero.to(torch.float16).contiguous())
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         qk_zero.contiguous()if qk_zero.dtype == torch.float16 else qk_zero.to(torch.float16).contiguous())
                 # attn_weights = attn_weights.to(query.dtype).contiguous()
             else:
                 key = dequantize_cache_torch(qk, qk_scale, qk_zero)
@@ -404,7 +449,9 @@ class QWenAttention(nn.Module):
         if causal_mask is not None:
             attn_weights = torch.where(
                 causal_mask, attn_weights.to(attn_weights.dtype), mask_value
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if attention_mask is not None:
             attn_weights = attn_weights + attention_mask
@@ -430,7 +477,9 @@ class QWenAttention(nn.Module):
                         qv.contiguous(),  # dtype: int32
                     attn_output,
                         qv_scale.contiguous() if qv_scale.dtype == torch.float16 else qv_scale.to(torch.float16).contiguous(),
-                        qv_zero.contiguous() if qv_zero.dtype == torch.float16 else qv_zero.to(torch.float16).contiguous())
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         qv_zero.contiguous() if qv_zero.dtype == torch.float16 else qv_zero.to(torch.float16).contiguous())
                 if attn_output.dtype != query.dtype:
                     attn_output = attn_output.to(query.dtype)
                     attn_weights = attn_weights.to(query.dtype)
@@ -468,7 +517,8 @@ class QWenAttention(nn.Module):
             encoder_attention_mask: Optional[torch.FloatTensor] = None,
             output_attentions: Optional[bool] = False,
             use_cache: Optional[bool] = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         mixed_x_layer = self.c_attn(hidden_states)
 
         query, key, value = mixed_x_layer.split(self.split_size, dim = 2)
@@ -496,7 +546,9 @@ class QWenAttention(nn.Module):
                     q_pos_emb, k_pos_emb = rotary_pos_emb
                     # Slice the pos emb for current inference
                     query_list += [apply_rotary_pos_emb(query[i:i + 1, :, :],
-    q_pos_emb)]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     q_pos_emb)]
                     key_list += [apply_rotary_pos_emb(key[i:i + 1, :, :], k_pos_emb)]
                 query = torch.cat(query_list, dim = 0)
                 key = torch.cat(key_list, dim = 0)
@@ -505,24 +557,34 @@ class QWenAttention(nn.Module):
             key = quantize_cache_v(key.permute(0, 2, 1, 3),
                 bits = 8,
                                            qmin = self.cache_qmin,
-                                           qmax = self.cache_qmax)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                            qmax = self.cache_qmax)
             value = quantize_cache_v(value.permute(0, 2, 1, 3),
                 bits = 8,
                                              qmin = self.cache_qmin,
-                                             qmax = self.cache_qmax)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                              qmax = self.cache_qmax)
 
         if layer_past is not None:
             past_key, past_value = layer_past[0], layer_past[1]
             if self.use_cache_quantization:
                 # use_cache_quantization:
                 # present=((q_key,key_scale,key_zero_point),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
                     #          (q_value,value_scale,value_zero_point))
                 key = (torch.cat((past_key[0], key[0]), dim = 2),
                     torch.cat((past_key[1], key[1]), dim = 2),
-                           torch.cat((past_key[2], key[2]), dim = 2))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                            torch.cat((past_key[2], key[2]), dim = 2))
                 value = (torch.cat((past_value[0], value[0]), dim = 2),
                     torch.cat((past_value[1], value[1]), dim = 2),
-                             torch.cat((past_value[2], value[2]), dim = 2))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                              torch.cat((past_value[2], value[2]), dim = 2))
             else:
                 # not use_cache_quantization:
                 # present=(key,value)
@@ -550,21 +612,29 @@ class QWenAttention(nn.Module):
             and flash_attn_unpadded_func is not None
             and not self.is_fp32
             and query.is_cuda
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             q, k, v = query, key, value
             attn_output = self.core_attention_flash(q,
     k,
     v,
-    attention_mask = attention_mask)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     attention_mask = attention_mask)
         else:
             key_size = key[0].size(2) if self.use_cache_quantization else key.size(1)
             if query.size(1) == key_size:
                 causal_mask = torch.tril(
                     torch.ones((key_size,
-    key_size),
+# BRACKET_SURGEON: disabled
+#     key_size),
     dtype = torch.bool,
-    device = query.device)
-                ).view(1, 1, key_size, key_size)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     device = query.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).view(1, 1, key_size, key_size)
             else:
                 causal_mask = None
             query = query.permute(0, 2, 1, 3)
@@ -577,7 +647,8 @@ class QWenAttention(nn.Module):
                 and flash_attn_unpadded_func is not None
                 and not self.is_fp32
                 and not query.is_cuda
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 raise Exception(_ERROR_INPUT_CPU_QUERY_WITH_FLASH_ATTN_ACTIVATED)
 
             if not self.use_cache_quantization and SUPPORT_TORCH2:
@@ -585,20 +656,28 @@ class QWenAttention(nn.Module):
                     attention_mask = attention_mask.expand(-1, -1, query.size(2), -1)
                     if causal_mask is not None:
                         attention_mask = attention_mask.masked_fill(~causal_mask,
-    torch.finfo(query.dtype).min)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     torch.finfo(query.dtype).min)
                 else:
                     attention_mask = causal_mask
                 attn_output = F.scaled_dot_product_attention(
                     query, key, value, attn_mask = attention_mask
-                ).transpose(1, 2)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).transpose(1, 2)
                 attn_weight = None
             else:
                 attn_output, attn_weight = self._attn(
                     query, key, value, causal_mask, attention_mask, head_mask
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         context_layer = self._merge_heads(
             attn_output, self.num_heads, self.head_dim
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         attn_output = self.c_proj(context_layer)
 
@@ -608,7 +687,8 @@ class QWenAttention(nn.Module):
                 self.use_flash_attn
                 and flash_attn_unpadded_func is not None
                 and not self.is_fp32
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 raise ValueError("Cannot output attentions while using flash - attn")
             elif not self.use_cache_quantization and SUPPORT_TORCH2:
                 raise ValueError("Cannot output attentions while using scaled_dot_product_attention")
@@ -625,14 +705,20 @@ class QWenMLP(nn.Module):
         super().__init__()
         self.w1 = nn.Linear(
             config.hidden_size, config.intermediate_size//2, bias = not config.no_bias
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.w2 = nn.Linear(
             config.hidden_size, config.intermediate_size//2, bias = not config.no_bias
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         ff_dim_in = config.intermediate_size//2
         self.c_proj = nn.Linear(ff_dim_in,
     config.hidden_size,
-    bias = not config.no_bias)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     bias = not config.no_bias)
 
 
     def forward(self, hidden_states):
@@ -654,12 +740,16 @@ class QWenBlock(nn.Module):
         self.ln_1 = RMSNorm(
             hidden_size,
                 eps = config.layer_norm_epsilon,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.attn = QWenAttention(config)
         self.ln_2 = RMSNorm(
             hidden_size,
                 eps = config.layer_norm_epsilon,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.mlp = QWenMLP(config)
 
@@ -675,7 +765,8 @@ class QWenBlock(nn.Module):
             encoder_attention_mask: Optional[torch.FloatTensor] = None,
             use_cache: Optional[bool] = False,
             output_attentions: Optional[bool] = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         layernorm_output = self.ln_1(hidden_states)
 
         attn_outputs = self.attn(
@@ -686,7 +777,9 @@ class QWenBlock(nn.Module):
                 head_mask = head_mask,
                 use_cache = use_cache,
                 output_attentions = output_attentions,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         attn_output = attn_outputs[0]
 
         outputs = attn_outputs[1:]
@@ -740,8 +833,11 @@ class QWenPreTrainedModel(PreTrainedModel):
                     mean = 0.0,
                         std=(
                         self.config.initializer_range/math.sqrt(2 * self.config.num_hidden_layers)
-                    ),
-                        )
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
 
     def _set_gradient_checkpointing(self, module, value = False):
@@ -774,12 +870,16 @@ class QWenModel(QWenPreTrainedModel):
             assert config.rotary_pct < 1
             self.rotary_ndims = int(
                 config.kv_channels * config.rotary_pct
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         dim = (
             self.rotary_ndims
             if self.rotary_ndims is not None
             else config.kv_channels
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.rotary_emb = RotaryEmbedding(dim, base = config.rotary_emb_base)
 
         self.use_flash_attn = config.use_flash_attn
@@ -789,14 +889,22 @@ class QWenModel(QWenPreTrainedModel):
             [
                 QWenBlock(
                     config
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 for i in range(config.num_hidden_layers)
-            ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.ln_f = RMSNorm(
             self.embed_dim,
                 eps = config.layer_norm_epsilon,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.post_init()
 
@@ -831,26 +939,35 @@ class QWenModel(QWenPreTrainedModel):
             output_attentions: Optional[bool] = None,
             output_hidden_states: Optional[bool] = None,
             return_dict: Optional[bool] = None,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         output_attentions = (
             output_attentions
             if output_attentions is not None
             else self.config.output_attentions
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         output_hidden_states = (
             output_hidden_states
             if output_hidden_states is not None
             else self.config.output_hidden_states
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         use_cache = use_cache if use_cache is not None else self.config.use_cache
         return_dict = (
             return_dict if return_dict is not None else self.config.use_return_dict
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if input_ids is not None and inputs_embeds is not None:
             raise ValueError(
                 "You cannot specify both input_ids and inputs_embeds at the same time"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         elif input_ids is not None:
             input_shape = input_ids.size()
             input_ids = input_ids.view(-1, input_shape[-1])
@@ -882,7 +999,9 @@ class QWenModel(QWenPreTrainedModel):
                     input_shape[-1] + past_length,
                     dtype = torch.long,
                     device = device,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             position_ids = position_ids.unsqueeze(0).view(-1, input_shape[-1])
 
         if attention_mask is not None:
@@ -916,7 +1035,9 @@ class QWenModel(QWenPreTrainedModel):
             ntk_alpha_list = []
             if attention_mask is not None and kv_seq_len > self.seq_length:
                 true_seq_lens = attention_mask.squeeze(1).squeeze(1).eq(0).sum(dim=-1,
-    dtype = torch.int32)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     dtype = torch.int32)
                 for i in range(hidden_states.size()[0]):
                     true_seq_len = true_seq_lens[i].item()
                     ntk_alpha = self.get_ntk_alpha(true_seq_len)
@@ -927,8 +1048,11 @@ class QWenModel(QWenPreTrainedModel):
         self.rotary_emb._ntk_alpha_cached_list = ntk_alpha_list
         rotary_pos_emb_list = [
             self.rotary_emb(kv_seq_len,
-    ntk_alpha = ntk_alpha) for ntk_alpha in ntk_alpha_list
-        ]
+# BRACKET_SURGEON: disabled
+#     ntk_alpha = ntk_alpha) for ntk_alpha in ntk_alpha_list
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         hidden_states = self.drop(hidden_states)
         output_shape = input_shape + (hidden_states.size(-1),)
@@ -937,7 +1061,9 @@ class QWenModel(QWenPreTrainedModel):
             if use_cache:
                 logger.warning_once(
                     "`use_cache = True` is incompatible with gradient checkpointing. Setting `use_cache = False`..."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 use_cache = False
 
         presents = () if use_cache else None
@@ -969,7 +1095,9 @@ class QWenModel(QWenPreTrainedModel):
                         head_mask[i],
                         encoder_hidden_states,
                         encoder_attention_mask,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 outputs = block(
                     hidden_states,
@@ -981,7 +1109,9 @@ class QWenModel(QWenPreTrainedModel):
                         encoder_attention_mask = encoder_attention_mask,
                         use_cache = use_cache,
                         output_attentions = output_attentions,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             hidden_states = outputs[0]
             if use_cache is True:
@@ -999,14 +1129,18 @@ class QWenModel(QWenPreTrainedModel):
         if not return_dict:
             return tuple(
                 v for v in [hidden_states, presents, all_hidden_states] if v is not None
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return BaseModelOutputWithPast(
             last_hidden_state = hidden_states,
                 past_key_values = presents,
                 hidden_states = all_hidden_states,
                 attentions = all_self_attentions,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
 class QWenLMHeadModel(QWenPreTrainedModel):
@@ -1018,7 +1152,8 @@ class QWenLMHeadModel(QWenPreTrainedModel):
         super().__init__(config)
         assert (
             config.bf16 + config.fp16 + config.fp32 <= 1
-        ), "Only one of \\"bf16\\", \\"fp16\\", \\"fp32\\" can be true"
+# BRACKET_SURGEON: disabled
+#         ), "Only one of \\"bf16\\", \\"fp16\\", \\"fp32\\" can be true"
 
         autoset_precision = config.bf16 + config.fp16 + config.fp32 == 0
 
@@ -1027,23 +1162,31 @@ class QWenLMHeadModel(QWenPreTrainedModel):
                 logger.warn(
                     "The model is automatically converting to bf16 for faster inference. "
                     "If you want to disable the automatic precision, please manually add bf16/fp16/fp32 = True to \\"AutoModelForCausalLM.from_pretrained\\"."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 config.bf16 = True
             elif SUPPORT_FP16:
                 logger.warn(
                     "The model is automatically converting to fp16 for faster inference. "
                     "If you want to disable the automatic precision, please manually add bf16/fp16/fp32 = True to \\"AutoModelForCausalLM.from_pretrained\\"."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 config.fp16 = True
             else:
                 config.fp32 = True
 
         if config.bf16 and SUPPORT_CUDA and not SUPPORT_BF16:
-            logger.warn("Your device does NOT seem to support bf16, you can switch to fp16 \
-    or fp32 by by passing fp16/fp32 = True in \\"AutoModelForCausalLM.from_pretrained\\".")
+            logger.warn("Your device does NOT seem to support bf16, you can switch to fp16 \"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     or fp32 by by passing fp16/fp32 = True in \\"AutoModelForCausalLM.from_pretrained\\".")
         if config.fp16 and SUPPORT_CUDA and not SUPPORT_FP16:
-            logger.warn("Your device does NOT support faster inference with fp16,
-    please switch to fp32 which is likely to be faster")
+            logger.warn("Your device does NOT support faster inference with fp16,"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     please switch to fp32 which is likely to be faster")
         if config.fp32:
             if SUPPORT_BF16:
                 logger.warn("Your device support faster inference by passing bf16 = True in \\"AutoModelForCausalLM.from_pretrained\\".")
@@ -1084,7 +1227,8 @@ class QWenLMHeadModel(QWenPreTrainedModel):
 
     def prepare_inputs_for_generation(
         self, input_ids, past_key_values = None, inputs_embeds = None, **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         if past_key_values:
             input_ids = input_ids[:, -1].unsqueeze(-1)
 
@@ -1103,8 +1247,11 @@ class QWenLMHeadModel(QWenPreTrainedModel):
                 "past_key_values": past_key_values,
                     "use_cache": kwargs.get("use_cache"),
                     "attention_mask": attention_mask,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return model_inputs
 
 
@@ -1128,7 +1275,9 @@ class QWenLMHeadModel(QWenPreTrainedModel):
 
         return_dict = (
             return_dict if return_dict is not None else self.config.use_return_dict
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         transformer_outputs = self.transformer(
             input_ids,
@@ -1144,7 +1293,9 @@ class QWenLMHeadModel(QWenPreTrainedModel):
                 output_attentions = output_attentions,
                 output_hidden_states = output_hidden_states,
                 return_dict = return_dict,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         hidden_states = transformer_outputs[0]
 
         lm_logits = self.lm_head(hidden_states)
@@ -1157,7 +1308,9 @@ class QWenLMHeadModel(QWenPreTrainedModel):
             loss_fct = CrossEntropyLoss()
             loss = loss_fct(
                 shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if not return_dict:
             output = (lm_logits,) + transformer_outputs[1:]
@@ -1169,7 +1322,9 @@ class QWenLMHeadModel(QWenPreTrainedModel):
                 past_key_values = transformer_outputs.past_key_values,
                 hidden_states = transformer_outputs.hidden_states,
                 attentions = transformer_outputs.attentions,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     @staticmethod
 
@@ -1182,9 +1337,13 @@ class QWenLMHeadModel(QWenPreTrainedModel):
             tuple(
                 past_state.index_select(0, beam_idx.to(past_state.device))
                 for past_state in layer_past
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             for layer_past in past_key_values
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def chat(
@@ -1221,11 +1380,15 @@ class QWenLMHeadModel(QWenPreTrainedModel):
                 system = system,
                 max_window_size = max_window_size,
                 chat_format = generation_config.chat_format,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         stop_words_ids.extend(get_stop_words_ids(
             generation_config.chat_format, tokenizer
-        ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ))
         input_ids = torch.tensor([context_tokens]).to(self.device)
         outputs = self.generate(
             input_ids,
@@ -1233,7 +1396,9 @@ class QWenLMHeadModel(QWenPreTrainedModel):
                         return_dict_in_generate = False,
                         generation_config = generation_config,
                         **kwargs,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         response = decode_tokens(
             outputs[0],
@@ -1243,7 +1408,9 @@ class QWenLMHeadModel(QWenPreTrainedModel):
                 chat_format = generation_config.chat_format,
                 verbose = False,
                 errors='replace'
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # as history is a copy of the user inputs,
             # we can always return the new turn to the user.
@@ -1282,16 +1449,22 @@ class QWenLMHeadModel(QWenPreTrainedModel):
                 system = system,
                 max_window_size = max_window_size,
                 chat_format = generation_config.chat_format,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         stop_words_ids.extend(get_stop_words_ids(
             generation_config.chat_format, tokenizer
-        ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ))
         if stop_words_ids is not None:
             stop_words_logits_processor = StopWordsLogitsProcessor(
                 stop_words_ids = stop_words_ids,
                     eos_token_id = generation_config.eos_token_id,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             if logits_processor is None:
                 logits_processor = LogitsProcessorList([stop_words_logits_processor])
             else:
@@ -1300,11 +1473,15 @@ class QWenLMHeadModel(QWenPreTrainedModel):
 
         from transformers_stream_generator.main import (NewGenerationMixin,
 
-            StreamGenerationConfig)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             StreamGenerationConfig)
         self.__class__.generate_stream = NewGenerationMixin.generate
         self.__class__.sample_stream = NewGenerationMixin.sample_stream
         stream_config = StreamGenerationConfig(**generation_config.to_dict(),
-    do_stream = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     do_stream = True)
 
 
         def stream_generator():
@@ -1315,11 +1492,14 @@ class QWenLMHeadModel(QWenPreTrainedModel):
                         generation_config = stream_config,
                         logits_processor = logits_processor,
                         seed=-1,
-                        **kwargs):
+# BRACKET_SURGEON: disabled
+#                         **kwargs):
                 outputs.append(token.item())
                 yield tokenizer.decode(outputs,
     skip_special_tokens = True,
-    errors='ignore')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     errors='ignore')
 
         return stream_generator()
 
@@ -1332,7 +1512,9 @@ class QWenLMHeadModel(QWenPreTrainedModel):
             stopping_criteria: Optional[StoppingCriteriaList] = None,
             prefix_allowed_tokens_fn: Optional[
             Callable[[int, torch.Tensor], List[int]]
-        ] = None,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ] = None,
             synced_gpus: Optional[bool] = None,
             assistant_model: Optional["PreTrainedModel"] = None,
             streamer: Optional["BaseStreamer"] = None,
@@ -1351,7 +1533,9 @@ class QWenLMHeadModel(QWenPreTrainedModel):
             stop_words_logits_processor = StopWordsLogitsProcessor(
                 stop_words_ids = stop_words_ids,
                     eos_token_id = generation_config.eos_token_id,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             if logits_processor is None:
                 logits_processor = LogitsProcessorList([stop_words_logits_processor])
             else:
@@ -1367,7 +1551,9 @@ class QWenLMHeadModel(QWenPreTrainedModel):
                 assistant_model = assistant_model,
                 streamer = streamer,
                 **kwargs,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
 class RotaryEmbedding(torch.nn.Module):
@@ -1398,8 +1584,12 @@ class RotaryEmbedding(torch.nn.Module):
     self.dim,
     2,
     device = self.inv_freq.device).float()/self.dim
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self._seq_len_cached = max(2 * seqlen, 16)
             self._ntk_alpha_cached = ntk_alpha
             seq = torch.arange(self._seq_len_cached, device = self.inv_freq.device)
@@ -1431,7 +1621,7 @@ def _rotate_half(x):
 
 
 def apply_rotary_pos_emb(t, freqs):
-    """ Apply rotary embedding to the first rotary_dim of the iput
+    """ Apply rotary embedding to the first rotary_dim of the iput"""
 
     Arguments:
       t (tensor(batch_size, seq_len, n_head, head_dim)):
@@ -1439,13 +1629,16 @@ def apply_rotary_pos_emb(t, freqs):
       freqs (list[tensor(1,
     seq_len,
     1,
-    rotary_dim),
+# BRACKET_SURGEON: disabled
+#     rotary_dim),
     tensor(1,
     seq_len,
     1,
-    rotary_dim)]):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     rotary_dim)]):
         the cached cos/sin position embeddings
-    """
+    """"""
     rot_dim = freqs[0].shape[-1]
     cos, sin = freqs
     t_float = t.float()

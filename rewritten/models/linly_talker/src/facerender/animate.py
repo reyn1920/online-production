@@ -58,15 +58,21 @@ class AnimateFromCoeff:
         generator = OcclusionAwareSPADEGenerator(
             **config["model_params"]["generator_params"],
                 **config["model_params"]["common_params"],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         kp_extractor = KPDetector(
             **config["model_params"]["kp_detector_params"],
                 **config["model_params"]["common_params"],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         he_estimator = HEEstimator(
             **config["model_params"]["he_estimator_params"],
                 **config["model_params"]["common_params"],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         mapping = MappingNet(**config["model_params"]["mapping_params"])
 
         generator.to(device)
@@ -89,27 +95,37 @@ class AnimateFromCoeff:
                         kp_detector = kp_extractor,
                         generator = generator,
                         he_estimator = None,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 self.load_cpk_facevid2vid(
                     sadtalker_path["free_view_checkpoint"],
                         kp_detector = kp_extractor,
                         generator = generator,
                         he_estimator = he_estimator,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
         else:
             raise AttributeError(
                 "Checkpoint should be specified for video head pose estimator."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if sadtalker_path["mappingnet_checkpoint"] is not None:
             self.load_cpk_mapping(
                 sadtalker_path["mappingnet_checkpoint"], mapping = mapping
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             raise AttributeError(
                 "Checkpoint should be specified for video head pose estimator."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.kp_extractor = kp_extractor
             self.generator = generator
@@ -131,7 +147,8 @@ class AnimateFromCoeff:
             kp_detector = None,
             he_estimator = None,
             device="cpu",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
         checkpoint = safetensors.torch.load_file(checkpoint_path)
 
@@ -169,7 +186,8 @@ class AnimateFromCoeff:
             optimizer_kp_detector = None,
             optimizer_he_estimator = None,
             device="cpu",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         checkpoint = torch.load(checkpoint_path, map_location = torch.device(device))
         if generator is not None:
             generator.load_state_dict(checkpoint["generator"])
@@ -183,18 +201,24 @@ class AnimateFromCoeff:
             except Exception:
                 print(
                     "No discriminator in the state - dict. Dicriminator will be randomly initialized"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         if optimizer_generator is not None:
             optimizer_generator.load_state_dict(checkpoint["optimizer_generator"])
         if optimizer_discriminator is not None:
             try:
                 optimizer_discriminator.load_state_dict(
                     checkpoint["optimizer_discriminator"]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except RuntimeError as e:
                 print(
                     "No discriminator optimizer in the state - dict. Optimizer will be not initialized"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         if optimizer_kp_detector is not None:
             optimizer_kp_detector.load_state_dict(checkpoint["optimizer_kp_detector"])
         if optimizer_he_estimator is not None:
@@ -211,7 +235,8 @@ class AnimateFromCoeff:
             optimizer_mapping = None,
             optimizer_discriminator = None,
             device="cpu",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         checkpoint = torch.load(checkpoint_path, map_location = torch.device(device))
         if mapping is not None:
             mapping.load_state_dict(checkpoint["mapping"])
@@ -222,7 +247,9 @@ class AnimateFromCoeff:
         if optimizer_discriminator is not None:
             optimizer_discriminator.load_state_dict(
                 checkpoint["optimizer_discriminator"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return checkpoint["epoch"]
 
@@ -238,7 +265,8 @@ class AnimateFromCoeff:
             preprocess="crop",
             img_size = 256,
             fps = 25,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
         source_image = x["source_image"].type(torch.FloatTensor)
         source_semantics = x["source_semantics"].type(torch.FloatTensor)
@@ -260,11 +288,15 @@ class AnimateFromCoeff:
                 None,
                 None,
                 use_exp = True,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         predictions_video = predictions_video.reshape(
             (-1,) + predictions_video.shape[2:]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         predictions_video = predictions_video[:frame_num]
 
         video = []
@@ -282,14 +314,22 @@ class AnimateFromCoeff:
                 cv2.resize(
                     result_i,
                         (img_size, int(img_size * original_size[1]/original_size[0])),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 for result_i in result
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             # result = [ cv2.cvtColor(cv2.resize(result_i, (img_size,
     int(img_size * original_size[1]/original_size[0]) )),
-    cv2.COLOR_BGR2RGB) for result_i in result ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     cv2.COLOR_BGR2RGB) for result_i in result ]
             # result = [ cv2.cvtColor(result_i,
-    cv2.COLOR_BGR2RGB) for result_i in result ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     cv2.COLOR_BGR2RGB) for result_i in result ]
 
         video_name = x["video_name"] + ".mp4"
         path = os.path.join(video_save_dir, "temp_" + video_name)
@@ -331,7 +371,9 @@ class AnimateFromCoeff:
                     audio_path,
                     full_video_path,
                     extended_crop = True if "ext" in preprocess.lower() else False,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             print(f"The generated video is named {video_save_dir}/{video_name_full}")
         else:
             full_video_path = av_path
@@ -346,25 +388,35 @@ class AnimateFromCoeff:
             try:
                 enhanced_images_gen_with_len = enhancer_generator_with_len(
                     full_video_path, method = enhancer, bg_upsampler = background_enhancer
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 imageio.mimsave(
                     enhanced_path, enhanced_images_gen_with_len, fps = float(fps)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 # print(enhanced_images_gen_with_len.shape)
                 # save_video(enhanced_path, enhanced_images_gen_with_len, fps, img_size)
             except Exception:
                 enhanced_images_gen_with_len = enhancer_list(
                     full_video_path, method = enhancer, bg_upsampler = background_enhancer
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 # print(enhanced_images_gen_with_len.shape)
                 # save_video(enhanced_path, enhanced_images_gen_with_len, fps, img_size)
                 imageio.mimsave(
                     enhanced_path, enhanced_images_gen_with_len, fps = float(fps)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             save_video_with_watermark(
                 enhanced_path, audio_path, av_path_enhancer, watermark = False
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             # print(f'The generated video is named {video_save_dir}/{video_name_enhancer}')
             os.remove(enhanced_path)
 

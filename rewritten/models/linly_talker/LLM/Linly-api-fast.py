@@ -40,7 +40,7 @@ async def create_item(request: Request):
     temperature = json_post_list.get("temperature")  # 获取请求中的温度参数
 
     # 调用模型进行对话生成
-    prompt = f"请用少于25个字回答以下问题 ### Instruction:{prompt}  ### Response:"
+    prompt = f"请用少于25个字回答以下问题 ### Instruction:{prompt}  ### Response:""
     inputs = tokenizer(prompt, return_tensors="pt").to("cuda:0")
     generate_ids = model.generate(
         inputs.input_ids,
@@ -53,11 +53,12 @@ async def create_item(request: Request):
         eos_token_id=2,
         bos_token_id=1,
         pad_token_id=0,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     response = tokenizer.batch_decode(
         generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
     )[0]
-    response = response.split("### Response:")[-1]
+    response = response.split("### Response:")[-1]"
     now = datetime.datetime.now()  # 获取当前时间
     time = now.strftime("%Y-%m-%d %H:%M:%S")  # 格式化时间为字符串
     # 构建响应JSON
@@ -66,9 +67,10 @@ async def create_item(request: Request):
         # "history": history,
         "status": 200,
         "time": time,
-    }
+# BRACKET_SURGEON: disabled
+#     }
     # 构建日志信息
-    log = "[" + time + "] " + '", prompt:"' + prompt + '", response:"' + repr(response) + '"'
+    log = "[" + time + "] " + '", prompt:"' + prompt + '", response:"' + repr(response) + '"'"
     print(log)  # 打印日志
     torch_gc()  # 执行GPU内存清理
     return answer  # 返回响应
@@ -82,7 +84,8 @@ if __name__ == "__main__":
         device_map="cuda:0",
         torch_dtype=torch.bfloat16,
         trust_remote_code=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, trust_remote_code=True)
     model.eval()  # 设置模型为评估模式
     # 启动FastAPI应用

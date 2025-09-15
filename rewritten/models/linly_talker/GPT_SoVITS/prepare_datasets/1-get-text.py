@@ -81,7 +81,8 @@ if os.path.exists(txt_path) is False:
                 name = os.path.basename(name)
                 phones, word2ph, norm_text = clean_text(
                     text.replace("%", "-").replace("￥", ","), lan
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 path_bert = "%s/%s.pt" % (bert_dir, name)
                 if os.path.exists(path_bert) is False and lan == "zh":
                     bert_feature = get_bert_feature(norm_text, word2ph)
@@ -109,7 +110,8 @@ if os.path.exists(txt_path) is False:
         "EN": "en",
         "en": "en",
         "En": "en",
-    }
+# BRACKET_SURGEON: disabled
+#     }
     for line in lines[int(i_part) :: int(all_parts)]:
         try:
             wav_name, spk_name, language, text = line.split("|")

@@ -24,7 +24,8 @@ class Record:
             rate=self.sample_rate,
             input=True,
             frames_per_buffer=self.chunk,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         print("开始录音...")
 

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI GIMP Automation Integration
 
 Provides comprehensive automation for GIMP image editing and graphic design.
@@ -19,7 +19,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import base64
@@ -53,7 +53,9 @@ except ImportError:
     IMAGE_LIBS_AVAILABLE = False
     print(
         "Warning: Image processing libraries not available. Install with: pip install Pillow numpy"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 # Add project root to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -112,7 +114,7 @@ class ImageFile:
     channels: int = 3
     color_mode: str = "RGB"
     size_bytes: int = 0
-    dpi: Tuple[int, int] = (72, 72)
+    dpi: Tuple[int, int] = (72, 72):
     created_at: str = ""
     metadata: Dict[str, Any] = None
 
@@ -152,18 +154,18 @@ class DesignSpec:
     fonts: List[str] = None
     images: List[str] = None
     logo_path: Optional[str] = None
-    background_color: str = "#FFFFFF"
-    text_color: str = "#000000"
-    accent_color: str = "#007ACC"
+    background_color: str = "#FFFFFF""
+    text_color: str = "#000000""
+    accent_color: str = "#007ACC""
     style: str = "modern"
     metadata: Dict[str, Any] = None
 
 
 class GIMPAutomation:
-    """
+    """"""
     Comprehensive GIMP automation system for image editing and graphic design.
     Integrates with TRAE.AI content pipeline for automated visual content creation.
-    """
+    """"""
 
 
     def __init__(self, secrets_db_path: str = "data / secrets.sqlite"):
@@ -203,19 +205,25 @@ class GIMPAutomation:
                     "/Applications / GIMP.app / Contents / MacOS / gimp",
                     "/usr / local / bin / gimp",
                     "/opt / homebrew / bin / gimp",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
         elif system == "windows":
             possible_paths = [
                 "C:\\\\Program Files\\\\GIMP 2\\\\bin\\\\gimp - 2.10.exe",
-                    "C:\\\\Program Files (x86)\\\\GIMP 2\\\\bin\\\\gimp - 2.10.exe",
+                    "C:\\\\Program Files (x86)\\\\GIMP 2\\\\bin\\\\gimp - 2.10.exe",:
                     "gimp.exe",  # If in PATH
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         else:  # Linux
             possible_paths = [
                 "/usr / bin / gimp",
                     "/usr / local / bin / gimp",
                     "gimp",  # If in PATH
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
         for path in possible_paths:
             if os.path.exists(path) or shutil.which(path):
@@ -235,7 +243,9 @@ class GIMPAutomation:
                 Path.home()/"Library"
                 / "Application Support"/"GIMP"/"2.10"
                 / "scripts"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         elif system == "windows":
             base_dir = Path.home()/"AppData"/"Roaming"/"GIMP"/"2.10"/"scripts"
         else:  # Linux
@@ -256,12 +266,15 @@ class GIMPAutomation:
                     "title_area": {"x": 50, "y": 50, "width": 980, "height": 200},
                         "content_area": {"x": 50, "y": 300, "width": 980, "height": 600},
                         "logo_area": {"x": 900, "y": 950, "width": 150, "height": 100},
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "fonts": {
                     "title": {"family": "Arial Bold", "size": 48},
                         "content": {"family": "Arial", "size": 24},
-                        },
-                    },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
                 DesignTemplate.YOUTUBE_THUMBNAIL.value: {
                 "dimensions": (1280, 720),
                     "dpi": 72,
@@ -270,12 +283,15 @@ class GIMPAutomation:
                     "title_area": {"x": 50, "y": 50, "width": 800, "height": 150},
                         "image_area": {"x": 50, "y": 220, "width": 600, "height": 400},
                         "overlay_area": {"x": 700, "y": 220, "width": 530, "height": 400},
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "fonts": {
                     "title": {"family": "Arial Black", "size": 64},
                         "subtitle": {"family": "Arial Bold", "size": 32},
-                        },
-                    },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
                 DesignTemplate.BLOG_HEADER.value: {
                 "dimensions": (1200, 600),
                     "dpi": 72,
@@ -283,12 +299,15 @@ class GIMPAutomation:
                     "layout": {
                     "title_area": {"x": 100, "y": 200, "width": 1000, "height": 200},
                         "subtitle_area": {"x": 100, "y": 420, "width": 1000, "height": 80},
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "fonts": {
                     "title": {"family": "Arial Bold", "size": 56},
                         "subtitle": {"family": "Arial", "size": 28},
-                        },
-                    },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
                 DesignTemplate.LOGO.value: {
                 "dimensions": (512, 512),
                     "dpi": 300,
@@ -296,35 +315,42 @@ class GIMPAutomation:
                     "layout": {
                     "icon_area": {"x": 50, "y": 50, "width": 200, "height": 200},
                         "text_area": {"x": 270, "y": 100, "width": 200, "height": 100},
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "fonts": {"brand": {"family": "Arial Bold", "size": 36}},
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _load_brand_assets(self) -> Dict[str, Any]:
         """Load brand assets and guidelines."""
         return {
             "colors": {
-                "primary": "#007ACC",
-                    "secondary": "#FF6B35",
-                    "accent": "#4ECDC4",
-                    "neutral_dark": "#2C3E50",
-                    "neutral_light": "#ECF0F1",
-                    "white": "#FFFFFF",
-                    "black": "#000000",
-                    },
+                "primary": "#007ACC","
+                    "secondary": "#FF6B35","
+                    "accent": "#4ECDC4","
+                    "neutral_dark": "#2C3E50","
+                    "neutral_light": "#ECF0F1","
+                    "white": "#FFFFFF","
+                    "black": "#000000","
+# BRACKET_SURGEON: disabled
+#                     },
                 "fonts": {
                 "primary": "Arial",
                     "secondary": "Helvetica",
                     "accent": "Georgia",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "spacing": {"small": 8, "medium": 16, "large": 32, "xlarge": 64},
                 "effects": {
                 "shadow": {"offset": (2, 2), "blur": 4, "color": "rgba(0,0,0,0.3)"},
                     "glow": {"blur": 8, "color": "rgba(255,255,255,0.8)"},
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def initialize(self) -> bool:
@@ -339,7 +365,9 @@ class GIMPAutomation:
             if not IMAGE_LIBS_AVAILABLE:
                 self.logger.warning(
                     "Image processing libraries not available. Some features may be limited."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Install custom scripts
             await self._install_custom_scripts()
@@ -382,10 +410,12 @@ class GIMPAutomation:
         """Install custom GIMP scripts for automation."""
         try:
             # Create a simple batch processing script
-            batch_script = """
+            batch_script = """"""
 (define (trae - batch - process input - file output - file operations)
   (let* ((image (car (gimp - file - load RUN - NONINTERACTIVE input - file input - file)))
-         (drawable (car (gimp - image - get - active - layer image))))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#          (drawable (car (gimp - image - get - active - layer image))))
 
     ; Apply operations based on the operations list
     ; This is a simplified version - full implementation would parse operations
@@ -401,9 +431,13 @@ class GIMPAutomation:
 
     ; Clean up
     (gimp - image - delete image)
-  )
-)
-"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#   )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
+""""""
 
             script_path = self.gimp_scripts_dir/"trae - automation.scm"
             with open(script_path, "w") as f:
@@ -424,7 +458,9 @@ class GIMPAutomation:
                     capture_output = True,
                     text = True,
                     timeout = 10,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if result.returncode == 0:
                 self.logger.info(f"GIMP version: {result.stdout.strip()}")
@@ -451,7 +487,9 @@ class GIMPAutomation:
                     format = ImageFormat(path.suffix.lower().lstrip(".")),
                     size_bytes = stat.st_size,
                     created_at = datetime.fromtimestamp(stat.st_ctime).isoformat(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Use PIL for detailed analysis if available
             if IMAGE_LIBS_AVAILABLE:
@@ -473,8 +511,10 @@ class GIMPAutomation:
                             and img.is_animated,
                                 "exif": (
                                 dict(img.getexif()) if hasattr(img, "getexif") else {}
-                            ),
-                                }
+# BRACKET_SURGEON: disabled
+#                             ),
+# BRACKET_SURGEON: disabled
+#                                 }
 
                 except Exception as e:
                     self.logger.warning(f"Detailed image analysis failed: {e}")
@@ -494,7 +534,8 @@ class GIMPAutomation:
             template: Optional[DesignTemplate] = None,
             quality: ProcessingQuality = ProcessingQuality.STANDARD,
             priority: int = 5,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Create a new image processing task."""
         task_id = str(uuid.uuid4())
 
@@ -507,7 +548,9 @@ class GIMPAutomation:
                 quality = quality,
                 priority = priority,
                 created_at = datetime.now().isoformat(),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Add to queue (sorted by priority)
         self.processing_queue.append(task)
@@ -556,7 +599,9 @@ class GIMPAutomation:
             for i, operation in enumerate(task.operations):
                 self.logger.info(
                     f"Processing operation {i + 1}/{len(task.operations)}: {operation.get('type')}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Update progress
                 task.progress = (i / len(task.operations)) * 100
@@ -590,7 +635,8 @@ class GIMPAutomation:
                     datetime.fromisoformat(task.completed_at)
                     - datetime.fromisoformat(task.started_at)
                 ).total_seconds(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             task.status = "failed"
@@ -763,7 +809,7 @@ class GIMPAutomation:
     def _adjust_images(
         self, input_files: List[str], params: Dict[str, Any]
     ) -> List[str]:
-        """Adjust image properties (brightness, contrast, etc.)."""
+        """Adjust image properties (brightness, contrast, etc.).""":
         output_files = []
 
         for input_file in input_files:
@@ -825,13 +871,17 @@ class GIMPAutomation:
                             if overlay_img.size != result.size:
                                 overlay_img = overlay_img.resize(
                                     result.size, Image.Resampling.LANCZOS
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                             # Composite with alpha blending if possible
                             if overlay_img.mode == "RGBA":
                                 result = Image.alpha_composite(
                                     result.convert("RGBA"), overlay_img
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                             else:
                                 result = Image.blend(result, overlay_img, 0.5)
 
@@ -855,7 +905,7 @@ class GIMPAutomation:
         text = params.get("text", "")
         position = params.get("position", (50, 50))
         font_size = params.get("font_size", 24)
-        color = params.get("color", "#FFFFFF")
+        color = params.get("color", "#FFFFFF")"
 
         for input_file in input_files:
             output_file = self._get_temp_file(".png")
@@ -909,7 +959,8 @@ class GIMPAutomation:
                 IMAGE_LIBS_AVAILABLE
                 and watermark_path
                 and os.path.exists(watermark_path)
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 try:
                     with Image.open(input_file) as img:
                         with Image.open(watermark_path) as watermark:
@@ -973,13 +1024,16 @@ class GIMPAutomation:
                         if target_format.upper() == "JPEG" and img.mode in (
                             "RGBA",
                                 "LA",
-                                ):
+# BRACKET_SURGEON: disabled
+#                                 ):
                             # Convert to RGB for JPEG
                             background = Image.new("RGB", img.size, (255, 255, 255))
                             background.paste(
                                 img,
                                     mask = img.split()[-1] if img.mode == "RGBA" else None,
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                             img = background
 
                         # Save with appropriate parameters
@@ -989,7 +1043,9 @@ class GIMPAutomation:
                                     format = target_format,
                                     quality = quality,
                                     optimize = True,
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                         else:
                             img.save(output_file, format = target_format)
 
@@ -1073,20 +1129,26 @@ class GIMPAutomation:
                     y = (
                         subtitle_area["y"]
                         + (subtitle_area["height"] - text_height) // 2
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     draw.text((x,
-    y),
+# BRACKET_SURGEON: disabled
+#     y),
     spec.subtitle,
     fill = spec.text_color,
-    font = font)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     font = font)
 
                 # Add logo if provided
                 if (
                     spec.logo_path
                     and os.path.exists(spec.logo_path)
                     and "logo_area" in layout
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     logo_area = layout["logo_area"]
 
                     with Image.open(spec.logo_path) as logo:
@@ -1094,7 +1156,9 @@ class GIMPAutomation:
                         logo.thumbnail(
                             (logo_area["width"], logo_area["height"]),
                                 Image.Resampling.LANCZOS,
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                         # Center logo in area
                         x = logo_area["x"] + (logo_area["width"] - logo.width) // 2
@@ -1116,7 +1180,9 @@ class GIMPAutomation:
                                 bg_img = bg_img.resize(
                                     (image_area["width"], image_area["height"]),
                                         Image.Resampling.LANCZOS,
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
 
                                 img.paste(bg_img, (image_area["x"], image_area["y"]))
                             break  # Use first available image
@@ -1162,7 +1228,9 @@ class GIMPAutomation:
                     ".bmp",
                     ".tiff",
                     ".webp",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             image_files = []
 
             for ext in image_extensions:
@@ -1182,7 +1250,9 @@ class GIMPAutomation:
                         output_path = str(output_file),
                         operations = operations,
                         quality = ProcessingQuality.HIGH,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 task = next((t for t in self.processing_queue if t.id == task_id), None)
                 if task:
@@ -1195,7 +1265,8 @@ class GIMPAutomation:
                 "processed_files": len(tasks),
                     "results": results,
                     "output_directory": str(output_path),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Batch processing error: {e}")
@@ -1214,7 +1285,8 @@ class GIMPAutomation:
                     "created_at": task.created_at,
                     "started_at": task.started_at,
                     "error": task.error,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Check queue
         for task in self.processing_queue:
@@ -1225,7 +1297,8 @@ class GIMPAutomation:
                         "progress": task.progress,
                         "created_at": task.created_at,
                         "position_in_queue": self.processing_queue.index(task),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         return None
 
@@ -1236,28 +1309,32 @@ class GIMPAutomation:
             "status": "healthy",
                 "timestamp": datetime.now().isoformat(),
                 "components": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Check GIMP availability
         health["components"]["gimp"] = {
             "available": bool(self.gimp_path),
                 "path": self.gimp_path,
                 "scripts_dir": str(self.gimp_scripts_dir),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Check image libraries
         health["components"]["image_libs"] = {
             "available": IMAGE_LIBS_AVAILABLE,
                 "pil": "PIL" in sys.modules,
                 "numpy": "numpy" in sys.modules,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Check processing status
         health["components"]["processing"] = {
             "active_tasks": len(self.active_tasks),
                 "queued_tasks": len(self.processing_queue),
                 "max_workers": self.max_workers,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Overall status
         if not health["components"]["gimp"]["available"]:
@@ -1303,9 +1380,11 @@ if __name__ == "__main__":
                     dimensions=(1080, 1080),
                     title="Test Post",
                     subtitle="Created with TRAE.AI",
-                    background_color="#007ACC",
-                    text_color="#FFFFFF",
-                    )
+                    background_color="#007ACC","
+                    text_color="#FFFFFF","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             try:
                 design_path = await automation.create_design_from_template(spec)

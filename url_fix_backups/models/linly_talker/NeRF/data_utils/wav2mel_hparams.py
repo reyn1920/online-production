@@ -20,12 +20,12 @@ class HParams:
 # Default hyperparameters
 hparams = HParams(
     num_mels = 80,  # Number of mel - spectrogram channels \
-    and local conditioning dimensionality
+#     and local conditioning dimensionality
     #  network
     rescale = True,  # Whether to rescale audio prior to preprocessing
     rescaling_max = 0.9,  # Rescaling value
     # Use LWS (https://github.com / Jonathan - LeRoux / lws) for STFT \
-    and phase reconstruction
+#     and phase reconstruction
     # It"s preferred to set True to use with https://github.com / r9y9 / wavenet_vocoder
     # Does not work if n_ffit is not multiple of hop_size!!
     use_lws = False,
@@ -33,7 +33,9 @@ hparams = HParams(
     hop_size = 200,  # For 16000Hz, 200 = 12.5 ms (0.0125 * sample_rate)
     win_size = 800,  # For 16000Hz,
     800 = 50 ms (If None,
-    win_size = n_fft) (0.05 * sample_rate)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     win_size = n_fft) (0.05 * sample_rate)
     sample_rate = 16000,  # 16000Hz (corresponding to librispeech) (sox --i <filename>)
     frame_shift_ms = None,  # Can replace hop_size parameter. (Recommended: 12.5)
     # Mel and Linear spectrograms normalization / scaling and clipping
@@ -42,17 +44,25 @@ hparams = HParams(
     allow_clipping_in_normalization = True,  # Only relevant if mel_normalization = True
     symmetric_mels = True,
         # Whether to scale the data to be symmetric around 0. (Also multiplies the output range by 2,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
         # faster and cleaner convergence)
     max_abs_value = 4.0,
         # max absolute value of data. If symmetric,
     data will be [-max,
     max] else [0,
-    max] (Must not
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     max] (Must not
     # be too big to avoid gradient explosion,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
         # not too small for fast convergence)
     # Contribution by @begeekmyfriend
     # Spectrogram Pre - Emphasis (Lfilter: Reduce spectrogram noise \
-    and helps model certitude
+#     and helps model certitude
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
     # levels. Also allows for better G&L phase reconstruction)
     preemphasize = True,  # whether to apply filter
     preemphasis = 0.97,  # filter coefficient.
@@ -62,6 +72,8 @@ hparams = HParams(
         fmin = 65,
         # Set this to 55 if your speaker is male! if female,
     95 should help taking off noise. (To
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
     # test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
     fmax = 6000,  # To be increased / reduced depending on data.
     ###################### Our training parameters #################################
@@ -81,4 +93,6 @@ hparams = HParams(
         syncnet_checkpoint_interval = 10000,
         disc_wt = 0.07,
         disc_initial_learning_rate = 1e-4,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )

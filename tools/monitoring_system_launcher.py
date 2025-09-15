@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Launcher for the monitoring subsystem.
 Purpose: start cleanly; if it exits non - zero, watchdog restarts it per policy.
-"""
+""""""
 
 import os
 import signal

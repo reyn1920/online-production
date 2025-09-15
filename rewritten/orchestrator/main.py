@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Orchestrator - Main Coordination Service
 Handles agent coordination, task distribution, and system monitoring
-"""
+""""""
 
 import asyncio
 import logging
@@ -29,7 +29,8 @@ from sqlalchemy import (
     Integer,
     String,
     create_engine,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
@@ -39,7 +40,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 class Config:
     # Database
-    DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@postgres:5432/trae_ai")
+    DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@postgres:5432/trae_ai"):
     REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379")
 
     # Services
@@ -47,7 +48,8 @@ class Config:
     MARKETING_AGENT_URL = os.getenv("MARKETING_AGENT_URL", "http://marketing_agent:8002")
     MONETIZATION_BUNDLE_URL = os.getenv(
         "MONETIZATION_BUNDLE_URL", "http://monetization_bundle:8003"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     REVENUE_TRACKER_URL = os.getenv("REVENUE_TRACKER_URL", "http://revenue_tracker:8004")
 
     # System
@@ -176,7 +178,8 @@ class MarketingCampaignRequest(BaseModel):
 task_counter = Counter("orchestrator_tasks_total", "Total tasks processed", ["agent", "status"])
 task_duration = Histogram(
     "orchestrator_task_duration_seconds", "Task processing duration", ["agent"]
-)
+# BRACKET_SURGEON: disabled
+# )
 active_tasks_gauge = Gauge("orchestrator_active_tasks", "Currently active tasks")
 agent_health_gauge = Gauge("orchestrator_agent_health", "Agent health score", ["agent"])
 
@@ -200,7 +203,8 @@ class TraeAIOrchestrator:
             "marketing_agent": config.MARKETING_AGENT_URL,
             "monetization_bundle": config.MONETIZATION_BUNDLE_URL,
             "revenue_tracker": config.REVENUE_TRACKER_URL,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.active_tasks = {}
         self.task_workers = []
         self.system_start_time = datetime.utcnow()
@@ -228,19 +232,22 @@ class TraeAIOrchestrator:
             self.health_check_agents,
             CronTrigger(second="*/30"),  # Every 30 seconds
             id="health_check",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         scheduler.add_job(
             self.cleanup_old_tasks,
             CronTrigger(hour=2),  # Daily at 2 AM
             id="cleanup_tasks",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         scheduler.add_job(
             self.generate_system_report,
             CronTrigger(hour="*/6"),  # Every 6 hours
             id="system_report",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         logger.info("TRAE.AI Orchestrator initialized successfully")
 
@@ -303,7 +310,8 @@ class TraeAIOrchestrator:
             # Update task with result
             await self.update_task_status(
                 task_id, "completed", result=result, completed_at=datetime.utcnow()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Update metrics
             task_counter.labels(agent=agent, status="completed").inc()
@@ -367,18 +375,22 @@ class TraeAIOrchestrator:
                             "agent": task.agent,
                             "task_type": task.task_type,
                             "payload": task.payload,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
                     logger.info(
                         f"Task {task_id} queued for retry ({task.retry_count}/{task.max_retries})"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     # Mark as failed
                     task.status = "failed"
                     task.completed_at = datetime.utcnow()
                     logger.error(
                         f"Task {task_id} failed permanently after {task.retry_count} retries"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 db.commit()
         finally:
@@ -401,7 +413,8 @@ class TraeAIOrchestrator:
                 # Update agent status
                 agent_status = (
                     db.query(AgentStatus).filter(AgentStatus.agent_name == agent_name).first()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if not agent_status:
                     agent_status = AgentStatus(
@@ -409,7 +422,8 @@ class TraeAIOrchestrator:
                         status=status,
                         health_score=health_score,
                         last_heartbeat=datetime.utcnow(),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     db.add(agent_status)
                 else:
                     agent_status.status = status
@@ -434,9 +448,11 @@ class TraeAIOrchestrator:
                 .filter(
                     Task.completed_at < cutoff_date,
                     Task.status.in_(["completed", "failed"]),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 .delete()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             db.commit()
             logger.info(f"Cleaned up {deleted_count} old tasks")
@@ -465,7 +481,8 @@ class TraeAIOrchestrator:
                     "failed": failed_tasks,
                     "active": active_tasks,
                     "success_rate": (completed_tasks / max(total_tasks, 1)) * 100,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "agents": {
                     agent.agent_name: {
                         "status": agent.status,
@@ -473,10 +490,13 @@ class TraeAIOrchestrator:
                         "active_tasks": agent.active_tasks,
                         "total_completed": agent.total_tasks_completed,
                         "error_count": agent.error_count,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     for agent in agents_health
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             # Store report in Redis
             await redis_client.setex("system_report", 3600, str(report))  # 1 hour TTL
@@ -506,7 +526,8 @@ app = FastAPI(
     description="Central coordination service for TRAE.AI agents",
     version="1.0.0",
     lifespan=lifespan,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # CORS middleware
 app.add_middleware(
@@ -515,7 +536,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Dependency to get database session
 
@@ -537,7 +559,8 @@ async def health_check():
         "timestamp": datetime.utcnow().isoformat(),
         "service": "orchestrator",
         "version": "1.0.0",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @app.get("/metrics")
@@ -561,7 +584,8 @@ async def get_system_status(db: Session = Depends(get_db)):
             "active_tasks": agent.active_tasks,
             "total_completed": agent.total_tasks_completed,
             "error_count": agent.error_count,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     # Get task counts
     active_tasks = db.query(Task).filter(Task.status.in_(["pending", "running"])).count()
@@ -569,7 +593,8 @@ async def get_system_status(db: Session = Depends(get_db)):
         db.query(Task)
         .filter(Task.completed_at >= datetime.utcnow().date(), Task.status == "completed")
         .count()
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     return SystemStatus(
         status="healthy",
@@ -580,7 +605,8 @@ async def get_system_status(db: Session = Depends(get_db)):
         system_load=psutil.cpu_percent(interval=1) / 100.0,
         memory_usage=psutil.virtual_memory().percent / 100.0,
         uptime=str(datetime.utcnow() - orchestrator.system_start_time),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @app.post("/api/tasks", response_model=TaskResponse)
@@ -600,7 +626,8 @@ async def create_task(task_request: TaskRequest, db: Session = Depends(get_db)):
         payload=task_request.payload,
         max_retries=task_request.max_retries,
         status="pending",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     db.add(task)
     db.commit()
@@ -612,8 +639,10 @@ async def create_task(task_request: TaskRequest, db: Session = Depends(get_db)):
             "agent": task_request.agent,
             "task_type": task_request.task_type,
             "payload": task_request.payload,
-        }
-    )
+# BRACKET_SURGEON: disabled
+#         }
+# BRACKET_SURGEON: disabled
+#     )
 
     # Update metrics
     active_tasks_gauge.inc()
@@ -623,7 +652,8 @@ async def create_task(task_request: TaskRequest, db: Session = Depends(get_db)):
         status="queued",
         message="Task queued for execution",
         estimated_completion=datetime.utcnow() + timedelta(seconds=task_request.timeout),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @app.get("/api/tasks/{task_id}")
@@ -645,7 +675,8 @@ async def get_task_status(task_id: str, db: Session = Depends(get_db)):
         "result": task.result,
         "error": task.error,
         "retry_count": task.retry_count,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @app.post("/api/content/create")
@@ -656,7 +687,8 @@ async def create_content(request: ContentCreationRequest, background_tasks: Back
         agent="content_agent",
         priority=7,
         payload=request.dict(),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Create task
     db = SessionLocal()
@@ -675,7 +707,8 @@ async def create_marketing_campaign(request: MarketingCampaignRequest):
         agent="marketing_agent",
         priority=6,
         payload=request.dict(),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Create task
     db = SessionLocal()
@@ -694,7 +727,8 @@ async def create_ebook(topic: str, pages: int = 50):
         agent="monetization_bundle",
         priority=5,
         payload={"topic": topic, "pages": pages},
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Create task
     db = SessionLocal()
@@ -737,7 +771,8 @@ if __name__ == "__main__":
     logging.basicConfig(
         level=getattr(logging, config.LOG_LEVEL),
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     logger.info("Starting TRAE.AI Orchestrator")
     logger.info(f"Environment: {config.ENVIRONMENT}")

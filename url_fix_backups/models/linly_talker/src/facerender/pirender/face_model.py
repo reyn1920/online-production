@@ -7,13 +7,13 @@ from .base_function import ADAINHourglass, FineDecoder, FineEncoder, LayerNorm2d
 
 
 def convert_flow_to_deformation(flow):
-    r"""convert flow fields to deformations.
+    r"""convert flow fields to deformations."""
 
     Args:
         flow (tensor): Flow field obtained by the model
     Returns:
         deformation (tensor): The deformation used for warpping
-    """
+    """"""
     b, c, h, w = flow.shape
     flow_norm = 2 * torch.cat([flow[:, :1, ...] / (w - 1), flow[:, 1:, ...] / (h - 1)], 1)
     grid = make_coordinate_grid(flow)
@@ -22,13 +22,13 @@ def convert_flow_to_deformation(flow):
 
 
 def make_coordinate_grid(flow):
-    r"""obtain coordinate grid with the same size as the flow filed.
+    r"""obtain coordinate grid with the same size as the flow filed."""
 
     Args:
         flow (tensor): Flow field obtained by the model
     Returns:
         grid (tensor): The grid with the same size as the input flow
-    """
+    """"""
     b, c, h, w = flow.shape
 
     x = torch.arange(w).to(flow)
@@ -46,15 +46,16 @@ def make_coordinate_grid(flow):
 
 
 def warp_image(source_image, deformation):
-    r"""warp the input image according to the deformation
+    r"""warp the input image according to the deformation"""
 
     Args:
         source_image (tensor): source images to be warpped
         deformation (tensor): deformations used to warp the images; value in range (-1,
-    1)
+# BRACKET_SURGEON: disabled
+#     1)
     Returns:
         output (tensor): the warpped images
-    """
+    """"""
     _, h_old, w_old, _ = deformation.shape
     _, _, h, w = source_image.shape
     if h_old != h or w_old != w:
@@ -91,13 +92,15 @@ class MappingNet(nn.Module):
 
         self.first = nn.Sequential(
             torch.nn.Conv1d(coeff_nc, descriptor_nc, kernel_size=7, padding=0, bias=True)
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         for i in range(layer):
             net = nn.Sequential(
                 nonlinearity,
                 torch.nn.Conv1d(descriptor_nc, descriptor_nc, kernel_size=3, padding=0, dilation=3),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             setattr(self, "encoder" + str(i), net)
 
         self.pooling = nn.AdaptiveAvgPool1d(1)
@@ -122,7 +125,8 @@ class WarpingNet(nn.Module):
         encoder_layer,
         decoder_layer,
         use_spect,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(WarpingNet, self).__init__()
 
         nonlinearity = nn.LeakyReLU(0.1)
@@ -132,13 +136,15 @@ class WarpingNet(nn.Module):
         self.descriptor_nc = descriptor_nc
         self.hourglass = ADAINHourglass(
             image_nc, self.descriptor_nc, base_nc, max_nc, encoder_layer, decoder_layer, **kwargs
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.flow_out = nn.Sequential(
             norm_layer(self.hourglass.output_nc),
             nonlinearity,
             nn.Conv2d(self.hourglass.output_nc, 2, kernel_size=7, stride=1, padding=3),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.pool = nn.AdaptiveAvgPool2d(1)
 
@@ -162,14 +168,16 @@ class EditingNet(nn.Module):
             "norm_layer": norm_layer,
             "nonlinearity": nonlinearity,
             "use_spect": use_spect,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.descriptor_nc = descriptor_nc
 
         # encoder part
         self.encoder = FineEncoder(image_nc * 2, base_nc, max_nc, layer, **kwargs)
         self.decoder = FineDecoder(
             image_nc, self.descriptor_nc, base_nc, max_nc, layer, num_res_blocks, **kwargs
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, input_image, warp_image, descriptor):
         x = torch.cat([input_image, warp_image], 1)

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Environment Configuration Manager
 
 This module handles secure loading and validation of environment variables
@@ -8,7 +8,7 @@ following go - live security best practices:
 - Use environment variable hierarchy
 - Validate required configurations
 - Provide secure defaults
-"""
+""""""
 
 import logging
 import os
@@ -194,14 +194,16 @@ class EnvironmentConfig:
             f"Dog={self.pet_care_apis.is_dog_api_enabled}, "
             f"Cat={self.pet_care_apis.is_cat_api_enabled}, "
             f"Petfinder={self.pet_care_apis.is_petfinder_enabled}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logger.info(
             f"Geocoding APIs status: Nominatim={self.geocoding_apis.is_nominatim_enabled}, "
             f"OpenCage={self.geocoding_apis.is_opencage_enabled}, "
             f"Foursquare={self.geocoding_apis.is_foursquare_enabled}, "
             f"Google Places={self.geocoding_apis.is_google_places_enabled}, "
             f"Yelp={self.geocoding_apis.is_yelp_enabled}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _get_env(self, key: str, default: str = "") -> str:
         """Get environment variable with default"""
@@ -227,7 +229,8 @@ class EnvironmentConfig:
             pool_size=self._get_int_env("DATABASE_POOL_SIZE", 10),
             max_overflow=self._get_int_env("DATABASE_MAX_OVERFLOW", 20),
             echo=self._get_bool_env("DATABASE_ECHO", False),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _load_security_config(self) -> SecurityConfig:
         """Load security configuration"""
@@ -248,7 +251,8 @@ class EnvironmentConfig:
             jwt_secret=jwt_secret,
             jwt_algorithm=self._get_env("JWT_ALGORITHM", "HS256"),
             jwt_expiration_hours=self._get_int_env("JWT_EXPIRATION_HOURS", 24),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _load_pet_care_apis(self) -> PetCareAPIs:
         """Load pet care API configurations"""
@@ -258,7 +262,8 @@ class EnvironmentConfig:
             cat_api_key=self._get_env("CAT_API_KEY") or None,
             petfinder_key=self._get_env("PETFINDER_KEY") or None,
             petfinder_secret=self._get_env("PETFINDER_SECRET") or None,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _load_vet_services(self) -> VetServicesAPIs:
         """Load veterinary service API configurations"""
@@ -267,7 +272,8 @@ class EnvironmentConfig:
             pawp_key=self._get_env("PAWP_API_KEY") or None,
             airvet_key=self._get_env("AIRVET_API_KEY") or None,
             calendly_token=self._get_env("CALENDLY_TOKEN") or None,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _load_geocoding_apis(self) -> GeocodingAPIs:
         """Load geocoding and places API configurations"""
@@ -277,7 +283,8 @@ class EnvironmentConfig:
             foursquare_api_key=self._get_env("FOURSQUARE_API_KEY") or None,
             google_places_key=self._get_env("GOOGLE_PLACES_KEY") or None,
             yelp_api_key=self._get_env("YELP_API_KEY") or None,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _load_affiliate_config(self) -> AffiliateConfig:
         """Load affiliate program configurations"""
@@ -287,7 +294,8 @@ class EnvironmentConfig:
             tractor_supply_key=self._get_env("TRACTOR_SUPPLY_KEY") or None,
             only_natural_pet_key=self._get_env("ONLY_NATURAL_PET_KEY") or None,
             barkbox_id=self._get_env("BARKBOX_AFFILIATE_ID") or None,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _load_feature_flags(self) -> FeatureFlags:
         """Load feature flag configurations"""
@@ -300,7 +308,8 @@ class EnvironmentConfig:
             pet_care_apis=self._get_bool_env("ENABLE_PET_CARE_APIS", True),
             geocoding_apis=self._get_bool_env("ENABLE_GEOCODING_APIS", False),
             places_apis=self._get_bool_env("ENABLE_PLACES_APIS", False),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _validate_config(self):
         """Validate critical configuration settings"""
@@ -331,24 +340,28 @@ class EnvironmentConfig:
                 "dog_api": self.pet_care_apis.is_dog_api_enabled,
                 "cat_api": self.pet_care_apis.is_cat_api_enabled,
                 "petfinder": self.pet_care_apis.is_petfinder_enabled,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "vet_services": {
                 "vetster": self.vet_services.is_vetster_enabled,
                 "pawp": self.vet_services.is_pawp_enabled,
                 "airvet": self.vet_services.is_airvet_enabled,
                 "calendly": self.vet_services.is_calendly_enabled,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "geocoding_apis": {
                 "nominatim": self.geocoding_apis.is_nominatim_enabled,
                 "opencage": self.geocoding_apis.is_opencage_enabled,
                 "foursquare": self.geocoding_apis.is_foursquare_enabled,
                 "google_places": self.geocoding_apis.is_google_places_enabled,
                 "yelp": self.geocoding_apis.is_yelp_enabled,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "affiliates": {
                 "enabled_programs": self.affiliates.enabled_programs,
                 "total_enabled": len(self.affiliates.enabled_programs),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "features": {
                 "affiliate_processing": self.features.affiliate_processing,
                 "pet_search": self.features.pet_search,
@@ -357,8 +370,10 @@ class EnvironmentConfig:
                 "analytics": self.features.analytics,
                 "geocoding_apis": self.features.geocoding_apis,
                 "places_apis": self.features.places_apis,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Global configuration instance
@@ -375,4 +390,5 @@ __all__ = [
     "GeocodingAPIs",
     "AffiliateConfig",
     "FeatureFlags",
-]
+# BRACKET_SURGEON: disabled
+# ]

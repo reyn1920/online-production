@@ -1,11 +1,11 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Research Agent - The Intelligence Officer
 
-The system's eyes and ears that runs the "Hypocrisy Engine," finds new
+The system's eyes and ears that runs the "Hypocrisy Engine," finds new'
 zero - cost APIs and affiliates, and incorporates Autonomous Trend Forecasting
 using pytrends to preempt market shifts.
-"""
+""""""
 
 import json
 import logging
@@ -129,7 +129,9 @@ class ResearchAgent(BaseAgent):
             "https://api.publicapis.org / entries",
                 "https://github.com / public - apis / public - apis",
                 "https://rapidapi.com / search/",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Hypocrisy detection patterns
         self.contradiction_patterns = [
@@ -137,7 +139,9 @@ class ResearchAgent(BaseAgent):
                 (r"impossible", r"definitely\\s + possible"),
                 (r"will\\s + never", r"will\\s + definitely"),
                 (r"completely\\s + against", r"fully\\s + support"),
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     def get_status(self) -> Dict[str, Any]:
@@ -149,7 +153,8 @@ class ResearchAgent(BaseAgent):
             "last_trend_check": getattr(self, "last_trend_check", None),
             "last_api_discovery": getattr(self, "last_api_discovery", None),
             "last_hypocrisy_scan": getattr(self, "last_hypocrisy_scan", None),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def get_capabilities(self) -> List[str]:
@@ -161,7 +166,9 @@ class ResearchAgent(BaseAgent):
                 "market_intelligence",
                 "autonomous_monitoring",
                 "research_target_management",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     def _execute_with_monitoring(:
@@ -181,7 +188,8 @@ class ResearchAgent(BaseAgent):
             "success": True,
             "data": result,
             "execution_time": time.time() - start_time,
-        }
+# BRACKET_SURGEON: disabled
+#         }
             elif task == "analyze_trends":
                 keywords = context.get("keywords", []) if context else []
                 result = self.analyze_trends(keywords)
@@ -189,7 +197,8 @@ class ResearchAgent(BaseAgent):
             "success": True,
             "data": result,
             "execution_time": time.time() - start_time,
-        }
+# BRACKET_SURGEON: disabled
+#         }
             elif task == "run_hypocrisy_engine":
                 target = context.get("target") if context else None
                 result = self.run_hypocrisy_engine(target)
@@ -197,20 +206,24 @@ class ResearchAgent(BaseAgent):
             "success": True,
             "data": result,
             "execution_time": time.time() - start_time,
-        }
+# BRACKET_SURGEON: disabled
+#         }
             else:
+                pass
         return {
             "success": False,
             "error": f"Unknown task: {task}",
             "execution_time": time.time() - start_time,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         except Exception as e:
             self.logger.error(f"Task execution failed: {e}")
         return {
             "success": False,
             "error": str(e),
             "execution_time": time.time() - start_time,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
     def _rephrase_task(self, original_task: str) -> str:
@@ -224,11 +237,13 @@ class ResearchAgent(BaseAgent):
             "check trends": "analyze_trends",
             "hypocrisy check": "run_hypocrisy_engine",
             "contradiction detection": "run_hypocrisy_engine",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         lower_task = original_task.lower().strip()
         for key, value in task_mappings.items():
             if key in lower_task:
+                pass
         return value
 
         return original_task
@@ -269,7 +284,9 @@ class ResearchAgent(BaseAgent):
             "https://api.publicapis.org / entries",
                 "https://github.com / public - apis / public - apis",
                 "https://rapidapi.com / search/",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Hypocrisy detection patterns
         self.contradiction_patterns = [
@@ -277,14 +294,16 @@ class ResearchAgent(BaseAgent):
                 (r"impossible", r"definitely\\s + possible"),
                 (r"will\\s + never", r"will\\s + definitely"),
                 (r"completely\\s + against", r"fully\\s + support"),
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     def initialize_database(self):
         """Initialize research database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS trend_data (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         keyword TEXT NOT NULL,
@@ -294,12 +313,16 @@ class ResearchAgent(BaseAgent):
                         geographic_data TEXT NOT NULL,
                         timestamp TIMESTAMP NOT NULL,
                         confidence REAL NOT NULL
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS api_discoveries (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         api_name TEXT NOT NULL,
@@ -311,12 +334,16 @@ class ResearchAgent(BaseAgent):
                         rate_limits TEXT NOT NULL,
                         discovered_at TIMESTAMP NOT NULL,
                         quality_score REAL NOT NULL
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS hypocrisy_alerts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         target TEXT NOT NULL,
@@ -326,12 +353,16 @@ class ResearchAgent(BaseAgent):
                         confidence REAL NOT NULL,
                         evidence_urls TEXT NOT NULL,
                         detected_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS market_intelligence (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         sector TEXT NOT NULL,
@@ -341,12 +372,16 @@ class ResearchAgent(BaseAgent):
                         competitor_analysis TEXT NOT NULL,
                         market_sentiment REAL NOT NULL,
                         generated_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS research_targets (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         target_type TEXT NOT NULL,
@@ -354,9 +389,13 @@ class ResearchAgent(BaseAgent):
                         priority INTEGER NOT NULL,
                         last_researched TIMESTAMP,
                         created_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def start_monitoring(self):
@@ -368,19 +407,25 @@ class ResearchAgent(BaseAgent):
 
         # Start trend monitoring
         self.trend_thread = threading.Thread(target = self._trend_monitor,
-    daemon = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     daemon = True)
         self.trend_thread.start()
 
         # Start API discovery
         self.api_thread = threading.Thread(
             target = self._api_discovery_monitor, daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.api_thread.start()
 
         # Start hypocrisy scanning
         self.hypocrisy_thread = threading.Thread(
             target = self._hypocrisy_monitor, daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.hypocrisy_thread.start()
 
         self.logger.info("Research monitoring started")
@@ -406,7 +451,9 @@ class ResearchAgent(BaseAgent):
             # Build payload
             self.pytrends.build_payload(
                 keywords, cat = 0, timeframe = timeframe, geo="", gprop=""
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Get interest over time
             interest_over_time = self.pytrends.interest_over_time()
@@ -424,10 +471,14 @@ class ResearchAgent(BaseAgent):
                     if len(values) >= 2:
                         recent_avg = (
                             values[-5:].mean() if len(values) >= 5 else values[-1]
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         older_avg = (
                             values[:-5].mean() if len(values) >= 10 else values[0]
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                         if recent_avg > older_avg * 1.1:
                             trend_direction = "rising"
@@ -443,7 +494,8 @@ class ResearchAgent(BaseAgent):
                     if (
                         keyword in related_queries
                         and related_queries[keyword]["top"] is not None
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         related = related_queries[keyword]["top"]["query"].tolist()[:10]
 
                     # Get geographic data
@@ -460,8 +512,12 @@ class ResearchAgent(BaseAgent):
                                 geographic_data = geo_data,
                                 timestamp = datetime.now(),
                                 confidence = 0.8,
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Save trend data
             self._save_trend_data(trend_data)
@@ -500,7 +556,9 @@ class ResearchAgent(BaseAgent):
 
         self.logger.info(
             f"Discovered {len(unique_discoveries)} unique APIs from {len(discoveries)} total"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return unique_discoveries
 
 
@@ -509,7 +567,9 @@ class ResearchAgent(BaseAgent):
         discoveries = []
         try:
             response = requests.get("https://api.publicapis.org / entries",
-    timeout = 10)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 10)
             if response.status_code == 200:
                 data = response.json()
 
@@ -519,7 +579,8 @@ class ResearchAgent(BaseAgent):
                     if (
                         auth in ["", "no", "none"]
                         or "free" in entry.get("Description", "").lower()
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         discovery = APIDiscovery(
                             api_name = entry.get("API", "Unknown"),
                                 base_url = entry.get("Link", ""),
@@ -530,7 +591,9 @@ class ResearchAgent(BaseAgent):
                                 rate_limits={"source": "publicapis.org"},
                                 discovered_at = datetime.now(),
                                 quality_score = self._calculate_api_quality_score(entry),
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         discoveries.append(discovery)
         except Exception as e:
             self.logger.error(f"Error discovering from PublicAPIs: {e}")
@@ -548,50 +611,60 @@ class ResearchAgent(BaseAgent):
             "Link": "https://jsonplaceholder.typicode.com",
             "Description": "Fake REST API for testing and prototyping",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "httpbin",
             "Link": "https://httpbin.org",
             "Description": "HTTP request and response testing service",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "Cat Facts",
             "Link": "https://catfact.ninja",
             "Description": "Daily cat facts API",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "Dog API",
             "Link": "https://dog.ceo / dog - api",
             "Description": "Collection of dog images",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "Advice Slip",
             "Link": "https://api.adviceslip.com",
             "Description": "Random advice generator",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "JokeAPI",
             "Link": "https://jokeapi.dev",
             "Description": "Programming and general jokes",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "Numbers API",
             "Link": "http://numbersapi.com",
             "Description": "Interesting facts about numbers",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "Quotable",
             "Link": "https://quotable.io",
             "Description": "Random quotes API",
             "Auth": "none",
-        },
-                ]
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for api_data in free_apis:
             discovery = APIDiscovery(
@@ -604,7 +677,9 @@ class ResearchAgent(BaseAgent):
                     rate_limits={"source": "github_collections"},
                     discovered_at = datetime.now(),
                     quality_score = 0.8,  # High quality curated APIs
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             discoveries.append(discovery)
 
         return discoveries
@@ -621,32 +696,39 @@ class ResearchAgent(BaseAgent):
             "Link": "https://openweathermap.org / api",
             "Description": "Weather data API with free tier",
             "Auth": "apikey",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "News API",
             "Link": "https://newsapi.org",
             "Description": "News articles from various sources",
             "Auth": "apikey",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "CoinGecko",
             "Link": "https://coingecko.com / en / api",
             "Description": "Cryptocurrency data API",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "REST Countries",
             "Link": "https://restcountries.com",
             "Description": "Country information API",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "IP Geolocation",
             "Link": "https://ipapi.co",
             "Description": "IP address geolocation",
             "Auth": "none",
-        },
-                ]
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for api_data in rapidapi_free:
             discovery = APIDiscovery(
@@ -659,7 +741,9 @@ class ResearchAgent(BaseAgent):
                     rate_limits={"source": "rapidapi_free", "tier": "free"},
                     discovered_at = datetime.now(),
                     quality_score = 0.9,  # High quality commercial APIs
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             discoveries.append(discovery)
 
         return discoveries
@@ -675,20 +759,25 @@ class ResearchAgent(BaseAgent):
             "Link": "https://api.nasa.gov",
             "Description": "NASA datasets and imagery",
             "Auth": "apikey",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "USGS Earthquake",
             "Link": "https://earthquake.usgs.gov / fdsnws / event / 1/",
             "Description": "Real - time earthquake data",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "World Bank",
             "Link": "https://datahelpdesk.worldbank.org / knowledgebase / articles / 889392",
             "Description": "World development indicators",
             "Auth": "none",
-        },
-                ]
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for api_data in gov_apis:
             discovery = APIDiscovery(
@@ -701,7 +790,9 @@ class ResearchAgent(BaseAgent):
                     rate_limits={"source": "government", "reliability": "high"},
                     discovered_at = datetime.now(),
                     quality_score = 0.95,  # Government APIs are highly reliable
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             discoveries.append(discovery)
 
         return discoveries
@@ -717,26 +808,32 @@ class ResearchAgent(BaseAgent):
             "Link": "https://api.github.com",
             "Description": "GitHub repository and user data",
             "Auth": "oauth",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "Unsplash",
             "Link": "https://unsplash.com / developers",
             "Description": "High - quality stock photos",
             "Auth": "oauth",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "Lorem Picsum",
             "Link": "https://picsum.photos",
             "Description": "Lorem Ipsum for photos",
             "Auth": "none",
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "API": "QR Server",
             "Link": "https://goqr.me / api",
             "Description": "QR code generation",
             "Auth": "none",
-        },
-                ]
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for api_data in dev_apis:
             discovery = APIDiscovery(
@@ -749,7 +846,9 @@ class ResearchAgent(BaseAgent):
                     rate_limits={"source": "developer_friendly", "generous": True},
                     discovered_at = datetime.now(),
                     quality_score = 0.85,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             discoveries.append(discovery)
 
         return discoveries
@@ -790,7 +889,9 @@ class ResearchAgent(BaseAgent):
                             confidence = contradiction["confidence"],
                             evidence_urls = contradiction["evidence_urls"],
                             detected_at = datetime.now(),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     alerts.append(alert)
 
             except Exception as e:
@@ -828,7 +929,8 @@ class ResearchAgent(BaseAgent):
             "competitive_advantages": [],
         except Exception as e:
             pass
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
             # Calculate market sentiment
             market_sentiment = self._calculate_market_sentiment(trends)
@@ -841,7 +943,9 @@ class ResearchAgent(BaseAgent):
                     competitor_analysis = competitor_analysis,
                     market_sentiment = market_sentiment,
                     generated_at = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Save intelligence
             self._save_market_intelligence(intelligence)
@@ -858,7 +962,9 @@ class ResearchAgent(BaseAgent):
                     competitor_analysis={},
                     market_sentiment = 0.5,
                     generated_at = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _trend_monitor(self):
@@ -920,13 +1026,17 @@ class ResearchAgent(BaseAgent):
             "text": f"Sample statement 1 from {target}",
             "url": "https://example.com / 1",
             "date": datetime.now() - timedelta(days = 30),
-        },
+# BRACKET_SURGEON: disabled
+#         },
                 {
             "text": f"Sample statement 2 from {target}",
             "url": "https://example.com / 2",
             "date": datetime.now() - timedelta(days = 1),
-        },
-                ]
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     def _detect_contradictions(:
@@ -941,7 +1051,8 @@ class ResearchAgent(BaseAgent):
                 for pattern1, pattern2 in self.contradiction_patterns:
                     if re.search(pattern1, stmt1["text"], re.IGNORECASE) and re.search(
                         pattern2, stmt2["text"], re.IGNORECASE
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
 
                         contradictions.append(
                             {
@@ -950,8 +1061,11 @@ class ResearchAgent(BaseAgent):
             "type": "direct",  # Fixed: use valid constraint value instead of 'pattern_contradiction'
             "confidence": 0.7,
             "evidence_urls": [stmt1["url"], stmt2["url"]],
-        }
-                        )
+# BRACKET_SURGEON: disabled
+#         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         return contradictions
 
@@ -984,36 +1098,47 @@ class ResearchAgent(BaseAgent):
                     "blockchain",
                     "cloud computing",
                     "cybersecurity",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "finance": [
                 "fintech",
                     "cryptocurrency",
                     "digital banking",
                     "robo advisor",
                     "payment",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "health": [
                 "telemedicine",
                     "digital health",
                     "wearables",
                     "health app",
                     "medical AI",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "education": [
                 "edtech",
                     "online learning",
                     "e - learning",
                     "educational app",
                     "remote education",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
             "retail": [
                 "e - commerce",
                     "online shopping",
                     "retail tech",
                     "omnichannel",
                     "digital retail",
-                    ],
-        }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#         }
 
         return sector_keywords.get(sector.lower(), [sector])
 
@@ -1021,6 +1146,7 @@ class ResearchAgent(BaseAgent):
     def _calculate_market_sentiment(self, trends: List[TrendData]) -> float:
         """Calculate overall market sentiment from trends"""
         if not trends:
+            pass
         return 0.5
 
         rising_count = sum(1 for t in trends if t.trend_direction == "rising")
@@ -1036,35 +1162,42 @@ class ResearchAgent(BaseAgent):
         """Get research targets from database"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
-                """
+                """"""
                 SELECT target_value, priority, last_researched
                 FROM research_targets
                 WHERE target_type = ?
                 ORDER BY priority DESC, last_researched ASC
                 LIMIT 10
-            """,
+            ""","""
                 (target_type,),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         return [
                 {"target_value": row[0], "priority": row[1], "last_researched": row[2]}
                 for row in cursor.fetchall()
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
 
     def add_research_target(:
         self, target_type: str, target_value: str, priority: int = 1
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Add research target"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO research_targets
                 (target_type, target_value, priority, created_at)
                 VALUES (?, ?, ?, ?)
-            """,
+            ""","""
                 (target_type, target_value, priority, datetime.now().isoformat()),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _save_trend_data(self, trends: List[TrendData]):
@@ -1072,12 +1205,14 @@ class ResearchAgent(BaseAgent):
         with sqlite3.connect(self.db_path) as conn:
             for trend in trends:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO trend_data
                     (keyword, interest_score, trend_direction, related_queries,
-                        geographic_data, timestamp, confidence)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         geographic_data, timestamp, confidence)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         trend.keyword,
                             trend.interest_score,
@@ -1086,8 +1221,11 @@ class ResearchAgent(BaseAgent):
                             json.dumps(trend.geographic_data),
                             trend.timestamp.isoformat(),
                             trend.confidence,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
 
     def _save_api_discoveries(self, discoveries: List[APIDiscovery]):
@@ -1095,12 +1233,14 @@ class ResearchAgent(BaseAgent):
         with sqlite3.connect(self.db_path) as conn:
             for discovery in discoveries:
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO api_discoveries
                     (api_name, base_url, description, endpoints, authentication_type,
-                        cost_model, rate_limits, discovered_at, quality_score)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         cost_model, rate_limits, discovered_at, quality_score)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         discovery.api_name,
                             discovery.base_url,
@@ -1111,8 +1251,11 @@ class ResearchAgent(BaseAgent):
                             json.dumps(discovery.rate_limits),
                             discovery.discovered_at.isoformat(),
                             discovery.quality_score,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
 
     def _save_hypocrisy_alerts(self, alerts: List[HypocrisyAlert]):
@@ -1120,12 +1263,14 @@ class ResearchAgent(BaseAgent):
         with sqlite3.connect(self.db_path) as conn:
             for alert in alerts:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO hypocrisy_alerts
                     (target, statement_1, statement_2, contradiction_type,
-                        confidence, evidence_urls, detected_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         confidence, evidence_urls, detected_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         alert.target,
                             alert.statement_1,
@@ -1134,20 +1279,25 @@ class ResearchAgent(BaseAgent):
                             alert.confidence,
                             json.dumps(alert.evidence_urls),
                             alert.detected_at.isoformat(),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
 
     def _save_market_intelligence(self, intelligence: MarketIntelligence):
         """Save market intelligence to database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT INTO market_intelligence
                 (sector, key_trends, opportunities, threats, competitor_analysis,
-                    market_sentiment, generated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     market_sentiment, generated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     intelligence.sector,
                         json.dumps(intelligence.key_trends),
@@ -1156,8 +1306,11 @@ class ResearchAgent(BaseAgent):
                         json.dumps(intelligence.competitor_analysis),
                         intelligence.market_sentiment,
                         intelligence.generated_at.isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def execute_task(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -1205,7 +1358,9 @@ if __name__ == "__main__":
         for trend in trends:
             print(
                 f"- {trend.keyword}: {trend.interest_score} ({trend.trend_direction})"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Test API discovery
     apis = research_agent.discover_apis()

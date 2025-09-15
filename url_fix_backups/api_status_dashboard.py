@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 API Status Dashboard
 Real - time monitoring and management for 100+ APIs
 
@@ -14,7 +14,7 @@ Features:
 Usage:
     python api_status_dashboard.py
     Open http://localhost:8080 in browser
-"""
+""""""
 
 import asyncio
 import json
@@ -86,7 +86,8 @@ class APIStatusDashboard:
             total_daily_requests=0,
             overall_health_score=0,
             last_updated=datetime.now().isoformat(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.monitoring_active = False
         self.update_interval = 30  # seconds
@@ -118,8 +119,10 @@ class APIStatusDashboard:
                 {
                     "statuses": {k: asdict(v) for k, v in self.api_statuses.items()},
                     "metrics": asdict(self.system_metrics),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api / test/<api_key>")
         def test_api(api_key):
@@ -153,7 +156,8 @@ class APIStatusDashboard:
                 "timestamp": datetime.now().isoformat(),
                 "api_statuses": {k: asdict(v) for k, v in self.api_statuses.items()},
                 "system_metrics": asdict(self.system_metrics),
-            }
+# BRACKET_SURGEON: disabled
+#             }
             return jsonify(export_data)
 
     def setup_socketio_events(self):
@@ -167,8 +171,10 @@ class APIStatusDashboard:
                 {
                     "statuses": {k: asdict(v) for k, v in self.api_statuses.items()},
                     "metrics": asdict(self.system_metrics),
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.socketio.on("disconnect")
         def handle_disconnect():
@@ -181,8 +187,10 @@ class APIStatusDashboard:
                 {
                     "statuses": {k: asdict(v) for k, v in self.api_statuses.items()},
                     "metrics": asdict(self.system_metrics),
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
     def initialize_api_statuses(self):
         """Initialize API statuses from registry"""
@@ -204,7 +212,8 @@ class APIStatusDashboard:
                 phase=api_config["phase"],
                 priority=api_config["priority"],
                 cost_tier=api_config["cost"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         logger.info(f"Initialized {len(self.api_statuses)} API statuses")
 
@@ -236,7 +245,8 @@ class APIStatusDashboard:
                     "response_time": api_status.response_time,
                     "error_message": api_status.error_message,
                     "health_score": health_score,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 api_status.status = "error"
                 api_status.error_message = "No test result returned"
@@ -313,8 +323,10 @@ class APIStatusDashboard:
             {
                 "statuses": {k: asdict(v) for k, v in self.api_statuses.items()},
                 "metrics": asdict(self.system_metrics),
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         logger.info("Status update completed")
 
@@ -347,7 +359,8 @@ class APIStatusDashboard:
             total_daily_requests=total_daily_requests,
             overall_health_score=overall_health_score,
             last_updated=datetime.now().isoformat(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def start_monitoring(self):
         """Start continuous monitoring"""
@@ -373,7 +386,7 @@ class APIStatusDashboard:
 
     def get_dashboard_template(self) -> str:
         """Return HTML template for dashboard"""
-        return """
+        return """"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -387,39 +400,45 @@ class APIStatusDashboard:
             margin: 0;
             padding: 0;
             box - sizing: border - box;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         body {
             font - family: 'Segoe UI', Tahoma, Geneva, Verdana, sans - serif;
             background: linear - gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             min - height: 100vh;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .container {
             max - width: 1400px;
             margin: 0 auto;
             padding: 20px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .header {
             text - align: center;
             margin - bottom: 30px;
             color: white;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .header h1 {
             font - size: 2.5em;
             margin - bottom: 10px;
             text - shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metrics - grid {
             display: grid;
             grid - template - columns: repeat(auto - fit, minmax(250px, 1fr));
             gap: 20px;
             margin - bottom: 30px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric - card {
             background: white;
@@ -428,29 +447,34 @@ class APIStatusDashboard:
             box - shadow: 0 8px 32px rgba(0,0,0,0.1);
             text - align: center;
             transition: transform 0.3s ease;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric - card:hover {
             transform: translateY(-5px);
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric - value {
             font - size: 2.5em;
             font - weight: bold;
             margin - bottom: 10px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric - label {
             color: #666;
             font - size: 1.1em;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .status - grid {
             display: grid;
             grid - template - columns: repeat(auto - fill, minmax(300px, 1fr));
             gap: 20px;
             margin - bottom: 30px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .api - card {
             background: white;
@@ -458,23 +482,27 @@ class APIStatusDashboard:
             padding: 20px;
             box - shadow: 0 8px 32px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .api - card:hover {
             transform: translateY(-3px);
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .api - header {
             display: flex;
             justify - content: space - between;
             align - items: center;
             margin - bottom: 15px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .api - name {
             font - weight: bold;
             font - size: 1.2em;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .status - badge {
             padding: 5px 12px;
@@ -482,47 +510,56 @@ class APIStatusDashboard:
             font - size: 0.9em;
             font - weight: bold;
             text - transform: uppercase;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .status - active {
             background: #d4edda;
             color: #155724;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .status - inactive {
             background: #f8d7da;
             color: #721c24;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .status - error {
             background: #f5c6cb;
             color: #721c24;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .status - unknown {
             background: #e2e3e5;
             color: #383d41;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .api - details {
             display: grid;
             grid - template - columns: 1fr 1fr;
             gap: 10px;
             font - size: 0.9em;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .detail - item {
             display: flex;
             justify - content: space - between;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .detail - label {
             color: #666;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .detail - value {
             font - weight: bold;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .controls {
             background: white;
@@ -530,18 +567,21 @@ class APIStatusDashboard:
             padding: 25px;
             box - shadow: 0 8px 32px rgba(0,0,0,0.1);
             margin - bottom: 30px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .controls h3 {
             margin - bottom: 20px;
             color: #333;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .button - group {
             display: flex;
             gap: 15px;
             flex - wrap: wrap;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn {
             padding: 12px 24px;
@@ -552,43 +592,52 @@ class APIStatusDashboard:
             transition: all 0.3s ease;
             text - decoration: none;
             display: inline - block;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn - primary {
             background: #007bff;
             color: white;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn - primary:hover {
             background: #0056b3;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn - success {
             background: #28a745;
             color: white;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn - success:hover {
             background: #1e7e34;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn - warning {
             background: #ffc107;
             color: #212529;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn - warning:hover {
             background: #e0a800;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn - danger {
             background: #dc3545;
             color: white;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn - danger:hover {
             background: #c82333;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .health - bar {
             width: 100%;
@@ -597,31 +646,37 @@ class APIStatusDashboard:
             border - radius: 4px;
             overflow: hidden;
             margin - top: 10px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .health - fill {
             height: 100%;
             transition: width 0.3s ease;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .health - excellent {
             background: #28a745;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .health - good {
             background: #ffc107;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .health - poor {
             background: #dc3545;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .last - updated {
             text - align: center;
             color: white;
             margin - top: 20px;
             font - style: italic;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .phase - badge {
             background: #6c757d;
@@ -630,33 +685,41 @@ class APIStatusDashboard:
             border - radius: 12px;
             font - size: 0.8em;
             margin - left: 10px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .priority - high {
             background: #dc3545;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .priority - medium {
             background: #ffc107;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .priority - low {
             background: #28a745;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         @media (max - width: 768px) {
             .metrics - grid {
                 grid - template - columns: 1fr;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             .status - grid {
                 grid - template - columns: 1fr;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             .button - group {
                 flex - direction: column;
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
     </style>
 </head>
 <body>
@@ -672,11 +735,11 @@ class APIStatusDashboard:
                 <div class="metric - label">Total APIs</div>
             </div>
             <div class="metric - card">
-                <div class="metric - value" id="active - apis" style="color: #28a745;">0</div>
+                <div class="metric - value" id="active - apis" style="color: #28a745;">0</div>"
                 <div class="metric - label">Active APIs</div>
             </div>
             <div class="metric - card">
-                <div class="metric - value" id="error - apis" style="color: #dc3545;">0</div>
+                <div class="metric - value" id="error - apis" style="color: #dc3545;">0</div>"
                 <div class="metric - label">Error APIs</div>
             </div>
             <div class="metric - card">
@@ -684,11 +747,11 @@ class APIStatusDashboard:
                 <div class="metric - label">Avg Response Time</div>
             </div>
             <div class="metric - card">
-                <div class="metric - value" id="health - score" style="color: #007bff;">0%</div>
+                <div class="metric - value" id="health - score" style="color: #007bff;">0%</div>"
                 <div class="metric - label">Overall Health</div>
             </div>
             <div class="metric - card">
-                <div class="metric - value" id="daily - cost" style="color: #ffc107;">$0.00</div>
+                <div class="metric - value" id="daily - cost" style="color: #ffc107;">$0.00</div>"
                 <div class="metric - label">Daily Cost</div>
             </div>
         </div>
@@ -718,11 +781,13 @@ class APIStatusDashboard:
 
         socket.on('connect', function() {
             console.log('Connected to dashboard');
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         socket.on('status_update', function(data) {
             updateDashboard(data);
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         function updateDashboard(data) {
             // Update metrics
@@ -742,12 +807,14 @@ class APIStatusDashboard:
             Object.entries(data.statuses).forEach(([apiKey, status]) => {
                 const card = createApiCard(apiKey, status);
                 grid.appendChild(card);
-            });
+# BRACKET_SURGEON: disabled
+#             });
 
             // Update last updated time
             document.getElementById('last - updated').textContent =
                 `Last updated: ${new Date(metrics.last_updated).toLocaleString()}`;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function createApiCard(apiKey, status) {
             const card = document.createElement('div');
@@ -796,7 +863,7 @@ class APIStatusDashboard:
                 <div class="health - bar">
                     <div class="health - fill ${healthClass}" style="width: ${status.health_score}%"></div>
                 </div>
-                ${status.error_message ? `<div style="color: #dc3545; font - size: 0.9em; margin - top: 10px;">⚠️ ${status.error_message}</div>` : ''}
+                ${status.error_message ? `<div style="color: #dc3545; font - size: 0.9em; margin - top: 10px;">⚠️ ${status.error_message}</div>` : ''}"
             `;
 
             // Add click handler for testing
@@ -804,11 +871,13 @@ class APIStatusDashboard:
             card.style.cursor = 'pointer';
 
             return card;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function refreshAll() {
             socket.emit('request_update');
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function testAll() {
             // This would trigger a full test of all APIs
@@ -819,12 +888,16 @@ class APIStatusDashboard:
                         alert('✅ All APIs tested successfully');
                     } else {
                         alert('❌ Test failed: ' + data.error);
-                    }
-                })
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 })
                 .catch(error => {
                     console.error('Test error:', error);
-                });
-        }
+# BRACKET_SURGEON: disabled
+#                 });
+# BRACKET_SURGEON: disabled
+#         }
 
         function testApi(apiKey) {
             fetch(`/api / test/${apiKey}`)
@@ -835,12 +908,16 @@ class APIStatusDashboard:
                         refreshAll();
                     } else {
                         alert(`❌ ${apiKey} test failed: ${data.error}`);
-                    }
-                })
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 })
                 .catch(error => {
                     console.error('Test error:', error);
-                });
-        }
+# BRACKET_SURGEON: disabled
+#                 });
+# BRACKET_SURGEON: disabled
+#         }
 
         function exportData() {
             fetch('/api / export')
@@ -855,11 +932,14 @@ class APIStatusDashboard:
                     a.download = `api_status_${new Date().toISOString().split('T')[0]}.json`;
                     a.click();
                     URL.revokeObjectURL(url);
-                })
+# BRACKET_SURGEON: disabled
+#                 })
                 .catch(error => {
                     console.error('Export error:', error);
-                });
-        }
+# BRACKET_SURGEON: disabled
+#                 });
+# BRACKET_SURGEON: disabled
+#         }
 
         function toggleMonitoring() {
             monitoringActive = !monitoringActive;
@@ -870,22 +950,26 @@ class APIStatusDashboard:
             } else {
                 button.textContent = '▶️ Resume Monitoring';
                 button.className = 'btn btn - success';
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         // Auto - refresh every 30 seconds
         setInterval(() => {
             if (monitoringActive) {
                 refreshAll();
-            }
-        }, 30000);
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }, 30000);
 
         // Initial load
         refreshAll();
     </script>
 </body>
 </html>
-        """
+        """"""
 
     def run(self, host="localhost", port=8080, debug=False):
         """Run the dashboard server"""

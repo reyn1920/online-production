@@ -29,12 +29,12 @@ class TikTokTokens:
 
 
 class TikTokClient:
-    """
-    Official TikTok Open API v2 (Developers) client.
+    """"""
+    Official TikTok Open API v2 (Developers) client.:
     Supports OAuth (authorization_code & refresh) and Content Posting API:
       - Direct Post (PULL_FROM_URL) -> publish_id
       - Status polling
-    """
+    """"""
 
 
     def __init__(
@@ -46,7 +46,8 @@ class TikTokClient:
             scopes=("video.upload", "video.publish"),
             enabled: bool = False,
             session: Optional[requests.Session] = None,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.client_key = client_key or ""
         self.client_secret = client_secret or ""
         self.redirect_uri = redirect_uri or ""
@@ -66,7 +67,8 @@ class TikTokClient:
             s.strip()
             for s in os.getenv("TIKTOK_SCOPES", "video.upload,video.publish").split(",")
             if s.strip()
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         return cls(
             client_key = os.getenv("TIKTOK_CLIENT_KEY", ""),
                 client_secret = os.getenv("TIKTOK_CLIENT_SECRET", ""),
@@ -74,18 +76,20 @@ class TikTokClient:
                 token_path = os.getenv("TIKTOK_TOKEN_FILE", "./config / tiktok.tokens.json"),
                 scopes = scopes,
                 enabled = enabled,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
     # ---------- status / light helpers ----------
 
 
         def status_light(self) -> Tuple[str, Dict]:
-        """
+            pass
+        """"""
         Returns ("green" | "purple" | "red", meta)
         - purple: missing keys / disabled
         - red: enabled but not authenticated / token invalid
         - green: authenticated & ready
-        """
+        """"""
         meta = {"enabled": self.enabled}
         if not self.enabled:
             return ("purple", {**meta, "reason": "disabled"})
@@ -96,7 +100,8 @@ class TikTokClient:
         return (
             "green",
                 {**meta, "open_id": self._tokens.open_id, "scopes": self._tokens.scope},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
 
     def ready(self) -> bool:
@@ -107,6 +112,7 @@ class TikTokClient:
 
 
         def _load_tokens(self):
+            pass
         try:
             if os.path.exists(self.token_path):
                 with open(self.token_path, "r") as f:
@@ -117,7 +123,8 @@ class TikTokClient:
                         expires_at = int(data.get("expires_at", 0)),
                         open_id = data.get("open_id"),
                         scope = data.get("scope"),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
         except Exception:
             self._tokens = None
 
@@ -132,10 +139,12 @@ class TikTokClient:
                         "expires_at": tokens.expires_at,
                         "open_id": tokens.open_id,
                         "scope": tokens.scope,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     f,
                     indent = 2,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
         self._tokens = tokens
 
 
@@ -146,6 +155,7 @@ class TikTokClient:
 
 
         def authorize_url(self, state: str) -> str:
+            pass
         scope_str = " ".join(self.scopes)  # space - delimited per TikTok docs
         q = {
             "client_key": self.client_key,
@@ -153,22 +163,24 @@ class TikTokClient:
                 "scope": scope_str,
                 "redirect_uri": self.redirect_uri,
                 "state": state,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return f"{TIKTOK_AUTH_URL}?{urllib.parse.urlencode(q)}"
 
 
     def exchange_code(self, code: str) -> TikTokTokens:
-        """
+        """"""
         Exchange authorization code for tokens.
         Docs: open.tiktokapis.com / v2 / oauth / token/ (grant_type = authorization_code)
-        """
+        """"""
         payload = {
             "client_key": self.client_key,
                 "client_secret": self.client_secret,
                 "code": code,
                 "grant_type": "authorization_code",
                 "redirect_uri": self.redirect_uri,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         r = self.http.post(TIKTOK_TOKEN_URL, json = payload, timeout = 30)
         r.raise_for_status()
         data = r.json().get("data") or {}
@@ -183,7 +195,8 @@ class TikTokClient:
                 expires_at = _now() + expires_in,
                 open_id = open_id,
                 scope = scope,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         self._save_tokens(tokens)
         return tokens
 
@@ -196,7 +209,8 @@ class TikTokClient:
                 "client_secret": self.client_secret,
                 "grant_type": "refresh_token",
                 "refresh_token": self._tokens.refresh_token,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         r = self.http.post(TIKTOK_TOKEN_URL, json = payload, timeout = 30)
         r.raise_for_status()
         data = r.json().get("data") or {}
@@ -211,7 +225,8 @@ class TikTokClient:
                 expires_at = _now() + expires_in,
                 open_id = open_id,
                 scope = scope,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         self._save_tokens(tokens)
         return tokens
 
@@ -230,22 +245,26 @@ class TikTokClient:
 
 
         def direct_post_from_url(self, video_url: str, caption: str) -> Dict:
-        """
+            pass
+        """"""
         Direct Post (PULL_FROM_URL).
         Requires scopes: video.upload + video.publish.
         Returns {publish_id, status_hint}
-        """
+        """"""
         headers = {
             **self._auth_headers(),
                 "Content - Type": "application / json; charset = UTF - 8",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         payload = {
             "source_info": {"source": "PULL_FROM_URL", "video_url": video_url},
                 "post_info": {"title": caption},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         r = self.http.post(
             TIKTOK_DIRECT_POST_INIT, headers = headers, json = payload, timeout = 60
-        )
+# BRACKET_SURGEON: disabled
+#         )
         r.raise_for_status()
         j = r.json()
         err = (j.get("error") or {}).get("code")
@@ -255,20 +274,23 @@ class TikTokClient:
         return {
             "publish_id": publish_id,
                 "hint": "use /tiktok / status?publish_id=... to poll",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def fetch_status(self, publish_id: str) -> Dict:
         headers = {
             **self._auth_headers(),
                 "Content - Type": "application / json; charset = UTF - 8",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         r = self.http.post(
             TIKTOK_STATUS_FETCH,
                 headers = headers,
                 json={"publish_id": publish_id},
                 timeout = 30,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         r.raise_for_status()
         return r.json()
 

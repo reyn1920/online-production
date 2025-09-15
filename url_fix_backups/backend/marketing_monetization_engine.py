@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Marketing & Monetization Engine
 
 Autonomous revenue generation system that creates and manages multiple income streams
@@ -29,7 +29,7 @@ Follows TRAE.AI System Constitution:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -211,11 +211,11 @@ class NewsletterCampaign:
 
 
 class MarketingMonetizationEngine:
-    """
+    """"""
     Autonomous marketing and monetization engine that creates and manages
     multiple revenue streams from content. Implements advanced marketing
     automation, affiliate management, and revenue optimization.
-    """
+    """"""
 
     def __init__(self, db_path: str = "data / marketing_monetization.sqlite"):
         self.logger = setup_logger("marketing_monetization_engine")
@@ -264,7 +264,7 @@ class MarketingMonetizationEngine:
 
         # Revenue targets table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS revenue_targets (
                 stream TEXT PRIMARY KEY,
                     monthly_target REAL NOT NULL,
@@ -273,13 +273,15 @@ class MarketingMonetizationEngine:
                     traffic_required INTEGER DEFAULT 0,
                     optimization_score REAL DEFAULT 0.0,
                     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Marketing campaigns table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS marketing_campaigns (
                 campaign_id TEXT PRIMARY KEY,
                     name TEXT NOT NULL,
@@ -296,13 +298,15 @@ class MarketingMonetizationEngine:
                     content_assets_json TEXT,
                     conversion_tracking_json TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Digital products table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS digital_products (
                 product_id TEXT PRIMARY KEY,
                     name TEXT NOT NULL,
@@ -320,13 +324,15 @@ class MarketingMonetizationEngine:
                     refund_rate REAL DEFAULT 0.0,
                     customer_satisfaction REAL DEFAULT 0.0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Affiliate programs table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS affiliate_programs (
                 program_id TEXT PRIMARY KEY,
                     company_name TEXT NOT NULL,
@@ -342,13 +348,15 @@ class MarketingMonetizationEngine:
                     gravity_score REAL DEFAULT 0.0,
                     is_active BOOLEAN DEFAULT 1,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Newsletter campaigns table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS newsletter_campaigns (
                 campaign_id TEXT PRIMARY KEY,
                     subject_line TEXT NOT NULL,
@@ -362,13 +370,15 @@ class MarketingMonetizationEngine:
                     unsubscribe_rate REAL DEFAULT 0.0,
                     spam_score REAL DEFAULT 0.0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Revenue tracking table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS revenue_tracking (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     date DATE NOT NULL,
@@ -381,13 +391,15 @@ class MarketingMonetizationEngine:
                     transaction_id TEXT,
                     metadata_json TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Customer analytics table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS customer_analytics (
                 customer_id TEXT PRIMARY KEY,
                     email TEXT,
@@ -402,13 +414,15 @@ class MarketingMonetizationEngine:
                     acquisition_source TEXT,
                     preferences_json TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Marketing automation table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS marketing_automation (
                 automation_id TEXT PRIMARY KEY,
                     name TEXT NOT NULL,
@@ -419,9 +433,11 @@ class MarketingMonetizationEngine:
                     execution_count INTEGER DEFAULT 0,
                     success_rate REAL DEFAULT 0.0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -446,7 +462,8 @@ class MarketingMonetizationEngine:
                 traffic_required=row[4],
                 optimization_score=row[5],
                 last_updated=datetime.fromisoformat(row[6]),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.revenue_targets[stream] = target
 
         conn.close()
@@ -469,7 +486,8 @@ class MarketingMonetizationEngine:
             RevenueStream.SOFTWARE_TOOLS: 5000.0,
             RevenueStream.LIVE_EVENTS: 1200.0,
             RevenueStream.LICENSING: 800.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for stream, target_amount in default_targets.items():
             self.set_revenue_target(stream, target_amount)
@@ -497,7 +515,8 @@ class MarketingMonetizationEngine:
                 epc=row[10],
                 gravity_score=row[11],
                 is_active=bool(row[12]),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.affiliate_programs[program.program_id] = program
 
         conn.close()
@@ -541,7 +560,8 @@ class MarketingMonetizationEngine:
             status=MonetizationStatus.PLANNING,
             roi=0.0,
             conversion_tracking={},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.active_campaigns[campaign_id] = campaign
         self._save_campaign_to_db(campaign)
@@ -575,7 +595,8 @@ class MarketingMonetizationEngine:
 
     def _execute_channel_campaign(
         self, campaign: MarketingCampaign, channel: MarketingChannel
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Execute campaign on a specific marketing channel."""
         if channel == MarketingChannel.EMAIL:
             self._execute_email_campaign(campaign)
@@ -606,7 +627,8 @@ class MarketingMonetizationEngine:
             revenue_generated=0.0,
             unsubscribe_rate=0.0,
             spam_score=0.0,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Send email (placeholder - would integrate with email service)
         self._send_newsletter_campaign(newsletter_campaign)
@@ -627,8 +649,10 @@ class MarketingMonetizationEngine:
                     "campaign_id": campaign.campaign_id,
                     "scheduled_time": datetime.now()
                     + timedelta(minutes=len(self.social_media_queue) * 30),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         self.logger.info(f"Scheduled {len(tweets)} tweets for campaign {campaign.campaign_id}")
 
@@ -676,7 +700,8 @@ class MarketingMonetizationEngine:
             total_revenue=0.0,
             refund_rate=0.0,
             customer_satisfaction=0.0,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Generate product content based on type
         if product.product_type == "ebook":
@@ -715,14 +740,16 @@ class MarketingMonetizationEngine:
                 "Advanced Techniques",
                 "Case Studies",
                 "Conclusion",
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
-        ebook_content = f"# {product.name}\\n\\n"
+        ebook_content = f"# {product.name}\\n\\n""
         ebook_content += f"{product.description}\\n\\n"
 
         for i, chapter in enumerate(chapters, 1):
-            ebook_content += f"## Chapter {i}: {chapter}\\n\\n"
+            ebook_content += f"## Chapter {i}: {chapter}\\n\\n""
             ebook_content += f"Content for {chapter} chapter...\\n\\n"
 
         # Save eBook
@@ -747,14 +774,17 @@ class MarketingMonetizationEngine:
                 "Module 2: Implementation",
                 "Module 3: Optimization",
                 "Module 4: Advanced Strategies",
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
         course_structure = {
             "title": product.name,
             "description": product.description,
             "modules": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for module in modules:
             course_structure["modules"].append(
@@ -764,10 +794,13 @@ class MarketingMonetizationEngine:
                         f"{module} - Lesson 1",
                         f"{module} - Lesson 2",
                         f"{module} - Lesson 3",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "resources": ["Worksheet", "Video Tutorial", "Case Study"],
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Save course structure
         course_file = course_dir / "course_structure.json"
@@ -802,24 +835,30 @@ class MarketingMonetizationEngine:
         templates = {
             "instagram_post.json": {
                 "caption_templates": [
-                    "🚀 Ready to {action}? Here's how to {benefit}...",
+                    "🚀 Ready to {action}? Here's how to {benefit}...",'
                     "💡 Pro tip: {tip} will help you {outcome}",
                     "🔥 {number} ways to {achieve_goal}",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "hashtag_groups": {
-                    "general": ["#motivation", "#success", "#entrepreneur"],
-                    "business": ["#business", "#marketing", "#growth"],
-                    "tech": ["#technology", "#innovation", "#ai"],
-                },
-            },
+                    "general": ["#motivation", "#success", "#entrepreneur"],"
+                    "business": ["#business", "#marketing", "#growth"],"
+                    "tech": ["#technology", "#innovation", "#ai"],"
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "twitter_threads.json": {
                 "thread_starters": [
                     "🧵 Thread: Everything you need to know about {topic}",
-                    "📚 I've learned {number} things about {subject}. Here they are:",
+                    "📚 I've learned {number} things about {subject}. Here they are:",'
                     "🎯 Want to {goal}? Follow this step - by - step guide:",
-                ]
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         for filename, content in templates.items():
             with open(template_dir / filename, "w") as f:
@@ -831,20 +870,26 @@ class MarketingMonetizationEngine:
             "welcome_sequence.json": {
                 "email_1": {
                     "subject": "Welcome to {product_name}!",
-                    "body": "Thank you for joining us! Here's what to expect...",
-                },
+                    "body": "Thank you for joining us! Here's what to expect...",'
+# BRACKET_SURGEON: disabled
+#                 },
                 "email_2": {
                     "subject": "Your first step to {benefit}",
-                    "body": "Let's get started with your journey...",
-                },
-            },
+                    "body": "Let's get started with your journey...",'
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "sales_sequence.json": {
                 "email_1": {
                     "subject": "Special offer: {discount}% off {product}",
                     "body": "Limited time offer for our valued subscribers...",
-                }
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         for filename, content in templates.items():
             with open(template_dir / filename, "w") as f:
@@ -859,13 +904,16 @@ class MarketingMonetizationEngine:
                 {"type": "agenda", "content": "Agenda Slide Template"},
                 {"type": "content", "content": "Content Slide Template"},
                 {"type": "conclusion", "content": "Conclusion Slide Template"},
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "themes": {
-                "professional": {"colors": ["#1f4e79", "#ffffff", "#f2f2f2"]},
-                "modern": {"colors": ["#2c3e50", "#3498db", "#ecf0f1"]},
-                "creative": {"colors": ["#e74c3c", "#f39c12", "#2ecc71"]},
-            },
-        }
+                "professional": {"colors": ["#1f4e79", "#ffffff", "#f2f2f2"]},"
+                "modern": {"colors": ["#2c3e50", "#3498db", "#ecf0f1"]},"
+                "creative": {"colors": ["#e74c3c", "#f39c12", "#2ecc71"]},"
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         with open(template_dir / "presentation_template.json", "w") as f:
             json.dump(template_structure, f, indent=2)
@@ -876,7 +924,7 @@ class MarketingMonetizationEngine:
         sales_page_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate sales page HTML
-        sales_page_html = f"""
+        sales_page_html = f""""""
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -890,7 +938,8 @@ class MarketingMonetizationEngine:
                 .price {{ font - size: 2em; color: #e74c3c; font - weight: bold; }}
                 .cta - button {{ background: #3498db; color: white; padding: 15px 30px;
                              border: none; border - radius: 5px; font - size: 1.2em;
-                             cursor: pointer; margin: 20px 0; }}
+# BRACKET_SURGEON: disabled
+#                              cursor: pointer; margin: 20px 0; }}
                 .features {{ list - style: none; padding: 0; }}
                 .features li {{ padding: 10px 0; border - bottom: 1px solid #eee; }}
             </style>
@@ -903,7 +952,7 @@ class MarketingMonetizationEngine:
                     <div class="price">${product.price}</div>
                 </div>
 
-                <h2 > What You'll Get:</h2>
+                <h2 > What You'll Get:</h2>'
                 <ul class="features">
                     <li>✅ Complete {product.product_type} with step - by - step guidance</li>
                     <li>✅ Bonus resources and templates</li>
@@ -918,12 +967,13 @@ class MarketingMonetizationEngine:
                 <script>
                     function purchase() {{
                         alert('Purchase functionality would be integrated with payment processor');
-                    }}
+# BRACKET_SURGEON: disabled
+#                     }}
                 </script>
             </div>
         </body>
         </html>
-        """
+        """"""
 
         sales_page_file = sales_page_dir / "index.html"
         with open(sales_page_file, "w") as f:
@@ -951,7 +1001,8 @@ class MarketingMonetizationEngine:
             epc=0.0,
             gravity_score=0.0,
             is_active=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.affiliate_programs[affiliate_id] = affiliate_program
         self._save_affiliate_program_to_db(affiliate_program)
@@ -968,7 +1019,8 @@ class MarketingMonetizationEngine:
             traffic_required=0,
             optimization_score=0.0,
             last_updated=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.revenue_targets[stream] = target
         self._save_revenue_target_to_db(target)
@@ -981,7 +1033,8 @@ class MarketingMonetizationEngine:
         amount: float,
         source: str = None,
         metadata: Dict[str, Any] = None,
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Track revenue from a specific stream."""
         # Update current revenue
         if stream in self.revenue_targets:
@@ -993,19 +1046,21 @@ class MarketingMonetizationEngine:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT INTO revenue_tracking
             (date, revenue_stream, amount, source, metadata_json)
             VALUES (?, ?, ?, ?, ?)
-            """,
+            ""","""
             (
                 datetime.now().date(),
                 stream.value,
                 amount,
                 source,
                 json.dumps(metadata or {}),
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -1017,12 +1072,12 @@ class MarketingMonetizationEngine:
         if campaign.campaign_type == CampaignType.PRODUCT_LAUNCH:
             return {
                 "subject": f"🚀 Introducing {campaign.name} - Limited Time Offer!",
-                "body": f"""
+                "body": f""""""
                 Hi there!
 
-                We're excited to announce the launch of {campaign.name}!
+                We're excited to announce the launch of {campaign.name}!'
 
-                This is exactly what you've been waiting for to take your {campaign.target_audience} to the next level.
+                This is exactly what you've been waiting for to take your {campaign.target_audience} to the next level.'
 
                 Special launch pricing: Get 50% off for the first 48 hours!
 
@@ -1030,34 +1085,37 @@ class MarketingMonetizationEngine:
 
                 Best regards,
                     The TRAE.AI Team
-                """,
-            }
+                ""","""
+# BRACKET_SURGEON: disabled
+#             }
         elif campaign.campaign_type == CampaignType.CONTENT_PROMOTION:
             return {
                 "subject": f"📺 New Video: {campaign.name}",
-                "body": f"""
+                "body": f""""""
                 Hey!
 
-                Just dropped a new video that I think you'll love: {campaign.name}
+                Just dropped a new video that I think you'll love: {campaign.name}'
 
-                In this video, you'll discover:
+                In this video, you'll discover:'
                 • Key insights about {campaign.target_audience}
                 • Actionable strategies you can implement today
                 • Real - world examples and case studies
 
                 [CTA Button: Watch Now]
 
-                Don't forget to subscribe and hit the bell icon!
+                Don't forget to subscribe and hit the bell icon!'
 
                 Cheers,
                     TRAE.AI
-                """,
-            }
+                ""","""
+# BRACKET_SURGEON: disabled
+#             }
         else:
             return {
                 "subject": f"📧 {campaign.name}",
                 "body": f"Content for {campaign.campaign_type.value} campaign: {campaign.name}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _generate_twitter_content(self, campaign: MarketingCampaign) -> List[str]:
         """Generate Twitter content for a campaign."""
@@ -1065,33 +1123,36 @@ class MarketingMonetizationEngine:
 
         if campaign.campaign_type == CampaignType.PRODUCT_LAUNCH:
             tweets = [
-                f"🚀 LAUNCH DAY! {campaign.name} is finally here! Get 50% off for the next 24 hours. Link in bio! #ProductLaunch #AI #Automation",
-                f"🧵 Thread: Why I created {campaign.name} \
-    and how it can transform your {campaign.target_audience} (1 / 5)",
+                f"🚀 LAUNCH DAY! {campaign.name} is finally here! Get 50% off for the next 24 hours. Link in bio! #ProductLaunch #AI #Automation","
+                f"🧵 Thread: Why I created {campaign.name} \"
+#     and how it can transform your {campaign.target_audience} (1 / 5)",
                 f"💡 Pro tip: The secret to success with {campaign.name} is consistency. Here's how to get started... #Tips #Success",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
         elif campaign.campaign_type == CampaignType.CONTENT_PROMOTION:
             tweets = [
                 f"📺 New video is live! {campaign.name} - everything you need to know about {campaign.target_audience}. Link in bio!",
                 f"🔥 This video took me 20 hours to create, but it will save you 200 hours. Watch: {campaign.name}",
-                f"💬 What's your biggest challenge with {campaign.target_audience}? Answered it all in my latest video!",
-            ]
+                f"💬 What's your biggest challenge with {campaign.target_audience}? Answered it all in my latest video!",'
+# BRACKET_SURGEON: disabled
+#             ]
         else:
             tweets = [
-                f"📢 {campaign.name} - check it out! #Marketing #AI",
+                f"📢 {campaign.name} - check it out! #Marketing #AI","
                 f"🎯 Excited to share: {campaign.name}. What do you think?",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
         return tweets
 
     def _generate_blog_content(self, campaign: MarketingCampaign) -> str:
         """Generate blog content for a campaign."""
-        return f"""
+        return f""""""
 # {campaign.name}
 
 ## Introduction
 
-Welcome to our latest blog post about {campaign.name}. In this comprehensive guide, we'll explore everything you need to know about {campaign.target_audience}.
+Welcome to our latest blog post about {campaign.name}. In this comprehensive guide, we'll explore everything you need to know about {campaign.target_audience}.'
 
 ## Key Points
 
@@ -1111,13 +1172,13 @@ To begin your journey with {campaign.name}, follow these steps:
 
 ## Conclusion
 
-{campaign.name} represents a significant opportunity for {campaign.target_audience}. By following the strategies outlined in this post, you'll be well on your way to success.
+{campaign.name} represents a significant opportunity for {campaign.target_audience}. By following the strategies outlined in this post, you'll be well on your way to success.'
 
 ---
 
 *Want to learn more? Check out our latest video on this topic \
-    and don't forget to subscribe to our newsletter for more insights!*
-"""
+#     and don't forget to subscribe to our newsletter for more insights!*
+""""""
 
     def _send_newsletter_campaign(self, campaign: NewsletterCampaign) -> None:
         """Send newsletter campaign (placeholder implementation)."""
@@ -1136,12 +1197,13 @@ To begin your journey with {campaign.name}, follow these steps:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT OR REPLACE INTO newsletter_campaigns
             (campaign_id, subject_line, content, subscriber_segment, send_date,
-                open_rate, click_rate, conversion_rate, revenue_generated)
+# BRACKET_SURGEON: disabled
+#                 open_rate, click_rate, conversion_rate, revenue_generated)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
             (
                 campaign.campaign_id,
                 campaign.subject_line,
@@ -1152,8 +1214,10 @@ To begin your journey with {campaign.name}, follow these steps:
                 campaign.click_rate,
                 campaign.conversion_rate,
                 campaign.revenue_generated,
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -1183,7 +1247,8 @@ To begin your journey with {campaign.name}, follow these steps:
                     post
                     for post in self.social_media_queue
                     if post["scheduled_time"] <= current_time
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 for post in posts_to_send:
                     self._send_social_media_post(post)
@@ -1223,7 +1288,8 @@ To begin your journey with {campaign.name}, follow these steps:
             # Calculate optimization score
             progress = (
                 target.current_revenue / target.monthly_target if target.monthly_target > 0 else 0
-            )
+# BRACKET_SURGEON: disabled
+#             )
             target.optimization_score = min(progress, 1.0)
 
             # Update database
@@ -1258,13 +1324,14 @@ To begin your journey with {campaign.name}, follow these steps:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT OR REPLACE INTO marketing_campaigns
             (campaign_id, name, campaign_type, channels, target_audience, budget,
                 duration_days, start_date, end_date, status, roi, kpis_json,
-                 content_assets_json, conversion_tracking_json)
+# BRACKET_SURGEON: disabled
+#                  content_assets_json, conversion_tracking_json)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
             (
                 campaign.campaign_id,
                 campaign.name,
@@ -1280,8 +1347,10 @@ To begin your journey with {campaign.name}, follow these steps:
                 json.dumps(campaign.kpis),
                 json.dumps(campaign.content_assets),
                 json.dumps(campaign.conversion_tracking),
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -1292,18 +1361,20 @@ To begin your journey with {campaign.name}, follow these steps:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             UPDATE marketing_campaigns
             SET status = ?, roi = ?, conversion_tracking_json = ?
             WHERE campaign_id = ?
-            """,
+            ""","""
             (
                 campaign.status.value,
                 campaign.roi,
                 json.dumps(campaign.conversion_tracking),
                 campaign.campaign_id,
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -1314,13 +1385,14 @@ To begin your journey with {campaign.name}, follow these steps:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT OR REPLACE INTO digital_products
             (product_id, name, description, product_type, price, cost_to_produce,
                 target_market, sales_page_url, download_url, affiliate_commission,
-                 launch_date, total_sales, total_revenue, refund_rate, customer_satisfaction)
+# BRACKET_SURGEON: disabled
+#                  launch_date, total_sales, total_revenue, refund_rate, customer_satisfaction)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
             (
                 product.product_id,
                 product.name,
@@ -1337,8 +1409,10 @@ To begin your journey with {campaign.name}, follow these steps:
                 product.total_revenue,
                 product.refund_rate,
                 product.customer_satisfaction,
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -1349,7 +1423,7 @@ To begin your journey with {campaign.name}, follow these steps:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT OR REPLACE INTO affiliate_programs
             (program_id,
     company_name,
@@ -1357,9 +1431,10 @@ To begin your journey with {campaign.name}, follow these steps:
     commission_rate,
     cookie_duration_days,
                 affiliate_link, tracking_code, minimum_payout, payment_schedule,
-                 conversion_rate, epc, gravity_score, is_active)
+# BRACKET_SURGEON: disabled
+#                  conversion_rate, epc, gravity_score, is_active)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
             (
                 program.program_id,
                 program.company_name,
@@ -1374,8 +1449,10 @@ To begin your journey with {campaign.name}, follow these steps:
                 program.epc,
                 program.gravity_score,
                 program.is_active,
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -1386,12 +1463,13 @@ To begin your journey with {campaign.name}, follow these steps:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT OR REPLACE INTO revenue_targets
             (stream, monthly_target, current_revenue, conversion_rate,
-                traffic_required, optimization_score, last_updated)
+# BRACKET_SURGEON: disabled
+#                 traffic_required, optimization_score, last_updated)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
             (
                 target.stream.value,
                 target.monthly_target,
@@ -1400,8 +1478,10 @@ To begin your journey with {campaign.name}, follow these steps:
                 target.traffic_required,
                 target.optimization_score,
                 target.last_updated,
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -1410,10 +1490,12 @@ To begin your journey with {campaign.name}, follow these steps:
         """Get comprehensive revenue dashboard data."""
         total_monthly_target = sum(
             target.monthly_target for target in self.revenue_targets.values()
-        )
+# BRACKET_SURGEON: disabled
+#         )
         total_current_revenue = sum(
             target.current_revenue for target in self.revenue_targets.values()
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Get revenue by stream
         revenue_by_stream = {
@@ -1424,25 +1506,29 @@ To begin your journey with {campaign.name}, follow these steps:
                     (target.current_revenue / target.monthly_target * 100)
                     if target.monthly_target > 0
                     else 0
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "optimization_score": target.optimization_score,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             for stream, target in self.revenue_targets.items()
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Get recent transactions
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             SELECT revenue_stream, SUM(amount) as total, COUNT(*) as transactions
             FROM revenue_tracking
             WHERE date >= date('now', '-30 days')
             GROUP BY revenue_stream
             ORDER BY total DESC
-            """
-        )
+            """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         recent_revenue = dict(cursor.fetchall())
         conn.close()
@@ -1454,13 +1540,15 @@ To begin your journey with {campaign.name}, follow these steps:
                 (total_current_revenue / total_monthly_target * 100)
                 if total_monthly_target > 0
                 else 0
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "revenue_by_stream": revenue_by_stream,
             "recent_revenue": recent_revenue,
             "active_campaigns": len(self.active_campaigns),
             "digital_products": len(self.digital_products),
             "affiliate_programs": len(self.affiliate_programs),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Global engine instance
@@ -1488,7 +1576,8 @@ if __name__ == "__main__":
             "target_audience": "content creators",
             "budget": 500.0,
             "duration_days": 14,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         campaign_id = engine.create_marketing_campaign(campaign_config)
         print(f"Created campaign: {campaign_id}")
@@ -1510,8 +1599,10 @@ if __name__ == "__main__":
                 "Setting Up Your AI Workflow",
                 "Content Creation at Scale",
                 "Monetization Strategies",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         product_id = engine.create_digital_product(product_config)
         print(f"Created product: {product_id}")

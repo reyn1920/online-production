@@ -33,7 +33,8 @@ class MultiheadAttention(Module):
             linear2_cls = Linear,
             device = None,
             dtype = None,
-            ) -> None:
+# BRACKET_SURGEON: disabled
+#             ) -> None:
         factory_kwargs = {"device": device, "dtype": dtype}
         super(MultiheadAttention, self).__init__()
         self.embed_dim = embed_dim
@@ -47,7 +48,8 @@ class MultiheadAttention(Module):
         self.head_dim = embed_dim//num_heads
         assert (
             self.head_dim * num_heads == self.embed_dim
-        ), "embed_dim must be divisible by num_heads"
+# BRACKET_SURGEON: disabled
+#         ), "embed_dim must be divisible by num_heads"
 
         if add_bias_kv:
             self.bias_k = Parameter(torch.empty((1, 1, embed_dim), **factory_kwargs))
@@ -59,18 +61,26 @@ class MultiheadAttention(Module):
             if not self._qkv_same_embed_dim:
                 self.q_proj_weight = Parameter(
                     torch.empty((embed_dim, embed_dim), **factory_kwargs)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.k_proj_weight = Parameter(
                     torch.empty((embed_dim, self.kdim), **factory_kwargs)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.v_proj_weight = Parameter(
                     torch.empty((embed_dim, self.vdim), **factory_kwargs)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.register_parameter("in_proj_weight", None)
             else:
                 self.in_proj_weight = Parameter(
                     torch.empty((3 * embed_dim, embed_dim), **factory_kwargs)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.register_parameter("q_proj_weight", None)
                 self.register_parameter("k_proj_weight", None)
                 self.register_parameter("v_proj_weight", None)
@@ -78,21 +88,28 @@ class MultiheadAttention(Module):
             if bias:
                 self.in_proj_bias = Parameter(
                     torch.empty(3 * embed_dim, **factory_kwargs)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.register_parameter("in_proj_bias", None)
             self.out_proj = NonDynamicallyQuantizableLinear(
                 embed_dim, embed_dim, bias = bias, **factory_kwargs
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self._reset_parameters()
         else:
             if not self._qkv_same_embed_dim:
                 raise NotImplementedError
                     else:
+                        pass
                 self.in_proj_linear = linear1_cls(
                     embed_dim, 3 * embed_dim, bias = bias, **factory_kwargs
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.in_proj_weight = self.in_proj_linear.weight
 
                 self.register_parameter("q_proj_weight", None)
@@ -106,7 +123,9 @@ class MultiheadAttention(Module):
 
             self.out_proj = linear2_cls(
                 embed_dim, embed_dim, bias = bias, **factory_kwargs
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if self.bias_k is not None:
                 xavier_normal_(self.bias_k)
@@ -175,5 +194,7 @@ class MultiheadAttention(Module):
                 attn_mask = attn_mask,
                 average_attn_weights = average_attn_weights,
                 cache = cache,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         return attn_output.transpose(1, 0)

@@ -10,7 +10,7 @@ from .basic import remove_symbols_and_diacritics
 
 
 class EnglishNumberNormalizer:
-    """
+    """"""
     Convert any spelled - out numbers into arabic numbers, while handling:
 
     - remove any commas
@@ -18,7 +18,7 @@ class EnglishNumberNormalizer:
     - spell out currency symbols after the number. e.g. `$20 million` -> `20000000 dollars`
     - spell out `one` and `ones`
     - interpret successive single - digit numbers as nominal: `one oh one` -> `101`
-    """
+    """"""
 
 
     def __init__(self):
@@ -48,14 +48,20 @@ class EnglishNumberNormalizer:
                         "seventeen",
                         "eighteen",
                         "nineteen",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     start = 1,
-                    )
-        }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# BRACKET_SURGEON: disabled
+#         }
         self.ones_plural = {
             "sixes" if name == "six" else name + "s": (value, "s")
             for name, value in self.ones.items()
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.ones_ordinal = {
             "zeroth": (0, "th"),
                 "first": (1, "st"),
@@ -67,8 +73,10 @@ class EnglishNumberNormalizer:
                 name + ("h" if name.endswith("t") else "th"): (value, "th")
                 for name, value in self.ones.items()
                 if value > 3 and value != 5 and value != 12
-            },
-                }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#                 }
         self.ones_suffixed = {**self.ones_plural, **self.ones_ordinal}
 
         self.tens = {
@@ -80,14 +88,17 @@ class EnglishNumberNormalizer:
                 "seventy": 70,
                 "eighty": 80,
                 "ninety": 90,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.tens_plural = {
             name.replace("y", "ies"): (value, "s") for name, value in self.tens.items()
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.tens_ordinal = {
             name.replace("y", "ieth"): (value, "th")
             for name, value in self.tens.items()
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.tens_suffixed = {**self.tens_plural, **self.tens_ordinal}
 
         self.multipliers = {
@@ -103,17 +114,21 @@ class EnglishNumberNormalizer:
                 "octillion": 1_000_000_000_000_000_000_000_000_000,
                 "nonillion": 1_000_000_000_000_000_000_000_000_000_000,
                 "decillion": 1_000_000_000_000_000_000_000_000_000_000_000,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.multipliers_plural = {
             name + "s": (value, "s") for name, value in self.multipliers.items()
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.multipliers_ordinal = {
             name + "th": (value, "th") for name, value in self.multipliers.items()
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.multipliers_suffixed = {
             **self.multipliers_plural,
                 **self.multipliers_ordinal,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.decimals = {*self.ones, *self.tens, *self.zeros}
 
         self.preceding_prefixers = {
@@ -121,7 +136,8 @@ class EnglishNumberNormalizer:
                 "negative": "-",
                 "plus": "+",
                 "positive": "+",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.following_prefixers = {
             "pound": "£",
                 "pounds": "£",
@@ -131,15 +147,19 @@ class EnglishNumberNormalizer:
                 "dollars": "$",
                 "cent": "¢",
                 "cents": "¢",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.prefixes = set(
             list(self.preceding_prefixers.values())
             + list(self.following_prefixers.values())
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.suffixers = {
             "per": {"cent": "%"},
                 "percent": "%",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.specials = {"and", "double", "triple", "point"}
 
         self.words = set(
@@ -157,10 +177,16 @@ class EnglishNumberNormalizer:
                         self.following_prefixers,
                         self.suffixers,
                         self.specials,
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
                 for key in mapping
-            ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.literal_words = {"one", "ones"}
 
 
@@ -229,7 +255,8 @@ class EnglishNumberNormalizer:
                 elif isinstance(value, str) or prev in self.ones:
                     if (
                         prev in self.tens and ones < 10
-                    ):  # replace the last zero with the digit
+# BRACKET_SURGEON: disabled
+#                     ):  # replace the last zero with the digit
                         assert value[-1] == "0"
                         value = value[:-1] + str(ones)
                     else:
@@ -299,6 +326,7 @@ class EnglishNumberNormalizer:
                     if f is not None and p.denominator == 1:
                         value = p.numerator
                             else:
+                                pass
                         yield output(value)
                         value = multiplier
                 else:
@@ -458,11 +486,11 @@ class EnglishNumberNormalizer:
 
 
 class EnglishSpellingNormalizer:
-    """
+    """"""
     Applies British - American spelling mappings as listed in [1].
 
     [1] https://www.tysto.com / uk - us - spelling - list.html
-    """
+    """"""
 
 
     def __init__(self):
@@ -481,20 +509,20 @@ class EnglishTextNormalizer:
         self.ignore_patterns = r"\\b(hmm|mm|mhm|mmm|uh|um)\\b"
         self.replacers = {
             # common contractions
-            r"\\bwon't\\b": "will not",
-                r"\\bcan't\\b": "can not",
-                r"\\blet's\\b": "let us",
-                r"\\bain't\\b": "aint",
-                r"\\by'all\\b": "you all",
+            r"\\bwon't\\b": "will not",'
+                r"\\bcan't\\b": "can not",'
+                r"\\blet's\\b": "let us",'
+                r"\\bain't\\b": "aint",'
+                r"\\by'all\\b": "you all",'
                 r"\\bwanna\\b": "want to",
                 r"\\bgotta\\b": "got to",
                 r"\\bgonna\\b": "going to",
-                r"\\bi'ma\\b": "i am going to",
+                r"\\bi'ma\\b": "i am going to",'
                 r"\\bimma\\b": "i am going to",
                 r"\\bwoulda\\b": "would have",
                 r"\\bcoulda\\b": "could have",
                 r"\\bshoulda\\b": "should have",
-                r"\\bma'am\\b": "madam",
+                r"\\bma'am\\b": "madam",'
                 # contractions in titles / prefixes
             r"\\bmr\\b": "mister ",
                 r"\\bmrs\\b": "missus ",
@@ -518,22 +546,23 @@ class EnglishTextNormalizer:
                 r"\\bsr\\b": "senior ",
                 r"\\besq\\b": "esquire ",
                 # prefect tenses, ideally it should be any past participles, but it's harder..
-            r"'d been\\b": " had been",
-                r"'s been\\b": " has been",
-                r"'d gone\\b": " had gone",
-                r"'s gone\\b": " has gone",
-                r"'d done\\b": " had done",  # "'s done" is ambiguous
-            r"'s got\\b": " has got",
+            r"'d been\\b": " had been",'
+                r"'s been\\b": " has been",'
+                r"'d gone\\b": " had gone",'
+                r"'s gone\\b": " has gone",'
+                r"'d done\\b": " had done",  # "'s done" is ambiguous'
+            r"'s got\\b": " has got",'
                 # general contractions
-            r"n't\\b": " not",
-                r"'re\\b": " are",
-                r"'s\\b": " is",
-                r"'d\\b": " would",
-                r"'ll\\b": " will",
-                r"'t\\b": " not",
-                r"'ve\\b": " have",
-                r"'m\\b": " am",
-                }
+            r"n't\\b": " not",'
+                r"'re\\b": " are",'
+                r"'s\\b": " is",'
+                r"'d\\b": " would",'
+                r"'ll\\b": " will",'
+                r"'t\\b": " not",'
+                r"'ve\\b": " have",'
+                r"'m\\b": " am",'
+# BRACKET_SURGEON: disabled
+#                 }
         self.standardize_numbers = EnglishNumberNormalizer()
         self.standardize_spellings = EnglishSpellingNormalizer()
 
@@ -541,12 +570,15 @@ class EnglishTextNormalizer:
     def __call__(self, s: str):
         s = s.lower()
 
-        s = re.sub(r"[<\\[][^>\\]]*[>\\]]", "", s)  # remove words between brackets
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         s = re.sub(r"[<\\[][^>\\]]*[>\\]]", "", s)  # remove words between brackets
         s = re.sub(r"\\(([^)]+?)\\)", "", s)  # remove words between parenthesis
         s = re.sub(self.ignore_patterns, "", s)
         s = re.sub(
             r"\\s+'", "'", s
-        )  # standardize when there's a space before an apostrophe
+# BRACKET_SURGEON: disabled
+#         )  # standardize when there's a space before an apostrophe
 
         for pattern, replacement in self.replacers.items():
             s = re.sub(pattern, replacement, s)
@@ -554,10 +586,12 @@ class EnglishTextNormalizer:
         s = re.sub(r"(\\d),(\\d)", r"\\1\\2", s)  # remove commas between digits
         s = re.sub(r"\\.([^0 - 9]|$)",
     r" \\1",
-    s)  # remove periods not followed by numbers
+# BRACKET_SURGEON: disabled
+#     s)  # remove periods not followed by numbers
         s = remove_symbols_and_diacritics(
             s, keep=".%$¢€£"
-        )  # keep some symbols for numerics
+# BRACKET_SURGEON: disabled
+#         )  # keep some symbols for numerics
 
         s = self.standardize_numbers(s)
         s = self.standardize_spellings(s)
@@ -568,6 +602,7 @@ class EnglishTextNormalizer:
 
         s = re.sub(
             r"\\s+", " ", s
-        )  # replace any successive whitespace characters with a space
+# BRACKET_SURGEON: disabled
+#         )  # replace any successive whitespace characters with a space
 
         return s

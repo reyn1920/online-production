@@ -19,7 +19,8 @@ class ArxivAPI(BaseAPI):
             requests_per_hour=300,
             requests_per_day=3000,
             burst_limit=5,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         super().__init__(rate_config)
         self.base_url = "http://export.arxiv.org/api/query"
 
@@ -33,7 +34,8 @@ class ArxivAPI(BaseAPI):
             "stat": "Statistics",
             "eess": "Electrical Engineering and Systems Science",
             "econ": "Economics",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def health_check(self) -> bool:
         """Check if arXiv API is accessible"""
@@ -55,7 +57,8 @@ class ArxivAPI(BaseAPI):
             "hourly_used": self.rate_limiter.hourly_count,
             "tokens_available": int(self.rate_limiter.tokens),
             "cost": "Free",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def search_papers(
         self,
@@ -80,7 +83,8 @@ class ArxivAPI(BaseAPI):
             "max_results": min(max_results, 2000),  # arXiv limit
             "sortBy": sort_by,
             "sortOrder": sort_order,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Make request to arXiv API
@@ -95,7 +99,8 @@ class ArxivAPI(BaseAPI):
                 "total_results": len(papers),
                 "papers": papers,
                 "search_timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to search arXiv papers: {e}")
@@ -118,7 +123,8 @@ class ArxivAPI(BaseAPI):
                 max_results=max_results,
                 sort_by="submittedDate",
                 sort_order="descending",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return result.get("papers", [])
 
@@ -144,21 +150,24 @@ class ArxivAPI(BaseAPI):
                     "categories": {},
                     "total_papers": 0,
                     "recent_papers": 0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 for category in categories:
                     try:
                         # Get all papers for this keyword/category
                         all_papers = await self.search_papers(
                             query=keyword, category=category, max_results=500
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         # Get recent papers
                         recent_papers = await self.get_recent_papers(
                             category=category,
                             days_back=time_period_days,
                             max_results=100,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         # Filter recent papers by keyword
                         relevant_recent = [
@@ -166,21 +175,24 @@ class ArxivAPI(BaseAPI):
                             for paper in recent_papers
                             if keyword.lower() in paper.get("title", "").lower()
                             or keyword.lower() in paper.get("summary", "").lower()
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
 
                         category_stats = {
                             "total_papers": len(all_papers.get("papers", [])),
                             "recent_papers": len(relevant_recent),
                             "growth_rate": 0,
                             "top_papers": relevant_recent[:5],  # Top 5 recent papers
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                         # Calculate growth rate
                         if category_stats["total_papers"] > 0:
                             category_stats["growth_rate"] = (
                                 category_stats["recent_papers"]
                                 / max(category_stats["total_papers"], 1)
-                            ) * 100
+# BRACKET_SURGEON: disabled
+#                             ) * 100
 
                         keyword_data["categories"][category] = category_stats
                         keyword_data["total_papers"] += category_stats["total_papers"]
@@ -197,7 +209,8 @@ class ArxivAPI(BaseAPI):
                 if keyword_data["total_papers"] > 0:
                     keyword_data["trend_score"] = (
                         keyword_data["recent_papers"] / max(keyword_data["total_papers"], 1)
-                    ) * 100
+# BRACKET_SURGEON: disabled
+#                     ) * 100
                 else:
                     keyword_data["trend_score"] = 0
 
@@ -206,7 +219,8 @@ class ArxivAPI(BaseAPI):
             # Rank keywords by trend score
             ranked_keywords = sorted(
                 trend_data.items(), key=lambda x: x[1]["trend_score"], reverse=True
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "keywords": trend_data,
@@ -214,7 +228,8 @@ class ArxivAPI(BaseAPI):
                 "analysis_period_days": time_period_days,
                 "categories_analyzed": categories,
                 "analysis_timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to analyze research trends: {e}")
@@ -251,7 +266,8 @@ class ArxivAPI(BaseAPI):
                 try:
                     recent_papers = await self.get_recent_papers(
                         category=category, days_back=days_back, max_results=200
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     for paper in recent_papers:
                         paper["category"] = category
@@ -268,7 +284,8 @@ class ArxivAPI(BaseAPI):
                     "emerging_topics": [],
                     "total_papers_analyzed": 0,
                     "error": "No papers found",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Extract keywords from titles and abstracts
             keyword_counts = {}
@@ -292,8 +309,10 @@ class ArxivAPI(BaseAPI):
                             "analysis",
                             "method",
                             "approach",
-                        ]
-                    ):
+# BRACKET_SURGEON: disabled
+#                         ]
+# BRACKET_SURGEON: disabled
+#                     ):
                         if word not in keyword_counts:
                             keyword_counts[word] = 0
                             keyword_papers[word] = []
@@ -306,8 +325,10 @@ class ArxivAPI(BaseAPI):
                                     "authors": paper.get("authors", []),
                                     "category": paper.get("category", ""),
                                     "published": paper.get("published", ""),
-                                }
-                            )
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                             )
 
             # Filter and rank emerging topics
             emerging_topics = []
@@ -324,9 +345,12 @@ class ArxivAPI(BaseAPI):
                             "sample_papers": keyword_papers[keyword],
                             "categories": list(
                                 set(paper["category"] for paper in keyword_papers[keyword])
-                            ),
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                             ),
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Sort by emergence score
             emerging_topics.sort(key=lambda x: x["emergence_score"], reverse=True)
@@ -337,7 +361,8 @@ class ArxivAPI(BaseAPI):
                 "analysis_period_days": days_back,
                 "categories_analyzed": categories,
                 "analysis_timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to find emerging topics: {e}")
@@ -366,7 +391,8 @@ class ArxivAPI(BaseAPI):
             namespaces = {
                 "atom": "http://www.w3.org/2005/Atom",
                 "arxiv": "http://arxiv.org/schemas/atom",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             papers = []
 
@@ -378,17 +404,20 @@ class ArxivAPI(BaseAPI):
                     entry.find("atom:id", namespaces).text
                     if entry.find("atom:id", namespaces) is not None
                     else ""
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 paper["title"] = (
                     entry.find("atom:title", namespaces).text.strip()
                     if entry.find("atom:title", namespaces) is not None
                     else ""
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 paper["summary"] = (
                     entry.find("atom:summary", namespaces).text.strip()
                     if entry.find("atom:summary", namespaces) is not None
                     else ""
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Published and updated dates
                 published = entry.find("atom:published", namespaces)
@@ -417,7 +446,8 @@ class ArxivAPI(BaseAPI):
                 primary_cat = entry.find("arxiv:primary_category", namespaces)
                 paper["primary_category"] = (
                     primary_cat.get("term") if primary_cat is not None else ""
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Links
                 links = {}

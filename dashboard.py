@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Dashboard Application
 
 A comprehensive web dashboard for monitoring and managing TRAE.AI agents,
 tasks, and system performance.
-"""
+""""""
 
 import logging
 import os
@@ -18,7 +18,8 @@ from flask import (
     Flask,
     jsonify,
     send_from_directory,
-)
+# BRACKET_SURGEON: disabled
+# )
 from waitress import serve
 
 # Try to import TRAE.AI components
@@ -35,7 +36,8 @@ try:
         TaskQueueManager,
         TaskStatus,
         TaskType,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     TRAE_AI_AVAILABLE = True
 except ImportError as e:
@@ -51,7 +53,8 @@ except ImportError as e:
         logging.basicConfig(
             level=getattr(logging, log_level.upper()),
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     # Mock classes for standalone mode
     class TaskQueueManager:
@@ -169,7 +172,8 @@ class DashboardApp:
                 self.task_manager = TaskQueueManager(self.config.database_path)
                 self.logger.info(
                     f"Task manager initialized with database: {self.config.database_path}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 self.task_manager = TaskQueueManager(self.config.database_path)
                 self.logger.warning("Running with mock task manager")
@@ -218,8 +222,10 @@ class DashboardApp:
                     "components": {
                         "task_manager": self.task_manager is not None,
                         "database": self._check_database_health(),
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
                 return jsonify(health_status)
             except Exception as e:
                 self.logger.error(f"Health check failed: {e}")
@@ -233,7 +239,8 @@ class DashboardApp:
                     "youtube": self._fetch_youtube_channel_data(),
                     "tiktok": self._fetch_tiktok_channel_data(),
                     "instagram": self._fetch_instagram_channel_data(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 return jsonify(channels)
             except Exception as e:
                 self.logger.error(f"Failed to fetch social channels: {e}")
@@ -251,7 +258,8 @@ class DashboardApp:
                     "name": "YouTube Channel",
                     "status": "not_configured",
                     "error": "API credentials missing",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             import requests
 
@@ -261,7 +269,8 @@ class DashboardApp:
                 "part": "statistics,snippet,brandingSettings",
                 "id": channel_id,
                 "key": youtube_api_key,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = requests.get(stats_url, params=stats_params, timeout=10)
             response.raise_for_status()
@@ -272,7 +281,8 @@ class DashboardApp:
                     "name": "YouTube Channel",
                     "status": "error",
                     "error": "Channel not found",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             channel_data = data["items"][0]
             stats = channel_data["statistics"]
@@ -286,7 +296,8 @@ class DashboardApp:
                 "status": "active",
                 "description": snippet.get("description", ""),
                 "thumbnail": snippet.get("thumbnails", {}).get("default", {}).get("url"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Failed to fetch YouTube data: {e}")
@@ -303,7 +314,8 @@ class DashboardApp:
                     "name": "TikTok Channel",
                     "status": "not_configured",
                     "error": "API credentials missing",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # TikTok API implementation would go here
             # For now, return a placeholder
@@ -311,7 +323,8 @@ class DashboardApp:
                 "name": "TikTok Channel",
                 "status": "not_implemented",
                 "error": "TikTok API integration pending",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Failed to fetch TikTok data: {e}")
@@ -328,7 +341,8 @@ class DashboardApp:
                     "name": "Instagram Channel",
                     "status": "not_configured",
                     "error": "API credentials missing",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             import requests
 
@@ -337,7 +351,8 @@ class DashboardApp:
             user_params = {
                 "fields": "id,username,account_type,media_count",
                 "access_token": instagram_access_token,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = requests.get(user_url, params=user_params, timeout=10)
             response.raise_for_status()
@@ -350,7 +365,8 @@ class DashboardApp:
                 "account_type": user_data.get("account_type", "PERSONAL"),
                 "posts": user_data.get("media_count", 0),
                 "status": "active",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Failed to fetch Instagram data: {e}")

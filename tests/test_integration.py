@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE AI Integration Tests
 Tests for system integration, API endpoints, and cross - component functionality
-"""
+""""""
 
 import os
 from pathlib import Path
@@ -35,7 +35,8 @@ class TestSystemIntegration:
             "DASHBOARD_SECRET_KEY",
             "DATABASE_PATH",
             "LOG_LEVEL",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for var in required_vars:
             assert var in env_content, f"Required environment variable {var} not in .env.example"
@@ -57,7 +58,8 @@ class TestSystemIntegration:
                 MarketingAgent,
                 QAAgent,
                 ResearchAgent,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test that classes can be instantiated (basic validation)
             assert ResearchAgent is not None
@@ -95,7 +97,7 @@ class TestSystemIntegration:
 class TestAPIEndpoints:
     """Tests for API endpoints and web interfaces"""
 
-    @pytest.fixture(scope="class")
+    @pytest.fixture(scope="class"):
     def dashboard_url(self):
         """Fixture to provide dashboard URL"""
         return os.getenv("DASHBOARD_URL", "http://localhost:8080")
@@ -126,7 +128,7 @@ class TestSecurityIntegration:
     """Security - focused integration tests"""
 
     def test_no_hardcoded_secrets_in_config(self):
-        """Test that configuration files don't contain hardcoded secrets"""
+        """Test that configuration files don't contain hardcoded secrets"""'
         config_files = ["app/dashboard.py", "backend/config.py", ".env.example"]
 
         dangerous_patterns = ['password = "', 'api_key = "', 'secret = "', 'token = "']
@@ -141,12 +143,13 @@ class TestSecurityIntegration:
                     # Allow patterns in comments or test data
                     lines = content.split("\\n")
                     for line_num, line in enumerate(lines, 1):
-                        if pattern in line and not line.strip().startswith("#"):
+                        if pattern in line and not line.strip().startswith("#"):"
                             # Check if it's in test data generation (rule1_scanner.py)
                             if "rule1_scanner.py" not in config_file:
                                 pytest.fail(
                                     f"Potential hardcoded secret in {config_file}:{line_num}: {line.strip()}"
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
 
     def test_gitignore_security(self):
         """Test that .gitignore properly excludes sensitive files"""
@@ -163,7 +166,8 @@ class TestSecurityIntegration:
             "*.pyc",
             "data/",
             "logs/",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for exclusion in required_exclusions:
             assert exclusion in gitignore_content, f"Missing .gitignore exclusion: {exclusion}"
@@ -185,12 +189,13 @@ class TestSecurityIntegration:
                     # Allow references to variable names but not actual values
                     lines = content.split("\\n")
                     for line_num, line in enumerate(lines, 1):
-                        if f"{var}=" in line and not line.strip().startswith("#"):
+                        if f"{var}=" in line and not line.strip().startswith("#"):"
                             # Check if it's just a reference (os.getenv) not a hardcoded value
                             if "os.getenv" not in line and "os.environ" not in line:
                                 pytest.fail(
                                     f"Potential hardcoded secret in {file_path}:{line_num}: {line.strip()}"
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
 
 
 class TestDeploymentIntegration:
@@ -203,7 +208,8 @@ class TestDeploymentIntegration:
             "scripts/deploy - production.sh",
             "scripts/rollback - production.sh",
             "scripts/smoke - tests.sh",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for script in scripts:
             script_path = Path(script)

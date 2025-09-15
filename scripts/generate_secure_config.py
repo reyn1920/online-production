@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""
+""""""
 Secure Configuration Generator for TRAE AI Production
 
 This script generates secure credentials \
-    and configuration files for production deployment.
+#     and configuration files for production deployment.
 Run this script before deploying to production to ensure all secrets are properly configured.
-"""
+""""""
 
 import argparse
 import json
@@ -21,7 +21,7 @@ def generate_secure_password(length: int = 32, include_symbols: bool = True) -> 
     """Generate a cryptographically secure password."""
     alphabet = string.ascii_letters + string.digits
     if include_symbols:
-        alphabet += "!@#$%^&*()-_=+[]{}|;:,.<>?"
+        alphabet += "!@#$%^&*()-_=+[]{}|;:,.<>?""
 
     password = "".join(secrets.choice(alphabet) for _ in range(length))
     return password
@@ -44,7 +44,8 @@ def generate_database_credentials() -> Dict[str, str]:
         "DB_USER": f"trae_user_{secrets.token_hex(4)}",
         "DB_PASSWORD": generate_secure_password(32, False),  # No symbols for DB password
         "DB_NAME": "trae_ai_production",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def generate_redis_credentials() -> Dict[str, str]:
@@ -58,7 +59,8 @@ def generate_rabbitmq_credentials() -> Dict[str, str]:
         "RABBITMQ_USER": f"trae_mq_{secrets.token_hex(4)}",
         "RABBITMQ_PASSWORD": generate_secure_password(32, False),
         "RABBITMQ_ERLANG_COOKIE": secrets.token_hex(32),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def generate_admin_credentials() -> Dict[str, str]:
@@ -67,7 +69,8 @@ def generate_admin_credentials() -> Dict[str, str]:
         "ADMIN_USERNAME": f"admin_{secrets.token_hex(4)}",
         "ADMIN_PASSWORD": generate_secure_password(16, True),
         "ADMIN_EMAIL": "admin@yourdomain.com",  # User should update this
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def generate_encryption_keys() -> Dict[str, str]:
@@ -77,12 +80,13 @@ def generate_encryption_keys() -> Dict[str, str]:
         "JWT_SECRET": generate_jwt_secret(),
         "TRAE_MASTER_KEY": generate_api_key("trae_master", 32),
         "BACKUP_ENCRYPTION_KEY": secrets.token_urlsafe(32),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def create_production_env_file(credentials: Dict[str, Any], output_path: str) -> None:
     """Create the production .env file with secure credentials."""
-    env_content = f"""# Production Environment Configuration
+    env_content = f"""# Production Environment Configuration"""
 # Generated on: {datetime.now().isoformat()}
 # NEVER commit this file to version control
 
@@ -150,7 +154,7 @@ BACKUP_SCHEDULE = 0 2 * * *  # Daily at 2 AM
 
 # Grafana Admin Password
 GRAFANA_ADMIN_PASSWORD={generate_secure_password(16, False)}
-"""
+""""""
 
     with open(output_path, "w") as f:
         f.write(env_content)
@@ -170,8 +174,10 @@ def create_credentials_backup(credentials: Dict[str, Any], output_path: str) -> 
             "Use a password manager or encrypted storage",
             "Never commit this file to version control",
             "Rotate these credentials regularly",
-        ],
-    }
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     }
 
     with open(output_path, "w") as f:
         json.dump(backup_data, f, indent=2)
@@ -183,7 +189,8 @@ def create_credentials_backup(credentials: Dict[str, Any], output_path: str) -> 
 def main():
     parser = argparse.ArgumentParser(
         description="Generate secure configuration for TRAE AI production"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument("--output - dir", default=".", help="Output directory for generated files")
     parser.add_argument("--backup", action="store_true", help="Create credentials backup file")
     args = parser.parse_args()
@@ -209,7 +216,8 @@ def main():
     if args.backup:
         backup_path = (
             output_dir / f"credentials_backup_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         create_credentials_backup(credentials, str(backup_path))
 
     print("\\n🎯 Next Steps:")

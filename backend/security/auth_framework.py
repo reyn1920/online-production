@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 Enterprise Security Framework
 Implements JWT authentication, RBAC authorization, input validation, and secrets management
 Designed for scalable channel system (100+ channels) with full functionality preservation
-"""
+
+""""""
+
 
 import jwt
 import bcrypt
@@ -27,7 +32,9 @@ logger = logging.getLogger(__name__)
 
 
 class UserRole(Enum):
-    """User roles for RBAC system"""
+    
+User roles for RBAC system
+"""
 
     SUPER_ADMIN = "super_admin"
     ADMIN = "admin"
@@ -41,10 +48,28 @@ class UserRole(Enum):
 
 
 class Permission(Enum):
-    """Granular permissions for fine-grained access control"""
+    """
+Granular permissions for fine-grained access control
+
+
+   
+""""""
 
     # Channel Management
+   
+
+    
+   
+"""
     CREATE_CHANNEL = "create_channel"
+   """
+
+    
+   
+
+    # Channel Management
+   
+""""""
     DELETE_CHANNEL = "delete_channel"
     MODIFY_CHANNEL = "modify_channel"
     VIEW_CHANNEL = "view_channel"
@@ -76,11 +101,18 @@ class Permission(Enum):
 
 @dataclass
 class SecurityConfig:
-    """Security configuration settings"""
+    """
+Security configuration settings
+
+
+    
+"""
 
     jwt_secret_key: str = field(
+
+    """
         default_factory=lambda: os.getenv("JWT_SECRET_KEY", secrets.token_urlsafe(32))
-    )
+     )
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
@@ -90,10 +122,18 @@ class SecurityConfig:
     encryption_key: bytes = field(default_factory=lambda: Fernet.generate_key())
     rate_limit_requests: int = 100
     rate_limit_window_minutes: int = 15
+    """
 
+    jwt_secret_key: str = field(
+    
+
+   
+""""""
 
 class TokenPayload(BaseModel):
-    """JWT token payload structure"""
+    
+JWT token payload structure
+"""
 
     user_id: str
     username: str
@@ -102,15 +142,29 @@ class TokenPayload(BaseModel):
     channel_access: List[str] = []
     exp: datetime
     iat: datetime
-    jti: str  # JWT ID for token revocation
+   """
 
+    
+   
+
+    jti: str  # JWT ID for token revocation
+   
+""""""
 
 class UserCredentials(BaseModel):
-    """User authentication credentials"""
+    
+User authentication credentials
+"""
 
     username: str
-    password: str
+   """
 
+    
+   
+
+    password: str
+   
+""""""
     @validator("username")
     def validate_username(cls, v):
         if not re.match(r"^[a-zA-Z0-9_]{3,20}$", v):
@@ -131,16 +185,19 @@ class UserCredentials(BaseModel):
 
 
 class InputValidator:
-    """Comprehensive input validation system"""
+    """
+Comprehensive input validation system
+
 
     @staticmethod
     def sanitize_string(input_str: str, max_length: int = 1000) -> str:
-        """Sanitize string input to prevent XSS and injection attacks"""
+        
+"""Sanitize string input to prevent XSS and injection attacks"""
         if not isinstance(input_str, str):
             raise ValueError("Input must be a string")
 
         # Remove potentially dangerous characters
-        sanitized = re.sub(r'[<>"\'\/\\]', "", input_str)
+        sanitized = re.sub(r'[<>"\'\/\\]', "", input_str)"
 
         # Limit length
         if len(sanitized) > max_length:
@@ -168,7 +225,9 @@ class InputValidator:
 
 
 class SecretsManager:
-    """Advanced secrets management system"""
+    """
+Advanced secrets management system
+
 
     def __init__(self, config: SecurityConfig):
         self.config = config
@@ -176,27 +235,67 @@ class SecretsManager:
         self.secrets_cache = {}
 
     def encrypt_secret(self, secret: str) -> str:
-        """Encrypt a secret value"""
+        
+"""Encrypt a secret value"""
+
+        
+
+        return self.cipher_suite.encrypt(secret.encode()).decode()
+        
+""""""
+
+        
+       
+
+        
+"""
+
         return self.cipher_suite.encrypt(secret.encode()).decode()
 
+        """"""
     def decrypt_secret(self, encrypted_secret: str) -> str:
-        """Decrypt a secret value"""
+        """
+Decrypt a secret value
+
+        
+"""
+        return self.cipher_suite.decrypt(encrypted_secret.encode()).decode()
+        """"""
+        """
+
+
         return self.cipher_suite.decrypt(encrypted_secret.encode()).decode()
 
+        
+
+       
+""""""
+
     def store_secret(self, key: str, value: str) -> None:
-        """Store an encrypted secret"""
+        
+Store an encrypted secret
+"""
         encrypted_value = self.encrypt_secret(value)
         # In production, this would be stored in a secure database or vault
         self.secrets_cache[key] = encrypted_value
         logger.info(f"Secret stored for key: {key}")
 
     def get_secret(self, key: str) -> Optional[str]:
-        """Retrieve and decrypt a secret"""
+        """
+Retrieve and decrypt a secret
+
         encrypted_value = self.secrets_cache.get(key)
         if encrypted_value:
+            
+"""
             return self.decrypt_secret(encrypted_value)
-
+            """"""
         # Fallback to environment variables
+            """
+
+            return self.decrypt_secret(encrypted_value)
+            
+
         env_value = os.getenv(key)
         if env_value:
             return env_value
@@ -204,13 +303,33 @@ class SecretsManager:
         return None
 
     def rotate_encryption_key(self) -> bytes:
-        """Rotate the encryption key for enhanced security"""
+        
+"""Rotate the encryption key for enhanced security"""
+
         new_key = Fernet.generate_key()
         # Re-encrypt all secrets with new key
         old_cipher = self.cipher_suite
+       
+
+        
+       
+"""
         new_cipher = Fernet(new_key)
+       """
+
+        
+       
 
         for key, encrypted_value in self.secrets_cache.items():
+       
+""""""
+
+        new_cipher = Fernet(new_key)
+       
+
+        
+       
+"""
             decrypted = old_cipher.decrypt(encrypted_value.encode()).decode()
             self.secrets_cache[key] = new_cipher.encrypt(decrypted.encode()).decode()
 
@@ -220,7 +339,9 @@ class SecretsManager:
 
 
 class RBACManager:
-    """Role-Based Access Control Manager"""
+    """
+Role-Based Access Control Manager
+
 
     def __init__(self):
         self.role_permissions = self._initialize_role_permissions()
@@ -228,7 +349,9 @@ class RBACManager:
         self.channel_permissions = {}
 
     def _initialize_role_permissions(self) -> Dict[UserRole, List[Permission]]:
-        """Initialize default role-permission mappings"""
+        
+"""Initialize default role-permission mappings"""
+
         return {
             UserRole.SUPER_ADMIN: list(Permission),  # All permissions
             UserRole.ADMIN: [
@@ -244,7 +367,7 @@ class RBACManager:
                 Permission.MANAGE_USERS,
                 Permission.AI_GENERATION,
                 Permission.VIEW_REVENUE,
-            ],
+             ],
             UserRole.CHANNEL_MANAGER: [
                 Permission.CREATE_CHANNEL,
                 Permission.MODIFY_CHANNEL,
@@ -254,33 +377,49 @@ class RBACManager:
                 Permission.PUBLISH_CONTENT,
                 Permission.VIEW_ANALYTICS,
                 Permission.AI_GENERATION,
-            ],
+             ],
             UserRole.CONTENT_CREATOR: [
                 Permission.VIEW_CHANNEL,
                 Permission.CREATE_CONTENT,
                 Permission.EDIT_CONTENT,
                 Permission.AI_GENERATION,
-            ],
+             ],
             UserRole.MARKETING_SPECIALIST: [
                 Permission.VIEW_CHANNEL,
                 Permission.VIEW_ANALYTICS,
                 Permission.EXPORT_DATA,
                 Permission.MANAGE_CAMPAIGNS,
-            ],
+             ],
             UserRole.ANALYST: [
                 Permission.VIEW_CHANNEL,
                 Permission.VIEW_ANALYTICS,
                 Permission.EXPORT_DATA,
-            ],
+             ],
             UserRole.API_USER: [
                 Permission.API_ACCESS,
                 Permission.VIEW_CHANNEL,
                 Permission.CREATE_CONTENT,
-            ],
+             ],
             UserRole.VIEWER: [Permission.VIEW_CHANNEL],
             UserRole.GUEST: [],
-        }
+        
 
+         
+        
+"""
+         }
+        """"""
+
+         
+
+        """
+
+         }
+        
+
+         
+        
+"""
     def assign_role(self, user_id: str, role: UserRole) -> None:
         """Assign a role to a user"""
         if user_id not in self.user_roles:
@@ -297,7 +436,7 @@ class RBACManager:
 
     def grant_channel_access(
         self, user_id: str, channel_id: str, permissions: List[Permission]
-    ) -> None:
+#     ) -> None:
         """Grant specific permissions to a user for a channel"""
         if user_id not in self.channel_permissions:
             self.channel_permissions[user_id] = {}
@@ -306,15 +445,45 @@ class RBACManager:
 
     def check_permission(
         self, user_id: str, permission: Permission, channel_id: str = None
-    ) -> bool:
-        """Check if user has specific permission"""
+#     ) -> bool:
+        """
+Check if user has specific permission
+
+       
+""""""
+
         # Check role-based permissions
+       
+
+        
+       
+"""
         user_roles = self.user_roles.get(user_id, [])
         for role in user_roles:
+       """
+
+        
+       
+
+        # Check role-based permissions
+       
+""""""
+
             if permission in self.role_permissions.get(role, []):
+                
+
                 return True
+                
+""""""
+
+                
+               
 
         # Check channel-specific permissions
+                
+"""
+                return True
+                """"""
         if channel_id and user_id in self.channel_permissions:
             channel_perms = self.channel_permissions[user_id].get(channel_id, [])
             if permission in channel_perms:
@@ -323,10 +492,28 @@ class RBACManager:
         return False
 
     def get_user_permissions(self, user_id: str) -> List[Permission]:
-        """Get all permissions for a user"""
-        permissions = set()
+        """
+Get all permissions for a user
 
+       
+""""""
+
+        permissions = set()
+       
+
+        
+       
+"""
         # Add role-based permissions
+       """
+
+        
+       
+
+        permissions = set()
+       
+""""""
+
         user_roles = self.user_roles.get(user_id, [])
         for role in user_roles:
             permissions.update(self.role_permissions.get(role, []))
@@ -340,7 +527,9 @@ class RBACManager:
 
 
 class JWTManager:
-    """JWT token management system"""
+    
+JWT token management system
+"""
 
     def __init__(self, config: SecurityConfig, rbac_manager: RBACManager):
         self.config = config
@@ -349,11 +538,29 @@ class JWTManager:
 
     def create_access_token(
         self, user_id: str, username: str, channel_access: List[str] = None
-    ) -> str:
-        """Create JWT access token"""
-        user_roles = self.rbac_manager.user_roles.get(user_id, [])
-        user_permissions = self.rbac_manager.get_user_permissions(user_id)
+#     ) -> str:
+        """
+Create JWT access token
 
+        user_roles = self.rbac_manager.user_roles.get(user_id, [])
+       
+""""""
+
+        user_permissions = self.rbac_manager.get_user_permissions(user_id)
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        user_permissions = self.rbac_manager.get_user_permissions(user_id)
+       
+""""""
         payload = {
             "user_id": user_id,
             "username": username,
@@ -363,7 +570,7 @@ class JWTManager:
             "exp": datetime.utcnow() + timedelta(minutes=self.config.access_token_expire_minutes),
             "iat": datetime.utcnow(),
             "jti": secrets.token_urlsafe(16),
-        }
+         }
 
         token = jwt.encode(payload, self.config.jwt_secret_key, algorithm=self.config.jwt_algorithm)
         logger.info(f"Access token created for user {username}")
@@ -377,21 +584,46 @@ class JWTManager:
             "exp": datetime.utcnow() + timedelta(days=self.config.refresh_token_expire_days),
             "iat": datetime.utcnow(),
             "jti": secrets.token_urlsafe(16),
-        }
+         }
 
         token = jwt.encode(payload, self.config.jwt_secret_key, algorithm=self.config.jwt_algorithm)
         return token
 
     def verify_token(self, token: str) -> Optional[Dict[str, Any]]:
-        """Verify and decode JWT token"""
+        """
+Verify and decode JWT token
+
+        
+"""
         try:
+        """
+
             payload = jwt.decode(
                 token,
                 self.config.jwt_secret_key,
+        
+
+        try:
+        
+"""
                 algorithms=[self.config.jwt_algorithm],
-            )
+            """
+
+             
+            
+
+             )
+            
+""""""
 
             # Check if token is revoked
+            
+
+             
+            
+"""
+             )
+            """"""
             if payload.get("jti") in self.revoked_tokens:
                 return None
 
@@ -404,13 +636,24 @@ class JWTManager:
             return None
 
     def revoke_token(self, token: str) -> None:
-        """Revoke a JWT token"""
+        """
+Revoke a JWT token
+
+        
+"""
         try:
+        """
+
             payload = jwt.decode(
                 token,
                 self.config.jwt_secret_key,
+        
+
+        try:
+        
+"""
                 algorithms=[self.config.jwt_algorithm],
-            )
+             )
             jti = payload.get("jti")
             if jti:
                 self.revoked_tokens.add(jti)
@@ -420,7 +663,9 @@ class JWTManager:
 
 
 class AuthenticationManager:
-    """Main authentication and authorization manager"""
+    """
+Main authentication and authorization manager
+
 
     def __init__(self, config: SecurityConfig = None):
         self.config = config or SecurityConfig()
@@ -432,7 +677,8 @@ class AuthenticationManager:
         self.security = HTTPBearer()
 
     def hash_password(self, password: str) -> str:
-        """Hash password using bcrypt"""
+        
+"""Hash password using bcrypt"""
         salt = bcrypt.gensalt()
         hashed = bcrypt.hashpw(password.encode("utf-8"), salt)
         return hashed.decode("utf-8")
@@ -442,15 +688,32 @@ class AuthenticationManager:
         return bcrypt.checkpw(password.encode("utf-8"), hashed_password.encode("utf-8"))
 
     def authenticate_user(self, credentials: UserCredentials) -> Optional[Dict[str, Any]]:
-        """Authenticate user credentials"""
-        username = self.validator.sanitize_string(credentials.username)
+        """
+Authenticate user credentials
 
+       
+""""""
+
+        username = self.validator.sanitize_string(credentials.username)
+       
+
+        
+       
+"""
         # Check login attempts
+       """
+
+        
+       
+
+        username = self.validator.sanitize_string(credentials.username)
+       
+""""""
         if self._is_account_locked(username):
             raise HTTPException(
                 status_code=423,
                 detail="Account temporarily locked due to too many failed attempts",
-            )
+             )
 
         # In production, retrieve user from database
         # For demo, using mock user data
@@ -460,8 +723,8 @@ class AuthenticationManager:
                 "username": "admin",
                 "password_hash": self.hash_password("Admin123!"),
                 "roles": [UserRole.SUPER_ADMIN],
-            }
-        }
+             }
+         }
 
         user = mock_users.get(username)
         if not user or not self.verify_password(credentials.password, user["password_hash"]):
@@ -498,17 +761,53 @@ class AuthenticationManager:
         self.login_attempts[username]["last_attempt"] = datetime.utcnow()
 
     def _reset_login_attempts(self, username: str) -> None:
-        """Reset login attempts after successful authentication"""
-        if username in self.login_attempts:
-            del self.login_attempts[username]
+        """
+Reset login attempts after successful authentication
 
+        if username in self.login_attempts:
+           
+""""""
+
+            del self.login_attempts[username]
+           
+
+            
+           
+"""
     async def get_current_user(
         self, credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer())
     ) -> Dict[str, Any]:
-        """FastAPI dependency to get current authenticated user"""
-        token = credentials.credentials
-        payload = self.jwt_manager.verify_token(token)
+        """
+FastAPI dependency to get current authenticated user
 
+           
+""""""
+
+            del self.login_attempts[username]
+           
+
+            
+           
+"""
+        token = credentials.credentials
+       """
+
+        
+       
+
+        payload = self.jwt_manager.verify_token(token)
+       
+""""""
+
+       
+
+
+        
+
+       
+"""
+        payload = self.jwt_manager.verify_token(token)
+       """"""
         if not payload:
             raise HTTPException(status_code=401, detail="Invalid or expired token")
 
@@ -523,7 +822,7 @@ class AuthenticationManager:
                 # Extract user from request context
                 request = kwargs.get("request") or (
                     args[0] if args and hasattr(args[0], "state") else None
-                )
+                 )
                 if not request or not hasattr(request.state, "user"):
                     raise HTTPException(status_code=401, detail="Authentication required")
 
@@ -546,8 +845,18 @@ auth_manager = AuthenticationManager()
 
 # FastAPI middleware for authentication
 async def auth_middleware(request: Request, call_next):
-    """Authentication middleware for FastAPI"""
+    """
+Authentication middleware for FastAPI
+
+   
+""""""
+
     # Skip authentication for public endpoints
+   
+
+    
+   
+"""
     public_paths = [
         "/docs",
         "/redoc",
@@ -555,7 +864,15 @@ async def auth_middleware(request: Request, call_next):
         "/health",
         "/login",
         "/register",
-    ]
+     ]
+   """
+
+    
+   
+
+    # Skip authentication for public endpoints
+   
+""""""
     if request.url.path in public_paths:
         response = await call_next(request)
         return response
@@ -580,16 +897,33 @@ async def auth_middleware(request: Request, call_next):
 
 # Example usage and testing functions
 def setup_demo_data():
-    """Setup demo data for testing"""
+    """
+Setup demo data for testing
+
+   
+""""""
+
     # Create demo users with different roles
+   
+
+    
+   
+"""
     demo_users = [
         ("admin", UserRole.SUPER_ADMIN),
         ("channel_mgr", UserRole.CHANNEL_MANAGER),
         ("creator", UserRole.CONTENT_CREATOR),
         ("marketer", UserRole.MARKETING_SPECIALIST),
         ("analyst", UserRole.ANALYST),
-    ]
+     ]
+   """
 
+    
+   
+
+    # Create demo users with different roles
+   
+""""""
     for username, role in demo_users:
         user_id = f"user_{username}"
         auth_manager.rbac_manager.assign_role(user_id, role)
@@ -606,8 +940,8 @@ def setup_demo_data():
                     Permission.CREATE_CONTENT,
                     Permission.EDIT_CONTENT,
                     Permission.PUBLISH_CONTENT,
-                ],
-            )
+                 ],
+             )
 
     logger.info("Demo data setup completed")
 
@@ -624,13 +958,13 @@ if __name__ == "__main__":
             user["user_id"],
             user["username"],
             [f"channel_{i:03d}" for i in range(1, 5)],  # Access to first 4 channels
-        )
+         )
         print(f"Authentication successful. Token: {token[:50]}...")
 
         # Test permission checking
         has_permission = auth_manager.rbac_manager.check_permission(
             user["user_id"], Permission.CREATE_CHANNEL
-        )
+         )
         print(f"User has CREATE_CHANNEL permission: {has_permission}")
 
     except Exception as e:

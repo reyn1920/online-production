@@ -6,7 +6,8 @@ special = [
     ("￥", "zh", "SP2"),
     ("^", "zh", "SP3"),
     # ('@', 'zh', "SP4")#不搞鬼畜了，和第二版保持一致吧
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 
 def clean_text(text, language):
@@ -32,9 +33,9 @@ def clean_text(text, language):
 
 
 def clean_special(text, language, special_s, target_symbol):
-    """
+    """"""
     特殊静音段sp符号处理
-    """
+    """"""
     text = text.replace(special_s, ",")
     language_module = language_module_map[language]
     norm_text = language_module.text_normalize(text)

@@ -91,7 +91,8 @@ def verify_paypal_signature(payload: bytes, headers: Dict[str, str]) -> bool:
         "paypal - transmission - id",
         "paypal - cert - id",
         "paypal - transmission - sig",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     return all(header.lower() in [h.lower() for h in headers.keys()] for header in required_headers)
 
 
@@ -99,7 +100,8 @@ def verify_paypal_signature(payload: bytes, headers: Dict[str, str]) -> bool:
 async def stripe_webhook(
     request: Request,
     stripe_signature: Optional[str] = Header(None, alias="stripe - signature"),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Handle Stripe webhook events with signature verification and idempotency"""
     try:
         # Get raw payload
@@ -109,7 +111,8 @@ async def stripe_webhook(
         stripe_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
         if stripe_secret and not verify_stripe_signature(
             payload, stripe_signature or "", stripe_secret
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             raise HTTPException(status_code=400, detail="Invalid signature")
 
         # Parse event
@@ -135,7 +138,8 @@ async def stripe_webhook(
             "event_id": event_id,
             "event_type": event_type,
             "result": result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON payload")
@@ -178,7 +182,8 @@ async def paypal_webhook(request: Request):
             "event_id": event_id,
             "event_type": event_type,
             "result": result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON payload")
@@ -242,7 +247,8 @@ async def handle_successful_payment(provider: str, payment_data: Dict[str, Any])
         "amount": payment_data.get("amount")
         or payment_data.get("amount_with_breakdown", {}).get("gross_amount", {}).get("value"),
         "processed_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 async def handle_failed_payment(provider: str, payment_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -256,7 +262,8 @@ async def handle_failed_payment(provider: str, payment_data: Dict[str, Any]) -> 
         "provider": provider,
         "payment_id": payment_data.get("id"),
         "processed_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 async def handle_subscription_created(
@@ -272,7 +279,8 @@ async def handle_subscription_created(
         "provider": provider,
         "subscription_id": subscription_data.get("id"),
         "processed_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 async def handle_subscription_cancelled(
@@ -288,7 +296,8 @@ async def handle_subscription_cancelled(
         "provider": provider,
         "subscription_id": subscription_data.get("id"),
         "processed_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/health")
@@ -298,4 +307,5 @@ async def webhook_health():
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
         "processed_webhooks_count": len(load_processed_webhooks()),
-    }
+# BRACKET_SURGEON: disabled
+#     }

@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Comprehensive AI Platform Integration Test
 Tests ChatGPT, Gemini, and Abacus AI integrations
-"""
+""""""
 
 import requests
 import json
@@ -18,7 +18,8 @@ class AIIntegrationTester:
             "quality_dashboard": "http://localhost:5004",
             "ai_benchmark": "http://0.0.0.0:5003",
             "minimal_server": "http://localhost:8000",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.test_results = []
 
     def log_result(self, test_name, status, message=""):
@@ -28,7 +29,8 @@ class AIIntegrationTester:
             "status": status,
             "message": message,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.test_results.append(result)
         status_icon = "✅" if status == "PASS" else "❌" if status == "FAIL" else "⚠️"
         print(f"{status_icon} {test_name}: {status} - {message}")
@@ -55,7 +57,8 @@ class AIIntegrationTester:
             ("/api / abacus / status", "Abacus AI Status"),
             ("/api / ai / benchmark", "AI Benchmark"),
             ("/api / cost - tracking", "Cost Tracking"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for endpoint, name in ai_endpoints:
             try:
@@ -64,7 +67,8 @@ class AIIntegrationTester:
                 if response.status_code in [
                     200,
                     404,
-                ]:  # 404 is acceptable for some endpoints
+# BRACKET_SURGEON: disabled
+#                 ]:  # 404 is acceptable for some endpoints
                     self.log_result(f"{name} Endpoint", "PASS", f"Endpoint accessible")
                 else:
                     self.log_result(f"{name} Endpoint", "WARN", f"HTTP {response.status_code}")
@@ -78,7 +82,8 @@ class AIIntegrationTester:
             ("/dashboard", "Dashboard Page"),
             ("/ai - integration", "AI Integration Page"),
             ("/quality", "Quality Page"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for page, name in pages:
             try:
@@ -145,12 +150,15 @@ class AIIntegrationTester:
                         "warnings": warnings,
                         "total": total,
                         "success_rate": success_rate,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "results": self.test_results,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 f,
                 indent=2,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         print(f"\\n📄 Detailed results saved to: ai_integration_test_results.json")
 

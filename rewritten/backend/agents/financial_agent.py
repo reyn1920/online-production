@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Financial Agent - Autonomous Financial Management System
 
 This agent continuously analyzes channel profitability, optimizes resource allocation,
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import logging
@@ -43,7 +43,8 @@ from .base_agents import BaseAgent
 from .web_automation_tools import (
     StealthLevel,
     WebAutomationAgent,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +97,7 @@ class ChannelFinancials:
     performance_metrics: Dict[str, float]
     growth_rate: float
     risk_score: float  # 0 - 1 scale
-    last_updated: datetime = field(default_factory=datetime.now)
+    last_updated: datetime = field(default_factory=datetime.now):
     status: ChannelStatus = ChannelStatus.BREAK_EVEN
 
 
@@ -114,7 +115,7 @@ class ResourceAllocation:
     priority_score: float
     effective_date: datetime
     duration_days: int
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=datetime.now):
 
 
 @dataclass
@@ -129,7 +130,7 @@ class FinancialAlert:
     current_value: float
     threshold_value: float
     recommended_action: str
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=datetime.now):
     resolved: bool = False
 
 
@@ -150,31 +151,34 @@ class FinancialMetrics:
 
 
 class FinancialAgent(BaseAgent):
-    """
+    """"""
     Autonomous Financial Management Agent
 
     Continuously analyzes financial performance, optimizes resource allocation,
         and implements autonomous financial decision - making protocols.
-    """
+    """"""
 
     def __init__(
         self,
         agent_id: str = "financial_agent",
         name: str = "Financial Agent",
         config: Dict[str, Any] = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__(agent_id, name)
         self.config = config or {}
         self.agent_type = "financial"
         self.analysis_interval = self.config.get("analysis_interval", 3600)  # 1 hour
         self.reallocation_threshold = self.config.get(
             "reallocation_threshold", 0.15
-        )  # 15% improvement
+# BRACKET_SURGEON: disabled
+#         )  # 15% improvement
         self.min_roi_threshold = self.config.get("min_roi_threshold", 0.1)  # 10% minimum ROI
         self.risk_tolerance = self.config.get("risk_tolerance", 0.3)  # 30% risk tolerance
         self.allocation_strategy = AllocationStrategy(
             self.config.get("strategy", "profit_maximization")
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Financial tracking data
         self.channel_financials: Dict[str, ChannelFinancials] = {}
@@ -192,8 +196,10 @@ class FinancialAgent(BaseAgent):
                 ResourceType.API_CALLS: 1000000,  # calls per month
                 ResourceType.PROCESSING_SLOTS: 50,  # concurrent slots
                 ResourceType.RENDER_TIME: 2000,  # hours per month
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         self.resource_costs = self.config.get(
             "resource_costs",
@@ -204,8 +210,10 @@ class FinancialAgent(BaseAgent):
                 ResourceType.API_CALLS: 0.001,  # $ per 1000 calls
                 ResourceType.PROCESSING_SLOTS: 1.00,  # $ per slot per hour
                 ResourceType.RENDER_TIME: 0.15,  # $ per hour
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         # Initialize financial tools
         self._initialize_financial_tools()
@@ -239,7 +247,7 @@ class FinancialAgent(BaseAgent):
 
                 # Channel financials table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS channel_financials (
                         channel_id TEXT PRIMARY KEY,
                             channel_name TEXT NOT NULL,
@@ -257,13 +265,15 @@ class FinancialAgent(BaseAgent):
                             risk_score REAL DEFAULT 0.0,
                             status TEXT DEFAULT 'break_even',
                             last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Resource allocations table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS resource_allocations (
                         allocation_id TEXT PRIMARY KEY,
                             channel_id TEXT NOT NULL,
@@ -277,13 +287,15 @@ class FinancialAgent(BaseAgent):
                             duration_days INTEGER DEFAULT 30,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (channel_id) REFERENCES channel_financials (channel_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Financial alerts table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS financial_alerts (
                         alert_id TEXT PRIMARY KEY,
                             alert_type TEXT NOT NULL,
@@ -296,13 +308,15 @@ class FinancialAgent(BaseAgent):
                             resolved BOOLEAN DEFAULT FALSE,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (channel_id) REFERENCES channel_financials (channel_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Financial metrics history
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS financial_metrics_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             total_revenue REAL DEFAULT 0.0,
@@ -315,13 +329,15 @@ class FinancialAgent(BaseAgent):
                             active_channels INTEGER DEFAULT 0,
                             profitable_channels INTEGER DEFAULT 0,
                             recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Affiliate payout tracking
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS affiliate_payouts (
                         payout_id TEXT PRIMARY KEY,
                             affiliate_program TEXT NOT NULL,
@@ -333,9 +349,11 @@ class FinancialAgent(BaseAgent):
                             discrepancy_amount REAL DEFAULT 0.0,
                             last_checked TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (channel_id) REFERENCES channel_financials (channel_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 logger.info("Financial database tables created successfully")
@@ -416,7 +434,8 @@ class FinancialAgent(BaseAgent):
                     "revenue_efficiency": revenue / costs if costs > 0 else 0,
                     "growth_potential": self._assess_growth_potential(channel_data),
                     "risk_level": self._assess_risk_level(channel_data),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 return performance
 
@@ -438,9 +457,12 @@ class FinancialAgent(BaseAgent):
                                     "reduce_allocation"
                                     if performance["roi"] < 0
                                     else "optimize_costs"
-                                ),
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
                     elif performance["growth_potential"] > 0.7:
                         recommendations.append(
                             {
@@ -449,8 +471,10 @@ class FinancialAgent(BaseAgent):
                                 "current_roi": performance["roi"],
                                 "growth_score": performance["growth_potential"],
                                 "action": "increase_allocation",
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
 
                 return recommendations
 
@@ -481,7 +505,8 @@ class FinancialAgent(BaseAgent):
             return {
                 "status": "error",
                 "message": "Financial management actions are currently disabled in configuration",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         task_type = task.get("type", "")
 
@@ -517,7 +542,8 @@ class FinancialAgent(BaseAgent):
             "average_roi": 0.0,
             "recommendations": [],
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Get all active channels
@@ -542,12 +568,14 @@ class FinancialAgent(BaseAgent):
                     if financials.status in [
                         ChannelStatus.HIGHLY_PROFITABLE,
                         ChannelStatus.PROFITABLE,
-                    ]:
+# BRACKET_SURGEON: disabled
+#                     ]:
                         analysis_results["profitable_channels"] += 1
                     elif financials.status in [
                         ChannelStatus.UNDERPERFORMING,
                         ChannelStatus.LOSS_MAKING,
-                    ]:
+# BRACKET_SURGEON: disabled
+#                     ]:
                         analysis_results["underperforming_channels"] += 1
 
                     # Generate recommendations
@@ -562,7 +590,8 @@ class FinancialAgent(BaseAgent):
 
             logger.info(
                 f"Profitability analysis completed: {analysis_results['profitable_channels']}/{analysis_results['channels_analyzed']} channels profitable"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return {"status": "success", "data": analysis_results}
 
         except Exception as e:
@@ -616,12 +645,14 @@ class FinancialAgent(BaseAgent):
                 growth_rate=growth_rate,
                 risk_score=risk_score,
                 status=status,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(
                 f"Failed to calculate financials for channel {channel.get('id', 'unknown')}: {e}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return None
 
     async def _optimize_resource_allocation(self) -> Dict[str, Any]:
@@ -634,7 +665,8 @@ class FinancialAgent(BaseAgent):
             "resources_optimized": [],
             "affected_channels": [],
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Analyze current allocation efficiency
@@ -652,17 +684,21 @@ class FinancialAgent(BaseAgent):
                         optimization_results["reallocations_made"] += 1
                         optimization_results["expected_profit_increase"] += reallocation[
                             "expected_profit_increase"
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
                         optimization_results["resources_optimized"].append(
                             reallocation["resource_type"]
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         optimization_results["affected_channels"].extend(
                             reallocation["affected_channels"]
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
             logger.info(
                 f"Resource optimization completed: {optimization_results['reallocations_made']} reallocations made"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return {"status": "success", "data": optimization_results}
 
         except Exception as e:
@@ -680,7 +716,8 @@ class FinancialAgent(BaseAgent):
             "total_discrepancy_amount": 0.0,
             "verification_details": [],
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Get affiliate programs to check
@@ -692,13 +729,16 @@ class FinancialAgent(BaseAgent):
                 verification_results["programs_checked"] += 1
                 verification_results["payouts_verified"] += program_results.get(
                     "payouts_verified", 0
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 verification_results["discrepancies_found"] += program_results.get(
                     "discrepancies_found", 0
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 verification_results["total_discrepancy_amount"] += program_results.get(
                     "discrepancy_amount", 0.0
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 verification_results["verification_details"].append(program_results)
 
                 # Create alerts for discrepancies
@@ -707,7 +747,8 @@ class FinancialAgent(BaseAgent):
 
             logger.info(
                 f"Payout verification completed: {verification_results['discrepancies_found']} discrepancies found"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return {"status": "success", "data": verification_results}
 
         except Exception as e:
@@ -725,7 +766,8 @@ class FinancialAgent(BaseAgent):
             "discrepancies_found": 0,
             "discrepancy_amount": 0.0,
             "verification_status": "success",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Use stealth web automation to access affiliate dashboard
@@ -734,7 +776,8 @@ class FinancialAgent(BaseAgent):
                 "login_credentials": program.get("credentials"),
                 "stealth_level": StealthLevel.MAXIMUM,
                 "selectors": program.get("selectors", {}),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Login to affiliate dashboard
             login_result = await self._stealth_login_to_dashboard(dashboard_config)
@@ -758,7 +801,8 @@ class FinancialAgent(BaseAgent):
 
                         if (
                             abs(expected_amount - actual_amount) > 0.01
-                        ):  # Allow for small rounding differences
+# BRACKET_SURGEON: disabled
+#                         ):  # Allow for small rounding differences
                             results["discrepancies_found"] += 1
                             discrepancy = expected_amount - actual_amount
                             results["discrepancy_amount"] += discrepancy
@@ -826,7 +870,8 @@ class FinancialAgent(BaseAgent):
             "budget_allocation",
             "risk_assessment",
             "performance_monitoring",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def get_status(self) -> Dict[str, Any]:
         """Get current agent status"""
@@ -844,8 +889,10 @@ class FinancialAgent(BaseAgent):
                 self.financial_metrics.last_calculated.isoformat()
                 if self.financial_metrics.last_calculated
                 else None
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _execute_with_monitoring(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Execute task with monitoring - required by BaseAgent"""
@@ -860,7 +907,8 @@ class FinancialAgent(BaseAgent):
             "check": "verify financial status of",
             "report": "generate financial report for",
             "monitor": "monitor financial performance of",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         rephrased = task.lower()
         for keyword, replacement in financial_keywords.items():
@@ -881,7 +929,8 @@ class FinancialAgent(BaseAgent):
             "roi",
             "allocation",
             "budget",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         original_lower = original.lower()
         rephrased_lower = rephrased.lower()

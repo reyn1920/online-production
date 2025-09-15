@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Blender API Integration Demo
-Demonstrates how to access and use Blender's Python API from the existing system.
-"""
+Demonstrates how to access and use Blender's Python API from the existing system.'
+""""""
 
 import os
 import subprocess
@@ -18,7 +18,7 @@ from pipelines.blender_handoff import get_blender_path, validate_blender_install
 
 
 def test_blender_api_access():
-    """Test accessing Blender's Python API through the system integration."""
+    """Test accessing Blender's Python API through the system integration."""'
     print("=== Blender API Integration Test ===")
 
     # 1. Validate Blender installation
@@ -39,7 +39,7 @@ def test_blender_api_access():
     compositor = BlenderCompositor()
 
     # Create a simple test script
-    test_script = """
+    test_script = """"""
 
 import bpy
 import sys
@@ -66,7 +66,7 @@ cube.data.materials.append(material)
 print(f"Created and assigned material: {material.name}")
 
 print("\\n✓ Blender Python API is fully accessible and functional!")
-"""
+""""""
 
     # Write test script to temporary file
     with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
@@ -122,7 +122,7 @@ print("\\n✓ Blender Python API is fully accessible and functional!")
 
 
 def show_api_capabilities():
-    """Show what's possible with the Blender API integration."""
+    """Show what's possible with the Blender API integration."""'
     print("\\n=== Blender API Capabilities Available ===")
 
     capabilities = {
@@ -130,43 +130,52 @@ def show_api_capabilities():
             "Create, modify, and delete objects",
             "Manage scenes, collections, and hierarchies",
             "Control viewport and render settings",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "3D Modeling": [
             "Create primitive objects (cubes, spheres, etc.)",
             "Advanced mesh editing with bmesh",
             "Procedural modeling and modifiers",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "Materials & Shading": [
             "Create and assign materials",
             "Set up shader nodes programmatically",
             "Texture mapping and UV coordinates",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "Animation": [
             "Keyframe animation for any property",
             "Curve and path animations",
             "Armature and bone animations",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "Rendering": [
             "Configure render engines (Cycles, Eevee Next)",
             "Batch rendering and automation",
             "Custom render passes and AOVs",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "Compositor": [
             "Node - based compositing workflows",
             "Image processing and effects",
             "Multi - layer compositing",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "File I / O": [
             "Import / export various 3D formats",
             "Batch file processing",
             "Asset library management",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "Scripting & Automation": [
             "Custom operators and panels",
             "Automated workflows and pipelines",
             "Integration with external systems",
-        ],
-    }
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     }
 
     for category, features in capabilities.items():
         print(f"\\n{category}:")

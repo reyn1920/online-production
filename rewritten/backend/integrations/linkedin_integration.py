@@ -20,7 +20,8 @@ class LinkedInClient:
             client_id = os.getenv("LI_CLIENT_ID"),
                 client_secret = os.getenv("LI_CLIENT_SECRET"),
                 access_token = os.getenv("LI_ACCESS_TOKEN"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
 
     def ready(self) -> bool:
@@ -31,6 +32,7 @@ class LinkedInClient:
 
 
         def post_text(self, text: str, media_url: str = "") -> Dict[str, Any]:
+            pass
         if not self.ready():
             raise RuntimeError("LinkedIn not configured")
         return {"ok": True, "id": "li_post_stub", "text": text, "media": media_url}
@@ -47,7 +49,8 @@ class LinkedInClient:
                 "title": title,
                 "content": content,
                 "media": media_url,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def insights(self) -> Dict[str, Any]:

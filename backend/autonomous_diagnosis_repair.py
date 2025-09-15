@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Autonomous Diagnosis and Repair (ADR) Protocol
-Self - Healing System Optimization and Recovery
 
+Self - Healing System Optimization and Recovery
+""""""
 System Constitution Adherence:
 - 100% Live Code: All diagnostics and repairs produce executable solutions
 - Zero - Cost Stack: Uses only free, open - source monitoring and repair tools
 - Additive Evolution: Builds upon existing systems without breaking changes
 - Secure Design: Implements robust security and error handling
+""""""
+Self - Healing System Optimization and Recovery
 """
 
 import json
@@ -34,7 +37,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("logs/adr_protocol.log"), logging.StreamHandler()],
-)
+ )
 logger = logging.getLogger(__name__)
 
 
@@ -75,7 +78,9 @@ class SystemComponent(Enum):
 
 @dataclass
 class DiagnosticResult:
-    """Result of a diagnostic check"""
+    """
+Result of a diagnostic check
+
 
     id: str
     component: SystemComponent
@@ -86,12 +91,20 @@ class DiagnosticResult:
     timestamp: datetime
     resolved: bool = False
     repair_suggestions: List[str] = None
+   
+""""""
+
     auto_repairable: bool = False
+   
 
-
+    
+   
+"""
 @dataclass
 class RepairAction:
-    """Represents a repair action"""
+    """
+Represents a repair action
+
 
     id: str
     diagnostic_id: str
@@ -103,12 +116,20 @@ class RepairAction:
     priority: int = 1
     estimated_duration: int = 60  # seconds
     requires_restart: bool = False
+   
+""""""
+
     backup_required: bool = False
+   
 
-
+    
+   
+"""
 @dataclass
 class RepairResult:
-    """Result of a repair operation"""
+    """
+Result of a repair operation
+
 
     action_id: str
     status: RepairStatus
@@ -117,9 +138,15 @@ class RepairResult:
     output: Optional[str] = None
     error: Optional[str] = None
     success: bool = False
+   
+""""""
+
     rollback_available: bool = False
+   
 
-
+    
+   
+"""
 class AutonomousDiagnosisRepair:
     """Main ADR Protocol Implementation"""
 
@@ -160,35 +187,44 @@ class AutonomousDiagnosisRepair:
                 "disk_critical": 95.0,
                 "response_time_warning": 2000,  # ms
                 "response_time_critical": 5000,  # ms
-            },
+             },
             "repair_strategies": {
                 "high_cpu": [
                     "restart_heavy_processes",
                     "optimize_processes",
                     "scale_resources",
-                ],
+                 ],
                 "high_memory": [
                     "clear_cache",
                     "restart_memory_leaks",
                     "garbage_collect",
-                ],
+                 ],
                 "disk_full": ["cleanup_logs", "cleanup_temp", "compress_files"],
                 "service_down": [
                     "restart_service",
                     "check_dependencies",
                     "restore_backup",
-                ],
-            },
-        }
+                 ],
+             },
+         }
 
     def _init_database(self):
-        """Initialize SQLite database for persistent storage"""
-        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
+        """
+Initialize SQLite database for persistent storage
 
+       
+""""""
+
+        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
+       
+
+        
+       
+"""
         with sqlite3.connect(self.db_path) as conn:
             conn.executescript(
-                """
-                CREATE TABLE IF NOT EXISTS diagnostics (
+               """
+CREATE TABLE IF NOT EXISTS diagnostics (
                     id TEXT PRIMARY KEY,
                         component TEXT NOT NULL,
                         level TEXT NOT NULL,
@@ -199,7 +235,14 @@ class AutonomousDiagnosisRepair:
                         resolved BOOLEAN DEFAULT FALSE,
                         repair_suggestions TEXT,
                         auto_repairable BOOLEAN DEFAULT FALSE
-                );
+
+#                 );
+""""""
+        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
+       """
+
+        
+       
 
                 CREATE TABLE IF NOT EXISTS repair_actions (
                     id TEXT PRIMARY KEY,
@@ -214,7 +257,7 @@ class AutonomousDiagnosisRepair:
                         requires_restart BOOLEAN DEFAULT FALSE,
                         backup_required BOOLEAN DEFAULT FALSE,
                         FOREIGN KEY (diagnostic_id) REFERENCES diagnostics (id)
-                );
+#                 );
 
                 CREATE TABLE IF NOT EXISTS repair_results (
                     id TEXT PRIMARY KEY,
@@ -227,14 +270,14 @@ class AutonomousDiagnosisRepair:
                         success BOOLEAN DEFAULT FALSE,
                         rollback_available BOOLEAN DEFAULT FALSE,
                         FOREIGN KEY (action_id) REFERENCES repair_actions (id)
-                );
+#                 );
 
                 CREATE TABLE IF NOT EXISTS system_baseline (
                     component TEXT PRIMARY KEY,
                         baseline_metrics TEXT NOT NULL,
                         established_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
+#                 );
 
                 CREATE TABLE IF NOT EXISTS system_health (
                     timestamp TIMESTAMP PRIMARY KEY,
@@ -245,35 +288,58 @@ class AutonomousDiagnosisRepair:
                         active_connections INTEGER,
                         response_times TEXT,
                         error_rates TEXT
-                );
+#                 );
+           
+""""""
+
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
     def _establish_baseline(self):
-        """Establish system performance baseline"""
+        
+"""Establish system performance baseline"""
+
+        
+
         try:
+        
+"""
             baseline = {
                 "cpu": {
                     "average_usage": psutil.cpu_percent(interval=1),
                     "core_count": psutil.cpu_count(),
                     "frequency": (psutil.cpu_freq()._asdict() if psutil.cpu_freq() else None),
-                },
+                 },
                 "memory": {
                     "total": psutil.virtual_memory().total,
                     "available": psutil.virtual_memory().available,
                     "baseline_usage": psutil.virtual_memory().percent,
-                },
+                 },
                 "disk": {
                     "total": psutil.disk_usage("/").total,
                     "free": psutil.disk_usage("/").free,
                     "baseline_usage": psutil.disk_usage("/").percent,
-                },
+                 },
                 "network": {
                     "interfaces": list(psutil.net_if_addrs().keys()),
                     "baseline_io": psutil.net_io_counters()._asdict(),
-                },
-            }
+                 },
+             }
+        """
 
+        try:
+        
+
+       
+""""""
             self.system_baseline = baseline
 
             # Store in database
@@ -282,7 +348,7 @@ class AutonomousDiagnosisRepair:
                     conn.execute(
                         "INSERT OR REPLACE INTO system_baseline (component, baseline_metrics, last_updated) VALUES (?, ?, ?)",
                         (component, json.dumps(metrics), datetime.now()),
-                    )
+                     )
 
             logger.info("System baseline established successfully")
 
@@ -290,11 +356,28 @@ class AutonomousDiagnosisRepair:
             logger.error(f"Failed to establish system baseline: {e}")
 
     def _start_monitoring(self):
-        """Start background monitoring threads"""
-        self.is_running = True
+        """
+Start background monitoring threads
 
+       
+""""""
+
+        self.is_running = True
+       
+
+        
+       
+"""
         # System health monitor
         threading.Thread(target=self._monitor_system_health, daemon=True).start()
+       """
+
+        
+       
+
+        self.is_running = True
+       
+""""""
 
         # Service monitor
         threading.Thread(target=self._monitor_services, daemon=True).start()
@@ -306,14 +389,44 @@ class AutonomousDiagnosisRepair:
         threading.Thread(target=self._process_repairs, daemon=True).start()
 
         # Health recorder
+       
+
+        
+       
+"""
         threading.Thread(target=self._record_health_metrics, daemon=True).start()
+       """
+
+        
+       
 
     def _monitor_system_health(self):
-        """Monitor system health metrics"""
+        
+"""Monitor system health metrics"""
+
         while self.is_running:
             try:
+               
+
+                
+               
+"""
                 # CPU monitoring
+               """
+
+                
+               
+
                 cpu_percent = psutil.cpu_percent(interval=1)
+               
+""""""
+
+                # CPU monitoring
+               
+
+                
+               
+"""
                 if cpu_percent > self.config["thresholds"]["cpu_critical"]:
                     self._create_diagnostic(
                         SystemComponent.CPU,
@@ -323,9 +436,9 @@ class AutonomousDiagnosisRepair:
                         {
                             "cpu_percent": cpu_percent,
                             "processes": self._get_top_cpu_processes(),
-                        },
+                         },
                         auto_repairable=True,
-                    )
+                     )
                 elif cpu_percent > self.config["thresholds"]["cpu_warning"]:
                     self._create_diagnostic(
                         SystemComponent.CPU,
@@ -335,9 +448,9 @@ class AutonomousDiagnosisRepair:
                         {
                             "cpu_percent": cpu_percent,
                             "processes": self._get_top_cpu_processes(),
-                        },
+                         },
                         auto_repairable=True,
-                    )
+                     )
 
                 # Memory monitoring
                 memory = psutil.virtual_memory()
@@ -351,9 +464,9 @@ class AutonomousDiagnosisRepair:
                             "memory_percent": memory.percent,
                             "available_gb": memory.available / (1024**3),
                             "processes": self._get_top_memory_processes(),
-                        },
+                         },
                         auto_repairable=True,
-                    )
+                     )
                 elif memory.percent > self.config["thresholds"]["memory_warning"]:
                     self._create_diagnostic(
                         SystemComponent.MEMORY,
@@ -364,9 +477,9 @@ class AutonomousDiagnosisRepair:
                             "memory_percent": memory.percent,
                             "available_gb": memory.available / (1024**3),
                             "processes": self._get_top_memory_processes(),
-                        },
+                         },
                         auto_repairable=True,
-                    )
+                     )
 
                 # Disk monitoring
                 disk = psutil.disk_usage("/")
@@ -381,9 +494,9 @@ class AutonomousDiagnosisRepair:
                             "disk_percent": disk_percent,
                             "free_gb": disk.free / (1024**3),
                             "large_files": self._get_large_files(),
-                        },
+                         },
                         auto_repairable=True,
-                    )
+                     )
                 elif disk_percent > self.config["thresholds"]["disk_warning"]:
                     self._create_diagnostic(
                         SystemComponent.DISK,
@@ -394,9 +507,9 @@ class AutonomousDiagnosisRepair:
                             "disk_percent": disk_percent,
                             "free_gb": disk.free / (1024**3),
                             "large_files": self._get_large_files(),
-                        },
+                         },
                         auto_repairable=True,
-                    )
+                     )
 
                 time.sleep(self.config["monitoring_interval"])
 
@@ -410,7 +523,7 @@ class AutonomousDiagnosisRepair:
             "python",  # Main application
             "nginx",  # Web server (if used)
             "redis",  # Cache (if used)
-        ]
+         ]
 
         while self.is_running:
             try:
@@ -423,7 +536,7 @@ class AutonomousDiagnosisRepair:
                             f"Critical service {service_name} is not running",
                             {"service": service_name, "status": "down"},
                             auto_repairable=True,
-                        )
+                         )
 
                 time.sleep(60)  # Check services every minute
 
@@ -432,10 +545,20 @@ class AutonomousDiagnosisRepair:
                 time.sleep(120)
 
     def _monitor_network(self):
-        """Monitor network connectivity and performance"""
+        """
+Monitor network connectivity and performance
+
         while self.is_running:
             try:
+               
+""""""
+
                 # Check internet connectivity
+               
+
+                
+               
+"""
                 if not self._check_internet_connectivity():
                     self._create_diagnostic(
                         SystemComponent.NETWORK,
@@ -445,9 +568,17 @@ class AutonomousDiagnosisRepair:
                         {
                             "connectivity": False,
                             "timestamp": datetime.now().isoformat(),
-                        },
+                         },
+               """
+
+                
+               
+
+                # Check internet connectivity
+               
+""""""
                         auto_repairable=True,
-                    )
+                     )
 
                 # Check API endpoint health
                 api_health = self._check_api_endpoints()
@@ -458,7 +589,7 @@ class AutonomousDiagnosisRepair:
                             if health["response_time"]
                             > self.config["thresholds"]["response_time_critical"]
                             else DiagnosisLevel.WARNING
-                        )
+                         )
                         self._create_diagnostic(
                             SystemComponent.API_ENDPOINTS,
                             level,
@@ -468,9 +599,9 @@ class AutonomousDiagnosisRepair:
                                 "endpoint": endpoint,
                                 "response_time": health["response_time"],
                                 "error": health.get("error"),
-                            },
+                             },
                             auto_repairable=True,
-                        )
+                         )
 
                 time.sleep(120)  # Check network every 2 minutes
 
@@ -479,16 +610,33 @@ class AutonomousDiagnosisRepair:
                 time.sleep(180)
 
     def _process_repairs(self):
-        """Process repair queue"""
-        active_repairs = 0
+        """
+Process repair queue
 
+       
+""""""
+
+        active_repairs = 0
+       
+
+        
+       
+"""
         while self.is_running:
             try:
                 with self.lock:
+       """
+
+        
+       
+
+        active_repairs = 0
+       
+""""""
                     if (
                         not self.repair_queue
                         or active_repairs >= self.config["max_concurrent_repairs"]
-                    ):
+#                     ):
                         time.sleep(5)
                         continue
 
@@ -506,11 +654,29 @@ class AutonomousDiagnosisRepair:
                 time.sleep(10)
 
     def _record_health_metrics(self):
-        """Record system health metrics to database"""
+        """
+Record system health metrics to database
+
         while self.is_running:
             try:
+               
+""""""
+
                 # Collect metrics
+               
+
+                
+               
+"""
                 cpu_percent = psutil.cpu_percent()
+               """
+
+                
+               
+
+                # Collect metrics
+               
+""""""
                 memory = psutil.virtual_memory()
                 disk = psutil.disk_usage("/")
                 network_io = psutil.net_io_counters()
@@ -526,8 +692,8 @@ class AutonomousDiagnosisRepair:
                             (disk.used / disk.total) * 100,
                             json.dumps(network_io._asdict()),
                             len(psutil.net_connections()),
-                        ),
-                    )
+                         ),
+                     )
 
                 time.sleep(300)  # Record every 5 minutes
 
@@ -543,24 +709,56 @@ class AutonomousDiagnosisRepair:
         description: str,
         metrics: Dict[str, Any],
         auto_repairable: bool = False,
-    ):
-        """Create a new diagnostic result"""
+#     ):
+        """
+Create a new diagnostic result
+
         try:
+           
+""""""
+
             # Check if similar diagnostic already exists and is unresolved
+           
+
+            
+           
+"""
             existing = next(
                 (
                     d
                     for d in self.diagnostics
+           """
+
+            
+           
+
+            # Check if similar diagnostic already exists and is unresolved
+           
+""""""
+
                     if d.component == component and d.title == title and not d.resolved
-                ),
+                 ),
                 None,
-            )
+             )
             if existing:
                 # Update existing diagnostic
                 existing.metrics.update(metrics)
                 existing.timestamp = datetime.now()
+                
+
+                return
+                
+""""""
+
+                
+               
+
+                
+"""
+
                 return
 
+                """
             diagnostic = DiagnosticResult(
                 id=str(uuid.uuid4()),
                 component=component,
@@ -571,7 +769,7 @@ class AutonomousDiagnosisRepair:
                 timestamp=datetime.now(),
                 auto_repairable=auto_repairable,
                 repair_suggestions=self._generate_repair_suggestions(component, level, metrics),
-            )
+             )
 
             with self.lock:
                 self.diagnostics.append(diagnostic)
@@ -590,8 +788,8 @@ class AutonomousDiagnosisRepair:
                         diagnostic.timestamp,
                         auto_repairable,
                         json.dumps(diagnostic.repair_suggestions),
-                    ),
-                )
+                     ),
+                 )
 
             logger.warning(f"Diagnostic created: {level.value.upper()} - {title}")
 
@@ -605,9 +803,27 @@ class AutonomousDiagnosisRepair:
     def _generate_repair_suggestions(
         self, component: SystemComponent, level: DiagnosisLevel, metrics: Dict[str, Any]
     ) -> List[str]:
-        """Generate repair suggestions based on diagnostic"""
-        suggestions = []
+        """
+Generate repair suggestions based on diagnostic
 
+       
+""""""
+
+        suggestions = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        suggestions = []
+       
+""""""
         if component == SystemComponent.CPU:
             if metrics.get("cpu_percent", 0) > 90:
                 suggestions.extend(
@@ -616,8 +832,8 @@ class AutonomousDiagnosisRepair:
                         "Optimize process priorities",
                         "Scale resources if possible",
                         "Check for CPU - intensive background tasks",
-                    ]
-                )
+                     ]
+                 )
 
         elif component == SystemComponent.MEMORY:
             if metrics.get("memory_percent", 0) > 90:
@@ -627,8 +843,8 @@ class AutonomousDiagnosisRepair:
                         "Restart memory - leaking processes",
                         "Force garbage collection",
                         "Increase swap space",
-                    ]
-                )
+                     ]
+                 )
 
         elif component == SystemComponent.DISK:
             if metrics.get("disk_percent", 0) > 90:
@@ -638,8 +854,8 @@ class AutonomousDiagnosisRepair:
                         "Remove temporary files",
                         "Compress old files",
                         "Move files to external storage",
-                    ]
-                )
+                     ]
+                 )
 
         elif component == SystemComponent.SERVICES:
             suggestions.extend(
@@ -648,8 +864,8 @@ class AutonomousDiagnosisRepair:
                     "Check service dependencies",
                     "Restore from backup",
                     "Check service configuration",
-                ]
-            )
+                 ]
+             )
 
         elif component == SystemComponent.NETWORK:
             suggestions.extend(
@@ -658,16 +874,23 @@ class AutonomousDiagnosisRepair:
                     "Check DNS configuration",
                     "Test alternative routes",
                     "Contact network administrator",
-                ]
-            )
+                 ]
+             )
 
         return suggestions
 
     def _schedule_auto_repair(self, diagnostic: DiagnosticResult):
-        """Schedule automatic repair for a diagnostic"""
-        try:
-            repair_actions = self._create_repair_actions(diagnostic)
+        """
+Schedule automatic repair for a diagnostic
 
+        
+"""
+        try:
+        """"""
+            repair_actions = self._create_repair_actions(diagnostic)
+           """"""
+        try:
+        """"""
             with self.lock:
                 self.repair_queue.extend(repair_actions)
                 # Sort by priority
@@ -690,20 +913,38 @@ class AutonomousDiagnosisRepair:
                             action.estimated_duration,
                             action.requires_restart,
                             action.backup_required,
-                        ),
-                    )
+                         ),
+                     )
 
             logger.info(
                 f"Scheduled {len(repair_actions)} repair actions for diagnostic {diagnostic.id}"
-            )
+             )
 
         except Exception as e:
             logger.error(f"Error scheduling auto repair: {e}")
 
     def _create_repair_actions(self, diagnostic: DiagnosticResult) -> List[RepairAction]:
-        """Create repair actions for a diagnostic"""
-        actions = []
+        """
+Create repair actions for a diagnostic
 
+       
+""""""
+
+        actions = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        actions = []
+       
+""""""
         if diagnostic.component == SystemComponent.CPU:
             if diagnostic.metrics.get("cpu_percent", 0) > 95:
                 actions.append(
@@ -715,8 +956,8 @@ class AutonomousDiagnosisRepair:
                         script="self._restart_heavy_cpu_processes()",
                         priority=1,
                         estimated_duration=30,
-                    )
-                )
+                     )
+                 )
 
         elif diagnostic.component == SystemComponent.MEMORY:
             if diagnostic.metrics.get("memory_percent", 0) > 95:
@@ -725,13 +966,13 @@ class AutonomousDiagnosisRepair:
                         id=str(uuid.uuid4()),
                         diagnostic_id=diagnostic.id,
                         action_type="clear_cache",
-                        description="Clear system cache \
-    and restart memory - heavy processes",
+                        description="Clear system cache \"
+#     and restart memory - heavy processes",
                         script="self._clear_memory_cache()",
                         priority=1,
                         estimated_duration=45,
-                    )
-                )
+                     )
+                 )
 
         elif diagnostic.component == SystemComponent.DISK:
             if diagnostic.metrics.get("disk_percent", 0) > 95:
@@ -740,14 +981,14 @@ class AutonomousDiagnosisRepair:
                         id=str(uuid.uuid4()),
                         diagnostic_id=diagnostic.id,
                         action_type="cleanup_disk",
-                        description="Clean up disk space by removing temporary files \
-    and logs",
+                        description="Clean up disk space by removing temporary files \"
+#     and logs",
                         script="self._cleanup_disk_space()",
                         priority=1,
                         estimated_duration=120,
                         backup_required=True,
-                    )
-                )
+                     )
+                 )
 
         elif diagnostic.component == SystemComponent.SERVICES:
             service_name = diagnostic.metrics.get("service")
@@ -761,8 +1002,8 @@ class AutonomousDiagnosisRepair:
                         script=f"self._restart_service('{service_name}')",
                         priority=1,
                         estimated_duration=60,
-                    )
-                )
+                     )
+                 )
 
         elif diagnostic.component == SystemComponent.NETWORK:
             actions.append(
@@ -774,22 +1015,38 @@ class AutonomousDiagnosisRepair:
                     script="self._recover_network_connectivity()",
                     priority=1,
                     estimated_duration=90,
-                )
-            )
+                 )
+             )
 
         return actions
 
     def _execute_repair(self, action: RepairAction):
-        """Execute a repair action"""
+        """
+Execute a repair action
+
         result = RepairResult(
             action_id=action.id,
             status=RepairStatus.IN_PROGRESS,
             started_at=datetime.now(),
-        )
+        
+""""""
 
+         )
+        
+
+         
+        
+"""
         try:
             logger.info(f"Starting repair action: {action.description}")
+        """
 
+         
+        
+
+         )
+        
+""""""
             # Create backup if required
             if action.backup_required:
                 backup_success = self._create_backup(action)
@@ -807,7 +1064,7 @@ class AutonomousDiagnosisRepair:
             elif action.script:
                 success, output, error = self._execute_script(
                     action.script, action.parameters or {}
-                )
+                 )
             else:
                 success, output, error = False, None, "No command or script specified"
 
@@ -836,15 +1093,26 @@ class AutonomousDiagnosisRepair:
                 self.repair_history.append(result)
 
     def _execute_command(self, command: str) -> Tuple[bool, str, str]:
-        """Execute a system command"""
+        """
+Execute a system command
+
+        
+"""
         try:
+        """
+
             result = subprocess.run(
                 command,
+        
+
+        try:
+        
+"""
                 shell=True,
                 capture_output=True,
                 text=True,
                 timeout=300,  # 5 minute timeout
-            )
+             )
             return result.returncode == 0, result.stdout, result.stderr
         except subprocess.TimeoutExpired:
             return False, None, "Command timed out"
@@ -852,11 +1120,29 @@ class AutonomousDiagnosisRepair:
             return False, None, str(e)
 
     def _execute_script(self, script: str, parameters: Dict[str, Any]) -> Tuple[bool, str, str]:
-        """Execute a Python script method"""
+        """
+Execute a Python script method
+
         try:
             # This is a simplified implementation
+           
+""""""
+
             # In practice, you'd want more sophisticated script execution
+           
+
+            
+           
+"""
             if script.startswith("self."):
+           """
+
+            
+           
+
+            # In practice, you'd want more sophisticated script execution
+           
+""""""
                 method_name = script.replace("self.", "").split("(")[0]
                 if hasattr(self, method_name):
                     method = getattr(self, method_name)
@@ -872,11 +1158,22 @@ class AutonomousDiagnosisRepair:
             return False, None, str(e)
 
     def _create_backup(self, action: RepairAction) -> bool:
-        """Create backup before repair"""
+        """
+Create backup before repair
+
+        
+"""
         try:
+        """
             backup_dir = Path("backups") / datetime.now().strftime("%Y % m%d_ % H%M % S")
             backup_dir.mkdir(parents=True, exist_ok=True)
+        """
 
+        try:
+        
+
+       
+""""""
             # Create backup based on action type
             if action.action_type == "cleanup_disk":
                 # Backup important files before cleanup
@@ -908,26 +1205,57 @@ class AutonomousDiagnosisRepair:
                         result.error,
                         result.success,
                         result.rollback_available,
-                    ),
-                )
+                     ),
+                 )
         except Exception as e:
             logger.error(f"Error storing repair result: {e}")
 
     def _resolve_diagnostic(self, diagnostic_id: str):
-        """Mark a diagnostic as resolved"""
-        try:
-            # Update in memory
-            diagnostic = next((d for d in self.diagnostics if d.id == diagnostic_id), None)
-            if diagnostic:
-                diagnostic.resolved = True
+        """
+Mark a diagnostic as resolved
 
+        try:
+           
+""""""
+
+            # Update in memory
+           
+
+            
+           
+"""
+            diagnostic = next((d for d in self.diagnostics if d.id == diagnostic_id), None)
+           """
+
+            
+           
+
+            # Update in memory
+           
+""""""
+
+            if diagnostic:
+               
+
+                
+               
+"""
+                diagnostic.resolved = True
+               """"""
             # Update in database
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     "UPDATE diagnostics SET resolved = TRUE WHERE id = ?",
                     (diagnostic_id,),
-                )
+                 )
+               """
 
+                
+               
+
+                diagnostic.resolved = True
+               
+""""""
             logger.info(f"Diagnostic {diagnostic_id} marked as resolved")
 
         except Exception as e:
@@ -936,38 +1264,70 @@ class AutonomousDiagnosisRepair:
     # Utility methods for system checks and repairs
 
     def _get_top_cpu_processes(self) -> List[Dict[str, Any]]:
-        """Get top CPU consuming processes"""
+        """
+Get top CPU consuming processes
+
+        
+"""
         try:
+        """
             processes = []
             for proc in psutil.process_iter(["pid", "name", "cpu_percent"]):
                 try:
                     processes.append(proc.info)
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     pass
+        """
+
+        try:
+        
+
+       
+""""""
             return sorted(processes, key=lambda x: x["cpu_percent"], reverse=True)[:5]
         except Exception:
             return []
 
     def _get_top_memory_processes(self) -> List[Dict[str, Any]]:
-        """Get top memory consuming processes"""
+        """
+Get top memory consuming processes
+
+        
+"""
         try:
+        """
             processes = []
             for proc in psutil.process_iter(["pid", "name", "memory_percent"]):
                 try:
                     processes.append(proc.info)
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     pass
+        """
+
+        try:
+        
+
+       
+""""""
             return sorted(processes, key=lambda x: x["memory_percent"], reverse=True)[:5]
         except Exception:
             return []
 
     def _get_large_files(self) -> List[Dict[str, Any]]:
-        """Get largest files on disk"""
+        """
+Get largest files on disk
+
+        
+"""
         try:
+        """
             large_files = []
             for root, dirs, files in os.walk("."):
                 for file in files:
                     try:
+        """
+        try:
+        """
                         file_path = os.path.join(root, file)
                         size = os.path.getsize(file_path)
                         if size > 100 * 1024 * 1024:  # Files larger than 100MB
@@ -1001,7 +1361,7 @@ class AutonomousDiagnosisRepair:
         endpoints = {
             "localhost": "http://localhost:8000/health",
             # Add more endpoints as needed
-        }
+         }
 
         results = {}
         for name, url in endpoints.items():
@@ -1014,7 +1374,7 @@ class AutonomousDiagnosisRepair:
                     "healthy": response.status_code == 200,
                     "response_time": response_time,
                     "status_code": response.status_code,
-                }
+                 }
             except Exception as e:
                 results[name] = {"healthy": False, "response_time": 0, "error": str(e)}
 
@@ -1023,12 +1383,36 @@ class AutonomousDiagnosisRepair:
     # Repair methods
 
     def _restart_heavy_cpu_processes(self) -> str:
-        """Restart processes consuming high CPU"""
+        """
+Restart processes consuming high CPU
+
+        
+"""
         try:
+        """
+
             heavy_processes = self._get_top_cpu_processes()
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             restarted = []
+           
+""""""
 
             for proc_info in heavy_processes[:3]:  # Restart top 3
+           
+
+            
+           
+"""
+            restarted = []
+           """"""
                 if proc_info["cpu_percent"] > 50:  # Only if using more than 50% CPU
                     try:
                         proc = psutil.Process(proc_info["pid"])
@@ -1039,7 +1423,7 @@ class AutonomousDiagnosisRepair:
                         psutil.NoSuchProcess,
                         psutil.AccessDenied,
                         psutil.TimeoutExpired,
-                    ):
+#                     ):
                         pass
 
             return f"Restarted processes: {', '.join(restarted)}"
@@ -1047,10 +1431,19 @@ class AutonomousDiagnosisRepair:
             raise Exception(f"Failed to restart heavy CPU processes: {e}")
 
     def _clear_memory_cache(self) -> str:
-        """Clear system memory cache"""
-        try:
-            # Force garbage collection
+        """
+Clear system memory cache
 
+        try:
+           
+""""""
+
+            # Force garbage collection
+           
+
+            
+           
+"""
             import gc
 
             gc.collect()
@@ -1064,10 +1457,17 @@ class AutonomousDiagnosisRepair:
             raise Exception(f"Failed to clear memory cache: {e}")
 
     def _cleanup_disk_space(self) -> str:
-        """Clean up disk space"""
-        try:
-            cleaned_mb = 0
+        """
+Clean up disk space
 
+        
+"""
+        try:
+        """"""
+            cleaned_mb = 0
+           """"""
+        try:
+        """"""
             # Clean log files
             log_dirs = ["logs", "/var/log", "/tmp"]
             for log_dir in log_dirs:
@@ -1077,7 +1477,7 @@ class AutonomousDiagnosisRepair:
                             if (
                                 file.endswith(".log")
                                 and os.path.getsize(os.path.join(root, file)) > 10 * 1024 * 1024
-                            ):
+#                             ):
                                 try:
                                     file_path = os.path.join(root, file)
                                     size = os.path.getsize(file_path)
@@ -1105,11 +1505,29 @@ class AutonomousDiagnosisRepair:
             raise Exception(f"Failed to cleanup disk space: {e}")
 
     def _restart_service(self, service_name: str) -> str:
-        """Restart a service"""
+        """
+Restart a service
+
         try:
+           
+""""""
+
             # Kill existing processes
+           
+
+            
+           
+"""
             killed = 0
             for proc in psutil.process_iter(["pid", "name"]):
+           """
+
+            
+           
+
+            # Kill existing processes
+           
+""""""
                 if service_name.lower() in proc.info["name"].lower():
                     try:
                         proc.terminate()
@@ -1119,7 +1537,7 @@ class AutonomousDiagnosisRepair:
                         psutil.NoSuchProcess,
                         psutil.AccessDenied,
                         psutil.TimeoutExpired,
-                    ):
+#                     ):
                         pass
 
             # Wait a moment
@@ -1132,10 +1550,17 @@ class AutonomousDiagnosisRepair:
             raise Exception(f"Failed to restart service {service_name}: {e}")
 
     def _recover_network_connectivity(self) -> str:
-        """Attempt to recover network connectivity"""
-        try:
-            recovery_actions = []
+        """
+Attempt to recover network connectivity
 
+        
+"""
+        try:
+        """"""
+            recovery_actions = []
+           """"""
+        try:
+        """"""
             # Flush DNS
             if os.name == "posix":
                 os.system("dscacheutil -flushcache 2>/dev/null || true")
@@ -1152,17 +1577,42 @@ class AutonomousDiagnosisRepair:
             raise Exception(f"Failed to recover network connectivity: {e}")
 
     def get_system_health_report(self) -> Dict[str, Any]:
-        """Get comprehensive system health report"""
+        """
+Get comprehensive system health report
+
         try:
+            
+"""
             with self.lock:
+            """
+
                 unresolved_diagnostics = [d for d in self.diagnostics if not d.resolved]
+            
+
+            with self.lock:
+            
+"""
                 recent_repairs = [
                     r
                     for r in self.repair_history
                     if r.started_at > datetime.now() - timedelta(hours=24)
-                ]
+                """
+
+                 
+                
+
+                 ]
+                
+""""""
 
             # Get current system metrics
+                
+
+                 
+                
+"""
+                 ]
+                """"""
             cpu_percent = psutil.cpu_percent()
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage("/")
@@ -1171,21 +1621,21 @@ class AutonomousDiagnosisRepair:
                 "timestamp": datetime.now().isoformat(),
                 "system_status": (
                     "healthy" if len(unresolved_diagnostics) == 0 else "issues_detected"
-                ),
+                 ),
                 "current_metrics": {
                     "cpu_percent": cpu_percent,
                     "memory_percent": memory.percent,
                     "disk_percent": (disk.used / disk.total) * 100,
                     "uptime": time.time() - psutil.boot_time(),
-                },
+                 },
                 "diagnostics": {
                     "total": len(self.diagnostics),
                     "unresolved": len(unresolved_diagnostics),
                     "by_level": {
                         level.value: len([d for d in unresolved_diagnostics if d.level == level])
                         for level in DiagnosisLevel
-                    },
-                },
+                     },
+                 },
                 "repairs": {
                     "total_executed": len(self.repair_history),
                     "recent_24h": len(recent_repairs),
@@ -1193,10 +1643,10 @@ class AutonomousDiagnosisRepair:
                         (len([r for r in recent_repairs if r.success]) / len(recent_repairs) * 100)
                         if recent_repairs
                         else 100
-                    ),
-                },
+                     ),
+                 },
                 "auto_repair_enabled": self.config["auto_repair_enabled"],
-            }
+             }
         except Exception as e:
             logger.error(f"Error generating health report: {e}")
             return {"error": str(e)}

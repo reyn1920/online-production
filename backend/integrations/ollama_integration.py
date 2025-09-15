@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI Ollama LLM Integration - Advanced Language Model Integration
-
+""""""
 This module provides comprehensive integration with Ollama for advanced AI - powered
 strategic analysis, content generation, and decision - making capabilities.
 It handles model management, prompt optimization, and response processing.
+"""
+
+TRAE.AI Ollama LLM Integration - Advanced Language Model Integration
+
+
+
+""""""
+
 
 Features:
+
+
+
 - Ollama service management and health monitoring
 - Model downloading and management
 - Optimized prompt engineering for strategic analysis
@@ -16,6 +27,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import asyncio
@@ -74,7 +86,9 @@ class ResponseQuality(Enum):
 
 @dataclass
 class OllamaModel:
-    """Ollama model configuration"""
+    """
+Ollama model configuration
+
 
     name: str
     size: str
@@ -85,12 +99,20 @@ class OllamaModel:
     last_used: Optional[datetime] = None
     usage_count: int = 0
     average_response_time: float = 0.0
+   
+""""""
+
     success_rate: float = 1.0
+   
 
-
+    
+   
+"""
 @dataclass
 class PromptConfig:
-    """Prompt configuration and optimization settings"""
+    """
+Prompt configuration and optimization settings
+
 
     template_name: str
     system_prompt: str
@@ -101,12 +123,20 @@ class PromptConfig:
     top_p: float = 0.9
     top_k: int = 40
     repeat_penalty: float = 1.1
+   
+""""""
+
     context_length: int = 4096
+   
 
-
+    
+   
+"""
 @dataclass
 class QueryRequest:
-    """LLM query request structure"""
+    """
+LLM query request structure
+
 
     request_id: str
     prompt: str
@@ -116,12 +146,20 @@ class QueryRequest:
     priority: int = 5  # 1 - 10 scale
     timeout: int = 120
     retry_count: int = 3
+   
+""""""
+
     created_at: datetime = field(default_factory=datetime.now)
+   
 
-
+    
+   
+"""
 @dataclass
 class QueryResponse:
-    """LLM query response structure"""
+    """
+LLM query response structure
+
 
     request_id: str
     response_text: str
@@ -132,17 +170,42 @@ class QueryResponse:
     confidence_level: float
     metadata: Dict[str, Any]
     completed_at: datetime = field(default_factory=datetime.now)
+   
+""""""
+
     cached: bool = False
+   
 
-
+    
+   
+"""
 class OllamaIntegration:
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
+   
+
+    
+   
+"""
     Comprehensive Ollama LLM Integration
+   """"""
+    
+   """
 
     Provides advanced language model capabilities for strategic analysis,
         content generation, and AI - powered decision making.
-    """
+   
 
+    
+   
+"""
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.ollama_endpoint = config.get("ollama_endpoint", "http://localhost:11434")
@@ -182,7 +245,7 @@ class OllamaIntegration:
                 "total_tokens_processed": 0,
                 "cache_hit_rate": 0.0,
                 "model_performance": defaultdict(dict),
-            }
+             }
 
             # Setup metrics collection intervals
             self.metrics_collection_interval = self.config.get("metrics_interval", 300)  # 5 minutes
@@ -197,7 +260,7 @@ class OllamaIntegration:
                     "avg_response_time": 0.0,
                     "total_tokens": 0,
                     "quality_scores": [],
-                }
+                 }
 
             # Start background metrics collection
             self._start_metrics_collection()
@@ -224,13 +287,50 @@ class OllamaIntegration:
         logger.info("Background metrics collection started")
 
     def _collect_system_metrics(self):
-        """Collect system performance metrics"""
+        """
+Collect system performance metrics
+
         try:
+           
+""""""
+
             # System resource usage
+           
+
+            
+           
+"""
             cpu_usage = psutil.cpu_percent()
+           """
+
+            
+           
+
+            # System resource usage
+           
+""""""
+
+           
+
+            
+           
+"""
             memory_usage = psutil.virtual_memory().percent
+           """
+
+            
+           
 
             # Calculate cache hit rate
+           
+""""""
+
+            memory_usage = psutil.virtual_memory().percent
+           
+
+            
+           
+"""
             total_requests = self.performance_stats["total_requests"]
             cache_hits = sum(1 for r in self.request_history if hasattr(r, "cached") and r.cached)
             cache_hit_rate = (cache_hits / total_requests) if total_requests > 0 else 0.0
@@ -246,7 +346,7 @@ class OllamaIntegration:
                 "cache_hit_rate": cache_hit_rate,
                 "active_requests": len(self.active_requests),
                 "total_requests": total_requests,
-            }
+             }
 
             self.performance_history.append(metrics_snapshot)
 
@@ -256,7 +356,7 @@ class OllamaIntegration:
                     f"Performance metrics - Requests: {total_requests}, "
                     f"Cache hit rate: {cache_hit_rate:.2%}, "
                     f"CPU: {cpu_usage:.1f}%, Memory: {memory_usage:.1f}%"
-                )
+                 )
 
         except Exception as e:
             logger.error(f"Failed to collect system metrics: {e}")
@@ -264,14 +364,30 @@ class OllamaIntegration:
         logger.info(f"OllamaIntegration initialized with endpoint: {self.ollama_endpoint}")
 
     def _initialize_ollama_integration(self):
-        """Initialize Ollama integration and check service health"""
+        """
+Initialize Ollama integration and check service health
+
         try:
             # Check Ollama service health
-            self._check_ollama_health()
+           
+""""""
 
+            self._check_ollama_health()
+           
+
+            
+           
+"""
             # Discover available models
             self._discover_available_models()
+           """
 
+            
+           
+
+            self._check_ollama_health()
+           
+""""""
             # Ensure required models are available
             self._ensure_required_models()
 
@@ -284,9 +400,21 @@ class OllamaIntegration:
             raise
 
     def _check_ollama_health(self) -> bool:
-        """Check if Ollama service is running and healthy"""
+        """
+Check if Ollama service is running and healthy
+
+        
+"""
         try:
+        """
             response = requests.get(f"{self.ollama_endpoint}/api/tags", timeout=10)
+        """
+
+        try:
+        
+
+       
+""""""
             if response.status_code == 200:
                 logger.info("Ollama service is healthy")
                 return True
@@ -301,10 +429,28 @@ class OllamaIntegration:
             return False
 
     def _start_ollama_service(self):
-        """Attempt to start Ollama service if not running"""
+        """
+Attempt to start Ollama service if not running
+
         try:
+           
+""""""
+
             # Check if Ollama is installed
+           
+
+            
+           
+"""
             result = subprocess.run(["which", "ollama"], capture_output=True, text=True)
+           """
+
+            
+           
+
+            # Check if Ollama is installed
+           
+""""""
             if result.returncode != 0:
                 logger.error("Ollama is not installed. Please install Ollama first.")
                 return False
@@ -315,7 +461,7 @@ class OllamaIntegration:
                 ["ollama", "serve"],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-            )
+             )
 
             # Wait for service to start
             for i in range(30):  # Wait up to 30 seconds
@@ -332,9 +478,21 @@ class OllamaIntegration:
             return False
 
     def _discover_available_models(self):
-        """Discover and catalog available Ollama models"""
+        """
+Discover and catalog available Ollama models
+
+        
+"""
         try:
+        """
             response = requests.get(f"{self.ollama_endpoint}/api/tags", timeout=10)
+        """
+
+        try:
+        
+
+       
+""""""
             if response.status_code == 200:
                 models_data = response.json().get("models", [])
 
@@ -349,7 +507,7 @@ class OllamaIntegration:
                         description=f"Ollama model: {model_name}",
                         use_cases=self._determine_model_use_cases(model_name),
                         parameters=self._get_default_model_parameters(model_name),
-                    )
+                     )
 
                     self.available_models[model_name] = model
 
@@ -360,9 +518,21 @@ class OllamaIntegration:
             logger.error(f"Model discovery failed: {e}")
 
     def _format_model_size(self, size_bytes: int) -> str:
-        """Format model size in human - readable format"""
+        """
+Format model size in human - readable format
+
+        
+"""
         try:
+        """"""
             if size_bytes == 0:
+        """
+
+        try:
+        
+
+       
+""""""
                 return "Unknown"
 
             # Convert bytes to appropriate unit
@@ -376,10 +546,28 @@ class OllamaIntegration:
             return "Unknown"
 
     def _determine_model_use_cases(self, model_name: str) -> List[str]:
-        """Determine use cases for a model based on its name"""
-        use_cases = []
-        model_lower = model_name.lower()
+        """
+Determine use cases for a model based on its name
 
+        use_cases = []
+       
+""""""
+
+        model_lower = model_name.lower()
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        model_lower = model_name.lower()
+       
+""""""
         if "llama" in model_lower:
             use_cases.extend(["general", "analysis", "reasoning"])
         if "mistral" in model_lower:
@@ -399,17 +587,34 @@ class OllamaIntegration:
             "top_k": 40,
             "repeat_penalty": 1.1,
             "max_tokens": 2000,
-        }
+         }
 
     def _ensure_required_models(self):
-        """Ensure required models are downloaded and available"""
+        """
+Ensure required models are downloaded and available
+
         required_models = [
             ModelType.STRATEGIC_ANALYSIS.value,
             ModelType.CONTENT_GENERATION.value,
             ModelType.GENERAL_PURPOSE.value,
-        ]
+        
+""""""
 
+         ]
+        
+
+         
+        
+"""
         for model_name in required_models:
+        """
+
+         
+        
+
+         ]
+        
+""""""
             if model_name not in self.available_models:
                 logger.info(f"Downloading required model: {model_name}")
                 self._download_model(model_name)
@@ -425,7 +630,7 @@ class OllamaIntegration:
                 capture_output=True,
                 text=True,
                 timeout=1800,  # 30 minutes timeout
-            )
+             )
 
             if result.returncode == 0:
                 logger.info(f"Successfully downloaded model: {model_name}")
@@ -444,51 +649,59 @@ class OllamaIntegration:
             return False
 
     def _setup_prompt_templates(self):
-        """Setup optimized prompt templates for different use cases"""
+        """
+Setup optimized prompt templates for different use cases
+
         self.prompt_templates = {
+            
+"""
             PromptTemplate.STRATEGIC_BRIEF: PromptConfig(
+            """
                 template_name="strategic_brief",
-                system_prompt="You are a senior strategic advisor with 20+ years of experience in business strategy, market analysis, \
-    and corporate planning. Provide comprehensive, actionable insights.",
-                user_prompt_template="Analyze the following business data \
-    and generate a strategic brief: {data}\\n\\nFocus on: {focus_areas}\\n\\nProvide specific recommendations with implementation timelines.",
+            """
+            PromptTemplate.STRATEGIC_BRIEF: PromptConfig(
+            """
+                system_prompt="You are a senior strategic advisor with 20+ years of experience in business strategy, market analysis, \"
+#     and corporate planning. Provide comprehensive, actionable insights.",
+                user_prompt_template="Analyze the following business data \"
+#     and generate a strategic brief: {data}\\n\\nFocus on: {focus_areas}\\n\\nProvide specific recommendations with implementation timelines.",
                 parameters={"temperature": 0.7, "top_p": 0.9, "max_tokens": 3000},
-            ),
+             ),
             PromptTemplate.MARKET_ANALYSIS: PromptConfig(
                 template_name="market_analysis",
-                system_prompt="You are a market research expert specializing in digital marketing, content creation, \
-    and online business models. Provide data - driven market insights.",
-                user_prompt_template="Conduct a comprehensive market analysis for: {market_segment}\\n\\nData: {market_data}\\n\\nInclude market size, growth trends, competitive landscape, \
-    and opportunities.",
+                system_prompt="You are a market research expert specializing in digital marketing, content creation, \"
+#     and online business models. Provide data - driven market insights.",
+                user_prompt_template="Conduct a comprehensive market analysis for: {market_segment}\\n\\nData: {market_data}\\n\\nInclude market size, growth trends, competitive landscape, \"
+#     and opportunities.",
                 parameters={"temperature": 0.6, "top_p": 0.85, "max_tokens": 2500},
-            ),
+             ),
             PromptTemplate.COMPETITIVE_INTEL: PromptConfig(
                 template_name="competitive_intelligence",
-                system_prompt="You are a competitive intelligence analyst with expertise in digital business models, content strategies, \
-    and market positioning.",
-                user_prompt_template="Analyze competitive landscape: {competitors}\\n\\nOur position: {our_data}\\n\\nIdentify competitive advantages, threats, \
-    and strategic opportunities.",
+                system_prompt="You are a competitive intelligence analyst with expertise in digital business models, content strategies, \"
+#     and market positioning.",
+                user_prompt_template="Analyze competitive landscape: {competitors}\\n\\nOur position: {our_data}\\n\\nIdentify competitive advantages, threats, \"
+#     and strategic opportunities.",
                 parameters={"temperature": 0.65, "top_p": 0.9, "max_tokens": 2000},
-            ),
+             ),
             PromptTemplate.OPPORTUNITY_ASSESSMENT: PromptConfig(
                 template_name="opportunity_assessment",
-                system_prompt="You are a business development expert specializing in identifying \
-    and evaluating new market opportunities \
-    and revenue streams.",
-                user_prompt_template="Evaluate this business opportunity: {opportunity_data}\\n\\nAssess: market potential, risks, resource requirements, ROI projections, \
-    and implementation strategy.",
+                system_prompt="You are a business development expert specializing in identifying \"
+#     and evaluating new market opportunities \
+#     and revenue streams.",
+                user_prompt_template="Evaluate this business opportunity: {opportunity_data}\\n\\nAssess: market potential, risks, resource requirements, ROI projections, \"
+#     and implementation strategy.",
                 parameters={"temperature": 0.7, "top_p": 0.9, "max_tokens": 2200},
-            ),
+             ),
             PromptTemplate.CONTENT_STRATEGY: PromptConfig(
                 template_name="content_strategy",
-                system_prompt="You are a content strategist \
-    and digital marketing expert with deep knowledge of YouTube, social media, \
-    and content monetization.",
-                user_prompt_template="Develop content strategy for: {platform}\\n\\nTarget audience: {audience}\\n\\nCurrent performance: {performance_data}\\n\\nProvide specific content recommendations \
-    and optimization strategies.",
+                system_prompt="You are a content strategist \"
+#     and digital marketing expert with deep knowledge of YouTube, social media, \
+#     and content monetization.",
+                user_prompt_template="Develop content strategy for: {platform}\\n\\nTarget audience: {audience}\\n\\nCurrent performance: {performance_data}\\n\\nProvide specific content recommendations \"
+#     and optimization strategies.",
                 parameters={"temperature": 0.8, "top_p": 0.9, "max_tokens": 2000},
-            ),
-        }
+             ),
+         }
 
         logger.info(f"Loaded {len(self.prompt_templates)} prompt templates")
 
@@ -499,7 +712,7 @@ class OllamaIntegration:
         template: Optional[PromptTemplate] = None,
         context: Optional[Dict[str, Any]] = None,
         priority: int = 5,
-    ) -> QueryResponse:
+#     ) -> QueryResponse:
         """Query Ollama LLM with advanced features"""
 
         request_id = self._generate_request_id()
@@ -530,7 +743,7 @@ class OllamaIntegration:
                 parameters=self._get_model_parameters(model_name, template),
                 context=context or {},
                 priority=priority,
-            )
+             )
 
             # Execute query with semaphore control
             async with self.request_semaphore:
@@ -556,20 +769,37 @@ class OllamaIntegration:
                 quality_score=0.0,
                 confidence_level=0.0,
                 metadata={"error": str(e)},
-            )
+             )
 
     async def _execute_llm_query(self, request: QueryRequest) -> QueryResponse:
-        """Execute the actual LLM query"""
-        start_time = time.time()
+        """
+Execute the actual LLM query
 
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         try:
             # Prepare request payload
+       """
+
+        
+       
+
+        start_time = time.time()
+       
+""""""
             payload = {
                 "model": request.model_name,
                 "prompt": request.prompt,
                 "stream": False,
                 "options": request.parameters,
-            }
+             }
 
             # Execute request
             async with aiohttp.ClientSession() as session:
@@ -577,7 +807,7 @@ class OllamaIntegration:
                     f"{self.ollama_endpoint}/api/generate",
                     json=payload,
                     timeout=aiohttp.ClientTimeout(total=request.timeout),
-                ) as response:
+#                 ) as response:
                     if response.status == 200:
                         result = await response.json()
                         response_text = result.get("response", "").strip()
@@ -602,8 +832,8 @@ class OllamaIntegration:
                                 "load_duration": result.get("load_duration", 0),
                                 "prompt_eval_count": result.get("prompt_eval_count", 0),
                                 "eval_count": result.get("eval_count", 0),
-                            },
-                        )
+                             },
+                         )
                     else:
                         raise Exception(f"Ollama API error: {response.status}")
 
@@ -614,11 +844,30 @@ class OllamaIntegration:
 
     def _select_optimal_model(
         self, template: Optional[PromptTemplate], context: Optional[Dict]
-    ) -> str:
-        """Select the optimal model based on use case and context"""
+#     ) -> str:
+        """
+Select the optimal model based on use case and context
+
         try:
+           
+""""""
+
             # Use template - specific model if available
+           
+
+            
+           
+"""
             if template:
+           """
+
+            
+           
+
+            # Use template - specific model if available
+           
+""""""
+
                 if template == PromptTemplate.STRATEGIC_BRIEF:
                     return ModelType.STRATEGIC_ANALYSIS.value
                 elif template == PromptTemplate.CONTENT_STRATEGY:
@@ -626,10 +875,21 @@ class OllamaIntegration:
                 elif template in [
                     PromptTemplate.MARKET_ANALYSIS,
                     PromptTemplate.COMPETITIVE_INTEL,
-                ]:
+#                 ]:
+                    
+
                     return ModelType.RESEARCH_SYNTHESIS.value
+                    
+""""""
+
+                    
+                   
 
             # Check context for hints
+                    
+"""
+                    return ModelType.RESEARCH_SYNTHESIS.value
+                    """"""
             if context:
                 if "code" in context or "programming" in str(context).lower():
                     return ModelType.CODE_ANALYSIS.value
@@ -644,11 +904,34 @@ class OllamaIntegration:
             return self.default_model
 
     def get_system_status(self) -> Dict[str, Any]:
-        """Get comprehensive system status"""
-        try:
-            # Ollama service status
-            service_healthy = self._check_ollama_health()
+        """
+Get comprehensive system status
 
+        try:
+           
+""""""
+
+            # Ollama service status
+           
+
+            
+           
+""""""
+
+            
+           
+
+            service_healthy = self._check_ollama_health()
+           
+""""""
+
+           
+
+            
+           
+"""
+            # Ollama service status
+           """"""
             # Model statistics
             model_stats = {}
             for name, model in self.available_models.items():
@@ -657,7 +940,7 @@ class OllamaIntegration:
                     "usage_count": model.usage_count,
                     "success_rate": model.success_rate,
                     "avg_response_time": model.average_response_time,
-                }
+                 }
 
             # Performance metrics
             recent_requests = len(
@@ -665,8 +948,8 @@ class OllamaIntegration:
                     r
                     for r in self.request_history
                     if r.completed_at > datetime.now() - timedelta(hours=1)
-                ]
-            )
+                 ]
+             )
 
             return {
                 "service_healthy": service_healthy,
@@ -678,21 +961,37 @@ class OllamaIntegration:
                 "recent_requests_1h": recent_requests,
                 "prompt_templates": len(self.prompt_templates),
                 "max_concurrent": self.max_concurrent_requests,
-            }
+             }
 
         except Exception as e:
             logger.error(f"Status check failed: {e}")
             return {"error": str(e)}
 
     async def optimize_performance(self):
-        """Optimize Ollama integration performance"""
+        """
+Optimize Ollama integration performance
+
         try:
             # Clean old cache entries
-            self._cleanup_cache()
+           
+""""""
 
+            self._cleanup_cache()
+           
+
+            
+           
+"""
             # Update model performance scores
             self._update_model_scores()
+           """
 
+            
+           
+
+            self._cleanup_cache()
+           
+""""""
             # Optimize model parameters based on usage patterns
             self._optimize_model_parameters()
 
@@ -702,17 +1001,33 @@ class OllamaIntegration:
             logger.error(f"Performance optimization failed: {e}")
 
     def _setup_ollama_database(self):
-        """Setup SQLite database for caching and metrics storage"""
+        """
+Setup SQLite database for caching and metrics storage
+
+        
+"""
         try:
+        """
             db_path = Path(self.config.get("cache_db_path", "./data/ollama_cache.db"))
             db_path.parent.mkdir(parents=True, exist_ok=True)
+        """
+
+        try:
+        
+
+       
+""""""
 
             self.db_connection = sqlite3.connect(str(db_path), check_same_thread=False)
             cursor = self.db_connection.cursor()
 
             # Create response cache table
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 CREATE TABLE IF NOT EXISTS response_cache (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         prompt_hash TEXT UNIQUE NOT NULL,
@@ -724,13 +1039,24 @@ class OllamaIntegration:
                         response_time REAL NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         expires_at TIMESTAMP NOT NULL
-                )
+                 )
+            """"""
+
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
             # Create performance metrics table
             cursor.execute(
-                """
+               
+""""""
                 CREATE TABLE IF NOT EXISTS performance_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         model_name TEXT NOT NULL,
@@ -741,13 +1067,32 @@ class OllamaIntegration:
                         success BOOLEAN NOT NULL,
                         error_message TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+                 )
+            """"""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             # Create model usage statistics table
             cursor.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS model_usage (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         model_name TEXT NOT NULL,
@@ -757,25 +1102,39 @@ class OllamaIntegration:
                         failure_count INTEGER DEFAULT 0,
                         last_used TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+                 )
+            
+""""""
 
+            
+
+             
+            
+"""
+             )
+            """"""
             # Create indexes for better performance
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_prompt_hash ON response_cache(prompt_hash)"
-            )
+             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_model_name ON response_cache(model_name)"
-            )
+             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_expires_at ON response_cache(expires_at)"
-            )
+             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_performance_model ON performance_metrics(model_name)"
-            )
+             )
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_usage_model ON model_usage(model_name)")
+            """
 
+             
+            
+
+             )
+            
+""""""
             self.db_connection.commit()
             logger.info("Ollama database setup completed successfully")
 

@@ -16,10 +16,12 @@ class GMM:
         self.cov = cov  # covariance matrix of Gaussian components (a list of dimxdim matrices)
         self.cov_det = (
             cov_det  # pre - computed determinet of covariance matrices (a list of scalars)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.cov_inv = (
             cov_inv  # pre - computed inverse covariance matrices (a list of dimxdim matrices)
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.factor = [0] * num
         for i in range(self.num):
@@ -65,7 +67,8 @@ gmm_skin_mu = [
     np.array([150.19858, 105.18467, 155.51428]),
     np.array([183.92976, 107.62468, 152.71820]),
     np.array([114.90524, 113.59782, 151.38217]),
-]
+# BRACKET_SURGEON: disabled
+# ]
 gmm_skin_cov_det = [5692842.5, 5851930.5, 2329131.0, 1585971.0]
 gmm_skin_cov_inv = [
     np.array(
@@ -73,30 +76,39 @@ gmm_skin_cov_inv = [
             [0.0019472069, 0.0020450759, -0.00060243998],
             [0.0020450759, 0.017700525, 0.0051420014],
             [-0.00060243998, 0.0051420014, 0.0081308950],
-        ]
-    ),
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     ),
     np.array(
         [
             [0.0027110141, 0.0011036990, 0.0023122299],
             [0.0011036990, 0.010707724, 0.010742856],
             [0.0023122299, 0.010742856, 0.017481629],
-        ]
-    ),
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     ),
     np.array(
         [
             [0.0048026871, 0.00022935172, 0.0077668377],
             [0.00022935172, 0.011729696, 0.0081661865],
             [0.0077668377, 0.0081661865, 0.025374353],
-        ]
-    ),
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     ),
     np.array(
         [
             [0.0011989699, 0.0022453172, -0.0010748957],
             [0.0022453172, 0.047758564, 0.020332102],
             [-0.0010748957, 0.020332102, 0.024502251],
-        ]
-    ),
-]
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     ),
+# BRACKET_SURGEON: disabled
+# ]
 
 gmm_skin = GMM(3, 4, gmm_skin_w, gmm_skin_mu, [], gmm_skin_cov_det, gmm_skin_cov_inv)
 
@@ -106,7 +118,8 @@ gmm_nonskin_mu = [
     np.array([110.91392, 125.52969, 130.19237]),
     np.array([129.75864, 129.96107, 126.96808]),
     np.array([112.29587, 128.85121, 129.05431]),
-]
+# BRACKET_SURGEON: disabled
+# ]
 gmm_nonskin_cov_det = [458703648.0, 6466488.0, 90611376.0, 133097.63]
 gmm_nonskin_cov_inv = [
     np.array(
@@ -114,30 +127,39 @@ gmm_nonskin_cov_inv = [
             [0.00085371657, 0.00071197288, 0.00023958916],
             [0.00071197288, 0.0025935620, 0.00076557708],
             [0.00023958916, 0.00076557708, 0.0015042332],
-        ]
-    ),
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     ),
     np.array(
         [
             [0.00024650150, 0.00045542428, 0.00015019422],
             [0.00045542428, 0.026412144, 0.018419769],
             [0.00015019422, 0.018419769, 0.037497383],
-        ]
-    ),
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     ),
     np.array(
         [
             [0.00037054974, 0.00038146760, 0.00040408765],
             [0.00038146760, 0.0085505722, 0.0079136286],
             [0.00040408765, 0.0079136286, 0.010982352],
-        ]
-    ),
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     ),
     np.array(
         [
             [0.00013709733, 0.00051228428, 0.00012777430],
             [0.00051228428, 0.28237113, 0.10528370],
             [0.00012777430, 0.10528370, 0.23468947],
-        ]
-    ),
-]
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     ),
+# BRACKET_SURGEON: disabled
+# ]
 
 gmm_nonskin = GMM(3, 4, gmm_nonskin_w, gmm_nonskin_mu, [], gmm_nonskin_cov_det, gmm_nonskin_cov_inv)
 
@@ -174,7 +196,8 @@ def get_skin_mask(img_path):
         i
         for i in sorted(os.listdir(img_path))
         if "jpg" in i or "png" in i or "jpeg" in i or "PNG" in i
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     save_path = os.path.join(img_path, "mask")
     if not os.path.isdir(save_path):
         os.makedirs(save_path)

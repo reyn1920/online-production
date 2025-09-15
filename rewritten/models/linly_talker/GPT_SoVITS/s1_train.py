@@ -40,7 +40,8 @@ class my_model_ckpt(ModelCheckpoint):
             half_weights_save_dir,
             exp_name,
             **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__(**kwargs)
         self.if_save_latest = if_save_latest
         self.if_save_every_weights = if_save_every_weights
@@ -51,16 +52,18 @@ class my_model_ckpt(ModelCheckpoint):
 
     def on_train_epoch_end(self, trainer, pl_module):
         # if not self._should_skip_saving_checkpoint(trainer) \
-    and self._should_save_on_train_epoch_end(trainer):
+#     and self._should_save_on_train_epoch_end(trainer):
         if self._should_save_on_train_epoch_end(trainer):
             monitor_candidates = self._monitor_candidates(trainer)
             if (
                 self._every_n_epochs >= 1
                 and (trainer.current_epoch + 1) % self._every_n_epochs == 0
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 if (
                     self.if_save_latest is True
-                ):  ####如果设置只保存最后一个ckpt，在保存下一个ckpt后要清理掉之前的所有ckpt
+# BRACKET_SURGEON: disabled
+#                 ):  ####如果设置只保存最后一个ckpt，在保存下一个ckpt后要清理掉之前的所有ckpt
                     to_clean = list(os.listdir(self.dirpath))
                 self._save_topk_checkpoint(trainer, monitor_candidates)
                 if self.if_save_latest is True:
@@ -84,8 +87,11 @@ class my_model_ckpt(ModelCheckpoint):
                             self.half_weights_save_dir,
                                 self.exp_name,
                                 trainer.current_epoch + 1,
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
             self._save_last_checkpoint(trainer, monitor_candidates)
 
 
@@ -111,7 +117,9 @@ def main(args):
             save_on_train_epoch_end = True,
             every_n_epochs = config["train"]["save_every_n_epoch"],
             dirpath = ckpt_dir,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     logger = TensorBoardLogger(name = output_dir.stem, save_dir = output_dir)
     trainer: Trainer = Trainer(
         max_epochs = config["train"]["epochs"],
@@ -128,18 +136,27 @@ def main(args):
             else DDPStrategy(
                 process_group_backend=(
                     "nccl" if platform.system() != "Windows" else "gloo"
-                )
-            )
-        ),  # mps 不支持多节点训练
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# BRACKET_SURGEON: disabled
+#         ),  # mps 不支持多节点训练
         precision = config["train"]["precision"],
             logger = logger,
             num_sanity_val_steps = 0,
             callbacks=[ckpt_callback],
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     model: Text2SemanticLightningModule = Text2SemanticLightningModule(
         config, output_dir
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     data_module: Text2SemanticDataModule = Text2SemanticDataModule(
         config,
@@ -147,7 +164,9 @@ def main(args):
             train_phoneme_path = config["train_phoneme_path"],
             # dev_semantic_path = args.dev_semantic_path,
             # dev_phoneme_path = args.dev_phoneme_path
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     try:
         # 使用正则表达式匹配文件名中的数字部分，并按数字大小进行排序
@@ -167,19 +186,27 @@ if __name__ == "__main__":
             type = str,
             default="configs/s1longer.yaml",
             help="path of config file",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     # args for dataset
     # parser.add_argument('--train_semantic_path',type = str,default='/data/docker/liujing04/gpt - vits/fine_tune_dataset/xuangou/6 - name2semantic.tsv')
     # parser.add_argument('--train_phoneme_path',
     type = str,
-    default='/data/docker/liujing04/gpt - vits/fine_tune_dataset/xuangou/2 - name2text.txt')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     default='/data/docker/liujing04/gpt - vits/fine_tune_dataset/xuangou/2 - name2text.txt')
 
     # parser.add_argument('--dev_semantic_path',
     type = str,
-    default='dump_mix/semantic_dev.tsv')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     default='dump_mix/semantic_dev.tsv')
     # parser.add_argument('--dev_phoneme_path',
     type = str,
-    default='dump_mix/phoneme_dev.npy')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     default='dump_mix/phoneme_dev.npy')
     # parser.add_argument('--output_dir',type = str,default='/data/docker/liujing04/gpt - vits/fine_tune_dataset/xuangou/logs_s1',help='directory to save the results')
     # parser.add_argument('--output_dir',type = str,default='/liujing04/gpt_logs/s1/xuangou_ft',help='directory to save the results')
 

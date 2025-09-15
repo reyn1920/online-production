@@ -55,10 +55,10 @@ SOFTWARE_REGISTRY = {
             "rendering",
             "video_editing",
             "scripting",
-        ],
+         ],
         "integration_type": "creative",
         "file_formats": [".blend", ".fbx", ".obj", ".dae", ".ply"],
-    },
+     },
     "davinci_resolve": {
         "name": "DaVinci Resolve",
         "path": "/Applications/DaVinci Resolve/DaVinci Resolve.app",
@@ -68,10 +68,10 @@ SOFTWARE_REGISTRY = {
             "audio_editing",
             "vfx",
             "rendering",
-        ],
+         ],
         "integration_type": "creative",
         "file_formats": [".drp", ".mp4", ".mov", ".avi", ".mkv"],
-    },
+     },
     "gimp": {
         "name": "GIMP",
         "path": "/Applications/GIMP.app",
@@ -81,10 +81,10 @@ SOFTWARE_REGISTRY = {
             "photo_manipulation",
             "graphics_design",
             "scripting",
-        ],
+         ],
         "integration_type": "creative",
         "file_formats": [".xcf", ".png", ".jpg", ".gif", ".tiff"],
-    },
+     },
     "inkscape": {
         "name": "Inkscape",
         "path": "/Applications/Inkscape.app",
@@ -94,17 +94,17 @@ SOFTWARE_REGISTRY = {
             "svg_editing",
             "illustration",
             "logo_design",
-        ],
+         ],
         "integration_type": "creative",
         "file_formats": [".svg", ".eps", ".pdf", ".ai"],
-    },
+     },
     "filmora": {
         "name": "Wondershare Filmora",
         "path": "/Applications/Wondershare Filmora Mac.app",
         "capabilities": ["video_editing", "effects", "transitions", "audio_editing"],
         "integration_type": "creative",
         "file_formats": [".wfp", ".mp4", ".mov", ".avi"],
-    },
+     },
     # Development Tools
     "xcode": {
         "name": "Xcode",
@@ -116,10 +116,10 @@ SOFTWARE_REGISTRY = {
             "swift",
             "objective_c",
             "debugging",
-        ],
+         ],
         "integration_type": "development",
         "file_formats": [".xcodeproj", ".xcworkspace", ".swift", ".m", ".h"],
-    },
+     },
     "cursor": {
         "name": "Cursor",
         "path": "/Applications/Cursor.app",
@@ -128,10 +128,10 @@ SOFTWARE_REGISTRY = {
             "ai_assistance",
             "debugging",
             "git_integration",
-        ],
+         ],
         "integration_type": "development",
         "file_formats": [".*"],
-    },
+     },
     "sublime_text": {
         "name": "Sublime Text",
         "path": "/Applications/Sublime Text.app",
@@ -139,7 +139,7 @@ SOFTWARE_REGISTRY = {
         "capabilities": ["text_editing", "code_editing", "multiple_cursors", "plugins"],
         "integration_type": "development",
         "file_formats": [".*"],
-    },
+     },
     "github_desktop": {
         "name": "GitHub Desktop",
         "path": "/Applications/GitHub Desktop.app",
@@ -148,10 +148,10 @@ SOFTWARE_REGISTRY = {
             "repository_management",
             "branch_management",
             "pull_requests",
-        ],
+         ],
         "integration_type": "development",
         "file_formats": [],
-    },
+     },
     # AI and Machine Learning
     "ollama": {
         "name": "Ollama",
@@ -162,10 +162,10 @@ SOFTWARE_REGISTRY = {
             "model_management",
             "api_server",
             "chat_interface",
-        ],
+         ],
         "integration_type": "ai",
         "file_formats": [],
-    },
+     },
     "jan": {
         "name": "Jan",
         "path": "/Applications/Jan.app",
@@ -174,10 +174,10 @@ SOFTWARE_REGISTRY = {
             "model_management",
             "chat_interface",
             "privacy_focused",
-        ],
+         ],
         "integration_type": "ai",
         "file_formats": [],
-    },
+     },
     # System and Utilities
     "docker": {
         "name": "Docker",
@@ -188,17 +188,17 @@ SOFTWARE_REGISTRY = {
             "deployment",
             "microservices",
             "orchestration",
-        ],
+         ],
         "integration_type": "system",
         "file_formats": ["Dockerfile", "docker - compose.yml"],
-    },
+     },
     "google_drive": {
         "name": "Google Drive",
         "path": "/Applications/Google Drive.app",
         "capabilities": ["cloud_storage", "file_sync", "collaboration", "backup"],
         "integration_type": "productivity",
         "file_formats": [".*"],
-    },
+     },
     # Command Line Tools
     "git": {
         "name": "Git",
@@ -206,7 +206,7 @@ SOFTWARE_REGISTRY = {
         "capabilities": ["version_control", "branching", "merging", "collaboration"],
         "integration_type": "development",
         "file_formats": [],
-    },
+     },
     "ffmpeg": {
         "name": "FFmpeg",
         "cli_path": "/opt/homebrew/bin/ffmpeg",
@@ -215,10 +215,10 @@ SOFTWARE_REGISTRY = {
             "audio_conversion",
             "streaming",
             "codec_support",
-        ],
+         ],
         "integration_type": "media",
         "file_formats": [".mp4", ".avi", ".mkv", ".mp3", ".wav", ".flac"],
-    },
+     },
     "imagemagick": {
         "name": "ImageMagick",
         "cli_path": "/Users/thomasbrianreynolds/homebrew/bin/convert",
@@ -227,10 +227,10 @@ SOFTWARE_REGISTRY = {
             "image_manipulation",
             "batch_processing",
             "format_support",
-        ],
+         ],
         "integration_type": "media",
         "file_formats": [".png", ".jpg", ".gif", ".tiff", ".bmp", ".svg"],
-    },
+     },
     "node": {
         "name": "Node.js",
         "cli_path": "/Users/thomasbrianreynolds/.nvm/versions/node/v22.17.1/bin/node",
@@ -239,10 +239,10 @@ SOFTWARE_REGISTRY = {
             "npm_packages",
             "web_development",
             "api_development",
-        ],
+         ],
         "integration_type": "development",
         "file_formats": [".js", ".json", ".ts"],
-    },
+     },
     "python": {
         "name": "Python",
         "cli_path": "/Users/thomasbrianreynolds/online production/venv/bin/python3",
@@ -251,22 +251,33 @@ SOFTWARE_REGISTRY = {
             "data_science",
             "machine_learning",
             "web_development",
-        ],
+         ],
         "integration_type": "development",
         "file_formats": [".py", ".ipynb", ".pyx"],
-    },
-}
+     },
+ }
 
 # Helper Functions
 
 
 async def check_software_availability(software_key: str) -> bool:
-    """Check if software is available and accessible"""
+    """
+Check if software is available and accessible
+
     software = SOFTWARE_REGISTRY.get(software_key)
     if not software:
+        
+"""
         return False
-
+        """"""
     # Check GUI application
+        """
+
+        return False
+        
+
+       
+""""""
     if "path" in software:
         return os.path.exists(software["path"])
 
@@ -275,17 +286,43 @@ async def check_software_availability(software_key: str) -> bool:
         return (
             os.path.exists(software["cli_path"])
             or shutil.which(software["cli_path"].split("/")[-1]) is not None
-        )
+         )
 
     return False
 
 
 async def execute_command(command: str, args: list = None, cwd: str = None) -> Dict[str, Any]:
-    """Execute a system command safely"""
-    try:
-        if args is None:
-            args = []
+    """
+Execute a system command safely
 
+    
+"""
+    try:
+    """"""
+        if args is None:
+    """
+
+    try:
+    
+
+           
+""""""
+
+            args = []
+           
+
+            
+           
+""""""
+
+
+            
+
+           
+
+            args = []
+           
+""""""
         full_command = [command] + args
 
         process = await asyncio.create_subprocess_exec(
@@ -293,7 +330,7 @@ async def execute_command(command: str, args: list = None, cwd: str = None) -> D
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
             cwd=cwd,
-        )
+         )
 
         stdout, stderr = await process.communicate()
 
@@ -302,7 +339,7 @@ async def execute_command(command: str, args: list = None, cwd: str = None) -> D
             "returncode": process.returncode,
             "stdout": stdout.decode("utf - 8", errors="ignore"),
             "stderr": stderr.decode("utf - 8", errors="ignore"),
-        }
+         }
     except Exception as e:
         return {"success": False, "error": str(e), "stdout": "", "stderr": ""}
 
@@ -310,23 +347,40 @@ async def execute_command(command: str, args: list = None, cwd: str = None) -> D
 # API Endpoints
 @router.get("/status", response_model=Dict[str, Any])
 async def get_system_software_status():
-    """Get status of all integrated software"""
-    status = {}
+    """
+Get status of all integrated software
 
+   
+""""""
+
+    status = {}
+   
+
+    
+   
+"""
     for key, software in SOFTWARE_REGISTRY.items():
+   """
+
+    
+   
+
+    status = {}
+   
+""""""
         is_available = await check_software_availability(key)
         status[key] = {
             "name": software["name"],
             "available": is_available,
             "integration_type": software["integration_type"],
             "capabilities": software["capabilities"],
-        }
+         }
 
     return {
         "total_software": len(SOFTWARE_REGISTRY),
         "available_count": sum(1 for s in status.values() if s["available"]),
         "software": status,
-    }
+     }
 
 
 @router.get("/software/{software_key}", response_model=SoftwareInfo)
@@ -344,7 +398,7 @@ async def get_software_info(software_key: str):
         status="available" if is_available else "unavailable",
         capabilities=software["capabilities"],
         integration_type=software["integration_type"],
-    )
+     )
 
 
 @router.post("/execute")
@@ -370,7 +424,7 @@ async def execute_software_command(request: CommandRequest):
         # Direct CLI execution
         result = await execute_command(
             executable, [request.command] + request.args, request.working_directory
-        )
+         )
 
     return result
 
@@ -380,7 +434,7 @@ async def blender_render(
     background_tasks: BackgroundTasks,
     blend_file: str,
     output_path: str,
-    frame_range: Optional[str] = None,
+    frame_range: Optional[str] = None
 ):
     """Render a Blender project"""
     if not await check_software_availability("blender"):
@@ -438,7 +492,7 @@ async def git_operation(operation: str, args: List[str] = None, repository_path:
 
     result = await execute_command(
         SOFTWARE_REGISTRY["git"]["cli_path"], command_args, repository_path
-    )
+     )
     return result
 
 
@@ -471,16 +525,33 @@ async def ollama_chat(model: str, prompt: str, system_prompt: Optional[str] = No
         # Use ollama run command
         result = await execute_command(
             SOFTWARE_REGISTRY["ollama"]["cli_path"], ["run", model, prompt]
-        )
+         )
     return result
 
 
 @router.post("/automation/workflow")
 async def create_automation_workflow(task: AutomationTask, background_tasks: BackgroundTasks):
-    """Create and execute an automation workflow across multiple software"""
-    workflow_results = []
+    """
+Create and execute an automation workflow across multiple software
 
+   
+""""""
+
+    workflow_results = []
+   
+
+    
+   
+"""
     for step in task.steps:
+   """
+
+    
+   
+
+    workflow_results = []
+   
+""""""
         software_key = step.get("software")
         if software_key not in SOFTWARE_REGISTRY:
             workflow_results.append(
@@ -488,8 +559,8 @@ async def create_automation_workflow(task: AutomationTask, background_tasks: Bac
                     "step": step,
                     "success": False,
                     "error": f"Software {software_key} not found",
-                }
-            )
+                 }
+             )
             continue
 
         if not await check_software_availability(software_key):
@@ -498,8 +569,8 @@ async def create_automation_workflow(task: AutomationTask, background_tasks: Bac
                     "step": step,
                     "success": False,
                     "error": f"Software {software_key} not available",
-                }
-            )
+                 }
+             )
             continue
 
         # Execute the step based on software type
@@ -513,12 +584,12 @@ async def create_automation_workflow(task: AutomationTask, background_tasks: Bac
                     software["cli_path"],
                     [command] + args,
                     step.get("working_directory"),
-                )
+                 )
             else:
                 # For GUI apps, use open command
                 result = await execute_command(
                     "open", ["-a", software["path"]], step.get("working_directory")
-                )
+                 )
 
             workflow_results.append({"step": step, "success": result["success"], "result": result})
         except Exception as e:
@@ -529,7 +600,7 @@ async def create_automation_workflow(task: AutomationTask, background_tasks: Bac
         "total_steps": len(task.steps),
         "successful_steps": sum(1 for r in workflow_results if r["success"]),
         "results": workflow_results,
-    }
+     }
 
 
 @router.get("/integrations/creative")
@@ -537,7 +608,7 @@ async def get_creative_software():
     """Get all creative software integrations"""
     creative_software = {
         k: v for k, v in SOFTWARE_REGISTRY.items() if v["integration_type"] == "creative"
-    }
+     }
 
     status = {}
     for key, software in creative_software.items():
@@ -547,7 +618,7 @@ async def get_creative_software():
             "available": is_available,
             "capabilities": software["capabilities"],
             "file_formats": software.get("file_formats", []),
-        }
+         }
 
     return status
 
@@ -557,7 +628,7 @@ async def get_development_software():
     """Get all development software integrations"""
     dev_software = {
         k: v for k, v in SOFTWARE_REGISTRY.items() if v["integration_type"] == "development"
-    }
+     }
 
     status = {}
     for key, software in dev_software.items():
@@ -567,7 +638,7 @@ async def get_development_software():
             "available": is_available,
             "capabilities": software["capabilities"],
             "file_formats": software.get("file_formats", []),
-        }
+         }
 
     return status
 
@@ -584,7 +655,7 @@ async def get_ai_software():
             "name": software["name"],
             "available": is_available,
             "capabilities": software["capabilities"],
-        }
+         }
 
     return status
 
@@ -601,7 +672,7 @@ async def creative_pipeline(input_files: List[str], output_directory: str, pipel
             if input_file.endswith(".blend"):
                 blender_result = await blender_render(
                     None, input_file, f"{output_directory}/blender_output.mov"
-                )
+                 )
                 results.append({"step": "blender_render", "result": blender_result})
 
             # Step 2: FFmpeg conversion
@@ -609,7 +680,7 @@ async def creative_pipeline(input_files: List[str], output_directory: str, pipel
                 input_file,
                 f"{output_directory}/final_output.mp4",
                 ["-c:v", "libx264", "-crf", "23"],
-            )
+             )
             results.append({"step": "ffmpeg_convert", "result": ffmpeg_result})
 
         return {"pipeline": "video_production", "results": results}
@@ -624,7 +695,7 @@ async def creative_pipeline(input_files: List[str], output_directory: str, pipel
                 input_file,
                 f"{output_directory}/processed_{os.path.basename(input_file)}",
                 ["-resize", "1920x1080", "-quality", "90"],
-            )
+             )
             results.append({"step": "imagemagick_convert", "result": convert_result})
 
         return {"pipeline": "image_processing", "results": results}

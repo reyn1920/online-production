@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Integration Monitor - Provider Health Monitoring
 
 Monitors provider health, performs status checks, and tracks availability.
-"""
+""""""
 
 import logging
 import os
@@ -36,7 +36,8 @@ class IntegrationMonitor:
             "response_time": None,
             "error": None,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if not provider.enabled:
             result["status"] = "purple"
@@ -89,7 +90,8 @@ class IntegrationMonitor:
             "overpass_main": f'{provider.base_url}/interpreter?data=[out:json];node[name="London"];out;',
             "overpass_kumi": f'{provider.base_url}/interpreter?data=[out:json];node[name="London"];out;',
             "overpass_fr": f'{provider.base_url}/interpreter?data=[out:json];node[name="London"];out;',
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return test_urls.get(provider.id)
 
     async def check_all(self) -> Dict[str, Dict[str, Any]]:
@@ -115,7 +117,8 @@ class IntegrationMonitor:
                 # Update registry with new status
                 self.registry.update_provider_status(
                     provider.id, result["status"], result.get("error")
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 logger.error(f"Error checking provider {provider.id}: {e}")
@@ -124,7 +127,8 @@ class IntegrationMonitor:
                     "status": "red",
                     "error": str(e),
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         self.check_results = results
         self.last_check_time = current_time
@@ -146,7 +150,8 @@ class IntegrationMonitor:
                     # Update registry
                     self.registry.update_provider_status(
                         provider_id, result["status"], result.get("error")
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 except Exception as e:
                     logger.error(f"Error checking provider {provider_id}: {e}")
@@ -155,14 +160,16 @@ class IntegrationMonitor:
                         "status": "red",
                         "error": str(e),
                         "timestamp": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             else:
                 results[provider_id] = {
                     "provider_id": provider_id,
                     "status": "red",
                     "error": "Provider not found",
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return results
 
@@ -180,8 +187,10 @@ class IntegrationMonitor:
                 datetime.fromtimestamp(self.last_check_time).isoformat()
                 if self.last_check_time
                 else None
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         return summary
 

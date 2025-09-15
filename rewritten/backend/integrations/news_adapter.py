@@ -72,7 +72,8 @@ def _report_usage(
     error: Optional[str] = None,
     took_ms: Optional[int] = None,
     quota_remaining: Optional[int] = None,
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Report usage metrics to the integrations registry."""
     try:
         payload = {"key": provider_key, "success": success, "took_ms": took_ms}
@@ -100,7 +101,8 @@ def _fetch_newsapi_articles(
             "pageSize": min(limit, 100),  # NewsAPI max is 100
             "sortBy": "publishedAt",
             "language": "en",
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         url = "https://newsapi.org/v2/top - headlines"
         params = {"pageSize": min(limit, 100), "country": "us", "language": "en"}
@@ -130,20 +132,24 @@ def _fetch_newsapi_articles(
                     "source": article["source"]["name"],
                     "author": article.get("author"),
                     "provider": "newsapi",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "success": True,
             "articles": articles,
             "total": data.get("totalResults", len(articles)),
             "quota_remaining": None,  # NewsAPI doesn't provide quota in response
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         return {
             "success": False,
             "error": f"NewsAPI error: {resp.status_code} - {resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def _fetch_guardian_articles(query: str, limit: int, api_key: str) -> Dict[str, Any]:
@@ -153,14 +159,16 @@ def _fetch_guardian_articles(query: str, limit: int, api_key: str) -> Dict[str, 
         "page - size": min(limit, 50),  # Guardian max is 50
         "show - fields": "thumbnail,trailText,body",
         "order - by": "newest",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     if query:
         params["q"] = query
 
     resp = http_get_with_backoff(
         "https://content.guardianapis.com/search", params=params, timeout=TIMEOUT_S
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -180,20 +188,24 @@ def _fetch_guardian_articles(query: str, limit: int, api_key: str) -> Dict[str, 
                     "source": "The Guardian",
                     "author": None,  # Guardian doesn't always provide author in this endpoint
                     "provider": "guardian",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "success": True,
             "articles": articles,
             "total": data["response"].get("total", len(articles)),
             "quota_remaining": None,
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         return {
             "success": False,
             "error": f"Guardian API error: {resp.status_code} - {resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def _fetch_nytimes_articles(query: str, limit: int, api_key: str) -> Dict[str, Any]:
@@ -237,8 +249,10 @@ def _fetch_nytimes_articles(query: str, limit: int, api_key: str) -> Dict[str, A
                         "source": "The New York Times",
                         "author": doc.get("byline", {}).get("original"),
                         "provider": "nytimes",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
         else:
             # Top stories response format
             results = data.get("results", [])
@@ -263,20 +277,24 @@ def _fetch_nytimes_articles(query: str, limit: int, api_key: str) -> Dict[str, A
                         "source": "The New York Times",
                         "author": article.get("byline"),
                         "provider": "nytimes",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return {
             "success": True,
             "articles": articles,
             "total": len(articles),  # NYT doesn't always provide total count
             "quota_remaining": None,
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         return {
             "success": False,
             "error": f"NY Times API error: {resp.status_code} - {resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def fetch_news(
@@ -305,7 +323,8 @@ def fetch_news(
                     False,
                     error_msg,
                     int((time.time() - start_time) * 1000),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return {"provider": provider_key, "ok": False, "error": error_msg}
 
             # Call appropriate provider
@@ -320,7 +339,8 @@ def fetch_news(
                 result = {
                     "success": False,
                     "error": f"No adapter implementation for {provider_key}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             took_ms = int((time.time() - start_time) * 1000)
 
@@ -333,7 +353,8 @@ def fetch_news(
                     "data": result["articles"],
                     "total": result.get("total", len(result["articles"])),
                     "took_ms": took_ms,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 # Failure - report and potentially rotate
                 error_msg = result.get("error", "Unknown error")
@@ -345,7 +366,8 @@ def fetch_news(
                         logger.info(f"Rotating from failed provider {provider_key}")
                         rotate_resp = requests.post(
                             f"{BASE}/integrations/rotate?category = news", timeout=10
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         if rotate_resp.status_code == 200:
                             rotation_data = rotate_resp.json()
                             logger.info(f"Rotated to {rotation_data.get('rotated_to', 'unknown')}")
@@ -361,7 +383,8 @@ def fetch_news(
                     "ok": False,
                     "error": error_msg,
                     "took_ms": took_ms,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             took_ms = int((time.time() - start_time) * 1000)
@@ -380,7 +403,8 @@ def fetch_news(
                 "ok": False,
                 "error": error_msg,
                 "took_ms": took_ms,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     # Should not reach here
     return {
@@ -388,7 +412,8 @@ def fetch_news(
         "ok": False,
         "error": "Max retries exceeded",
         "took_ms": int((time.time() - start_time) * 1000),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Convenience functions for backward compatibility

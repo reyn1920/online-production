@@ -1,17 +1,28 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 VidScriptPro Framework - AI - Powered Multi - Stage Scriptwriting System
-
+""""""
 This module provides a comprehensive scriptwriting framework that uses local Ollama LLM
+"""
 for generating professional video scripts through a structured multi - stage process:
+
+
+    pass
 1. Logline Development
 2. Synopsis Creation
 3. Character Development
 4. Scene Breakdown
 5. Full Script Generation
 
+VidScriptPro Framework - AI - Powered Multi - Stage Scriptwriting System
+"""
+
+
+
+
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
+
 """
 
 import json
@@ -50,29 +61,47 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ScriptElement:
-    """Base class for script elements."""
+    """
+Base class for script elements.
+
 
     content: str
     timestamp: datetime
     stage: str
+   
+""""""
+
     metadata: Dict[str, Any]
+   
 
-
+    
+   
+"""
 @dataclass
 class Character:
-    """Character definition for script."""
+    """
+Character definition for script.
+
 
     name: str
     description: str
     personality: str
     background: str
     motivation: str
+   
+""""""
+
     arc: str
+   
 
-
+    
+   
+"""
 @dataclass
 class Scene:
-    """Scene structure for script."""
+    """
+Scene structure for script.
+
 
     number: int
     location: str
@@ -81,12 +110,20 @@ class Scene:
     description: str
     dialogue: List[Dict[str, str]]
     action: List[str]
+   
+""""""
+
     duration_estimate: int  # in seconds
+   
 
-
+    
+   
+"""
 @dataclass
 class Script:
-    """Complete script structure."""
+    """
+Complete script structure.
+
 
     title: str
     logline: str
@@ -97,9 +134,15 @@ class Script:
     genre: str
     target_audience: str
     created_at: datetime
+   
+""""""
+
     version: str
+   
 
-
+    
+   
+"""
 class OllamaLLMClient:
     """Client for interacting with local Ollama LLM server."""
 
@@ -111,9 +154,14 @@ class OllamaLLMClient:
 
     def generate(
         self, prompt: str, system_prompt: str = "", max_tokens: int = 2000
-    ) -> str:
-        """Generate text using Ollama LLM."""
+#     ) -> str:
+        """
+Generate text using Ollama LLM.
+
+        
+"""
         try:
+        """
             payload = {
                 "model": self.model,
                 "prompt": prompt,
@@ -123,14 +171,20 @@ class OllamaLLMClient:
                     "num_predict": max_tokens,
                     "temperature": 0.7,
                     "top_p": 0.9,
-                },
-            }
+                 },
+             }
+        """
 
+        try:
+        
+
+       
+""""""
             response = self.session.post(
                 f"{self.base_url}/api/generate",
                 json=payload,
                 headers={"Content - Type": "application/json"},
-            )
+             )
 
             if response.status_code == 200:
                 result = response.json()
@@ -138,7 +192,7 @@ class OllamaLLMClient:
             else:
                 logger.error(
                     f"Ollama API error: {response.status_code} - {response.text}"
-                )
+                 )
                 return ""
 
         except requests.exceptions.RequestException as e:
@@ -149,20 +203,35 @@ class OllamaLLMClient:
             return ""
 
     def health_check(self) -> bool:
-        """Check if Ollama server is running and accessible."""
+        """
+Check if Ollama server is running and accessible.
+
+        
+"""
         try:
+        """
             response = self.session.get(f"{self.base_url}/api/tags")
+        """
+
+        try:
+        
+
+       
+""""""
+
             return response.status_code == 200
         except Exception:
             return False
 
 
 class VidScriptPro:
-    """Advanced AI - powered scriptwriting framework."""
+    
+Advanced AI - powered scriptwriting framework.
+"""
 
     def __init__(
         self, ollama_url: str = "http://localhost:11434", model: str = "llama2"
-    ):
+#     ):
         self.llm = OllamaLLMClient(ollama_url, model)
         self.current_project: Optional[Dict[str, Any]] = None
         self.script_templates = self._load_script_templates()
@@ -181,10 +250,17 @@ class VidScriptPro:
             logger.warning("Ollama server not accessible. Some features may not work.")
 
     def _load_script_templates(self) -> Dict[str, str]:
-        """Load scriptwriting templates and prompts."""
+        """
+Load scriptwriting templates and prompts.
+
         return {
-            "logline_prompt": """
+           
+""""""
+            "logline_prompt":
+           """"""
 You are a professional screenwriter. Create a compelling logline for a video script.
+"""
+
 
 A logline is a one - sentence summary that captures:
 - The protagonist
@@ -192,17 +268,34 @@ A logline is a one - sentence summary that captures:
 - The stakes
 - The genre/tone
 
+
+You are a professional screenwriter. Create a compelling logline for a video script.
+
+"""
+
 Topic: {topic}
 Genre: {genre}
 Target Duration: {duration} minutes
 Target Audience: {audience}
 
 Write a single, powerful logline that would make someone want to watch this video.
-""",
-            "synopsis_prompt": """
+"""
+,
+
+           
+""""""
+            "synopsis_prompt":
+           """"""
 You are a professional screenwriter. Expand the following logline into a detailed synopsis.
+"""
+
 
 Logline: {logline}
+
+
+You are a professional screenwriter. Expand the following logline into a detailed synopsis.
+
+"""
 
 Create a 3 - 4 paragraph synopsis that includes:
 - Setup and character introduction
@@ -211,12 +304,24 @@ Create a 3 - 4 paragraph synopsis that includes:
 - Emotional journey and themes
 
 Keep it engaging and visual, suitable for a {duration}-minute video.
-""",
-            "character_prompt": """
+"""
+,
+
+           
+""""""
+            "character_prompt":
+           """"""
 You are a professional character developer. Create detailed character profiles for this script.
+"""
+
 
 Synopsis: {synopsis}
 Genre: {genre}
+
+
+You are a professional character developer. Create detailed character profiles for this script.
+
+"""
 
 For each main character, provide:
 - Name and brief description
@@ -225,13 +330,25 @@ For each main character, provide:
 - Character arc throughout the story
 
 Focus on characters that will drive the narrative forward.
-""",
-            "scene_breakdown_prompt": """
+"""
+,
+
+           
+""""""
+            "scene_breakdown_prompt":
+           """"""
 You are a professional screenwriter. Break down this story into scenes.
+"""
+
 
 Synopsis: {synopsis}
 Characters: {characters}
 Target Duration: {duration} minutes
+
+
+You are a professional screenwriter. Break down this story into scenes.
+
+"""
 
 Create a scene - by - scene breakdown with:
 - Scene number and location
@@ -242,12 +359,24 @@ Create a scene - by - scene breakdown with:
 - Estimated duration
 
 Aim for {target_scenes} scenes total.
-""",
-            "script_prompt": """
+"""
+,
+
+           
+""""""
+            "script_prompt":
+           """"""
 You are a professional screenwriter. Write the full script for this scene.
+"""
+
 
 Scene Details:
 {scene_details}
+
+
+You are a professional screenwriter. Write the full script for this scene.
+
+"""
 
 Characters:
 {characters}
@@ -260,9 +389,18 @@ Write in proper screenplay format with:
 - Parentheticals when needed
 
 Make it engaging, visual, and true to the characters.
-""",
-        }
+"""
+,
 
+        
+""""""
+
+         }
+        
+
+         
+        
+"""
     def _get_live_script_briefing(self, topic: str, genre: str) -> str:
         """Get live briefing from Research Agent for enhanced script generation."""
         if not self.research_agent:
@@ -285,26 +423,44 @@ Make it engaging, visual, and true to the characters.
             if hasattr(self.research_agent, "get_hypocrisy_content_opportunities"):
                 hypocrisy_opportunities = (
                     self.research_agent.get_hypocrisy_content_opportunities(topic)
-                )
+                 )
 
             # Compile live briefing for script context
-            live_briefing = f"""
+           """
+
+            
+           
+
+            live_briefing = f
+           
+""""""
+
 === LIVE SCRIPT BRIEFING ===
 Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 Topic: {topic}
+
+
 Genre: {genre}
+
+"""
 
 --- CURRENT EVENTS CONTEXT ---
 {briefing.get('summary', 'No recent intelligence available')}
+"""
+
+Genre: {genre}
+
+
 
 --- TRENDING TOPICS ---
+
 """
 
             for trend in trending_topics[:4]:  # Top 4 trends for scripts
                 live_briefing += (
                     f"• {trend.get('topic', 'Unknown')}: "
                     f"{trend.get('momentum_score', 0):.2f} momentum\\n"
-                )
+                 )
 
             live_briefing += "\\n--- RELEVANT HEADLINES ---\\n"
             for headline in topic_headlines[:6]:  # Top 6 headlines for scripts
@@ -320,7 +476,7 @@ Genre: {genre}
             live_briefing += "• Use trending topics to add relevance and timeliness\\n"
             live_briefing += (
                 "• Leverage recent headlines for authentic dialogue and scenarios\\n"
-            )
+             )
 
             live_briefing += "\\n=== END BRIEFING ===\\n"
 
@@ -338,26 +494,26 @@ Genre: {genre}
         duration: int = 10,
         audience: str = "General",
         live_briefing: str = "",
-    ) -> str:
+#     ) -> str:
         """Generate a compelling logline for the video script."""
         logger.info(f"Creating logline for topic: {topic}")
 
         # Enhanced prompt with live briefing context
         briefing_context = ""
         if live_briefing:
-            briefing_context = f"\\n\\nCURRENT EVENTS CONTEXT:\\n{live_briefing}\\n\\nUse this current events context to make the logline more timely \
-    and relevant."
+            briefing_context = f"\\n\\nCURRENT EVENTS CONTEXT:\\n{live_briefing}\\n\\nUse this current events context to make the logline more timely \"
+#     and relevant."
 
         prompt = (
             self.script_templates["logline_prompt"].format(
                 topic=topic, genre=genre, duration=duration, audience=audience
-            )
+             )
             + briefing_context
-        )
+         )
 
         system_prompt = (
             "You are an expert screenwriter specializing in compelling loglines."
-        )
+         )
 
         logline = self.llm.generate(prompt, system_prompt, max_tokens=200)
 
@@ -369,26 +525,26 @@ Genre: {genre}
 
     def create_synopsis(
         self, logline: str, duration: int = 10, live_briefing: str = ""
-    ) -> str:
+#     ) -> str:
         """Expand logline into detailed synopsis."""
         logger.info("Creating synopsis from logline")
 
         # Enhanced prompt with live briefing context
         briefing_context = ""
         if live_briefing:
-            briefing_context = f"\\n\\nCURRENT EVENTS CONTEXT:\\n{live_briefing}\\n\\nIncorporate relevant current events to make the synopsis more engaging \
-    and timely."
+            briefing_context = f"\\n\\nCURRENT EVENTS CONTEXT:\\n{live_briefing}\\n\\nIncorporate relevant current events to make the synopsis more engaging \"
+#     and timely."
 
         prompt = (
             self.script_templates["synopsis_prompt"].format(
                 logline=logline, duration=duration
-            )
+             )
             + briefing_context
-        )
+         )
 
         system_prompt = (
             "You are an expert story developer who creates engaging synopses."
-        )
+         )
 
         synopsis = self.llm.generate(prompt, system_prompt, max_tokens=800)
 
@@ -406,7 +562,7 @@ Genre: {genre}
 
         prompt = self.script_templates["character_prompt"].format(
             synopsis=synopsis, genre=genre
-        )
+         )
 
         system_prompt = "You are an expert character developer who creates compelling, three - dimensional characters."
 
@@ -422,18 +578,35 @@ Genre: {genre}
                     background="Unknown",
                     motivation="To overcome challenges",
                     arc="Growth through adversity",
-                )
-            ]
+                 )
+             ]
 
         # Parse character text into Character objects
         characters = self._parse_characters(character_text)
         return characters
 
     def _parse_characters(self, character_text: str) -> List[Character]:
-        """Parse LLM - generated character text into Character objects with enhanced profiling."""
-        characters = []
+        """
+Parse LLM - generated character text into Character objects with enhanced profiling.
 
+       
+""""""
+
+        characters = []
+       
+
+        
+       
+"""
         # Enhanced parsing - look for character sections
+       """
+
+        
+       
+
+        characters = []
+       
+""""""
         sections = character_text.split("\\n\\n")
 
         for section in sections:
@@ -447,8 +620,8 @@ Genre: {genre}
                 name_line = lines[0]
                 name = (
                     name_line.split(":")[0].strip() if ":" in name_line else name_line
-                )
-                name = name.replace("**", "").replace("#", "").replace("*", "").strip()
+                 )
+                name = name.replace("**", "").replace("#", "").replace("*", "").strip()"
 
                 # Enhanced character attribute extraction
                 description = " ".join(lines[1:])[:200]  # Limit length
@@ -464,7 +637,7 @@ Genre: {genre}
                     background=background,
                     motivation=motivation,
                     arc=arc,
-                )
+                 )
                 characters.append(character)
 
         # Generate realistic default characters if none found
@@ -472,122 +645,175 @@ Genre: {genre}
             default_characters = [
                 Character(
                     name="Alex Rivera",
-                    description="A determined coffee shop owner who believes in creating community through quality beverages \
-    and genuine connections.",
-                    personality="Passionate, detail - oriented, empathetic, with a strong work ethic \
-    and natural leadership qualities",
+                    description="A determined coffee shop owner who believes in creating community through quality beverages \"
+#     and genuine connections.",
+                    personality="Passionate, detail - oriented, empathetic, with a strong work ethic \"
+#     and natural leadership qualities",
                     background="Former corporate executive who left the business world to pursue their dream of opening an independent coffee shop",
-                    motivation="To build a sustainable business that serves as a community hub \
-    and provides ethically sourced coffee",
+                    motivation="To build a sustainable business that serves as a community hub \"
+#     and provides ethically sourced coffee",
                     arc="Learns to balance business success with personal fulfillment while building meaningful relationships",
-                ),
+                 ),
                 Character(
                     name="Jordan Chen",
-                    description="A talented barista \
-    and aspiring artist who finds inspiration in the daily interactions with customers.",
-                    personality="Creative, observant, introverted but warm, with a keen eye for detail \
-    and artistic expression",
-                    background="Art school graduate working part - time while developing their portfolio \
-    and artistic career",
+                    description="A talented barista \"
+#     and aspiring artist who finds inspiration in the daily interactions with customers.",
+                    personality="Creative, observant, introverted but warm, with a keen eye for detail \"
+#     and artistic expression",
+                    background="Art school graduate working part - time while developing their portfolio \"
+#     and artistic career",
                     motivation="To support their artistic pursuits while contributing to a positive workplace environment",
-                    arc="Gains confidence in their artistic abilities \
-    and learns to share their creativity with others",
-                ),
-            ]
+                    arc="Gains confidence in their artistic abilities \"
+#     and learns to share their creativity with others",
+                 ),
+             ]
             characters.extend(default_characters)
 
         return characters[:4]  # Limit to 4 main characters
 
     def _extract_personality_traits(self, description: str) -> str:
-        """Extract personality traits from character description."""
-        description_lower = description.lower()
-        traits = []
+        """
+Extract personality traits from character description.
 
+        description_lower = description.lower()
+       
+""""""
+
+        traits = []
+       
+
+        
+       
+"""
         # Common personality indicators
+       """
+
+        
+       
+
+        traits = []
+       
+""""""
         if any(
             word in description_lower for word in ["confident", "bold", "assertive"]
-        ):
+#         ):
             traits.append("confident")
         if any(
             word in description_lower for word in ["kind", "caring", "compassionate"]
-        ):
+#         ):
             traits.append("empathetic")
         if any(
             word in description_lower
             for word in ["creative", "artistic", "imaginative"]
-        ):
+#         ):
             traits.append("creative")
         if any(
             word in description_lower for word in ["determined", "persistent", "driven"]
-        ):
+#         ):
             traits.append("determined")
         if any(word in description_lower for word in ["funny", "humorous", "witty"]):
             traits.append("humorous")
 
         if traits:
-            return f"Characterized by being {', '.join(traits)}, with depth \
-    and authenticity that drives character development"
+            return f"Characterized by being {', '.join(traits)}, with depth \"
+#     and authenticity that drives character development"
         else:
-            return "Multi - dimensional with realistic strengths \
-    and flaws that create compelling character dynamics"
+            return "Multi - dimensional with realistic strengths \"
+#     and flaws that create compelling character dynamics"
 
     def _generate_character_background(self, name: str, description: str) -> str:
-        """Generate appropriate background based on character context."""
-        description_lower = description.lower()
+        """
+Generate appropriate background based on character context.
 
+       
+""""""
+
+        description_lower = description.lower()
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        description_lower = description.lower()
+       
+""""""
         if any(word in description_lower for word in ["coffee", "barista", "shop"]):
-            return "Has experience in hospitality \
-    and customer service, with a passion for coffee culture \
-    and community building"
+            return "Has experience in hospitality \"
+#     and customer service, with a passion for coffee culture \
+#     and community building"
         elif any(
             word in description_lower for word in ["office", "business", "corporate"]
-        ):
-            return "Professional background in business with experience in corporate environments \
-    and team management"
+#         ):
+            return "Professional background in business with experience in corporate environments \"
+#     and team management"
         elif any(
             word in description_lower for word in ["artist", "creative", "design"]
-        ):
-            return "Educational background in the arts with experience in creative industries \
-    and artistic expression"
+#         ):
+            return "Educational background in the arts with experience in creative industries \"
+#     and artistic expression"
         else:
-            return "Diverse life experiences that inform their worldview \
-    and approach to relationships \
-    and challenges"
+            return "Diverse life experiences that inform their worldview \"
+#     and approach to relationships \
+#     and challenges"
 
     def _extract_character_motivation(self, description: str) -> str:
-        """Extract or generate character motivation."""
-        description_lower = description.lower()
+        """
+Extract or generate character motivation.
 
+       
+""""""
+
+        description_lower = description.lower()
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        description_lower = description.lower()
+       
+""""""
         if any(word in description_lower for word in ["success", "achieve", "goal"]):
-            return "Driven by the desire to achieve meaningful success while maintaining personal values \
-    and relationships"
+            return "Driven by the desire to achieve meaningful success while maintaining personal values \"
+#     and relationships"
         elif any(
             word in description_lower for word in ["help", "support", "community"]
-        ):
-            return "Motivated by the opportunity to make a positive impact on others \
-    and contribute to community well - being"
+#         ):
+            return "Motivated by the opportunity to make a positive impact on others \"
+#     and contribute to community well - being"
         elif any(word in description_lower for word in ["create", "build", "develop"]):
-            return "Inspired by the creative process \
-    and the satisfaction of building something meaningful \
-    and lasting"
+            return "Inspired by the creative process \"
+#     and the satisfaction of building something meaningful \
+#     and lasting"
         else:
-            return "Seeks personal growth \
-    and authentic connections while navigating life's challenges \
-    and opportunities"
+            return "Seeks personal growth \"
+#     and authentic connections while navigating life's challenges \
+#     and opportunities"
 
     def _generate_character_arc(self, name: str, personality: str) -> str:
         """Generate appropriate character arc based on personality."""
         if "confident" in personality.lower():
             return "Learns to balance confidence with vulnerability, discovering the strength that comes from authentic connections"
         elif "creative" in personality.lower():
-            return "Develops the courage to share their creative vision while learning to collaborate \
-    and accept constructive feedback"
+            return "Develops the courage to share their creative vision while learning to collaborate \"
+#     and accept constructive feedback"
         elif "determined" in personality.lower():
-            return "Discovers that true success includes personal fulfillment \
-    and meaningful relationships, not just achievement"
+            return "Discovers that true success includes personal fulfillment \"
+#     and meaningful relationships, not just achievement"
         else:
-            return "Undergoes meaningful personal growth through challenges that reveal inner strength \
-    and authentic character"
+            return "Undergoes meaningful personal growth through challenges that reveal inner strength \"
+#     and authentic character"
 
     def create_scene_breakdown(
         self, synopsis: str, characters: List[Character], duration: int = 10
@@ -603,7 +829,7 @@ Genre: {genre}
             characters=", ".join(character_names),
             duration=duration,
             target_scenes=target_scenes,
-        )
+         )
 
         system_prompt = "You are an expert script supervisor who creates well - paced scene breakdowns."
 
@@ -617,11 +843,28 @@ Genre: {genre}
         return scenes
 
     def _create_default_scenes(self, duration: int) -> List[Scene]:
-        """Create realistic default scene structure if LLM fails."""
-        num_scenes = max(3, duration // 2)  # More realistic scene count
-        scenes = []
+        """
+Create realistic default scene structure if LLM fails.
 
+        num_scenes = max(3, duration // 2)  # More realistic scene count
+       
+""""""
+
+        scenes = []
+       
+
+        
+       
+"""
         # Define realistic scene templates
+       """
+
+        
+       
+
+        scenes = []
+       
+""""""
         scene_templates = [
             {
                 "location": "INT. COFFEE SHOP",
@@ -632,8 +875,8 @@ Genre: {genre}
                     "The espresso machine hisses as steam rises",
                     "Customers check their phones while waiting in line",
                     "The cash register chimes with each transaction",
-                ],
-            },
+                 ],
+             },
             {
                 "location": "EXT. CITY STREET",
                 "time": "DAY",
@@ -643,21 +886,21 @@ Genre: {genre}
                     "Traffic lights change from red to green",
                     "Footsteps echo on the concrete sidewalk",
                     "A gentle breeze rustles through nearby trees",
-                ],
-            },
+                 ],
+             },
             {
                 "location": "INT. OFFICE BUILDING",
                 "time": "AFTERNOON",
-                "description": "A modern office space with glass walls \
-    and contemporary furniture. Employees collaborate in an open workspace.",
+                "description": "A modern office space with glass walls \"
+#     and contemporary furniture. Employees collaborate in an open workspace.",
                 "characters": ["MANAGER", "EMPLOYEE"],
                 "actions": [
                     "Keyboards click as people type at their desks",
                     "A printer hums quietly in the background",
                     "Sunlight streams through large windows",
-                ],
-            },
-        ]
+                 ],
+             },
+         ]
 
         for i in range(num_scenes):
             template = scene_templates[i % len(scene_templates)]
@@ -672,15 +915,15 @@ Genre: {genre}
                     {
                         "character": template["characters"][0],
                         "line": "This scene establishes the setting and mood.",
-                    },
+                     },
                     {
                         "character": template["characters"][-1],
                         "line": "The story unfolds naturally from here.",
-                    },
-                ],
+                     },
+                 ],
                 action=template["actions"],
                 duration_estimate=duration * 60 // num_scenes,
-            )
+             )
             scenes.append(scene)
 
         return scenes
@@ -703,7 +946,7 @@ Genre: {genre}
             time_of_day = "DAY"
             description = (
                 "A scene unfolds with careful attention to detail and atmosphere."
-            )
+             )
             extracted_actions = []
 
             for line in lines:
@@ -713,10 +956,10 @@ Genre: {genre}
                     or "setting" in line_lower
                     or "int." in line_lower
                     or "ext." in line_lower
-                ):
+#                 ):
                     location = (
                         line.split(":")[-1].strip() if ":" in line else line.strip()
-                    )
+                     )
                     if not location.startswith(("INT.", "EXT.")):
                         location = f"INT. {location.upper()}"
                 elif (
@@ -725,25 +968,25 @@ Genre: {genre}
                     or "afternoon" in line_lower
                     or "evening" in line_lower
                     or "night" in line_lower
-                ):
+#                 ):
                     time_of_day = (
                         line.split(":")[-1].strip()
                         if ":" in line
                         else self._extract_time_of_day(line)
-                    )
+                     )
                 elif len(line) > 30 and not any(
                     keyword in line_lower
                     for keyword in ["scene", "location", "time", "character"]
-                ):
+#                 ):
                     if (
                         not description
                         or description
-                        == "A scene unfolds with careful attention to detail \
-    and atmosphere."
-                    ):
+                        == "A scene unfolds with careful attention to detail \"
+#     and atmosphere."
+#                     ):
                         description = line[
                             :200
-                        ]  # Use first substantial line as description
+#                         ]  # Use first substantial line as description
                 elif len(line) > 15 and any(
                     action_word in line_lower
                     for action_word in [
@@ -755,8 +998,8 @@ Genre: {genre}
                         "moves",
                         "opens",
                         "closes",
-                    ]
-                ):
+                     ]
+#                 ):
                     extracted_actions.append(line)
 
             # Generate contextual actions if none found
@@ -766,25 +1009,25 @@ Genre: {genre}
                         "The coffee shop bustles with morning activity",
                         "Steam rises from freshly brewed beverages",
                         "Customers engage in quiet conversation",
-                    ]
+                     ]
                 elif "office" in location.lower():
                     extracted_actions = [
                         "Fluorescent lights illuminate the workspace",
                         "Keyboards click as work progresses",
                         "Papers rustle as documents are reviewed",
-                    ]
+                     ]
                 elif "street" in location.lower() or "ext." in location.lower():
                     extracted_actions = [
                         "Urban sounds create a dynamic soundscape",
                         "Pedestrians move with purpose along the sidewalk",
                         "Natural light creates interesting shadows",
-                    ]
+                     ]
                 else:
                     extracted_actions = [
                         "The environment establishes mood and atmosphere",
                         "Characters interact naturally within the space",
                         "Visual details enhance the storytelling",
-                    ]
+                     ]
 
             scene = Scene(
                 number=i,
@@ -797,7 +1040,7 @@ Genre: {genre}
                 duration_estimate=total_duration
                 * 60
                 // max(len(scene_sections[1:]), 3),
-            )
+             )
             scenes.append(scene)
 
         # Ensure at least 3 scenes with realistic content
@@ -816,26 +1059,26 @@ Genre: {genre}
                         time_of_day="DAY",
                         characters=(
                             character_names[:1] if character_names else ["PROTAGONIST"]
-                        ),
-                        description="The story continues with natural progression \
-    and development.",
+                         ),
+                        description="The story continues with natural progression \"
+#     and development.",
                         dialogue=[
                             {
                                 "character": (
                                     character_names[0]
                                     if character_names
                                     else "PROTAGONIST"
-                                ),
+                                 ),
                                 "line": "The narrative flows seamlessly into this moment.",
-                            }
-                        ],
+                             }
+                         ],
                         action=[
                             "The scene transitions smoothly from the previous moment",
                             "Characters continue their journey through the story",
-                        ],
+                         ],
                         duration_estimate=total_duration * 60 // 3,
-                    )
-                )
+                     )
+                 )
 
         return scenes
 
@@ -859,9 +1102,18 @@ Genre: {genre}
 
         character_info = "\\n".join(
             [f"{char.name}: {char.description}" for char in characters]
-        )
+         )
 
-        scene_details = f"""
+       """
+
+
+        
+
+       
+
+        scene_details = f
+       
+""""""
 Scene {scene.number}: {scene.location} - {scene.time_of_day}
 Characters: {', '.join(scene.characters)}
 Description: {scene.description}
@@ -869,7 +1121,7 @@ Description: {scene.description}
 
         prompt = self.script_templates["script_prompt"].format(
             scene_details=scene_details, characters=character_info
-        )
+         )
 
         system_prompt = "You are a professional screenwriter who writes engaging, properly formatted scripts."
 
@@ -884,7 +1136,7 @@ Description: {scene.description}
             logger.error(f"Failed to generate script for scene {scene.number}")
             scene.dialogue = [
                 {"character": scene.characters[0], "line": "Dialogue to be written"}
-            ]
+             ]
             scene.action = ["Action to be written"]
 
         return scene
@@ -892,10 +1144,28 @@ Description: {scene.description}
     def _parse_script_text(
         self, script_text: str
     ) -> Tuple[List[Dict[str, str]], List[str]]:
-        """Parse script text into dialogue and action lists with enhanced parsing."""
-        dialogue = []
-        action = []
+        """
+Parse script text into dialogue and action lists with enhanced parsing.
 
+        dialogue = []
+       
+""""""
+
+        action = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        action = []
+       
+""""""
         lines = script_text.split("\\n")
         current_character = None
 
@@ -936,31 +1206,31 @@ Description: {scene.description}
                     {
                         "character": "BARISTA",
                         "line": "Welcome to our coffee shop! What can I get you today?",
-                    }
-                )
+                     }
+                 )
                 dialogue.append(
-                    {"character": "CUSTOMER", "line": "I'll have a cappuccino, please."}
-                )
+                    {"character": "CUSTOMER", "line": "I'll have a cappuccino, please."}'
+                 )
             elif any(word in words for word in ["office", "work", "meeting"]):
                 dialogue.append(
                     {
                         "character": "MANAGER",
                         "line": "Let's discuss the quarterly results in today's meeting.",
-                    }
-                )
+                     }
+                 )
                 dialogue.append(
                     {
                         "character": "EMPLOYEE",
-                        "line": "I've prepared the presentation slides.",
-                    }
-                )
+                        "line": "I've prepared the presentation slides.",'
+                     }
+                 )
             else:
                 dialogue.append(
                     {
                         "character": "PROTAGONIST",
                         "line": "This is where our story begins.",
-                    }
-                )
+                     }
+                 )
 
         if not action:
             # Generate contextual actions
@@ -982,7 +1252,7 @@ Description: {scene.description}
         genre: str = "Drama",
         duration: int = 10,
         audience: str = "General",
-    ) -> Script:
+#     ) -> Script:
         """Generate complete script through all stages."""
         logger.info(f"Starting full script generation for: {topic}")
 
@@ -993,7 +1263,7 @@ Description: {scene.description}
             # Stage 1: Logline with live context
             logline = self.create_logline(
                 topic, genre, duration, audience, live_briefing
-            )
+             )
             time.sleep(1)  # Rate limiting
 
             # Stage 2: Synopsis with live context
@@ -1027,7 +1297,7 @@ Description: {scene.description}
                 target_audience=audience,
                 created_at=datetime.now(),
                 version="1.0",
-            )
+             )
 
             logger.info(f"Successfully generated script: {script.title}")
             return script
@@ -1038,12 +1308,25 @@ Description: {scene.description}
 
     def export_script(
         self, script: Script, output_path: str, format_type: str = "json"
-    ) -> bool:
-        """Export script to file."""
-        try:
-            output_file = Path(output_path)
-            output_file.parent.mkdir(parents=True, exist_ok=True)
+#     ) -> bool:
+        """
+Export script to file.
 
+        
+"""
+        try:
+        """
+
+            output_file = Path(output_path)
+           
+
+            
+           
+"""
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+           """"""
+        try:
+        """"""
             if format_type.lower() == "json":
                 with open(output_file, "w", encoding="utf - 8") as f:
                     json.dump(asdict(script), f, indent=2, default=str)
@@ -1063,7 +1346,7 @@ Description: {scene.description}
                     for scene in script.scenes:
                         f.write(
                             f"SCENE {scene.number} - {scene.location} - {scene.time_of_day}\\n"
-                        )
+                         )
                         f.write(f"{scene.description}\\n\\n")
 
                         for action_line in scene.action:
@@ -1072,7 +1355,7 @@ Description: {scene.description}
                         for dialogue in scene.dialogue:
                             f.write(
                                 f"\\n{dialogue['character']}\\n{dialogue['line']}\\n"
-                            )
+                             )
 
                         f.write("\\n" + "=" * 50 + "\\n\\n")
 
@@ -1084,17 +1367,35 @@ Description: {scene.description}
             return False
 
     def get_script_statistics(self, script: Script) -> Dict[str, Any]:
-        """Get detailed statistics about the script."""
-        total_dialogue_lines = sum(len(scene.dialogue) for scene in script.scenes)
-        total_action_lines = sum(len(scene.action) for scene in script.scenes)
+        """
+Get detailed statistics about the script.
 
+        total_dialogue_lines = sum(len(scene.dialogue) for scene in script.scenes)
+       
+""""""
+
+        total_action_lines = sum(len(scene.action) for scene in script.scenes)
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        total_action_lines = sum(len(scene.action) for scene in script.scenes)
+       
+""""""
         character_dialogue_count = {}
         for scene in script.scenes:
             for dialogue in scene.dialogue:
                 char = dialogue["character"]
                 character_dialogue_count[char] = (
                     character_dialogue_count.get(char, 0) + 1
-                )
+                 )
 
         return {
             "title": script.title,
@@ -1106,11 +1407,11 @@ Description: {scene.description}
             "character_dialogue_distribution": character_dialogue_count,
             "average_scene_duration": (
                 script.total_duration // len(script.scenes) if script.scenes else 0
-            ),
+             ),
             "genre": script.genre,
             "target_audience": script.target_audience,
             "created_at": script.created_at.isoformat(),
-        }
+         }
 
 
 # Example usage and testing
@@ -1129,7 +1430,7 @@ if __name__ == "__main__":
                 genre="Slice of Life",
                 duration=5,
                 audience="General",
-            )
+             )
 
             # Print statistics
             stats = scriptwriter.get_script_statistics(script)
@@ -1146,6 +1447,6 @@ if __name__ == "__main__":
     else:
         print(
             "❌ Ollama server not accessible. Please ensure Ollama is running on localhost:11434"
-        )
+         )
         print("   You can start Ollama with: ollama serve")
         print("   And pull a model with: ollama pull llama2")

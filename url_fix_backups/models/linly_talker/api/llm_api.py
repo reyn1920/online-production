@@ -39,7 +39,8 @@ async def change_model(
     gemini_apikey: str = Query("", description="Gemini API 密钥"),
     openai_apikey: str = Query("", description="OpenAI API 密钥"),
     proxy_url: str = Query(None, description="代理 URL"),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """更换LLM模型并加载相应资源。"""
     global llm
 
@@ -52,14 +53,16 @@ async def change_model(
                 "Linly",
                 "Linly - AI / Chinese - LLaMA - 2 - 7B - hf",
                 prefix_prompt=PREFIX_PROMPT,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             logger.info("Linly模型导入成功")
         elif model_name in ["Qwen", "Qwen2"]:
             model_path = (
                 "Qwen / Qwen - 1_8B - Chat"
                 if model_name == "Qwen"
                 else "Qwen / Qwen1.5 - 0.5B - Chat"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             llm = llm_class.init_model(model_name, model_path, prefix_prompt=PREFIX_PROMPT)
             logger.info(f"{model_name} 模型导入成功")
         elif model_name == "Gemini":
@@ -71,7 +74,8 @@ async def change_model(
         elif model_name == "ChatGLM":
             llm = llm_class.init_model(
                 "ChatGLM", "THUDM / chatglm3 - 6b", prefix_prompt=PREFIX_PROMPT
-            )
+# BRACKET_SURGEON: disabled
+#             )
             logger.info("ChatGLM模型导入成功")
         elif model_name == "ChatGPT":
             if openai_apikey:
@@ -80,7 +84,8 @@ async def change_model(
                     api_key=openai_apikey,
                     proxy_url=proxy_url,
                     prefix_prompt=PREFIX_PROMPT,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 logger.info("ChatGPT模型导入成功")
             else:
                 raise HTTPException(status_code=400, detail="请填写OpenAI的API密钥")

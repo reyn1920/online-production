@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 AI Inpainting - Dynamic Avatar Clothing and Appearance Modification
 
 This module implements AI - powered inpainting using local Stable Diffusion models
@@ -9,7 +9,7 @@ integration with the content pipeline.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import hashlib
 import logging
@@ -152,7 +152,7 @@ class InpaintingJob:
     retry_count: int = 0
     cache_hit: bool = False
     processing_time: Optional[float] = None
-    intermediate_results: List[str] = field(default_factory=list)
+    intermediate_results: List[str] = field(default_factory=list):
 
     def __post_init__(self):
         if self.generated_images is None:
@@ -187,13 +187,16 @@ class QualityAnalyzer:
                 "structural_similarity": self._calculate_ssim(orig_np, inpaint_np, mask_np),
                 "color_consistency": self._calculate_color_consistency(
                     orig_np, inpaint_np, mask_np
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "edge_preservation": self._calculate_edge_preservation(
                     orig_np, inpaint_np, mask_np
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "texture_quality": self._calculate_texture_quality(inpaint_np, mask_np),
                 "overall_score": 0.0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Calculate overall score
             weights = {
@@ -201,7 +204,8 @@ class QualityAnalyzer:
                 "color_consistency": 0.25,
                 "edge_preservation": 0.25,
                 "texture_quality": 0.2,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             metrics["overall_score"] = sum(metrics[k] * weights[k] for k in weights)
 
             return metrics
@@ -227,7 +231,8 @@ class QualityAnalyzer:
 
     def _calculate_color_consistency(
         self, orig: np.ndarray, inpaint: np.ndarray, mask: np.ndarray
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate color consistency between original and inpainted regions."""
         try:
             # Get boundary region for color matching
@@ -251,7 +256,8 @@ class QualityAnalyzer:
 
     def _calculate_edge_preservation(
         self, orig: np.ndarray, inpaint: np.ndarray, mask: np.ndarray
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate edge preservation quality."""
         try:
             # Convert to grayscale
@@ -357,7 +363,8 @@ class CacheManager:
                 "images": images,
                 "metadata": metadata,
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             with open(cache_file, "wb") as f:
                 pickle.dump(cached_data, f)
@@ -411,7 +418,8 @@ class StableDiffusionEngine:
                 from diffusers import (
                     DPMSolverMultistepScheduler,
                     StableDiffusionInpaintPipeline,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 self.logger.info(f"PyTorch available: {torch.__version__}")
 
@@ -428,12 +436,14 @@ class StableDiffusionEngine:
                     torch_dtype=(torch.float16 if self.device == "cuda" else torch.float32),
                     safety_checker=None,  # Disable for local use
                     requires_safety_checker=False,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Use DPM solver for faster inference
                 self.pipe.scheduler = DPMSolverMultistepScheduler.from_config(
                     self.pipe.scheduler.config
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 self.pipe = self.pipe.to(self.device)
 
@@ -489,10 +499,12 @@ class StableDiffusionEngine:
                         torch.Generator(device=self.device).manual_seed(config.seed)
                         if config.seed
                         else None
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     num_images_per_prompt=config.batch_size,
                     negative_prompt=config.negative_prompt,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             return result.images
 
@@ -544,7 +556,8 @@ class MaskGenerator:
         try:
             self.face_cascade = cv2.CascadeClassifier(
                 cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except Exception:
             self.face_cascade = None
 
@@ -565,8 +578,10 @@ class MaskGenerator:
                     transforms.Resize((512, 512)),
                     transforms.ToTensor(),
                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
         except ImportError:
             self.has_torch = False
             self.logger.warning("PyTorch not available, using fallback methods")
@@ -577,7 +592,8 @@ class MaskGenerator:
         mode: MaskMode,
         region: Optional[Tuple[int, int, int, int]] = None,
         clothing_type: Optional[ClothingType] = None,
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate mask based on the specified mode."""
         try:
             if mode == MaskMode.AUTO_CLOTHING:
@@ -604,7 +620,8 @@ class MaskGenerator:
 
     def _generate_clothing_mask(
         self, image: Image.Image, clothing_type: Optional[ClothingType] = None
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate mask for clothing area (torso region)."""
         width, height = image.size
         mask = Image.new("L", (width, height), 0)
@@ -617,42 +634,48 @@ class MaskGenerator:
                 int(height * 0.3),
                 int(width * 0.8),
                 int(height * 0.7),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif clothing_type == ClothingType.PANTS:
             x1, y1, x2, y2 = (
                 int(width * 0.25),
                 int(height * 0.6),
                 int(width * 0.75),
                 int(height * 0.95),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif clothing_type == ClothingType.DRESS:
             x1, y1, x2, y2 = (
                 int(width * 0.2),
                 int(height * 0.3),
                 int(width * 0.8),
                 int(height * 0.9),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif clothing_type == ClothingType.JACKET:
             x1, y1, x2, y2 = (
                 int(width * 0.15),
                 int(height * 0.25),
                 int(width * 0.85),
                 int(height * 0.75),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif clothing_type == ClothingType.SHOES:
             x1, y1, x2, y2 = (
                 int(width * 0.3),
                 int(height * 0.85),
                 int(width * 0.7),
                 int(height * 0.98),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif clothing_type == ClothingType.HAT:
             x1, y1, x2, y2 = (
                 int(width * 0.25),
                 int(height * 0.05),
                 int(width * 0.75),
                 int(height * 0.35),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             # Default clothing region (roughly torso area)
             x1, y1, x2, y2 = (
@@ -660,7 +683,8 @@ class MaskGenerator:
                 int(height * 0.3),
                 int(width * 0.8),
                 int(height * 0.9),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Create elliptical mask for clothing
         draw.ellipse([x1, y1, x2, y2], fill=255)
@@ -672,7 +696,8 @@ class MaskGenerator:
 
     def _generate_smart_clothing_mask(
         self, image: Image.Image, clothing_type: Optional[ClothingType] = None
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate smart clothing mask using advanced detection."""
         try:
             # Convert to numpy for processing
@@ -700,7 +725,8 @@ class MaskGenerator:
 
     def _color_based_segmentation(
         self, hsv_image: np.ndarray, clothing_type: Optional[ClothingType] = None
-    ) -> np.ndarray:
+# BRACKET_SURGEON: disabled
+#     ) -> np.ndarray:
         """Perform color - based segmentation for clothing detection."""
         height, width = hsv_image.shape[:2]
 
@@ -709,17 +735,20 @@ class MaskGenerator:
             roi = hsv_image[
                 int(height * 0.3) : int(height * 0.7),
                 int(width * 0.2) : int(width * 0.8),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
         elif clothing_type == ClothingType.PANTS:
             roi = hsv_image[
                 int(height * 0.6) : int(height * 0.95),
                 int(width * 0.25) : int(width * 0.75),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
         else:
             roi = hsv_image[
                 int(height * 0.3) : int(height * 0.9),
                 int(width * 0.2) : int(width * 0.8),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
         # Calculate dominant colors in ROI
         roi_flat = roi.reshape(-1, 3)
@@ -764,7 +793,8 @@ class MaskGenerator:
                 int(height * 0.1),
                 int(width * 0.8),
                 int(height * 0.8),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Apply GrabCut
             cv2.grabCut(img_np, mask, rect, bgd_model, fgd_model, 5, cv2.GC_INIT_WITH_RECT)
@@ -892,7 +922,8 @@ class MaskGenerator:
 
     def _generate_region_mask(
         self, image: Image.Image, region: Tuple[int, int, int, int]
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate mask for custom region."""
         mask = Image.new("L", image.size, 0)
         draw = ImageDraw.Draw(mask)
@@ -951,7 +982,8 @@ class AIInpainting:
         self.sd_engine = StableDiffusionEngine(
             model_path=self.config.model_path,
             device="cuda" if self.config.use_gpu else "cpu",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.fallback_engine = FallbackEngine()
         self.mask_generator = MaskGenerator()
 
@@ -961,7 +993,8 @@ class AIInpainting:
             CacheManager(cache_dir=self.config.cache_dir, max_size_mb=self.config.max_cache_size)
             if self.config.enable_caching
             else None
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Job tracking
         self.active_jobs: Dict[str, InpaintingJob] = {}
@@ -986,7 +1019,8 @@ class AIInpainting:
         output_path: Optional[str] = None,
         job_id: Optional[str] = None,
         config: Optional[InpaintingConfig] = None,
-    ) -> InpaintingJob:
+# BRACKET_SURGEON: disabled
+#     ) -> InpaintingJob:
         """Create a new inpainting job."""
         if job_id is None:
             job_id = f"inpaint_{int(time.time())}_{len(self.active_jobs)}"
@@ -1015,8 +1049,10 @@ class AIInpainting:
             metadata={
                 "created_at": datetime.now().isoformat(),
                 "source_image_info": self._get_image_info(source_image),
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Inpainting job created: {job_id}")
@@ -1041,7 +1077,8 @@ class AIInpainting:
             if self.cache_manager:
                 cache_key = self.cache_manager.get_cache_key(
                     job.source_image, job.prompt, job.config
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 cached_result = self.cache_manager.get_cached_result(cache_key)
                 if cached_result:
                     job.generated_images = cached_result
@@ -1064,7 +1101,8 @@ class AIInpainting:
                     source_image,
                     job.config.mask_mode,
                     clothing_type=job.config.clothing_type,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 # Save generated mask for reference
                 mask_path = str(self.temp_dir / f"{job_id}_mask.png")
                 mask_image.save(mask_path)
@@ -1081,30 +1119,35 @@ class AIInpainting:
                 if job.config.model in [
                     InpaintingModel.STABLE_DIFFUSION_INPAINT,
                     InpaintingModel.STABLE_DIFFUSION_XL_INPAINT,
-                ]:
+# BRACKET_SURGEON: disabled
+#                 ]:
                     generated_images = self.sd_engine.generate_inpainting(
                         source_image, mask_image, job.prompt, job.config
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Quality analysis
                     if generated_images and job.config.quality_threshold > 0:
                         best_image = generated_images[0]
                         quality_metrics = self.quality_analyzer.analyze_quality(
                             source_image, best_image, mask_image
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         job.quality_score = quality_metrics["overall_score"]
 
                         if quality_metrics["overall_score"] < job.config.quality_threshold:
                             self.logger.warning(
                                 f"Quality score {quality_metrics['overall_score']:.2f} below threshold {job.config.quality_threshold}"
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             if retry_count < max_retries - 1:
                                 generated_images = []  # Clear for retry
                                 # Adjust parameters for retry
                                 job.config.steps = min(job.config.steps + 5, 50)
                                 job.config.guidance_scale = min(
                                     job.config.guidance_scale + 0.5, 12.0
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
 
                 retry_count += 1
                 job.retry_count = retry_count
@@ -1115,7 +1158,8 @@ class AIInpainting:
                 self.logger.warning(f"Primary engine failed, using fallback for job {job_id}")
                 generated_images = self.fallback_engine.generate_inpainting(
                     source_image, mask_image, job.prompt, job.config
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 job.progress = 80.0
 
             if generated_images:
@@ -1128,7 +1172,8 @@ class AIInpainting:
                         base_path = Path(job.output_path)
                         save_path = str(
                             base_path.parent / f"{base_path.stem}_{i}{base_path.suffix}"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                     img.save(save_path)
                     saved_paths.append(save_path)
@@ -1171,7 +1216,8 @@ class AIInpainting:
                     "height": img.height,
                     "format": img.format,
                     "mode": img.mode,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception:
             return {}
 
@@ -1291,7 +1337,8 @@ class AIInpainting:
             quality_threshold=0.7,
             auto_retry=True,
             max_retries=2,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Enhanced prompt with style and quality descriptors
         enhanced_prompt = f"wearing {clothing_prompt}, high quality, detailed clothing, photorealistic, professional photography"
@@ -1301,7 +1348,8 @@ class AIInpainting:
             prompt=enhanced_prompt,
             output_path=output_path,
             config=config,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if self.process_job(job.job_id):
             return job.generated_images[0] if job.generated_images else None
@@ -1324,7 +1372,8 @@ class AIInpainting:
             quality_threshold=0.6,
             auto_retry=True,
             max_retries=2,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Enhanced prompt for better background generation
         enhanced_prompt = f"{background_prompt}, high quality, detailed background, photorealistic, professional lighting"
@@ -1334,7 +1383,8 @@ class AIInpainting:
             prompt=enhanced_prompt,
             output_path=output_path,
             config=config,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if self.process_job(job.job_id):
             return job.generated_images[0] if job.generated_images else None
@@ -1357,7 +1407,8 @@ class AIInpainting:
             quality_threshold=0.8,
             auto_retry=True,
             max_retries=3,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         job = self.create_inpainting_job(
             source_image=avatar_image,
@@ -1365,7 +1416,8 @@ class AIInpainting:
             mask_image=mask_path,
             output_path=output_path,
             config=config,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if self.process_job(job.job_id):
             return job.generated_images[0] if job.generated_images else None
@@ -1440,7 +1492,8 @@ if __name__ == "__main__":
         quality_threshold=0.7,
         auto_retry=True,
         max_retries=2,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     inpainter = AIInpainting(config)
 
@@ -1454,7 +1507,8 @@ if __name__ == "__main__":
             preserve_face=True,
             preserve_hands=True,
             output_path="./output/avatar_dress.png",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if result:
             print(f"Avatar clothing changed: {result}")
@@ -1468,7 +1522,8 @@ if __name__ == "__main__":
             background_prompt="modern office environment with natural lighting",
             preserve_subject=True,
             output_path="./output/avatar_office.png",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if result:
             print(f"Avatar background changed: {result}")
@@ -1481,7 +1536,8 @@ if __name__ == "__main__":
             avatar_image="./assets/avatar.jpg",
             enhancement_prompt="sharper facial features, better skin texture",
             output_path="./output/avatar_enhanced.png",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if result:
             print(f"Avatar details enhanced: {result}")
@@ -1497,9 +1553,11 @@ if __name__ == "__main__":
                 "wearing business suit",
                 "casual attire",
                 "formal evening wear",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             output_dir="./output/variations",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Created {len(variations)} variations: {variations}")
 
         # Example 5: Batch processing with progress tracking
@@ -1512,11 +1570,13 @@ if __name__ == "__main__":
             ("./assets/avatar1.jpg", "wearing red shirt"),
             ("./assets/avatar2.jpg", "wearing blue dress"),
             ("./assets/avatar3.jpg", "wearing black suit"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         job_ids = inpainter.batch_process_with_progress(
             jobs_data, progress_callback=progress_callback
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Batch processing completed: {len(job_ids)} jobs")
 
         # Example 6: Asynchronous processing
@@ -1527,8 +1587,10 @@ if __name__ == "__main__":
             output_path="./output/avatar_scifi.png",
             config=InpaintingConfig(
                 mask_mode=MaskMode.SMART_CLOTHING, quality=InpaintingQuality.ULTRA
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         future = inpainter.submit_job_async(job.job_id)
         if future:
@@ -1539,7 +1601,8 @@ if __name__ == "__main__":
             if job.status == "completed":
                 print(
                     f"Async job completed: {job.generated_images[0] if job.generated_images else 'No output'}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         print("\\n=== All Examples Completed ===")
 

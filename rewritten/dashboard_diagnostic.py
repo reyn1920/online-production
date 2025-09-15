@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Dashboard Diagnostic Tool
 Comprehensive testing and verification of dashboard functionality
-"""
+""""""
 
 import json
 import sys
@@ -30,43 +30,50 @@ def test_dashboard_endpoints():
             "method": "GET",
             "expected_status": 200,
             "check_content": "Production Dashboard",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "name": "Dashboard Metrics API",
             "url": f"{base_url}/dashboard/api/metrics",
             "method": "GET",
             "expected_status": 200,
             "check_json": True,
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "name": "Dashboard Services API",
             "url": f"{base_url}/dashboard/api/services",
             "method": "GET",
             "expected_status": 200,
             "check_json": True,
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "name": "Dashboard System Info API",
             "url": f"{base_url}/dashboard/api/system - info",
             "method": "GET",
             "expected_status": 200,
             "check_json": True,
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "name": "Main API Health Check",
             "url": f"{base_url}/health",
             "method": "GET",
             "expected_status": 200,
             "check_json": True,
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "name": "API Documentation",
             "url": f"{base_url}/docs",
             "method": "GET",
             "expected_status": 200,
             "check_content": "FastAPI",
-        },
-    ]
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     ]
 
     passed = 0
     failed = 0
@@ -108,18 +115,22 @@ def test_dashboard_endpoints():
                 failed += 1
                 print(
                     f"  Status: {status} - Expected {test['expected_status']}, got {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             results.append(
                 {
                     "test": test["name"],
                     "status": (
                         "PASS" if response.status_code == test["expected_status"] else "FAIL"
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "status_code": response.status_code,
                     "response_time": response.elapsed.total_seconds(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         except requests.exceptions.ConnectionError:
             print("  Status: ❌ FAIL - Connection refused (server not running?)")

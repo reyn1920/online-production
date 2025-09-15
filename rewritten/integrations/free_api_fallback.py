@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Free API Fallback System for RouteLL Integration
 Provides fallback options when RouteLL credits are exhausted
-"""
+""""""
 
 import json
 import logging
@@ -39,15 +39,16 @@ class FallbackResponse:
 
 
 class FreeAPIFallback:
-    """
+    """"""
     Manages fallback to free AI APIs when RouteLL credits are exhausted
-    """
+    """"""
 
     def __init__(self, config_path: str = None):
         self.config_path = (
             config_path
             or "/Users/thomasbrianreynolds/online production/config/fallback_config.json"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.config = self._load_config()
 
         # Setup logging
@@ -63,10 +64,12 @@ class FreeAPIFallback:
                     "microsoft/DialoGPT - medium",
                     "facebook/blenderbot - 400M - distill",
                     "microsoft/DialoGPT - small",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "rate_limit": 1000,  # requests per hour
                 "requires_key": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             FallbackProvider.GROQ_FREE: {
                 "name": "Groq Free Tier",
                 "base_url": "https://api.groq.com/openai/v1",
@@ -74,28 +77,34 @@ class FreeAPIFallback:
                     "llama3 - 8b - 8192",
                     "llama3 - 70b - 8192",
                     "mixtral - 8x7b - 32768",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "rate_limit": 30,  # requests per minute
                 "requires_key": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             FallbackProvider.TOGETHER_FREE: {
                 "name": "Together AI Free",
                 "base_url": "https://api.together.xyz/v1",
                 "models": [
                     "meta - llama/Llama - 2 - 7b - chat - hf",
                     "mistralai/Mistral - 7B - Instruct - v0.1",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "rate_limit": 60,  # requests per hour
                 "requires_key": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             FallbackProvider.OLLAMA_LOCAL: {
                 "name": "Ollama Local",
                 "base_url": "http://localhost:11434/api",
                 "models": ["llama2", "mistral", "codellama"],
                 "rate_limit": float("inf"),  # No limit for local
                 "requires_key": False,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # Track usage for rate limiting
         self.usage_tracker = {}
@@ -118,15 +127,18 @@ class FreeAPIFallback:
                 "together_free",
                 "huggingface_free",
                 "ollama_local",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "fallback_models": {
                 "text_generation": "llama3 - 8b - 8192",
                 "chat": "llama3 - 8b - 8192",
                 "code": "codellama",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "max_retries": 3,
             "timeout_seconds": 30,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def is_available(self) -> bool:
         """Check if fallback system is available"""
@@ -172,7 +184,8 @@ class FreeAPIFallback:
         # Clean old entries (older than 1 hour)
         self.usage_tracker[provider_key] = [
             timestamp for timestamp in self.usage_tracker[provider_key] if now - timestamp < 3600
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         rate_limit = self.providers[provider]["rate_limit"]
         current_usage = len(self.usage_tracker[provider_key])
@@ -200,7 +213,8 @@ class FreeAPIFallback:
                 model_used="none",
                 response_time_ms=0,
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Try providers in order of preference
         preferred_providers = self.config.get("preferred_providers", [])
@@ -227,11 +241,13 @@ class FreeAPIFallback:
             model_used="none",
             response_time_ms=int((time.time() - start_time) * 1000),
             timestamp=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _make_request(
         self, provider: FallbackProvider, messages: List[Dict], task_type: str
-    ) -> FallbackResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> FallbackResponse:
         """Make request to specific provider"""
         start_time = time.time()
         provider_config = self.providers[provider]
@@ -257,7 +273,8 @@ class FreeAPIFallback:
                 model_used="unknown",
                 response_time_ms=int((time.time() - start_time) * 1000),
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _make_groq_request(self, messages: List[Dict], start_time: float) -> FallbackResponse:
         """Make request to Groq API"""
@@ -268,21 +285,24 @@ class FreeAPIFallback:
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content - Type": "application/json",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         payload = {
             "model": "llama3 - 8b - 8192",
             "messages": messages,
             "max_tokens": 1000,
             "temperature": 0.7,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         response = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
             headers=headers,
             json=payload,
             timeout=30,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if response.status_code == 200:
             data = response.json()
@@ -294,13 +314,15 @@ class FreeAPIFallback:
                 model_used="llama3 - 8b - 8192",
                 response_time_ms=int((time.time() - start_time) * 1000),
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             raise Exception(f"Groq API error: {response.status_code} - {response.text}")
 
     def _make_huggingface_request(
         self, messages: List[Dict], start_time: float
-    ) -> FallbackResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> FallbackResponse:
         """Make request to Hugging Face API"""
         api_key = os.getenv("HUGGINGFACE_API_KEY")
         if not api_key:
@@ -312,7 +334,8 @@ class FreeAPIFallback:
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content - Type": "application/json",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         payload = {
             "inputs": prompt,
@@ -320,15 +343,18 @@ class FreeAPIFallback:
                 "max_new_tokens": 500,
                 "temperature": 0.7,
                 "return_full_text": False,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         response = requests.post(
             "https://api - inference.huggingface.co/models/microsoft/DialoGPT - medium",
             headers=headers,
             json=payload,
             timeout=30,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if response.status_code == 200:
             data = response.json()
@@ -340,7 +366,8 @@ class FreeAPIFallback:
                 model_used="DialoGPT - medium",
                 response_time_ms=int((time.time() - start_time) * 1000),
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             raise Exception(f"HuggingFace API error: {response.status_code} - {response.text}")
 
@@ -353,21 +380,24 @@ class FreeAPIFallback:
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content - Type": "application/json",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         payload = {
             "model": "meta - llama/Llama - 2 - 7b - chat - hf",
             "messages": messages,
             "max_tokens": 1000,
             "temperature": 0.7,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         response = requests.post(
             "https://api.together.xyz/v1/chat/completions",
             headers=headers,
             json=payload,
             timeout=30,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if response.status_code == 200:
             data = response.json()
@@ -379,7 +409,8 @@ class FreeAPIFallback:
                 model_used="Llama - 2 - 7b - chat - hf",
                 response_time_ms=int((time.time() - start_time) * 1000),
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             raise Exception(f"Together API error: {response.status_code} - {response.text}")
 
@@ -402,7 +433,8 @@ class FreeAPIFallback:
                 model_used="llama2",
                 response_time_ms=int((time.time() - start_time) * 1000),
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             raise Exception(f"Ollama API error: {response.status_code} - {response.text}")
 
@@ -416,7 +448,8 @@ class FreeAPIFallback:
             "total_providers": len(self.providers),
             "usage_stats": {provider: len(usage) for provider, usage in self.usage_tracker.items()},
             "config": self.config,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 if __name__ == "__main__":

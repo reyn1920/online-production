@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 RSS Watcher Service
 
 This service continuously monitors RSS feeds and automatically triggers
 video creation through the API when new items are detected.
-"""
+""""""
 
 import asyncio
 import json
@@ -52,7 +52,8 @@ class RSSWatcherService:
             api_base_url: str = "http://localhost:8080",
             config_path: str = "rss_feeds_example.json",
             db_path: str = "rss_watcher.db",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.api_base_url = api_base_url
         self.config_path = config_path
         self.db_path = db_path
@@ -66,7 +67,8 @@ class RSSWatcherService:
             "style": "news_analysis",
                 "duration": 60,  # 1 minute videos
             "include_affiliates": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Initialize database
         self._init_database()
@@ -84,7 +86,7 @@ class RSSWatcherService:
 
         # RSS video triggers table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS rss_video_triggers (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     trigger_id TEXT UNIQUE NOT NULL,
@@ -98,13 +100,17 @@ class RSSWatcherService:
                     video_task_id TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     processed_at TIMESTAMP
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # RSS feed items tracking (to avoid duplicates)
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS rss_feed_items (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     feed_name TEXT NOT NULL,
@@ -113,21 +119,29 @@ class RSSWatcherService:
                     item_hash TEXT NOT NULL,
                     first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(feed_name, item_hash)
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # RSS watcher logs
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS rss_watcher_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     action TEXT NOT NULL,
                     details TEXT,
                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         conn.commit()
         conn.close()
@@ -137,14 +151,16 @@ class RSSWatcherService:
 
     def _calculate_urgency_score(
         self, article: NewsArticle, feed_config: Dict
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate urgency score for an RSS item."""
         urgency_factors = {
             "recency": 0.0,
                 "keyword_relevance": 0.0,
                 "feed_priority": 0.0,
                 "sentiment": 0.0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Recency factor (newer = higher urgency)
         now = datetime.now()
@@ -163,12 +179,16 @@ class RSSWatcherService:
                 "emergency",
                 "investigation",
                 "leaked",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         content_text = f"{article.title} {article.content}".lower()
         keyword_matches = sum(
             1 for keyword in high_priority_keywords if keyword in content_text
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         urgency_factors["keyword_relevance"] = min(1.0, keyword_matches / 3)
 
         # Feed priority (from config)
@@ -184,15 +204,20 @@ class RSSWatcherService:
                 "keyword_relevance": 0.3,
                 "feed_priority": 0.2,
                 "sentiment": 0.1,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         urgency_score = sum(
             urgency_factors[factor] * weights[factor] for factor in urgency_factors
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         logger.debug(
             f"Urgency calculation for '{article.title[:50]}...': {urgency_factors} -> {urgency_score:.3f}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return urgency_score
 
 
@@ -206,27 +231,33 @@ class RSSWatcherService:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM rss_feed_items
                 WHERE feed_name = ? AND item_hash = ?
-            """,
+            ""","""
                 (feed_name, item_hash),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             count = cursor.fetchone()[0]
 
             if count == 0:
                 # Store new item
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO rss_feed_items (feed_name,
     item_url,
     item_title,
-    item_hash)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     item_hash)
                     VALUES (?, ?, ?, ?)
-                """,
+                ""","""
                     (feed_name, article.url, article.title, item_hash),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 conn.commit()
 
             conn.close()
@@ -241,7 +272,7 @@ class RSSWatcherService:
         """Create video through the API endpoint."""
         try:
             # Prepare video creation prompt
-            prompt = f"""
+            prompt = f""""""
 Create a news analysis video about: {trigger.title}
 
 Description: {trigger.description}
@@ -253,7 +284,7 @@ Source: {trigger.feed_name}
 Urgency: {trigger.urgency_score:.2f}
 
 Style: Professional news analysis with Right Perspective approach
-"""
+""""""
 
             # API payload
             payload = {
@@ -261,13 +292,16 @@ Style: Professional news analysis with Right Perspective approach
                     "style": self.video_settings["style"],
                     "duration": self.video_settings["duration"],
                     "include_affiliates": self.video_settings["include_affiliates"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Make API call
             async with httpx.AsyncClient(timeout = 30.0) as client:
                 response = await client.post(
                     f"{self.api_base_url}/api / create_video", json = payload
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if response.status_code == 200:
                     result = response.json()
@@ -275,12 +309,16 @@ Style: Professional news analysis with Right Perspective approach
 
                     logger.info(
                         f"Video creation initiated: {task_id} for trigger {trigger.trigger_id}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return task_id
                 else:
                     logger.error(
                         f"API call failed: {response.status_code} - {response.text}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return None
 
         except Exception as e:
@@ -295,12 +333,14 @@ Style: Professional news analysis with Right Perspective approach
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO rss_video_triggers
                 (trigger_id, title, description, source_url, feed_name,
-                    keywords, urgency_score, status, video_task_id)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     keywords, urgency_score, status, video_task_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     trigger.trigger_id,
                         trigger.title,
@@ -311,20 +351,26 @@ Style: Professional news analysis with Right Perspective approach
                         trigger.urgency_score,
                         trigger.status,
                         trigger.video_task_id,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Log the action
             cursor.execute(
-                """
+                """"""
                 INSERT INTO rss_watcher_logs (action, details)
                 VALUES (?, ?)
-            """,
+            ""","""
                 (
                     "trigger_created",
                         f"Trigger {trigger.trigger_id}: {trigger.title[:50]}... (urgency: {trigger.urgency_score:.3f})",
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
             conn.close()
@@ -364,14 +410,18 @@ Style: Professional news analysis with Right Perspective approach
                         # Calculate urgency
                         urgency_score = self._calculate_urgency_score(
                             article, feed_config
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                         # Only create trigger if urgency meets threshold
                         if urgency_score >= self.min_urgency_threshold:
                             # Create trigger
                             trigger_id = (
                                 f"rss_{int(time.time())}_{hash(article.url) % 10000}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                             trigger = RSSVideoTrigger(
                                 trigger_id = trigger_id,
@@ -380,13 +430,16 @@ Style: Professional news analysis with Right Perspective approach
                                     article.content[:500] + "..."
                                     if len(article.content) > 500
                                     else article.content
-                                ),
+# BRACKET_SURGEON: disabled
+#                                 ),
                                     source_url = article.url,
                                     feed_name = feed_name,
                                     keywords = article.keywords[:10],  # Limit keywords
                                 urgency_score = urgency_score,
                                     created_at = datetime.now(),
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                             # Create video via API
                             task_id = await self._create_video_via_api(trigger)
@@ -403,7 +456,9 @@ Style: Professional news analysis with Right Perspective approach
 
                             logger.info(
                                 f"Created video trigger: {trigger.title[:50]}... (urgency: {urgency_score:.3f})"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 except Exception as e:
                     logger.error(f"Error processing feed {feed_name}: {e}")
@@ -411,7 +466,9 @@ Style: Professional news analysis with Right Perspective approach
 
             logger.info(
                 f"RSS processing complete. Created {triggers_created} video triggers."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             logger.error(f"Error processing RSS feeds: {e}")
@@ -422,7 +479,9 @@ Style: Professional news analysis with Right Perspective approach
         self.running = True
         logger.info(
             f"Starting RSS watcher (interval: {self.monitoring_interval} seconds)"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         while self.running:
             try:
@@ -452,7 +511,8 @@ Style: Professional news analysis with Right Perspective approach
             min_urgency_threshold: float = None,
             include_affiliates: bool = None,
             video_duration: int = None,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Start RSS monitoring with optional configuration updates."""
         # Update configuration if provided
         if monitoring_interval is not None:
@@ -476,9 +536,11 @@ Style: Professional news analysis with Right Perspective approach
         self._monitoring_task = loop.create_task(self.run_continuous_monitoring())
 
         logger.info(
-            f"RSS monitoring started (interval: {self.monitoring_interval}s,
-    threshold: {self.min_urgency_threshold})"
-        )
+            f"RSS monitoring started (interval: {self.monitoring_interval}s,"
+    threshold: {self.min_urgency_threshold})""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return {
             "status": "started",
                 "message": "RSS monitoring started",
@@ -487,8 +549,10 @@ Style: Professional news analysis with Right Perspective approach
                     "min_urgency_threshold": self.min_urgency_threshold,
                     "include_affiliates": self.video_settings["include_affiliates"],
                     "video_duration": self.video_settings["duration"],
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def get_status(self):
@@ -502,7 +566,8 @@ Style: Professional news analysis with Right Perspective approach
                 "recent_triggers_count": len(recent_triggers),
                 "last_check": recent_triggers[0]["created_at"] if recent_triggers else None,
                 "video_settings": self.video_settings,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def get_recent_triggers(self, limit: int = 10) -> List[Dict[str, Any]]:
@@ -512,15 +577,17 @@ Style: Professional news analysis with Right Perspective approach
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 SELECT trigger_id, title, feed_name, urgency_score,
                     status, video_task_id, created_at
                 FROM rss_video_triggers
                 ORDER BY created_at DESC
                 LIMIT ?
-            """,
+            ""","""
                 (limit,),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             results = cursor.fetchall()
             conn.close()
@@ -536,8 +603,11 @@ Style: Professional news analysis with Right Perspective approach
                             "status": result[4],
                             "video_task_id": result[5],
                             "created_at": result[6],
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return triggers
 
@@ -562,7 +632,9 @@ if __name__ == "__main__":
         for trigger in triggers:
             print(
                 f"- {trigger['title'][:50]}... (urgency: {trigger['urgency_score']:.3f})"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Uncomment to run continuous monitoring
         # await watcher.run_continuous_monitoring()

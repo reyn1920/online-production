@@ -21,11 +21,11 @@ if TYPE_CHECKING:
 def detect_language(
     model: "Whisper", mel: Tensor, tokenizer: Tokenizer = None
 ) -> Tuple[Tensor, List[dict]]:
-    """
+    """"""
     Detect the spoken language in the audio, \
-    and return them as list of strings, along with the ids
+#     and return them as list of strings, along with the ids
     of the most probable language tokens \
-    and the probability distribution over all language tokens.
+#     and the probability distribution over all language tokens.
     This is performed outside the main decode loop in order to not interfere with kv - caching.
 
     Returns
@@ -34,16 +34,19 @@ def detect_language(
         ids of the most probable language tokens, which appears after the startoftranscript token.
     language_probs : List[Dict[str, float]], length = n_audio
         list of dictionaries containing the probability distribution over all languages.
-    """
+    """"""
     if tokenizer is None:
         tokenizer = get_tokenizer(model.is_multilingual)
     if (
         tokenizer.language is None
         or tokenizer.language_token not in tokenizer.sot_sequence
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         raise ValueError(
             f"This model doesn't have language tokens so it can't perform lang id"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     single = mel.ndim == 2
     if single:
@@ -68,9 +71,12 @@ def detect_language(
         {
             c: language_token_probs[i, j].item()
             for j, c in zip(tokenizer.all_language_tokens, tokenizer.all_language_codes)
-        }
+# BRACKET_SURGEON: disabled
+#         }
         for i in range(n_audio)
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
 
     if single:
         language_tokens = language_tokens[0]
@@ -84,34 +90,48 @@ def detect_language(
 class DecodingOptions:
     task: str = (
         "transcribe"  # whether to perform X->X "transcribe" or X->English "translate"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     language: Optional[str] = (
         None  # language that the audio is in; uses detected language if None
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # sampling - related options
     temperature: float = 0.0
     sample_len: Optional[int] = None  # maximum number of tokens to sample
     best_of: Optional[int] = (
         None  # number of independent samples to collect, when t > 0
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     beam_size: Optional[int] = None  # number of beams in beam search, when t == 0
     patience: Optional[float] = (
         None  # patience in beam search (https://arxiv.org / abs / 2204.05424)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # options for ranking generations (either beams or best - of - N samples)
     length_penalty: Optional[float] = (
         None  # "alpha" in Google NMT, None defaults to length norm
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # prompt, prefix, and token suppression
     prompt: Optional[Union[str, List[int]]] = (
         None  # text or tokens for the previous context
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     prefix: Optional[Union[str, List[int]]] = (
         None  # text or tokens to prefix the current context
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     suppress_blank: bool = True  # this will suppress blank outputs
 
     # list of tokens ids (or comma - separated token ids) to suppress
@@ -122,7 +142,9 @@ class DecodingOptions:
     without_timestamps: bool = False  # use <|notimestamps|> to sample text tokens only
     max_initial_timestamp: Optional[float] = (
         1.0  # the initial timestamp cannot be later than this
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # implementation details
     fp16: bool = True  # use fp16 for most of the calculation
@@ -136,7 +158,7 @@ class DecodingResult:
     encoder_embeddings: np.ndarray
     decoder_embeddings: np.ndarray
     language_probs: Optional[Dict[str, float]] = None
-    tokens: List[int] = field(default_factory = list)
+    tokens: List[int] = field(default_factory = list):
     text: str = ""
     avg_logprob: float = np.nan
     no_speech_prob: float = np.nan
@@ -174,7 +196,8 @@ class PyTorchInference(Inference):
 
     def logits(
         self, tokens: Tensor, audio_features: Tensor, include_embeddings = False
-    ) -> Tensor:
+# BRACKET_SURGEON: disabled
+#     ) -> Tensor:
         if not self.kv_cache:
             self.kv_cache, self.hooks = self.model.install_kv_cache_hooks()
 
@@ -187,7 +210,9 @@ class PyTorchInference(Inference):
                 audio_features,
                 kv_cache = self.kv_cache,
                 include_embeddings = include_embeddings,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         return return_val
 
 
@@ -211,18 +236,18 @@ class SequenceRanker:
     def rank(
         self, tokens: List[List[Tensor]], sum_logprobs: List[List[float]]
     ) -> List[int]:
-        """
+        """"""
         Given a list of groups of samples and their cumulative log probabilities,
             return the indices of the samples in each group to select as the final result
-        """
+        """"""
         raise NotImplementedError
 
 
 class MaximumLikelihoodRanker(SequenceRanker):
-    """
+    """"""
     Select the sample with the highest log probabilities, penalized using either
-    a simple length normalization or Google NMT paper's length penalty
-    """
+    a simple length normalization or Google NMT paper's length penalty'
+    """"""
 
 
     def __init__(self, length_penalty: Optional[float]):
@@ -258,13 +283,13 @@ class TokenDecoder:
     def update(
         self, tokens: Tensor, logits: Tensor, sum_logprobs: Tensor
             ) -> Tuple[Tensor, bool]:
-        """Specify how to select the next token, based on the current trace and logits
+        """Specify how to select the next token, based on the current trace and logits"""
 
         Parameters
         ----------
             tokens : Tensor, shape = (n_batch, current_sequence_length)
             all tokens in the context so far, including the prefix \
-    and sot_sequence tokens
+#     and sot_sequence tokens
 
         logits : Tensor, shape = (n_batch, vocab_size)
             per - token logits of the probability distribution at the current step
@@ -280,14 +305,14 @@ class TokenDecoder:
         completed : bool
             True if all sequences has reached the end of text
 
-        """
+        """"""
         raise NotImplementedError
 
 
     def finalize(
         self, tokens: Tensor, sum_logprobs: Tensor
             ) -> Tuple[Sequence[Sequence[Tensor]], List[List[float]]]:
-        """Finalize search and return the final candidate sequences
+        """Finalize search and return the final candidate sequences"""
 
         Parameters
         ----------
@@ -305,7 +330,7 @@ class TokenDecoder:
         sum_logprobs : List[List[float]], length = n_audio
             sequence of cumulative log probabilities corresponding to the above
 
-        """
+        """"""
         raise NotImplementedError
 
 
@@ -352,7 +377,8 @@ class BeamSearchDecoder(TokenDecoder):
             eot: int,
             inference: Inference,
             patience: Optional[float] = None,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.beam_size = beam_size
         self.eot = eot
         self.inference = inference
@@ -395,7 +421,7 @@ class BeamSearchDecoder(TokenDecoder):
                     sources[sequence] = idx
 
             # STEP 2: rank the candidates \
-    and keep the top beam_size sequences for each audio
+#     and keep the top beam_size sequences for each audio
             saved = 0
             for sequence in sorted(scores, key = scores.get, reverse = True):
                 if sequence[-1] == self.eot:
@@ -418,7 +444,8 @@ class BeamSearchDecoder(TokenDecoder):
         assert len(self.finished_sequences) == len(finished_sequences)
         for previously_finished, newly_finished in zip(
             self.finished_sequences, finished_sequences
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             for seq in sorted(newly_finished, key = newly_finished.get, reverse = True):
                 if len(previously_finished) >= self.max_candidates:
                     break  # the candidate list is full
@@ -428,18 +455,21 @@ class BeamSearchDecoder(TokenDecoder):
         completed = all(
             len(sequences) >= self.max_candidates
             for sequences in self.finished_sequences
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return tokens, completed
 
 
     def finalize(self, preceding_tokens: Tensor, sum_logprobs: Tensor):
         # collect all finished sequences, including patience, \
-    and add unfinished ones if not enough
+#     and add unfinished ones if not enough
         sum_logprobs = sum_logprobs.cpu()
         for i, sequences in enumerate(self.finished_sequences):
             if (
                 len(sequences) < self.beam_size
-            ):  # when not enough sequences are finished
+# BRACKET_SURGEON: disabled
+#             ):  # when not enough sequences are finished
                 for j in list(np.argsort(sum_logprobs[i]))[::-1]:
                     sequence = preceding_tokens[i, j].tolist() + [self.eot]
                     sequences[tuple(sequence)] = sum_logprobs[i][j].item()
@@ -449,10 +479,14 @@ class BeamSearchDecoder(TokenDecoder):
         tokens: List[List[Tensor]] = [
             [torch.tensor(seq) for seq in sequences.keys()]
             for sequences in self.finished_sequences
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         sum_logprobs: List[List[float]] = [
             list(sequences.values()) for sequences in self.finished_sequences
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         return tokens, sum_logprobs
 
 
@@ -460,7 +494,7 @@ class LogitFilter:
 
 
     def apply(self, logits: Tensor, tokens: Tensor) -> None:
-        """Apply any filtering or masking to logits in - place
+        """Apply any filtering or masking to logits in - place"""
 
         Parameters
         ----------
@@ -469,9 +503,9 @@ class LogitFilter:
 
         tokens : Tensor, shape = (n_batch, current_sequence_length)
             all tokens in the context so far, including the prefix \
-    and sot_sequence tokens
+#     and sot_sequence tokens
 
-        """
+        """"""
         raise NotImplementedError
 
 
@@ -507,7 +541,8 @@ class ApplyTimestampRules(LogitFilter):
             tokenizer: Tokenizer,
             sample_begin: int,
             max_initial_timestamp_index: Optional[int],
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.tokenizer = tokenizer
         self.sample_begin = sample_begin
         self.max_initial_timestamp_index = max_initial_timestamp_index
@@ -523,10 +558,14 @@ class ApplyTimestampRules(LogitFilter):
             seq = [t for t in tokens[k, self.sample_begin :].tolist()]
             last_was_timestamp = (
                 len(seq) >= 1 and seq[-1] >= self.tokenizer.timestamp_begin
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             penultimate_was_timestamp = (
                 len(seq) < 2 or seq[-2] >= self.tokenizer.timestamp_begin
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if last_was_timestamp:
                 if penultimate_was_timestamp:  # has to be non - timestamp
@@ -538,10 +577,13 @@ class ApplyTimestampRules(LogitFilter):
         if (
             tokens.shape[1] == self.sample_begin
             and self.max_initial_timestamp_index is not None
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             last_allowed = (
                 self.tokenizer.timestamp_begin + self.max_initial_timestamp_index
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             logits[:, last_allowed + 1 :] = -np.inf
 
         # if sum of probability over timestamps is above any other token, sample timestamp
@@ -549,7 +591,9 @@ class ApplyTimestampRules(LogitFilter):
         for k in range(tokens.shape[0]):
             timestamp_logprob = logprobs[k, self.tokenizer.timestamp_begin :].logsumexp(
                 dim=-1
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             max_text_token_logprob = logprobs[k, : self.tokenizer.timestamp_begin].max()
             if timestamp_logprob > max_text_token_logprob:
                 logits[k, : self.tokenizer.timestamp_begin] = -np.inf
@@ -568,7 +612,9 @@ class DecodingTask:
         language = options.language or "en"
         tokenizer = get_tokenizer(
             model.is_multilingual, language = language, task = options.task
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.tokenizer: Tokenizer = tokenizer
         self.options: DecodingOptions = self._verify_options(options)
 
@@ -594,7 +640,9 @@ class DecodingTask:
         if options.beam_size is not None:
             self.decoder = BeamSearchDecoder(
                 options.beam_size, tokenizer.eot, self.inference, options.patience
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             self.decoder = GreedyDecoder(options.temperature, tokenizer.eot)
 
@@ -610,17 +658,23 @@ class DecodingTask:
             if options.max_initial_timestamp:
                 max_initial_timestamp_index = round(
                     self.options.max_initial_timestamp / precision
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             self.logit_filters.append(
                 ApplyTimestampRules(
                     tokenizer, self.sample_begin, max_initial_timestamp_index
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _verify_options(self, options: DecodingOptions) -> DecodingOptions:
         if options.beam_size is not None and options.best_of is not None:
-            raise ValueError("beam_size and best_of can't be given together")
+            raise ValueError("beam_size and best_of can't be given together")'
         if options.temperature == 0:
             if options.best_of is not None:
                 raise ValueError("best_of with greedy sampling (T = 0) is not compatible")
@@ -628,7 +682,8 @@ class DecodingTask:
             raise ValueError("patience requires beam_size to be given")
         if options.length_penalty is not None and not (
             0 <= options.length_penalty <= 1
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             raise ValueError("length_penalty (alpha) should be a value between 0 and 1")
 
         return options
@@ -644,7 +699,9 @@ class DecodingTask:
                 self.tokenizer.encode(" " + prefix.strip())
                 if isinstance(prefix, str)
                 else prefix
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if self.sample_len is not None:
                 max_prefix_len = self.n_ctx // 2 - self.sample_len
                 prefix_tokens = prefix_tokens[-max_prefix_len:]
@@ -655,12 +712,16 @@ class DecodingTask:
                 self.tokenizer.encode(" " + prompt.strip())
                 if isinstance(prompt, str)
                 else prompt
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             tokens = (
                 [self.tokenizer.sot_prev]
                 + prompt_tokens[-(self.n_ctx // 2 - 1) :]
                 + tokens
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return tuple(tokens)
 
@@ -681,7 +742,9 @@ class DecodingTask:
 
         suppress_tokens.extend(
             [self.tokenizer.sot, self.tokenizer.sot_prev, self.tokenizer.sot_lm]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if self.tokenizer.no_speech is not None:
             # no - speech probability is collected separately
             suppress_tokens.append(self.tokenizer.no_speech)
@@ -696,7 +759,8 @@ class DecodingTask:
         if mel.shape[-2:] == (
             self.model.dims.n_audio_ctx,
                 self.model.dims.n_audio_state,
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
             # encoded audio features are given; skip audio encoding
             audio_features = mel
         else:
@@ -708,10 +772,13 @@ class DecodingTask:
 
         if audio_features.dtype != (
             torch.float16 if self.options.fp16 else torch.float32
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return TypeError(
                 f"audio_features has an incorrect dtype: {audio_features.dtype}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if include_embeddings:
             return audio_features, embeddings
@@ -726,7 +793,9 @@ class DecodingTask:
         if self.options.language is None or self.options.task == "lang_id":
             lang_tokens, lang_probs = self.model.detect_language(
                 audio_features, self.tokenizer
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             languages = [max(probs, key = probs.get) for probs in lang_probs]
             if self.options.language is None:
                 tokens[:, self.sot_index + 1] = lang_tokens  # write language tokens
@@ -745,11 +814,14 @@ class DecodingTask:
             for i in range(self.sample_len):
                 logits, token_embeddings = self.inference.logits(
                     tokens, audio_features, include_embeddings = True
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if (
                     i == 0 and self.tokenizer.no_speech is not None
-                ):  # save no_speech_probs
+# BRACKET_SURGEON: disabled
+#                 ):  # save no_speech_probs
                     probs_at_sot = logits[:, self.sot_index].float().softmax(dim=-1)
                     no_speech_probs = probs_at_sot[:, self.tokenizer.no_speech].tolist()
 
@@ -788,7 +860,9 @@ class DecodingTask:
         # encoder forward pass
         forward_pass: Tuple[Tensor, np.ndarray] = self._get_audio_features(
             mel, include_embeddings = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         audio_features, encoder_embeddings = forward_pass
         tokens: Tensor = torch.tensor([self.initial_tokens]).repeat(n_audio, 1)
 
@@ -798,22 +872,32 @@ class DecodingTask:
             return [
                 DecodingResult(
                     audio_features = features, language = language, language_probs = probs
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 for features, language, probs in zip(
                     audio_features, languages, language_probs
-                )
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
         # repeat the audio & text tensors by the group size, for beam search \
-    or best - of - n sampling
+#     or best - of - n sampling
         audio_features = audio_features.repeat_interleave(self.n_group, dim = 0)
         tokens = tokens.repeat_interleave(self.n_group,
-    dim = 0).to(audio_features.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     dim = 0).to(audio_features.device)
 
         # call the main sampling loop
         tokens, sum_logprobs, no_speech_probs, decoder_embeddings = self._main_loop(
             audio_features, tokens
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # reshape the tensors to have (n_audio, n_group) as the first two dimensions
         audio_features = audio_features[:: self.n_group]
@@ -824,13 +908,15 @@ class DecodingTask:
         sum_logprobs = sum_logprobs.reshape(n_audio, self.n_group)
 
         # get the final candidates for each group, \
-    and slice between the first sampled token \
-    and EOT
+#     and slice between the first sampled token \
+#     and EOT
         tokens, sum_logprobs = self.decoder.finalize(tokens, sum_logprobs)
         tokens: List[List[Tensor]] = [
             [t[self.sample_begin : (t == tokenizer.eot).nonzero()[0, 0]] for t in s]
             for s in tokens
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         # select the top - ranked sample in each group
         selected = self.sequence_ranker.rank(tokens, sum_logprobs)
@@ -840,7 +926,9 @@ class DecodingTask:
         sum_logprobs: List[float] = [lp[i] for i, lp in zip(selected, sum_logprobs)]
         avg_logprobs: List[float] = [
             lp / (len(t) + 1) for t, lp in zip(tokens, sum_logprobs)
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         fields = (
             texts,
@@ -849,7 +937,9 @@ class DecodingTask:
                 audio_features,
                 avg_logprobs,
                 no_speech_probs,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         if len(set(map(len, fields))) != 1:
             raise RuntimeError(f"inconsistent result lengths: {list(map(len, fields))}")
 
@@ -865,11 +955,17 @@ class DecodingTask:
                     compression_ratio = compression_ratio(text),
                     encoder_embeddings = encoder_embeddings,
                     decoder_embeddings = decoder_embeddings,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             for text, language, tokens, features, avg_logprob, no_speech_prob in zip(
                 *fields
-            )
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
 @torch.no_grad()
 
@@ -877,7 +973,7 @@ class DecodingTask:
 def decode(
     model: "Whisper", mel: Tensor, options: DecodingOptions = DecodingOptions()
 ) -> Union[DecodingResult, List[DecodingResult]]:
-    """
+    """"""
     Performs decoding of 30 - second audio segment(s), provided as Mel spectrogram(s).
 
     Parameters
@@ -895,7 +991,7 @@ def decode(
     -------
         result: Union[DecodingResult, List[DecodingResult]]
         The result(s) of decoding contained in `DecodingResult` dataclass instance(s)
-    """
+    """"""
     single = mel.ndim == 2
     if single:
         mel = mel.unsqueeze(0)

@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Quality Metrics Dashboard
 Provides real - time quality tracking and visualization for AI benchmark compliance
-"""
+""""""
 
 import json
 import sqlite3
@@ -40,7 +40,8 @@ class QualityDashboard:
         self,
         db_path: str = "quality_metrics.db",
         benchmark_api_url: str = "http://localhost:5003",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.app = Flask(__name__, template_folder="templates", static_folder="static")
         CORS(self.app)
 
@@ -60,7 +61,7 @@ class QualityDashboard:
 
             # Quality records table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS quality_records (
                     id TEXT PRIMARY KEY,
                         content_hash TEXT NOT NULL,
@@ -72,22 +73,26 @@ class QualityDashboard:
                         recommendations TEXT NOT NULL,
                         timestamp DATETIME NOT NULL,
                         response_time_ms INTEGER NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Quality trends table for aggregated metrics
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS quality_trends (
                     date TEXT PRIMARY KEY,
                         total_validations INTEGER NOT NULL,
                         passed_validations INTEGER NOT NULL,
                         average_score REAL NOT NULL,
                         average_response_time REAL NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -123,7 +128,8 @@ class QualityDashboard:
                     return (
                         jsonify({"success": False, "error": "Content is required"}),
                         400,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Call benchmark API
                 benchmark_response = requests.post(
@@ -132,15 +138,18 @@ class QualityDashboard:
                         "content": content,
                         "type": content_type,
                         "providers": providers,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     timeout=30,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if benchmark_response.status_code != 200:
                     return (
                         jsonify({"success": False, "error": "Benchmark API error"}),
                         500,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 result = benchmark_response.json()
 
@@ -159,8 +168,10 @@ class QualityDashboard:
                         "passed_threshold": result["passed_threshold"],
                         "metrics": result["metrics"],
                         "recommendations": result["recommendations"],
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except requests.RequestException as e:
                 return (
@@ -168,10 +179,13 @@ class QualityDashboard:
                         {
                             "success": False,
                             "error": f"Benchmark service unavailable: {str(e)}",
-                        }
-                    ),
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     ),
                     503,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 return jsonify({"success": False, "error": str(e)}), 500
 
@@ -186,15 +200,17 @@ class QualityDashboard:
 
                     # Get recent records
                     cursor.execute(
-                        """
+                        """"""
                         SELECT * FROM quality_records
                         WHERE timestamp >= datetime('now', '-{} days')
                         ORDER BY timestamp DESC
                         LIMIT 100
-                    """.format(
+                    """.format("""
                             days
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     records = []
                     for row in cursor.fetchall():
@@ -210,12 +226,14 @@ class QualityDashboard:
                                 "recommendations": json.loads(row[7]),
                                 "timestamp": row[8],
                                 "response_time_ms": row[9],
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
 
                     # Get summary statistics
                     cursor.execute(
-                        """
+                        """"""
                         SELECT
                             COUNT(*) as total,
                                 SUM(CASE WHEN passed_threshold = 1 THEN 1 ELSE 0 END) as passed,
@@ -225,10 +243,12 @@ class QualityDashboard:
                                 MAX(consensus_score) as max_score
                         FROM quality_records
                         WHERE timestamp >= datetime('now', '-{} days')
-                    """.format(
+                    """.format("""
                             days
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     stats_row = cursor.fetchone()
                     stats = {
@@ -239,18 +259,21 @@ class QualityDashboard:
                         "average_response_time": round(stats_row[3] or 0, 2),
                         "min_score": stats_row[4] or 0,
                         "max_score": stats_row[5] or 0,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get trends data
                     cursor.execute(
-                        """
+                        """"""
                         SELECT * FROM quality_trends
                         WHERE date >= date('now', '-{} days')
                         ORDER BY date DESC
-                    """.format(
+                    """.format("""
                             days
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     trends = []
                     for row in cursor.fetchall():
@@ -261,8 +284,10 @@ class QualityDashboard:
                                 "passed_validations": row[2],
                                 "average_score": row[3],
                                 "average_response_time": row[4],
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
 
                 return jsonify(
                     {
@@ -270,8 +295,10 @@ class QualityDashboard:
                         "records": records,
                         "statistics": stats,
                         "trends": trends,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 return jsonify({"success": False, "error": str(e)}), 500
@@ -282,7 +309,8 @@ class QualityDashboard:
             try:
                 response = requests.get(
                     f"{self.benchmark_api_url}/api / benchmark / providers", timeout=10
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if response.status_code == 200:
                     return jsonify(response.json())
@@ -290,13 +318,15 @@ class QualityDashboard:
                     return (
                         jsonify({"success": False, "error": "Provider status unavailable"}),
                         503,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             except requests.RequestException:
                 return (
                     jsonify({"success": False, "error": "Benchmark service unavailable"}),
                     503,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         @self.app.route("/api / quality / export", methods=["GET"])
         def export_quality_data():
@@ -308,14 +338,16 @@ class QualityDashboard:
                     cursor = conn.cursor()
 
                     cursor.execute(
-                        """
+                        """"""
                         SELECT * FROM quality_records
                         WHERE timestamp >= datetime('now', '-{} days')
                         ORDER BY timestamp DESC
-                    """.format(
+                    """.format("""
                             days
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     records = []
                     for row in cursor.fetchall():
@@ -331,8 +363,10 @@ class QualityDashboard:
                                 "recommendations": json.loads(row[7]),
                                 "timestamp": row[8],
                                 "response_time_ms": row[9],
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
 
                 return jsonify(
                     {
@@ -340,15 +374,18 @@ class QualityDashboard:
                         "export_date": datetime.now().isoformat(),
                         "records_count": len(records),
                         "records": records,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 return jsonify({"success": False, "error": str(e)}), 500
 
     def _store_quality_record(
         self, content: str, content_type: str, result: Dict[str, Any]
-    ) -> QualityRecord:
+# BRACKET_SURGEON: disabled
+#     ) -> QualityRecord:
         """Store quality validation record in database"""
 
         import hashlib
@@ -365,7 +402,8 @@ class QualityDashboard:
                 "professionalism": metric["professionalism"],
                 "overall_score": metric["overall_score"],
                 "response_time_ms": metric["response_time_ms"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         record = QualityRecord(
             id=record_id,
@@ -378,19 +416,20 @@ class QualityDashboard:
             recommendations=result["recommendations"],
             timestamp=datetime.now(),
             response_time_ms=sum(m["response_time_ms"] for m in result.get("metrics", [])),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         with self._get_db_connection() as conn:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO quality_records (
                     id, content_hash, content_type, validation_id,
                         consensus_score, passed_threshold, provider_scores,
                         recommendations, timestamp, response_time_ms
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     record.id,
                     record.content_hash,
@@ -402,8 +441,10 @@ class QualityDashboard:
                     json.dumps(record.recommendations),
                     record.timestamp.isoformat(),
                     record.response_time_ms,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -418,7 +459,7 @@ class QualityDashboard:
 
             # Get today's statistics
             cursor.execute(
-                """
+                """"""
                 SELECT
                     COUNT(*) as total,
                         SUM(CASE WHEN passed_threshold = 1 THEN 1 ELSE 0 END) as passed,
@@ -426,28 +467,31 @@ class QualityDashboard:
                         AVG(response_time_ms) as avg_response_time
                 FROM quality_records
                 WHERE date(timestamp) = ?
-            """,
+            ""","""
                 (today,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             row = cursor.fetchone()
             if row and row[0] > 0:
                 # Insert or update trend record
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO quality_trends (
                         date, total_validations, passed_validations,
                             average_score, average_response_time
                     ) VALUES (?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         today,
                         row[0],
                         row[1] or 0,
                         round(row[2] or 0, 2),
                         round(row[3] or 0, 2),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
 

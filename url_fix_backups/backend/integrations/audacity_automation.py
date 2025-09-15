@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Audacity Automation Integration
 
 Provides comprehensive automation for Audacity audio editing and podcast production.
@@ -19,7 +19,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -53,7 +53,9 @@ except ImportError:
     AUDIO_LIBS_AVAILABLE = False
     print(
         "Warning: Audio processing libraries not available. Install with: pip install librosa soundfile numpy"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 # Add project root to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -146,10 +148,10 @@ class PodcastEpisode:
 
 
 class AudacityAutomation:
-    """
+    """"""
     Comprehensive Audacity automation system for audio editing and podcast production.
     Integrates with TRAE.AI content pipeline for automated audio processing.
-    """
+    """"""
 
 
     def __init__(self, secrets_db_path: str = "data / secrets.sqlite"):
@@ -192,19 +194,25 @@ class AudacityAutomation:
                 "/Applications / Audacity.app / Contents / MacOS / Audacity",
                     "/usr / local / bin / audacity",
                     "/opt / homebrew / bin / audacity",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
         elif system == "windows":
             possible_paths = [
                 "C:\\\\Program Files\\\\Audacity\\\\Audacity.exe",
                     "C:\\\\Program Files (x86)\\\\Audacity\\\\Audacity.exe",
                     "audacity.exe",  # If in PATH
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         else:  # Linux
             possible_paths = [
                 "/usr / bin / audacity",
                     "/usr / local / bin / audacity",
                     "audacity",  # If in PATH
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
         for path in possible_paths:
             if os.path.exists(path) or shutil.which(path):
@@ -237,35 +245,44 @@ class AudacityAutomation:
                         "ratio": 3.0,
                         "attack": 0.2,
                         "release": 1.0,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "eq": {
                     "high_pass": 80,
                         "low_pass": 15000,
                         "presence_boost": {"freq": 3000, "gain": 2.0},
-                        },
-                    },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
                 "music_master": {
                 "normalize": {"peak_level": -1.0},
                     "limiter": {"threshold": -2.0, "release": 10},
                     "eq": {
                     "low_shelf": {"freq": 100, "gain": 1.0},
                         "high_shelf": {"freq": 10000, "gain": 0.5},
-                        },
-                    },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
                 "noise_reduction": {
                 "noise_reduction": {
                     "sensitivity": 6.0,
                         "frequency_smoothing": 0,
                         "attack_decay_time": 0.15,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "click_removal": {"threshold": 200, "width": 20},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "voice_enhancement": {
                 "de_esser": {"threshold": -20, "frequency": 6000},
                     "warmth": {"freq": 200, "gain": 1.5},
                     "clarity": {"freq": 5000, "gain": 2.0},
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def initialize(self) -> bool:
@@ -280,7 +297,9 @@ class AudacityAutomation:
             if not AUDIO_LIBS_AVAILABLE:
                 self.logger.warning(
                     "Audio processing libraries not available. Some features may be limited."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Test Audacity scripting
             if await self._test_audacity_scripting():
@@ -288,7 +307,9 @@ class AudacityAutomation:
             else:
                 self.logger.warning(
                     "Audacity scripting not available. Enable mod - script - pipe in Audacity."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Load credentials
             await self._load_credentials()
@@ -348,7 +369,9 @@ class AudacityAutomation:
                         win32file.OPEN_EXISTING,
                         0,
                         None,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 # Unix domain socket or FIFO
                 if os.path.exists(self.pipe_path):
@@ -420,7 +443,9 @@ class AudacityAutomation:
                     format = AudioFormat(path.suffix.lower().lstrip(".")),
                     size_bytes = stat.st_size,
                     created_at = datetime.fromtimestamp(stat.st_ctime).isoformat(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Use librosa for detailed analysis if available
             if AUDIO_LIBS_AVAILABLE:
@@ -435,12 +460,15 @@ class AudacityAutomation:
                         "rms_energy": float(np.sqrt(np.mean(y**2))),
                             "zero_crossing_rate": float(
                             np.mean(librosa.feature.zero_crossing_rate(y))
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             "spectral_centroid": float(
                             np.mean(librosa.feature.spectral_centroid(y = y, sr = sr))
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             "tempo": float(librosa.beat.tempo(y = y, sr = sr)[0]),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                 except Exception as e:
                     self.logger.warning(f"Detailed audio analysis failed: {e}")
@@ -459,7 +487,8 @@ class AudacityAutomation:
             operations: List[Dict[str, Any]],
             quality: ProcessingQuality = ProcessingQuality.STANDARD,
             priority: int = 5,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Create a new audio processing task."""
         task_id = str(uuid.uuid4())
 
@@ -471,7 +500,9 @@ class AudacityAutomation:
                 quality = quality,
                 priority = priority,
                 created_at = datetime.now().isoformat(),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Add to queue (sorted by priority)
         self.processing_queue.append(task)
@@ -520,7 +551,9 @@ class AudacityAutomation:
             for i, operation in enumerate(task.operations):
                 self.logger.info(
                     f"Processing operation {i + 1}/{len(task.operations)}: {operation.get('type')}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Update progress
                 task.progress = (i / len(task.operations)) * 100
@@ -554,7 +587,8 @@ class AudacityAutomation:
                     datetime.fromisoformat(task.completed_at)
                     - datetime.fromisoformat(task.started_at)
                 ).total_seconds(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             task.status = "failed"
@@ -627,6 +661,7 @@ class AudacityAutomation:
                     self.logger.error(f"Normalization failed: {e}")
                     output_files.append(input_file)  # Return original on error
                         else:
+                            pass
                 # Fallback: copy original file
                 shutil.copy2(input_file, output_file)
                 output_files.append(output_file)
@@ -709,7 +744,9 @@ class AudacityAutomation:
                     y_compressed[above_threshold] = np.sign(y[above_threshold]) * (
                         threshold_linear
                         + (np.abs(y[above_threshold]) - threshold_linear) / ratio
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     sf.write(output_file, y_compressed, sr)
                     output_files.append(output_file)
@@ -918,24 +955,33 @@ class AudacityAutomation:
                     {
                     "type": "noise_reduction",
                         "params": {"level": NoiseReductionLevel.MODERATE},
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {"type": "compress", "params": {"threshold": -12.0, "ratio": 3.0}},
                     {"type": "merge", "params": {}},
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             # Add fade effects
             if len(input_files) > 1:
                 operations.append(
                     {"type": "fade", "params": {"fade_in": 0.5, "fade_out": 1.0}}
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Generate output path
             safe_title = "".join(
                 c for c in episode.title if c.isalnum() or c in (" ", "-", "_")
-            ).rstrip()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).rstrip()
             output_path = str(
                 self.temp_dir / f"{safe_title}.{episode.output_format.value}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Create processing task
             task_id = await self.create_processing_task(
@@ -944,7 +990,9 @@ class AudacityAutomation:
                     operations = operations,
                     quality = episode.quality,
                     priority = 8,  # High priority for podcast production
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Process the task
             task = next((t for t in self.processing_queue if t.id == task_id), None)
@@ -1005,7 +1053,9 @@ class AudacityAutomation:
                         output_path = str(output_file),
                         operations = operations,
                         quality = ProcessingQuality.HIGH,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 task = next((t for t in self.processing_queue if t.id == task_id), None)
                 if task:
@@ -1018,7 +1068,8 @@ class AudacityAutomation:
                 "processed_files": len(tasks),
                     "results": results,
                     "output_directory": str(output_path),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Batch processing error: {e}")
@@ -1037,7 +1088,8 @@ class AudacityAutomation:
                     "created_at": task.created_at,
                     "started_at": task.started_at,
                     "error": task.error,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Check queue
         for task in self.processing_queue:
@@ -1048,7 +1100,8 @@ class AudacityAutomation:
                         "progress": task.progress,
                         "created_at": task.created_at,
                         "position_in_queue": self.processing_queue.index(task),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         return None
 
@@ -1059,28 +1112,32 @@ class AudacityAutomation:
             "status": "healthy",
                 "timestamp": datetime.now().isoformat(),
                 "components": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Check Audacity availability
         health["components"]["audacity"] = {
             "available": bool(self.audacity_path),
                 "path": self.audacity_path,
                 "scripting": await self._test_audacity_scripting(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Check audio libraries
         health["components"]["audio_libs"] = {
             "available": AUDIO_LIBS_AVAILABLE,
                 "librosa": "librosa" in sys.modules,
                 "soundfile": "soundfile" in sys.modules,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Check processing status
         health["components"]["processing"] = {
             "active_tasks": len(self.active_tasks),
                 "queued_tasks": len(self.processing_queue),
                 "max_workers": self.max_workers,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Overall status
         if not health["components"]["audacity"]["available"]:

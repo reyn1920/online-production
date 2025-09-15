@@ -14,9 +14,9 @@ from torch.cuda.amp import GradScaler
 
 
 class _MultiDeviceReplicator(object):
-    """
+    """"""
     Lazily serves copies of a tensor to requested devices.  Copies are cached per - device.
-    """
+    """"""
 
 
     def __init__(self, master_tensor: torch.Tensor) -> None:
@@ -39,7 +39,9 @@ class MaxClipGradScaler(GradScaler):
     def __init__(self, init_scale, max_scale: float, growth_interval = 100):
         GradScaler.__init__(
             self, init_scale = init_scale, growth_interval = growth_interval
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.max_scale = max_scale
 
 
@@ -54,7 +56,7 @@ class MaxClipGradScaler(GradScaler):
 
 
     def scale(self, outputs):
-        """
+        """"""
         Multiplies ('scales') a tensor or list of tensors by the scale factor.
 
         Returns scaled outputs.  If this instance of :class:`GradScaler` is not enabled, outputs are returned
@@ -62,7 +64,7 @@ class MaxClipGradScaler(GradScaler):
 
         Arguments:
             outputs (Tensor or iterable of Tensors):  Outputs to scale.
-        """
+        """"""
         if not self._enabled:
             return outputs
         self.scale_clip()
@@ -73,12 +75,15 @@ class MaxClipGradScaler(GradScaler):
                 self._lazy_init_scale_growth_tracker(outputs.device)
             assert self._scale is not None
             return outputs * self._scale.to(device = outputs.device,
-    non_blocking = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     non_blocking = True)
 
         # Invoke the more complex machinery only if we're treating multiple outputs.
         stash: List[_MultiDeviceReplicator] = (
             []
-        )  # holds a reference that can be overwritten by apply_scale
+# BRACKET_SURGEON: disabled
+#         )  # holds a reference that can be overwritten by apply_scale
 
 
         def apply_scale(val):

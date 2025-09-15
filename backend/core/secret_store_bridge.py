@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 """
+
+
+
 SecretStore Bridge - Enhanced version with CLI integration and env fallback
 Provides secure credential management for TRAE.AI system
-"""
+
+""""""
+
+
+
 
 import json
 import logging
@@ -15,20 +22,24 @@ logger = logging.getLogger(__name__)
 
 
 class SecretStoreBridge:
-    """Bridge to SecretStore CLI with environment variable fallback"""
-
+    """
+    Bridge to SecretStore CLI with environment variable fallback
+    """
+    
     def __init__(self, cli_path: Optional[str] = None):
         self.cli_path = cli_path or self._find_cli()
         self.available = self._check_availability()
 
     def _find_cli(self) -> Optional[str]:
-        """Find SecretStore CLI in common locations"""
+        """
+        Find SecretStore CLI in common locations
+        """
         possible_paths = [
             "./scripts/secrets_cli.py",
             "/usr/local/bin/secrets_cli",
             "~/.local/bin/secrets_cli",
             "secrets_cli",
-        ]
+         ]
 
         for path in possible_paths:
             expanded_path = Path(path).expanduser()
@@ -39,7 +50,7 @@ class SecretStoreBridge:
         try:
             result = subprocess.run(
                 ["which", "secrets_cli"], capture_output=True, text=True, timeout=5
-            )
+             )
             if result.returncode == 0:
                 return result.stdout.strip()
         except (subprocess.TimeoutExpired, FileNotFoundError):
@@ -59,7 +70,7 @@ class SecretStoreBridge:
                 capture_output=True,
                 text=True,
                 timeout=10,
-            )
+             )
             if result.returncode == 0:
                 logger.info(f"SecretStore CLI available at {self.cli_path}")
                 return True
@@ -69,16 +80,34 @@ class SecretStoreBridge:
         return False
 
     def get_secret(self, key: str, default: Optional[str] = None) -> Optional[str]:
-        """Get secret from SecretStore CLI or environment variable"""
+        """
+Get secret from SecretStore CLI or environment variable
+
+       
+""""""
+
         # First try SecretStore CLI if available
+       
+
+        
+       
+"""
         if self.available:
             try:
+       """
+
+        
+       
+
+        # First try SecretStore CLI if available
+       
+""""""
                 result = subprocess.run(
                     ["python3", self.cli_path, "get", key],
                     capture_output=True,
                     text=True,
                     timeout=30,
-                )
+                 )
                 if result.returncode == 0:
                     secret = result.stdout.strip()
                     if secret:
@@ -108,7 +137,7 @@ class SecretStoreBridge:
                 capture_output=True,
                 text=True,
                 timeout=30,
-            )
+             )
             if result.returncode == 0:
                 logger.info(f"Secret '{key}' set successfully")
                 return True
@@ -125,7 +154,7 @@ class SecretStoreBridge:
             "cli_available": self.available,
             "cli_path": self.cli_path,
             "keys": [],
-        }
+         }
 
         if self.available:
             try:
@@ -134,7 +163,7 @@ class SecretStoreBridge:
                     capture_output=True,
                     text=True,
                     timeout=30,
-                )
+                 )
                 if result.returncode == 0:
                     output = result.stdout.strip()
                     if output:
@@ -149,8 +178,8 @@ class SecretStoreBridge:
             if any(
                 pattern in key.upper()
                 for pattern in ["API_KEY", "SECRET", "TOKEN", "PASSWORD", "CREDENTIAL"]
-            )
-        ]
+             )
+         ]
         secrets_info["env_keys"] = env_secrets
 
         return secrets_info
@@ -177,8 +206,8 @@ class SecretStoreBridge:
             "davinci_resolve_path": self.get_secret("DAVINCI_RESOLVE_PATH"),
             "blender_path": self.get_secret(
                 "BLENDER_PATH", "/Applications/Blender.app/Contents/MacOS/Blender"
-            ),
-        }
+             ),
+         }
 
         return credentials
 
@@ -199,28 +228,103 @@ _secret_store = None
 
 
 def get_secret_store() -> SecretStoreBridge:
-    """Get global SecretStore instance"""
+    """
+Get global SecretStore instance
+
+   
+""""""
+
     global _secret_store
+   
+
+    
+   
+"""
     if _secret_store is None:
+   """
+
+    
+   
+
+    global _secret_store
+   
+""""""
+
         _secret_store = SecretStoreBridge()
+    
+
+    return _secret_store
+    
+""""""
+
+    
+   
+
+    
+"""
+
     return _secret_store
 
-
+    """"""
 def get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
-    """Convenience function to get a secret"""
+    """
+Convenience function to get a secret
+
+    
+"""
+    return get_secret_store().get_secret(key, default)
+    """"""
+    """
+
+
     return get_secret_store().get_secret(key, default)
 
+    
+
+   
+""""""
 
 def get_database_url() -> str:
-    """Convenience function to get database URL"""
+        """
+        Convenience function to get database URL
+        """"""
+
+    return get_secret_store().get_database_url()
+    
+
+   
+""""""
+
+    
+
+
     return get_secret_store().get_database_url()
 
+    
+""""""
+
+    
+   
 
 def get_api_credentials() -> Dict[str, Optional[str]]:
-    """Convenience function to get API credentials"""
+    
+"""Convenience function to get API credentials"""
+
+    
+
+    return get_secret_store().get_api_credentials()
+    
+""""""
+
+    
+   
+
+    
+"""
+
     return get_secret_store().get_api_credentials()
 
-
+    """"""
 if __name__ == "__main__":
     # Test the bridge
     bridge = SecretStoreBridge()

@@ -21,7 +21,8 @@ __all__ = [
     "SynchronizedBatchNorm1d",
         "SynchronizedBatchNorm2d",
         "SynchronizedBatchNorm3d",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 
 def _sum_ft(tensor):
@@ -43,7 +44,8 @@ class _SynchronizedBatchNorm(_BatchNorm):
     def __init__(self, num_features, eps = 1e-5, momentum = 0.1, affine = True):
         super(_SynchronizedBatchNorm, self).__init__(
             num_features, eps = eps, momentum = momentum, affine = affine
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self._sync_master = SyncMaster(self._data_parallel_master)
 
@@ -54,7 +56,7 @@ class _SynchronizedBatchNorm(_BatchNorm):
 
     def forward(self, input):
         # If it is not parallel computation \
-    or is in evaluation mode, use PyTorch's implementation.
+#     or is in evaluation mode, use PyTorch's implementation.
         if not (self._is_parallel and self.training):
             return F.batch_norm(
                 input,
@@ -65,7 +67,8 @@ class _SynchronizedBatchNorm(_BatchNorm):
                     self.training,
                     self.momentum,
                     self.eps,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         # Resize the input to (B, C, -1).
         input_shape = input.size()
@@ -80,11 +83,13 @@ class _SynchronizedBatchNorm(_BatchNorm):
         if self._parallel_id == 0:
             mean, inv_std = self._sync_master.run_master(
                 _ChildMessage(input_sum, input_ssum, sum_size)
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             mean, inv_std = self._slave_pipe.run_slave(
                 _ChildMessage(input_sum, input_ssum, sum_size)
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Compute the output.
         if self.affine:
@@ -135,13 +140,14 @@ class _SynchronizedBatchNorm(_BatchNorm):
 
 
     def _compute_mean_std(self, sum_, ssum, size):
-        """Compute the mean \
-    and standard - deviation with sum \
-    and square - sum. This method
-        also maintains the moving average on the master device."""
+        """Compute the mean \"""
+#     and standard - deviation with sum \
+#     and square - sum. This method
+        also maintains the moving average on the master device.""""""
         assert (
             size > 1
-        ), "BatchNorm computes unbiased standard - deviation, which requires size > 1."
+# BRACKET_SURGEON: disabled
+#         ), "BatchNorm computes unbiased standard - deviation, which requires size > 1."
         mean = sum_ / size
         sumvar = ssum - sum_ * mean
         unbias_var = sumvar / (size - 1)
@@ -149,16 +155,18 @@ class _SynchronizedBatchNorm(_BatchNorm):
 
         self.running_mean = (
             1 - self.momentum
-        ) * self.running_mean + self.momentum * mean.data
+# BRACKET_SURGEON: disabled
+#         ) * self.running_mean + self.momentum * mean.data
         self.running_var = (
             1 - self.momentum
-        ) * self.running_var + self.momentum * unbias_var.data
+# BRACKET_SURGEON: disabled
+#         ) * self.running_var + self.momentum * unbias_var.data
 
         return mean, bias_var.clamp(self.eps) ** -0.5
 
 
 class SynchronizedBatchNorm1d(_SynchronizedBatchNorm):
-    r"""Applies Synchronized Batch Normalization over a 2d or 3d input that is seen as a
+    r"""Applies Synchronized Batch Normalization over a 2d or 3d input that is seen as a"""
     mini - batch.
 
     .. math::
@@ -169,7 +177,7 @@ class SynchronizedBatchNorm1d(_SynchronizedBatchNorm):
         standard - deviation are reduced across all devices during training.
 
     For example, when one uses `nn.DataParallel` to wrap the network during
-    training, PyTorch's implementation normalize the tensor on each device using
+    training, PyTorch's implementation normalize the tensor on each device using'
     the statistics only on that device, which accelerated the computation and
         is also easy to implement, but the statistics might be inaccurate.
     Instead, in this synchronized version, the statistics will be computed
@@ -188,7 +196,7 @@ class SynchronizedBatchNorm1d(_SynchronizedBatchNorm):
     During evaluation, this running mean / variance is used for normalization.
 
     Because the BatchNorm is done over the `C` dimension, computing statistics
-    on `(N, L)` slices, it's common terminology to call this Temporal BatchNorm
+    on `(N, L)` slices, it's common terminology to call this Temporal BatchNorm'
 
     Args:
         num_features: num_features from an expected input of size
@@ -211,19 +219,20 @@ class SynchronizedBatchNorm1d(_SynchronizedBatchNorm):
         >>> m = SynchronizedBatchNorm1d(100, affine = False)
         >>> input = torch.autograd.Variable(torch.randn(20, 100))
         >>> output = m(input)
-    """
+    """"""
 
 
     def _check_input_dim(self, input):
         if input.dim() != 2 and input.dim() != 3:
             raise ValueError(
                 "expected 2D or 3D input (got {}D input)".format(input.dim())
-            )
+# BRACKET_SURGEON: disabled
+#             )
         super(SynchronizedBatchNorm1d, self)._check_input_dim(input)
 
 
 class SynchronizedBatchNorm2d(_SynchronizedBatchNorm):
-    r"""Applies Batch Normalization over a 4d input that is seen as a mini - batch
+    r"""Applies Batch Normalization over a 4d input that is seen as a mini - batch"""
     of 3d inputs
 
     .. math::
@@ -234,7 +243,7 @@ class SynchronizedBatchNorm2d(_SynchronizedBatchNorm):
         standard - deviation are reduced across all devices during training.
 
     For example, when one uses `nn.DataParallel` to wrap the network during
-    training, PyTorch's implementation normalize the tensor on each device using
+    training, PyTorch's implementation normalize the tensor on each device using'
     the statistics only on that device, which accelerated the computation and
         is also easy to implement, but the statistics might be inaccurate.
     Instead, in this synchronized version, the statistics will be computed
@@ -253,7 +262,7 @@ class SynchronizedBatchNorm2d(_SynchronizedBatchNorm):
     During evaluation, this running mean / variance is used for normalization.
 
     Because the BatchNorm is done over the `C` dimension, computing statistics
-    on `(N, H, W)` slices, it's common terminology to call this Spatial BatchNorm
+    on `(N, H, W)` slices, it's common terminology to call this Spatial BatchNorm'
 
     Args:
         num_features: num_features from an expected input of
@@ -276,7 +285,7 @@ class SynchronizedBatchNorm2d(_SynchronizedBatchNorm):
         >>> m = SynchronizedBatchNorm2d(100, affine = False)
         >>> input = torch.autograd.Variable(torch.randn(20, 100, 35, 45))
         >>> output = m(input)
-    """
+    """"""
 
 
     def _check_input_dim(self, input):
@@ -286,7 +295,7 @@ class SynchronizedBatchNorm2d(_SynchronizedBatchNorm):
 
 
 class SynchronizedBatchNorm3d(_SynchronizedBatchNorm):
-    r"""Applies Batch Normalization over a 5d input that is seen as a mini - batch
+    r"""Applies Batch Normalization over a 5d input that is seen as a mini - batch"""
     of 4d inputs
 
     .. math::
@@ -297,7 +306,7 @@ class SynchronizedBatchNorm3d(_SynchronizedBatchNorm):
         standard - deviation are reduced across all devices during training.
 
     For example, when one uses `nn.DataParallel` to wrap the network during
-    training, PyTorch's implementation normalize the tensor on each device using
+    training, PyTorch's implementation normalize the tensor on each device using'
     the statistics only on that device, which accelerated the computation and
         is also easy to implement, but the statistics might be inaccurate.
     Instead, in this synchronized version, the statistics will be computed
@@ -316,7 +325,7 @@ class SynchronizedBatchNorm3d(_SynchronizedBatchNorm):
     During evaluation, this running mean / variance is used for normalization.
 
     Because the BatchNorm is done over the `C` dimension, computing statistics
-    on `(N, D, H, W)` slices, it's common terminology to call this Volumetric BatchNorm
+    on `(N, D, H, W)` slices, it's common terminology to call this Volumetric BatchNorm'
     or Spatio - temporal BatchNorm
 
     Args:
@@ -340,7 +349,7 @@ class SynchronizedBatchNorm3d(_SynchronizedBatchNorm):
         >>> m = SynchronizedBatchNorm3d(100, affine = False)
         >>> input = torch.autograd.Variable(torch.randn(20, 100, 35, 45, 10))
         >>> output = m(input)
-    """
+    """"""
 
 
     def _check_input_dim(self, input):

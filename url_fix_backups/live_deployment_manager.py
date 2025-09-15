@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 Live Deployment Manager
 Manages the complete go - live process for the production environment.
 Follows the LIVE_ENVIRONMENT_RULES.md guidelines.
-"""
+""""""
 
 import os
 import sys
@@ -28,7 +28,8 @@ class LiveDeploymentManager:
             "action": action,
             "status": status,
             "details": details,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.deployment_log.append(log_entry)
         print(f"[{timestamp}] {status}: {action}")
         if details:
@@ -95,17 +96,19 @@ class LiveDeploymentManager:
                     ".",
                     "--exclude - dir = node_modules",
                     "--exclude - dir=.git",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 capture_output=True,
                 text=True,
                 cwd=self.project_root,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode == 0 and result.stdout:
                 # Filter out .env files and comments
                 suspicious_lines = []
                 for line in result.stdout.split("\\n"):
-                    if line and not line.startswith(".env") and not line.strip().startswith("#"):
+                    if line and not line.startswith(".env") and not line.strip().startswith("#"):"
                         suspicious_lines.append(line)
 
                 if suspicious_lines:
@@ -113,7 +116,8 @@ class LiveDeploymentManager:
                         "Potential hardcoded secrets found",
                         "WARNING",
                         suspicious_lines[:5],
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         except Exception as e:
             self.log_action(f"Security check failed: {e}", "WARNING")
@@ -133,7 +137,8 @@ class LiveDeploymentManager:
                 capture_output=True,
                 text=True,
                 cwd=self.project_root,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode != 0:
                 self.log_action("Dependency installation failed", "ERROR", result.stderr)
@@ -146,7 +151,8 @@ class LiveDeploymentManager:
                 capture_output=True,
                 text=True,
                 cwd=self.project_root,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode != 0:
                 self.log_action("Build failed", "ERROR", result.stderr)
@@ -176,7 +182,8 @@ class LiveDeploymentManager:
                         capture_output=True,
                         text=True,
                         cwd=self.project_root,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if result.returncode != 0:
                         self.log_action("Tests failed", "ERROR", result.stderr)
@@ -204,7 +211,8 @@ class LiveDeploymentManager:
                 self.log_action(
                     "Netlify CLI not found. Install with: npm install -g netlify - cli",
                     "ERROR",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return False
 
             # Deploy to Netlify
@@ -214,7 +222,8 @@ class LiveDeploymentManager:
                 capture_output=True,
                 text=True,
                 cwd=self.project_root,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode != 0:
                 self.log_action("Netlify deployment failed", "ERROR", result.stderr)
@@ -266,8 +275,10 @@ class LiveDeploymentManager:
                 "node_env": os.getenv("NODE_ENV"),
                 "python_version": sys.version,
                 "working_directory": str(self.project_root),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         report_filename = f"deployment_report_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
         report_path = self.project_root / report_filename

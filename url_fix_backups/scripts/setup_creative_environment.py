@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Creative Environment Setup Script
 
 This script creates and manages an isolated Python virtual environment
@@ -12,7 +12,7 @@ Usage:
 Options:
     --force: Force recreation of the environment even if it exists
     --update: Update existing environment with new dependencies
-"""
+""""""
 
 import argparse
 import logging
@@ -26,7 +26,9 @@ from typing import List, Optional
 # Setup logging
 logging.basicConfig(
     level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -61,7 +63,9 @@ class CreativeEnvironmentManager:
                 [sys.executable, "-m", "venv", "--help"],
                     capture_output = True,
                     check = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except subprocess.CalledProcessError:
             logger.error("Python venv module is not available")
             return False
@@ -75,9 +79,12 @@ class CreativeEnvironmentManager:
         if self.creative_env_path.exists():
             if not force:
                 logger.info(
-                    f"Creative environment already exists at {
-                        self.creative_env_path}"
-                )
+                    f"Creative environment already exists at {"
+# BRACKET_SURGEON: disabled
+#                         self.creative_env_path}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return True
             else:
                 logger.info("Removing existing creative environment...")
@@ -95,9 +102,13 @@ class CreativeEnvironmentManager:
                         str(self.creative_env_path),
                         "--prompt",
                         "creative - pipeline",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     check = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             logger.info("Creative environment created successfully")
             return True
@@ -132,7 +143,9 @@ class CreativeEnvironmentManager:
         try:
             # Upgrade pip first
             subprocess.run([pip_executable, "install", "--upgrade", "pip"],
-    check = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     check = True)
 
             # Install wheel for better package compilation
             subprocess.run([pip_executable, "install", "wheel"], check = True)
@@ -141,7 +154,9 @@ class CreativeEnvironmentManager:
             subprocess.run(
                 [pip_executable, "install", "-r", str(self.requirements_file)],
                     check = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             logger.info("Creative dependencies installed successfully")
             return True
@@ -155,7 +170,7 @@ class CreativeEnvironmentManager:
         """Create a convenient activation script."""
         logger.info("Creating activation script...")
 
-        script_content = f"""#!/bin / bash
+        script_content = f"""#!/bin / bash"""
 # Creative Environment Activation Script
 # This script activates the isolated creative environment
 
@@ -169,7 +184,7 @@ echo "  - AI model libraries"
 echo "  - Video / Audio processing tools"
 echo ""
 echo "To deactivate, run: deactivate"
-"""
+""""""
 
         script_path = self.project_root / "activate_creative.sh"
 
@@ -190,7 +205,7 @@ echo "To deactivate, run: deactivate"
 
     def create_environment_info(self) -> bool:
         """Create environment information file."""
-        info_content = f"""# Creative Environment Information
+        info_content = f"""# Creative Environment Information"""
 
 This directory contains an isolated Python virtual environment specifically
 for creative tools and AI models used in the TRAE.AI pipeline.
@@ -228,7 +243,7 @@ python scripts / setup_creative_environment.py --update
 {self.requirements_file}
 
 ## Created: {subprocess.check_output(['date']).decode().strip()}
-"""
+""""""
 
         info_path = self.creative_env_path / "ENVIRONMENT_INFO.md"
 
@@ -256,11 +271,13 @@ python scripts / setup_creative_environment.py --update
             with open(self.requirements_file, "r") as f:
                 for line in f:
                     line = line.strip()
-                    if line and not line.startswith("#"):
+                    if line and not line.startswith("#"):"
                         # Extract package name (before any version specifiers)
                         package_name = (
                             line.split(">=")[0].split("==")[0].split("<")[0].strip()
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         if package_name:
                             # Map common package names to import names
                             import_name = {
@@ -287,11 +304,15 @@ python scripts / setup_creative_environment.py --update
                         python_executable,
                             "-c",
                             f"import {import_name}; print(f'{package_name} imported successfully')",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         capture_output = True,
                         text = True,
                         check = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 logger.info(f"✓ {package_name}: {result.stdout.strip()}")
 
@@ -320,7 +341,8 @@ python scripts / setup_creative_environment.py --update
                 "path": str(self.creative_env_path),
                 "requirements_file": str(self.requirements_file),
                 "requirements_exists": self.requirements_file.exists(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         if status["exists"]:
             python_executable = self.get_python_executable()
@@ -331,7 +353,9 @@ python scripts / setup_creative_environment.py --update
                         capture_output = True,
                         text = True,
                         check = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 status["python_version"] = result.stdout.strip()
 
                 # Get installed packages count
@@ -340,7 +364,9 @@ python scripts / setup_creative_environment.py --update
                         capture_output = True,
                         text = True,
                         check = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 status["installed_packages"] = len(result.stdout.strip().split("\\n"))
 
             except subprocess.CalledProcessError:
@@ -352,7 +378,8 @@ python scripts / setup_creative_environment.py --update
 
     def setup_complete_environment(
         self, force: bool = False, update: bool = False
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Complete setup process for the creative environment."""
         logger.info("Starting creative environment setup...")
 
@@ -388,13 +415,19 @@ def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
         description="Setup isolated creative environment for TRAE.AI"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--force", action="store_true", help="Force recreation of environment"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--update", action="store_true", help="Update existing environment"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--status", action="store_true", help="Show environment status")
 
     args = parser.parse_args()
@@ -416,7 +449,9 @@ def main():
         return
 
     success = manager.setup_complete_environment(force = args.force,
-    update = args.update)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     update = args.update)
 
     if success:
         print("\\n🎉 Creative environment setup completed successfully!")
@@ -424,10 +459,14 @@ def main():
         print("1. Activate the environment: ./activate_creative.sh")
         print(
             "2. Test creative tools: python -c 'import torch; print(torch.__version__)'"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(
             "3. Update self_repair_agent.py to use this environment for creative tasks"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         sys.exit(0)
     else:
         print("\\n❌ Creative environment setup failed. Check logs above.")

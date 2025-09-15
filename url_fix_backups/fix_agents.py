@@ -56,17 +56,23 @@ def patch_right_perspective_firewall():
             r"class\\s + RightPerspectiveFirewall\\s*(?:\\([^)]*\\))?\\s*:\\s*(?:\\n\\s+\\"\\"\\".*?\\"\\"\\"\\s*)?",
                 txt,
                 re.S,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         if not class_match:
             class_match = re.search(r"class\\s + RightPerspectiveFirewall\\s*:\\s*",
-    txt)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     txt)
         if not class_match:
             continue
 
         if "_rule_cache" in txt:
             details.append(
                 {"file": str(path), "patched": False, "reason": "cache_already_present"}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             continue
 
         # Try to detect class block start and insert __init__ if missing
@@ -78,7 +84,9 @@ def patch_right_perspective_firewall():
                 r"(def\\s + __init__\\s*\\([^)]*\\)\\s*:)(.*?)(?=\\n\\s * def|\\n\\s * class|\\Z)",
                     txt,
                     re.S,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             if init_match:
                 init_body = init_match.group(2)
                 if "self._rule_cache" not in init_body:
@@ -98,13 +106,16 @@ def patch_right_perspective_firewall():
                             # Look for first non - empty line in __init__ body
                             if (
                                 line.strip()
-                                and not line.strip().startswith('"""')
-                                and not line.strip().startswith("'''")
-                            ):
+                                and not line.strip().startswith('"""')"""
+                                and not line.strip().startswith("'''")'''
+# BRACKET_SURGEON: disabled
+#                             ):
                                 # Add cache initialization before this line
                                 cache_line = (
                                     " " * (init_indent + 4) + "self._rule_cache = {}"
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                                 new_lines.insert(-1, cache_line)
                                 cache_added = True
                                 in_init = False
@@ -118,24 +129,33 @@ def patch_right_perspective_firewall():
                                 "file": str(path),
                                     "patched": True,
                                     "reason": "added_cache_to_init",
-                                    }
-                        )
+# BRACKET_SURGEON: disabled
+#                                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     else:
                         details.append(
                             {
                                 "file": str(path),
                                     "patched": False,
                                     "reason": "could_not_locate_init_body",
-                                    }
-                        )
+# BRACKET_SURGEON: disabled
+#                                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 else:
                     details.append(
                         {
                             "file": str(path),
                                 "patched": False,
                                 "reason": "cache_already_in_init",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             # Add __init__ method with _rule_cache
             class_start = class_match.end()
@@ -153,7 +173,9 @@ def patch_right_perspective_firewall():
             patched_any = True
             details.append(
                 {"file": str(path), "patched": True, "reason": "added_init_with_cache"}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     return {"patched": patched_any, "details": details}
 
@@ -176,7 +198,9 @@ def patch_content_agent():
         has_shutil_usage = "shutil." in txt
         has_shutil_import = re.search(
             r"^\\s * import\\s + shutil\\s*$|^\\s * from\\s+\\S+\\s + import\\s+.*shutil", txt, re.M
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if has_shutil_usage and not has_shutil_import:
             # Add shutil import
@@ -187,7 +211,8 @@ def patch_content_agent():
             for i, line in enumerate(lines):
                 if line.strip().startswith("import ") or line.strip().startswith(
                     "from "
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     continue
                 elif (
                     line.strip() == ""
@@ -195,13 +220,16 @@ def patch_content_agent():
                     and (
                         lines[i - 1].strip().startswith("import ")
                         or lines[i - 1].strip().startswith("from ")
-                    )
-                ):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ):
                     # Insert after import block
                     lines.insert(i, "import shutil")
                     import_inserted = True
                     break
-                elif not line.strip().startswith("#") and line.strip() != "":
+                elif not line.strip().startswith("#") and line.strip() != "":"
                     # Insert before first non - import, non - comment line
                     lines.insert(i, "import shutil")
                     import_inserted = True
@@ -211,7 +239,7 @@ def patch_content_agent():
                 # Fallback: insert at the beginning after shebang / encoding
                 insert_pos = 0
                 for i, line in enumerate(lines[:5]):
-                    if line.startswith("#!"):
+                    if line.startswith("#!"):"
                         insert_pos = i + 1
                     elif "coding:" in line or "encoding:" in line:
                         insert_pos = i + 1
@@ -222,11 +250,15 @@ def patch_content_agent():
             patched_any = True
             details.append(
                 {"file": str(path), "patched": True, "reason": "added_shutil_import"}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             reason = (
                 "no_shutil_usage" if not has_shutil_usage else "import_already_present"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             details.append({"file": str(path), "patched": False, "reason": reason})
 
     return {"patched": patched_any, "details": details}
@@ -248,7 +280,9 @@ def patch_database(db_path: Path):
         # Check if api_discovery_tasks table exists
         cursor.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='api_discovery_tasks';"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         table_exists = cursor.fetchone() is not None
 
         if table_exists:
@@ -266,7 +300,9 @@ def patch_database(db_path: Path):
             if task_type_col and task_type_col[3] == 1:  # NOT NULL constraint exists
                 print(
                     "  📝 Recreating api_discovery_tasks table to remove NOT NULL constraint..."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Get existing data
                 cursor.execute("SELECT * FROM api_discovery_tasks;")
@@ -275,7 +311,7 @@ def patch_database(db_path: Path):
                 # Drop and recreate table
                 cursor.execute("DROP TABLE api_discovery_tasks;")
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE api_discovery_tasks (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             task_type TEXT DEFAULT 'general',
@@ -283,42 +319,52 @@ def patch_database(db_path: Path):
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             data TEXT
-                    );
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     );
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Restore data with proper column mapping
                 if existing_data:
+                    pass
                     # Map old data to new schema (6 columns: id,
     task_type,
     status,
     created_at,
     updated_at,
-    data)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     data)
                     for row in existing_data:
                         # Handle different row lengths gracefully
                         if len(row) >= 6:
                             cursor.execute(
-                                "INSERT INTO api_discovery_tasks (id,
+                                "INSERT INTO api_discovery_tasks (id,"
     task_type,
     status,
     created_at,
     updated_at,
-    data) VALUES (?, ?, ?, ?, ?, ?);",
+    data) VALUES (?, ?, ?, ?, ?, ?);","
                                     row[:6],
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                         else:
                             # Pad with defaults if row is shorter
                             padded_row = list(row) + [None] * (6 - len(row))
                             cursor.execute(
-                                "INSERT INTO api_discovery_tasks (id,
+                                "INSERT INTO api_discovery_tasks (id,"
     task_type,
     status,
     created_at,
     updated_at,
-    data) VALUES (?, ?, ?, ?, ?, ?);",
+    data) VALUES (?, ?, ?, ?, ?, ?);","
                                     padded_row[:6],
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                 conn.commit()
                 conn.close()
@@ -329,7 +375,7 @@ def patch_database(db_path: Path):
         else:
             # Create table with correct schema
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE api_discovery_tasks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         task_type TEXT DEFAULT 'general',
@@ -337,9 +383,12 @@ def patch_database(db_path: Path):
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         data TEXT
-                );
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 );
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             conn.commit()
             conn.close()
             return {"patched": True, "reason": "created_table"}

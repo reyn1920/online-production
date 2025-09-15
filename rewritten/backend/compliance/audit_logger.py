@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Audit Logger for ChatGPT Integration Compliance
 Implements Rule 15: Compliance and Audit Requirements
-"""
+""""""
 
 import hashlib
 import hmac
@@ -82,7 +82,8 @@ class AuditLogger:
             "data_access_events": 0,
             "gdpr_events": 0,
             "ccpa_events": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _load_default_config(self) -> Dict[str, Any]:
         """Load default audit configuration"""
@@ -97,7 +98,8 @@ class AuditLogger:
             "gdpr_compliance": True,
             "ccpa_compliance": True,
             "audit_integrity_checks": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _setup_logger(self) -> logging.Logger:
         """Setup structured audit logger"""
@@ -111,7 +113,8 @@ class AuditLogger:
         # JSON formatter for structured logging
         formatter = logging.Formatter(
             "%(asctime)s|%(levelname)s|%(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 
@@ -130,7 +133,8 @@ class AuditLogger:
         request_size: Optional[int] = None,
         response_size: Optional[int] = None,
         additional_data: Optional[Dict[str, Any]] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Log API request for compliance tracking"""
 
         event = AuditEvent(
@@ -153,7 +157,8 @@ class AuditLogger:
             compliance_tags=["api_access", "chatgpt_integration"],
             data_classification="internal",
             retention_period_days=365,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return self._write_audit_event(event)
 
@@ -165,7 +170,8 @@ class AuditLogger:
         user_agent: Optional[str] = None,
         failure_reason: Optional[str] = None,
         additional_data: Optional[Dict[str, Any]] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Log authentication events for security monitoring"""
 
         level = AuditLevel.INFO if success else AuditLevel.WARNING
@@ -190,7 +196,8 @@ class AuditLogger:
             compliance_tags=["authentication", "security"],
             data_classification="confidential",
             retention_period_days=365,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if not success:
             self.compliance_metrics["failed_authentications"] += 1
@@ -204,7 +211,8 @@ class AuditLogger:
         user_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         additional_data: Optional[Dict[str, Any]] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Log security events for threat monitoring"""
 
         event = AuditEvent(
@@ -227,7 +235,8 @@ class AuditLogger:
             compliance_tags=["security", "threat_detection"],
             data_classification="confidential",
             retention_period_days=365,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.compliance_metrics["security_events"] += 1
 
@@ -242,7 +251,8 @@ class AuditLogger:
         gdpr_relevant: bool = False,
         ccpa_relevant: bool = False,
         additional_data: Optional[Dict[str, Any]] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Log data access for privacy compliance"""
 
         compliance_tags = ["data_access"]
@@ -273,11 +283,13 @@ class AuditLogger:
                 "data_type": data_type,
                 "operation": operation,
                 **(additional_data or {}),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             compliance_tags=compliance_tags,
             data_classification=data_classification,
             retention_period_days=365,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.compliance_metrics["data_access_events"] += 1
 
@@ -297,7 +309,8 @@ class AuditLogger:
             "event": asdict(event),
             "integrity_hash": event_hash,
             "log_timestamp": datetime.utcnow().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Write to structured log
         self.logger.info(json.dumps(log_entry))
@@ -336,20 +349,24 @@ class AuditLogger:
                 "audit_logging_active": True,
                 "data_retention_policy_enforced": True,
                 "security_monitoring_active": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "recommendations": [
                 "Continue regular security audits",
                 "Monitor authentication failure rates",
                 "Review data access patterns monthly",
                 "Ensure audit log integrity checks",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         # Save report
         report_file = (
             self.audit_dir
             / f"compliance_report_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
 
@@ -384,14 +401,16 @@ def log_chatgpt_api_call(endpoint: str, user_id: str, success: bool, **kwargs):
             method="POST",
             user_id=user_id,
             additional_data={"integration": "chatgpt", **kwargs},
-        )
+# BRACKET_SURGEON: disabled
+#         )
     else:
         return audit_logger.log_security_event(
             event_description=f"ChatGPT API call failed: {endpoint}",
             severity=AuditLevel.WARNING,
             user_id=user_id,
             additional_data={"integration": "chatgpt", **kwargs},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 def log_rate_limit_violation(user_id: str, endpoint: str, ip_address: str):
@@ -402,7 +421,8 @@ def log_rate_limit_violation(user_id: str, endpoint: str, ip_address: str):
         user_id=user_id,
         ip_address=ip_address,
         additional_data={"violation_type": "rate_limit", "endpoint": endpoint},
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def log_webhook_signature_failure(webhook_id: str, ip_address: str):
@@ -414,5 +434,7 @@ def log_webhook_signature_failure(webhook_id: str, ip_address: str):
         additional_data={
             "violation_type": "signature_verification",
             "webhook_id": webhook_id,
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )

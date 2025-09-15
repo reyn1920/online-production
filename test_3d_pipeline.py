@@ -18,8 +18,8 @@ def test_blender_api():
             "--background",
             "--python - expr",
             "import bpy; print('Blender API Version:', bpy.app.version); bpy.ops.mesh.primitive_cube_add(); print('Cube created successfully')",
-            "--python - exit - code",
-            "1",
+            "--python-exit-code",
+            "1"
         ]
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
         if result.returncode == 0:
@@ -40,7 +40,7 @@ def test_gimp_availability():
     gimp_paths = [
         "/Applications/GIMP.app/Contents/MacOS/gimp",
         "/usr/local/bin/gimp",
-        "/opt/homebrew/bin/gimp",
+        "/opt/homebrew/bin/gimp"
     ]
 
     for path in gimp_paths:
@@ -58,7 +58,7 @@ def test_inkscape_availability():
     inkscape_paths = [
         "/Applications/Inkscape.app/Contents/MacOS/inkscape",
         "/usr/local/bin/inkscape",
-        "/opt/homebrew/bin/inkscape",
+        "/opt/homebrew/bin/inkscape"
     ]
 
     for path in inkscape_paths:
@@ -103,7 +103,6 @@ def create_sample_3d_scene():
     print("Creating sample 3D scene...")
 
     blender_script = """
-
 import bpy
 import bmesh
 
@@ -156,7 +155,7 @@ print("Scene saved to/tmp/trae_test_scene.blend")
             "/Applications/Blender.app/Contents/MacOS/Blender",
             "--background",
             "--python",
-            script_path,
+            script_path
         ]
 
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
@@ -185,7 +184,7 @@ def main():
         ("Inkscape Availability", test_inkscape_availability),
         ("DaVinci Resolve", test_davinci_resolve),
         ("Mixamo Integration", test_mixamo_integration),
-        ("3D Scene Creation", create_sample_3d_scene),
+        ("3D Scene Creation", create_sample_3d_scene)
     ]
 
     results = []

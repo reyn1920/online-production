@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Test script for YouTube marketing features (TubeBuddy/VidIQ - like functionality)
 This script tests the YouTube marketing classes without external dependencies.
-"""
+""""""
 
 import sys
 import os
@@ -51,7 +51,8 @@ class YouTubeSEOOptimizer:
                 "secrets",
                 "best",
                 "top",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             power_words_found = [pw for pw in power_words if pw.lower() in title_lower]
             seo_score += min(len(power_words_found) * 10, 20)
 
@@ -62,7 +63,8 @@ class YouTubeSEOOptimizer:
                 "keywords_found": keywords_found,
                 "power_words_found": power_words_found,
                 "recommendations": self._generate_title_recommendations(title, keywords),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Error optimizing title: {e}")
             return {"error": str(e)}
@@ -81,7 +83,8 @@ class YouTubeSEOOptimizer:
         if missing_keywords:
             recommendations.append(
                 f"Consider including these keywords: {', '.join(missing_keywords)}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return recommendations
 
@@ -95,32 +98,38 @@ class YouTubeSEOOptimizer:
                     "volume": 10000,
                     "competition": "medium",
                     "trend": "rising",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "keyword": f"{topic} guide",
                     "volume": 8500,
                     "competition": "low",
                     "trend": "stable",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "keyword": f"{topic} tips",
                     "volume": 12000,
                     "competition": "high",
                     "trend": "rising",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "keyword": f"how to {topic}",
                     "volume": 15000,
                     "competition": "medium",
                     "trend": "stable",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "keyword": f"{topic} for beginners",
                     "volume": 7500,
                     "competition": "low",
                     "trend": "rising",
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
 
             if niche:
                 base_keywords.extend(
@@ -130,15 +139,19 @@ class YouTubeSEOOptimizer:
                             "volume": 5000,
                             "competition": "low",
                             "trend": "stable",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         {
                             "keyword": f"{topic} {niche}",
                             "volume": 4500,
                             "competition": "low",
                             "trend": "rising",
-                        },
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
             return base_keywords
         except Exception as e:
@@ -167,36 +180,44 @@ class CompetitorAnalyzer:
                         "title": "How to Master YouTube SEO",
                         "views": 45000,
                         "engagement": 5.8,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "title": "Ultimate Guide to Video Marketing",
                         "views": 38000,
                         "engagement": 4.9,
-                    },
-                ],
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ],
                 "content_themes": ["tutorials", "marketing tips", "SEO guides"],
                 "optimal_posting_times": [
                     "Tuesday 2PM",
                     "Thursday 10AM",
                     "Saturday 6PM",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "keyword_strategy": [
                     "youtube seo",
                     "video marketing",
                     "content creation",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "growth_rate": 12.5,  # monthly percentage
                 "competitive_advantages": [
                     "Consistent upload schedule",
                     "High - quality thumbnails",
                     "Strong SEO optimization",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "opportunities": [
                     "Underutilized trending topics",
                     "Limited community engagement",
                     "Missing short - form content",
-                ],
-            }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             }
 
             return analysis
         except Exception as e:
@@ -227,30 +248,36 @@ class VideoAnalytics:
                     "suggested_videos": 30,
                     "external": 15,
                     "direct": 10,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "audience_retention": {
                     "0 - 25%": 100,
                     "25 - 50%": 75,
                     "50 - 75%": 45,
                     "75 - 100%": 25,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "demographics": {
                     "age_groups": {
                         "18 - 24": 25,
                         "25 - 34": 40,
                         "35 - 44": 20,
                         "45+": 15,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "gender": {"male": 65, "female": 35},
                     "top_countries": ["US", "UK", "Canada", "Australia"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "seo_score": 78,
                 "optimization_opportunities": [
                     "Improve thumbnail click - through rate",
                     "Add more engaging hooks in first 15 seconds",
                     "Optimize end screen for better retention",
-                ],
-            }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             }
 
             return analytics
         except Exception as e:
@@ -273,11 +300,13 @@ class ThumbnailTester:
                 "thumbnails": [
                     {"id": "thumb_a", "url": thumbnails[0], "performance": None},
                     {"id": "thumb_b", "url": thumbnails[1], "performance": None},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "test_duration": "7 days",
                 "status": "active",
                 "created_at": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return test_data
         except Exception as e:
@@ -300,9 +329,11 @@ class ThumbnailTester:
                     "Good use of contrasting colors",
                     "Text is clearly readable",
                     "Consider adding arrows or highlights for better CTR",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "predicted_ctr": 7.2,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return analysis
         except Exception as e:
@@ -341,7 +372,8 @@ def test_youtube_features():
     for kw in keywords_data[:3]:
         print(
             f"Keyword: {kw['keyword']} | Volume: {kw['volume']} | Competition: {kw['competition']} | Trend: {kw['trend']}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     # Test 3: Competitor Analysis
     print("\\n📊 Test 3: Competitor Analysis")
@@ -366,7 +398,8 @@ def test_youtube_features():
     print(f"SEO Score: {video_data['seo_score']}/100")
     print(
         f"Top Traffic Source: YouTube Search ({video_data['traffic_sources']['youtube_search']}%)"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Test 5: Thumbnail A/B Testing
     print("\\n🖼️ Test 5: Thumbnail A/B Testing")
@@ -384,7 +417,8 @@ def test_youtube_features():
     print("-" * 40)
     thumb_analysis = thumbnail_tester.analyze_thumbnail_performance(
         "https://example.com/thumbnail.jpg"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(f"Visual Score: {thumb_analysis['visual_score']}/100")
     print(f"Text Readability: {thumb_analysis['text_readability']}/100")
     print(f"Color Contrast: {thumb_analysis['color_contrast']}/100")

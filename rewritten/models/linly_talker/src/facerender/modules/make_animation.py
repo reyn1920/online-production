@@ -12,12 +12,14 @@ def normalize_kp(
         adapt_movement_scale = False,
         use_relative_movement = False,
         use_relative_jacobian = False,
-):
+# BRACKET_SURGEON: disabled
+# ):
     if adapt_movement_scale:
         source_area = ConvexHull(kp_source["value"][0].data.cpu().numpy()).volume
         driving_area = ConvexHull(
             kp_driving_initial["value"][0].data.cpu().numpy()
-        ).volume
+# BRACKET_SURGEON: disabled
+#         ).volume
         adapt_movement_scale = np.sqrt(source_area)/np.sqrt(driving_area)
     else:
         adapt_movement_scale = 1
@@ -32,7 +34,9 @@ def normalize_kp(
         if use_relative_jacobian:
             jacobian_diff = torch.matmul(
                 kp_driving["jacobian"], torch.inverse(kp_driving_initial["jacobian"])
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             kp_new["jacobian"] = torch.matmul(jacobian_diff, kp_source["jacobian"])
 
     return kp_new
@@ -67,9 +71,13 @@ def get_rotation_matrix(yaw, pitch, roll):
                 torch.zeros_like(pitch),
                 torch.sin(pitch),
                 torch.cos(pitch),
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             dim = 1,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     pitch_mat = pitch_mat.view(pitch_mat.shape[0], 3, 3)
 
     yaw_mat = torch.cat(
@@ -83,9 +91,13 @@ def get_rotation_matrix(yaw, pitch, roll):
                 -torch.sin(yaw),
                 torch.zeros_like(yaw),
                 torch.cos(yaw),
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             dim = 1,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     yaw_mat = yaw_mat.view(yaw_mat.shape[0], 3, 3)
 
     roll_mat = torch.cat(
@@ -99,9 +111,13 @@ def get_rotation_matrix(yaw, pitch, roll):
                 torch.zeros_like(roll),
                 torch.zeros_like(roll),
                 torch.ones_like(roll),
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             dim = 1,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     roll_mat = roll_mat.view(roll_mat.shape[0], 3, 3)
 
     rot_mat = torch.einsum("bij,bjk,bkm->bim", pitch_mat, yaw_mat, roll_mat)
@@ -158,7 +174,8 @@ def make_animation(
         roll_c_seq = None,
         use_exp = True,
         use_half = False,
-):
+# BRACKET_SURGEON: disabled
+# ):
     with torch.no_grad():
         predictions = []
 
@@ -182,29 +199,35 @@ def make_animation(
 
             kp_norm = kp_driving
             out = generator(source_image, kp_source = kp_source, kp_driving = kp_norm)
-            """
+            """"""
             source_image_new = out['prediction'].squeeze(1)
             kp_canonical_new =  kp_detector(source_image_new)
             he_source_new = he_estimator(source_image_new)
             kp_source_new = keypoint_transformation(kp_canonical_new,
     he_source_new,
-    wo_exp = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     wo_exp = True)
             kp_driving_new = keypoint_transformation(kp_canonical_new,
     he_driving,
-    wo_exp = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     wo_exp = True)
             out = generator(source_image_new,
     kp_source = kp_source_new,
-    kp_driving = kp_driving_new)
-            """
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     kp_driving = kp_driving_new)
+            """"""
             predictions.append(out["prediction"])
         predictions_ts = torch.stack(predictions, dim = 1)
     return predictions_ts
 
 
 class AnimateModel(torch.nn.Module):
-    """
+    """"""
     Merge all generator related updates into single model for better multi - gpu usage
-    """
+    """"""
 
 
     def __init__(self, generator, kp_extractor, mapping):
@@ -238,6 +261,8 @@ class AnimateModel(torch.nn.Module):
                 yaw_c_seq = yaw_c_seq,
                 pitch_c_seq = pitch_c_seq,
                 roll_c_seq = roll_c_seq,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return predictions_video

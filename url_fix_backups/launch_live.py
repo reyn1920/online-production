@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Master Orchestrator - Live Production Launch System
 
 This is the master orchestrator that initializes and manages all TRAE.AI agents,
@@ -11,7 +11,7 @@ Features:
 - Graceful shutdown and error recovery
 - Integration with unified dashboard
 - Autonomous task distribution and execution
-"""
+""""""
 
 import asyncio
 import logging
@@ -51,7 +51,9 @@ logging.basicConfig(
     level = logging.INFO,
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
         datefmt="%H:%M:%S",
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger("trae_ai.orchestrator")
 
 # IDE Probe Filter to reduce log noise
@@ -61,6 +63,7 @@ class IDEProbeFilter(logging.Filter):
 
 
     def filter(self, record):
+        pass
         # Suppress log lines for IDE webview probes
 
 # Apply to werkzeug / flask request logger
@@ -130,7 +133,9 @@ try:
     from backend.agents.base_agents import AgentCapability, AgentStatus
     from backend.agents.specialized_agents import (ContentAgent, MarketingAgent,
 
-        ResearchAgent, SystemAgent)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ResearchAgent, SystemAgent)
 except ImportError as e:
     logger.warning(f"Specialized agents not available: {e}")
     SystemAgent = None
@@ -269,7 +274,9 @@ class AutonomousOrchestrator:
         self.shutdown_event = threading.Event()
         self.thread_pool = ThreadPoolExecutor(
             max_workers = 10, thread_name_prefix="TRAE - Agent"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.main_loop = main_loop  # Store the main event loop for agent threads
 
         logger.info("🚀 Initializing TRAE.AI Master Orchestrator...")
@@ -370,23 +377,29 @@ class AutonomousOrchestrator:
                     agent_id="system_agent",
                         name="System Management Agent",
                         main_loop = self.main_loop,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.agents["SystemAgent"] = {
                     "instance": agent,
                         "config": {
                         "enabled": True,
                             "priority": 1,
                             "description": "System monitoring and management",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "status": "initialized",
                         "last_heartbeat": datetime.now(),
                         "task_count": 0,
                         "error_count": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 self.update_agent_status("SystemAgent", "initialized")
                 logger.info(
                     "✅ SystemAgent initialized: System monitoring and management"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize SystemAgent: {e}")
                 self.update_agent_status("SystemAgent", "error", error = str(e))
@@ -396,23 +409,29 @@ class AutonomousOrchestrator:
             try:
                 agent = ResearchAgent(
                     agent_id="research_agent", name="Research & Intelligence Agent"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.agents["ResearchAgent"] = {
                     "instance": agent,
                         "config": {
                         "enabled": True,
                             "priority": 2,
                             "description": "Research and intelligence gathering",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "status": "initialized",
                         "last_heartbeat": datetime.now(),
                         "task_count": 0,
                         "error_count": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 self.update_agent_status("ResearchAgent", "initialized")
                 logger.info(
                     "✅ ResearchAgent initialized: Research and intelligence gathering"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize ResearchAgent: {e}")
                 self.update_agent_status("ResearchAgent", "error", error = str(e))
@@ -422,23 +441,29 @@ class AutonomousOrchestrator:
             try:
                 agent = ContentAgent(
                     agent_id="content_agent", name="Content Creation Agent"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.agents["ContentAgent"] = {
                     "instance": agent,
                         "config": {
                         "enabled": True,
                             "priority": 3,
                             "description": "Content creation and evolution",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "status": "initialized",
                         "last_heartbeat": datetime.now(),
                         "task_count": 0,
                         "error_count": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 self.update_agent_status("ContentAgent", "initialized")
                 logger.info(
                     "✅ ContentAgent initialized: Content creation and evolution"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize ContentAgent: {e}")
                 self.update_agent_status("ContentAgent", "error", error = str(e))
@@ -448,23 +473,29 @@ class AutonomousOrchestrator:
             try:
                 agent = MarketingAgent(
                     agent_id="marketing_agent", name="Marketing & Promotion Agent"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.agents["MarketingAgent"] = {
                     "instance": agent,
                         "config": {
                         "enabled": True,
                             "priority": 4,
                             "description": "Marketing automation and strategy",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "status": "initialized",
                         "last_heartbeat": datetime.now(),
                         "task_count": 0,
                         "error_count": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 self.update_agent_status("MarketingAgent", "initialized")
                 logger.info(
                     "✅ MarketingAgent initialized: Marketing automation and strategy"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize MarketingAgent: {e}")
                 self.update_agent_status("MarketingAgent", "error", error = str(e))
@@ -474,24 +505,30 @@ class AutonomousOrchestrator:
             try:
                 agent = FinancialAgent(
                     agent_id="financial_agent", name="Financial Management Agent"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.agents["FinancialAgent"] = {
                     "instance": agent,
                         "config": {
                         "enabled": True,
                             "priority": 5,
                             "description": "Financial analysis and trading automation",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "status": "initialized",
                         "last_heartbeat": datetime.now(),
                         "task_count": 0,
                         "error_count": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 self.update_agent_status("FinancialAgent", "initialized")
                 logger.info(
-                    "✅ FinancialAgent initialized: Financial analysis \
-    and trading automation"
-                )
+                    "✅ FinancialAgent initialized: Financial analysis \"
+#     and trading automation"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize FinancialAgent: {e}")
                 self.update_agent_status("FinancialAgent", "error", error = str(e))
@@ -505,24 +542,30 @@ class AutonomousOrchestrator:
                         "config": {
                         "enabled": True,
                             "priority": 6,
-                            "description": "YouTube content engagement \
-    and optimization",
-                            },
+                            "description": "YouTube content engagement \"
+#     and optimization",
+# BRACKET_SURGEON: disabled
+#                             },
                         "status": "initialized",
                         "last_heartbeat": datetime.now(),
                         "task_count": 0,
                         "error_count": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 self.update_agent_status("YouTubeEngagementAgent", "initialized")
                 logger.info(
-                    "✅ YouTubeEngagementAgent initialized: YouTube content engagement \
-    and optimization"
-                )
+                    "✅ YouTubeEngagementAgent initialized: YouTube content engagement \"
+#     and optimization"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize YouTubeEngagementAgent: {e}")
                 self.update_agent_status(
                     "YouTubeEngagementAgent", "error", error = str(e)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Progressive Self Repair Agent
         if ProgressiveSelfRepairAgent:
@@ -531,30 +574,39 @@ class AutonomousOrchestrator:
                     config={
                         "agent_id": "progressive_self_repair_agent",
                             "name": "Self Repair Agent",
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.agents["ProgressiveSelfRepairAgent"] = {
                     "instance": agent,
                         "config": {
                         "enabled": True,
                             "priority": 7,
                             "description": "System self - repair and optimization",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "status": "initialized",
                         "last_heartbeat": datetime.now(),
                         "task_count": 0,
                         "error_count": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 self.update_agent_status("ProgressiveSelfRepairAgent", "initialized")
                 logger.info(
-                    "✅ ProgressiveSelfRepairAgent initialized: System self - repair \
-    and optimization"
-                )
+                    "✅ ProgressiveSelfRepairAgent initialized: System self - repair \"
+#     and optimization"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize ProgressiveSelfRepairAgent: {e}")
                 self.update_agent_status(
                     "ProgressiveSelfRepairAgent", "error", error = str(e)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Proactive Niche Domination Agent
         if ProactiveNicheDominationAgent:
@@ -562,55 +614,71 @@ class AutonomousOrchestrator:
                 agent = ProactiveNicheDominationAgent(
                     agent_id="proactive_niche_domination_agent",
                         name="Niche Domination Agent",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.agents["ProactiveNicheDominationAgent"] = {
                     "instance": agent,
                         "config": {
                         "enabled": True,
                             "priority": 8,
                             "description": "Market niche identification and domination",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "status": "initialized",
                         "last_heartbeat": datetime.now(),
                         "task_count": 0,
                         "error_count": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 self.update_agent_status("ProactiveNicheDominationAgent", "initialized")
                 logger.info(
-                    "✅ ProactiveNicheDominationAgent initialized: Market niche identification \
-    and domination"
-                )
+                    "✅ ProactiveNicheDominationAgent initialized: Market niche identification \"
+#     and domination"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(
                     f"❌ Failed to initialize ProactiveNicheDominationAgent: {e}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.update_agent_status(
                     "ProactiveNicheDominationAgent", "error", error = str(e)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Evolution Agent
         if EvolutionAgent:
             try:
                 agent = EvolutionAgent(
                     agent_id="evolution_agent", name="Evolution Agent"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.agents["EvolutionAgent"] = {
                     "instance": agent,
                         "config": {
                         "enabled": True,
                             "priority": 9,
                             "description": "Continuous system evolution and adaptation",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "status": "initialized",
                         "last_heartbeat": datetime.now(),
                         "task_count": 0,
                         "error_count": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 self.update_agent_status("EvolutionAgent", "initialized")
                 logger.info(
-                    "✅ EvolutionAgent initialized: Continuous system evolution \
-    and adaptation"
-                )
+                    "✅ EvolutionAgent initialized: Continuous system evolution \"
+#     and adaptation"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize EvolutionAgent: {e}")
                 self.update_agent_status("EvolutionAgent", "error", error = str(e))
@@ -628,7 +696,9 @@ class AutonomousOrchestrator:
                 self.news_monitoring_service = NewsMonitoringService()
                 logger.info(
                     "✅ News Monitoring Service initialized: Political RSS feed monitoring for Right Perspective"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(f"❌ Failed to initialize News Monitoring Service: {e}")
                 self.news_monitoring_service = None
@@ -642,7 +712,8 @@ class AutonomousOrchestrator:
             status: str,
             task_id: Optional[str] = None,
             error: Optional[str] = None,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Update agent status with thread safety."""
         with self.agent_state_lock:
             self.agent_states[agent_name] = {
@@ -651,7 +722,8 @@ class AutonomousOrchestrator:
                     "error": error,
                     "timestamp": datetime.now(),
                     "uptime": (datetime.now() - self.start_time).total_seconds(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Update agent heartbeat
             if agent_name in self.agents:
@@ -686,13 +758,17 @@ class AutonomousOrchestrator:
                     a
                     for a in self.agent_states.values()
                     if a.get("status") not in ["error", "stopped"]
-                ]
-            ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
+# BRACKET_SURGEON: disabled
+#             ),
                 "total_agents": len(self.agents),
                 "database_health": self._check_database_health(),
                 "task_queue_size": self._get_task_queue_size(),
                 "start_time": self.start_time.isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _check_database_health(self) -> bool:
@@ -742,53 +818,72 @@ class AutonomousOrchestrator:
                     if task:
                         logger.info(
                             f"📋 {agent_name} processing task: {task.get('id', 'unknown')}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         with self.agent_state_lock:
                             self.update_agent_status(
                                 agent_name, "processing", task_id = task.get("id")
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                         # Process the task with timeout and defensive programming
                         try:
                             if hasattr(agent, "process_task") and callable(
                                 getattr(agent, "process_task", None)
-                            ):
+# BRACKET_SURGEON: disabled
+#                             ):
                                 await asyncio.wait_for(
                                     agent.process_task(task), timeout = 60.0
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                             elif hasattr(agent, "execute") and callable(
                                 getattr(agent, "execute", None)
-                            ):
+# BRACKET_SURGEON: disabled
+#                             ):
                                 await asyncio.wait_for(
                                     agent.execute(task), timeout = 60.0
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                             else:
                                 logger.warning(
-                                    f"⚠️  Agent {agent_name} has no callable process_task \
-    or execute method"
-                                )
+                                    f"⚠️  Agent {agent_name} has no callable process_task \"
+#     or execute method"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         except asyncio.TimeoutError:
                             logger.warning(f"⏰ Task timeout for agent {agent_name}")
                         except Exception as e:
                             logger.error(
                                 f"❌ Task processing error for {agent_name}: {e}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                         agent_info["task_count"] += 1
                         logger.info(
                             f"✅ {agent_name} completed task: {task.get('id', 'unknown')}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Agent - specific autonomous operations with defensive programming
                 if hasattr(agent, "autonomous_cycle") and callable(
                     getattr(agent, "autonomous_cycle", None)
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     try:
                         await asyncio.wait_for(agent.autonomous_cycle(), timeout = 30.0)
                     except asyncio.TimeoutError:
                         logger.warning(
                             f"⏰ Autonomous cycle timeout for agent {agent_name}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     except Exception as e:
                         logger.error(f"❌ Autonomous cycle error for {agent_name}: {e}")
 
@@ -834,7 +929,9 @@ class AutonomousOrchestrator:
                 # Submit the coroutine to the main event loop from this thread
                 future = asyncio.run_coroutine_threadsafe(
                     self._run_agent_loop(agent_name), self.main_loop
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 future.result()  # Wait for completion
             else:
                 # Fallback: create a new event loop for this thread
@@ -882,7 +979,9 @@ class AutonomousOrchestrator:
 
         health_thread = threading.Thread(
             target = health_monitor, name="HealthMonitor", daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         health_thread.start()
         logger.info("💓 Health monitor started")
 
@@ -899,11 +998,15 @@ class AutonomousOrchestrator:
                     if last_heartbeat:
                         time_since_heartbeat = (
                             current_time - last_heartbeat
-                        ).total_seconds()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ).total_seconds()
                         if time_since_heartbeat > 120:  # 2 minutes
                             logger.warning(
                                 f"⚠️  {agent_name} heartbeat timeout ({time_since_heartbeat:.1f}s)"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             self.update_agent_status(agent_name, "timeout")
                 except Exception as e:
                     logger.error(f"Error checking heartbeat for {agent_name}: {e}")
@@ -968,7 +1071,9 @@ class AutonomousOrchestrator:
         except Exception as e:
             logger.error(
                 f"Failed to control agent {agent_id} with action {action}: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return False
 
 
@@ -1023,7 +1128,9 @@ def main():
     except Exception as e:
         logger.error(
             f"❌ Database migration failed: {e} - continuing with startup but some features may not work"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     orchestrator = None
     dashboard_thread = None
@@ -1042,7 +1149,9 @@ def main():
 
     loop_thread = threading.Thread(
         target = run_event_loop, daemon = True, name="AsyncEventLoop"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     loop_thread.start()
 
     # Wait for the loop to be properly running
@@ -1065,7 +1174,9 @@ def main():
             signal_name = signal.Signals(signum).name
             logger.info(
                 f"📡 Received {signal_name} signal, initiating graceful shutdown..."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             _shutdown_event.set()
 
             # Add cleanup logic here
@@ -1116,10 +1227,14 @@ def main():
                 # Try port 8080 first, fallback to 5000 if busy
                 dashboard_port = int(
                     os.getenv("DASHBOARD_PORT") or os.getenv("PORT") or "8080"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 logger.info(
                     f"[dashboard] attempting to bind to http://127.0.0.1:{dashboard_port}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 dashboard_app = DashboardApp(orchestrator = orchestrator)
 
@@ -1139,15 +1254,20 @@ def main():
                             "routes": [
                             {"rule": r.rule, "methods": list(r.methods)}
                             for r in dashboard_app.app.url_map.iter_rules()
-                        ],
-                            }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# BRACKET_SURGEON: disabled
+#                             }
 
                 print(f"🚀 Starting dashboard on port {dashboard_port}")
 
                 # Force consistent binding with CORS fix
                 dashboard_future = orchestrator.thread_pool.submit(
                     lambda: dashboard_app.run(use_waitress = True)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 logger.info(f"✅ Dashboard started on port {dashboard_port}")
             except OSError as e:
                 # Handle port binding failures specifically
@@ -1159,14 +1279,20 @@ def main():
                         logger.info(f"🔄 Trying fallback port {fallback_port}")
                         dashboard_future = orchestrator.thread_pool.submit(
                             lambda: dashboard_app.run(use_waitress = True)
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         logger.info(
                             f"✅ Dashboard started on fallback port {fallback_port}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     except Exception as fallback_e:
                         logger.error(
                             f"❌ Fallback port {fallback_port} also failed: {fallback_e}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                         import traceback
 
@@ -1200,10 +1326,14 @@ def main():
             try:
                 news_future = orchestrator.thread_pool.submit(
                     lambda: asyncio.run(orchestrator.news_monitoring_service.start())
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 logger.info(
                     "✅ News Monitoring Service started - monitoring political RSS feeds"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as e:
                 logger.error(f"❌ Failed to start News Monitoring Service: {e}")
 
@@ -1212,11 +1342,15 @@ def main():
         stats = orchestrator.get_system_stats()
         logger.info(
             f"   • Active Agents: {stats['active_agents']}/{stats['total_agents']}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         logger.info(f"   • Memory Usage: {stats['memory_usage']:.1f}%")
         logger.info(
             f"   • Database Health: {'✅' if stats['database_health'] else '❌'}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         logger.info(f"   • Task Queue Size: {stats['task_queue_size']}")
 
         logger.info("🎉 TRAE.AI Master Orchestrator is now LIVE!")
@@ -1228,7 +1362,8 @@ def main():
             orchestrator.running
             and not orchestrator.shutdown_event.is_set()
             and not _shutdown_event.is_set()
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             # Check if any critical threads have died
             if agent_futures:
                 for agent_name, future in list(agent_futures.items()):
@@ -1255,7 +1390,9 @@ def main():
                 stats = orchestrator.get_system_stats()
                 logger.info(
                     f"💓 System heartbeat - Uptime: {stats['uptime']}, Active Agents: {stats['active_agents']}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         logger.info("🛑 Main execution loop terminated")
         return 0

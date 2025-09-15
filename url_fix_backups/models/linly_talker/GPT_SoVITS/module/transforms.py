@@ -18,7 +18,8 @@ def piecewise_rational_quadratic_transform(
     min_bin_width=DEFAULT_MIN_BIN_WIDTH,
     min_bin_height=DEFAULT_MIN_BIN_HEIGHT,
     min_derivative=DEFAULT_MIN_DERIVATIVE,
-):
+# BRACKET_SURGEON: disabled
+# ):
     if tails is None:
         spline_fn = rational_quadratic_spline
         spline_kwargs = {}
@@ -36,7 +37,8 @@ def piecewise_rational_quadratic_transform(
         min_bin_height=min_bin_height,
         min_derivative=min_derivative,
         **spline_kwargs
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return outputs, logabsdet
 
 
@@ -56,7 +58,8 @@ def unconstrained_rational_quadratic_spline(
     min_bin_width=DEFAULT_MIN_BIN_WIDTH,
     min_bin_height=DEFAULT_MIN_BIN_HEIGHT,
     min_derivative=DEFAULT_MIN_DERIVATIVE,
-):
+# BRACKET_SURGEON: disabled
+# ):
     inside_interval_mask = (inputs >= -tail_bound) & (inputs <= tail_bound)
     outside_interval_mask = ~inside_interval_mask
 
@@ -90,7 +93,8 @@ def unconstrained_rational_quadratic_spline(
         min_bin_width=min_bin_width,
         min_bin_height=min_bin_height,
         min_derivative=min_derivative,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     return outputs, logabsdet
 
@@ -108,7 +112,8 @@ def rational_quadratic_spline(
     min_bin_width=DEFAULT_MIN_BIN_WIDTH,
     min_bin_height=DEFAULT_MIN_BIN_HEIGHT,
     min_derivative=DEFAULT_MIN_DERIVATIVE,
-):
+# BRACKET_SURGEON: disabled
+# ):
     if torch.min(inputs) < left or torch.max(inputs) > right:
         raise ValueError("Input to a transform is not within its domain")
 
@@ -162,7 +167,8 @@ def rational_quadratic_spline(
         ) + input_heights * (input_delta - input_derivatives)
         b = input_heights * input_derivatives - (inputs - input_cumheights) * (
             input_derivatives + input_derivatives_plus_one - 2 * input_delta
-        )
+# BRACKET_SURGEON: disabled
+#         )
         c = -input_delta * (inputs - input_cumheights)
 
         discriminant = b.pow(2) - 4 * a * c
@@ -175,12 +181,14 @@ def rational_quadratic_spline(
         denominator = input_delta + (
             (input_derivatives + input_derivatives_plus_one - 2 * input_delta)
             * theta_one_minus_theta
-        )
+# BRACKET_SURGEON: disabled
+#         )
         derivative_numerator = input_delta.pow(2) * (
             input_derivatives_plus_one * root.pow(2)
             + 2 * input_delta * theta_one_minus_theta
             + input_derivatives * (1 - root).pow(2)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logabsdet = torch.log(derivative_numerator) - 2 * torch.log(denominator)
 
         return outputs, -logabsdet
@@ -190,18 +198,21 @@ def rational_quadratic_spline(
 
         numerator = input_heights * (
             input_delta * theta.pow(2) + input_derivatives * theta_one_minus_theta
-        )
+# BRACKET_SURGEON: disabled
+#         )
         denominator = input_delta + (
             (input_derivatives + input_derivatives_plus_one - 2 * input_delta)
             * theta_one_minus_theta
-        )
+# BRACKET_SURGEON: disabled
+#         )
         outputs = input_cumheights + numerator / denominator
 
         derivative_numerator = input_delta.pow(2) * (
             input_derivatives_plus_one * theta.pow(2)
             + 2 * input_delta * theta_one_minus_theta
             + input_derivatives * (1 - theta).pow(2)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logabsdet = torch.log(derivative_numerator) - 2 * torch.log(denominator)
 
         return outputs, logabsdet

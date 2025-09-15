@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Testing Suite
 Comprehensive testing for all registered APIs
 
@@ -7,7 +7,7 @@ Usage:
     python api_testing_suite.py --test - all
     python api_testing_suite.py --test huggingface
     python api_testing_suite.py --health - check
-"""
+""""""
 
 import argparse
 import json
@@ -61,7 +61,8 @@ class APITester:
             headers = {"Authorization": f"Bearer {api_key}"}
             response = requests.get(
                 "https://huggingface.co/api/whoami", headers=headers, timeout=10
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
@@ -70,14 +71,16 @@ class APITester:
                     "success",
                     response_time,
                     response_data=response.json(),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "Hugging Face",
                     "failed",
                     response_time,
                     f"HTTP {response.status_code}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("Hugging Face", "error", 0, str(e))
@@ -93,28 +96,33 @@ class APITester:
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content - Type": "application/json",
-            }
+# BRACKET_SURGEON: disabled
+#             }
             data = {
                 "messages": [{"role": "user", "content": "Hello"}],
                 "model": "mixtral - 8x7b - 32768",
                 "max_tokens": 10,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             response = requests.post(
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers=headers,
                 json=data,
                 timeout=30,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
                     "Groq", "success", response_time, response_data=response.json()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "Groq", "failed", response_time, f"HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("Groq", "error", 0, str(e))
@@ -134,11 +142,13 @@ class APITester:
             if response.status_code == 200:
                 return APITestResult(
                     "Google AI", "success", response_time, response_data=response.json()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "Google AI", "failed", response_time, f"HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("Google AI", "error", 0, str(e))
@@ -158,11 +168,13 @@ class APITester:
             if response.status_code == 200:
                 return APITestResult(
                     "YouTube", "success", response_time, response_data=response.json()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "YouTube", "failed", response_time, f"HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("YouTube", "error", 0, str(e))
@@ -188,7 +200,8 @@ class APITester:
                 data=data,
                 headers=headers,
                 timeout=10,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if token_response.status_code == 200:
                 token_data = token_response.json()
@@ -200,7 +213,8 @@ class APITester:
                     "https://oauth.reddit.com/r/test/hot?limit = 1",
                     headers=headers,
                     timeout=10,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 response_time = time.time() - start_time
 
                 if response.status_code == 200:
@@ -209,14 +223,16 @@ class APITester:
                         "success",
                         response_time,
                         response_data=response.json(),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     return APITestResult(
                         "Reddit",
                         "failed",
                         response_time,
                         f"HTTP {response.status_code}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
             else:
                 return APITestResult("Reddit", "failed", 0, "Token request failed")
 
@@ -234,18 +250,21 @@ class APITester:
             headers = {
                 "Authorization": f"token {token}",
                 "Accept": "application/vnd.github.v3 + json",
-            }
+# BRACKET_SURGEON: disabled
+#             }
             response = requests.get("https://api.github.com/user", headers=headers, timeout=10)
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
                     "GitHub", "success", response_time, response_data=response.json()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "GitHub", "failed", response_time, f"HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("GitHub", "error", 0, str(e))
@@ -261,17 +280,20 @@ class APITester:
             headers = {"Authorization": f"Bearer {token}"}
             response = requests.get(
                 "https://api.netlify.com/api/v1/user", headers=headers, timeout=10
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
                     "Netlify", "success", response_time, response_data=response.json()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "Netlify", "failed", response_time, f"HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("Netlify", "error", 0, str(e))
@@ -287,20 +309,24 @@ class APITester:
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content - Type": "application/json",
-            }
+# BRACKET_SURGEON: disabled
+#             }
             response = requests.get(
                 "https://api.sendgrid.com/v3/user/profile", headers=headers, timeout=10
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
                     "SendGrid", "success", response_time, response_data=response.json()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "SendGrid", "failed", response_time, f"HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("SendGrid", "error", 0, str(e))
@@ -323,14 +349,16 @@ class APITester:
                     "success",
                     response_time,
                     response_data=response.json(),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "OpenWeather",
                     "failed",
                     response_time,
                     f"HTTP {response.status_code}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("OpenWeather", "error", 0, str(e))
@@ -348,17 +376,20 @@ class APITester:
                 "https://api.unsplash.com/photos/random?count = 1",
                 headers=headers,
                 timeout=10,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 return APITestResult(
                     "Unsplash", "success", response_time, response_data=response.json()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "Unsplash", "failed", response_time, f"HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("Unsplash", "error", 0, str(e))
@@ -377,18 +408,21 @@ class APITester:
                 "https://api.thedogapi.com/v1/breeds?limit = 1",
                 headers=headers,
                 timeout=10,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 status = "success" if api_key else "no_key"
                 return APITestResult(
                     "Dog API", status, response_time, response_data=response.json()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "Dog API", "failed", response_time, f"HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("Dog API", "error", 0, str(e))
@@ -407,18 +441,21 @@ class APITester:
                 "https://api.thecatapi.com/v1/breeds?limit = 1",
                 headers=headers,
                 timeout=10,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response_time = time.time() - start_time
 
             if response.status_code == 200:
                 status = "success" if api_key else "no_key"
                 return APITestResult(
                     "Cat API", status, response_time, response_data=response.json()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return APITestResult(
                     "Cat API", "failed", response_time, f"HTTP {response.status_code}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return APITestResult("Cat API", "error", 0, str(e))
@@ -438,7 +475,8 @@ class APITester:
             self.test_unsplash_api,
             self.test_dog_api,
             self.test_cat_api,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         results = []
 
@@ -460,10 +498,12 @@ class APITester:
                         "failed": "❌",
                         "no_key": "🔑",
                         "error": "💥",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     print(
                         f"{status_emoji.get(result.status, '❓')} {result.api_name}: {result.status}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 except Exception as e:
                     print(f"💥 {test_name}: Exception - {str(e)}")
@@ -485,7 +525,8 @@ class APITester:
             "unsplash": self.test_unsplash_api,
             "dog_api": self.test_dog_api,
             "cat_api": self.test_cat_api,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         test_method = test_mapping.get(api_name.lower())
         if not test_method:
@@ -506,9 +547,9 @@ class APITester:
     def generate_report(self, results: List[APITestResult]) -> str:
         """Generate a comprehensive test report"""
         report = []
-        report.append("# API Testing Report")
+        report.append("# API Testing Report")"
         report.append(f"Generated: {datetime.now().isoformat()}")
-        report.append("\\n## Summary")
+        report.append("\\n## Summary")"
 
         # Count results by status
         status_counts = {}
@@ -518,7 +559,8 @@ class APITester:
         total_tests = len(results)
         success_rate = (
             (status_counts.get("success", 0) / total_tests * 100) if total_tests > 0 else 0
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         report.append(f"- Total APIs tested: {total_tests}")
         report.append(f"- Success rate: {success_rate:.1f}%")
@@ -527,10 +569,10 @@ class APITester:
         report.append(f"- No API key: {status_counts.get('no_key', 0)}")
         report.append(f"- Errors: {status_counts.get('error', 0)}")
 
-        report.append("\\n## Detailed Results")
+        report.append("\\n## Detailed Results")"
 
         for result in sorted(results, key=lambda x: x.api_name):
-            report.append(f"\\n### {result.api_name}")
+            report.append(f"\\n### {result.api_name}")"
             report.append(f"- Status: {result.status.upper()}")
             report.append(f"- Response time: {result.response_time:.3f}s")
 
@@ -540,7 +582,7 @@ class APITester:
             if result.response_data and result.status == "success":
                 report.append("- Response: Available")
 
-        report.append("\\n## Recommendations")
+        report.append("\\n## Recommendations")"
 
         if status_counts.get("no_key", 0) > 0:
             report.append("- 🔑 Register for APIs with missing keys")
@@ -561,7 +603,8 @@ class APITester:
             "timestamp": datetime.now().isoformat(),
             "overall_status": "healthy",
             "apis": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for api in critical_apis:
             result = self.run_specific_test(api)
@@ -569,7 +612,8 @@ class APITester:
                 health_status["apis"][api] = {
                     "status": result.status,
                     "response_time": result.response_time,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 if result.status not in ["success", "no_key"]:
                     health_status["overall_status"] = "degraded"

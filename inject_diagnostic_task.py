@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 Diagnostic Task Injection Script for TRAE.AI System
 
 This script injects a diagnostic task into the TaskQueueManager to command
 the ProgressiveSelfRepairAgent to generate a comprehensive diagnostic report.
-"""
+""""""
 
 import sys
 from pathlib import Path
@@ -19,9 +19,9 @@ from backend.task_queue_manager import TaskPriority, TaskQueueManager
 
 
 def inject_diagnostic_task():
-    """
+    """"""
     Inject the diagnostic task into the TRAE.AI task queue system.
-    """
+    """"""
 
     # Initialize TaskQueueManager
     tqm = TaskQueueManager()
@@ -33,40 +33,49 @@ def inject_diagnostic_task():
         "task_type": "GENERATE_DIAGNOSTIC_REPORT",
         "priority": "HIGHEST",
         "payload": {
-            "description": "The current self - repair \
-    and deployment cycle has failed. Analyze the entire process you have undertaken so far. Generate a comprehensive diagnostic report detailing your analysis, the point of failure, \
-    and your current hypothesis. The output of this task should be a structured report.",
+            "description": "The current self - repair \"
+#     and deployment cycle has failed. Analyze the entire process you have undertaken so far. Generate a comprehensive diagnostic report detailing your analysis, the point of failure, \
+#     and your current hypothesis. The output of this task should be a structured report.",
             "report_format": {
                 "sections": [
                     {
                         "section_name": "Initial Goal",
                         "description": "Summarize the primary objective you were trying to achieve (e.g., 'Fix all startup errors \
-    and prepare for live deployment').",
-                    },
+#     and prepare for live deployment').",
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "section_name": "Analysis Log",
                         "description": "Provide a step - by - step log of the actions you took. Example: 1. Parsed error logs. 2. Identified Abstract Class error in orchestrator. 3. Loaded 'trae_ai/agent/content_agent.py' for analysis. 4. Attempted to generate a concrete class implementation...",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "section_name": "Point of Failure",
-                        "description": "Describe the EXACT operation that failed \
-    and the error it produced. Be specific. Example: 'Failed during step 4. The code generation model produced a class with a syntax error, causing the validation check to fail.'",
-                    },
+                        "description": "Describe the EXACT operation that failed \"
+#     and the error it produced. Be specific. Example: 'Failed during step 4. The code generation model produced a class with a syntax error, causing the validation check to fail.'",
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "section_name": "Current Hypothesis",
                         "description": "Based on the failure, what do you believe is the root cause? Example: 'The abstract methods in the base agents lack sufficient context or docstrings for the AI to generate a meaningful \
-    and syntactically correct implementation.'",
-                    },
+#     and syntactically correct implementation.'",
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "section_name": "Relevant Code Snippets",
-                        "description": "Provide the specific function, class, or code block where the failure occurred. Include the code you were analyzing \
-    and any code you attempted to generate.",
-                    },
-                ]
-            },
-        },
+                        "description": "Provide the specific function, class, or code block where the failure occurred. Include the code you were analyzing \"
+#     and any code you attempted to generate.",
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         },
         "status": "pending",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     try:
         # Inject the task using TaskQueueManager.add_task method
@@ -79,8 +88,10 @@ def inject_diagnostic_task():
                 "original_task_id": diagnostic_task["task_id"],
                 "target_agent": diagnostic_task["target_agent"],
                 "task_type_override": diagnostic_task["task_type"],
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         print("✅ Diagnostic task successfully injected into TaskQueueManager")
         print(f"📋 Task ID: {task_id}")
@@ -100,9 +111,9 @@ def inject_diagnostic_task():
 
 
 def main():
-    """
+    """"""
     Main execution function.
-    """
+    """"""
     print("🚀 TRAE.AI Diagnostic Task Injection")
     print("=" * 50)
     print("Injecting diagnostic task to command ProgressiveSelfRepairAgent...")
@@ -115,7 +126,8 @@ def main():
         print("\\n📋 Next Steps:")
         print(
             "1. The ProgressiveSelfRepairAgent should now execute the GENERATE_DIAGNOSTIC_REPORT task"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print("2. Monitor the task queue for completion")
         print("3. Retrieve the diagnostic report from the task results")
         print("4. Analyze the report to identify the root cause of failures")

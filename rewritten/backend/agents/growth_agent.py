@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Growth Agent - Proactive Niche Domination System
 
 This agent implements autonomous growth monitoring and channel expansion protocols.
 It continuously tracks channel performance, identifies growth plateaus, \
-    and automatically
+#     and automatically
 initiates niche expansion strategies for sustained market domination.
 
 Features:
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import logging
@@ -35,12 +35,14 @@ from .marketing_tools import (
     AffiliateManager,
     DayOneBlitzStrategy,
     RelentlessOptimizationLoop,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from .research_tools import BreakingNewsWatcher, CompetitorAnalyzer
 from .web_automation_tools import (
     WebAutomationAgent,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +82,7 @@ class ChannelMetrics:
     content_frequency: int  # Videos per week
     niche: str
     created_at: datetime
-    last_updated: datetime = field(default_factory=datetime.now)
+    last_updated: datetime = field(default_factory=datetime.now):
     growth_phase: GrowthPhase = GrowthPhase.GROWTH
 
 
@@ -99,7 +101,7 @@ class NicheOpportunity:
     estimated_startup_cost: float
     projected_roi: float
     confidence_score: float
-    identified_at: datetime = field(default_factory=datetime.now)
+    identified_at: datetime = field(default_factory=datetime.now):
     status: NicheStatus = NicheStatus.IDENTIFIED
 
 
@@ -115,24 +117,25 @@ class ExpansionPlan:
     resource_allocation: Dict[str, float]
     success_metrics: Dict[str, float]
     timeline: Dict[str, datetime]
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=datetime.now):
     status: str = "planned"
 
 
 class GrowthAgent(BaseAgent):
-    """
+    """"""
     Autonomous Growth Agent for Proactive Niche Domination
 
     This agent continuously monitors channel performance and automatically
     initiates expansion protocols when growth plateaus are detected.
-    """
+    """"""
 
     def __init__(
         self,
         agent_id: Optional[str] = None,
         name: Optional[str] = None,
         config: Optional[Dict[str, Any]] = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__(agent_id or str(uuid.uuid4()), name or "GrowthAgent")
         self.agent_type = "growth"
         self.config = config or {}
@@ -184,7 +187,7 @@ class GrowthAgent(BaseAgent):
 
                 # Channel metrics table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS channel_metrics (
                         channel_id TEXT PRIMARY KEY,
                             channel_name TEXT NOT NULL,
@@ -199,13 +202,15 @@ class GrowthAgent(BaseAgent):
                             growth_phase TEXT DEFAULT 'growth',
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Niche opportunities table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS niche_opportunities (
                         niche_id TEXT PRIMARY KEY,
                             niche_name TEXT NOT NULL,
@@ -220,13 +225,15 @@ class GrowthAgent(BaseAgent):
                             confidence_score REAL DEFAULT 0.0,
                             status TEXT DEFAULT 'identified',
                             identified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Expansion plans table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS expansion_plans (
                         plan_id TEXT PRIMARY KEY,
                             source_channel_id TEXT,
@@ -240,13 +247,15 @@ class GrowthAgent(BaseAgent):
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (source_channel_id) REFERENCES channel_metrics (channel_id),
                             FOREIGN KEY (target_niche_id) REFERENCES niche_opportunities (niche_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Growth history table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS growth_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             channel_id TEXT,
@@ -254,9 +263,11 @@ class GrowthAgent(BaseAgent):
                             metric_value REAL,
                             recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (channel_id) REFERENCES channel_metrics (channel_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 logger.info("Growth database tables created successfully")
@@ -271,7 +282,8 @@ class GrowthAgent(BaseAgent):
             return {
                 "status": "disabled",
                 "message": "Growth actions are currently disabled in configuration",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         task_type = task.get("type", "")
 
@@ -302,7 +314,8 @@ class GrowthAgent(BaseAgent):
             "plateaued_channels": [],
             "expansion_triggered": [],
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Load active channels from database
@@ -324,14 +337,17 @@ class GrowthAgent(BaseAgent):
                     if growth_rate < self.growth_threshold:
                         logger.warning(
                             f"Channel {channel_id} growth plateau detected: {growth_rate}%"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         results["plateaued_channels"].append(
                             {
                                 "channel_id": channel_id,
                                 "growth_rate": growth_rate,
                                 "channel_name": updated_metrics.channel_name,
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
 
                         # Trigger expansion protocol
                         expansion_result = await self._trigger_niche_expansion(channel_id)
@@ -356,11 +372,12 @@ class GrowthAgent(BaseAgent):
             with sqlite3.connect(db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM channel_metrics WHERE channel_id = ?
-                """,
+                ""","""
                     (channel_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 row = cursor.fetchone()
                 if row:
@@ -378,7 +395,8 @@ class GrowthAgent(BaseAgent):
                         growth_phase=GrowthPhase(row[10]),
                         created_at=datetime.fromisoformat(row[11]),
                         last_updated=datetime.fromisoformat(row[12]),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Check if cache is fresh (less than 1 hour old)
                     if (datetime.now() - cached_metrics.last_updated).seconds < 3600:
@@ -457,13 +475,14 @@ class GrowthAgent(BaseAgent):
             with sqlite3.connect(db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO channel_metrics
                     (channel_id, channel_name, platform, subscribers, views_last_30d,
                         revenue_last_30d, growth_rate_mom, engagement_rate, content_frequency,
-                         niche, growth_phase, created_at, last_updated)
+# BRACKET_SURGEON: disabled
+#                          niche, growth_phase, created_at, last_updated)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         metrics.channel_id,
                         metrics.channel_name,
@@ -478,8 +497,10 @@ class GrowthAgent(BaseAgent):
                         metrics.growth_phase.value,
                         metrics.created_at.isoformat(),
                         metrics.last_updated.isoformat(),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
                 logger.info(f"Updated cache for channel {metrics.channel_id}")
         except Exception as e:
@@ -540,7 +561,8 @@ class GrowthAgent(BaseAgent):
                 "expansion_plan_id": expansion_plan.plan_id,
                 "target_niche": niche_opportunity.niche_name,
                 "blitz_result": blitz_result,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Niche expansion failed for {source_channel_id}: {e}")
@@ -569,7 +591,8 @@ class GrowthAgent(BaseAgent):
                         estimated_startup_cost=gap.get("startup_cost", 1000.0),
                         projected_roi=gap.get("projected_roi", 1.5),
                         confidence_score=gap.get("confidence", 0.7),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     opportunities.append(opportunity)
 
                 # Select best opportunity based on profit potential and low competition
@@ -578,8 +601,10 @@ class GrowthAgent(BaseAgent):
                         opportunities,
                         key=lambda x: (
                             x.profit_potential * (1 - x.competition_level) * x.confidence_score
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Save to database
                     await self._save_niche_opportunity(best_opportunity)
@@ -601,13 +626,15 @@ class GrowthAgent(BaseAgent):
             "channels_setup": 0,
             "marketing_campaigns": 0,
             "affiliate_signups": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # 1. Rapid content creation (first 10 videos/posts)
             content_batch = await self._create_launch_content_batch(
                 expansion_plan.target_niche, count=10
-            )
+# BRACKET_SURGEON: disabled
+#             )
             blitz_results["content_created"] = len(content_batch)
 
             # 2. Multi - platform channel setup
@@ -620,14 +647,16 @@ class GrowthAgent(BaseAgent):
                     product_name=expansion_plan.target_niche.niche_name,
                     target_audience=expansion_plan.target_niche.target_audience,
                     budget=10000.0,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 blitz_results["marketing_campaigns"] = campaign_result.get("campaigns_launched", 0)
 
             # 4. Affiliate program setup - simplified for now
             affiliate_result = {
                 "status": "success",
                 "message": "Affiliate setup initiated",
-            }
+# BRACKET_SURGEON: disabled
+#             }
             blitz_results["affiliate_signups"] = affiliate_result.get("signups_completed", 0)
 
             logger.info(f"Day One Blitz completed: {blitz_results}")
@@ -671,7 +700,8 @@ class GrowthAgent(BaseAgent):
             "relentless_optimization",
             "market_gap_analysis",
             "roi_optimization",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def get_status(self) -> Dict[str, Any]:
         """Get current agent status"""
@@ -681,12 +711,14 @@ class GrowthAgent(BaseAgent):
             "identified_niches": len(self.niche_opportunities),
             "active_expansions": len(
                 [p for p in self.expansion_plans.values() if p.status == "active"]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "growth_threshold": self.growth_threshold,
             "monitoring_interval": self.monitoring_interval,
             "capabilities": self.capabilities,
             "last_monitoring_cycle": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _execute_with_monitoring(self, task: Dict[str, Any], context) -> Dict[str, Any]:
         """Execute task with monitoring"""
@@ -697,14 +729,16 @@ class GrowthAgent(BaseAgent):
                 "result": result,
                 "agent_id": getattr(self, "agent_id", "growth_agent"),
                 "execution_time": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             logger.error(f"Task execution failed: {e}")
             return {
                 "success": False,
                 "error": str(e),
                 "agent_id": getattr(self, "agent_id", "growth_agent"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
         """Rephrase task for confirmation"""
@@ -714,7 +748,8 @@ class GrowthAgent(BaseAgent):
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrase accuracy"""
         task_type = original_task.get("type", "")
         return task_type.lower() in rephrased.lower() if task_type else True

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Prometheus Integration Module
 
 Integrates Prometheus metrics collection with the existing performance monitoring system
@@ -13,7 +13,7 @@ Features:
 - Auto - scaling metrics support
 - Health check metrics
 - Resource utilization metrics
-"""
+""""""
 
 import logging
 import sys
@@ -34,7 +34,8 @@ from prometheus_client import (
     Histogram,
     Info,
     generate_latest,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
@@ -45,7 +46,8 @@ try:
     from backend.services.performance_monitor import performance_monitor
     from monitoring.performance_monitor import (
         PerformanceMonitor as TraePerformanceMonitor,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     performance_monitor = None
     TraePerformanceMonitor = None
@@ -79,20 +81,23 @@ class PrometheusMetrics:
         # System metrics
         self.cpu_usage = Gauge(
             "system_cpu_usage_percent", "CPU usage percentage", registry=self.registry
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.memory_usage = Gauge(
             "system_memory_usage_percent",
             "Memory usage percentage",
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.disk_usage = Gauge(
             "system_disk_usage_percent",
             "Disk usage percentage",
             ["mount_point"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Application metrics
         self.http_requests_total = Counter(
@@ -100,20 +105,23 @@ class PrometheusMetrics:
             "Total HTTP requests",
             ["method", "endpoint", "status"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.http_request_duration = Histogram(
             "http_request_duration_seconds",
             "HTTP request duration in seconds",
             ["method", "endpoint"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.active_connections = Gauge(
             "active_connections_total",
             "Number of active connections",
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Model generation metrics
         self.model_generation_requests = Counter(
@@ -121,34 +129,39 @@ class PrometheusMetrics:
             "Total model generation requests",
             ["status", "model_type"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.model_generation_duration = Histogram(
             "model_generation_duration_seconds",
             "Model generation duration in seconds",
             ["model_type"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.model_generation_queue_size = Gauge(
             "model_generation_queue_size",
             "Number of pending model generation requests",
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Database metrics
         self.database_connections = Gauge(
             "database_connections_active",
             "Number of active database connections",
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.database_query_duration = Histogram(
             "database_query_duration_seconds",
             "Database query duration in seconds",
             ["query_type"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Cache metrics
         self.cache_hits = Counter(
@@ -156,14 +169,16 @@ class PrometheusMetrics:
             "Total cache hits",
             ["cache_type"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.cache_misses = Counter(
             "cache_misses_total",
             "Total cache misses",
             ["cache_type"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Service health metrics
         self.service_health = Gauge(
@@ -171,7 +186,8 @@ class PrometheusMetrics:
             "Service health status (1 = healthy, 0 = unhealthy)",
             ["service_name"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Auto - scaling metrics
         self.scaling_events = Counter(
@@ -179,14 +195,16 @@ class PrometheusMetrics:
             "Total scaling events",
             ["action", "resource_type"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.resource_utilization = Gauge(
             "resource_utilization_percent",
             "Resource utilization percentage for scaling decisions",
             ["resource_type", "service"],
             registry=self.registry,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Application info
         self.app_info = Info("application_info", "Application information", registry=self.registry)
@@ -197,8 +215,10 @@ class PrometheusMetrics:
                 "version": "1.0.0",
                 "environment": "production",
                 "build_time": datetime.now().isoformat(),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
 
 class PrometheusIntegration:
@@ -268,9 +288,11 @@ class PrometheusIntegration:
         server_thread = threading.Thread(
             target=lambda: self.flask_app.run(
                 host="0.0.0.0", port=self.config.metrics_port, debug=False
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             daemon=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         server_thread.start()
 
     def _metrics_collection_loop(self):
@@ -302,18 +324,21 @@ class PrometheusIntegration:
                     usage = psutil.disk_usage(partition.mountpoint)
                     self.metrics.disk_usage.labels(mount_point=partition.mountpoint).set(
                         usage.percent
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 except (PermissionError, FileNotFoundError):
                     continue
 
             # Update resource utilization for scaling
             self.metrics.resource_utilization.labels(resource_type="cpu", service="system").set(
                 cpu_percent
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.metrics.resource_utilization.labels(resource_type="memory", service="system").set(
                 memory.percent
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Error collecting system metrics: {e}")
@@ -331,7 +356,8 @@ class PrometheusIntegration:
                         # Convert to seconds for Prometheus
                         self.metrics.model_generation_duration.labels(model_type="default").observe(
                             metric.value / 1000.0
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                     elif metric.name == "system.cpu.usage_percent":
                         self.metrics.resource_utilization.labels(
@@ -360,7 +386,8 @@ class PrometheusIntegration:
                         resource_type="memory", service="trae_app"
                     ).set(
                         app_metrics.memory_usage_mb / 1024
-                    )  # Convert to percentage
+# BRACKET_SURGEON: disabled
+#                     )  # Convert to percentage
 
                 except Exception as e:
                     logger.debug(f"Could not collect TRAE metrics: {e}")
@@ -378,7 +405,8 @@ class PrometheusIntegration:
                 "marketing_agent": "http://localhost:8002/health",
                 "monetization_bundle": "http://localhost:8003/health",
                 "analytics_dashboard": "http://localhost:8004/health",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             import requests
 
@@ -402,7 +430,8 @@ class PrometheusIntegration:
 
         self.metrics.http_request_duration.labels(method=method, endpoint=endpoint).observe(
             duration
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def record_model_generation(self, model_type: str, status: str, duration: float):
         """Record model generation metrics"""
@@ -438,7 +467,8 @@ prometheus_integration = None
 
 def initialize_prometheus_integration(
     config: PrometheusConfig = None,
-) -> PrometheusIntegration:
+# BRACKET_SURGEON: disabled
+# ) -> PrometheusIntegration:
     """Initialize Prometheus integration"""
     global prometheus_integration
 

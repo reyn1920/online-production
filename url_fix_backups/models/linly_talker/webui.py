@@ -22,7 +22,7 @@ os.environ["WEBUI"] = "true"
 
 
 def get_title(title="Linly 智能对话系统 (Linly - Talker)"):
-    description = f"""
+    description = f""""""
     <p style="text - align: center; font - weight: bold;">
         <span style="font - size: 28px;">{title}</span>
         <br>
@@ -35,7 +35,7 @@ def get_title(title="Linly 智能对话系统 (Linly - Talker)"):
         <br>
         <span > Linly - Talker是一款创新的数字人对话系统，它融合了最新的人工智能技术，包括大型语言模型（LLM）🤖、自动语音识别（ASR）🎙️、文本到语音转换（TTS）🗣️和语音克隆技术🎤。</span>
     </p>
-    """
+    """"""
     return description
 
 # Default system and prompt settings
@@ -70,9 +70,9 @@ def Asr(audio):
 
 
 def clear_memory():
-    """
+    """"""
     清理PyTorch的显存和系统内存缓存。
-    """
+    """"""
     # 1. 清理缓存的变量
     gc.collect()  # 触发Python垃圾回收
     torch.cuda.empty_cache()  # 清理PyTorch的显存缓存
@@ -82,7 +82,9 @@ def clear_memory():
     print(f"Memory allocated: {torch.cuda.memory_allocated()/(1024 ** 2):.2f} MB")
     print(
         f"Max memory allocated: {torch.cuda.max_memory_allocated()/(1024 ** 2):.2f} MB"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     print(f"Cached memory: {torch.cuda.memory_reserved()/(1024 ** 2):.2f} MB")
     print(f"Max cached memory: {torch.cuda.max_memory_reserved()/(1024 ** 2):.2f} MB")
 
@@ -135,7 +137,8 @@ def TTS_response(
         speed_factor,
         tts_method="Edge - TTS",
         save_path="answer.wav",
-):
+# BRACKET_SURGEON: disabled
+# ):
     if text == "":
         text = "请输入文字 / 问题"
     if tts_method == "Edge - TTS":
@@ -147,7 +150,9 @@ def TTS_response(
         except Exception as e:
             os.system(
                 f'edge - tts --text "{text}" --voice {voice} --write - media {save_path} --write - subtitles answer.vtt'
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         return save_path
 
     if tts_method == "PaddleTTS":
@@ -164,7 +169,9 @@ def TTS_response(
                     text_language = text_language,
                     how_to_cut = cut_method,
                     save_path = save_path,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             return save_path
         except Exception as e:
             gr.Warning("无克隆环境或模型权重，无法克隆声音", e)
@@ -182,7 +189,7 @@ def TTS_response(
                 return (TARGET_SR, DEFAULT_DATA)
             gr.Info("您正在使用跨语种复刻模式, 请确保合成文本和prompt文本为不同语言")
         # if in zero_shot cross_lingual, please make sure that prompt_text \
-    and prompt_wav meets requirements
+#     and prompt_wav meets requirements
         if mode_checkbox_group in ["3s极速复刻", "跨语种复刻"]:
             if prompt_wav is None:
                 gr.Warning("prompt音频为空，您是否忘记输入prompt音频？")
@@ -191,15 +198,21 @@ def TTS_response(
                 gr.Warning(
                     "prompt音频采样率{}低于{}".format(
                         torchaudio.info(prompt_wav).sample_rate, PROMPT_SR
-                    )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return (TARGET_SR, DEFAULT_DATA)
         # sft mode only use sft_dropdown
         if mode_checkbox_group in ["预训练音色"]:
             if prompt_wav is not None or prompt_text_cv != "":
                 gr.Info(
                     "您正在使用预训练音色模式，prompt文本 / prompt音频 / instruct文本会被忽略！"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         # zero_shot mode only use prompt_wav prompt text
         if mode_checkbox_group in ["3s极速复刻"]:
             if prompt_text_cv == "":
@@ -212,7 +225,9 @@ def TTS_response(
             set_all_random_seed(seed)
             output = cosyvoice.predict_sft(
                 text, sft_dropdown, speed_factor = speed_factor, save_path = save_path
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         elif mode_checkbox_group == "3s极速复刻":
             set_all_random_seed(seed)
             output = cosyvoice.predict_zero_shot(
@@ -221,12 +236,16 @@ def TTS_response(
                     prompt_wav,
                     speed_factor = speed_factor,
                     save_path = save_path,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         elif mode_checkbox_group == "跨语种复刻":
             set_all_random_seed(seed)
             output = cosyvoice.predict_cross_lingual(
                 text, prompt_wav, speed_factor = speed_factor, save_path = save_path
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         return output
     else:
         gr.Warning("未知模型")
@@ -238,7 +257,8 @@ instruct_dict = {
         "3s极速复刻": "1. 选择prompt音频文件，或录入prompt音频，注意不超过30s，若同时提供，优先选择prompt音频文件\\n2. 输入prompt文本\\n3. 点击生成音频按钮",
         "跨语种复刻": "1. 选择prompt音频文件，或录入prompt音频，注意不超过30s，若同时提供，优先选择prompt音频文件\\n2. 点击生成音频按钮",
         "自然语言控制": "1. 选择预训练音色\\n2. 输入instruct文本\\n3. 点击生成音频按钮",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 @calculate_time
 
@@ -268,7 +288,8 @@ def LLM_response(
     seed,
         speed_factor,  # 随机种子和语速因子
     tts_method="Edge - TTS",  # TTS 方法，默认使用 'Edge - TTS'
-):
+# BRACKET_SURGEON: disabled
+# ):
     if len(question) == 0:
         gr.Warning("请输入问题")
         return None, None, None
@@ -304,7 +325,9 @@ def LLM_response(
             seed,
             speed_factor,
             tts_method,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # 生成VTT文件（如果TTS方法为'Edge - TTS'）
     tts_vtt = "answer.vtt" if tts_method == "Edge - TTS" else None
@@ -352,7 +375,8 @@ def Talker_response_img(
         blink_every,
         fps,
         progress = gr.Progress(track_tqdm = True),
-):
+# BRACKET_SURGEON: disabled
+# ):
 
     if enhancer:
         gr.Warning("请先安装GFPGAN库 (pip install gfpgan)，已安装可忽略")
@@ -385,7 +409,9 @@ def Talker_response_img(
             seed,
             speed_factor,
             tts_method,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     if driven_audio is None:
         gr.Warning("音频没有正常生成，请检查TTS是否正确")
@@ -411,7 +437,9 @@ def Talker_response_img(
                 AUDIO_LENGTH,
                 blink_every,
                 fps = fps,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
     elif method == "Wav2Lip":
         video = talker.predict(source_image, driven_audio, batch_size)
     elif method == "Wav2Lipv2":
@@ -488,7 +516,8 @@ def human_response(
         blink_every,
         fps = 20,
         progress = gr.Progress(track_tqdm = True),
-):
+# BRACKET_SURGEON: disabled
+# ):
     response = history[-1][1]
     question = history[-1][0]
 
@@ -496,7 +525,9 @@ def human_response(
     if character == "女性角色":
         source_image = pic_path = crop_pic_path = first_coeff_path = (
             r"./inputs / girl.png"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         crop_info = ((403, 403), (19, 30, 502, 513), [40.06, 40.17, 443.79, 443.90])
         default_voice = "zh - CN - XiaoxiaoNeural"
     elif character == "男性角色":
@@ -541,7 +572,9 @@ def human_response(
             seed,
             speed_factor,
             tts_method,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     driven_vtt = "answer.vtt" if tts_method == "Edge - TTS" else None
     driven_vtt = None
     if driven_audio is None:
@@ -569,7 +602,9 @@ def human_response(
                 AUDIO_LENGTH,
                 blink_every,
                 fps = fps,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
     elif talker_method == "Wav2Lip":
         video = talker.predict(crop_pic_path, driven_audio, batch_size, enhancer)
     elif talker_method == "Wav2Lipv2":
@@ -614,7 +649,8 @@ def MuseTalker_response(
         tts_method="Edge - TTS",
         batch_size = 4,
         progress = gr.Progress(track_tqdm = True),
-):
+# BRACKET_SURGEON: disabled
+# ):
     default_voice = None
     voice = default_voice if not voice else voice
 
@@ -648,7 +684,9 @@ def MuseTalker_response(
             seed,
             speed_factor,
             tts_method,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     if driven_audio is None:
         gr.Warning("音频没有正常生成，请检查TTS是否正确")
@@ -657,7 +695,9 @@ def MuseTalker_response(
     # MuseTalker 视频生成
     video = musetalker.inference_noprepare(
         driven_audio, source_video, bbox_shift, batch_size, fps = 25
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     return (video, driven_vtt) if driven_vtt else video
 
@@ -700,26 +740,40 @@ def webui_setting(talk = False):
                     edgetts.SUPPORTED_VOICE,
                         value="zh - CN - XiaoxiaoNeural",
                         label="Voice 声音选择",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 rate = gr.Slider(
                     minimum=-100, maximum = 100, value = 0, step = 1.0, label="Rate 速率"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 volume = gr.Slider(
                     minimum = 0, maximum = 100, value = 100, step = 1, label="Volume 音量"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 pitch = gr.Slider(
                     minimum=-100, maximum = 100, value = 0, step = 1, label="Pitch 音调"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             with gr.Tab("PaddleTTS"):
                 am = gr.Dropdown(
                     ["FastSpeech2"], label="声学模型选择", value="FastSpeech2"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 voc = gr.Dropdown(
                     ["PWGan", "HifiGan"], label="声码器选择", value="PWGan"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 lang = gr.Dropdown(
                     ["zh", "en", "mix", "canton"], label="语言选择", value="zh"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 male = gr.Checkbox(label="男声(Male)", value = False)
             with gr.Tab("GPT - SoVITS"):
                 with gr.Row():
@@ -729,33 +783,43 @@ def webui_setting(talk = False):
                             value="s1bert25hz - 2kh - longer - epoch = 68e - step = 50232.ckpt",
                             file_count="single",
                             label="GPT模型路径",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     sovits_path = gr.FileExplorer(
                         root = GPT_SoVITS_ckpt,
                             glob="*.pth",
                             value="s2G488k.pth",
                             file_count="single",
                             label="SoVITS模型路径",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 button = gr.Button("加载模型")
                 button.click(
                     fn = load_vits_model,
                         inputs=[gpt_path, sovits_path],
                         outputs=[gpt_path, sovits_path],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 with gr.Row():
                     ref_audio = gr.Audio(
                         label="请上传3~10秒内参考音频，超过会报错！",
                             sources=["microphone", "upload"],
                             type="filepath",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     use_mic_voice = gr.Checkbox(label="使用语音问答的麦克风")
                     prompt_text = gr.Textbox(label="参考音频的文本", value="")
                     prompt_language = gr.Dropdown(
                         label="参考音频的语种",
                             choices=["中文", "英文", "日文"],
                             value="中文",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 asr_button = gr.Button("语音识别 - 克隆参考音频")
                 asr_button.click(fn = Asr, inputs=[ref_audio], outputs=[prompt_text])
                 with gr.Row():
@@ -768,9 +832,13 @@ def webui_setting(talk = False):
                                 "中英混合",
                                 "日英混合",
                                 "多语种混合",
-                                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
                             value="中文",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     cut_method = gr.Dropdown(
                         label="怎么切",
                             choices=[
@@ -780,15 +848,22 @@ def webui_setting(talk = False):
                                 "按中文句号。切",
                                 "按英文句号.切",
                                 "按标点符号切",
-                                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
                             value="凑四句一切",
                             interactive = True,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             with gr.Tab("CosyVoice"):
+                pass
                 # tts_text = gr.Textbox(label="输入合成文本",
     lines = 1,
-    value="我是通义实验室语音团队全新推出的生成式语音大模型，提供舒适自然的语音合成能力。")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     value="我是通义实验室语音团队全新推出的生成式语音大模型，提供舒适自然的语音合成能力。")
                 speed_factor = gr.Slider(
                     minimum = 0.25,
                         maximum = 4,
@@ -796,19 +871,25 @@ def webui_setting(talk = False):
                         label="语速调节",
                         value = 1.0,
                         interactive = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 with gr.Row():
                     mode_checkbox_group = gr.Radio(
                         choices = inference_mode_list,
                             label="选择推理模式",
                             value = inference_mode_list[0],
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     instruction_text = gr.Text(
                         label="操作步骤",
                             lines = 3,
                             value = instruct_dict[inference_mode_list[0]],
                             scale = 0.5,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     sft_dropdown = gr.Dropdown(
                         choices=[
                             "中文女",
@@ -818,11 +899,15 @@ def webui_setting(talk = False):
                                 "英文女",
                                 "英文男",
                                 "韩语女",
-                                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
                             label="选择预训练音色",
                             value="中文女",
                             scale = 0.25,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 with gr.Row():
                     seed_button = gr.Button(value="\\U0001f3b2")
                     seed = gr.Number(value = 0, label="随机推理种子")
@@ -831,42 +916,58 @@ def webui_setting(talk = False):
                         sources="upload",
                             type="filepath",
                             label="选择prompt音频文件，注意采样率不低于16khz",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     prompt_wav_record = gr.Audio(
                         sources="microphone",
                             type="filepath",
                             label="录制prompt音频文件",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 prompt_text_cv = gr.Textbox(
                     label="输入prompt文本",
                         lines = 1,
                         placeholder="请输入prompt文本，需与prompt音频内容一致，暂时不支持自动识别...",
                         value="",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 # instruct_text = gr.Textbox(label="输入instruct文本",
     lines = 1,
     placeholder="请输入instruct文本.",
-    value='')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     value='')
                 seed_button.click(generate_seed, inputs=[], outputs = seed)
                 mode_checkbox_group.change(
                     fn = change_instruction,
                         inputs=[mode_checkbox_group],
                         outputs=[instruction_text],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             generate_button = gr.Button("生成音频")
             audio_output = gr.Audio(label="合成音频")
 
             with gr.Column(variant="panel"):
                 batch_size = gr.Slider(
                     minimum = 1, maximum = 10, value = 2, step = 1, label="Talker Batch size"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
     if not talk:
         character = gr.Radio(
             ["女性角色", "男性角色", "自定义角色"], label="角色选择", value="自定义角色"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         character.change(
             fn = character_change, inputs=[character], outputs=[source_image]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         talker_method = gr.Radio(
             choices=[
                 "SadTalker",
@@ -874,13 +975,19 @@ def webui_setting(talk = False):
                     "Wav2Lipv2",
                     "NeRFTalk",
                     "Comming Soon!!!",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 value="SadTalker",
                 label="数字人模型选择",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         talker_method.change(
             fn = talker_model_change, inputs=[talker_method], outputs=[talker_method]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     else:
         character = None
         talker_method = None
@@ -892,10 +999,14 @@ def webui_setting(talk = False):
                 "CosyVoice - SFT模式",
                 "CosyVoice - 克隆翻译模式",
                 "Comming Soon!!!",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             label="Text To Speech Method",
             value="Edge - TTS",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     tts_method.change(fn = tts_model_change, inputs=[tts_method], outputs=[tts_method])
     asr_method = gr.Radio(
         choices=[
@@ -905,10 +1016,14 @@ def webui_setting(talk = False):
                 "OmniSenseVoice - quantize",
                 "OmniSenseVoice",
                 "Comming Soon!!!",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             value="Whisper - base",
             label="语音识别模型选择",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     asr_method.change(fn = asr_model_change, inputs=[asr_method], outputs=[asr_method])
     llm_method = gr.Dropdown(
         choices=[
@@ -922,10 +1037,14 @@ def webui_setting(talk = False):
                 "QAnything",
                 "直接回复 Direct Reply",
                 "Comming Soon!!!",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             value="直接回复 Direct Reply",
             label="LLM 模型选择",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     llm_method.change(fn = llm_model_change, inputs=[llm_method], outputs=[llm_method])
     return (
         source_image,
@@ -958,7 +1077,9 @@ def webui_setting(talk = False):
             prompt_wav_record,
             seed,
             speed_factor,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
 def exmaple_setting(asr, text, character, talk, tts, voice, llm):
@@ -972,7 +1093,9 @@ def exmaple_setting(asr, text, character, talk, tts, voice, llm):
                 "Edge - TTS",
                 "zh - CN - XiaoxiaoNeural",
                 "直接回复 Direct Reply",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             [
             "Whisper - tiny",
                 "应对压力最有效的方法是什么？",
@@ -981,7 +1104,9 @@ def exmaple_setting(asr, text, character, talk, tts, voice, llm):
                 "PaddleTTS",
                 "None",
                 "直接回复 Direct Reply",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             [
             "Whisper - base",
                 "应对压力最有效的方法是什么？",
@@ -990,7 +1115,9 @@ def exmaple_setting(asr, text, character, talk, tts, voice, llm):
                 "Edge - TTS",
                 "zh - CN - XiaoxiaoNeural",
                 "Qwen",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             [
             "FunASR",
                 "如何进行时间管理？",
@@ -999,7 +1126,9 @@ def exmaple_setting(asr, text, character, talk, tts, voice, llm):
                 "Edge - TTS",
                 "zh - CN - YunyangNeural",
                 "Qwen",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             [
             "Whisper - tiny",
                 "为什么有些人选择使用纸质地图或寻求方向，而不是依赖GPS设备或智能手机应用程序？",
@@ -1008,7 +1137,9 @@ def exmaple_setting(asr, text, character, talk, tts, voice, llm):
                 "PaddleTTS",
                 "None",
                 "Qwen",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             [
             "Whisper - tiny",
                 "为什么有些人选择使用纸质地图或寻求方向，而不是依赖GPS设备或智能手机应用程序？",
@@ -1017,15 +1148,21 @@ def exmaple_setting(asr, text, character, talk, tts, voice, llm):
                 "Edge - TTS",
                 "None",
                 "Qwen",
-                ],
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
     with gr.Row(variant="panel"):
         with gr.Column(variant="panel"):
-            gr.Markdown("## Test Examples")
+            gr.Markdown("## Test Examples")"
             gr.Examples(
                 examples = examples,
                     inputs=[asr, text, character, talk, tts, voice, llm],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
 def app_multi():
@@ -1067,13 +1204,17 @@ def app_multi():
                         prompt_wav_record,
                         seed,
                         speed_factor,
-                        ) = webui_setting()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) = webui_setting()
 
                 # 数字人问答视频显示
                 video = gr.Video(label="数字人问答", scale = 0.5)
                 video_button = gr.Button(
                     "🎬 生成数字人视频（对话后）", variant="primary"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             with gr.Column():
                 with gr.Tabs(elem_id="sadtalker_checkbox"):
@@ -1081,7 +1222,9 @@ def app_multi():
                         with gr.Accordion("Advanced Settings", open = False):
                             gr.Markdown(
                                 "SadTalker: need help? please visit our [best practice page](https://github.com / OpenTalker / SadTalker / blob / main / docs / best_practice.md) for more details"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             with gr.Column(variant="panel"):
                                 # 数字人参数设置
                                 with gr.Row():
@@ -1091,24 +1234,32 @@ def app_multi():
                                             step = 1,
                                             label="Pose style",
                                             value = 0,
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                     exp_weight = gr.Slider(
                                         minimum = 0,
                                             maximum = 3,
                                             step = 0.1,
                                             label="expression scale",
                                             value = 1,
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                     blink_every = gr.Checkbox(
                                         label="use eye blink", value = True
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                                 with gr.Row():
                                     size_of_image = gr.Radio(
                                         [256, 512],
                                             value = 256,
                                             label="face model resolution",
                                             info="use 256 / 512 model? 256 is faster",
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                     preprocess_type = gr.Radio(
                                         [
                                             "crop",
@@ -1116,39 +1267,54 @@ def app_multi():
                                                 "full",
                                                 "extcrop",
                                                 "extfull",
-                                                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                                 ],
                                             value="crop",
                                             label="preprocess",
                                             info="How to handle input image?",
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                 with gr.Row():
                                     is_still_mode = gr.Checkbox(
-                                        label="Still Mode (fewer head motion,
-    works with preprocess `full`)"
-                                    )
+                                        label="Still Mode (fewer head motion,"
+# BRACKET_SURGEON: disabled
+#     works with preprocess `full`)""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                                     facerender = gr.Radio(
                                         ["facevid2vid"],
                                             value="facevid2vid",
                                             label="facerender",
                                             info="which face render?",
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                 with gr.Row():
                                     fps = gr.Slider(
                                         label="fps in generation",
                                             step = 1,
                                             maximum = 30,
                                             value = 20,
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                     enhancer = gr.Checkbox(
                                         label="GFPGAN as Face enhancer(slow)"
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                 # System 设定及清除历史对话
                 with gr.Row():
                     with gr.Column(scale = 3):
                         system_input = gr.Textbox(
                             value = DEFAULT_SYSTEM, lines = 1, label="System (设定角色)"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     with gr.Column(scale = 1):
                         modify_system = gr.Button("🛠️ 设置system并清除历史对话", scale = 2)
                     system_state = gr.Textbox(value = DEFAULT_SYSTEM, visible = False)
@@ -1163,7 +1329,9 @@ def app_multi():
                             type="filepath",
                             label="语音对话",
                             autoplay = False,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     asr_btn = gr.Button("🎤 语音识别（语音对话后点击）")
 
                 # 文本输入框
@@ -1171,7 +1339,9 @@ def app_multi():
                     label="输入文字 / 问题",
                         lines = 3,
                         placeholder="请输入文本或问题，同时可以设置LLM模型。默认使用直接回复。",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 asr_btn.click(fn = Asr, inputs=[question_audio], outputs=[msg])
 
                 generate_button.click(
@@ -1202,9 +1372,13 @@ def app_multi():
                             seed,
                             speed_factor,
                             tts_method,
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         outputs=[audio_output],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # 清除历史记录和提交按钮
                 with gr.Row():
@@ -1216,13 +1390,17 @@ def app_multi():
                     chat_response,
                         inputs=[system_input, msg, chatbot],
                         outputs=[msg, chatbot],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 clear_history.click(fn = clear_session, outputs=[msg, chatbot])
                 modify_system.click(
                     fn = modify_system_session,
                         inputs=[system_input],
                         outputs=[system_state, system_input, chatbot],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 video_button.click(
                     fn = human_response,
                         inputs=[
@@ -1263,14 +1441,20 @@ def app_multi():
                             exp_weight,
                             blink_every,
                             fps,
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         outputs=[video],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         # 示例设置
         exmaple_setting(
             asr_method, msg, character, talker_method, tts_method, voice, llm_method
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     return inference
 
 
@@ -1313,7 +1497,9 @@ def app_img():
                         prompt_wav_record,
                         seed,
                         speed_factor,
-                        ) = webui_setting()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) = webui_setting()
 
             with gr.Column(variant="panel"):
                 with gr.Tabs():
@@ -1323,16 +1509,22 @@ def app_img():
                                 sources=["microphone", "upload"],
                                     type="filepath",
                                     label="语音对话",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                             input_text = gr.Textbox(
                                 label="输入文字 / 问题",
                                     lines = 3,
                                     placeholder="请输入文本或问题，同时可以设置LLM模型。默认使用直接回复。",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                             asr_btn = gr.Button("语音识别（语音对话后点击）")
                         asr_btn.click(
                             fn = Asr, inputs=[question_audio], outputs=[input_text]
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 generate_button.click(
                     fn = TTS_response,
                         inputs=[
@@ -1361,18 +1553,26 @@ def app_img():
                             seed,
                             speed_factor,
                             tts_method,
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         outputs=[audio_output],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 with gr.Tabs(elem_id="text_examples"):
-                    gr.Markdown("## Text Examples")
+                    gr.Markdown("## Text Examples")"
                     examples = [
                         ["应对压力最有效的方法是什么？"],
                             ["如何进行时间管理？"],
                             [
                             "为什么有些人选择使用纸质地图或寻求方向，而不是依赖GPS设备或智能手机应用程序？"
-                        ],
-                            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
                     gr.Examples(examples = examples, inputs=[input_text])
 
                 with gr.Tabs(elem_id="sadtalker_checkbox"):
@@ -1380,7 +1580,9 @@ def app_img():
                         with gr.Accordion("Advanced Settings", open = False):
                             gr.Markdown(
                                 "SadTalker: need help? please visit our [best practice page](https://github.com / OpenTalker / SadTalker / blob / main / docs / best_practice.md) for more details"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             with gr.Column(variant="panel"):
                                 with gr.Row():
                                     pose_style = gr.Slider(
@@ -1389,24 +1591,32 @@ def app_img():
                                             step = 1,
                                             label="Pose style",
                                             value = 0,
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                     exp_weight = gr.Slider(
                                         minimum = 0,
                                             maximum = 3,
                                             step = 0.1,
                                             label="expression scale",
                                             value = 1,
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                     blink_every = gr.Checkbox(
                                         label="use eye blink", value = True
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                                 with gr.Row():
                                     size_of_image = gr.Radio(
                                         [256, 512],
                                             value = 256,
                                             label="face model resolution",
                                             info="use 256 / 512 model? 256 is faster",
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                     preprocess_type = gr.Radio(
                                         [
                                             "crop",
@@ -1414,39 +1624,54 @@ def app_img():
                                                 "full",
                                                 "extcrop",
                                                 "extfull",
-                                                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                                 ],
                                             value="crop",
                                             label="preprocess",
                                             info="How to handle input image?",
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                 with gr.Row():
                                     is_still_mode = gr.Checkbox(
-                                        label="Still Mode (fewer head motion,
-    works with preprocess `full`)"
-                                    )
+                                        label="Still Mode (fewer head motion,"
+# BRACKET_SURGEON: disabled
+#     works with preprocess `full`)""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                                     facerender = gr.Radio(
                                         ["facevid2vid"],
                                             value="facevid2vid",
                                             label="facerender",
                                             info="which face render?",
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                 with gr.Row():
                                     fps = gr.Slider(
                                         label="fps in generation",
                                             step = 1,
                                             maximum = 30,
                                             value = 20,
-                                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                             )
                                     enhancer = gr.Checkbox(
                                         label="GFPGAN as Face enhancer(slow)"
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                 with gr.Tabs(elem_id="sadtalker_genearted"):
                     gen_video = gr.Video(label="数字人视频", format="mp4")
 
                 submit = gr.Button(
                     "🎬 生成数字人视频", elem_id="sadtalker_generate", variant="primary"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 submit.click(
                     fn = Talker_response_img,
                         inputs=[
@@ -1486,9 +1711,13 @@ def app_img():
                             exp_weight,
                             blink_every,
                             fps,
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         outputs=[gen_video],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         with gr.Row():
             examples = [
@@ -1498,37 +1727,49 @@ def app_img():
                         "crop",
                         False,
                         False,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     [
                     "examples / source_image / full_body_1.png",
                         "Wav2Lipv2",
                         "full",
                         False,
                         False,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     [
                     "examples / source_image / full_body_2.png",
                         "Wav2Lipv2",
                         "full",
                         False,
                         False,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     [
                     "examples / source_image / full_body_1.png",
                         "Wav2Lip",
                         "full",
                         True,
                         False,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     [
                     "examples / source_image / full_body_1.png",
                         "SadTalker",
                         "full",
                         True,
                         False,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     ["examples / source_image / full4.jpeg", "SadTalker", "crop", False, True],
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             gr.Examples(
                 examples = examples,
                     inputs=[
@@ -1537,10 +1778,14 @@ def app_img():
                         preprocess_type,
                         is_still_mode,
                         enhancer,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     outputs=[gen_video],
                     # cache_examples = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
     return inference
 
 
@@ -1548,7 +1793,9 @@ def load_musetalk_model():
     """加载MuseTalk模型，显示加载状态和结果信息。"""
     gr.Warning(
         "若显存不足，可能会导致模型加载失败，可以尝试使用其他模型或者换其他设备。"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     gr.Info("MuseTalk模型导入中...")
     musetalker.init_model()
     gr.Info("MuseTalk模型导入成功")
@@ -1574,25 +1821,35 @@ def app_muse():
                 with gr.TabItem("MuseV Video"):
                     gr.Markdown(
                         "MuseV: 需要帮助？请访问 [MuseVDemo](https://huggingface.co / spaces / AnchorFake / MuseVDemo) 生成视频。"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     source_video = gr.Video(label="Reference Video", sources=["upload"])
                     gr.Markdown(
                         "BBox_shift 推荐值下限，在生成初始结果后生成相应的 bbox 范围。"
                         "一般来说，正值（向下半部分移动）通常会增加嘴巴的张开度，"
                         "而负值（向上半部分移动）通常会减少嘴巴的张开度。"
                         "用户可根据具体需求调整此参数。"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     bbox_shift = gr.Number(label="BBox_shift value, px", value = 0)
                     bbox_shift_scale = gr.Textbox(
                         label="bbox_shift_scale", value="", interactive = False
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 # 加载MuseTalk模型按钮
                 load_musetalk = gr.Button(
                     "加载MuseTalk模型(传入视频前先加载)", variant="primary"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 load_musetalk.click(fn = load_musetalk_model,
-    outputs = bbox_shift_scale)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     outputs = bbox_shift_scale)
 
                 # 加载 Web UI 设置
                 (
@@ -1626,14 +1883,18 @@ def app_muse():
                         prompt_wav_record,
                         seed,
                         speed_factor,
-                        ) = webui_setting(talk = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) = webui_setting(talk = True)
 
             # 处理source_video变化
             source_video.change(
                 fn = musetalk_prepare_material,
                     inputs=[source_video, bbox_shift],
                     outputs=[source_video, bbox_shift_scale],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # 问题输入和ASR识别
             with gr.Column(variant="panel"):
@@ -1644,16 +1905,22 @@ def app_muse():
                                 sources=["microphone", "upload"],
                                     type="filepath",
                                     label="语音对话",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                             input_text = gr.Textbox(
                                 label="输入文字 / 问题",
                                     lines = 3,
                                     placeholder="请输入文本或问题，同时可以设置LLM模型。默认使用直接回复。",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                             asr_btn = gr.Button("语音识别（语音对话后点击）")
                         asr_btn.click(
                             fn = Asr, inputs=[question_audio], outputs=[input_text]
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     generate_button.click(
                         fn = TTS_response,
                             inputs=[
@@ -1682,20 +1949,28 @@ def app_muse():
                                 seed,
                                 speed_factor,
                                 tts_method,
-                                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
                             outputs=[audio_output],
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # 生成MuseTalk视频
                 with gr.TabItem("MuseTalk Video"):
                     gen_video = gr.Video(label="数字人视频", format="mp4")
                 submit = gr.Button(
                     "Generate", elem_id="sadtalker_generate", variant="primary"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 # examples = [os.path.join('Musetalk / data / video',
-    video) for video in os.listdir("Musetalk / data / video")]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     video) for video in os.listdir("Musetalk / data / video")]
 
-                gr.Markdown("## MuseV Video Examples")
+                gr.Markdown("## MuseV Video Examples")"
                 gr.Examples(
                     examples=[
                         ["Musetalk / data / video / yongen_musev.mp4", 5],
@@ -1705,9 +1980,13 @@ def app_muse():
                             ["Musetalk / data / video / seaside4_musev.mp4", 5],
                             ["Musetalk / data / video / sit_musev.mp4", 5],
                             ["Musetalk / data / video / man_musev.mp4", 5],
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         inputs=[source_video, bbox_shift],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             # 提交按钮点击事件
             submit.click(
@@ -1740,9 +2019,13 @@ def app_muse():
                         speed_factor,
                         tts_method,
                         batch_size,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     outputs=[gen_video],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
     return inference
 
@@ -1756,13 +2039,17 @@ def asr_model_change(model_name, progress = gr.Progress(track_tqdm = True)):
         if model_name == "Whisper - tiny":
             asr_path = (
                 "Whisper / tiny.pt" if os.path.exists("Whisper / tiny.pt") else "tiny"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             asr = WhisperASR(asr_path)
             gr.Info("Whisper - tiny模型导入成功")
         elif model_name == "Whisper - base":
             asr_path = (
                 "Whisper / base.pt" if os.path.exists("Whisper / base.pt") else "base"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             asr = WhisperASR(asr_path)
             gr.Info("Whisper - base模型导入成功")
         elif model_name == "FunASR":
@@ -1805,30 +2092,40 @@ def llm_model_change(model_name, progress = gr.Progress(track_tqdm = True)):
         if model_name == "Linly":
             llm = llm_class.init_model(
                 "Linly", "Linly - AI / Chinese - LLaMA - 2 - 7B - hf", prefix_prompt = PREFIX_PROMPT
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             gr.Info("Linly模型导入成功")
         elif model_name == "Qwen":
             llm = llm_class.init_model(
                 "Qwen", "Qwen / Qwen - 1_8B - Chat", prefix_prompt = PREFIX_PROMPT
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             gr.Info("Qwen模型导入成功")
         elif model_name == "Qwen2":
             llm = llm_class.init_model(
                 "Qwen2", "Qwen / Qwen1.5 - 0.5B - Chat", prefix_prompt = PREFIX_PROMPT
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             gr.Info("Qwen2模型导入成功")
         elif model_name == "Gemini":
             if gemini_apikey:
                 llm = llm_class.init_model(
                     "Gemini", "gemini - pro", gemini_apikey, proxy_url
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 gr.Info("Gemini模型导入成功")
             else:
                 gr.Warning("请填写Gemini的API密钥")
         elif model_name == "ChatGLM":
             llm = llm_class.init_model(
                 "ChatGLM", "THUDM / chatglm3 - 6b", prefix_prompt = PREFIX_PROMPT
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             gr.Info("ChatGLM模型导入成功")
         elif model_name == "ChatGPT":
             if openai_apikey:
@@ -1837,7 +2134,9 @@ def llm_model_change(model_name, progress = gr.Progress(track_tqdm = True)):
                         api_key = openai_apikey,
                         proxy_url = proxy_url,
                         prefix_prompt = PREFIX_PROMPT,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 gr.Info("ChatGPT模型导入成功")
             else:
                 gr.Warning("请填写OpenAI的API密钥")
@@ -2003,7 +2302,8 @@ if __name__ == "__main__":
     if torch.cuda.is_available():
         gpu_memory = torch.cuda.get_device_properties(0).total_memory/(
             1024**3
-        )  # Convert bytes to GB
+# BRACKET_SURGEON: disabled
+#         )  # Convert bytes to GB
         if gpu_memory < 8:
             error_print("警告: 您的显卡显存小于8GB，不建议使用MuseTalk功能")
 
@@ -2035,7 +2335,9 @@ if __name__ == "__main__":
         interface_list=[demo_img, demo_multi, demo_muse],
             tab_names=["个性化角色互动", "数字人多轮智能对话", "MuseTalk数字人实时对话"],
             title="Linly - Talker WebUI",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     demo.queue(max_size = 4, default_concurrency_limit = 2)
     demo.launch(
         server_name = ip,  # 本地localhost:127.0.0.1 或 "0.0.0.0" 进行全局端口转发
@@ -2045,4 +2347,6 @@ if __name__ == "__main__":
         # ssl_verify = False,
             # share = True,
             debug = True,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )

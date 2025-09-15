@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 World - Class Research System Demonstration
 Showcases the comprehensive AI - powered research infrastructure
-"""
+""""""
 
 import asyncio
 
@@ -13,18 +13,21 @@ try:
         ContentFeatures,
         ContentType,
         PredictiveAnalyticsEngine,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     from backend.agents.research_agent import ResearchAgent
     from backend.agents.specialized_agents import (
         ResearchAgent as SpecializedResearchAgent,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     from backend.engines.hypocrisy_engine import HypocrisyEngine
     from backend.integrations.research_validation_service import (
         ResearchValidationRequest,
         ResearchValidationService,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError as e:
     print(f"Import warning: {e}")
     print("Some components may not be available - showing fallback capabilities")
@@ -137,7 +140,8 @@ async def run_research_system_test():
             sentiment_score=0.85,
             readability_score=78.0,
             trending_keywords_count=4,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         prediction = await engine.predict_content_success(test_content)
         print(f"   ✅ Success Score: {prediction.success_score:.2f}/1.0")
@@ -156,7 +160,8 @@ async def run_research_system_test():
             topic="AI Research",
             validation_type="claim",
             priority="high",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         validation_result = await validation_service.validate_research(test_claim)
         print(f"   ✅ Validation Status: {validation_result.validation_status}")
@@ -201,7 +206,8 @@ def show_research_metrics():
         "Scalability": "Production - ready",
         "Reliability": "99.9% uptime",
         "Security": "Enterprise - grade",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     for metric, value in metrics.items():
         print(f"   📈 {metric}: {value}")

@@ -26,7 +26,8 @@ MEMORY_OPTIMIZATION = {
     "gradient_checkpointing": True,
     "mixed_precision": True,
     "cpu_offload": True,  # Offload unused models to CPU
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # ============================================================================
 # MODEL OPTIMIZATION SETTINGS
@@ -42,7 +43,8 @@ OPTIMIZED_MODELS = {
     "avatar_model": "wav2lip",  # More M1 - friendly than SadTalker
     # Lightweight LLM options
     "llm_model": "qwen - 1.8b",  # Smaller model for better performance
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # ============================================================================
 # PERFORMANCE OPTIMIZATION PARAMETERS
@@ -53,7 +55,8 @@ BATCH_SETTINGS = {
     "batch_size": 1,  # Single batch for memory efficiency
     "max_concurrent_requests": 1,  # Prevent memory overflow
     "queue_size": 2,  # Small queue to prevent memory buildup
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # Video generation optimization
 VIDEO_SETTINGS = {
@@ -62,14 +65,16 @@ VIDEO_SETTINGS = {
     "quality": "medium",  # Balance between quality and performance
     "use_enhancer": False,  # Disable enhancer to save memory
     "still_mode": True,  # Enable for less computation
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # Audio processing optimization
 AUDIO_SETTINGS = {
     "sample_rate": 16000,  # Standard rate, good balance
     "chunk_length": 30,  # Process in smaller chunks
     "enable_vad": True,  # Voice activity detection to save processing
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # ============================================================================
 # M1 - SPECIFIC PYTORCH OPTIMIZATIONS
@@ -81,7 +86,8 @@ PYTORCH_OPTIMIZATIONS = {
     "torch.backends.mps.allow_fallback": True,  # Allow CPU fallback if needed
     "torch.set_num_threads": 4,  # Optimize for M1's 4 performance cores
     "torch.set_num_interop_threads": 2,
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # Apply PyTorch optimizations
 
@@ -144,7 +150,8 @@ MODEL_LOADING = {
     "model_cache_size": 2,  # Keep max 2 models in memory
     "auto_unload": True,  # Automatically unload unused models
     "preload_essential": ["tts", "asr"],  # Only preload essential models
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # ============================================================================
 # GRADIO UI OPTIMIZATION
@@ -156,7 +163,8 @@ UI_SETTINGS = {
     "enable_queue": True,
     "show_error": True,
     "debug": False,  # Disable debug for better performance
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # ============================================================================
 # NETWORK AND API SETTINGS
@@ -169,7 +177,8 @@ SERVER_CONFIG = {
     "workers": 1,  # Single worker to prevent memory issues
     "timeout": 300,  # 5 minute timeout
     "max_request_size": 50 * 1024 * 1024,  # 50MB max request
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # ============================================================================
 # FEATURE FLAGS FOR M1 OPTIMIZATION
@@ -182,7 +191,8 @@ FEATURE_FLAGS = {
     "enable_batch_processing": False,  # Disable batch processing
     "enable_gpu_acceleration": True,  # Use MPS acceleration
     "enable_memory_monitoring": True,  # Monitor memory usage
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # ============================================================================
 # INITIALIZATION FUNCTION
@@ -234,11 +244,13 @@ def get_system_info():
         "pytorch_version": torch.__version__,
         "mps_available": (
             torch.backends.mps.is_available() if hasattr(torch.backends, "mps") else False
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         "total_memory_gb": round(psutil.virtual_memory().total / (1024**3), 2),
         "available_memory_gb": round(psutil.virtual_memory().available / (1024**3), 2),
         "cpu_count": psutil.cpu_count(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     return info
 

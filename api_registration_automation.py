@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Registration Automation Script
 Automatically opens registration pages and manages API keys
 
@@ -7,7 +7,7 @@ Usage:
     python api_registration_automation.py --phase 1
     python api_registration_automation.py --api huggingface
     python api_registration_automation.py --batch-register
-"""
+""""""
 
 import argparse
 import json
@@ -30,7 +30,8 @@ API_REGISTRY = {
         "phase": 1,
         "priority": "HIGH",
         "notes": "1. Sign up → 2. Go to Settings → 3. Access Tokens → 4. Create new token",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "groq": {
         "name": "Groq",
         "url": "https://console.groq.com/",
@@ -40,7 +41,8 @@ API_REGISTRY = {
         "phase": 1,
         "priority": "HIGH",
         "notes": "1. Sign up → 2. Create API Key → 3. Copy key",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "google_ai": {
         "name": "Google AI (Gemini)",
         "url": "https://makersuite.google.com/",
@@ -50,7 +52,8 @@ API_REGISTRY = {
         "phase": 1,
         "priority": "HIGH",
         "notes": "1. Sign up with Google → 2. Create API Key → 3. Copy key",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "youtube": {
         "name": "YouTube Data API",
         "url": "https://console.cloud.google.com/",
@@ -60,7 +63,8 @@ API_REGISTRY = {
         "phase": 1,
         "priority": "HIGH",
         "notes": "1. Google Cloud Console → 2. Enable YouTube Data API → 3. Create credentials",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "reddit": {
         "name": "Reddit API",
         "url": "https://www.reddit.com/prefs/apps",
@@ -70,7 +74,8 @@ API_REGISTRY = {
         "phase": 1,
         "priority": "HIGH",
         "notes": "1. Reddit login → 2. Create app → 3. Get client ID and secret",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "github": {
         "name": "GitHub API",
         "url": "https://github.com/join",
@@ -80,7 +85,8 @@ API_REGISTRY = {
         "phase": 1,
         "priority": "HIGH",
         "notes": "1. GitHub login → 2. Settings → 3. Developer settings → 4. Personal access tokens",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "netlify": {
         "name": "Netlify",
         "url": "https://app.netlify.com/signup",
@@ -90,7 +96,8 @@ API_REGISTRY = {
         "phase": 1,
         "priority": "HIGH",
         "notes": "1. Sign up → 2. User settings → 3. Applications → 4. Personal access tokens",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "sendgrid": {
         "name": "SendGrid",
         "url": "https://signup.sendgrid.com/",
@@ -100,7 +107,8 @@ API_REGISTRY = {
         "phase": 1,
         "priority": "HIGH",
         "notes": "1. Sign up → 2. Settings → 3. API Keys → 4. Create API Key",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     # Phase 2: Social Media APIs
     "twitter": {
         "name": "Twitter/X API",
@@ -111,7 +119,8 @@ API_REGISTRY = {
         "phase": 2,
         "priority": "MEDIUM",
         "notes": "1. Apply for developer account → 2. Create app → 3. Get API keys",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "linkedin": {
         "name": "LinkedIn API",
         "url": "https://developer.linkedin.com/",
@@ -121,7 +130,8 @@ API_REGISTRY = {
         "phase": 2,
         "priority": "MEDIUM",
         "notes": "1. LinkedIn login → 2. Create app → 3. Get client credentials",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "pinterest": {
         "name": "Pinterest API",
         "url": "https://developers.pinterest.com/",
@@ -131,7 +141,8 @@ API_REGISTRY = {
         "phase": 2,
         "priority": "MEDIUM",
         "notes": "1. Pinterest login → 2. Create app → 3. Generate access token",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "tiktok": {
         "name": "TikTok API",
         "url": "https://developers.tiktok.com/",
@@ -141,7 +152,8 @@ API_REGISTRY = {
         "phase": 2,
         "priority": "MEDIUM",
         "notes": "1. TikTok login → 2. Apply for API access → 3. Create app",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "facebook": {
         "name": "Facebook/Meta API",
         "url": "https://developers.facebook.com/",
@@ -151,7 +163,8 @@ API_REGISTRY = {
         "phase": 2,
         "priority": "MEDIUM",
         "notes": "1. Facebook login → 2. Create app → 3. Get app ID and secret",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "instagram": {
         "name": "Instagram API",
         "url": "https://developers.facebook.com/",
@@ -161,7 +174,8 @@ API_REGISTRY = {
         "phase": 2,
         "priority": "MEDIUM",
         "notes": "1. Facebook developers → 2. Instagram Basic Display → 3. Create app",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     # Phase 3: Specialized APIs
     "dog_api": {
         "name": "Dog API",
@@ -172,7 +186,8 @@ API_REGISTRY = {
         "phase": 3,
         "priority": "LOW",
         "notes": "1. Sign up → 2. Get API key from email",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "cat_api": {
         "name": "Cat API",
         "url": "https://thecatapi.com/signup",
@@ -182,7 +197,8 @@ API_REGISTRY = {
         "phase": 3,
         "priority": "LOW",
         "notes": "1. Sign up → 2. Get API key from email",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "ebird": {
         "name": "eBird API",
         "url": "https://ebird.org/api/keygen",
@@ -192,7 +208,8 @@ API_REGISTRY = {
         "phase": 3,
         "priority": "LOW",
         "notes": "1. eBird login → 2. Request API key → 3. Get key via email",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "petfinder": {
         "name": "Petfinder API",
         "url": "https://www.petfinder.com/developers/",
@@ -202,7 +219,8 @@ API_REGISTRY = {
         "phase": 3,
         "priority": "LOW",
         "notes": "1. Petfinder login → 2. Register app → 3. Get API key and secret",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "openweather": {
         "name": "OpenWeatherMap",
         "url": "https://openweathermap.org/api",
@@ -212,7 +230,8 @@ API_REGISTRY = {
         "phase": 3,
         "priority": "MEDIUM",
         "notes": "1. Sign up → 2. API keys section → 3. Generate key",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "unsplash": {
         "name": "Unsplash API",
         "url": "https://unsplash.com/developers",
@@ -222,7 +241,8 @@ API_REGISTRY = {
         "phase": 3,
         "priority": "MEDIUM",
         "notes": "1. Unsplash login → 2. Create new app → 3. Get access key",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     # Phase 4: Business APIs
     "stripe": {
         "name": "Stripe",
@@ -233,7 +253,8 @@ API_REGISTRY = {
         "phase": 4,
         "priority": "MEDIUM",
         "notes": "1. Sign up → 2. Developers → 3. API keys → 4. Get publishable and secret keys",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "calendly": {
         "name": "Calendly",
         "url": "https://calendly.com/",
@@ -243,7 +264,8 @@ API_REGISTRY = {
         "phase": 4,
         "priority": "LOW",
         "notes": "1. Sign up → 2. Integrations → 3. API & Webhooks → 4. Generate token",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "mailchimp": {
         "name": "Mailchimp",
         "url": "https://mailchimp.com/",
@@ -253,7 +275,8 @@ API_REGISTRY = {
         "phase": 4,
         "priority": "MEDIUM",
         "notes": "1. Sign up → 2. Account → 3. Extras → 4. API keys → 5. Create key",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "hubspot": {
         "name": "HubSpot",
         "url": "https://www.hubspot.com/",
@@ -263,7 +286,8 @@ API_REGISTRY = {
         "phase": 4,
         "priority": "LOW",
         "notes": "1. Sign up → 2. Settings → 3. Integrations → 4. API key",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "airtable": {
         "name": "Airtable",
         "url": "https://airtable.com/",
@@ -273,7 +297,8 @@ API_REGISTRY = {
         "phase": 4,
         "priority": "LOW",
         "notes": "1. Sign up → 2. Account → 3. Generate API key",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "notion": {
         "name": "Notion",
         "url": "https://www.notion.so/",
@@ -283,8 +308,10 @@ API_REGISTRY = {
         "phase": 4,
         "priority": "LOW",
         "notes": "1. Sign up → 2. Settings → 3. Integrations → 4. Create integration",
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 
 class APIRegistrationManager:
@@ -314,7 +341,8 @@ class APIRegistrationManager:
             "registered": True,
             "timestamp": datetime.now().isoformat(),
             "has_token": bool(api_token),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.save_progress()
 
     def is_registered(self, api_key: str) -> bool:
@@ -440,7 +468,8 @@ class APIRegistrationManager:
                     has_key = "🔑" if os.getenv(env_var) else "🚫"
                     cost_icon = {"FREE": "🆓", "FREEMIUM": "💰", "PAID": "💳"}.get(
                         api_info["cost"], "❓"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     print(f"  {status_icon} {has_key} {cost_icon} {api_info['name']}")
 
@@ -461,18 +490,18 @@ class APIRegistrationManager:
         print(f"\n📄 Generating environment template: {template_file}")
 
         with open(template_file, "w") as f:
-            f.write("# API Registration Environment Variables\n")
-            f.write(f"# Generated on {datetime.now().isoformat()}\n\n")
+            f.write("# API Registration Environment Variables\n")"
+            f.write(f"# Generated on {datetime.now().isoformat()}\n\n")"
 
             # Group by phase
             for phase in [1, 2, 3, 4]:
                 phase_apis = [(k, v) for k, v in API_REGISTRY.items() if v["phase"] == phase]
 
                 if phase_apis:
-                    f.write(f"# Phase {phase} APIs\n")
+                    f.write(f"# Phase {phase} APIs\n")"
                     for api_key, api_info in sorted(phase_apis):
-                        f.write(f"# {api_info['name']} ({api_info['cost']})\n")
-                        f.write(f"# Registration: {api_info['url']}\n")
+                        f.write(f"# {api_info['name']} ({api_info['cost']})\n")"
+                        f.write(f"# Registration: {api_info['url']}\n")"
                         f.write(f"{api_info['env_var']}=your_api_key_here\n\n")
 
         print(f"✅ Template saved to {template_file}")
@@ -483,21 +512,23 @@ def main():
     parser = argparse.ArgumentParser(
         description="API Registration Automation Tool",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+        epilog=""""""
 Examples:
   python api_registration_automation.py --phase 1
   python api_registration_automation.py --api huggingface
   python api_registration_automation.py --batch-register
   python api_registration_automation.py --status
-        """,
-    )
+        ""","""
+# BRACKET_SURGEON: disabled
+#     )
 
     parser.add_argument(
         "--phase",
         type=int,
         choices=[1, 2, 3, 4],
         help="Register all APIs in a specific phase",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     parser.add_argument("--api", type=str, help="Register a specific API by key")
 
@@ -505,11 +536,13 @@ Examples:
         "--batch-register",
         action="store_true",
         help="Register multiple APIs interactively",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     parser.add_argument(
         "--status", action="store_true", help="Show registration status for all APIs"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     parser.add_argument("--template", action="store_true", help="Generate .env template file")
 
@@ -566,7 +599,8 @@ Examples:
                     for api_key, api_info in phase_apis:
                         cost_icon = {"FREE": "🆓", "FREEMIUM": "💰", "PAID": "💳"}.get(
                             api_info["cost"], "❓"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         print(f"  {cost_icon} {api_key}: {api_info['name']}")
 
     except KeyboardInterrupt:

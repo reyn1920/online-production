@@ -19,7 +19,8 @@ def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
         groups=groups,
         bias=False,
         dilation=dilation,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def conv1x1(in_planes, out_planes, stride=1):
@@ -39,7 +40,8 @@ class IBasicBlock(nn.Module):
         groups=1,
         base_width=64,
         dilation=1,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(IBasicBlock, self).__init__()
         if groups != 1 or base_width != 64:
             raise ValueError("BasicBlock only supports groups = 1 and base_width = 64")
@@ -48,18 +50,21 @@ class IBasicBlock(nn.Module):
         self.bn1 = nn.BatchNorm2d(
             inplanes,
             eps=1e-05,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.conv1 = conv3x3(inplanes, planes)
         self.bn2 = nn.BatchNorm2d(
             planes,
             eps=1e-05,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.prelu = nn.PReLU(planes)
         self.conv2 = conv3x3(planes, planes, stride)
         self.bn3 = nn.BatchNorm2d(
             planes,
             eps=1e-05,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.downsample = downsample
         self.stride = stride
 
@@ -91,7 +96,8 @@ class IResNet(nn.Module):
         width_per_group=64,
         replace_stride_with_dilation=None,
         fp16=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(IResNet, self).__init__()
         self.fp16 = fp16
         self.inplanes = 64
@@ -102,7 +108,8 @@ class IResNet(nn.Module):
             raise ValueError(
                 "replace_stride_with_dilation should be None "
                 "or a 3 - element tuple, got {}".format(replace_stride_with_dilation)
-            )
+# BRACKET_SURGEON: disabled
+#             )
         self.groups = groups
         self.base_width = width_per_group
         self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=3, stride=1, padding=1, bias=False)
@@ -111,17 +118,21 @@ class IResNet(nn.Module):
         self.layer1 = self._make_layer(block, 64, layers[0], stride=2)
         self.layer2 = self._make_layer(
             block, 128, layers[1], stride=2, dilate=replace_stride_with_dilation[0]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.layer3 = self._make_layer(
             block, 256, layers[2], stride=2, dilate=replace_stride_with_dilation[1]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.layer4 = self._make_layer(
             block, 512, layers[3], stride=2, dilate=replace_stride_with_dilation[2]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.bn2 = nn.BatchNorm2d(
             512 * block.expansion,
             eps=1e-05,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.dropout = nn.Dropout(p=dropout, inplace=True)
         self.fc = nn.Linear(512 * block.expansion * self.fc_scale, num_features)
         self.features = nn.BatchNorm1d(num_features, eps=1e-05)
@@ -152,8 +163,10 @@ class IResNet(nn.Module):
                 nn.BatchNorm2d(
                     planes * block.expansion,
                     eps=1e-05,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
         layers = []
         layers.append(
             block(
@@ -164,8 +177,10 @@ class IResNet(nn.Module):
                 self.groups,
                 self.base_width,
                 previous_dilation,
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
             layers.append(
@@ -175,8 +190,10 @@ class IResNet(nn.Module):
                     groups=self.groups,
                     base_width=self.base_width,
                     dilation=self.dilation,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         return nn.Sequential(*layers)
 
@@ -213,4 +230,5 @@ def _iresnet(arch, block, layers, pretrained, progress, **kwargs):
 def iresnet2060(pretrained=False, progress=True, **kwargs):
     return _iresnet(
         "iresnet2060", IBasicBlock, [3, 128, 1024 - 128, 3], pretrained, progress, **kwargs
-    )
+# BRACKET_SURGEON: disabled
+#     )

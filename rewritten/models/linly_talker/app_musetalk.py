@@ -5,7 +5,7 @@ from configs import *
 from src.cost_time import calculate_time
 from zhconv import convert
 
-description = """<p style="text - align: center; font - weight: bold;">
+description = """<p style="text - align: center; font - weight: bold;">"""
     <span style="font - size: 28px;">Linly 智能对话系统 (Linly - Talker)</span>
     <br>
     <span style="font - size: 18px;" id="paper - info">
@@ -17,7 +17,7 @@ description = """<p style="text - align: center; font - weight: bold;">
     <br>
     <span > Linly - Talker 是一款智能 AI 对话系统，结合了大型语言模型 (LLMs) 与视觉模型，是一种新颖的人工智能交互方式。</span>
 </p>
-"""
+""""""
 
 use_ref_video = False
 ref_video = None
@@ -45,13 +45,16 @@ def LLM_response(question,
     voice="zh - CN - XiaoxiaoNeural",
     rate = 0,
     volume = 0,
-    pitch = 0):
+# BRACKET_SURGEON: disabled
+#     pitch = 0):
     answer = llm.generate(question)
     print(answer)
     try:
         os.system(
             f'edge - tts --text "{answer}" --voice {voice} --write - media answer.wav --write - subtitles answer.vtt'
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     except Exception:
         tts.predict(answer, voice, rate, volume, pitch, "answer.wav", "answer.vtt")
     return "answer.wav", "answer.vtt", answer
@@ -81,27 +84,39 @@ def main():
                     with gr.TabItem("MuseV Video"):
                         gr.Markdown(
                             "MuseV: need help? please visit MuseVDemo to generate Video https://huggingface.co/spaces/AnchorFake/MuseVDemo"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         with gr.Row():
                             source_video = gr.Video(
                                 label="Reference Video", sources=["upload"]
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                         gr.Markdown(
                             "BBox_shift 推荐值下限，在生成初始结果后生成相应的 bbox 范围。如果结果不理想，可以根据该参考值进行调整。\\n一般来说，在我们的实验观察中，我们发现正值（向下半部分移动）通常会增加嘴巴的张开度，而负值（向上半部分移动）通常会减少嘴巴的张开度。然而，需要注意的是，这并不是绝对的规则，用户可能需要根据他们的具体需求和期望效果来调整该参数。"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         with gr.Row():
                             bbox_shift = gr.Number(
                                 label="BBox_shift value, px", value = 0
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             bbox_shift_scale = gr.Textbox(
                                 label="bbox_shift_scale", value="", interactive = False
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 source_video.change(
                     fn = musetalker.prepare_material,
                         inputs=[source_video, bbox_shift],
                         outputs=[source_video, bbox_shift_scale],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 with gr.Tabs(elem_id="question_audio"):
                     with gr.TabItem("对话"):
                         with gr.Column(variant="panel"):
@@ -109,68 +124,95 @@ def main():
                                 sources=["microphone", "upload"],
                                     type="filepath",
                                     label="语音对话",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                             input_text = gr.Textbox(
                                 label="Input Text", lines = 3, info="文字对话"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             with gr.Accordion(
                                 "Advanced Settings", open = False, visible = True
-                            ) as parameter_article:
+# BRACKET_SURGEON: disabled
+#                             ) as parameter_article:
                                 voice = gr.Dropdown(
                                     tts.SUPPORTED_VOICE,
                                         value="zh - CN - XiaoxiaoNeural",
                                         label="Voice",
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
                                 rate = gr.Slider(
                                     minimum=-100,
                                         maximum = 100,
                                         value = 0,
                                         step = 1.0,
                                         label="Rate",
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
                                 volume = gr.Slider(
                                     minimum = 0,
                                         maximum = 100,
                                         value = 100,
                                         step = 1,
                                         label="Volume",
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
                                 pitch = gr.Slider(
                                     minimum=-100,
                                         maximum = 100,
                                         value = 0,
                                         step = 1,
                                         label="Pitch",
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
 
                             asr_text = gr.Button("语音识别（语音对话后点击）")
                             asr_text.click(
                                 fn = Asr, inputs=[question_audio], outputs=[input_text]
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 with gr.Tabs():
-                    gr.Markdown("## Text Examples")
+                    gr.Markdown("## Text Examples")"
                     examples = [
                         ["应对压力最有效的方法是什么？"],
                             ["如何进行时间管理？"],
                             [
                             "为什么有些人选择使用纸质地图或寻求方向，而不是依赖GPS设备或智能手机应用程序？"
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                             [
                             "近日，苹果公司起诉高通公司，状告其未按照相关合约进行合作，高通方面尚未回应。这句话中“其”指的是谁？"
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                             [
                             "三年级同学种树80颗，四、五年级种的棵树比三年级种的2倍多14棵，三个年级共种树多少棵?"
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                             ["撰写一篇交响乐音乐会评论，讨论乐团的表演和观众的整体体验。"],
                             [
                             "翻译成中文：Luck is a dividend of sweat. The more you sweat, the luckier you get."
-                        ],
-                            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
                     gr.Examples(
                         examples = examples,
                             inputs=[input_text],
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             # driven_audio = 'answer.wav'
             with gr.Column(variant="panel"):
@@ -178,14 +220,18 @@ def main():
                     gen_video = gr.Video(label="Generated video", format="mp4")
                 submit = gr.Button(
                     "Generate", elem_id="sadtalker_generate", variant="primary"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 examples = [
                     os.path.join("Musetalk/data/video", video)
                     for video in os.listdir("Musetalk/data/video")
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
                 # ['Musetalk/data/video/yongen_musev.mp4', 'Musetalk/data/video/musk_musev.mp4', 'Musetalk/data/video/monalisa_musev.mp4', 'Musetalk/data/video/sun_musev.mp4', 'Musetalk/data/video/seaside4_musev.mp4', 'Musetalk/data/video/sit_musev.mp4', 'Musetalk/data/video/man_musev.mp4']
 
-                gr.Markdown("## MuseV Video Examples")
+                gr.Markdown("## MuseV Video Examples")"
                 gr.Examples(
                     examples=[
                         ["Musetalk/data/video/yongen_musev.mp4", 5],
@@ -195,9 +241,13 @@ def main():
                             ["Musetalk/data/video/seaside4_musev.mp4", 5],
                             ["Musetalk/data/video/sit_musev.mp4", 5],
                             ["Musetalk/data/video/man_musev.mp4", 5],
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         inputs=[source_video, bbox_shift],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             submit.click(
                 fn = Talker_response,
@@ -209,9 +259,13 @@ def main():
                         pitch,
                         source_video,
                         bbox_shift,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     outputs=[gen_video],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
     return inference
 
 
@@ -225,7 +279,9 @@ def error_print(text):
 if __name__ == "__main__":
     # llm = LLM(mode='offline').init_model('Linly', 'Linly - AI/Chinese - LLaMA - 2 - 7B - hf')
     # llm = LLM(mode='offline').init_model('Gemini', 'gemini - pro',
-    api_key = "your api key")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     api_key = "your api key")
     # llm = LLM(mode='offline').init_model('Qwen', 'Qwen/Qwen - 1_8B - Chat')
     try:
 
@@ -276,4 +332,6 @@ if __name__ == "__main__":
             # ssl_keyfile = ssl_keyfile,
             # ssl_verify = False,
             debug = True,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )

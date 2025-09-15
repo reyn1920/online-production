@@ -16,8 +16,8 @@ NC='\033[0m' # No Color
 # Configuration
 MONITORING_NAMESPACE="monitoring"
 APP_NAMESPACE="trae-ai"
-GRAFANA_ADMIN_PASSWORD="admin123!@#"
-ALERT_MANAGER_WEBHOOK_URL="https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+GRAFANA_ADMIN_PASSWORD="${GRAFANA_ADMIN_PASSWORD:-admin123!@#}"
+ALERT_MANAGER_WEBHOOK_URL="${ALERT_MANAGER_WEBHOOK_URL:-https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK}"
 
 echo -e "${BLUE}🚀 TRAE AI Monitoring Setup${NC}"
 echo -e "${BLUE}================================${NC}"

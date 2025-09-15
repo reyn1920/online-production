@@ -1,11 +1,11 @@
 #!/usr / bin / env python3
-"""
+""""""
 Local Development Server Launcher
 
 Usage:
     python3 tools / start_local.py paste      # Launch paste application
     python3 tools / start_local.py dashboard  # Launch dashboard application
-"""
+""""""
 
 import os
 import signal
@@ -85,7 +85,7 @@ def launch_live_dashboard():
 def show_help():
     """Show usage information"""
     print(
-        """
+        """"""
 🔧 Local Development Server Launcher
 
 Usage:
@@ -103,8 +103,9 @@ Examples:
 
 💡 All applications use automatic port detection to avoid conflicts.
 💡 Press Ctrl + C to stop any running service.
-    """
-    )
+    """"""
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def main():

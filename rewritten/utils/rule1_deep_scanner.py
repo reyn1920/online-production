@@ -52,7 +52,8 @@ class Rule1DeepScanner:
             + mk(97)
             + mk(108),
             mk(116) + mk(101) + mk(115) + mk(116) + mk(105) + mk(110) + mk(103),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         self.file_extensions = [
             ".py",
             ".js",
@@ -64,7 +65,8 @@ class Rule1DeepScanner:
             ".yml",
             ".sql",
             ".sh",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         self.exclude_dirs = {
             "__pycache__",
             ".git",
@@ -73,7 +75,8 @@ class Rule1DeepScanner:
             ".env",
             "logs",
             "data",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def scan_file_content(self, filepath: str) -> list:
         violations = []
@@ -85,7 +88,8 @@ class Rule1DeepScanner:
                         if term in line_lower:
                             violations.append(
                                 {"file": filepath, "line": line_num, "violation": term}
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
         except Exception as e:
             violations.append({"file": filepath, "error": str(e)})
         return violations
@@ -147,7 +151,8 @@ class Rule1Enforcer:
             + mk(97)
             + mk(108): "live_implementation",
             mk(116) + mk(101) + mk(115) + mk(116) + mk(105) + mk(110) + mk(103): "live_validation",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def fix_file_violations(self, filepath: str) -> int:
         fixes_applied = 0

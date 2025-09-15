@@ -26,7 +26,8 @@ _MODELS = {
     "large - v1": "https://openaipublic.azureedge.net/main/whisper/models/e4b87e7e0bf463eb8e6956e646f1e277e901512310def2c24bf0e11bd3c28e9a/large - v1.pt",
     "large - v2": "https://openaipublic.azureedge.net/main/whisper/models/81f7c96c852ee8fc832187b0132e569d6c3065a3252ed18e56effd0b6a73e524/large - v2.pt",
     "large - v3": "https://openaipublic.azureedge.net/main/whisper/models/e5b1a55b89c1367dacf97e3e19bfd829a01529dbfdeefa8caeb59b3f1b81dadb/large - v3.pt",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def _download(url: str, root: str, in_memory: bool) -> Union[bytes, str]:
@@ -45,7 +46,8 @@ def _download(url: str, root: str, in_memory: bool) -> Union[bytes, str]:
         else:
             warnings.warn(
                 f"{download_target} exists, but the SHA256 checksum does not match; re - downloading the file"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     with urllib.request.urlopen(url) as source, open(download_target, "wb") as output:
         with tqdm(
@@ -54,7 +56,8 @@ def _download(url: str, root: str, in_memory: bool) -> Union[bytes, str]:
             unit="iB",
             unit_scale=True,
             unit_divisor=1024,
-        ) as loop:
+# BRACKET_SURGEON: disabled
+#         ) as loop:
             while True:
                 buffer = source.read(8192)
                 if not buffer:
@@ -67,7 +70,8 @@ def _download(url: str, root: str, in_memory: bool) -> Union[bytes, str]:
     if hashlib.sha256(model_bytes).hexdigest() != expected_sha256:
         raise RuntimeError(
             "Model has been downloaded but the SHA256 checksum does not not match. Please retry loading the model."
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     return model_bytes if in_memory else download_target
 
@@ -82,8 +86,9 @@ def load_model(
     device: Optional[Union[str, torch.device]] = None,
     download_root: str = None,
     in_memory: bool = False,
-) -> Whisper:
-    """
+# BRACKET_SURGEON: disabled
+# ) -> Whisper:
+    """"""
     Load a Whisper ASR model
 
     Parameters
@@ -91,7 +96,7 @@ def load_model(
         name : str
         one of the official model names listed by `whisper.available_models()`, or
             path to a model checkpoint containing the model dimensions \
-    and the model state_dict.
+#     and the model state_dict.
     device : Union[str, torch.device]
         the PyTorch device to put the model into
     download_root: str
@@ -103,14 +108,15 @@ def load_model(
     -------
         model : Whisper
         The Whisper ASR model instance
-    """
+    """"""
 
     if device is None:
         device = "cuda" if torch.cuda.is_available() else "cpu"
     if download_root is None:
         download_root = os.getenv(
             "XDG_CACHE_HOME", os.path.join(os.path.expanduser("~"), ".cache", "whisper")
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     if name in _MODELS:
         checkpoint_file = _download(_MODELS[name], download_root, in_memory)

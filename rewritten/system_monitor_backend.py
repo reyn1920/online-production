@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 System Resource Monitor Backend
 A Flask server that provides real-time system statistics via REST API.
-"""
+""""""
 
 from flask import Flask, jsonify
 from flask_cors import CORS
@@ -20,12 +20,12 @@ CORS(app)  # Enable CORS for frontend access
 
 @app.route("/api/system-stats", methods=["GET"])
 def get_system_stats():
-    """
+    """"""
     Get current system statistics including CPU and memory usage.
 
     Returns:
         JSON object with cpu_percent and memory_percent
-    """
+    """"""
     try:
         # Get CPU usage percentage (1 second interval for accuracy)
         cpu_percent = psutil.cpu_percent(interval=1)
@@ -39,7 +39,8 @@ def get_system_stats():
             "cpu_percent": round(cpu_percent, 1),
             "memory_percent": round(memory_percent, 1),
             "timestamp": psutil.time.time(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info(f"System stats: CPU {cpu_percent}%, Memory {memory_percent}%")
         return jsonify(stats)
@@ -52,17 +53,20 @@ def get_system_stats():
                     "error": "Failed to retrieve system statistics",
                     "cpu_percent": 0,
                     "memory_percent": 0,
-                }
-            ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ),
             500,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @app.route("/health", methods=["GET"])
 def health_check():
-    """
+    """"""
     Health check endpoint to verify server is running.
-    """
+    """"""
     return jsonify({"status": "healthy", "service": "system-monitor-backend"})
 
 

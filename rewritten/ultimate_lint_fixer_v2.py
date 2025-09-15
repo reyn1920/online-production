@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 ULTIMATE LINT FIXER FOR TRAE.AI v2.0
 Maxed out Python linting fix that handles ALL common PEP8/flake8 violations + log noise cleanup.
 Run this once and watch your codebase become pristine.
-"""
+""""""
 
 import os
 import re
@@ -21,7 +21,8 @@ EXCLUDE_DIRS = {
     "env", ".env", "node_modules", ".pytest_cache",
     "build", "dist", ".tox", "site-packages",
     ".mypy_cache", "htmlcov", ".coverage", "eggs"
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # File patterns to skip
 SKIP_FILES = {"__pycache__", ".pyc", ".pyo", ".pyd", ".so", ".egg"}
@@ -65,7 +66,8 @@ class UltimateLintFixer:
                     [sys.executable, "-m", "pip", "install", "--upgrade", tool],
                     check=True,
                     capture_output=True,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 print(f"✅ {tool} ready")
             except subprocess.CalledProcessError:
                 print(f"⚠️  Could not install {tool}, continuing without it")
@@ -120,7 +122,8 @@ class UltimateLintFixer:
             (r"(\\w)!=(\\w)", r"\\1 != \\2"),  # a != b -> a != b
             (r"(\\w)<=(\\w)", r"\\1 <= \\2"),  # a <= b -> a <= b
             (r"(\\w)>=(\\w)", r"\\1 >= \\2"),  # a >= b -> a >= b
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for pattern, replacement in patterns:
             content = re.sub(pattern, replacement, content)
@@ -178,7 +181,8 @@ class UltimateLintFixer:
                     and fixed_lines
                     and fixed_lines[-1].strip()
                     and not lines[i - 1].strip().startswith(("@", "def ", "class ", "async def "))
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     fixed_lines.append("")
 
             fixed_lines.append(line)
@@ -238,11 +242,12 @@ class UltimateLintFixer:
 
             # Skip repetitive health check logs
             if (
-                'GET/health HTTP/1.1" 200 OK' in stripped
+                'GET/health HTTP/1.1" 200 OK' in stripped"
                 or "GET/affiliate - credentials" in stripped
                 or "GET/%40vite/client" in stripped
                 or "GET/api/status" in stripped
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 continue
 
                 # Skip IDE webview request logs
@@ -285,10 +290,12 @@ class UltimateLintFixer:
                     "88",
                     "--quiet",
                     str(file_path),
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 capture_output=True,
                 text=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result.returncode == 0
         except Exception:
             return False
@@ -307,10 +314,12 @@ class UltimateLintFixer:
                     "--max - line - length",
                     "88",
                     str(file_path),
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 capture_output=True,
                 text=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result.returncode == 0
         except Exception:
             return False
@@ -329,10 +338,12 @@ class UltimateLintFixer:
                     "88",
                     "--quiet",
                     str(file_path),
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 capture_output=True,
                 text=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result.returncode == 0
         except Exception:
             return False

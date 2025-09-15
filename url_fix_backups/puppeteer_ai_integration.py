@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Puppeteer AI Integration for Trae AI
 Uses MCP Puppeteer server to interact with AI websites for coding assistance.
-"""
+""""""
 
 import asyncio
 import json
@@ -41,30 +41,37 @@ class PuppeteerAIIntegration:
                     "input": 'textarea[placeholder*="Type your message"], .chat - input, textarea.message - input',
                     "submit": 'button[type="submit"], .send - button, .submit - btn',
                     "response": ".message - content, .response - text, .assistant - message, .output",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "gemini": {
                 "url": "https://gemini.google.com / app",
                 "selectors": {
                     "input": 'div[contenteditable="true"], textarea, .input - area',
                     "submit": 'button[aria - label="Send"], .send - button',
                     "response": ".model - response, .response - text, .message - content",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "chatgpt": {
                 "url": "https://chatgpt.com/",
                 "selectors": {
-                    "input": '#prompt - textarea, textarea[placeholder*="Message"]',
+                    "input": '#prompt - textarea, textarea[placeholder*="Message"]','
                     "submit": 'button[data - testid="send - button"]',
                     "response": '.markdown, .message - content, [data - message - author - role="assistant"]',
-                },
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
         self.responses_cache = []
         self.current_browser_session = None
 
     async def navigate_to_service(self, service: str) -> bool:
-        """
+        """"""
         Navigate to an AI service using Puppeteer
 
         Args:
@@ -72,7 +79,7 @@ class PuppeteerAIIntegration:
 
         Returns:
             True if navigation successful, False otherwise
-        """
+        """"""
         if service not in self.services:
             logger.error(f"Unknown service: {service}")
             return False
@@ -95,7 +102,7 @@ class PuppeteerAIIntegration:
             return False
 
     async def send_query_to_service(self, service: str, query: str) -> PuppeteerAIResponse:
-        """
+        """"""
         Send a query to an AI service using browser automation
 
         Args:
@@ -104,7 +111,7 @@ class PuppeteerAIIntegration:
 
         Returns:
             PuppeteerAIResponse with the result
-        """
+        """"""
         if service not in self.services:
             return PuppeteerAIResponse(
                 service=service,
@@ -115,7 +122,8 @@ class PuppeteerAIIntegration:
                 timestamp=time.time(),
                 success=False,
                 error=f"Unknown service: {service}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         try:
             service_config = self.services[service]
@@ -164,7 +172,8 @@ class PuppeteerAIIntegration:
                 screenshot_path=screenshot_after,
                 timestamp=time.time(),
                 success=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.responses_cache.append(response)
             return response
@@ -180,20 +189,21 @@ class PuppeteerAIIntegration:
                 timestamp=time.time(),
                 success=False,
                 error=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _generate_simulated_response(self, service: str, query: str) -> str:
-        """
+        """"""
         Generate a simulated response for demonstration purposes
         In real implementation, this would extract actual text from the webpage
-        """
+        """"""
         if "error" in query.lower() or "debug" in query.lower():
             if service == "abacus":
-                return f"""Abacus AI Analysis:
+                return f"""Abacus AI Analysis:"""
 
 The error you're encountering appears to be a database schema issue. Here's my analysis:
 
-1. **Root Cause**: The column 'search_keywords' doesn't exist in your table schema
+1. **Root Cause**: The column 'search_keywords' doesn't exist in your table schema'
 2. **Solution**: Run the ALTER TABLE command to add the missing column
 3. **Prevention**: Implement proper database migrations and schema validation
 
@@ -202,14 +212,14 @@ Recommended fix:
 ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT;
 ```
 
-Additionally, consider adding proper error handling for schema mismatches in your application code."""
+Additionally, consider adding proper error handling for schema mismatches in your application code.""""""
 
             elif service == "gemini":
-                return f"""I can help you debug this database error. The issue is that you're trying to reference a column that doesn't exist in your table.
+                return f"""I can help you debug this database error. The issue is that you're trying to reference a column that doesn't exist in your table."""
 
 Here's what's happening:
 - Your code is looking for a 'search_keywords' column
-- This column hasn't been created in the database yet
+- This column hasn't been created in the database yet'
 - You need to run a migration to add it
 
 Solution steps:
@@ -218,12 +228,12 @@ Solution steps:
 3. Update your application code to handle the new column
 4. Add proper error handling for future schema issues
 
-Would you like me to help you write the migration script?"""
+Would you like me to help you write the migration script?""""""
 
             elif service == "chatgpt":
-                return f"""This is a common database schema error. Here's how to fix it:
+                return f"""This is a common database schema error. Here's how to fix it:"""
 
-**Problem**: The database table doesn't have the 'search_keywords' column that your code is trying to access.
+**Problem**: The database table doesn't have the 'search_keywords' column that your code is trying to access.'
 
 **Solution**:
 1. Add the missing column:
@@ -239,6 +249,7 @@ Would you like me to help you write the migration script?"""
 3. Update your code to handle missing columns gracefully:
    ```python
    try:
+       pass
        # Your database operation
    except sqlite3.OperationalError as e:
        if "no such column" in str(e):
@@ -249,17 +260,17 @@ Would you like me to help you write the migration script?"""
 **Best Practices**:
 - Use database migrations for schema changes
 - Add proper error handling
-- Test schema changes in development first"""
+- Test schema changes in development first""""""
 
         else:
             # General coding assistance
-            return f"{service.title()} suggests implementing proper error handling \
-    and following best practices for your query: {query[:100]}..."
+            return f"{service.title()} suggests implementing proper error handling \"
+#     and following best practices for your query: {query[:100]}..."
 
     async def debug_with_all_services(
         self, error_message: str, code_context: str = ""
     ) -> Dict[str, PuppeteerAIResponse]:
-        """
+        """"""
         Debug an error using all available AI services
 
         Args:
@@ -268,8 +279,8 @@ Would you like me to help you write the migration script?"""
 
         Returns:
             Dictionary of responses from all services
-        """
-        query = f"""Debug this error:
+        """"""
+        query = f"""Debug this error:"""
 
 Error: {error_message}
 
@@ -279,7 +290,7 @@ Code Context:
 Please provide:
 1. Root cause analysis
 2. Specific fix
-3. Prevention strategies"""
+3. Prevention strategies""""""
 
         # Query all services concurrently
         tasks = [self.send_query_to_service(service, query) for service in self.services.keys()]
@@ -289,7 +300,7 @@ Please provide:
         return {response.service: response for response in responses}
 
     def generate_consolidated_report(self, responses: Dict[str, PuppeteerAIResponse]) -> str:
-        """
+        """"""
         Generate a consolidated report from multiple AI service responses
 
         Args:
@@ -297,7 +308,7 @@ Please provide:
 
         Returns:
             Formatted consolidated report
-        """
+        """"""
         report = "🤖 AI Services Debugging Report\\n"
         report += "=" * 50 + "\\n\\n"
 
@@ -308,7 +319,7 @@ Please provide:
             report += f"✅ Successful Responses ({len(successful_responses)}):\\n\\n"
 
             for service, response in successful_responses.items():
-                report += f"### {service.upper()} Analysis\\n"
+                report += f"### {service.upper()} Analysis\\n""
                 report += f"URL: {response.url}\\n"
                 report += f"Query: {response.query[:100]}...\\n"
                 report += f"Response:\\n{response.response}\\n"
@@ -320,7 +331,7 @@ Please provide:
             report += f"❌ Failed Responses ({len(failed_responses)}):\\n\\n"
 
             for service, response in failed_responses.items():
-                report += f"### {service.upper()} (Failed)\\n"
+                report += f"### {service.upper()} (Failed)\\n""
                 report += f"Error: {response.error}\\n\\n"
 
         report += f"\\n📊 Summary:\\n"
@@ -332,7 +343,7 @@ Please provide:
         return report
 
     def export_session_data(self, filename: str = "ai_session_data.json") -> str:
-        """
+        """"""
         Export all session data including responses and screenshots
 
         Args:
@@ -340,13 +351,14 @@ Please provide:
 
         Returns:
             Path to exported file
-        """
+        """"""
         export_data = {
             "session_info": {
                 "timestamp": time.time(),
                 "total_queries": len(self.responses_cache),
                 "services_used": list(set(r.service for r in self.responses_cache)),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "responses": [
                 {
                     "service": r.service,
@@ -357,10 +369,13 @@ Please provide:
                     "timestamp": r.timestamp,
                     "success": r.success,
                     "error": r.error,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for r in self.responses_cache
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         with open(filename, "w") as f:
             json.dump(export_data, f, indent=2)
@@ -383,16 +398,17 @@ async def demo_puppeteer_ai_integration():
     print("\\n🔍 Debugging SQLite Error with All AI Services")
 
     error_message = "no such column: search_keywords"
-    code_context = """
+    code_context = """"""
     # Database operation that failed
     cursor.execute(
         "SELECT * FROM api_discovery_tasks WHERE search_keywords LIKE ?",
             ('%python%',)
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Error occurred here:
     # sqlite3.OperationalError: no such column: search_keywords
-    """
+    """"""
 
     # Get responses from all services
     responses = await ai_integration.debug_with_all_services(error_message, code_context)

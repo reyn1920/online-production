@@ -3,15 +3,17 @@ import torch.nn.functional as F
 from src.facerender.modules.dense_motion import DenseMotionNetwork
 from src.facerender.modules.util import (DownBlock2d, ResBlock2d, ResBlock3d,
 
-    SameBlock2d, SPADEResnetBlock, UpBlock2d)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     SameBlock2d, SPADEResnetBlock, UpBlock2d)
 
 from torch import nn
 
 
 class OcclusionAwareGenerator(nn.Module):
-    """
+    """"""
     Generator follows NVIDIA architecture.
-    """
+    """"""
 
 
     def __init__(
@@ -28,7 +30,8 @@ class OcclusionAwareGenerator(nn.Module):
             estimate_occlusion_map = False,
             dense_motion_params = None,
             estimate_jacobian = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super(OcclusionAwareGenerator, self).__init__()
 
         if dense_motion_params is not None:
@@ -37,13 +40,17 @@ class OcclusionAwareGenerator(nn.Module):
                     feature_channel = feature_channel,
                     estimate_occlusion_map = estimate_occlusion_map,
                     **dense_motion_params
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             self.dense_motion_network = None
 
         self.first = SameBlock2d(
             image_channel, block_expansion, kernel_size=(7, 7), padding=(3, 3)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         down_blocks = []
         for i in range(num_down_blocks):
@@ -52,13 +59,19 @@ class OcclusionAwareGenerator(nn.Module):
             down_blocks.append(
                 DownBlock2d(
                     in_features, out_features, kernel_size=(3, 3), padding=(1, 1)
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         self.down_blocks = nn.ModuleList(down_blocks)
 
         self.second = nn.Conv2d(
             in_channels = out_features, out_channels = max_features, kernel_size = 1, stride = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.reshape_channel = reshape_channel
         self.reshape_depth = reshape_depth
@@ -69,39 +82,57 @@ class OcclusionAwareGenerator(nn.Module):
                 "3dr" + str(i),
     ResBlock3d(reshape_channel,
     kernel_size = 3,
-    padding = 1)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     padding = 1)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         out_features = block_expansion * (2 ** (num_down_blocks))
         self.third = SameBlock2d(
             max_features, out_features, kernel_size=(3, 3), padding=(1, 1), lrelu = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.fourth = nn.Conv2d(
             in_channels = out_features, out_channels = out_features, kernel_size = 1, stride = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.resblocks_2d = torch.nn.Sequential()
         for i in range(num_resblocks):
             self.resblocks_2d.add_module(
                 "2dr" + str(i), ResBlock2d(out_features, kernel_size = 3, padding = 1)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         up_blocks = []
         for i in range(num_down_blocks):
             in_features = max(
                 block_expansion, block_expansion * (2 ** (num_down_blocks - i))
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             out_features = max(
                 block_expansion, block_expansion * (2 ** (num_down_blocks - i - 1))
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             up_blocks.append(
                 UpBlock2d(in_features, out_features, kernel_size=(3, 3), padding=(1, 1))
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         self.up_blocks = nn.ModuleList(up_blocks)
 
         self.final = nn.Conv2d(
             block_expansion, image_channel, kernel_size=(7, 7), padding=(3, 3)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.estimate_occlusion_map = estimate_occlusion_map
         self.image_channel = image_channel
 
@@ -132,7 +163,9 @@ class OcclusionAwareGenerator(nn.Module):
         if self.dense_motion_network is not None:
             dense_motion = self.dense_motion_network(
                 feature = feature_3d, kp_driving = kp_driving, kp_source = kp_source
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             output_dict["mask"] = dense_motion["mask"]
 
             if "occlusion_map" in dense_motion:
@@ -152,14 +185,18 @@ class OcclusionAwareGenerator(nn.Module):
                 if (
                     out.shape[2] != occlusion_map.shape[2]
                     or out.shape[3] != occlusion_map.shape[3]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     occlusion_map = F.interpolate(
                         occlusion_map, size = out.shape[2:], mode="bilinear"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 out = out * occlusion_map
 
             # output_dict["deformed"] = self.deform_input(source_image,
-    deformation)  # 3d deformation cannot deform 2d image
+# BRACKET_SURGEON: disabled
+#     deformation)  # 3d deformation cannot deform 2d image
 
         # Decoding part
         out = self.resblocks_2d(out)
@@ -234,7 +271,8 @@ class OcclusionAwareSPADEGenerator(nn.Module):
             estimate_occlusion_map = False,
             dense_motion_params = None,
             estimate_jacobian = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super(OcclusionAwareSPADEGenerator, self).__init__()
 
         if dense_motion_params is not None:
@@ -243,13 +281,17 @@ class OcclusionAwareSPADEGenerator(nn.Module):
                     feature_channel = feature_channel,
                     estimate_occlusion_map = estimate_occlusion_map,
                     **dense_motion_params
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             self.dense_motion_network = None
 
         self.first = SameBlock2d(
             image_channel, block_expansion, kernel_size=(3, 3), padding=(1, 1)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         down_blocks = []
         for i in range(num_down_blocks):
@@ -258,13 +300,19 @@ class OcclusionAwareSPADEGenerator(nn.Module):
             down_blocks.append(
                 DownBlock2d(
                     in_features, out_features, kernel_size=(3, 3), padding=(1, 1)
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         self.down_blocks = nn.ModuleList(down_blocks)
 
         self.second = nn.Conv2d(
             in_channels = out_features, out_channels = max_features, kernel_size = 1, stride = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.reshape_channel = reshape_channel
         self.reshape_depth = reshape_depth
@@ -275,16 +323,24 @@ class OcclusionAwareSPADEGenerator(nn.Module):
                 "3dr" + str(i),
     ResBlock3d(reshape_channel,
     kernel_size = 3,
-    padding = 1)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     padding = 1)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         out_features = block_expansion * (2 ** (num_down_blocks))
         self.third = SameBlock2d(
             max_features, out_features, kernel_size=(3, 3), padding=(1, 1), lrelu = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.fourth = nn.Conv2d(
             in_channels = out_features, out_channels = out_features, kernel_size = 1, stride = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.estimate_occlusion_map = estimate_occlusion_map
         self.image_channel = image_channel
@@ -318,7 +374,9 @@ class OcclusionAwareSPADEGenerator(nn.Module):
         if self.dense_motion_network is not None:
             dense_motion = self.dense_motion_network(
                 feature = feature_3d, kp_driving = kp_driving, kp_source = kp_source
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             output_dict["mask"] = dense_motion["mask"]
 
             # import pdb; pdb.set_trace()
@@ -342,10 +400,13 @@ class OcclusionAwareSPADEGenerator(nn.Module):
                 if (
                     out.shape[2] != occlusion_map.shape[2]
                     or out.shape[3] != occlusion_map.shape[3]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     occlusion_map = F.interpolate(
                         occlusion_map, size = out.shape[2:], mode="bilinear"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 out = out * occlusion_map
 
         # Decoding part

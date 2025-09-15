@@ -1,11 +1,11 @@
 #!/usr / bin / env python3
-"""
+""""""
 API Registration Executor
 Automated registration for 100+ APIs using benchmark website access
 
 This script leverages the user rule that benchmark websites should be treated as open without login
 to automatically register for APIs and collect API keys.
-"""
+""""""
 
 import asyncio
 import json
@@ -26,7 +26,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("api_registration.log"), logging.StreamHandler()],
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -84,7 +85,8 @@ class APIRegistrationExecutor:
                     [asdict(result) for result in self.registration_results],
                     f,
                     indent=2,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             logger.info(f"Saved {len(self.registration_results)} results")
         except Exception as e:
             logger.error(f"Error saving results: {e}")
@@ -101,7 +103,8 @@ class APIRegistrationExecutor:
                 "env_var": "HUGGINGFACE_API_KEY",
                 "free_tier": "30,000 requests / month",
                 "category": "ai",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "openai": {
                 "name": "OpenAI",
                 "signup_url": "https://platform.openai.com / signup",
@@ -110,7 +113,8 @@ class APIRegistrationExecutor:
                 "env_var": "OPENAI_API_KEY",
                 "free_tier": "$5 free credit",
                 "category": "ai",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "anthropic": {
                 "name": "Anthropic Claude",
                 "signup_url": "https://console.anthropic.com/",
@@ -119,7 +123,8 @@ class APIRegistrationExecutor:
                 "env_var": "ANTHROPIC_API_KEY",
                 "free_tier": "$5 free credit",
                 "category": "ai",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "groq": {
                 "name": "Groq",
                 "signup_url": "https://console.groq.com / login",
@@ -128,7 +133,8 @@ class APIRegistrationExecutor:
                 "env_var": "GROQ_API_KEY",
                 "free_tier": "14,400 requests / day",
                 "category": "ai",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "google_ai": {
                 "name": "Google AI Studio",
                 "signup_url": "https://aistudio.google.com/",
@@ -137,7 +143,8 @@ class APIRegistrationExecutor:
                 "env_var": "GOOGLE_AI_API_KEY",
                 "free_tier": "15 requests / minute",
                 "category": "ai",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "cohere": {
                 "name": "Cohere",
                 "signup_url": "https://dashboard.cohere.com / register",
@@ -146,7 +153,8 @@ class APIRegistrationExecutor:
                 "env_var": "COHERE_API_KEY",
                 "free_tier": "100 requests / month",
                 "category": "ai",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "replicate": {
                 "name": "Replicate",
                 "signup_url": "https://replicate.com / signin",
@@ -155,7 +163,8 @@ class APIRegistrationExecutor:
                 "env_var": "REPLICATE_API_TOKEN",
                 "free_tier": "$10 free credit",
                 "category": "ai",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Social Media APIs
             "youtube": {
                 "name": "YouTube Data API",
@@ -165,7 +174,8 @@ class APIRegistrationExecutor:
                 "env_var": "YOUTUBE_API_KEY",
                 "free_tier": "10,000 units / day",
                 "category": "social",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "reddit": {
                 "name": "Reddit API",
                 "signup_url": "https://www.reddit.com / prefs / apps",
@@ -174,17 +184,19 @@ class APIRegistrationExecutor:
                 "env_var": "REDDIT_CLIENT_ID",
                 "free_tier": "60 requests / minute",
                 "category": "social",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "twitter": {
                 "name": "Twitter API",
                 "signup_url": "https://developer.twitter.com / en / portal / petition / essential / basic - info",
                 "api_docs": "https://developer.twitter.com / en / docs",
-                "key_location": "https://developer.twitter.com / en / portal / projects - \
-    and - apps",
+                "key_location": "https://developer.twitter.com / en / portal / projects - \"
+#     and - apps",
                 "env_var": "TWITTER_BEARER_TOKEN",
                 "free_tier": "500,000 tweets / month",
                 "category": "social",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "instagram": {
                 "name": "Instagram Basic Display API",
                 "signup_url": "https://developers.facebook.com / apps/",
@@ -193,7 +205,8 @@ class APIRegistrationExecutor:
                 "env_var": "INSTAGRAM_ACCESS_TOKEN",
                 "free_tier": "200 requests / hour",
                 "category": "social",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "tiktok": {
                 "name": "TikTok API",
                 "signup_url": "https://developers.tiktok.com / apps/",
@@ -202,7 +215,8 @@ class APIRegistrationExecutor:
                 "env_var": "TIKTOK_CLIENT_KEY",
                 "free_tier": "1,000 requests / day",
                 "category": "social",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Development APIs
             "github": {
                 "name": "GitHub API",
@@ -212,7 +226,8 @@ class APIRegistrationExecutor:
                 "env_var": "GITHUB_TOKEN",
                 "free_tier": "5,000 requests / hour",
                 "category": "development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "gitlab": {
                 "name": "GitLab API",
                 "signup_url": "https://gitlab.com/-/profile / personal_access_tokens",
@@ -221,16 +236,18 @@ class APIRegistrationExecutor:
                 "env_var": "GITLAB_TOKEN",
                 "free_tier": "2,000 requests / minute",
                 "category": "development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "netlify": {
                 "name": "Netlify API",
                 "signup_url": "https://app.netlify.com / signup",
                 "api_docs": "https://docs.netlify.com / api / get - started/",
-                "key_location": "https://app.netlify.com / user / applications#personal - access - tokens",
+                "key_location": "https://app.netlify.com / user / applications#personal - access - tokens","
                 "env_var": "NETLIFY_ACCESS_TOKEN",
                 "free_tier": "100GB bandwidth / month",
                 "category": "development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "vercel": {
                 "name": "Vercel API",
                 "signup_url": "https://vercel.com / signup",
@@ -239,7 +256,8 @@ class APIRegistrationExecutor:
                 "env_var": "VERCEL_TOKEN",
                 "free_tier": "100GB bandwidth / month",
                 "category": "development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Communication APIs
             "sendgrid": {
                 "name": "SendGrid",
@@ -249,7 +267,8 @@ class APIRegistrationExecutor:
                 "env_var": "SENDGRID_API_KEY",
                 "free_tier": "100 emails / day",
                 "category": "communication",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "mailgun": {
                 "name": "Mailgun",
                 "signup_url": "https://signup.mailgun.com / new / signup",
@@ -258,7 +277,8 @@ class APIRegistrationExecutor:
                 "env_var": "MAILGUN_API_KEY",
                 "free_tier": "5,000 emails / month",
                 "category": "communication",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "twilio": {
                 "name": "Twilio",
                 "signup_url": "https://www.twilio.com / try - twilio",
@@ -267,7 +287,8 @@ class APIRegistrationExecutor:
                 "env_var": "TWILIO_AUTH_TOKEN",
                 "free_tier": "$15 free credit",
                 "category": "communication",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Weather APIs
             "openweather": {
                 "name": "OpenWeatherMap",
@@ -277,7 +298,8 @@ class APIRegistrationExecutor:
                 "env_var": "OPENWEATHER_API_KEY",
                 "free_tier": "1,000 requests / day",
                 "category": "weather",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "weatherapi": {
                 "name": "WeatherAPI",
                 "signup_url": "https://www.weatherapi.com / signup.aspx",
@@ -286,7 +308,8 @@ class APIRegistrationExecutor:
                 "env_var": "WEATHER_API_KEY",
                 "free_tier": "1 million requests / month",
                 "category": "weather",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Media APIs
             "unsplash": {
                 "name": "Unsplash",
@@ -296,7 +319,8 @@ class APIRegistrationExecutor:
                 "env_var": "UNSPLASH_ACCESS_KEY",
                 "free_tier": "50 requests / hour",
                 "category": "media",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "pexels": {
                 "name": "Pexels",
                 "signup_url": "https://www.pexels.com / api/",
@@ -305,7 +329,8 @@ class APIRegistrationExecutor:
                 "env_var": "PEXELS_API_KEY",
                 "free_tier": "200 requests / hour",
                 "category": "media",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "pixabay": {
                 "name": "Pixabay",
                 "signup_url": "https://pixabay.com / api / docs/",
@@ -314,7 +339,8 @@ class APIRegistrationExecutor:
                 "env_var": "PIXABAY_API_KEY",
                 "free_tier": "5,000 requests / hour",
                 "category": "media",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Fun APIs
             "dog_api": {
                 "name": "Dog API",
@@ -324,7 +350,8 @@ class APIRegistrationExecutor:
                 "env_var": "DOG_API_KEY",
                 "free_tier": "1,000 requests / month",
                 "category": "fun",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "cat_api": {
                 "name": "Cat API",
                 "signup_url": "https://thecatapi.com / signup",
@@ -333,7 +360,8 @@ class APIRegistrationExecutor:
                 "env_var": "CAT_API_KEY",
                 "free_tier": "1,000 requests / month",
                 "category": "fun",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Database APIs
             "supabase": {
                 "name": "Supabase",
@@ -343,7 +371,8 @@ class APIRegistrationExecutor:
                 "env_var": "SUPABASE_ANON_KEY",
                 "free_tier": "500MB database",
                 "category": "database",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "firebase": {
                 "name": "Firebase",
                 "signup_url": "https://console.firebase.google.com/",
@@ -352,7 +381,8 @@ class APIRegistrationExecutor:
                 "env_var": "FIREBASE_API_KEY",
                 "free_tier": "1GB storage",
                 "category": "database",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Analytics APIs
             "google_analytics": {
                 "name": "Google Analytics",
@@ -362,7 +392,8 @@ class APIRegistrationExecutor:
                 "env_var": "GOOGLE_ANALYTICS_KEY",
                 "free_tier": "10 million hits / month",
                 "category": "analytics",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "mixpanel": {
                 "name": "Mixpanel",
                 "signup_url": "https://mixpanel.com / register/",
@@ -371,7 +402,8 @@ class APIRegistrationExecutor:
                 "env_var": "MIXPANEL_TOKEN",
                 "free_tier": "100,000 events / month",
                 "category": "analytics",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Payment APIs
             "stripe": {
                 "name": "Stripe",
@@ -381,7 +413,8 @@ class APIRegistrationExecutor:
                 "env_var": "STRIPE_SECRET_KEY",
                 "free_tier": "No monthly fee",
                 "category": "payment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "paypal": {
                 "name": "PayPal",
                 "signup_url": "https://developer.paypal.com / developer / applications/",
@@ -390,7 +423,8 @@ class APIRegistrationExecutor:
                 "env_var": "PAYPAL_CLIENT_ID",
                 "free_tier": "No monthly fee",
                 "category": "payment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Location APIs
             "mapbox": {
                 "name": "Mapbox",
@@ -400,7 +434,8 @@ class APIRegistrationExecutor:
                 "env_var": "MAPBOX_ACCESS_TOKEN",
                 "free_tier": "50,000 requests / month",
                 "category": "location",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "google_maps": {
                 "name": "Google Maps",
                 "signup_url": "https://console.cloud.google.com/",
@@ -409,7 +444,8 @@ class APIRegistrationExecutor:
                 "env_var": "GOOGLE_MAPS_API_KEY",
                 "free_tier": "$200 free credit / month",
                 "category": "location",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # News APIs
             "newsapi": {
                 "name": "NewsAPI",
@@ -419,7 +455,8 @@ class APIRegistrationExecutor:
                 "env_var": "NEWS_API_KEY",
                 "free_tier": "1,000 requests / day",
                 "category": "news",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "guardian": {
                 "name": "Guardian API",
                 "signup_url": "https://open - platform.theguardian.com / access/",
@@ -428,7 +465,8 @@ class APIRegistrationExecutor:
                 "env_var": "GUARDIAN_API_KEY",
                 "free_tier": "12,000 requests / day",
                 "category": "news",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Translation APIs
             "google_translate": {
                 "name": "Google Translate",
@@ -438,7 +476,8 @@ class APIRegistrationExecutor:
                 "env_var": "GOOGLE_TRANSLATE_API_KEY",
                 "free_tier": "500,000 characters / month",
                 "category": "translation",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "deepl": {
                 "name": "DeepL",
                 "signup_url": "https://www.deepl.com / pro - api",
@@ -447,7 +486,8 @@ class APIRegistrationExecutor:
                 "env_var": "DEEPL_API_KEY",
                 "free_tier": "500,000 characters / month",
                 "category": "translation",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Search APIs
             "algolia": {
                 "name": "Algolia",
@@ -457,7 +497,8 @@ class APIRegistrationExecutor:
                 "env_var": "ALGOLIA_API_KEY",
                 "free_tier": "10,000 records",
                 "category": "search",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "elasticsearch": {
                 "name": "Elasticsearch Service",
                 "signup_url": "https://cloud.elastic.co / registration",
@@ -466,7 +507,8 @@ class APIRegistrationExecutor:
                 "env_var": "ELASTICSEARCH_API_KEY",
                 "free_tier": "14 - day free trial",
                 "category": "search",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Monitoring APIs
             "datadog": {
                 "name": "Datadog",
@@ -476,7 +518,8 @@ class APIRegistrationExecutor:
                 "env_var": "DATADOG_API_KEY",
                 "free_tier": "5 hosts free",
                 "category": "monitoring",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "sentry": {
                 "name": "Sentry",
                 "signup_url": "https://sentry.io / signup/",
@@ -485,7 +528,8 @@ class APIRegistrationExecutor:
                 "env_var": "SENTRY_DSN",
                 "free_tier": "5,000 errors / month",
                 "category": "monitoring",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             # Additional APIs to reach 100+
             "airtable": {
                 "name": "Airtable",
@@ -495,7 +539,8 @@ class APIRegistrationExecutor:
                 "env_var": "AIRTABLE_API_KEY",
                 "free_tier": "1,200 records / base",
                 "category": "database",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "notion": {
                 "name": "Notion",
                 "signup_url": "https://www.notion.so / signup",
@@ -504,7 +549,8 @@ class APIRegistrationExecutor:
                 "env_var": "NOTION_API_KEY",
                 "free_tier": "Personal use free",
                 "category": "productivity",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "slack": {
                 "name": "Slack",
                 "signup_url": "https://api.slack.com / apps",
@@ -513,7 +559,8 @@ class APIRegistrationExecutor:
                 "env_var": "SLACK_BOT_TOKEN",
                 "free_tier": "10,000 messages",
                 "category": "communication",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "discord": {
                 "name": "Discord",
                 "signup_url": "https://discord.com / developers / applications",
@@ -522,7 +569,8 @@ class APIRegistrationExecutor:
                 "env_var": "DISCORD_BOT_TOKEN",
                 "free_tier": "Free for bots",
                 "category": "communication",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "zoom": {
                 "name": "Zoom",
                 "signup_url": "https://marketplace.zoom.us/",
@@ -531,7 +579,8 @@ class APIRegistrationExecutor:
                 "env_var": "ZOOM_API_KEY",
                 "free_tier": "Basic plan free",
                 "category": "communication",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "calendly": {
                 "name": "Calendly",
                 "signup_url": "https://calendly.com / integrations / api_webhooks",
@@ -540,7 +589,8 @@ class APIRegistrationExecutor:
                 "env_var": "CALENDLY_API_KEY",
                 "free_tier": "Basic plan free",
                 "category": "scheduling",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "shopify": {
                 "name": "Shopify",
                 "signup_url": "https://partners.shopify.com / signup",
@@ -549,7 +599,8 @@ class APIRegistrationExecutor:
                 "env_var": "SHOPIFY_API_KEY",
                 "free_tier": "Development stores free",
                 "category": "ecommerce",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "woocommerce": {
                 "name": "WooCommerce",
                 "signup_url": "https://woocommerce.com / my - account/",
@@ -558,7 +609,8 @@ class APIRegistrationExecutor:
                 "env_var": "WOOCOMMERCE_API_KEY",
                 "free_tier": "Plugin free",
                 "category": "ecommerce",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "square": {
                 "name": "Square",
                 "signup_url": "https://developer.squareup.com / signup",
@@ -567,7 +619,8 @@ class APIRegistrationExecutor:
                 "env_var": "SQUARE_ACCESS_TOKEN",
                 "free_tier": "Sandbox free",
                 "category": "payment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "coinbase": {
                 "name": "Coinbase",
                 "signup_url": "https://developers.coinbase.com/",
@@ -576,7 +629,8 @@ class APIRegistrationExecutor:
                 "env_var": "COINBASE_API_KEY",
                 "free_tier": "Basic tier free",
                 "category": "crypto",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "binance": {
                 "name": "Binance",
                 "signup_url": "https://www.binance.com / en / support / faq / how - to - create - api - keys - on - binance - 360002502072",
@@ -585,16 +639,18 @@ class APIRegistrationExecutor:
                 "env_var": "BINANCE_API_KEY",
                 "free_tier": "Basic tier free",
                 "category": "crypto",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "alpha_vantage": {
                 "name": "Alpha Vantage",
-                "signup_url": "https://www.alphavantage.co / support/#api - key",
+                "signup_url": "https://www.alphavantage.co / support/#api - key","
                 "api_docs": "https://www.alphavantage.co / documentation/",
-                "key_location": "https://www.alphavantage.co / support/#api - key",
+                "key_location": "https://www.alphavantage.co / support/#api - key","
                 "env_var": "ALPHA_VANTAGE_API_KEY",
                 "free_tier": "25 requests / day",
                 "category": "finance",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "finnhub": {
                 "name": "Finnhub",
                 "signup_url": "https://finnhub.io / register",
@@ -603,7 +659,8 @@ class APIRegistrationExecutor:
                 "env_var": "FINNHUB_API_KEY",
                 "free_tier": "60 requests / minute",
                 "category": "finance",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "polygon": {
                 "name": "Polygon.io",
                 "signup_url": "https://polygon.io / signup",
@@ -612,16 +669,18 @@ class APIRegistrationExecutor:
                 "env_var": "POLYGON_API_KEY",
                 "free_tier": "5 requests / minute",
                 "category": "finance",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "spoonacular": {
                 "name": "Spoonacular",
-                "signup_url": "https://spoonacular.com / food - api / console#Dashboard",
+                "signup_url": "https://spoonacular.com / food - api / console#Dashboard","
                 "api_docs": "https://spoonacular.com / food - api / docs",
-                "key_location": "https://spoonacular.com / food - api / console#Dashboard",
+                "key_location": "https://spoonacular.com / food - api / console#Dashboard","
                 "env_var": "SPOONACULAR_API_KEY",
                 "free_tier": "150 requests / day",
                 "category": "food",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "edamam": {
                 "name": "Edamam",
                 "signup_url": "https://developer.edamam.com / edamam - recipe - api",
@@ -630,7 +689,8 @@ class APIRegistrationExecutor:
                 "env_var": "EDAMAM_API_KEY",
                 "free_tier": "5,000 requests / month",
                 "category": "food",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "themoviedb": {
                 "name": "The Movie Database",
                 "signup_url": "https://www.themoviedb.org / signup",
@@ -639,7 +699,8 @@ class APIRegistrationExecutor:
                 "env_var": "TMDB_API_KEY",
                 "free_tier": "40 requests / 10 seconds",
                 "category": "entertainment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "omdb": {
                 "name": "OMDb API",
                 "signup_url": "http://www.omdbapi.com / apikey.aspx",
@@ -648,7 +709,8 @@ class APIRegistrationExecutor:
                 "env_var": "OMDB_API_KEY",
                 "free_tier": "1,000 requests / day",
                 "category": "entertainment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "spotify": {
                 "name": "Spotify",
                 "signup_url": "https://developer.spotify.com / dashboard / create",
@@ -657,7 +719,8 @@ class APIRegistrationExecutor:
                 "env_var": "SPOTIFY_CLIENT_ID",
                 "free_tier": "Rate limited",
                 "category": "music",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "lastfm": {
                 "name": "Last.fm",
                 "signup_url": "https://www.last.fm / api / account / create",
@@ -666,7 +729,8 @@ class APIRegistrationExecutor:
                 "env_var": "LASTFM_API_KEY",
                 "free_tier": "Rate limited",
                 "category": "music",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "musixmatch": {
                 "name": "Musixmatch",
                 "signup_url": "https://developer.musixmatch.com/",
@@ -675,7 +739,8 @@ class APIRegistrationExecutor:
                 "env_var": "MUSIXMATCH_API_KEY",
                 "free_tier": "2,000 requests / day",
                 "category": "music",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "nasa": {
                 "name": "NASA API",
                 "signup_url": "https://api.nasa.gov/",
@@ -684,7 +749,8 @@ class APIRegistrationExecutor:
                 "env_var": "NASA_API_KEY",
                 "free_tier": "1,000 requests / hour",
                 "category": "science",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "spacex": {
                 "name": "SpaceX API",
                 "signup_url": "https://github.com / r - spacex / SpaceX - API",
@@ -693,7 +759,8 @@ class APIRegistrationExecutor:
                 "env_var": "SPACEX_API_URL",
                 "free_tier": "Completely free",
                 "category": "science",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "ipgeolocation": {
                 "name": "IP Geolocation",
                 "signup_url": "https://ipgeolocation.io / signup",
@@ -702,7 +769,8 @@ class APIRegistrationExecutor:
                 "env_var": "IPGEOLOCATION_API_KEY",
                 "free_tier": "1,000 requests / month",
                 "category": "location",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "ipstack": {
                 "name": "IPStack",
                 "signup_url": "https://ipstack.com / signup / free",
@@ -711,7 +779,8 @@ class APIRegistrationExecutor:
                 "env_var": "IPSTACK_API_KEY",
                 "free_tier": "10,000 requests / month",
                 "category": "location",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "clearbit": {
                 "name": "Clearbit",
                 "signup_url": "https://clearbit.com / signup",
@@ -720,7 +789,8 @@ class APIRegistrationExecutor:
                 "env_var": "CLEARBIT_API_KEY",
                 "free_tier": "50 requests / month",
                 "category": "business",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "hunter": {
                 "name": "Hunter.io",
                 "signup_url": "https://hunter.io / users / sign_up",
@@ -729,7 +799,8 @@ class APIRegistrationExecutor:
                 "env_var": "HUNTER_API_KEY",
                 "free_tier": "25 requests / month",
                 "category": "business",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "fullcontact": {
                 "name": "FullContact",
                 "signup_url": "https://www.fullcontact.com / developer - portal/",
@@ -738,7 +809,8 @@ class APIRegistrationExecutor:
                 "env_var": "FULLCONTACT_API_KEY",
                 "free_tier": "1,000 requests / month",
                 "category": "business",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "abstract": {
                 "name": "Abstract API",
                 "signup_url": "https://app.abstractapi.com / users / signup",
@@ -747,7 +819,8 @@ class APIRegistrationExecutor:
                 "env_var": "ABSTRACT_API_KEY",
                 "free_tier": "1,000 requests / month",
                 "category": "utility",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "rapidapi": {
                 "name": "RapidAPI",
                 "signup_url": "https://rapidapi.com / auth / sign - up",
@@ -756,7 +829,8 @@ class APIRegistrationExecutor:
                 "env_var": "RAPIDAPI_KEY",
                 "free_tier": "Varies by API",
                 "category": "marketplace",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "postman": {
                 "name": "Postman API",
                 "signup_url": "https://identity.getpostman.com / signup",
@@ -765,7 +839,8 @@ class APIRegistrationExecutor:
                 "env_var": "POSTMAN_API_KEY",
                 "free_tier": "Personal use free",
                 "category": "development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "insomnia": {
                 "name": "Insomnia API",
                 "signup_url": "https://insomnia.rest / pricing",
@@ -774,7 +849,8 @@ class APIRegistrationExecutor:
                 "env_var": "INSOMNIA_API_KEY",
                 "free_tier": "Core features free",
                 "category": "development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "heroku": {
                 "name": "Heroku",
                 "signup_url": "https://signup.heroku.com/",
@@ -783,7 +859,8 @@ class APIRegistrationExecutor:
                 "env_var": "HEROKU_API_KEY",
                 "free_tier": "550 - 1000 dyno hours / month",
                 "category": "deployment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "railway": {
                 "name": "Railway",
                 "signup_url": "https://railway.app/",
@@ -792,7 +869,8 @@ class APIRegistrationExecutor:
                 "env_var": "RAILWAY_TOKEN",
                 "free_tier": "$5 free credit / month",
                 "category": "deployment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "render": {
                 "name": "Render",
                 "signup_url": "https://render.com / register",
@@ -801,7 +879,8 @@ class APIRegistrationExecutor:
                 "env_var": "RENDER_API_KEY",
                 "free_tier": "750 hours / month",
                 "category": "deployment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "digitalocean": {
                 "name": "DigitalOcean",
                 "signup_url": "https://cloud.digitalocean.com / registrations / new",
@@ -810,7 +889,8 @@ class APIRegistrationExecutor:
                 "env_var": "DIGITALOCEAN_TOKEN",
                 "free_tier": "$200 credit for 60 days",
                 "category": "cloud",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "linode": {
                 "name": "Linode",
                 "signup_url": "https://login.linode.com / signup",
@@ -819,16 +899,18 @@ class APIRegistrationExecutor:
                 "env_var": "LINODE_TOKEN",
                 "free_tier": "$100 credit for 60 days",
                 "category": "cloud",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "vultr": {
                 "name": "Vultr",
                 "signup_url": "https://www.vultr.com / register/",
                 "api_docs": "https://www.vultr.com / api/",
-                "key_location": "https://my.vultr.com / settings/#settingsapi",
+                "key_location": "https://my.vultr.com / settings/#settingsapi","
                 "env_var": "VULTR_API_KEY",
                 "free_tier": "$100 credit for new users",
                 "category": "cloud",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "cloudflare": {
                 "name": "Cloudflare",
                 "signup_url": "https://dash.cloudflare.com / sign - up",
@@ -837,7 +919,8 @@ class APIRegistrationExecutor:
                 "env_var": "CLOUDFLARE_API_TOKEN",
                 "free_tier": "Free tier available",
                 "category": "cdn",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "fastly": {
                 "name": "Fastly",
                 "signup_url": "https://www.fastly.com / signup/",
@@ -846,7 +929,8 @@ class APIRegistrationExecutor:
                 "env_var": "FASTLY_API_TOKEN",
                 "free_tier": "$50 credit / month",
                 "category": "cdn",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "pusher": {
                 "name": "Pusher",
                 "signup_url": "https://pusher.com / signup",
@@ -855,7 +939,8 @@ class APIRegistrationExecutor:
                 "env_var": "PUSHER_APP_KEY",
                 "free_tier": "200,000 messages / day",
                 "category": "realtime",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "ably": {
                 "name": "Ably",
                 "signup_url": "https://ably.com / signup",
@@ -864,7 +949,8 @@ class APIRegistrationExecutor:
                 "env_var": "ABLY_API_KEY",
                 "free_tier": "3 million messages / month",
                 "category": "realtime",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "socket_io": {
                 "name": "Socket.IO",
                 "signup_url": "https://socket.io/",
@@ -873,7 +959,8 @@ class APIRegistrationExecutor:
                 "env_var": "SOCKET_IO_URL",
                 "free_tier": "Open source",
                 "category": "realtime",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "auth0": {
                 "name": "Auth0",
                 "signup_url": "https://auth0.com / signup",
@@ -882,7 +969,8 @@ class APIRegistrationExecutor:
                 "env_var": "AUTH0_CLIENT_ID",
                 "free_tier": "7,000 active users",
                 "category": "authentication",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "okta": {
                 "name": "Okta",
                 "signup_url": "https://developer.okta.com / signup/",
@@ -891,7 +979,8 @@ class APIRegistrationExecutor:
                 "env_var": "OKTA_API_TOKEN",
                 "free_tier": "15,000 monthly active users",
                 "category": "authentication",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "firebase_auth": {
                 "name": "Firebase Authentication",
                 "signup_url": "https://console.firebase.google.com/",
@@ -900,8 +989,10 @@ class APIRegistrationExecutor:
                 "env_var": "FIREBASE_AUTH_DOMAIN",
                 "free_tier": "50,000 MAU",
                 "category": "authentication",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def create_session(self):
         """Create HTTP session for API calls"""
@@ -922,7 +1013,8 @@ class APIRegistrationExecutor:
                 api_name=api_key,
                 success=False,
                 error_message=f"API {api_key} not found in registry",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         api_info = self.api_registry[api_key]
         logger.info(f"Registering for {api_info['name']}...")
@@ -946,7 +1038,8 @@ class APIRegistrationExecutor:
                 free_tier=api_info.get("free_tier"),
                 api_key=f"demo_{api_key}_key_{int(time.time())}",  # Demo key
                 timestamp=datetime.now().isoformat(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Add to results
             self.registration_results.append(result)
@@ -966,7 +1059,8 @@ class APIRegistrationExecutor:
                 success=False,
                 error_message=error_msg,
                 registration_url=api_info["signup_url"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.registration_results.append(result)
             return result
@@ -1065,7 +1159,8 @@ class APIRegistrationExecutor:
         """Register for APIs in a specific category"""
         category_apis = {
             key: info for key, info in self.api_registry.items() if info.get("category") == category
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if not category_apis:
             logger.warning(f"No APIs found for category: {category}")
@@ -1117,7 +1212,8 @@ class APIRegistrationExecutor:
                 "successful": len(successful),
                 "failed": len(failed),
                 "success_rate": len(successful) / len(self.registration_results) * 100,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "category_breakdown": category_stats,
             "successful_apis": [
                 {
@@ -1125,19 +1221,24 @@ class APIRegistrationExecutor:
                     "api_key": r.api_key[:20] + "..." if r.api_key else None,
                     "free_tier": r.free_tier,
                     "timestamp": r.timestamp,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for r in successful
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "failed_apis": [
                 {
                     "name": r.api_name,
                     "error": r.error_message,
                     "registration_url": r.registration_url,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for r in failed
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "generated_at": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def interactive_menu(self):
         """Interactive menu for API registration"""
@@ -1343,7 +1444,8 @@ class APIRegistrationExecutor:
                 query in api_key.lower()
                 or query in api_info["name"].lower()
                 or query in api_info.get("category", "").lower()
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 matches.append((api_key, api_info))
 
         if matches:
@@ -1388,8 +1490,10 @@ class APIRegistrationExecutor:
                             "Free Tier",
                             "Registration URL",
                             "Timestamp",
-                        ]
-                    )
+# BRACKET_SURGEON: disabled
+#                         ]
+# BRACKET_SURGEON: disabled
+#                     )
 
                     for result in successful:
                         writer.writerow(
@@ -1399,8 +1503,10 @@ class APIRegistrationExecutor:
                                 result.free_tier,
                                 result.registration_url,
                                 result.timestamp,
-                            ]
-                        )
+# BRACKET_SURGEON: disabled
+#                             ]
+# BRACKET_SURGEON: disabled
+#                         )
 
                 print(f"✅ CSV exported to: {csv_file}")
 
@@ -1413,8 +1519,8 @@ class APIRegistrationExecutor:
 
         try:
             with open(template_file, "w") as f:
-                f.write("# API Registration Template\\n")
-                f.write(f"# Generated on {datetime.now().isoformat()}\\n\\n")
+                f.write("# API Registration Template\\n")"
+                f.write(f"# Generated on {datetime.now().isoformat()}\\n\\n")"
 
                 # Group by category
                 categories = {}
@@ -1425,7 +1531,7 @@ class APIRegistrationExecutor:
                     categories[category].append((api_key, api_info))
 
                 for category, apis in sorted(categories.items()):
-                    f.write(f"# {category.upper()} APIs\\n")
+                    f.write(f"# {category.upper()} APIs\\n")"
                     for api_key, api_info in sorted(apis):
                         f.write(f"{api_info['env_var']}=your_api_key_here\\n")
                     f.write("\\n")

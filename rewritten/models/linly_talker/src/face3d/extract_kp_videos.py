@@ -16,7 +16,8 @@ class KeypointExtractor:
     def __init__(self, device):
         self.detector = face_alignment.FaceAlignment(
             face_alignment.LandmarksType._2D, device=device
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def extract_keypoint(self, images, name=None, info=True):
         if isinstance(images, list):
@@ -96,7 +97,8 @@ if __name__ == "__main__":
     VIDEO_EXTENSIONS_LOWERCASE = {"mp4"}
     VIDEO_EXTENSIONS = VIDEO_EXTENSIONS_LOWERCASE.union(
         {f.upper() for f in VIDEO_EXTENSIONS_LOWERCASE}
-    )
+# BRACKET_SURGEON: disabled
+#     )
     extensions = VIDEO_EXTENSIONS
 
     for ext in extensions:

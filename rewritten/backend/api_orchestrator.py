@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Orchestrator - Intelligent API Management and Failover System
 
 This module provides intelligent API selection, load balancing, and automatic failover
@@ -13,7 +13,7 @@ Features:
 - Rate limit management and throttling
 - Configurable failover policies
 - Real - time API performance tracking
-"""
+""""""
 
 import asyncio
 import json
@@ -97,17 +97,18 @@ class APIResponse:
 
 
 class APIOrchestrator:
-    """
+    """"""
     Intelligent API orchestrator that manages multiple API endpoints,
         provides automatic failover, load balancing, and health monitoring.
-    """
+    """"""
 
     def __init__(
         self,
         db_path: str = "right_perspective.db",
         health_check_interval: int = 300,
         failover_strategy: FailoverStrategy = FailoverStrategy.PRIORITY_BASED,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.db_path = db_path
         self.health_check_interval = health_check_interval
         self.failover_strategy = failover_strategy
@@ -140,7 +141,7 @@ class APIOrchestrator:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT id, api_name, base_url, authentication_type,
                         rate_limit_per_minute, rate_limit_per_hour, status,
                                health_status, allow_automatic_failover, failover_priority,
@@ -149,8 +150,9 @@ class APIOrchestrator:
                     FROM api_registry
                     WHERE status = 'active'
                     ORDER BY failover_priority ASC
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 rows = cursor.fetchall()
 
@@ -175,9 +177,11 @@ class APIOrchestrator:
                             current_usage_hour=row[13] or 0,
                             last_health_check=(
                                 datetime.fromisoformat(row[14]) if row[14] else None
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             configuration=json.loads(row[15]) if row[15] else {},
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         self.api_endpoints[endpoint.api_name] = endpoint
 
@@ -199,7 +203,8 @@ class APIOrchestrator:
             self.health_monitor_running = True
             self.health_monitor_task = threading.Thread(
                 target=self._health_monitor_loop, daemon=True
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.health_monitor_task.start()
             self.logger.info("Health monitoring started")
 
@@ -239,7 +244,8 @@ class APIOrchestrator:
         """Check health of a specific endpoint"""
         health_url = (
             endpoint.configuration.get("health_check_url") if endpoint.configuration else None
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if not health_url:
             health_url = f"{endpoint.base_url.rstrip('/')}/health"
 
@@ -272,7 +278,8 @@ class APIOrchestrator:
 
             self.logger.debug(
                 f"Health check for {endpoint.api_name}: {health_status} ({response_time:.0f}ms)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             health_status = APIStatus.UNHEALTHY.value
@@ -287,22 +294,24 @@ class APIOrchestrator:
 
     def _update_endpoint_health(
         self, api_name: str, health_status: str, response_time: float
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Update endpoint health in database"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE api_registry
                     SET health_status = ?,
                         average_response_time = ?,
                             last_health_check = CURRENT_TIMESTAMP,
                             updated_at = CURRENT_TIMESTAMP
                     WHERE api_name = ?
-                """,
+                ""","""
                     (health_status, response_time, api_name),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to update endpoint health for {api_name}: {e}")
@@ -323,8 +332,10 @@ class APIOrchestrator:
                     and endpoint.api_name not in exclude_apis
                     and endpoint.health_status in ["healthy", "degraded"]
                     and self._check_rate_limits(endpoint)
-                )
-            ]
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             ]
 
             if not available_endpoints:
                 self.logger.warning("No healthy API endpoints available")
@@ -345,7 +356,8 @@ class APIOrchestrator:
                 return min(
                     available_endpoints,
                     key=lambda x: self.request_counts.get(x.api_name, 0),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             else:
                 # Default to priority - based
@@ -386,7 +398,8 @@ class APIOrchestrator:
                     self.logger.warning(
                         f"No available API endpoint, "
                         f"retrying in 5 seconds (attempt {attempt + 1}/{max_retries})"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     await asyncio.sleep(5)
                     continue
                 else:
@@ -437,11 +450,13 @@ class APIOrchestrator:
             elif request.method.upper() == "POST":
                 response = requests.post(
                     url, headers=headers, data=request.body, timeout=request.timeout
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif request.method.upper() == "PUT":
                 response = requests.put(
                     url, headers=headers, data=request.body, timeout=request.timeout
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif request.method.upper() == "DELETE":
                 response = requests.delete(url, headers=headers, timeout=request.timeout)
             else:
@@ -459,7 +474,8 @@ class APIOrchestrator:
                 response_time_ms=response_time_ms,
                 api_name=endpoint.api_name,
                 success=200 <= response.status_code < 300,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             response_time_ms = int((time.time() - start_time) * 1000)
@@ -477,7 +493,7 @@ class APIOrchestrator:
 
                 # Update usage counters
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE api_registry
                     SET current_usage_minute = current_usage_minute + 1,
                         current_usage_hour = current_usage_hour + 1,
@@ -485,19 +501,21 @@ class APIOrchestrator:
                             total_errors = total_errors + ?,
                             updated_at = CURRENT_TIMESTAMP
                     WHERE api_name = ?
-                """,
+                ""","""
                     (0 if success else 1, api_name),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Calculate new success rate
                 cursor.execute(
-                    """
+                    """"""
                     SELECT total_requests, total_errors
                     FROM api_registry
                     WHERE api_name = ?
-                """,
+                ""","""
                     (api_name,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 row = cursor.fetchone()
                 if row:
@@ -506,16 +524,18 @@ class APIOrchestrator:
                         (total_requests - total_errors) / total_requests
                         if total_requests > 0
                         else 1.0
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     cursor.execute(
-                        """
+                        """"""
                         UPDATE api_registry
                         SET success_rate = ?
                         WHERE api_name = ?
-                    """,
+                    ""","""
                         (success_rate, api_name),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 conn.commit()
 
@@ -530,7 +550,8 @@ class APIOrchestrator:
                         if len(self.performance_history[api_name]) > 100:
                             self.performance_history[api_name] = self.performance_history[api_name][
                                 -100:
-                            ]
+# BRACKET_SURGEON: disabled
+#                             ]
 
         except Exception as e:
             self.logger.error(f"Failed to update request metrics for {api_name}: {e}")
@@ -542,7 +563,8 @@ class APIOrchestrator:
         response: Optional[requests.Response],
         response_time_ms: int,
         error_message: str = None,
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Log API request details"""
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -551,13 +573,13 @@ class APIOrchestrator:
                 request_id = f"{endpoint.api_name}_{int(time.time() * 1000)}"
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO api_request_logs (
                         api_id, request_id, endpoint, method, request_headers,
                             request_body, response_status, response_headers, response_body,
                             response_time_ms, error_message, timestamp
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-                """,
+                ""","""
                     (
                         endpoint.id,
                         request_id,
@@ -570,8 +592,10 @@ class APIOrchestrator:
                         response.text if response else None,
                         response_time_ms,
                         error_message,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
 
@@ -585,15 +609,19 @@ class APIOrchestrator:
                 "total_endpoints": len(self.api_endpoints),
                 "healthy_endpoints": len(
                     [e for e in self.api_endpoints.values() if e.health_status == "healthy"]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "degraded_endpoints": len(
                     [e for e in self.api_endpoints.values() if e.health_status == "degraded"]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "unhealthy_endpoints": len(
                     [e for e in self.api_endpoints.values() if e.health_status == "unhealthy"]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "endpoints": {},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             for name, endpoint in self.api_endpoints.items():
                 status["endpoints"][name] = {
@@ -609,8 +637,10 @@ class APIOrchestrator:
                         endpoint.last_health_check.isoformat()
                         if endpoint.last_health_check
                         else None
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
             return status
 
@@ -646,7 +676,8 @@ async def make_api_request(
     body: str = None,
     api_name: str = None,
     orchestrator: APIOrchestrator = None,
-) -> APIResponse:
+# BRACKET_SURGEON: disabled
+# ) -> APIResponse:
     """Convenience function to make an API request with automatic failover"""
     if orchestrator is None:
         orchestrator = create_api_orchestrator()

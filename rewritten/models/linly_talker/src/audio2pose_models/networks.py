@@ -13,11 +13,13 @@ class ResidualConv(nn.Module):
             nn.BatchNorm2d(output_dim),
             nn.ReLU(),
             nn.Conv2d(output_dim, output_dim, kernel_size=3, padding=1),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.conv_skip = nn.Sequential(
             nn.Conv2d(input_dim, output_dim, kernel_size=3, stride=stride, padding=1),
             nn.BatchNorm2d(output_dim),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, x):
         return self.conv_block(x) + self.conv_skip(x)
@@ -42,7 +44,8 @@ class Squeeze_Excite_Block(nn.Module):
             nn.ReLU(inplace=True),
             nn.Linear(channel // reduction, channel, bias=False),
             nn.Sigmoid(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, x):
         b, c, _, _ = x.size()
@@ -59,17 +62,20 @@ class ASPP(nn.Module):
             nn.Conv2d(in_dims, out_dims, 3, stride=1, padding=rate[0], dilation=rate[0]),
             nn.ReLU(inplace=True),
             nn.BatchNorm2d(out_dims),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.aspp_block2 = nn.Sequential(
             nn.Conv2d(in_dims, out_dims, 3, stride=1, padding=rate[1], dilation=rate[1]),
             nn.ReLU(inplace=True),
             nn.BatchNorm2d(out_dims),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.aspp_block3 = nn.Sequential(
             nn.Conv2d(in_dims, out_dims, 3, stride=1, padding=rate[2], dilation=rate[2]),
             nn.ReLU(inplace=True),
             nn.BatchNorm2d(out_dims),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.output = nn.Conv2d(len(rate) * out_dims, out_dims, 1)
         self._init_weights()
@@ -109,19 +115,22 @@ class AttentionBlock(nn.Module):
             nn.ReLU(),
             nn.Conv2d(input_encoder, output_dim, 3, padding=1),
             nn.MaxPool2d(2, 2),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.conv_decoder = nn.Sequential(
             nn.BatchNorm2d(input_decoder),
             nn.ReLU(),
             nn.Conv2d(input_decoder, output_dim, 3, padding=1),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.conv_attn = nn.Sequential(
             nn.BatchNorm2d(output_dim),
             nn.ReLU(),
             nn.Conv2d(output_dim, 1, 1),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, x1, x2):
         out = self.conv_encoder(x1) + self.conv_decoder(x2)

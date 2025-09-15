@@ -92,6 +92,14 @@ test-results/
 test_outputs/
 test_output/
 
+# Linter and type checker caches
+.mypy_cache/
+.ruff_cache/
+.pylint_cache/
+
+# Trae AI generated directories
+trae_ai_base44/
+
 # Backup and snapshot directories
 backups/
 snapshots/

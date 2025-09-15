@@ -13,12 +13,12 @@ class GroqAPI(BaseAPI):
     """Groq API integration for fast AI inference"""
 
     def __init__(self, api_key: Optional[str] = None):
-        """
+        """"""
         Initialize Groq API client
 
         Args:
             api_key: Groq API key. If not provided, will try to get from environment
-        """
+        """"""
         super().__init__()
         self.api_key = api_key or os.getenv("GROQ_API_KEY")
         self.base_url = "https://api.groq.com / openai / v1"
@@ -33,7 +33,8 @@ class GroqAPI(BaseAPI):
         return {
             "Authorization": f"Bearer {self.api_key}",
             "Content - Type": "application / json",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def chat_completion(
         self,
@@ -41,7 +42,7 @@ class GroqAPI(BaseAPI):
         model: str = "mixtral - 8x7b - 32768",
         **kwargs,
     ) -> Dict[str, Any]:
-        """
+        """"""
         Create a chat completion using Groq
 
         Args:
@@ -51,7 +52,7 @@ class GroqAPI(BaseAPI):
 
         Returns:
             Dict containing the completion response
-        """
+        """"""
         if not self.api_key:
             raise APIError("Groq API key not configured")
 
@@ -73,12 +74,12 @@ class GroqAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def list_models(self) -> Dict[str, Any]:
-        """
+        """"""
         List available models
 
         Returns:
             Dict containing available models
-        """
+        """"""
         if not self.api_key:
             raise APIError("Groq API key not configured")
 
@@ -98,12 +99,12 @@ class GroqAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_status(self) -> Dict[str, Any]:
-        """
+        """"""
         Get API status and configuration
 
         Returns:
             Dict containing status information
-        """
+        """"""
         return {
             "name": self.name,
             "category": self.category,
@@ -113,25 +114,28 @@ class GroqAPI(BaseAPI):
                 "mixtral - 8x7b - 32768",
                 "llama2 - 70b - 4096",
                 "gemma - 7b - it",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "rate_limits": "Generous free tier",
             "last_checked": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def test_connection(self) -> Dict[str, Any]:
-        """
+        """"""
         Test the API connection
 
         Returns:
             Dict containing test results
-        """
+        """"""
         try:
             if not self.api_key:
                 return {
                     "success": False,
                     "error": "API key not configured",
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Test with a simple model list request
             models = self.list_models()
@@ -141,11 +145,13 @@ class GroqAPI(BaseAPI):
                 "message": "Connection successful",
                 "models_available": len(models.get("data", [])),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {
                 "success": False,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }

@@ -17,7 +17,9 @@ try:
 
     from backend.services.avatar_engines import (AvatarRequest, AvatarResponse,
 
-        engine_manager)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         engine_manager)
 except ImportError:
     engine_manager = None
     logging.warning("Avatar engines not available - check backend structure")
@@ -31,7 +33,9 @@ except ImportError:
 
         from copy_of_code.avatar_pipeline import (AnimationSpec, AvatarPipeline,
 
-            CharacterSpec)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             CharacterSpec)
     except ImportError:
         AvatarPipeline = None
         logging.warning("Avatar pipeline not available - check backend structure")
@@ -47,36 +51,54 @@ class AvatarGenerationRequest(BaseModel):
     text: str = Field(..., description="Text for the avatar to speak")
     voice_settings: Optional[Dict[str, Any]] = Field(
         default={}, description="Voice configuration"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     video_settings: Optional[Dict[str, Any]] = Field(
         default={}, description="Video configuration"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     source_image: Optional[str] = Field(
         None, description="Base64 encoded source image or image URL"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     engine: Optional[str] = Field("linly - talker", description="Avatar engine to use")
     gender: Optional[str] = Field(
         "neutral", description="Avatar gender (neutral, male, female)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 class Avatar3DRequest(BaseModel):
     character_description: str = Field(
         ..., description="Description of the 3D character to create"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     animation_type: Optional[str] = Field(
         "idle", description="Type of animation to apply"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     voice_text: Optional[str] = Field(None, description="Text for voice synthesis")
     export_format: Optional[str] = Field(
         "mp4", description="Export format (mp4, fbx, obj)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     quality: Optional[str] = Field(
         "medium", description="Rendering quality (low, medium, high)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     gender: Optional[str] = Field(
         "neutral", description="Avatar gender (neutral, male, female)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 class AvatarStatusResponse(BaseModel):
@@ -102,8 +124,11 @@ async def avatar_interface(request: Request):
             "request": request,
                 "title": "Avatar Generation",
                 "engines": await get_available_engines(),
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 @router.get("/health")
 
@@ -115,7 +140,8 @@ async def health_check():
             "timestamp": datetime.now().isoformat(),
             "engines": {},
             "pipeline": AvatarPipeline is not None,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     if engine_manager:
         try:
@@ -151,8 +177,11 @@ async def get_available_engines():
                         "name": engine_name,
                             "healthy": health,
                             "capabilities": getattr(engine, "capabilities", []),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return {"engines": engine_info}
     except Exception as e:
@@ -176,17 +205,23 @@ async def generate_avatar(request: AvatarGenerationRequest):
         if not engine:
             raise HTTPException(
                 status_code = 400,
-                    detail = f"Engine {
-                    request.engine} not available",
-                        )
+                    detail = f"Engine {"
+# BRACKET_SURGEON: disabled
+#                     request.engine} not available","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         # Check engine health
         if not await engine.health_check():
             raise HTTPException(
                 status_code = 503,
-                    detail = f"Engine {
-                    request.engine} is not responding",
-                        )
+                    detail = f"Engine {"
+# BRACKET_SURGEON: disabled
+#                     request.engine} is not responding","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         # Create avatar request
         avatar_request = AvatarRequest(
@@ -195,7 +230,9 @@ async def generate_avatar(request: AvatarGenerationRequest):
                 video_settings = request.video_settings,
                 source_image = request.source_image,
                 gender = request.gender,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Store job info
         avatar_jobs[job_id] = {
@@ -204,7 +241,8 @@ async def generate_avatar(request: AvatarGenerationRequest):
                 "created_at": datetime.now(),
                 "updated_at": datetime.now(),
                 "engine": request.engine,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Start generation (async)
         try:
@@ -217,20 +255,28 @@ async def generate_avatar(request: AvatarGenerationRequest):
                             "progress": 100.0,
                             "result_url": response.output_path,
                             "updated_at": datetime.now(),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 avatar_jobs[job_id].update(
                     {
                         "status": "failed",
                             "error": response.error,
                             "updated_at": datetime.now(),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except Exception as e:
             avatar_jobs[job_id].update(
                 {"status": "failed", "error": str(e), "updated_at": datetime.now()}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return {"job_id": job_id, "status": "started"}
 
@@ -245,7 +291,9 @@ async def generate_3d_avatar(request: Avatar3DRequest):
     """Generate 3D avatar using the avatar pipeline"""
     if not AvatarPipeline:
         raise HTTPException(status_code = 503,
-    detail="3D Avatar pipeline not available")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail="3D Avatar pipeline not available")
 
     try:
         # Create job ID
@@ -258,7 +306,8 @@ async def generate_3d_avatar(request: Avatar3DRequest):
                 "created_at": datetime.now(),
                 "updated_at": datetime.now(),
                 "type": "3d_pipeline",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Initialize pipeline
         pipeline = AvatarPipeline()
@@ -269,7 +318,9 @@ async def generate_3d_avatar(request: Avatar3DRequest):
                 gender = request.gender or "neutral",
                 age_range="adult",
                 style="realistic",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Create animation spec if voice text provided
         animation_spec = None
@@ -278,7 +329,9 @@ async def generate_3d_avatar(request: Avatar3DRequest):
                 animation_type = request.animation_type,
                     voice_text = request.voice_text,
                     duration = None,  # Auto - calculate from text
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Start generation (async)
         try:
@@ -287,7 +340,9 @@ async def generate_3d_avatar(request: Avatar3DRequest):
                     animation_spec = animation_spec,
                     output_format = request.export_format,
                     quality = request.quality,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             avatar_jobs[job_id].update(
                 {
@@ -296,13 +351,18 @@ async def generate_3d_avatar(request: Avatar3DRequest):
                         "result_url": str(result.final_render_path),
                         "metadata": result.metadata,
                         "updated_at": datetime.now(),
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             avatar_jobs[job_id].update(
                 {"status": "failed", "error": str(e), "updated_at": datetime.now()}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return {"job_id": job_id, "status": "started"}
 
@@ -327,7 +387,9 @@ async def get_avatar_status(job_id: str):
             error = job_info.get("error"),
             created_at = job_info["created_at"],
             updated_at = job_info["updated_at"],
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 @router.get("/download/{job_id}")
 
@@ -347,7 +409,9 @@ async def download_avatar(job_id: str):
 
     return FileResponse(
         path = result_path, filename = f"avatar_{job_id}.mp4", media_type="video / mp4"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 @router.post("/upload - image")
 
@@ -361,7 +425,8 @@ async def upload_source_image(file: UploadFile = File(...)):
         # Create temporary file
         with tempfile.NamedTemporaryFile(
             delete = False, suffix = os.path.splitext(file.filename)[1]
-        ) as tmp_file:
+# BRACKET_SURGEON: disabled
+#         ) as tmp_file:
             content = await file.read()
             tmp_file.write(content)
             tmp_file_path = tmp_file.name
@@ -372,7 +437,8 @@ async def upload_source_image(file: UploadFile = File(...)):
                 "file_path": tmp_file_path,
                 "filename": file.filename,
                 "size": len(content),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
     except Exception as e:
         logger.error(f"Error uploading image: {e}")
@@ -415,8 +481,11 @@ async def list_avatar_jobs():
                     "created_at": job_info["created_at"],
                     "updated_at": job_info["updated_at"],
                     "type": job_info.get("type", "standard"),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     return {"jobs": jobs, "total": len(jobs)}
 

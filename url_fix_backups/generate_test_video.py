@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Generate Test Video - Create Actual MP4 Using Simple ffmpeg Commands
 
 This script creates real MP4 videos using the simplest possible ffmpeg commands
@@ -7,7 +7,7 @@ that work reliably across all systems.
 
 Author: TRAE.AI System
 Version: 3.0.0
-"""
+""""""
 
 import logging
 import os
@@ -19,7 +19,8 @@ from pathlib import Path
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -52,7 +53,7 @@ class SimpleVideoGenerator:
     def create_basic_video(self, title: str, duration: int = 10) -> str:
         """Create a basic video with solid color background and simple text."""
         timestamp = datetime.now().strftime("%Y % m%d_ % H%M % S")
-        safe_title = title.replace(" ", "_").replace(":", "").replace("/", "").replace("'", "")
+        safe_title = title.replace(" ", "_").replace(":", "").replace("/", "").replace("'", "")'
         video_path = self.output_dir / f"video_{safe_title}_{timestamp}.mp4"
 
         try:
@@ -73,7 +74,8 @@ class SimpleVideoGenerator:
                 "-t",
                 str(duration),
                 str(video_path),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             logger.info(f"Creating basic video: {video_path}")
             result = subprocess.run(cmd, capture_output=True, text=True)
@@ -92,7 +94,7 @@ class SimpleVideoGenerator:
     def create_audio_video(self, title: str, duration: int = 10) -> str:
         """Create a video with both visual and audio components."""
         timestamp = datetime.now().strftime("%Y % m%d_ % H%M % S")
-        safe_title = title.replace(" ", "_").replace(":", "").replace("/", "").replace("'", "")
+        safe_title = title.replace(" ", "_").replace(":", "").replace("/", "").replace("'", "")'
         video_path = self.output_dir / f"audio_video_{safe_title}_{timestamp}.mp4"
 
         try:
@@ -120,7 +122,8 @@ class SimpleVideoGenerator:
                 str(duration),
                 "-shortest",
                 str(video_path),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             logger.info(f"Creating audio video: {video_path}")
             result = subprocess.run(cmd, capture_output=True, text=True)
@@ -166,7 +169,8 @@ class SimpleVideoGenerator:
                 "15",
                 "-shortest",
                 str(video_path),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             logger.info(f"Creating demo video: {video_path}")
             result = subprocess.run(cmd, capture_output=True, text=True)
@@ -188,7 +192,8 @@ class SimpleVideoGenerator:
             "timestamp": datetime.now().isoformat(),
             "videos_created": [],
             "errors": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Check prerequisites
         if not self.check_ffmpeg():
@@ -202,7 +207,8 @@ class SimpleVideoGenerator:
             ("create_audio_video", "Future of Technology", 10),
             ("create_audio_video", "Creative AI Systems", 10),
             ("create_demo_video",),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for task in video_tasks:
             try:
@@ -216,7 +222,8 @@ class SimpleVideoGenerator:
                     video_path = method(task[1], task[2])
                     task_name = (
                         f"{method_name.replace('create_', '').replace('_', ' ').title()}: {task[1]}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 if video_path and Path(video_path).exists():
                     file_size = Path(video_path).stat().st_size
@@ -225,8 +232,10 @@ class SimpleVideoGenerator:
                             "name": task_name,
                             "path": video_path,
                             "size_mb": round(file_size / (1024 * 1024), 2),
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
                     logger.info(f"✓ Created: {task_name}")
                 else:
                     results["errors"].append(f"Failed to create: {task_name}")

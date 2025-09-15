@@ -43,14 +43,17 @@ def main():
                 "1. Task the ResearchAgent to identify the top 5 trending political topics from the last 72 hours based on its RSS feeds.",
                 "2. From those topics, task the ContentAgent to generate three distinct video script outlines.",
                 "3. Task the AuditorAgent to review the outlines for compliance with the 'RightPerspectiveFirewall'.",
-                "4. Select the highest - scoring outline \
-    and task the VideoCreator to produce a 2 - minute video.",
-                "5. Task the MarketingAgent to schedule the final video for publication on YouTube \
-    and draft a promotional tweet.",
-            ],
-        },
+                "4. Select the highest - scoring outline \"
+#     and task the VideoCreator to produce a 2 - minute video.",
+                "5. Task the MarketingAgent to schedule the final video for publication on YouTube \"
+#     and draft a promotional tweet.",
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         },
         "status": "pending",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     try:
         # Submit task to queue
@@ -63,8 +66,10 @@ def main():
                 "project_name": "Right Perspective Q4 2025",
                 "initiated_by": "strategic_request",
                 "timestamp": datetime.now().isoformat(),
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         logger.info(f"Strategic project task submitted successfully with ID: {task_id}")
         print("✅ Strategic project task submitted successfully!")

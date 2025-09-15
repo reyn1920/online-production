@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE AI Load Testing Script
 Comprehensive load testing to validate automatic scaling performance and reliability
 
 This script performs various load testing scenarios to ensure the monitoring
 and scaling infrastructure works correctly under different conditions.
-"""
+""""""
 
 import argparse
 import asyncio
@@ -26,7 +26,9 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("logs/load - test.log"), logging.StreamHandler()],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -71,7 +73,8 @@ class LoadTestScenario:
         endpoint: str,
         method: str = "GET",
         data: Dict = None,
-    ) -> TestResult:
+# BRACKET_SURGEON: disabled
+#     ) -> TestResult:
         """Make a single HTTP request and record the result"""
         start_time = time.time()
         url = urljoin(self.config.base_url, endpoint)
@@ -91,7 +94,9 @@ class LoadTestScenario:
                         endpoint=endpoint,
                         success=200 <= response.status < 400,
                         response_size=len(content),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             elif method.upper() == "POST":
                 async with session.post(url, json=data, timeout=timeout) as response:
                     content = await response.read()
@@ -104,7 +109,9 @@ class LoadTestScenario:
                         endpoint=endpoint,
                         success=200 <= response.status < 400,
                         response_size=len(content),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             response_time = time.time() - start_time
@@ -115,17 +122,21 @@ class LoadTestScenario:
                 endpoint=endpoint,
                 success=False,
                 error=str(e),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def user_simulation(self, user_id: int, session: aiohttp.ClientSession):
-        """Simulate a single user's behavior"""
+        """Simulate a single user's behavior"""'
         raise NotImplementedError("Subclasses must implement user_simulation")
 
     async def run(self) -> Dict[str, Any]:
         """Run the load test scenario"""
         logger.info(
             f"Starting load test with {self.config.concurrent_users} users for {self.config.duration_seconds}s"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.start_time = time.time()
 
@@ -133,7 +144,9 @@ class LoadTestScenario:
         connector = aiohttp.TCPConnector(
             limit=self.config.concurrent_users * 2,
             limit_per_host=self.config.concurrent_users * 2,
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         async with aiohttp.ClientSession(connector=connector) as session:
             # Create tasks for all users
@@ -142,10 +155,13 @@ class LoadTestScenario:
                 # Stagger user start times for ramp - up
                 delay = (
                     user_id * self.config.ramp_up_seconds
-                ) / self.config.concurrent_users
+# BRACKET_SURGEON: disabled
+#                 ) / self.config.concurrent_users
                 task = asyncio.create_task(
                     self.delayed_user_simulation(user_id, session, delay)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 tasks.append(task)
 
             # Wait for all tasks to complete
@@ -158,7 +174,8 @@ class LoadTestScenario:
 
     async def delayed_user_simulation(
         self, user_id: int, session: aiohttp.ClientSession, delay: float
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Start user simulation after a delay for ramp - up"""
         await asyncio.sleep(delay)
         await self.user_simulation(user_id, session)
@@ -179,7 +196,9 @@ class LoadTestScenario:
         failed_requests = len(failed_results)
         success_rate = (
             (successful_requests / total_requests) * 100 if total_requests > 0 else 0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Response time statistics
         if response_times:
@@ -192,13 +211,16 @@ class LoadTestScenario:
         else:
             avg_response_time = median_response_time = p95_response_time = (
                 p99_response_time
-            ) = 0
+# BRACKET_SURGEON: disabled
+#             ) = 0
             min_response_time = max_response_time = 0
 
         # Calculate throughput
         test_duration = (
             self.end_time - self.start_time if self.end_time and self.start_time else 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         requests_per_second = total_requests / test_duration
 
         # Error analysis
@@ -209,7 +231,9 @@ class LoadTestScenario:
             # Count status codes
             status_codes[result.status_code] = (
                 status_codes.get(result.status_code, 0) + 1
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Count error types
             if result.error:
@@ -228,7 +252,8 @@ class LoadTestScenario:
                 "avg_response_time": statistics.mean(times),
                 "p95_response_time": self.percentile(times, 95),
                 "request_count": len(times),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return {
             "test_config": asdict(self.config),
@@ -245,12 +270,14 @@ class LoadTestScenario:
                 "p99": p99_response_time,
                 "min": min_response_time,
                 "max": max_response_time,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "status_codes": status_codes,
             "error_types": error_types,
             "endpoint_performance": endpoint_performance,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     @staticmethod
     def percentile(data: List[float], percentile: float) -> float:
@@ -303,8 +330,10 @@ class ContentGenerationLoadTest(LoadTestScenario):
                     "type": "blog_post",
                     "topic": f"AI Technology Trends {random.randint(1, 1000)}",
                     "length": random.choice(["short", "medium", "long"]),
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "endpoint": "/api/content/generate",
                 "method": "POST",
@@ -312,8 +341,10 @@ class ContentGenerationLoadTest(LoadTestScenario):
                     "type": "social_media",
                     "platform": random.choice(["twitter", "linkedin", "facebook"]),
                     "topic": f"Tech Update {random.randint(1, 1000)}",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "endpoint": "/api/marketing/campaign",
                 "method": "POST",
@@ -321,11 +352,16 @@ class ContentGenerationLoadTest(LoadTestScenario):
                     "campaign_type": "email",
                     "target_audience": random.choice(
                         ["developers", "marketers", "executives"]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "product": f"Product {random.randint(1, 100)}",
-                },
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         while time.time() < end_time:
             # Random request selection
@@ -337,7 +373,9 @@ class ContentGenerationLoadTest(LoadTestScenario):
                 request_config["endpoint"],
                 request_config["method"],
                 request_config["data"],
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.results.append(result)
 
             # Longer wait for content generation
@@ -354,7 +392,9 @@ class SpikeLoadTest(LoadTestScenario):
         spike_duration = self.config.duration_seconds // 3
         recovery_duration = (
             self.config.duration_seconds - normal_duration - spike_duration
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         phases = [
             ("normal", normal_duration, self.config.request_delay_ms),
@@ -362,9 +402,12 @@ class SpikeLoadTest(LoadTestScenario):
                 "spike",
                 spike_duration,
                 self.config.request_delay_ms // 5,
-            ),  # 5x more requests
+# BRACKET_SURGEON: disabled
+#             ),  # 5x more requests
             ("recovery", recovery_duration, self.config.request_delay_ms),
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         endpoints = ["/health", "/api/status", "/api/content/generate"]
 
@@ -383,8 +426,11 @@ class SpikeLoadTest(LoadTestScenario):
                         {
                             "type": "quick_content",
                             "topic": f"Spike test {random.randint(1, 1000)}",
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     result = await self.make_request(session, endpoint)
 
@@ -407,7 +453,9 @@ class ScalingValidationTest:
             "http_requests_total",
             "scaling_events_total",
             "model_generation_queue_size",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         results = {}
 
@@ -442,7 +490,9 @@ class ScalingValidationTest:
             duration_seconds=600,  # 10 minutes
             concurrent_users=50,  # High load
             request_delay_ms=100,  # Aggressive requests
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         spike_test = SpikeLoadTest(spike_config)
         load_test_results = await spike_test.run()
@@ -459,8 +509,10 @@ class ScalingValidationTest:
             "post_test_metrics": post_test_metrics,
             "scaling_detected": self.analyze_scaling_events(
                 baseline_metrics, post_test_metrics
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     def analyze_scaling_events(self, baseline: Dict, post_test: Dict) -> Dict[str, Any]:
         """Analyze if scaling events occurred"""
@@ -469,13 +521,15 @@ class ScalingValidationTest:
             "memory_increase_detected": False,
             "scaling_events_detected": False,
             "recommendations": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Check for CPU increase
         if (
             "system_cpu_usage_percent" in baseline
             and "system_cpu_usage_percent" in post_test
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             baseline_cpu = baseline.get("system_cpu_usage_percent", [])
             post_cpu = post_test.get("system_cpu_usage_percent", [])
 
@@ -483,7 +537,9 @@ class ScalingValidationTest:
                 try:
                     baseline_val = (
                         float(baseline_cpu[0]["value"][1]) if baseline_cpu else 0
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     post_val = float(post_cpu[0]["value"][1]) if post_cpu else 0
 
                     if post_val > baseline_val * 1.5:  # 50% increase
@@ -501,12 +557,16 @@ class ScalingValidationTest:
         if not analysis["scaling_events_detected"]:
             analysis["recommendations"].append(
                 "No scaling events detected. Check HPA configuration and metrics."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if not analysis["cpu_increase_detected"]:
             analysis["recommendations"].append(
                 "CPU usage did not increase significantly. Consider increasing load test intensity."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return analysis
 
@@ -516,22 +576,32 @@ async def main():
     parser = argparse.ArgumentParser(description="TRAE AI Load Testing Suite")
     parser.add_argument(
         "--base - url", default="http://localhost:8080", help="Base URL for testing"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--duration", type=int, default=300, help="Test duration in seconds"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--users", type=int, default=10, help="Number of concurrent users"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--test - type",
         choices=["basic", "content", "spike", "scaling", "all"],
         default="all",
         help="Type of test to run",
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--output", default="load - test - results.json", help="Output file for results"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     args = parser.parse_args()
 
@@ -539,7 +609,9 @@ async def main():
         base_url=args.base_url,
         duration_seconds=args.duration,
         concurrent_users=args.users,
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     results = {}
 
@@ -579,13 +651,17 @@ async def main():
             print(f"  Total Requests: {test_results['total_requests']}")
             print(f"  Requests/sec: {test_results['requests_per_second']:.2f}")
             print(
-                f"  Avg Response Time: {
-                    test_results['response_time_stats']['average']:.3f}s"
-            )
+                f"  Avg Response Time: {"
+                    test_results['response_time_stats']['average']:.3f}s""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(
-                f"  P95 Response Time: {
-                    test_results['response_time_stats']['p95']:.3f}s"
-            )
+                f"  P95 Response Time: {"
+                    test_results['response_time_stats']['p95']:.3f}s""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     print(f"\\nDetailed results saved to: {args.output}")
     print("=" * 50)

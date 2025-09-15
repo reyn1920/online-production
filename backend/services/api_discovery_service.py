@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 API Discovery Service
 Automatically discovers and evaluates APIs for different marketing channels
-"""
+
+""""""
 
 import asyncio
 import json
@@ -29,7 +33,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class APICandidate:
-    """Represents a discovered API candidate"""
+    """
+Represents a discovered API candidate
+
 
     name: str
     url: str
@@ -42,9 +48,15 @@ class APICandidate:
     documentation_url: str
     score: float  # 0 - 10 rating based on various factors
     discovered_at: str
+   
+""""""
+
     channel: str  # marketing channel this API serves
+   
 
-
+    
+   
+"""
 class APIDiscoveryService:
     """Service for discovering and evaluating APIs for marketing channels"""
 
@@ -57,57 +69,60 @@ class APIDiscoveryService:
                 "youtube data api v3 affiliate",
                 "youtube creator economy api",
                 "youtube channel analytics api",
-            ],
+             ],
             "tiktok": [
                 "tiktok creator api affiliate marketing",
                 "tiktok business api monetization",
                 "tiktok marketing api free",
                 "tiktok creator fund api",
-            ],
+             ],
             "instagram": [
                 "instagram basic display api",
                 "instagram graph api creator",
                 "instagram affiliate marketing api",
                 "meta creator api instagram",
-            ],
+             ],
             "twitter": [
                 "twitter api v2 creator monetization",
                 "twitter spaces api affiliate",
                 "x api creator economy",
                 "twitter developer api free",
-            ],
+             ],
             "affiliate": [
                 "affiliate marketing api free",
                 "commission tracking api",
                 "affiliate network api integration",
                 "performance marketing api",
-            ],
+             ],
             "email": [
                 "email marketing api free tier",
                 "transactional email api",
                 "newsletter api integration",
                 "email automation api",
-            ],
+             ],
             "analytics": [
                 "marketing analytics api free",
                 "social media analytics api",
                 "creator analytics api",
                 "engagement tracking api",
-            ],
+             ],
             "content": [
                 "content creation api free",
                 "ai content generation api",
                 "stock photo api free",
                 "video editing api",
-            ],
-        }
+             ],
+         }
         self.init_database()
 
     def init_database(self):
-        """Initialize database tables for API discovery"""
+        """
+Initialize database tables for API discovery
+
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               
+""""""
                 CREATE TABLE IF NOT EXISTS discovered_apis (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT UNIQUE,
@@ -124,30 +139,64 @@ class APIDiscoveryService:
                         channel TEXT,
                         is_active BOOLEAN DEFAULT 0,
                         last_verified TEXT
-                )
+                 )
+            """"""
+
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
             conn.execute(
-                """
+               
+""""""
                 CREATE TABLE IF NOT EXISTS api_search_history (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         query TEXT,
                         channel TEXT,
                         results_count INTEGER,
                         search_date TEXT
-                )
-            """
-            )
-            conn.commit()
+                 )
+            """"""
 
+             )
+           
+
+            
+           
+"""
+            conn.commit()
+           """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
     async def __aenter__(self):
+        """
+
         self.session = httpx.AsyncClient(
+        
+
             timeout=30.0,
+        
+"""
+        self.session = httpx.AsyncClient(
+        """
             headers={
                 "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-            },
-        )
+             },
+         )
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -178,10 +227,27 @@ class APIDiscoveryService:
         return sorted(unique_candidates, key=lambda x: x.score, reverse=True)
 
     async def search_and_analyze(self, query: str, channel: str) -> List[APICandidate]:
-        """Search for APIs and analyze the results"""
-        candidates = []
+        """
+Search for APIs and analyze the results
 
+       
+""""""
+
+        candidates = []
+       
+
+        
+       
+"""
         # Search multiple sources
+       """
+
+        
+       
+
+        candidates = []
+       
+""""""
         search_results = await self.multi_source_search(query)
 
         for result in search_results:
@@ -195,21 +261,27 @@ class APIDiscoveryService:
         return candidates
 
     async def multi_source_search(self, query: str) -> List[Dict]:
-        """Search multiple sources for API information"""
-        results = []
+        """
+Search multiple sources for API information
 
+       
+""""""
+
+        results = []
+       
+
+        
+       
+"""
         # Known API directories and documentation sites
-        search_sources = [
-            f"site:rapidapi.com {query}",
-            f"site:github.com {query} API",
-            f"site:developers.google.com {query}",
-            f"site:developer.twitter.com {query}",
-            f"site:developers.facebook.com {query}",
-            f"site:docs.microsoft.com {query}",
-            f"site:aws.amazon.com {query}",
-            f"{query} API documentation free",
-            f"{query} REST API integration",
-        ]
+       """
+
+        
+       
+
+        results = []
+       
+""""""
 
         # Simulate search results (in production, integrate with search APIs)
         # For now, return curated results based on known good APIs
@@ -219,10 +291,25 @@ class APIDiscoveryService:
         return results
 
     async def get_curated_api_results(self, query: str) -> List[Dict]:
-        """Return curated API results based on query patterns"""
+        
+Return curated API results based on query patterns
+""""""
+
+        
+       
+
         results = []
+       
+""""""
 
         # YouTube APIs
+       
+
+        
+       
+"""
+        results = []
+       """"""
         if "youtube" in query.lower():
             results.extend(
                 [
@@ -236,8 +323,8 @@ class APIDiscoveryService:
                             "video analytics",
                             "channel data",
                             "playlist management",
-                        ],
-                    },
+                         ],
+                     },
                     {
                         "title": "YouTube Analytics API",
                         "url": "https://developers.google.com/youtube/analytics",
@@ -248,10 +335,10 @@ class APIDiscoveryService:
                             "revenue data",
                             "view analytics",
                             "audience insights",
-                        ],
-                    },
-                ]
-            )
+                         ],
+                     },
+                 ]
+             )
 
         # TikTok APIs
         if "tiktok" in query.lower():
@@ -264,9 +351,9 @@ class APIDiscoveryService:
                         "signup_url": "https://developers.tiktok.com/",
                         "cost": "free",
                         "features": ["video upload", "user data", "analytics"],
-                    }
-                ]
-            )
+                     }
+                 ]
+             )
 
         # Email Marketing APIs
         if "email" in query.lower():
@@ -282,8 +369,8 @@ class APIDiscoveryService:
                             "transactional email",
                             "marketing campaigns",
                             "analytics",
-                        ],
-                    },
+                         ],
+                     },
                     {
                         "title": "Mailchimp API",
                         "url": "https://mailchimp.com/developer/",
@@ -291,9 +378,9 @@ class APIDiscoveryService:
                         "signup_url": "https://mailchimp.com/signup/",
                         "cost": "freemium",
                         "features": ["list management", "campaigns", "automation"],
-                    },
-                ]
-            )
+                     },
+                 ]
+             )
 
         # Affiliate Marketing APIs
         if "affiliate" in query.lower():
@@ -306,7 +393,7 @@ class APIDiscoveryService:
                         "signup_url": "https://affiliate - program.amazon.com/",
                         "cost": "free",
                         "features": ["product data", "pricing", "affiliate links"],
-                    },
+                     },
                     {
                         "title": "ShareASale API",
                         "url": "https://www.shareasale.com/info/api/",
@@ -317,18 +404,36 @@ class APIDiscoveryService:
                             "merchant data",
                             "commission tracking",
                             "reporting",
-                        ],
-                    },
-                ]
-            )
+                         ],
+                     },
+                 ]
+             )
 
         return results
 
     async def analyze_api_candidate(self, result: Dict, channel: str) -> Optional[APICandidate]:
-        """Analyze a search result to create an API candidate"""
+        """
+Analyze a search result to create an API candidate
+
         try:
+           
+""""""
+
             # Extract basic information
+           
+
+            
+           
+"""
             name = result.get("title", "Unknown API")
+           """
+
+            
+           
+
+            # Extract basic information
+           
+""""""
             url = result.get("url", "")
             description = result.get("description", "")
             signup_url = result.get("signup_url", url)
@@ -365,7 +470,7 @@ class APIDiscoveryService:
                 score=score,
                 discovered_at=datetime.now().isoformat(),
                 channel=channel,
-            )
+             )
 
         except Exception as e:
             logger.error(f"Error creating API candidate: {e}")
@@ -378,11 +483,28 @@ class APIDiscoveryService:
         description: str,
         url: str,
         channel: str,
-    ) -> float:
-        """Calculate a score for an API candidate (0 - 10)"""
-        score = 5.0  # Base score
+#     ) -> float:
+        """
+Calculate a score for an API candidate (0 - 10)
 
+       
+""""""
+
+        score = 5.0  # Base score
+       
+
+        
+       
+"""
         # Cost model scoring
+       """
+
+        
+       
+
+        score = 5.0  # Base score
+       
+""""""
         cost_scores = {"free": 3.0, "freemium": 2.0, "paid": 0.0, "unknown": 1.0}
         score += cost_scores.get(cost_model, 0.0)
 
@@ -403,7 +525,7 @@ class APIDiscoveryService:
             "rapidapi.com",
             "sendgrid.com",
             "mailchimp.com",
-        ]
+         ]
         if any(trusted in domain for trusted in trusted_domains):
             score += 1.0
 
@@ -412,7 +534,7 @@ class APIDiscoveryService:
             "youtube": ["youtube", "video", "creator"],
             "email": ["email", "mail", "newsletter"],
             "affiliate": ["affiliate", "commission", "marketing"],
-        }
+         }
 
         if channel in channel_keywords:
             keywords = channel_keywords[channel]
@@ -434,13 +556,13 @@ class APIDiscoveryService:
                 "instagram",
                 "tiktok",
                 "youtube",
-            ],
+             ],
             "email": ["email", "mail", "newsletter", "sendgrid", "mailchimp"],
             "affiliate": ["affiliate", "commission", "amazon", "shareasale"],
             "analytics": ["analytics", "tracking", "metrics", "insights"],
             "content": ["content", "media", "image", "video", "photo"],
             "payment": ["payment", "stripe", "paypal", "billing"],
-        }
+         }
 
         for category, keywords in categories.items():
             if any(keyword in text for keyword in keywords):
@@ -449,15 +571,32 @@ class APIDiscoveryService:
         return "other"
 
     def extract_rate_limits(self, description: str) -> str:
-        """Extract rate limit information from description"""
+        """
+Extract rate limit information from description
+
+       
+""""""
+
         # Look for common rate limit patterns
+       
+
+        
+       
+"""
         patterns = [
             r"(\\d+)\\s * requests?\\s * per\\s*(minute|hour|day)",
             r"(\\d+)\\s * calls?\\s * per\\s*(minute|hour|day)",
             r"quota\\s * of\\s*(\\d+)",
             r"limit\\s * of\\s*(\\d+)",
-        ]
+         ]
+       """
 
+        
+       
+
+        # Look for common rate limit patterns
+       
+""""""
         for pattern in patterns:
             match = re.search(pattern, description.lower())
             if match:
@@ -466,11 +605,29 @@ class APIDiscoveryService:
         return "Not specified"
 
     def deduplicate_candidates(self, candidates: List[APICandidate]) -> List[APICandidate]:
-        """Remove duplicate API candidates"""
-        seen_urls = set()
-        unique_candidates = []
+        """
+Remove duplicate API candidates
 
+        seen_urls = set()
+       
+""""""
+
+        unique_candidates = []
+       
+
+        
+       
+"""
         for candidate in candidates:
+       """
+
+        
+       
+
+        unique_candidates = []
+       
+""""""
+
             if candidate.url not in seen_urls:
                 seen_urls.add(candidate.url)
                 unique_candidates.append(candidate)
@@ -478,18 +635,25 @@ class APIDiscoveryService:
         return unique_candidates
 
     def save_candidates(self, candidates: List[APICandidate]):
-        """Save discovered API candidates to database"""
+        
+Save discovered API candidates to database
+"""
         with sqlite3.connect(self.db_path) as conn:
             for candidate in candidates:
                 try:
                     conn.execute(
-                        """
+                       """
+
+                        
+                       
+
                         INSERT OR REPLACE INTO discovered_apis
                         (name, url, signup_url, category, cost_model, description,
                             features, rate_limits, documentation_url, score,
-                             discovered_at, channel)
+#                              discovered_at, channel)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    
+""","""
                         (
                             candidate.name,
                             candidate.url,
@@ -503,64 +667,154 @@ class APIDiscoveryService:
                             candidate.score,
                             candidate.discovered_at,
                             candidate.channel,
-                        ),
-                    )
+                         ),
+                     )
                 except sqlite3.Error as e:
                     logger.error(f"Error saving candidate {candidate.name}: {e}")
 
             conn.commit()
 
     def record_search(self, query: str, channel: str, results_count: int):
-        """Record search history"""
+        """
+Record search history
+
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               
+""""""
+
                 INSERT INTO api_search_history (query,
     channel,
     results_count,
-    search_date)
+#     search_date)
                 VALUES (?, ?, ?, ?)
-            """,
+            
+,
+"""
                 (query, channel, results_count, datetime.now().isoformat()),
-            )
+             )
+           """
+
+            
+           
+
             conn.commit()
+           
+""""""
 
     def get_top_apis_by_channel(self, channel: str, limit: int = 10) -> List[Dict]:
-        """Get top - rated APIs for a specific channel"""
+        
+Get top - rated APIs for a specific channel
+"""
         with sqlite3.connect(self.db_path) as conn:
+           """
+
+            
+           
+
             conn.row_factory = sqlite3.Row
+           
+""""""
+
             cursor = conn.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT * FROM discovered_apis
                 WHERE channel = ?
                 ORDER BY score DESC, cost_model = 'free' DESC
                 LIMIT ?
-            """,
+            """
+,
+
                 (channel, limit),
-            )
+            
+""""""
+
+             )
+            
+
+             
+            
+""""""
+
+            
+           
+
+            conn.row_factory = sqlite3.Row
+           
+""""""
 
             return [dict(row) for row in cursor.fetchall()]
 
     def get_free_apis(self) -> List[Dict]:
-        """Get all free APIs"""
+        """
+        Get all free APIs
+        """
         with sqlite3.connect(self.db_path) as conn:
+           """
+
+            
+           
+
             conn.row_factory = sqlite3.Row
+           
+""""""
+
             cursor = conn.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT * FROM discovered_apis
                 WHERE cost_model IN ('free', 'freemium')
                 ORDER BY score DESC
-            """
-            )
+            """"""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+            
+           """
+
+            conn.row_factory = sqlite3.Row
+           
+
+            
+           
+"""
             return [dict(row) for row in cursor.fetchall()]
 
     async def discover_all_channels(self) -> Dict[str, List[APICandidate]]:
-        """Discover APIs for all defined channels"""
-        results = {}
+        """
+Discover APIs for all defined channels
 
+       
+""""""
+
+        results = {}
+       
+
+        
+       
+"""
         for channel in self.search_patterns.keys():
             logger.info(f"Discovering APIs for channel: {channel}")
+       """
+
+        
+       
+
+        results = {}
+       
+""""""
             candidates = await self.discover_apis_for_channel(channel)
             results[channel] = candidates
 
@@ -603,7 +857,7 @@ async def main():
             for candidate in candidates[: args.top]:
                 print(
                     f"  • {candidate.name} ({candidate.cost_model}) - Score: {candidate.score:.1f}"
-                )
+                 )
                 print(f"    {candidate.description}")
                 print(f"    Signup: {candidate.signup_url}\\n")
 
@@ -614,7 +868,7 @@ async def main():
                 for candidate in candidates[:3]:  # Top 3 per channel
                     print(
                         f"  • {candidate.name} ({candidate.cost_model}) - Score: {candidate.score:.1f}"
-                    )
+                     )
 
         else:
             print("Use --help for usage information")

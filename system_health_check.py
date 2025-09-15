@@ -4,7 +4,6 @@ Comprehensive System Health Check
 Verifies all components are working correctly
 """
 
-import json
 import os
 import sys
 from datetime import datetime

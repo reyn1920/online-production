@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Production Content Validation System
 Implements comprehensive input validation and sanitization for go - live security
-"""
+""""""
 
 import hashlib
 import html
@@ -60,13 +60,15 @@ class ProductionContentValidator:
             "pre",
             "a",
             "img",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         self.allowed_attributes = {
             "a": ["href", "title"],
             "img": ["src", "alt", "title", "width", "height"],
             "*": ["class"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # CSS sanitizer for safe styling
         self.css_sanitizer = CSSSanitizer(
@@ -79,8 +81,10 @@ class ProductionContentValidator:
                 "margin",
                 "padding",
                 "border",
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         # Dangerous patterns to detect
         self.dangerous_patterns = [
@@ -92,14 +96,16 @@ class ProductionContentValidator:
             r"<iframe[^>]*>.*?</iframe>",  # Iframe tags
             r"<object[^>]*>.*?</object>",  # Object tags
             r"<embed[^>]*>.*?</embed>",  # Embed tags
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # SQL injection patterns
         self.sql_patterns = [
-            r"('|(\\-\\-)|(;)|(\\||\\|)|(\\*|\\*))",
+            r"('|(\\-\\-)|(;)|(\\||\\|)|(\\*|\\*))",'
             r"(union|select|insert|delete|update|drop|create|alter|exec|execute)",
             r"(script|javascript|vbscript|onload|onerror|onclick)",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Maximum content lengths
         self.max_lengths = {
@@ -110,7 +116,8 @@ class ProductionContentValidator:
             "username": 50,
             "email": 254,
             "url": 2048,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def validate_text_input(self, content: str, content_type: str = "general") -> ValidationResult:
         """Validate and sanitize text input"""
@@ -185,7 +192,8 @@ class ProductionContentValidator:
                 attributes=self.allowed_attributes,
                 css_sanitizer=self.css_sanitizer,
                 strip=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Check if content was modified (indicates potentially dangerous content)
             if sanitized != content:
@@ -262,7 +270,8 @@ class ProductionContentValidator:
 
     def validate_file_upload(
         self, filename: str, content_type: str, file_size: int
-    ) -> ValidationResult:
+# BRACKET_SURGEON: disabled
+#     ) -> ValidationResult:
         """Validate file upload parameters"""
         result = ValidationResult(is_valid=True)
 
@@ -276,7 +285,8 @@ class ProductionContentValidator:
             "text/csv",
             "application/pdf",
             "application/json",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Dangerous file extensions
         dangerous_extensions = {
@@ -292,7 +302,8 @@ class ProductionContentValidator:
             ".asp",
             ".aspx",
             ".jsp",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Check file extension
         file_ext = "." + filename.split(".")[-1].lower() if "." in filename else ""

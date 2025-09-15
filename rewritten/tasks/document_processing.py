@@ -37,7 +37,7 @@ class DocumentProcessingTask(Task):
 def generate_product_documentation(
     self, product_data: Dict[str, Any], output_formats: List[str] = None
 ) -> Dict[str, Any]:
-    """
+    """"""
     Generate comprehensive product documentation in multiple formats
 
     Args:
@@ -46,11 +46,13 @@ def generate_product_documentation(
 
     Returns:
         Dict containing generated document paths and metadata
-    """
+    """"""
     try:
         logger.info(
             f"Generating product documentation for {product_data.get('name', 'Unknown Product')}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if output_formats is None:
             output_formats = ["pdf", "html"]
@@ -74,13 +76,17 @@ def generate_product_documentation(
                 try:
                     output_file = generate_document_format(
                         markdown_file, format_type, temp_path, product_data
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     if output_file and output_file.exists():
                         # Move to permanent location
                         permanent_path = save_generated_document(
                             output_file, product_data.get("id", "unknown"), format_type
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         generated_files[format_type] = str(permanent_path)
 
                 except Exception as e:
@@ -98,9 +104,12 @@ def generate_product_documentation(
                     f
                     for f in generated_files.keys()
                     if "error" not in str(generated_files[f])
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "generated_at": datetime.utcnow().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
     except Exception as e:
         logger.error(f"Product documentation generation failed: {str(e)}")
@@ -112,7 +121,7 @@ def generate_product_documentation(
 def create_marketing_presentation(
     self, business_data: Dict[str, Any], presentation_type: str = "pitch"
 ) -> Dict[str, Any]:
-    """
+    """"""
     Create marketing presentations using Marp
 
     Args:
@@ -121,11 +130,13 @@ def create_marketing_presentation(
 
     Returns:
         Dict containing presentation files and metadata
-    """
+    """"""
     try:
         logger.info(
             f"Creating {presentation_type} presentation for {business_data.get('name', 'Unknown Business')}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Create temporary working directory
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -149,7 +160,9 @@ def create_marketing_presentation(
                     html_file,
                         f"{business_data.get('id', 'unknown')}_{presentation_type}",
                         "html",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 generated_files["html"] = str(permanent_html)
 
             # Generate PDF presentation
@@ -159,7 +172,9 @@ def create_marketing_presentation(
                     pdf_file,
                         f"{business_data.get('id', 'unknown')}_{presentation_type}",
                         "pdf",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 generated_files["pdf"] = str(permanent_pdf)
 
             # Generate PowerPoint presentation
@@ -169,7 +184,9 @@ def create_marketing_presentation(
                     pptx_file,
                         f"{business_data.get('id', 'unknown')}_{presentation_type}",
                         "pptx",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 generated_files["pptx"] = str(permanent_pptx)
 
             logger.info(f"Marketing presentation creation completed")
@@ -181,7 +198,8 @@ def create_marketing_presentation(
                     "generated_files": generated_files,
                     "slide_count": count_presentation_slides(marp_content),
                     "generated_at": datetime.utcnow().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
     except Exception as e:
         logger.error(f"Marketing presentation creation failed: {str(e)}")
@@ -193,7 +211,7 @@ def create_marketing_presentation(
 def generate_business_reports(
     self, analytics_data: Dict[str, Any], report_types: List[str] = None
 ) -> Dict[str, Any]:
-    """
+    """"""
     Generate comprehensive business reports from analytics data
 
     Args:
@@ -201,15 +219,19 @@ def generate_business_reports(
         report_types: Types of reports to generate (financial,
     performance,
     marketing,
-    customer)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     customer)
 
     Returns:
         Dict containing generated report files
-    """
+    """"""
     try:
         logger.info(
             f"Generating business reports for period {analytics_data.get('period', 'unknown')}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if report_types is None:
             report_types = ["financial", "performance"]
@@ -225,7 +247,9 @@ def generate_business_reports(
                     # Generate report content
                     report_content = generate_report_content(
                         analytics_data, report_type
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Create markdown file
                     report_file = temp_path/f"{report_type}_report.md"
@@ -235,19 +259,24 @@ def generate_business_reports(
                     # Generate PDF report
                     pdf_file = generate_styled_pdf_report(
                         report_file, temp_path, report_type, analytics_data
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     if pdf_file and pdf_file.exists():
                         permanent_pdf = save_generated_document(
                             pdf_file,
                                 f"business_report_{report_type}_{analytics_data.get('period', 'current')}",
                                 "pdf",
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         generated_reports[report_type] = {
                             "pdf": str(permanent_pdf),
                                 "pages": count_pdf_pages(pdf_file),
                                 "size_mb": get_file_size_mb(pdf_file),
-                                }
+# BRACKET_SURGEON: disabled
+#                                 }
 
                 except Exception as e:
                     logger.error(f"Failed to generate {report_type} report: {str(e)}")
@@ -263,9 +292,12 @@ def generate_business_reports(
                     r
                     for r in generated_reports.keys()
                     if "error" not in generated_reports[r]
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "generated_at": datetime.utcnow().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
     except Exception as e:
         logger.error(f"Business reports generation failed: {str(e)}")
@@ -277,7 +309,7 @@ def generate_business_reports(
 def create_product_catalog(
     self, products_data: List[Dict[str, Any]], catalog_style: str = "modern"
 ) -> Dict[str, Any]:
-    """
+    """"""
     Create comprehensive product catalog with multiple products
 
     Args:
@@ -286,7 +318,7 @@ def create_product_catalog(
 
     Returns:
         Dict containing catalog files and metadata
-    """
+    """"""
     try:
         logger.info(f"Creating product catalog with {len(products_data)} products")
 
@@ -308,35 +340,45 @@ def create_product_catalog(
             # Generate PDF catalog
             pdf_file = generate_styled_catalog_pdf(
                 catalog_file, temp_path, catalog_style, products_data
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if pdf_file and pdf_file.exists():
                 permanent_pdf = save_generated_document(
                     pdf_file,
                         f"product_catalog_{catalog_style}_{datetime.now().strftime('%Y % m%d')}",
                         "pdf",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 generated_files["pdf"] = {
                     "path": str(permanent_pdf),
                         "pages": count_pdf_pages(pdf_file),
                         "size_mb": get_file_size_mb(pdf_file),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             # Generate HTML catalog
             html_file = generate_interactive_catalog_html(
                 catalog_file, temp_path, catalog_style, products_data
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if html_file and html_file.exists():
                 permanent_html = save_generated_document(
                     html_file,
                         f"product_catalog_{catalog_style}_{datetime.now().strftime('%Y % m%d')}",
                         "html",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 generated_files["html"] = {
                     "path": str(permanent_html),
                         "size_mb": get_file_size_mb(html_file),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             # Generate EPUB catalog for e - readers
             epub_file = generate_catalog_epub(catalog_file, temp_path, products_data)
@@ -346,11 +388,14 @@ def create_product_catalog(
                     epub_file,
                         f"product_catalog_{catalog_style}_{datetime.now().strftime('%Y % m%d')}",
                         "epub",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 generated_files["epub"] = {
                     "path": str(permanent_epub),
                         "size_mb": get_file_size_mb(epub_file),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             logger.info(f"Product catalog creation completed")
             return {
@@ -360,7 +405,8 @@ def create_product_catalog(
                     "generated_files": generated_files,
                     "formats_generated": list(generated_files.keys()),
                     "generated_at": datetime.utcnow().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
     except Exception as e:
         logger.error(f"Product catalog creation failed: {str(e)}")
@@ -372,7 +418,7 @@ def create_product_catalog(
 def generate_legal_documents(
     self, business_data: Dict[str, Any], document_types: List[str] = None
 ) -> Dict[str, Any]:
-    """
+    """"""
     Generate legal documents for business operations
 
     Args:
@@ -381,11 +427,13 @@ def generate_legal_documents(
 
     Returns:
         Dict containing generated legal document files
-    """
+    """"""
     try:
         logger.info(
             f"Generating legal documents for {business_data.get('name', 'Unknown Business')}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if document_types is None:
             document_types = ["terms", "privacy"]
@@ -401,7 +449,9 @@ def generate_legal_documents(
                     # Generate legal document content
                     legal_content = generate_legal_document_content(
                         business_data, doc_type
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Create markdown file
                     legal_file = temp_path/f"{doc_type}_document.md"
@@ -411,19 +461,25 @@ def generate_legal_documents(
                     # Generate PDF document
                     pdf_file = generate_legal_pdf(
                         legal_file, temp_path, doc_type, business_data
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     if pdf_file and pdf_file.exists():
                         permanent_pdf = save_generated_document(
                             pdf_file,
                                 f"{business_data.get('id', 'unknown')}_{doc_type}_legal",
                                 "pdf",
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                         # Also generate HTML version for web display
                         html_file = generate_legal_html(
                             legal_file, temp_path, doc_type, business_data
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                         permanent_html = None
                         if html_file and html_file.exists():
@@ -431,7 +487,9 @@ def generate_legal_documents(
                                 html_file,
                                     f"{business_data.get('id', 'unknown')}_{doc_type}_legal",
                                     "html",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
 
                         generated_documents[doc_type] = {
                             "pdf": str(permanent_pdf),
@@ -439,12 +497,15 @@ def generate_legal_documents(
                                 "pages": count_pdf_pages(pdf_file),
                                 "word_count": count_document_words(legal_content),
                                 "last_updated": datetime.utcnow().isoformat(),
-                                }
+# BRACKET_SURGEON: disabled
+#                                 }
 
                 except Exception as e:
                     logger.error(
                         f"Failed to generate {doc_type} legal document: {str(e)}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     generated_documents[doc_type] = {"error": str(e)}
 
             logger.info(f"Legal documents generation completed")
@@ -458,9 +519,12 @@ def generate_legal_documents(
                     d
                     for d in generated_documents.keys()
                     if "error" not in generated_documents[d]
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "generated_at": datetime.utcnow().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
     except Exception as e:
         logger.error(f"Legal documents generation failed: {str(e)}")
@@ -472,7 +536,7 @@ def generate_legal_documents(
 def create_training_materials(
     self, course_data: Dict[str, Any], material_types: List[str] = None
 ) -> Dict[str, Any]:
-    """
+    """"""
     Create comprehensive training materials and courses
 
     Args:
@@ -481,11 +545,13 @@ def create_training_materials(
 
     Returns:
         Dict containing generated training material files
-    """
+    """"""
     try:
         logger.info(
             f"Creating training materials for {course_data.get('title', 'Unknown Course')}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if material_types is None:
             material_types = ["slides", "workbook"]
@@ -507,7 +573,9 @@ def create_training_materials(
                         # Generate student workbook
                         workbook_result = create_training_workbook(
                             course_data, temp_path
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         generated_materials["workbook"] = workbook_result
 
                     elif material_type == "video_script":
@@ -523,7 +591,9 @@ def create_training_materials(
                 except Exception as e:
                     logger.error(
                         f"Failed to generate {material_type} training material: {str(e)}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     generated_materials[material_type] = {"error": str(e)}
 
             logger.info(f"Training materials creation completed")
@@ -537,9 +607,12 @@ def create_training_materials(
                     m
                     for m in generated_materials.keys()
                     if "error" not in generated_materials[m]
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "generated_at": datetime.utcnow().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
     except Exception as e:
         logger.error(f"Training materials creation failed: {str(e)}")
@@ -552,7 +625,7 @@ def generate_product_markdown(product_data: Dict[str, Any]) -> str:
     """Generate comprehensive product documentation in markdown format"""
 
     template = Template(
-        """
+        """"""
 # {{ product.name }}
 
 ## Product Overview
@@ -598,18 +671,23 @@ For technical support,
 ---
 
 *Generated on {{ generated_date }}*
-    """
-    )
+    """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     return template.render(
         product = product_data,
             generated_date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
 def generate_marp_presentation(
     business_data: Dict[str, Any], presentation_type: str
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     """Generate Marp presentation content"""
 
     if presentation_type == "pitch":
@@ -628,7 +706,7 @@ def generate_pitch_presentation(business_data: Dict[str, Any]) -> str:
     """Generate business pitch presentation"""
 
     template = Template(
-        """
+        """"""
 ---
 marp: true
 theme: default
@@ -746,14 +824,18 @@ backgroundColor: #fff
 - Phone: {{ business.contact.phone | default('+1 (555) 123 - 4567') }}
 - Website: {{ business.contact.website | default('www.business.com') }}
 
-*Let's build the future together!*
-    """
-    )
+*Let's build the future together!*'
+    """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     return template.render(
         business = business_data,
     generated_date = datetime.utcnow().strftime("%B %d, %Y")
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 def generate_report_content(analytics_data: Dict[str, Any], report_type: str) -> str:
@@ -775,7 +857,7 @@ def generate_financial_report(analytics_data: Dict[str, Any]) -> str:
     """Generate financial performance report"""
 
     template = Template(
-        """
+        """"""
 # Financial Performance Report
 
 **Reporting Period**: {{ period }}
@@ -851,8 +933,10 @@ This report provides a comprehensive overview of financial performance for the p
 ---
 
 *This report was automatically generated on {{ generated_date }}*
-    """
-    )
+    """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     return template.render(
         period = analytics_data.get("period", "Current Period"),
@@ -866,16 +950,19 @@ This report provides a comprehensive overview of financial performance for the p
             revenue_trend_analysis = analytics_data.get("revenue_trend_analysis"),
             conclusion = analytics_data.get("conclusion"),
             generated_date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
 def generate_catalog_content(
     products_data: List[Dict[str, Any]], catalog_style: str
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     """Generate product catalog content"""
 
     template = Template(
-        """
+        """"""
 # Product Catalog
 
 **{{ catalog_title | default('Our Product Collection') }}**
@@ -930,14 +1017,16 @@ For more information about any of our products, please contact us:
 
 ## Terms and Conditions
 
-{{ terms | default('All prices are subject to change without notice. Please contact us for the most current pricing \
-    and availability.') }}
+{{ terms | default('All prices are subject to change without notice. Please contact us for the most current pricing \'
+#     and availability.') }}
 
 ---
 
 *Catalog generated on {{ generated_date }}*
-    """
-    )
+    """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     return template.render(
         products = products_data,
@@ -947,16 +1036,20 @@ For more information about any of our products, please contact us:
             "email": "sales@company.com",
                 "phone": "+1 (555) 123 - 4567",
                 "website": "www.company.com",
-                },
-            terms="All products come with our standard warranty. Prices \
-    and availability subject to change.",
+# BRACKET_SURGEON: disabled
+#                 },
+            terms="All products come with our standard warranty. Prices \"
+#     and availability subject to change.",
             generated_date = datetime.utcnow().strftime("%B %d, %Y"),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
 def generate_legal_document_content(
     business_data: Dict[str, Any], doc_type: str
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     """Generate legal document content"""
 
     if doc_type == "terms":
@@ -975,7 +1068,7 @@ def generate_terms_of_service(business_data: Dict[str, Any]) -> str:
     """Generate Terms of Service document"""
 
     template = Template(
-        """
+        """"""
 # Terms of Service
 
 **{{ business.name }}**
@@ -985,14 +1078,14 @@ def generate_terms_of_service(business_data: Dict[str, Any]) -> str:
 ## 1. Acceptance of Terms
 
 By accessing \
-    and using {{ business.name }}'s services, you accept \
-    and agree to be bound by the terms \
-    and provision of this agreement.
+#     and using {{ business.name }}'s services, you accept \
+#     and agree to be bound by the terms \
+#     and provision of this agreement.
 
 ## 2. Description of Service
 
-{{ business.name }} provides {{ business.service_description | default('digital products \
-    and services') }} to customers worldwide.
+{{ business.name }} provides {{ business.service_description | default('digital products \'
+#     and services') }} to customers worldwide.
 
 ## 3. User Responsibilities
 
@@ -1012,17 +1105,17 @@ Users are responsible for:
 ## 5. Intellectual Property
 
 All content, trademarks, \
-    and intellectual property on this platform are owned by {{ business.name }} or our licensors.
+#     and intellectual property on this platform are owned by {{ business.name }} or our licensors.
 
 ## 6. Limitation of Liability
 
 {{ business.name }} shall not be liable for any indirect, incidental, special, consequential, \
-    or punitive damages.
+#     or punitive damages.
 
 ## 7. Termination
 
 We reserve the right to terminate \
-    or suspend access to our services at any time, without prior notice.
+#     or suspend access to our services at any time, without prior notice.
 
 ## 8. Governing Law
 
@@ -1041,14 +1134,18 @@ We reserve the right to modify these terms at any time. Changes will be effectiv
 ---
 
 *This document was generated on {{ generated_date }}*
-    """
-    )
+    """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     return template.render(
         business = business_data,
             last_updated = datetime.utcnow().strftime("%B %d, %Y"),
             generated_date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 # Document generation helper functions
 
@@ -1076,8 +1173,12 @@ def generate_document_format(
                         "geometry:margin = 1in",
                         "--variable",
                         "fontsize = 11pt",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         elif format_type == "html":
             cmd.extend(["--css", get_html_css_path(), "--self - contained"])
         elif format_type == "docx":
@@ -1094,7 +1195,9 @@ def generate_document_format(
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    check = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     check = True)
 
         if output_file.exists():
             return output_file
@@ -1132,7 +1235,9 @@ def generate_marp_html(marp_file: Path, temp_path: Path) -> Optional[Path]:
     except FileNotFoundError:
         logger.error(
             "Marp not found. Please install Marp CLI to generate presentations."
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return None
 
 
@@ -1158,7 +1263,9 @@ def generate_marp_pdf(marp_file: Path, temp_path: Path) -> Optional[Path]:
     except FileNotFoundError:
         logger.error(
             "Marp not found. Please install Marp CLI to generate presentations."
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return None
 
 
@@ -1184,13 +1291,16 @@ def generate_marp_pptx(marp_file: Path, temp_path: Path) -> Optional[Path]:
     except FileNotFoundError:
         logger.error(
             "Marp not found. Please install Marp CLI to generate presentations."
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return None
 
 
 def save_generated_document(
     temp_file: Path, document_id: str, format_type: str
-) -> Path:
+# BRACKET_SURGEON: disabled
+# ) -> Path:
     """Save generated document to permanent location"""
 
     # Create documents directory if it doesn't exist
@@ -1299,7 +1409,9 @@ def generate_styled_pdf_report(
     """Generate styled PDF report"""
     return generate_document_format(
         report_file, "pdf", temp_path, {"title": f"{report_type.title()} Report"}
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 def generate_styled_catalog_pdf(
@@ -1314,7 +1426,9 @@ def generate_styled_catalog_pdf(
             "pdf",
             temp_path,
             {"title": f"Product Catalog - {catalog_style.title()}"},
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
 def generate_interactive_catalog_html(
@@ -1326,7 +1440,9 @@ def generate_interactive_catalog_html(
     """Generate interactive HTML catalog"""
     return generate_document_format(
         catalog_file, "html", temp_path, {"title": f"Interactive Product Catalog"}
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 def generate_catalog_epub(
@@ -1335,7 +1451,9 @@ def generate_catalog_epub(
     """Generate EPUB catalog for e - readers"""
     return generate_document_format(
         catalog_file, "epub", temp_path, {"title": "Product Catalog"}
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 def generate_legal_pdf(
@@ -1347,7 +1465,9 @@ def generate_legal_pdf(
             "pdf",
             temp_path,
             {"title": f'{doc_type.title()} - {business_data.get("name", "Business")}'},
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
 def generate_legal_html(
@@ -1359,7 +1479,9 @@ def generate_legal_html(
             "html",
             temp_path,
             {"title": f'{doc_type.title()} - {business_data.get("name", "Business")}'},
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 # Additional content generation stubs
 
@@ -1421,6 +1543,7 @@ def generate_license_agreement(business_data: Dict[str, Any]) -> str:
 
 def generate_generic_legal_document(
     business_data: Dict[str, Any], doc_type: str
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     """Generate generic legal document"""
     return generate_terms_of_service(business_data)  # Use terms template for now

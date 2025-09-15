@@ -18,37 +18,46 @@ class Wav2Lip(nn.Module):
                     Conv2d(16, 32, kernel_size=3, stride=2, padding=1),
                     Conv2d(32, 32, kernel_size=3, stride=1, padding=1, residual=True),
                     Conv2d(32, 32, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2d(32, 64, kernel_size=3, stride=2, padding=1),
                     Conv2d(64, 64, kernel_size=3, stride=1, padding=1, residual=True),
                     Conv2d(64, 64, kernel_size=3, stride=1, padding=1, residual=True),
                     Conv2d(64, 64, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2d(64, 128, kernel_size=3, stride=2, padding=1),
                     Conv2d(128, 128, kernel_size=3, stride=1, padding=1, residual=True),
                     Conv2d(128, 128, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2d(128, 256, kernel_size=3, stride=2, padding=1),
                     Conv2d(256, 256, kernel_size=3, stride=1, padding=1, residual=True),
                     Conv2d(256, 256, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2d(256, 512, kernel_size=3, stride=2, padding=1),
                     Conv2d(512, 512, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2d(512, 512, kernel_size=3, stride=2, padding=1),
                     Conv2d(512, 512, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2d(512, 512, kernel_size=4, stride=1, padding=0),
                     Conv2d(512, 512, kernel_size=1, stride=1, padding=0),
-                ),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         self.audio_encoder = nn.Sequential(
             Conv2d(1, 32, kernel_size=3, stride=1, padding=1),
@@ -64,58 +73,72 @@ class Wav2Lip(nn.Module):
             Conv2d(256, 256, kernel_size=3, stride=1, padding=1, residual=True),
             Conv2d(256, 512, kernel_size=3, stride=1, padding=0),
             Conv2d(512, 512, kernel_size=1, stride=1, padding=0),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.face_decoder_blocks = nn.ModuleList(
             [
                 nn.Sequential(
                     Conv2d(512, 512, kernel_size=1, stride=1, padding=0),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2dTranspose(1024, 512, kernel_size=4, stride=1, padding=0),
                     Conv2d(512, 512, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2dTranspose(
                         1024, 512, kernel_size=3, stride=2, padding=1, output_padding=1
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     Conv2d(512, 512, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2dTranspose(
                         1024, 512, kernel_size=3, stride=2, padding=1, output_padding=1
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     Conv2d(512, 512, kernel_size=3, stride=1, padding=1, residual=True),
                     Conv2d(512, 512, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2dTranspose(768, 384, kernel_size=3, stride=2, padding=1, output_padding=1),
                     Conv2d(384, 384, kernel_size=3, stride=1, padding=1, residual=True),
                     Conv2d(384, 384, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2dTranspose(512, 256, kernel_size=3, stride=2, padding=1, output_padding=1),
                     Conv2d(256, 256, kernel_size=3, stride=1, padding=1, residual=True),
                     Conv2d(256, 256, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2dTranspose(320, 128, kernel_size=3, stride=2, padding=1, output_padding=1),
                     Conv2d(128, 128, kernel_size=3, stride=1, padding=1, residual=True),
                     Conv2d(128, 128, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     Conv2dTranspose(160, 64, kernel_size=3, stride=2, padding=1, output_padding=1),
                     Conv2d(64, 64, kernel_size=3, stride=1, padding=1, residual=True),
                     Conv2d(64, 64, kernel_size=3, stride=1, padding=1, residual=True),
-                ),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         self.output_block = nn.Sequential(
             Conv2d(80, 32, kernel_size=3, stride=1, padding=1),
             nn.Conv2d(32, 3, kernel_size=1, stride=1, padding=0),
             nn.Sigmoid(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def audio_forward(self, audio_sequences, a_alpha=1.0):
         audio_embedding = self.audio_encoder(audio_sequences)  # B, 512, 1, 1
@@ -206,37 +229,47 @@ class Wav2Lip_disc_qual(nn.Module):
                 nn.Sequential(
                     nonorm_Conv2d(32, 64, kernel_size=5, stride=(1, 2), padding=2),
                     nonorm_Conv2d(64, 64, kernel_size=5, stride=1, padding=2),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     nonorm_Conv2d(64, 128, kernel_size=5, stride=2, padding=2),
                     nonorm_Conv2d(128, 128, kernel_size=5, stride=1, padding=2),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     nonorm_Conv2d(128, 256, kernel_size=5, stride=2, padding=2),
                     nonorm_Conv2d(256, 256, kernel_size=5, stride=1, padding=2),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     nonorm_Conv2d(256, 512, kernel_size=3, stride=2, padding=1),
                     nonorm_Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     nonorm_Conv2d(512, 512, kernel_size=3, stride=2, padding=1),
                     nonorm_Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     nonorm_Conv2d(512, 512, kernel_size=3, stride=2, padding=1),
                     nonorm_Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 nn.Sequential(
                     nonorm_Conv2d(512, 512, kernel_size=4, stride=1, padding=0),
                     nonorm_Conv2d(512, 512, kernel_size=1, stride=1, padding=0),
-                ),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         self.binary_pred = nn.Sequential(
             nn.Conv2d(512, 1, kernel_size=1, stride=1, padding=0), nn.Sigmoid()
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.label_noise = 0.0
 
     def get_lower_half(self, face_sequences):  # 取得输入图片的下半部分。
@@ -246,7 +279,8 @@ class Wav2Lip_disc_qual(nn.Module):
         B = face_sequences.size(0)
         face_sequences = torch.cat(
             [face_sequences[:, :, i] for i in range(face_sequences.size(2))], dim=0
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return face_sequences
 
     def perceptual_forward(self, false_face_sequences):  # 前传生成图像

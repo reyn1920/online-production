@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Go - Live Checklist Validator
 Comprehensive validation of all go - live requirements before production deployment
-"""
+""""""
 
 import json
 import os
@@ -32,8 +32,10 @@ class GoLiveValidator:
                 "message": message,
                 "critical": critical,
                 "timestamp": datetime.utcnow().isoformat(),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         if status == "PASS":
             self.passed += 1
@@ -54,7 +56,8 @@ class GoLiveValidator:
             ".github/workflows/ci - cd.yml",
             "package.json",
             "requirements.txt",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         all_files_exist = True
         for file in required_files:
@@ -71,7 +74,8 @@ class GoLiveValidator:
             "NETLIFY_SITE_ID",
             "ENVIRONMENT",
             "NODE_ENV",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         env_vars_set = True
         for var in required_env_vars:
@@ -90,7 +94,8 @@ class GoLiveValidator:
         security_files = [
             "backend/security/content_validator.py",
             "backend/routers/production_health.py",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         security_ok = True
         for file in security_files:
@@ -114,14 +119,16 @@ class GoLiveValidator:
                         f"Security Tool: {tool}",
                         "PASS",
                         f"Security tool configured: {tool}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     self.add_check(
                         f"Security Tool: {tool}",
                         "WARN",
                         f"Security tool not found: {tool}",
                         critical=False,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         return security_ok
 
@@ -143,7 +150,8 @@ class GoLiveValidator:
             "security - scan",
             "test",
             "deploy - production",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         pipeline_ok = True
 
         for job in required_jobs:
@@ -181,13 +189,15 @@ class GoLiveValidator:
                         f"NPM Script: {script}",
                         "PASS",
                         f"Required script configured: {script}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     self.add_check(
                         f"NPM Script: {script}",
                         "FAIL",
                         f"Required script missing: {script}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     build_ok = False
         else:
             self.add_check("Package.json", "FAIL", "package.json file missing")
@@ -210,7 +220,8 @@ class GoLiveValidator:
         health_endpoints = [
             "backend/routers/production_health.py",
             "app/dashboard.py",  # Assuming dashboard has health checks
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         monitoring_ok = True
         for endpoint in health_endpoints:
@@ -220,14 +231,16 @@ class GoLiveValidator:
                     f"Health Endpoint: {endpoint}",
                     "PASS",
                     f"Health monitoring component exists: {endpoint}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 self.add_check(
                     f"Health Endpoint: {endpoint}",
                     "WARN",
                     f"Health monitoring component missing: {endpoint}",
                     critical=False,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return monitoring_ok
 
@@ -262,10 +275,12 @@ class GoLiveValidator:
                     "--include=*.py",
                     "|".join(dangerous_patterns),
                     str(self.project_root),
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 capture_output=True,
                 text=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode == 0 and result.stdout.strip():
                 # Found potential secrets
@@ -282,7 +297,8 @@ class GoLiveValidator:
                         "WARN",
                         f"Potential hardcoded secrets detected in: {file_path}",
                         critical=False,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
             else:
                 self.add_check("Secret Scan", "PASS", "No obvious hardcoded secrets detected")
 
@@ -316,7 +332,8 @@ class GoLiveValidator:
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if result.stdout.strip():
                 self.add_check("Git Status", "WARN", "Uncommitted changes detected", critical=False)
             else:
@@ -331,7 +348,8 @@ class GoLiveValidator:
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             current_branch = result.stdout.strip()
             if current_branch == "main":
                 self.add_check("Git Branch", "PASS", "On main branch")
@@ -340,7 +358,8 @@ class GoLiveValidator:
                     "Git Branch",
                     "FAIL",
                     f"Not on main branch (currently on: {current_branch})",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 readiness_ok = False
         except subprocess.CalledProcessError:
             self.add_check("Git Branch", "FAIL", "Could not determine current branch")
@@ -371,7 +390,8 @@ class GoLiveValidator:
             ("Content Validation", self.check_content_validation),
             ("Secrets Management", self.check_secrets_management),
             ("Deployment Readiness", self.check_deployment_readiness),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         category_results = {}
         for category_name, check_func in checks:
@@ -385,7 +405,8 @@ class GoLiveValidator:
 
         critical_failures = [
             check for check in self.checks if check["status"] == "FAIL" and check["critical"]
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         print(f"✅ Passed: {self.passed}")
         print(f"❌ Failed: {self.failed}")
@@ -423,10 +444,12 @@ class GoLiveValidator:
                 "failed": self.failed,
                 "warnings": self.warnings,
                 "critical_failures": len(critical_failures),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "category_results": category_results,
             "detailed_checks": self.checks,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         report_path = self.project_root / "go_live_report.json"
         with open(report_path, "w") as f:

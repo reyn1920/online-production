@@ -24,7 +24,8 @@ def fix_url_spaces(root_dir):
         ".yml",
         ".yaml",
         ".sh",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     files_to_check = []
 
     for root, dirs, files in os.walk(root_dir):

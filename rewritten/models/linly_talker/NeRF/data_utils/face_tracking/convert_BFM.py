@@ -35,5 +35,7 @@ np.save(
         "mu_tex": mu_tex,
         "b_tex": b_tex,
         "sig_tex": texEV.reshape(-1),
-    },
-)
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# )

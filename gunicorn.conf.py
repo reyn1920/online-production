@@ -138,7 +138,8 @@ raw_env = [
     "MEMORY_LIMIT=16GB",
     "CPU_CORES=8",
     "WORKER_MEMORY_LIMIT=2GB",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 # Security
 user = "traeai"
@@ -168,7 +169,8 @@ def validate_config():
     if available_memory_gb < 15:  # Less than 15GB available
         print(
             f"WARNING: Only {available_memory_gb:.1f}GB RAM available. M1 optimization requires 16GB."
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     # Check CPU cores
     cpu_count = multiprocessing.cpu_count()

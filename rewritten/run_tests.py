@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE AI Production Readiness Test Suite Runner
 
 This script provides a single entry point to run all tests with proper
@@ -12,7 +12,7 @@ Usage:
     python run_tests.py --security         # Run only security tests
     python run_tests.py --fast             # Skip slow tests
     python run_tests.py --coverage         # Run with coverage report
-"""
+""""""
 
 import argparse
 import os
@@ -92,8 +92,10 @@ class TestRunner:
                 "--cov - report = html",
                 "--cov - report = term - missing",
                 "--cov - fail - under = 70",
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
     def run_all_tests(self):
         """Run the complete test suite."""
@@ -107,7 +109,8 @@ class TestRunner:
             ".pytest_cache",
             "htmlcov",
             "__pycache__",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for artifact in artifacts:
             artifact_path = PROJECT_ROOT / artifact

@@ -5,7 +5,8 @@ import httpx
 @pytest.mark.parametrize("path", [
     "/api/version", "/api/system/status", "/api/services", "/ws/info",
     "/health", "/health/live", "/health/ready", "/api/health"
-])
+# BRACKET_SURGEON: disabled
+# ])
 def test_meta_endpoints_live(path):
     """Test that all meta endpoints return 200 status"""
     r = httpx.get(f"http://localhost:8000{path}", timeout=3)

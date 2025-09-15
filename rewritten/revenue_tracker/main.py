@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Revenue Tracker - Comprehensive Revenue Analytics & Forecasting System
 Tracks all income streams, provides real - time analytics, forecasting, and alerts
-"""
+""""""
 
 import asyncio
 import json
@@ -45,7 +45,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sqlalchemy import (Boolean, Column, DateTime, Float, Integer, Numeric, String,
 
-    Text, create_engine)
+# BRACKET_SURGEON: disabled
+#     Text, create_engine)
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
@@ -120,10 +121,12 @@ class RevenueConfig:
         # Alert thresholds
         self.revenue_alert_threshold = float(
             os.getenv("REVENUE_ALERT_THRESHOLD", "1000.0")
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.growth_alert_threshold = float(
             os.getenv("GROWTH_ALERT_THRESHOLD", "0.1")
-        )  # 10%
+# BRACKET_SURGEON: disabled
+#         )  # 10%
 
         # Ensure directories exist
         self.data_dir.mkdir(exist_ok = True)
@@ -227,12 +230,12 @@ class YouTubeAnalytics:
     def __init__(self, config: RevenueConfig):
         self.config = config
         self.session = None  # Will be initialized with aiohttp session
-    
+
     async def __aenter__(self):
         """Async context manager entry"""
         self.session = aiohttp.ClientSession()
         return self
-    
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Async context manager exit"""
         if self.session:
@@ -247,7 +250,8 @@ class YouTubeAnalytics:
             try:
                 self.service = build(
                     "youtubeAnalytics", "v2", developerKey = self.config.youtube_api_key
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 logger.info("✅ YouTube Analytics service initialized")
             except Exception as e:
                 logger.error(f"YouTube Analytics initialization failed: {e}")
@@ -271,9 +275,11 @@ class YouTubeAnalytics:
                         endDate = end_date.strftime("%Y-%m-%d"),
                         metrics="estimatedRevenue,monetizedPlaybacks,playbackBasedCpm",
                         dimensions="day",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 .execute()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             revenue_data = []
             if "rows" in response:
@@ -284,8 +290,10 @@ class YouTubeAnalytics:
                                 "revenue": float(row[1]) if row[1] else 0.0,
                                 "monetized_playbacks": int(row[2]) if row[2] else 0,
                                 "cpm": float(row[3]) if row[3] else 0.0,
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                     )
 
             return revenue_data
 
@@ -321,8 +329,10 @@ class GumroadAnalytics:
                     params={
                     "after": start_date.strftime("%Y-%m-%d"),
                         "before": end_date.strftime("%Y-%m-%d"),
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
 
             if response.status_code == 200:
                 sales_data = response.json().get("sales", [])
@@ -333,13 +343,16 @@ class GumroadAnalytics:
                         {
                             "date": datetime.fromisoformat(
                                 sale["created_at"].replace("Z", "+00:00")
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                                 "amount": float(sale["price"])/100,  # Convert cents to dollars
                             "product_name": sale["product_name"],
                                 "transaction_id": sale["id"],
                                 "currency": sale["currency"],
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                     )
 
                 return processed_data
             else:
@@ -364,31 +377,31 @@ class AffiliateTracker:
     ) -> List[Dict[str, Any]]:
         """Get affiliate marketing revenue data from multiple networks"""
         affiliate_data = []
-        
+
         try:
             # Amazon Associates API integration
             amazon_data = await self._get_amazon_associates_data(start_date, end_date)
             affiliate_data.extend(amazon_data)
-            
+
             # Commission Junction (CJ Affiliate) integration
             cj_data = await self._get_commission_junction_data(start_date, end_date)
             affiliate_data.extend(cj_data)
-            
+
             # ShareASale integration
             shareasale_data = await self._get_shareasale_data(start_date, end_date)
             affiliate_data.extend(shareasale_data)
-            
+
             # Impact Radius integration
             impact_data = await self._get_impact_radius_data(start_date, end_date)
             affiliate_data.extend(impact_data)
-            
+
             logger.info(f"Retrieved {len(affiliate_data)} affiliate transactions")
             return affiliate_data
-            
+
         except Exception as e:
             logger.error(f"Error retrieving affiliate data: {e}")
             return []
-    
+
     async def _get_amazon_associates_data(self, start_date: datetime, end_date: datetime) -> List[Dict[str, Any]]:
         """Get Amazon Associates affiliate data"""
         try:
@@ -396,11 +409,11 @@ class AffiliateTracker:
             amazon_access_key = os.getenv('AMAZON_ACCESS_KEY')
             amazon_secret_key = os.getenv('AMAZON_SECRET_KEY')
             amazon_partner_tag = os.getenv('AMAZON_PARTNER_TAG')
-            
+
             if not all([amazon_access_key, amazon_secret_key, amazon_partner_tag]):
                 logger.warning("Amazon Associates credentials not configured")
                 return []
-            
+
             # Note: Amazon doesn't provide direct earnings API
             # This would typically require scraping reports or manual CSV import
             # For now, return mock data structure
@@ -413,42 +426,46 @@ class AffiliateTracker:
                     'description': 'Amazon Associates earnings (manual import required)',
                     'transaction_date': start_date,
                     'metadata': {'note': 'Requires manual report import'}
-                }
-            ]
-            
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ]
+
         except Exception as e:
             logger.error(f"Amazon Associates data retrieval failed: {e}")
             return []
-    
+
     async def _get_commission_junction_data(self, start_date: datetime, end_date: datetime) -> List[Dict[str, Any]]:
         """Get Commission Junction affiliate data"""
         try:
             cj_api_key = os.getenv('CJ_API_KEY')
             cj_website_id = os.getenv('CJ_WEBSITE_ID')
-            
+
             if not all([cj_api_key, cj_website_id]):
                 logger.warning("Commission Junction credentials not configured")
                 return []
-            
+
             # CJ Affiliate API endpoint
             url = 'https://commission-detail.api.cj.com/v3/commissions'
             headers = {
                 'Authorization': f'Bearer {cj_api_key}',
                 'Accept': 'application/json'
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             params = {
                 'date-type': 'event',
                 'start-date': start_date.strftime('%Y-%m-%d'),
                 'end-date': end_date.strftime('%Y-%m-%d'),
                 'website-id': cj_website_id
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             async with self.session.get(url, headers=headers, params=params) as response:
                 if response.status == 200:
                     data = await response.json()
                     commissions = data.get('commissions', [])
-                    
+
                     return [
                         {
                             'source': 'commission_junction',
@@ -461,37 +478,40 @@ class AffiliateTracker:
                                 'advertiser': commission.get('advertiser-name'),
                                 'order_id': commission.get('order-id'),
                                 'commission_status': commission.get('commission-status')
-                            }
-                        }
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         }
                         for commission in commissions
-                    ]
+# BRACKET_SURGEON: disabled
+#                     ]
                 else:
                     logger.error(f"CJ API error: {response.status}")
                     return []
-                    
+
         except Exception as e:
             logger.error(f"Commission Junction data retrieval failed: {e}")
             return []
-    
+
     async def _get_shareasale_data(self, start_date: datetime, end_date: datetime) -> List[Dict[str, Any]]:
         """Get ShareASale affiliate data"""
         try:
             shareasale_api_token = os.getenv('SHAREASALE_API_TOKEN')
             shareasale_api_secret = os.getenv('SHAREASALE_API_SECRET')
             shareasale_affiliate_id = os.getenv('SHAREASALE_AFFILIATE_ID')
-            
+
             if not all([shareasale_api_token, shareasale_api_secret, shareasale_affiliate_id]):
                 logger.warning("ShareASale credentials not configured")
                 return []
-            
+
             # ShareASale API endpoint
             url = 'https://www.shareasale.com/w.cfm'
-            
+
             # Generate API signature (simplified - actual implementation needs proper HMAC)
             import hashlib
             import hmac
             timestamp = str(int(datetime.now().timestamp()))
-            
+
             params = {
                 'affiliateId': shareasale_affiliate_id,
                 'token': shareasale_api_token,
@@ -499,8 +519,9 @@ class AffiliateTracker:
                 'action': 'activity',
                 'dateStart': start_date.strftime('%m/%d/%Y'),
                 'dateEnd': end_date.strftime('%m/%d/%Y')
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             # Note: ShareASale requires specific signature generation
             # This is a simplified implementation
             async with self.session.get(url, params=params) as response:
@@ -508,7 +529,7 @@ class AffiliateTracker:
                     # ShareASale returns pipe-delimited data
                     text_data = await response.text()
                     lines = text_data.strip().split('\n')
-                    
+
                     transactions = []
                     for line in lines[1:]:  # Skip header
                         fields = line.split('|')
@@ -524,47 +545,51 @@ class AffiliateTracker:
                                     'merchant': fields[2],
                                     'order_number': fields[3],
                                     'commission_status': fields[8]
-                                }
-                            })
-                    
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                             })
+
                     return transactions
                 else:
                     logger.error(f"ShareASale API error: {response.status}")
                     return []
-                    
+
         except Exception as e:
             logger.error(f"ShareASale data retrieval failed: {e}")
             return []
-    
+
     async def _get_impact_radius_data(self, start_date: datetime, end_date: datetime) -> List[Dict[str, Any]]:
         """Get Impact Radius affiliate data"""
         try:
             impact_api_key = os.getenv('IMPACT_API_KEY')
             impact_account_sid = os.getenv('IMPACT_ACCOUNT_SID')
-            
+
             if not all([impact_api_key, impact_account_sid]):
                 logger.warning("Impact Radius credentials not configured")
                 return []
-            
+
             # Impact Radius API endpoint
             url = f'https://api.impact.com/Mediapartners/{impact_account_sid}/Actions'
             headers = {
                 'Authorization': f'Basic {impact_api_key}',
                 'Accept': 'application/json'
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             params = {
                 'StartDate': start_date.strftime('%Y-%m-%d'),
                 'EndDate': end_date.strftime('%Y-%m-%d'),
                 'ActionDateStart': start_date.strftime('%Y-%m-%d'),
                 'ActionDateEnd': end_date.strftime('%Y-%m-%d')
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             async with self.session.get(url, headers=headers, params=params) as response:
                 if response.status == 200:
                     data = await response.json()
                     actions = data.get('Actions', [])
-                    
+
                     return [
                         {
                             'source': 'impact_radius',
@@ -577,15 +602,18 @@ class AffiliateTracker:
                                 'campaign': action.get('CampaignName'),
                                 'action_tracker': action.get('ActionTrackerName'),
                                 'state': action.get('State')
-                            }
-                        }
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         }
                         for action in actions
                         if action.get('State') == 'APPROVED'
-                    ]
+# BRACKET_SURGEON: disabled
+#                     ]
                 else:
                     logger.error(f"Impact Radius API error: {response.status}")
                     return []
-                    
+
         except Exception as e:
             logger.error(f"Impact Radius data retrieval failed: {e}")
             return []
@@ -649,7 +677,8 @@ class RevenueForecaster:
 
         forecast_dates = [
             data["date"].max() + timedelta(days = i) for i in range(1, days_ahead + 1)
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         forecast_data = []
         for i, (date, pred) in enumerate(zip(forecast_dates, predictions)):
@@ -659,8 +688,10 @@ class RevenueForecaster:
                         "predicted_amount": max(0, pred),
                         "confidence_lower": max(0, pred - 1.96 * std_error),
                         "confidence_upper": pred + 1.96 * std_error,
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Calculate model metrics
         train_predictions = model.predict(X)
@@ -672,7 +703,8 @@ class RevenueForecaster:
                 "forecast": forecast_data,
                 "metrics": {"mae": mae, "rmse": rmse, "r2_score": model.score(X, y)},
                 "total_predicted": sum(f["predicted_amount"] for f in forecast_data),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def _prophet_forecast(
@@ -688,7 +720,8 @@ class RevenueForecaster:
             daily_seasonality = True,
                 weekly_seasonality = True,
                 yearly_seasonality = False if len(data) < 365 else True,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         model.fit(prophet_data)
 
         # Generate future dates
@@ -706,8 +739,10 @@ class RevenueForecaster:
                         "predicted_amount": max(0, row["yhat"]),
                         "confidence_lower": max(0, row["yhat_lower"]),
                         "confidence_upper": row["yhat_upper"],
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "model": "prophet",
@@ -719,10 +754,13 @@ class RevenueForecaster:
                     "increasing"
                     if forecast["trend"].iloc[-1] > forecast["trend"].iloc[0]
                     else "decreasing"
-                ),
-                    },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     },
                 "total_predicted": sum(f["predicted_amount"] for f in forecast_data),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def _random_forest_forecast(
@@ -749,7 +787,8 @@ class RevenueForecaster:
         # Prepare features
         feature_cols = ["day_of_week", "day_of_month", "month", "days_since_start"] + [
             f"amount_lag_{lag}" for lag in [1, 7, 14]
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         X = data[feature_cols].values
         y = data["amount"].values
@@ -774,11 +813,14 @@ class RevenueForecaster:
                     last_row["amount"] if i == 0 else predictions[-1],  # lag_1
                 (
                     data["amount"].iloc[-7] if len(data) >= 7 else last_row["amount"]
-                ),  # lag_7
+# BRACKET_SURGEON: disabled
+#                 ),  # lag_7
                 (
                     data["amount"].iloc[-14] if len(data) >= 14 else last_row["amount"]
-                ),  # lag_14
-            ]
+# BRACKET_SURGEON: disabled
+#                 ),  # lag_14
+# BRACKET_SURGEON: disabled
+#             ]
 
             pred = model.predict([features])[0]
             predictions.append(max(0, pred))
@@ -790,7 +832,8 @@ class RevenueForecaster:
 
         forecast_dates = [
             data["date"].max() + timedelta(days = i) for i in range(1, days_ahead + 1)
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         forecast_data = []
         for date, pred in zip(forecast_dates, predictions):
@@ -800,8 +843,10 @@ class RevenueForecaster:
                         "predicted_amount": pred,
                         "confidence_lower": max(0, pred - 1.96 * std_error),
                         "confidence_upper": pred + 1.96 * std_error,
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Calculate metrics
         mae = mean_absolute_error(y, train_predictions)
@@ -815,10 +860,13 @@ class RevenueForecaster:
                     "rmse": rmse,
                     "feature_importance": dict(
                     zip(feature_cols, model.feature_importances_)
-                ),
-                    },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     },
                 "total_predicted": sum(predictions),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _generate_simple_forecast(
@@ -832,7 +880,8 @@ class RevenueForecaster:
 
         forecast_dates = [
             datetime.now() + timedelta(days = i) for i in range(1, days_ahead + 1)
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         forecast_data = []
         for date in forecast_dates:
@@ -842,15 +891,18 @@ class RevenueForecaster:
                         "predicted_amount": avg_amount,
                         "confidence_lower": avg_amount * 0.8,
                         "confidence_upper": avg_amount * 1.2,
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "model": "simple_average",
                 "forecast": forecast_data,
                 "metrics": {"note": "Insufficient data for advanced forecasting"},
                 "total_predicted": avg_amount * days_ahead,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
 class RevenueTracker:
@@ -866,7 +918,8 @@ class RevenueTracker:
         Base.metadata.create_all(self.engine)
         SessionLocal = sessionmaker(autocommit = False,
     autoflush = False,
-    bind = self.engine)
+# BRACKET_SURGEON: disabled
+#     bind = self.engine)
         self.db_session = SessionLocal()
 
         # Initialize components
@@ -891,13 +944,15 @@ class RevenueTracker:
             sys.stdout,
                 level = self.config.log_level,
                 format="<green>{time:YYYY - MM - DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         logger.add(
             "/app/logs/revenue_tracker.log",
                 rotation="1 day",
                 retention="30 days",
                 level = self.config.log_level,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
 
     def setup_scheduler(self):
@@ -907,21 +962,24 @@ class RevenueTracker:
             self.collect_all_revenue_data,
                 CronTrigger(minute = 0),  # Every hour
             id="collect_revenue_data",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Generate daily reports
         self.scheduler.add_job(
             self.generate_daily_report,
                 CronTrigger(hour = 9, minute = 0),  # 9 AM daily
             id="daily_report",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Check revenue goals and alerts
         self.scheduler.add_job(
             self.check_goals_and_alerts,
                 CronTrigger(minute="*/30"),  # Every 30 minutes
             id="check_alerts",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
 
     def setup_routes(self):
@@ -937,7 +995,8 @@ class RevenueTracker:
                     "youtube_configured": bool(self.config.youtube_api_key),
                     "gumroad_configured": bool(self.config.gumroad_access_token),
                     "database_connected": True,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         @self.app.post("/revenue/record")
 
@@ -947,7 +1006,8 @@ class RevenueTracker:
             try:
                 logger.info(
                     f"💰 Recording revenue: ${request.amount} from {request.source}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 revenue_stream = RevenueStream(
                     source = request.source,
@@ -958,7 +1018,8 @@ class RevenueTracker:
                         description = request.description,
                         metadata = json.dumps(request.metadata) if request.metadata else None,
                         transaction_date = request.transaction_date,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 self.db_session.add(revenue_stream)
                 self.db_session.commit()
@@ -971,7 +1032,8 @@ class RevenueTracker:
                         "revenue_id": revenue_stream.id,
                         "amount": float(revenue_stream.amount),
                         "source": revenue_stream.source,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             except Exception as e:
                 logger.error(f"Revenue recording failed: {e}")
@@ -985,7 +1047,8 @@ class RevenueTracker:
                 end_date: datetime = Query(...),
                 sources: Optional[str] = Query(None),
                 group_by: str = Query("day"),
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
             """Get revenue analytics"""
             try:
                 logger.info(f"📊 Generating analytics from {start_date} to {end_date}")
@@ -994,7 +1057,8 @@ class RevenueTracker:
                 query = self.db_session.query(RevenueStream).filter(
                     RevenueStream.transaction_date >= start_date,
                         RevenueStream.transaction_date <= end_date,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 if sources:
                     source_list = sources.split(",")
@@ -1010,10 +1074,13 @@ class RevenueTracker:
                                 "amount": float(r.amount),
                                 "source": r.source,
                                 "platform": r.platform,
-                                }
+# BRACKET_SURGEON: disabled
+#                                 }
                         for r in revenue_data
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if df.empty:
                     return {
@@ -1022,7 +1089,8 @@ class RevenueTracker:
                             "average_transaction": 0,
                             "daily_breakdown": [],
                             "source_breakdown": {},
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                 # Group by specified period
                 if group_by == "day":
@@ -1051,8 +1119,10 @@ class RevenueTracker:
                         "daily_breakdown": daily_breakdown.to_dict("records"),
                         "source_breakdown": {
                         k: round(v, 2) for k, v in source_breakdown.items()
-                    },
-                        }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                         }
 
             except Exception as e:
                 logger.error(f"Analytics generation failed: {e}")
@@ -1066,7 +1136,8 @@ class RevenueTracker:
             try:
                 logger.info(
                     f"🔮 Generating {request.days_ahead}-day forecast using {request.model}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Get historical data
                 end_date = datetime.now()
@@ -1075,7 +1146,8 @@ class RevenueTracker:
                 query = self.db_session.query(RevenueStream).filter(
                     RevenueStream.transaction_date >= start_date,
                         RevenueStream.transaction_date <= end_date,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 if request.sources:
                     query = query.filter(RevenueStream.source.in_(request.sources))
@@ -1087,14 +1159,17 @@ class RevenueTracker:
                     [
                         {"date": r.transaction_date.date(), "amount": float(r.amount)}
                         for r in revenue_data
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if df.empty:
                     return {
                         "success": False,
                             "message": "No historical data available for forecasting",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                 # Group by day and sum amounts
                 daily_df = df.groupby("date")["amount"].sum().reset_index()
@@ -1103,7 +1178,8 @@ class RevenueTracker:
                 # Generate forecast
                 forecast_result = await self.forecaster.generate_forecast(
                     daily_df, request.days_ahead, request.model
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Save forecast to database
                 for forecast_point in forecast_result["forecast"]:
@@ -1111,18 +1187,23 @@ class RevenueTracker:
                         forecast_date = forecast_point["date"],
                             predicted_amount = Decimal(
                             str(forecast_point["predicted_amount"])
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             confidence_lower = Decimal(
                             str(forecast_point.get("confidence_lower", 0))
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             confidence_upper = Decimal(
                             str(forecast_point.get("confidence_upper", 0))
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             model_used = forecast_result["model"],
                             source_filter=(
                             ",".join(request.sources) if request.sources else None
-                        ),
-                            )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                             )
                     self.db_session.add(forecast_record)
 
                 self.db_session.commit()
@@ -1133,7 +1214,8 @@ class RevenueTracker:
                         "forecast": forecast_result["forecast"],
                         "metrics": forecast_result["metrics"],
                         "total_predicted": round(forecast_result["total_predicted"], 2),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             except Exception as e:
                 logger.error(f"Forecast generation failed: {e}")
@@ -1147,14 +1229,16 @@ class RevenueTracker:
             try:
                 logger.info(
                     f"🎯 Creating revenue goal: {request.name} - ${request.target_amount}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 goal = RevenueGoal(
                     name = request.name,
                         target_amount = Decimal(str(request.target_amount)),
                         target_date = request.target_date,
                         source_filter = request.source_filter,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 self.db_session.add(goal)
                 self.db_session.commit()
@@ -1165,7 +1249,8 @@ class RevenueTracker:
                         "name": goal.name,
                         "target_amount": float(goal.target_amount),
                         "target_date": goal.target_date.isoformat(),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             except Exception as e:
                 logger.error(f"Goal creation failed: {e}")
@@ -1181,7 +1266,8 @@ class RevenueTracker:
                     self.db_session.query(RevenueGoal)
                     .filter(RevenueGoal.status == "active")
                     .all()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 goal_progress = []
 
@@ -1190,7 +1276,8 @@ class RevenueTracker:
                     query = self.db_session.query(RevenueStream).filter(
                         RevenueStream.transaction_date >= goal.created_at,
                             RevenueStream.transaction_date <= datetime.now(),
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                     if goal.source_filter:
                         sources = goal.source_filter.split(",")
@@ -1199,7 +1286,8 @@ class RevenueTracker:
                     current_amount = sum(float(r.amount) for r in query.all())
                     progress_percentage = (
                         current_amount/float(goal.target_amount)
-                    ) * 100
+# BRACKET_SURGEON: disabled
+#                     ) * 100
 
                     # Update goal in database
                     goal.current_amount = Decimal(str(current_amount))
@@ -1215,9 +1303,12 @@ class RevenueTracker:
                                 "days_remaining": (goal.target_date - datetime.now()).days,
                                 "status": (
                                 "completed" if progress_percentage >= 100 else "active"
-                            ),
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                             ),
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                     )
 
                 self.db_session.commit()
 
@@ -1226,8 +1317,10 @@ class RevenueTracker:
                         "total_goals": len(goals),
                         "completed_goals": len(
                         [g for g in goal_progress if g["status"] == "completed"]
-                    ),
-                        }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                         }
 
             except Exception as e:
                 logger.error(f"Goal progress calculation failed: {e}")
@@ -1245,7 +1338,8 @@ class RevenueTracker:
                     .order_by(RevenueAlert.triggered_at.desc())
                     .limit(50)
                     .all()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return {
                     "alerts": [
@@ -1255,11 +1349,14 @@ class RevenueTracker:
                                 "message": alert.message,
                                 "severity": alert.severity,
                                 "triggered_at": alert.triggered_at.isoformat(),
-                                }
+# BRACKET_SURGEON: disabled
+#                                 }
                         for alert in alerts
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                         "total_unacknowledged": len(alerts),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             except Exception as e:
                 logger.error(f"Alert retrieval failed: {e}")
@@ -1285,7 +1382,8 @@ class RevenueTracker:
             # Collect YouTube data
             youtube_data = await self.youtube_analytics.get_revenue_data(
                 start_date, end_date
-            )
+# BRACKET_SURGEON: disabled
+#             )
             for data_point in youtube_data:
                 if data_point["revenue"] > 0:
                     revenue_stream = RevenueStream(
@@ -1299,11 +1397,15 @@ class RevenueTracker:
                             {
                                 "monetized_playbacks": data_point[
                                     "monetized_playbacks"
-                                ],
+# BRACKET_SURGEON: disabled
+#                                 ],
                                     "cpm": data_point["cpm"],
-                                    }
-                        ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                     }
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                             )
 
                     # Check if already exists
                     existing = (
@@ -1311,9 +1413,11 @@ class RevenueTracker:
                         .filter(
                             RevenueStream.source == "youtube",
                                 RevenueStream.transaction_date == data_point["date"],
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
                         .first()
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if not existing:
                         self.db_session.add(revenue_stream)
@@ -1321,7 +1425,8 @@ class RevenueTracker:
             # Collect Gumroad data
             gumroad_data = await self.gumroad_analytics.get_sales_data(
                 start_date, end_date
-            )
+# BRACKET_SURGEON: disabled
+#             )
             for sale in gumroad_data:
                 revenue_stream = RevenueStream(
                     source="gumroad",
@@ -1331,14 +1436,16 @@ class RevenueTracker:
                         transaction_id = sale["transaction_id"],
                         description = f"Product sale: {sale['product_name']}",
                         transaction_date = sale["date"],
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 # Check if already exists
                 existing = (
                     self.db_session.query(RevenueStream)
                     .filter(RevenueStream.transaction_id == sale["transaction_id"])
                     .first()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if not existing:
                     self.db_session.add(revenue_stream)
@@ -1347,7 +1454,8 @@ class RevenueTracker:
             try:
                 affiliate_data = await self.affiliate_tracker.get_affiliate_data(
                     start_date, end_date
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 for commission in affiliate_data:
                     revenue_stream = RevenueStream(
                         source="affiliate",
@@ -1357,16 +1465,19 @@ class RevenueTracker:
                         transaction_id=commission["transaction_id"],
                         description=f"Affiliate commission - {commission['network']}",
                         transaction_date=commission["date"],
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Check if already exists
                     existing = (
                         self.db_session.query(RevenueStream)
                         .filter(
                             RevenueStream.transaction_id == commission["transaction_id"]
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         .first()
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if not existing:
                         self.db_session.add(revenue_stream)
@@ -1378,7 +1489,8 @@ class RevenueTracker:
                 try:
                     ai_revenue_data = await self.ai_revenue_integration.get_ai_platform_revenue(
                         start_date, end_date
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     for ai_revenue in ai_revenue_data:
                         revenue_stream = RevenueStream(
                             source="ai_platform",
@@ -1389,7 +1501,8 @@ class RevenueTracker:
                                 description = f"AI platform revenue - {ai_revenue['platform']}: {ai_revenue.get('description', '')}",
                                 transaction_date = ai_revenue["date"],
                                 metadata = json.dumps(ai_revenue.get("metadata", {})),
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
 
                         # Check if already exists
                         existing = None
@@ -1398,12 +1511,14 @@ class RevenueTracker:
                                 self.db_session.query(RevenueStream)
                                 .filter(
                                     RevenueStream.transaction_id == ai_revenue["transaction_id"]
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
                                 .first()
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                         else:
                             # For records without transaction_id, check by platform \
-    and date
+#     and date
                             existing = (
                                 self.db_session.query(RevenueStream)
                                 .filter(
@@ -1411,9 +1526,11 @@ class RevenueTracker:
                                         RevenueStream.platform == ai_revenue["platform"],
                                         RevenueStream.transaction_date == ai_revenue["date"],
                                         RevenueStream.amount == Decimal(str(ai_revenue["amount"]))
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
                                 .first()
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                         if not existing:
                             self.db_session.add(revenue_stream)
@@ -1437,9 +1554,11 @@ class RevenueTracker:
                 .filter(
                     RevenueStream.transaction_date >= today,
                         RevenueStream.transaction_date < today + timedelta(days = 1),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 .all()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             total_daily = sum(float(r.amount) for r in daily_revenue)
 
@@ -1448,7 +1567,8 @@ class RevenueTracker:
                     alert_type="threshold",
                         message = f"Daily revenue threshold reached: ${total_daily:.2f}",
                         severity="info",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 self.db_session.add(alert)
 
             # Check for large single transactions
@@ -1462,9 +1582,12 @@ class RevenueTracker:
                             "revenue_id": revenue_stream.id,
                                 "source": revenue_stream.source,
                                 "amount": float(revenue_stream.amount),
-                                }
-                    ),
-                        )
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                         )
                 self.db_session.add(alert)
 
             self.db_session.commit()
@@ -1481,14 +1604,16 @@ class RevenueTracker:
                 self.db_session.query(RevenueGoal)
                 .filter(RevenueGoal.status == "active")
                 .all()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             for goal in goals:
                 # Calculate current progress
                 query = self.db_session.query(RevenueStream).filter(
                     RevenueStream.transaction_date >= goal.created_at,
                         RevenueStream.transaction_date <= datetime.now(),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 if goal.source_filter:
                     sources = goal.source_filter.split(",")
@@ -1507,7 +1632,8 @@ class RevenueTracker:
                         alert_type="goal",
                             message = f"Revenue goal '{goal.name}' completed! Target: ${goal.target_amount}, Achieved: ${current_amount:.2f}",
                             severity="info",
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                     self.db_session.add(alert)
 
                 # Check for goal deadline approaching
@@ -1517,7 +1643,8 @@ class RevenueTracker:
                         alert_type="goal",
                             message = f"Revenue goal '{goal.name}' deadline approaching. {days_remaining} days left, {progress_percentage:.1f}% complete",
                             severity="warning",
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                     self.db_session.add(alert)
 
             self.db_session.commit()
@@ -1539,9 +1666,11 @@ class RevenueTracker:
                 .filter(
                     RevenueStream.transaction_date >= yesterday,
                         RevenueStream.transaction_date < yesterday + timedelta(days = 1),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 .all()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not daily_revenue:
                 logger.info("No revenue data for yesterday")
@@ -1566,22 +1695,27 @@ class RevenueTracker:
                     "transaction_count": transaction_count,
                     "average_transaction": round(
                     total_revenue/transaction_count if transaction_count > 0 else 0, 2
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "source_breakdown": {
                     k: round(v, 2) for k, v in source_breakdown.items()
-                },
-                    }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Save report
             report_path = (
                 self.config.reports_dir/f"daily_report_{yesterday.isoformat()}.json"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             with open(report_path, "w") as f:
                 json.dump(report, f, indent = 2)
 
             logger.info(
                 f"✅ Daily report generated: ${total_revenue:.2f} from {transaction_count} transactions"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Daily report generation failed: {e}")
@@ -1606,7 +1740,8 @@ class RevenueTracker:
                 host="0.0.0.0",
                 port = 8004,
                 log_level = self.config.log_level.lower(),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         server = uvicorn.Server(config)
         await server.serve()
 

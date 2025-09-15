@@ -1,6 +1,6 @@
-"""
+""""""
 pip install openai
-"""
+""""""
 
 import os
 
@@ -14,7 +14,8 @@ class ChatGPT:
         api_key=None,
         proxy_url=None,
         prefix_prompt="""请用少于25个字回答以下问题\\n\\n""",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         if proxy_url:
             os.environ["https_proxy"] = proxy_url if proxy_url else None
             os.environ["http_proxy"] = proxy_url if proxy_url else None
@@ -27,7 +28,8 @@ class ChatGPT:
             response = openai.ChatCompletion.create(
                 model=self.model_path,
                 messages=[{"role": "user", "content": self.prefix_prompt + message}],
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return response["choices"][0]["message"]["content"]
         except Exception as e:
             print(e)

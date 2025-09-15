@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Self - Healing Monitoring System
 Detects stuck processes and automatically restarts failed services
-"""
+""""""
 
 import asyncio
 import logging
@@ -23,7 +23,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("logs / monitoring.log"), logging.StreamHandler()],
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -38,7 +39,7 @@ class ServiceConfig:
     max_failures: int = 3
     check_interval: int = 30
     timeout: int = 10
-    failure_count: int = field(default=0)
+    failure_count: int = field(default=0):
     last_check: Optional[datetime] = field(default=None)
     last_failure: Optional[datetime] = field(default=None)
     status: str = field(default="unknown")
@@ -67,8 +68,10 @@ class SelfHealingMonitor:
                 health_url="http://localhost:8000 / health",
                 process_name="python3",
                 restart_command=["python3", "main.py"],
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.add_service(
             ServiceConfig(
@@ -80,9 +83,12 @@ class SelfHealingMonitor:
                     "startup_system.py",
                     "--mode",
                     "development",
-                ],
-            )
-        )
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
 
     def add_service(self, service: ServiceConfig):
         """Add a service to monitor"""
@@ -139,7 +145,8 @@ class SelfHealingMonitor:
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
                 cwd=os.getcwd(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Give it time to start
             await asyncio.sleep(5)
@@ -153,7 +160,8 @@ class SelfHealingMonitor:
             else:
                 logger.error(
                     f"❌ Service {service.name} failed to start (exit code: {process.returncode})"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return False
 
         except Exception as e:
@@ -205,20 +213,23 @@ class SelfHealingMonitor:
                 f"⚠️ Service {service.name} unhealthy: "
                 f"process_running={process_running}, health_ok={health_ok}, "
                 f"failures={service.failure_count}/{service.max_failures}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Check if we should restart
             if service.failure_count >= service.max_failures:
                 # Check cooldown period
                 if service.last_failure and datetime.now() - service.last_failure < timedelta(
                     seconds=self.restart_cooldown
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     logger.info(f"⏳ Service {service.name} in restart cooldown")
                     return
 
                 await self._send_alert(
                     f"Service {service.name} failed {service.failure_count} times, attempting restart"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 success = await self.restart_service(service)
                 if success:
@@ -241,7 +252,8 @@ class SelfHealingMonitor:
                 for service in self.services.values():
                     if not service.last_check or datetime.now() - service.last_check >= timedelta(
                         seconds=service.check_interval
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         tasks.append(self.monitor_service(service))
 
                 if tasks:
@@ -282,11 +294,15 @@ class SelfHealingMonitor:
                     "last_check": (service.last_check.isoformat() if service.last_check else None),
                     "last_failure": (
                         service.last_failure.isoformat() if service.last_failure else None
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
                 for name, service in self.services.items()
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Global monitor instance

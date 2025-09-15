@@ -13,12 +13,12 @@ class PexelsAPI(BaseAPI):
     """Pexels API integration for free stock photos and videos"""
 
     def __init__(self, api_key: Optional[str] = None):
-        """
+        """"""
         Initialize Pexels API client
 
         Args:
             api_key: Pexels API key. If not provided, will try to get from environment
-        """
+        """"""
         super().__init__()
         self.api_key = api_key or os.getenv("PEXELS_API_KEY")
         self.base_url = "https://api.pexels.com / v1"
@@ -35,7 +35,7 @@ class PexelsAPI(BaseAPI):
     def search_photos(
         self, query: str, per_page: int = 15, page: int = 1, **kwargs
     ) -> Dict[str, Any]:
-        """
+        """"""
         Search for photos
 
         Args:
@@ -46,7 +46,7 @@ class PexelsAPI(BaseAPI):
 
         Returns:
             Dict containing search results
-        """
+        """"""
         if not self.api_key:
             raise APIError("Pexels API key not configured")
 
@@ -57,7 +57,8 @@ class PexelsAPI(BaseAPI):
             "per_page": min(per_page, 80),  # API limit
             "page": page,
             **kwargs,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             response = requests.get(url, params=params, headers=self.get_headers())
@@ -75,7 +76,7 @@ class PexelsAPI(BaseAPI):
     def search_videos(
         self, query: str, per_page: int = 15, page: int = 1, **kwargs
     ) -> Dict[str, Any]:
-        """
+        """"""
         Search for videos
 
         Args:
@@ -86,7 +87,7 @@ class PexelsAPI(BaseAPI):
 
         Returns:
             Dict containing video search results
-        """
+        """"""
         if not self.api_key:
             raise APIError("Pexels API key not configured")
 
@@ -97,7 +98,8 @@ class PexelsAPI(BaseAPI):
             "per_page": min(per_page, 80),  # API limit
             "page": page,
             **kwargs,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             response = requests.get(url, params=params, headers=self.get_headers())
@@ -113,7 +115,7 @@ class PexelsAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_curated_photos(self, per_page: int = 15, page: int = 1) -> Dict[str, Any]:
-        """
+        """"""
         Get curated photos
 
         Args:
@@ -122,7 +124,7 @@ class PexelsAPI(BaseAPI):
 
         Returns:
             Dict containing curated photos
-        """
+        """"""
         if not self.api_key:
             raise APIError("Pexels API key not configured")
 
@@ -144,7 +146,7 @@ class PexelsAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_popular_videos(self, per_page: int = 15, page: int = 1) -> Dict[str, Any]:
-        """
+        """"""
         Get popular videos
 
         Args:
@@ -153,7 +155,7 @@ class PexelsAPI(BaseAPI):
 
         Returns:
             Dict containing popular videos
-        """
+        """"""
         if not self.api_key:
             raise APIError("Pexels API key not configured")
 
@@ -175,7 +177,7 @@ class PexelsAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_photo_by_id(self, photo_id: int) -> Dict[str, Any]:
-        """
+        """"""
         Get a specific photo by ID
 
         Args:
@@ -183,7 +185,7 @@ class PexelsAPI(BaseAPI):
 
         Returns:
             Dict containing photo details
-        """
+        """"""
         if not self.api_key:
             raise APIError("Pexels API key not configured")
 
@@ -205,12 +207,12 @@ class PexelsAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_status(self) -> Dict[str, Any]:
-        """
+        """"""
         Get API status and configuration
 
         Returns:
             Dict containing status information
-        """
+        """"""
         return {
             "name": self.name,
             "category": self.category,
@@ -222,25 +224,28 @@ class PexelsAPI(BaseAPI):
                 "Curated photos",
                 "Popular videos",
                 "Photo by ID",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "rate_limits": "200 requests / hour for free accounts",
             "last_checked": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def test_connection(self) -> Dict[str, Any]:
-        """
+        """"""
         Test the API connection
 
         Returns:
             Dict containing test results
-        """
+        """"""
         try:
             if not self.api_key:
                 return {
                     "success": False,
                     "error": "API key not configured",
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Test with a simple curated photos request
             result = self.get_curated_photos(per_page=1)
@@ -250,11 +255,13 @@ class PexelsAPI(BaseAPI):
                 "message": "Connection successful",
                 "photos_available": len(result.get("photos", [])),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {
                 "success": False,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }

@@ -4,11 +4,10 @@
 # Author: Dave Kuhlman <dkuhlman@rexx.com>
 # Copyright: This module has been placed in the public domain.
 
-"""
+""""""
 A front end to the Docutils Publisher, producing OpenOffice documents.
-"""
+""""""
 
-import sys
 try:
     import locale
     locale.setlocale(locale.LC_ALL, '')
@@ -20,11 +19,12 @@ from docutils.writers.odf_odt import Writer, Reader
 
 
 description = ('Generates OpenDocument/OpenOffice/ODF documents from '
-               'standalone reStructuredText sources.  ' + default_description)
+# BRACKET_SURGEON: disabled
+#                'standalone reStructuredText sources.  ' + default_description)
 
 
 writer = Writer()
 reader = Reader()
 output = publish_cmdline_to_binary(reader=reader, writer=writer,
-    description=description)
-
+# BRACKET_SURGEON: disabled
+#     description=description)

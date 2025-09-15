@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 from backend.pipelines.blender_handoff import (
     get_blender_path,
     validate_blender_installation,
-)
+ )
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,9 @@ class BlenderOutputFormat(Enum):
 
 @dataclass
 class BlenderRenderConfig:
-    """Configuration for Blender rendering."""
+    """
+Configuration for Blender rendering.
+
 
     engine: BlenderRenderEngine = BlenderRenderEngine.EEVEE
     resolution_x: int = 1920
@@ -49,9 +51,15 @@ class BlenderRenderConfig:
     output_format: BlenderOutputFormat = BlenderOutputFormat.MP4
     output_path: Optional[str] = None
     use_gpu: bool = True
+   
+""""""
+
     denoising: bool = True
+   
 
-
+    
+   
+"""
 @dataclass
 class AvatarConfig:
     """Configuration for 3D avatar generation."""
@@ -98,10 +106,28 @@ class EnhancedBlenderPipeline:
     async def create_3d_avatar(
         self, avatar_config: AvatarConfig, project_name: str
     ) -> Dict[str, Any]:
-        """Create a 3D avatar using Blender and MPFB addon."""
+        """
+Create a 3D avatar using Blender and MPFB addon.
+
         try:
+           
+""""""
+
             # Validate installation
+           
+
+            
+           
+"""
             validation = await self.validate_installation()
+           """
+
+            
+           
+
+            # Validate installation
+           
+""""""
             if not validation["ok"]:
                 return validation
 
@@ -125,7 +151,7 @@ class EnhancedBlenderPipeline:
                     "avatar_file": str(avatar_file),
                     "project_dir": str(project_dir),
                     "config": avatar_config.__dict__,
-                }
+                 }
             else:
                 return {"ok": False, "error": result["error"]}
 
@@ -140,15 +166,28 @@ class EnhancedBlenderPipeline:
         audio_file: Optional[str] = None,
         background_type: str = "studio",
     ) -> Dict[str, Any]:
-        """Create an animated scene with avatar and background."""
-        try:
-            project_dir = self.project_root / project_name
-            project_dir.mkdir(parents=True, exist_ok=True)
+        """
+Create an animated scene with avatar and background.
 
+        
+"""
+        try:
+        """
+
+            project_dir = self.project_root / project_name
+           
+
+            
+           
+"""
+            project_dir.mkdir(parents=True, exist_ok=True)
+           """"""
+        try:
+        """"""
             # Generate scene creation script
             script_content = self._generate_scene_script(
                 avatar_file, audio_file, background_type, project_dir
-            )
+             )
             script_path = self.scripts_dir / f"create_scene_{project_name}.py"
             script_path.write_text(script_content)
 
@@ -162,7 +201,7 @@ class EnhancedBlenderPipeline:
                     "project_name": project_name,
                     "scene_file": str(scene_file),
                     "project_dir": str(project_dir),
-                }
+                 }
             else:
                 return {"ok": False, "error": result["error"]}
 
@@ -173,9 +212,20 @@ class EnhancedBlenderPipeline:
     async def render_animation(
         self, project_name: str, render_config: BlenderRenderConfig
     ) -> Dict[str, Any]:
-        """Render animation with specified configuration."""
+        """
+Render animation with specified configuration.
+
+        
+"""
         try:
+        """
+
             project_dir = self.project_root / project_name
+        
+
+        try:
+        
+"""
             scene_file = project_dir / f"{project_name}_scene.blend"
 
             if not scene_file.exists():
@@ -197,12 +247,12 @@ class EnhancedBlenderPipeline:
                 "status": "starting",
                 "progress": 0,
                 "start_time": time.time(),
-            }
+             }
 
             # Execute render in background
-            future = self.executor.submit(
+            self.executor.submit(
                 self._execute_render_process, script_path, project_dir, render_id
-            )
+             )
 
             return {
                 "ok": True,
@@ -210,7 +260,7 @@ class EnhancedBlenderPipeline:
                 "project_name": project_name,
                 "status": "started",
                 "output_path": render_config.output_path,
-            }
+             }
 
         except Exception as e:
             logger.error(f"Render start failed: {e}")
@@ -228,14 +278,25 @@ class EnhancedBlenderPipeline:
             "status": render_info["status"],
             "progress": render_info["progress"],
             "elapsed_time": time.time() - render_info["start_time"],
-        }
+         }
 
     async def export_for_davinci_resolve(
         self, project_name: str, export_format: str = "mp4"
     ) -> Dict[str, Any]:
-        """Export Blender project for DaVinci Resolve integration."""
+        """
+Export Blender project for DaVinci Resolve integration.
+
+        
+"""
         try:
+        """
+
             project_dir = self.project_root / project_name
+        
+
+        try:
+        
+"""
             export_dir = project_dir / "davinci_export"
             export_dir.mkdir(exist_ok=True)
 
@@ -253,7 +314,7 @@ class EnhancedBlenderPipeline:
                     "project_name": project_name,
                     "export_dir": str(export_dir),
                     "format": export_format,
-                }
+                 }
             else:
                 return {"ok": False, "error": result["error"]}
 
@@ -264,10 +325,17 @@ class EnhancedBlenderPipeline:
     async def integrate_with_cloud_software(
         self, project_name: str, cloud_assets: Dict[str, str]
     ) -> Dict[str, Any]:
-        """Integrate cloud software assets into Blender project."""
-        try:
-            project_dir = self.project_root / project_name
+        """
+Integrate cloud software assets into Blender project.
 
+        
+"""
+        try:
+        """"""
+            project_dir = self.project_root / project_name
+           """"""
+        try:
+        """"""
             # Process different cloud software assets
             integration_results = {}
 
@@ -280,30 +348,34 @@ class EnhancedBlenderPipeline:
             if "thumbnail_images" in cloud_assets:
                 thumbnail_result = await self._integrate_thumbnails(
                     project_dir, cloud_assets["thumbnail_images"]
-                )
+                 )
                 integration_results["thumbnails"] = thumbnail_result
 
             # Background music
             if "background_music" in cloud_assets:
                 music_result = await self._integrate_background_music(
                     project_dir, cloud_assets["background_music"]
-                )
+                 )
                 integration_results["background_music"] = music_result
 
             return {
                 "ok": True,
                 "project_name": project_name,
                 "integrations": integration_results,
-            }
+             }
 
         except Exception as e:
             logger.error(f"Cloud software integration failed: {e}")
             return {"ok": False, "error": str(e)}
 
     def _generate_avatar_script(self, config: AvatarConfig, project_dir: Path) -> str:
-        """Generate Blender script for avatar creation."""
-        return f"""
+        """
+Generate Blender script for avatar creation.
 
+        
+"""
+        return f
+        """"""
 import bpy
 import bmesh
 import os
@@ -336,7 +408,7 @@ body_material.use_nodes = True
 body_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.8,
     0.7,
     0.6,
-    1.0)
+#     1.0)
 body.data.materials.append(body_material)
 
 head_material = bpy.data.materials.new(name="Head_Material")
@@ -344,7 +416,7 @@ head_material.use_nodes = True
 head_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.9,
     0.8,
     0.7,
-    1.0)
+#     1.0)
 head.data.materials.append(head_material)
 
 # Set up basic lighting
@@ -368,7 +440,8 @@ output_file = r"{project_dir/f"{config.gender}_avatar.blend"}"
 bpy.ops.wm.save_as_mainfile(filepath = output_file)
 
 print(f"Avatar created and saved: {{output_file}}")
-"""
+""""""
+
 
     def _generate_scene_script(
         self,
@@ -376,21 +449,38 @@ print(f"Avatar created and saved: {{output_file}}")
         audio_file: Optional[str],
         background_type: str,
         project_dir: Path,
-    ) -> str:
-        """Generate Blender script for scene creation."""
+#     ) -> str:
+        
+Generate Blender script for scene creation.
+"""
         audio_setup = ""
         if audio_file:
-            audio_setup = f"""
+           """
+
+            
+           
+
+            audio_setup = f
+           
+""""""
 # Add audio
 try:
     bpy.ops.sequencer.sound_strip_add(filepath = r"{audio_file}")
     print("Audio added to scene")
 except Exception:
     print("Failed to add audio")
-"""
+""""""
 
-        return f"""
 
+        
+
+
+        return f
+
+        
+""""""
+        
+       """
 import bpy
 import os
 from mathutils import Vector
@@ -445,12 +535,19 @@ output_file = r"{project_dir/"animated_scene.blend"}"
 bpy.ops.wm.save_as_mainfile(filepath = output_file)
 
 print(f"Scene created and saved: {{output_file}}")
-"""
+""""""
+
 
     def _generate_render_script(self, config: BlenderRenderConfig, scene_file: Path) -> str:
-        """Generate Blender script for rendering."""
-        return f"""
+        
+Generate Blender script for rendering.
+""""""
 
+        return f
+        
+
+       
+""""""
 import bpy
 import os
 
@@ -495,14 +592,21 @@ if scene.render.engine == 'CYCLES':
 print("Starting render...")
 bpy.ops.render.render(animation = True)
 print("Render completed!")
-"""
+""""""
+
 
     def _generate_export_script(
         self, project_dir: Path, export_dir: Path, export_format: str
-    ) -> str:
-        """Generate Blender script for exporting to DaVinci Resolve."""
-        return f"""
+#     ) -> str:
+        
+Generate Blender script for exporting to DaVinci Resolve.
+""""""
 
+        return f
+        
+
+       
+""""""
 import bpy
 import os
 
@@ -522,30 +626,40 @@ elif "{export_format}" == "fbx":
         filepath = r"{export_dir/"scene_objects.fbx"}",
             use_selection = False,
             use_active_collection = False
-    )
+     )
 
 elif "{export_format}" == "alembic":
     # Export as Alembic for DaVinci Resolve
     bpy.ops.wm.alembic_export(
         filepath = r"{export_dir/"scene_animation.abc"}",
             selected = False
-    )
+     )
 
 print(f"Export completed to: {export_dir}")
-"""
+""""""
+
 
     async def _execute_blender_script(self, script_path: Path, project_dir: Path) -> Dict[str, Any]:
-        """Execute a Blender script."""
+        
+Execute a Blender script.
+""""""
         try:
+        """
             cmd = [self.blender_path, "--background", "--python", str(script_path)]
+        """
 
+        try:
+        
+
+       
+""""""
             result = subprocess.run(
                 cmd,
                 cwd=str(project_dir),
                 capture_output=True,
                 text=True,
                 timeout=300,  # 5 minute timeout
-            )
+             )
 
             if result.returncode == 0:
                 return {"success": True, "output": result.stdout}
@@ -570,7 +684,7 @@ print(f"Export completed to: {export_dir}")
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-            )
+             )
 
             # Monitor progress (simplified)
             while process.poll() is None:
@@ -590,14 +704,39 @@ print(f"Export completed to: {export_dir}")
             self.active_renders[render_id]["error"] = str(e)
 
     async def _check_required_addons(self) -> Dict[str, bool]:
-        """Check for required Blender addons."""
+        """
+Check for required Blender addons.
+
+       
+""""""
+
         # This would check for MPFB, Animation Nodes, etc.
+       
+
+        
+       
+"""
         return {"mpfb": True, "animation_nodes": False, "rigify": True}  # Placeholder
+       """
+
+        
+       
+
+        # This would check for MPFB, Animation Nodes, etc.
+       
+""""""
 
     async def _integrate_audio(self, project_dir: Path, audio_file: str) -> Dict[str, Any]:
-        """Integrate audio from Speechelo/Voice Generator."""
-        # Copy audio file to project directory
+        
+Integrate audio from Speechelo/Voice Generator.
+""""""
 
+        
+       
+
+        # Copy audio file to project directory
+       
+""""""
         import shutil
 
         audio_dest = project_dir / "audio" / "voice.wav"

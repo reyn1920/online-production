@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Health Check and Monitoring System for ChatGPT Integration
 Implements Rule 11: Health Check and Monitoring Requirements
-"""
+""""""
 
 import asyncio
 import json
@@ -159,18 +159,22 @@ class HealthMonitor:
             "default_cooldown": 5,  # minutes
             "chatgpt_api_url": os.getenv(
                 "CHATGPT_API_URL", "https://api.openai.com / v1 / chat / completions"
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "system_endpoints": [
                 "http://localhost:8000 / health",
                     "http://localhost:3000 / api / health",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "critical_processes": ["python", "node", "nginx"],
                 "disk_usage_threshold": 85,  # percent
             "memory_usage_threshold": 90,  # percent
             "cpu_usage_threshold": 80,  # percent
             "response_time_threshold": 5000,  # milliseconds
             "error_rate_threshold": 5,  # percent
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def _init_database(self):
@@ -180,7 +184,9 @@ class HealthMonitor:
 
         self.db_connection = sqlite3.connect(
             str(db_path), check_same_thread = False, timeout = 30
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.db_lock = threading.Lock()
 
         # Create tables
@@ -189,7 +195,7 @@ class HealthMonitor:
 
             # Health checks table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS health_checks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         check_name TEXT NOT NULL,
@@ -199,13 +205,17 @@ class HealthMonitor:
                         response_time_ms REAL,
                         details TEXT,
                         error TEXT
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Metrics table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
@@ -214,13 +224,17 @@ class HealthMonitor:
                         timestamp TEXT NOT NULL,
                         tags TEXT,
                         unit TEXT
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Alerts table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS alerts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         alert_id TEXT UNIQUE NOT NULL,
@@ -233,21 +247,32 @@ class HealthMonitor:
                         timestamp TEXT NOT NULL,
                         resolved INTEGER DEFAULT 0,
                         resolved_timestamp TEXT
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Create indexes
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_health_timestamp ON health_checks(timestamp)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_metrics_name_timestamp ON metrics(name,
-    timestamp)"
-            )
+                "CREATE INDEX IF NOT EXISTS idx_metrics_name_timestamp ON metrics(name,"
+# BRACKET_SURGEON: disabled
+#     timestamp)""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_alerts_timestamp ON alerts(timestamp)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self.db_connection.commit()
 
@@ -266,7 +291,9 @@ class HealthMonitor:
         # Network connectivity
         self.register_health_check(
             "internet_connectivity", self._check_internet_connectivity
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # ChatGPT API connectivity
         self.register_health_check("chatgpt_api", self._check_chatgpt_api)
@@ -276,7 +303,9 @@ class HealthMonitor:
             endpoint_name = f"endpoint_{urlparse(endpoint).port or 'default'}"
             self.register_health_check(
                 endpoint_name, lambda url = endpoint: self._check_http_endpoint(url)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _register_default_alert_rules(self):
@@ -293,8 +322,12 @@ class HealthMonitor:
                     description="High CPU usage detected",
                     cooldown_minutes = 5,
                     enabled = True,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.register_alert_rule(
             AlertRule(
@@ -306,8 +339,12 @@ class HealthMonitor:
                     description="High memory usage detected",
                     cooldown_minutes = 5,
                     enabled = True,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.register_alert_rule(
             AlertRule(
@@ -319,8 +356,12 @@ class HealthMonitor:
                     description="High disk usage detected",
                     cooldown_minutes = 10,
                     enabled = True,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # API response time alerts
         self.register_alert_rule(
@@ -333,8 +374,12 @@ class HealthMonitor:
                     description="Slow API response time detected",
                     cooldown_minutes = 3,
                     enabled = True,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Error rate alerts
         self.register_alert_rule(
@@ -347,13 +392,18 @@ class HealthMonitor:
                     description="High API error rate detected",
                     cooldown_minutes = 2,
                     enabled = True,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def register_health_check(
         self, name: str, check_function: Callable[[], Dict[str, Any]]
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Register a health check function"""
         self.health_checks[name] = check_function
         self.logger.info(f"Registered health check: {name}")
@@ -376,13 +426,17 @@ class HealthMonitor:
                     value = cpu_percent,
                     metric_type = MetricType.GAUGE,
                     unit="percent",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             status = HealthStatus.HEALTHY
             if cpu_percent > self.config["cpu_usage_threshold"]:
                 status = (
                     HealthStatus.CRITICAL if cpu_percent > 95 else HealthStatus.WARNING
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return {
                 "status": status,
@@ -392,9 +446,12 @@ class HealthMonitor:
                         "cpu_count": psutil.cpu_count(),
                         "load_average": (
                         os.getloadavg() if hasattr(os, "getloadavg") else None
-                    ),
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             return {
@@ -402,7 +459,8 @@ class HealthMonitor:
                     "message": f"Failed to check CPU usage: {str(e)}",
                     "details": {},
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _check_memory_usage(self) -> Dict[str, Any]:
@@ -416,14 +474,18 @@ class HealthMonitor:
                     value = memory.percent,
                     metric_type = MetricType.GAUGE,
                     unit="percent",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             await self.record_metric(
                 name="system.memory.available_bytes",
                     value = memory.available,
                     metric_type = MetricType.GAUGE,
                     unit="bytes",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             status = HealthStatus.HEALTHY
             if memory.percent > self.config["memory_usage_threshold"]:
@@ -431,7 +493,9 @@ class HealthMonitor:
                     HealthStatus.CRITICAL
                     if memory.percent > 95
                     else HealthStatus.WARNING
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return {
                 "status": status,
@@ -441,8 +505,10 @@ class HealthMonitor:
                         "available_bytes": memory.available,
                         "used_bytes": memory.used,
                         "percent": memory.percent,
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             return {
@@ -450,7 +516,8 @@ class HealthMonitor:
                     "message": f"Failed to check memory usage: {str(e)}",
                     "details": {},
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _check_disk_usage(self) -> Dict[str, Any]:
@@ -465,7 +532,9 @@ class HealthMonitor:
                     value = usage_percent,
                     metric_type = MetricType.GAUGE,
                     unit="percent",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             status = HealthStatus.HEALTHY
             if usage_percent > self.config["disk_usage_threshold"]:
@@ -473,7 +542,9 @@ class HealthMonitor:
                     HealthStatus.CRITICAL
                     if usage_percent > 95
                     else HealthStatus.WARNING
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return {
                 "status": status,
@@ -483,8 +554,10 @@ class HealthMonitor:
                         "used_bytes": disk.used,
                         "free_bytes": disk.free,
                         "percent": usage_percent,
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             return {
@@ -492,7 +565,8 @@ class HealthMonitor:
                     "message": f"Failed to check disk usage: {str(e)}",
                     "details": {},
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _check_critical_processes(self) -> Dict[str, Any]:
@@ -505,12 +579,15 @@ class HealthMonitor:
             for process in critical_processes:
                 if not any(
                     process in running_proc for running_proc in running_processes
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     missing_processes.append(process)
 
             status = (
                 HealthStatus.HEALTHY if not missing_processes else HealthStatus.CRITICAL
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return {
                 "status": status,
@@ -519,8 +596,10 @@ class HealthMonitor:
                     "critical_processes": critical_processes,
                         "missing_processes": missing_processes,
                         "running_processes": list(running_processes),
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             return {
@@ -528,7 +607,8 @@ class HealthMonitor:
                     "message": f"Failed to check processes: {str(e)}",
                     "details": {},
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _check_internet_connectivity(self) -> Dict[str, Any]:
@@ -539,10 +619,12 @@ class HealthMonitor:
             # Try to connect to a reliable external service
             async with timeout_manager.timeout_context(
                 operation_type = TimeoutType.HEALTH_CHECK, custom_timeout = 5
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 async with aiohttp.ClientSession() as session:
                     async with session.get("https://8.8.8.8:53",
-    timeout = 5) as response:
+# BRACKET_SURGEON: disabled
+#     timeout = 5) as response:
                         pass
 
             response_time = (time.time() - start_time) * 1000
@@ -553,8 +635,10 @@ class HealthMonitor:
                     "details": {
                     "response_time_ms": response_time,
                         "test_endpoint": "8.8.8.8:53",
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             return {
@@ -562,7 +646,8 @@ class HealthMonitor:
                     "message": f"No internet connectivity: {str(e)}",
                     "details": {},
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _check_chatgpt_api(self) -> Dict[str, Any]:
@@ -573,18 +658,21 @@ class HealthMonitor:
             headers = {
                 "Authorization": f'Bearer {os.getenv("OPENAI_API_KEY", "test_key")}',
                     "Content - Type": "application / json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Simple API health check (without making actual requests)
             async with timeout_manager.timeout_context(
                 operation_type = TimeoutType.API_CALL,
                     custom_timeout = self.config["webhook_timeout"],
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                 async with aiohttp.ClientSession() as session:
                     # Just check if the endpoint is reachable
                     async with session.head(
                         self.config["chatgpt_api_url"], headers = headers
-                    ) as response:
+# BRACKET_SURGEON: disabled
+#                     ) as response:
                         response_time = (time.time() - start_time) * 1000
 
                         # Record API response time metric
@@ -594,7 +682,9 @@ class HealthMonitor:
                                 metric_type = MetricType.TIMER,
                                 unit="milliseconds",
                                 tags={"endpoint": "chatgpt_api"},
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                         status = HealthStatus.HEALTHY
                         if response.status >= 500:
@@ -609,8 +699,10 @@ class HealthMonitor:
                                 "status_code": response.status,
                                     "response_time_ms": response_time,
                                     "endpoint": self.config["chatgpt_api_url"],
-                                    },
-                                }
+# BRACKET_SURGEON: disabled
+#                                     },
+# BRACKET_SURGEON: disabled
+#                                 }
 
         except Exception as e:
             return {
@@ -618,7 +710,8 @@ class HealthMonitor:
                     "message": f"ChatGPT API unreachable: {str(e)}",
                     "details": {},
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _check_http_endpoint(self, url: str) -> Dict[str, Any]:
@@ -629,7 +722,8 @@ class HealthMonitor:
             async with timeout_manager.timeout_context(
                 operation_type = TimeoutType.HEALTH_CHECK,
                     custom_timeout = self.config["webhook_timeout"],
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                 async with aiohttp.ClientSession() as session:
                     async with session.get(url) as response:
                         response_time = (time.time() - start_time) * 1000
@@ -647,8 +741,10 @@ class HealthMonitor:
                                 "url": url,
                                     "status_code": response.status,
                                     "response_time_ms": response_time,
-                                    },
-                                }
+# BRACKET_SURGEON: disabled
+#                                     },
+# BRACKET_SURGEON: disabled
+#                                 }
 
         except Exception as e:
             return {
@@ -656,7 +752,8 @@ class HealthMonitor:
                     "message": f"Endpoint {url} unreachable: {str(e)}",
                     "details": {"url": url},
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def run_health_check(self, check_name: str) -> HealthCheckResult:
@@ -680,7 +777,9 @@ class HealthMonitor:
                     response_time_ms = response_time,
                     details = result.get("details", {}),
                     error = result.get("error"),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Store in database
             await self._store_health_check_result(health_result)
@@ -698,7 +797,9 @@ class HealthMonitor:
                     response_time_ms = response_time,
                     details={},
                     error = str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             await self._store_health_check_result(health_result)
             return health_result
@@ -721,7 +822,9 @@ class HealthMonitor:
                         response_time_ms = 0,
                         details={},
                         error = str(e),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         return results
 
@@ -733,7 +836,8 @@ class HealthMonitor:
             metric_type: MetricType,
             unit: str = "",
             tags: Optional[Dict[str, str]] = None,
-            ) -> None:
+# BRACKET_SURGEON: disabled
+#             ) -> None:
         """Record a metric"""
 
         metric = SystemMetric(
@@ -743,7 +847,9 @@ class HealthMonitor:
                 timestamp = datetime.utcnow().isoformat(),
                 tags = tags or {},
                 unit = unit,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.metrics.append(metric)
 
@@ -764,7 +870,7 @@ class HealthMonitor:
             with self.db_lock:
                 cursor = self.db_connection.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO health_checks
                     (check_name,
     status,
@@ -772,9 +878,11 @@ class HealthMonitor:
     timestamp,
     response_time_ms,
     details,
-    error)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     error)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         result.check_name,
                             result.status.value,
@@ -783,8 +891,11 @@ class HealthMonitor:
                             result.response_time_ms,
                             json.dumps(result.details),
                             result.error,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.db_connection.commit()
         except Exception as e:
             self.logger.error(f"Error storing health check result: {str(e)}")
@@ -796,11 +907,11 @@ class HealthMonitor:
             with self.db_lock:
                 cursor = self.db_connection.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO metrics
                     (name, value, metric_type, timestamp, tags, unit)
                     VALUES (?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         metric.name,
                             metric.value,
@@ -808,8 +919,11 @@ class HealthMonitor:
                             metric.timestamp,
                             json.dumps(metric.tags),
                             metric.unit,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.db_connection.commit()
         except Exception as e:
             self.logger.error(f"Error storing metric: {str(e)}")
@@ -859,7 +973,9 @@ class HealthMonitor:
                 message = f"{rule.description}: {metric.name} = {metric.value} {metric.unit} (threshold: {rule.threshold})",
                 timestamp = datetime.utcnow().isoformat(),
                 resolved = False,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.active_alerts[alert_id] = alert
         self.alert_history.append(alert)
@@ -875,7 +991,8 @@ class HealthMonitor:
                 AuditLevel.ERROR
                 if rule.severity in [AlertSeverity.CRITICAL, AlertSeverity.EMERGENCY]
                 else AuditLevel.WARNING
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 additional_data={
                 "alert_id": alert_id,
                     "rule_id": rule.rule_id,
@@ -883,8 +1000,11 @@ class HealthMonitor:
                     "current_value": metric.value,
                     "threshold": rule.threshold,
                     "severity": rule.severity.value,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.logger.warning(f"Alert triggered: {alert.message}")
 
@@ -899,7 +1019,7 @@ class HealthMonitor:
             with self.db_lock:
                 cursor = self.db_connection.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO alerts
                     (alert_id,
     rule_id,
@@ -909,9 +1029,11 @@ class HealthMonitor:
     severity,
     message,
     timestamp,
-    resolved)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     resolved)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         alert.alert_id,
                             alert.rule_id,
@@ -922,8 +1044,11 @@ class HealthMonitor:
                             alert.message,
                             alert.timestamp,
                             0 if not alert.resolved else 1,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.db_connection.commit()
         except Exception as e:
             self.logger.error(f"Error storing alert: {str(e)}")
@@ -944,8 +1069,11 @@ class HealthMonitor:
                 additional_data={
                 "health_checks": list(self.health_checks.keys()),
                     "alert_rules": list(self.alert_rules.keys()),
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     async def stop_monitoring(self):
@@ -976,7 +1104,8 @@ class HealthMonitor:
                 if (
                     current_time - last_health_check
                     >= self.config["health_check_interval"]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     await self.run_all_health_checks()
                     last_health_check = current_time
 
@@ -984,7 +1113,8 @@ class HealthMonitor:
                 if (
                     current_time - last_metric_collection
                     >= self.config["metric_collection_interval"]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     await self._collect_system_metrics()
                     last_metric_collection = current_time
 
@@ -992,7 +1122,8 @@ class HealthMonitor:
                 if (
                     current_time - last_alert_check
                     >= self.config["alert_check_interval"]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     await self._check_alert_resolution()
                     last_alert_check = current_time
 
@@ -1010,7 +1141,9 @@ class HealthMonitor:
             cpu_percent = psutil.cpu_percent()
             await self.record_metric(
                 "system.cpu.usage_percent", cpu_percent, MetricType.GAUGE, "percent"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Memory metrics
             memory = psutil.virtual_memory()
@@ -1019,14 +1152,18 @@ class HealthMonitor:
                     memory.percent,
                     MetricType.GAUGE,
                     "percent",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Disk metrics
             disk = psutil.disk_usage("/")
             disk_percent = (disk.used / disk.total) * 100
             await self.record_metric(
                 "system.disk.usage_percent", disk_percent, MetricType.GAUGE, "percent"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Network metrics
             network = psutil.net_io_counters()
@@ -1035,13 +1172,17 @@ class HealthMonitor:
                     network.bytes_sent,
                     MetricType.COUNTER,
                     "bytes",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             await self.record_metric(
                 "system.network.bytes_recv",
                     network.bytes_recv,
                     MetricType.COUNTER,
                     "bytes",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             self.logger.error(f"Error collecting system metrics: {str(e)}")
@@ -1064,15 +1205,17 @@ class HealthMonitor:
                 with self.db_lock:
                     cursor = self.db_connection.cursor()
                     cursor.execute(
-                        """
+                        """"""
                         SELECT status, message, timestamp, response_time_ms, details, error
                             FROM health_checks
                         WHERE check_name = ?
                         ORDER BY timestamp DESC
                         LIMIT 1
-                    """,
+                    ""","""
                         (check_name,),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     result = cursor.fetchone()
                     if result:
@@ -1083,28 +1226,34 @@ class HealthMonitor:
                                 "response_time_ms": result[3],
                                 "details": json.loads(result[4]) if result[4] else {},
                                 "error": result[5],
-                                }
+# BRACKET_SURGEON: disabled
+#                                 }
             except Exception as e:
                 self.logger.error(
                     f"Error getting recent check for {check_name}: {str(e)}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Determine overall status
         overall_status = HealthStatus.HEALTHY
         if any(
             check["status"] == HealthStatus.CRITICAL.value
             for check in recent_checks.values()
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             overall_status = HealthStatus.CRITICAL
         elif any(
             check["status"] == HealthStatus.WARNING.value
             for check in recent_checks.values()
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             overall_status = HealthStatus.WARNING
         elif any(
             check["status"] == HealthStatus.UNKNOWN.value
             for check in recent_checks.values()
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             overall_status = HealthStatus.UNKNOWN
 
         return {
@@ -1117,8 +1266,10 @@ class HealthMonitor:
                 time.time() - psutil.boot_time()
                 if hasattr(psutil, "boot_time")
                 else None
-            ),
-                }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def get_monitoring_report(self) -> Dict[str, Any]:
@@ -1132,24 +1283,29 @@ class HealthMonitor:
 
                 # Get latest value for each metric
                 cursor.execute(
-                    """
+                    """"""
                     SELECT name, value, unit, timestamp
                     FROM metrics m1
                     WHERE timestamp = (
                         SELECT MAX(timestamp)
                         FROM metrics m2
                         WHERE m2.name = m1.name
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     ORDER BY name
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 for row in cursor.fetchall():
                     recent_metrics[row[0]] = {
                         "value": row[1],
                             "unit": row[2],
                             "timestamp": row[3],
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
         except Exception as e:
             self.logger.error(f"Error getting recent metrics: {str(e)}")
 
@@ -1162,8 +1318,11 @@ class HealthMonitor:
                     for alert in self.alert_history
                     if datetime.fromisoformat(alert.timestamp)
                     > datetime.utcnow() - timedelta(hours = 24)
-                ]
-            ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
+# BRACKET_SURGEON: disabled
+#             ),
                 "critical_alerts_24h": len(
                 [
                     alert
@@ -1173,10 +1332,16 @@ class HealthMonitor:
                         > datetime.utcnow() - timedelta(hours = 24)
                         and alert.severity
                         in [AlertSeverity.CRITICAL, AlertSeverity.EMERGENCY]
-                    )
-                ]
-            ),
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         return {
             "report_id": f"monitoring_{datetime.now().strftime('%Y % m%d_ % H%M % S')}",
@@ -1190,14 +1355,17 @@ class HealthMonitor:
                     "alert_check_interval": self.config["alert_check_interval"],
                     "registered_checks": list(self.health_checks.keys()),
                     "registered_rules": list(self.alert_rules.keys()),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "compliance_status": {
                 "rule_11_health_checks": len(self.health_checks) > 0,
                     "rule_11_monitoring_active": self.monitoring_active,
                     "rule_11_alerting_configured": len(self.alert_rules) > 0,
                     "rule_11_metrics_collection": len(recent_metrics) > 0,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 # Global health monitor instance
 health_monitor = HealthMonitor()
@@ -1223,7 +1391,9 @@ async def record_api_metric(endpoint: str, response_time_ms: float, status_code:
             metric_type = MetricType.TIMER,
             unit="milliseconds",
             tags={"endpoint": endpoint, "status_code": str(status_code)},
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Calculate error rate
     error_rate = 100 if status_code >= 400 else 0
@@ -1233,4 +1403,6 @@ async def record_api_metric(endpoint: str, response_time_ms: float, status_code:
             metric_type = MetricType.GAUGE,
             unit="percent",
             tags={"endpoint": endpoint},
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )

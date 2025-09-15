@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Audio Sample Generation Script
 
 Generates production - ready audio content samples using available TTS engines
@@ -7,7 +7,7 @@ Generates production - ready audio content samples using available TTS engines
 
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
-"""
+""""""
 
 import logging
 import os
@@ -39,42 +39,49 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 # Sample texts for different use cases
 SAMPLE_TEXTS = {
     "professional_intro": {
-        "text": "Welcome to our AI - powered content generation platform. Experience studio - quality voice synthesis with emotional control \
-    and perfect pronunciation. Transform your ideas into professional audio content in seconds.",
+        "text": "Welcome to our AI - powered content generation platform. Experience studio - quality voice synthesis with emotional control \"
+#     and perfect pronunciation. Transform your ideas into professional audio content in seconds.",
         "category": "Professional",
         "use_case": "Corporate introduction",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "casual_demo": {
-        "text": "Hey there! Check out this amazing AI system that creates incredible content in just seconds. It's like having a Hollywood studio right in your computer!",
+        "text": "Hey there! Check out this amazing AI system that creates incredible content in just seconds. It's like having a Hollywood studio right in your computer!",'
         "category": "Casual",
         "use_case": "Product demo",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "educational_content": {
         "text": "In this lesson, we'll explore the fascinating world of artificial intelligence \
-    and machine learning. These technologies are revolutionizing how we create \
-    and consume digital content.",
+#     and machine learning. These technologies are revolutionizing how we create \
+#     and consume digital content.",
         "category": "Educational",
         "use_case": "E - learning narration",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "storytelling": {
-        "text": "Once upon a time, in a world where creativity knew no bounds, there lived an AI that could bring any story to life with the power of voice \
-    and imagination.",
+        "text": "Once upon a time, in a world where creativity knew no bounds, there lived an AI that could bring any story to life with the power of voice \"
+#     and imagination.",
         "category": "Narrative",
         "use_case": "Storytelling",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "news_broadcast": {
-        "text": "Breaking news: Revolutionary AI technology now enables anyone to create professional - grade audio content without expensive equipment \
-    or studio time.",
+        "text": "Breaking news: Revolutionary AI technology now enables anyone to create professional - grade audio content without expensive equipment \"
+#     or studio time.",
         "category": "News",
         "use_case": "News broadcast",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "commercial_ad": {
         "text": "Don't miss out on the future of content creation! Our AI - powered platform delivers studio - quality results at lightning speed. Try it today \
-    and transform your creative workflow forever.",
+#     and transform your creative workflow forever.",
         "category": "Commercial",
         "use_case": "Advertisement",
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 # Voice configurations for different styles
 VOICE_CONFIGS = {
@@ -85,7 +92,8 @@ VOICE_CONFIGS = {
         "volume": 1.0,
         "sample_rate": 22050,
         "format": "mp3",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "pyttsx3_default": {
         "engine": "pyttsx3",
         "language": "en",
@@ -93,7 +101,8 @@ VOICE_CONFIGS = {
         "volume": 0.9,
         "sample_rate": 22050,
         "format": "wav",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "pyttsx3_fast": {
         "engine": "pyttsx3",
         "language": "en",
@@ -101,7 +110,8 @@ VOICE_CONFIGS = {
         "volume": 0.9,
         "sample_rate": 22050,
         "format": "wav",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "pyttsx3_slow": {
         "engine": "pyttsx3",
         "language": "en",
@@ -109,7 +119,8 @@ VOICE_CONFIGS = {
         "volume": 0.9,
         "sample_rate": 22050,
         "format": "wav",
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "system_tts": {
         "engine": "system",
         "language": "en",
@@ -117,8 +128,10 @@ VOICE_CONFIGS = {
         "volume": 1.0,
         "sample_rate": 44100,
         "format": "wav",
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 
 class AudioSampleGenerator:
@@ -157,7 +170,8 @@ class AudioSampleGenerator:
             "successful_samples": 0,
             "failed_samples": 0,
             "samples": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Generate samples for each text with different voice configs
         for text_key, text_info in SAMPLE_TEXTS.items():
@@ -180,12 +194,15 @@ class AudioSampleGenerator:
                                 "duration": result.duration,
                                 "sample_rate": result.sample_rate,
                                 "metadata": result.metadata,
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
 
                         logger.info(
                             f"✅ Generated: {text_key} + {voice_key} " f"({result.duration:.1f}s)"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                     else:
                         sample_info["failed_samples"] += 1
 
@@ -202,7 +219,8 @@ class AudioSampleGenerator:
         logger.info(
             f"🎉 Audio sample generation completed! "
             f"{sample_info['successful_samples']}/{sample_info['total_samples']} successful"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return sample_info
 
@@ -252,8 +270,10 @@ class AudioSampleGenerator:
                     "text_length": len(text_info["text"]),
                     "words_count": len(text_info["text"].split()),
                     "file_size": file_size,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             return result
 
@@ -282,7 +302,8 @@ class AudioSampleGenerator:
                 ["say", "-o", output_path, "--data - format = LEF32@44100", text],
                 check=True,
                 capture_output=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except subprocess.CalledProcessError as e:
             logger.error(f"System TTS failed: {e}")
             raise
@@ -298,7 +319,8 @@ class AudioSampleGenerator:
             "Transform your ideas into reality.",
             "Professional results in seconds.",
             "The future of content is here.",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         batch_dir = OUTPUT_DIR / "batch_samples"
         batch_dir.mkdir(exist_ok=True)
@@ -323,14 +345,17 @@ class AudioSampleGenerator:
                         "text": text,
                         "file_path": output_path.replace(".wav", ".mp3"),
                         "duration": len(text.split()) * 0.5,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             sample_info["batch_samples"] = {
                 "count": len(batch_results),
                 "total_duration": sum(r["duration"] for r in batch_results),
                 "files": [r["file_path"] for r in batch_results],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.info(f"✅ Generated {len(batch_results)} batch samples")
 
@@ -411,7 +436,8 @@ def main():
         if sample_info["successful_samples"] > 0:
             total_duration = sum(
                 sample["duration"] for sample in sample_info["samples"] if "duration" in sample
-            )
+# BRACKET_SURGEON: disabled
+#             )
             print(f"Total audio duration: {total_duration:.1f} seconds")
 
         print("\\n🎉 Audio sample generation completed successfully!")

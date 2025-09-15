@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Alert Manager - Comprehensive Monitoring and Alerting System
 Implements real - time monitoring, alerting, and scaling rules for go - live compliance
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -237,7 +237,8 @@ class AlertManager:
                 "scaling_cpu_threshold": 70.0,
                 "scaling_memory_threshold": 80.0,
                 "scaling_cooldown_minutes": 10,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _initialize_default_rules(self):
@@ -259,7 +260,9 @@ class AlertManager:
                     notification_channels=[
                     NotificationChannel.EMAIL,
                         NotificationChannel.SLACK,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     escalation_rules=[
                     {
                         "after_minutes": 15,
@@ -267,13 +270,22 @@ class AlertManager:
                             "channels": [
                             NotificationChannel.EMAIL,
                                 NotificationChannel.SLACK,
-                                ],
-                            }
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     auto_resolve = True,
                     tags=["system", "performance", "cpu"],
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.register_alert_rule(
             AlertRule(
@@ -290,7 +302,9 @@ class AlertManager:
                     notification_channels=[
                     NotificationChannel.EMAIL,
                         NotificationChannel.SLACK,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     escalation_rules=[
                     {
                         "after_minutes": 5,
@@ -299,13 +313,22 @@ class AlertManager:
                             NotificationChannel.EMAIL,
                                 NotificationChannel.SLACK,
                                 NotificationChannel.SMS,
-                                ],
-                            }
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     auto_resolve = True,
                     tags=["system", "performance", "cpu", "critical"],
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.register_alert_rule(
             AlertRule(
@@ -323,8 +346,12 @@ class AlertManager:
                     escalation_rules=[],
                     auto_resolve = True,
                     tags=["system", "performance", "memory"],
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.register_alert_rule(
             AlertRule(
@@ -341,7 +368,9 @@ class AlertManager:
                     notification_channels=[
                     NotificationChannel.EMAIL,
                         NotificationChannel.SLACK,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     escalation_rules=[
                     {
                         "after_minutes": 30,
@@ -349,13 +378,22 @@ class AlertManager:
                             "channels": [
                             NotificationChannel.EMAIL,
                                 NotificationChannel.SLACK,
-                                ],
-                            }
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     auto_resolve = True,
                     tags=["system", "storage", "disk"],
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Application monitoring rules
         self.register_alert_rule(
@@ -374,8 +412,12 @@ class AlertManager:
                     escalation_rules=[],
                     auto_resolve = True,
                     tags=["application", "performance", "response_time"],
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.register_alert_rule(
             AlertRule(
@@ -392,7 +434,9 @@ class AlertManager:
                     notification_channels=[
                     NotificationChannel.EMAIL,
                         NotificationChannel.SLACK,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     escalation_rules=[
                     {
                         "after_minutes": 10,
@@ -400,13 +444,22 @@ class AlertManager:
                             "channels": [
                             NotificationChannel.EMAIL,
                                 NotificationChannel.SLACK,
-                                ],
-                            }
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     auto_resolve = True,
                     tags=["application", "errors", "reliability"],
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Security monitoring rules
         self.register_alert_rule(
@@ -424,7 +477,9 @@ class AlertManager:
                     notification_channels=[
                     NotificationChannel.EMAIL,
                         NotificationChannel.SLACK,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     escalation_rules=[
                     {
                         "after_minutes": 5,
@@ -433,13 +488,22 @@ class AlertManager:
                             NotificationChannel.EMAIL,
                                 NotificationChannel.SLACK,
                                 NotificationChannel.SMS,
-                                ],
-                            }
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     auto_resolve = False,  # Manual resolution required
                 tags=["security", "threat", "critical"],
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Compliance monitoring rules
         self.register_alert_rule(
@@ -462,13 +526,22 @@ class AlertManager:
                             "channels": [
                             NotificationChannel.EMAIL,
                                 NotificationChannel.SLACK,
-                                ],
-                            }
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     auto_resolve = True,
                     tags=["compliance", "governance", "audit"],
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Health check rules
         self.register_alert_rule(
@@ -486,7 +559,9 @@ class AlertManager:
                     notification_channels=[
                     NotificationChannel.EMAIL,
                         NotificationChannel.SLACK,
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     escalation_rules=[
                     {
                         "after_minutes": 2,
@@ -495,13 +570,22 @@ class AlertManager:
                             NotificationChannel.EMAIL,
                                 NotificationChannel.SLACK,
                                 NotificationChannel.SMS,
-                                ],
-                            }
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     auto_resolve = True,
                     tags=["infrastructure", "availability", "critical"],
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def _setup_notification_channels(self):
@@ -518,22 +602,26 @@ class AlertManager:
                         "password": self.config["email_password"],
                         "from_email": self.config["email_from"],
                         "to_emails": self.config["email_to"],
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Slack notification
         if self.config["slack_webhook_url"]:
             self.notification_channels[NotificationChannel.SLACK] = {
                 "enabled": True,
                     "config": {"webhook_url": self.config["slack_webhook_url"]},
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Discord notification
         if self.config["discord_webhook_url"]:
             self.notification_channels[NotificationChannel.DISCORD] = {
                 "enabled": True,
                     "config": {"webhook_url": self.config["discord_webhook_url"]},
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Webhook notifications
         if self.config["webhook_endpoints"]:
@@ -544,9 +632,13 @@ class AlertManager:
                         url.strip()
                         for url in self.config["webhook_endpoints"]
                         if url.strip()
-                    ]
-                },
-                    }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def register_alert_rule(self, rule: AlertRule):
@@ -561,7 +653,9 @@ class AlertManager:
             self.monitoring_active = True
             self.monitoring_thread = threading.Thread(
                 target = self._monitoring_loop, daemon = True
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.monitoring_thread.start()
             self.logger.info("Alert monitoring started")
 
@@ -582,7 +676,8 @@ class AlertManager:
                 if (
                     time.time() - self.last_metric_collection
                     >= self.config["metric_collection_interval"]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     self._collect_metrics()
                     self.last_metric_collection = time.time()
 
@@ -615,38 +710,54 @@ class AlertManager:
                 system_metrics = self._collect_system_metrics()
                 self._store_metric(
                     "system.cpu_percent", system_metrics.cpu_percent, current_time
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self._store_metric(
                     "system.memory_percent", system_metrics.memory_percent, current_time
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self._store_metric(
                     "system.disk_percent", system_metrics.disk_percent, current_time
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self._store_metric(
                     "system.process_count", system_metrics.process_count, current_time
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self._store_metric(
                     "system.uptime_seconds", system_metrics.uptime_seconds, current_time
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if system_metrics.load_average:
                     self._store_metric(
                         "system.load_average_1m",
                             system_metrics.load_average[0],
                             current_time,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     if len(system_metrics.load_average) > 1:
                         self._store_metric(
                             "system.load_average_5m",
                                 system_metrics.load_average[1],
                                 current_time,
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                     if len(system_metrics.load_average) > 2:
                         self._store_metric(
                             "system.load_average_15m",
                                 system_metrics.load_average[2],
                                 current_time,
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
             # Collect application metrics
             if self.config["enable_application_monitoring"]:
@@ -654,42 +765,60 @@ class AlertManager:
                 if app_metrics:
                     self._store_metric(
                         "app.request_count", app_metrics.request_count, current_time
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     self._store_metric(
                         "app.error_count", app_metrics.error_count, current_time
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     self._store_metric(
                         "app.response_time_ms",
                             app_metrics.response_time_ms,
                             current_time,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     self._store_metric(
                         "app.active_connections",
                             app_metrics.active_connections,
                             current_time,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     self._store_metric(
                         "app.queue_size", app_metrics.queue_size, current_time
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     self._store_metric(
                         "app.cache_hit_rate", app_metrics.cache_hit_rate, current_time
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     self._store_metric(
                         "app.database_connections",
                             app_metrics.database_connections,
                             current_time,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             # Collect health metrics
             health_status = health_monitor.get_system_health()
             self._store_metric(
                 "health.overall_score", health_status.overall_health_score, current_time
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self._store_metric(
                 "health.availability",
                     100.0 if health_status.status == HealthStatus.HEALTHY else 0.0,
                     current_time,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Collect compliance metrics
             if self.config["enable_compliance_monitoring"]:
@@ -698,12 +827,16 @@ class AlertManager:
                     "compliance.score",
                         compliance_report["overall_compliance_score"],
                         current_time,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self._store_metric(
                     "compliance.violations",
                         len(compliance_report["violations"]),
                         current_time,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         except Exception as e:
             self.logger.error(f"Error collecting metrics: {str(e)}")
@@ -737,12 +870,15 @@ class AlertManager:
                         "bytes_recv": network.bytes_recv,
                         "packets_sent": network.packets_sent,
                         "packets_recv": network.packets_recv,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     process_count = process_count,
                     load_average = load_average,
                     uptime_seconds = uptime_seconds,
                     timestamp = time.time(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             self.logger.error(f"Error collecting system metrics: {str(e)}")
@@ -755,7 +891,9 @@ class AlertManager:
                     load_average=[],
                     uptime_seconds = 0.0,
                     timestamp = time.time(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _collect_application_metrics(self) -> Optional[ApplicationMetrics]:
@@ -776,7 +914,9 @@ class AlertManager:
                 cache_hit_rate = 0.0,  # Would come from cache metrics
                 database_connections = 0,  # Would come from DB pool
                 timestamp = time.time(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             self.logger.error(f"Error collecting application metrics: {str(e)}")
@@ -787,7 +927,9 @@ class AlertManager:
         """Store a metric point"""
         metric_point = MetricPoint(
             timestamp = timestamp, value = value, labels={"metric": metric_name}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.metrics_buffer[metric_name].append(metric_point)
 
@@ -796,7 +938,8 @@ class AlertManager:
         while (
             self.metrics_buffer[metric_name]
             and self.metrics_buffer[metric_name][0].timestamp < cutoff_time
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.metrics_buffer[metric_name].popleft()
 
 
@@ -834,8 +977,11 @@ class AlertManager:
                                 "alert_id": alert.alert_id,
                                     "rule_id": rule_id,
                                     "category": rule.category.value,
-                                    },
-                                )
+# BRACKET_SURGEON: disabled
+#                                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                 else:
                     # Check if existing alert should be auto - resolved
                     existing_alert = self._get_active_alert(rule_id)
@@ -863,7 +1009,8 @@ class AlertManager:
                     "max": max,
                     "round": round,
                     "len": len,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             result = eval(condition_code, safe_globals, context)
 
@@ -876,7 +1023,9 @@ class AlertManager:
         except Exception as e:
             self.logger.error(
                 f"Error evaluating condition for rule {rule.rule_id}: {str(e)}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return False
 
 
@@ -901,34 +1050,46 @@ class AlertManager:
         if "system.memory_percent" in self.metrics_buffer:
             context["memory_percent"] = self._get_latest_metric_value(
                 "system.memory_percent"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if "system.disk_percent" in self.metrics_buffer:
             context["disk_percent"] = self._get_latest_metric_value(
                 "system.disk_percent"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if "app.response_time_ms" in self.metrics_buffer:
             context["response_time_ms"] = self._get_latest_metric_value(
                 "app.response_time_ms"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if "health.availability" in self.metrics_buffer:
             context["availability"] = self._get_latest_metric_value(
                 "health.availability"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if "compliance.score" in self.metrics_buffer:
             context["compliance_score"] = self._get_latest_metric_value(
                 "compliance.score"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Calculate error rate
         request_count = self._get_latest_metric_value("app.request_count", 0)
         error_count = self._get_latest_metric_value("app.error_count", 0)
         context["error_rate"] = (
             (error_count/request_count * 100) if request_count > 0 else 0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Add threat level (would come from security monitoring)
         context["threat_level"] = 0  # Default to no threat
@@ -945,7 +1106,8 @@ class AlertManager:
 
     def _check_condition_duration(
         self, rule: AlertRule, condition_met: bool, current_time: float
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Check if condition has been met for required duration"""
         rule_state_key = f"condition_state_{rule.rule_id}"
 
@@ -1016,10 +1178,13 @@ class AlertManager:
                 "rule_tags": rule.tags,
                     "evaluation_context": context,
                     "hostname": os.uname().nodename if hasattr(os, "uname") else "unknown",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 notification_history=[],
                 escalation_level = 0,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Update cooldown state
         if not hasattr(self, "_cooldown_states"):
@@ -1041,7 +1206,8 @@ class AlertManager:
                 if (
                     channel in self.notification_channels
                     and self.notification_channels[channel]["enabled"]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     success = self._send_notification(channel, alert)
 
                     # Record notification attempt
@@ -1050,7 +1216,8 @@ class AlertManager:
                             "timestamp": datetime.now().isoformat(),
                             "success": success,
                             "attempt": 1,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     alert.notification_history.append(notification_record)
 
@@ -1058,12 +1225,16 @@ class AlertManager:
                         # Retry logic could be implemented here
                         self.logger.warning(
                             f"Failed to send notification via {channel.value} for alert {alert.alert_id}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             except Exception as e:
                 self.logger.error(
                     f"Error sending notification via {channel.value}: {str(e)}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def _send_notification(self, channel: NotificationChannel, alert: Alert) -> bool:
@@ -1080,7 +1251,9 @@ class AlertManager:
             else:
                 self.logger.warning(
                     f"Unsupported notification channel: {channel.value}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return False
 
         except Exception as e:
@@ -1100,7 +1273,7 @@ class AlertManager:
             msg["Subject"] = f"[{alert.severity.value.upper()}] {alert.title}"
 
             # Create email body
-            body = f"""
+            body = f""""""
 Alert: {alert.title}
 Severity: {alert.severity.value.upper()}
 Category: {alert.category.value}
@@ -1117,7 +1290,7 @@ Metadata:
 
 ---
 This is an automated alert from the monitoring system.
-"""
+""""""
 
             msg.attach(MIMEText(body, "plain"))
 
@@ -1159,37 +1332,49 @@ This is an automated alert from the monitoring system.
                                 "title": "Severity",
                                     "value": alert.severity.value.upper(),
                                     "short": True,
-                                    },
+# BRACKET_SURGEON: disabled
+#                                     },
                                 {
                                 "title": "Category",
                                     "value": alert.category.value,
                                     "short": True,
-                                    },
+# BRACKET_SURGEON: disabled
+#                                     },
                                 {
                                 "title": "Current Value",
                                     "value": str(alert.current_value),
                                     "short": True,
-                                    },
+# BRACKET_SURGEON: disabled
+#                                     },
                                 {
                                 "title": "Threshold",
                                     "value": str(alert.threshold),
                                     "short": True,
-                                    },
+# BRACKET_SURGEON: disabled
+#                                     },
                                 {
                                 "title": "Description",
                                     "value": alert.description,
                                     "short": False,
-                                    },
+# BRACKET_SURGEON: disabled
+#                                     },
                                 {
                                 "title": "Alert ID",
                                     "value": alert.alert_id,
                                     "short": False,
-                                    },
-                                ],
+# BRACKET_SURGEON: disabled
+#                                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
                             "ts": int(time.time()),
-                            }
-                ],
-                    }
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Send to Slack
 
@@ -1197,7 +1382,9 @@ This is an automated alert from the monitoring system.
 
             response = requests.post(config["webhook_url"],
     json = payload,
-    timeout = 10)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 10)
             response.raise_for_status()
 
             return True
@@ -1232,33 +1419,44 @@ This is an automated alert from the monitoring system.
                                 "name": "Severity",
                                     "value": alert.severity.value.upper(),
                                     "inline": True,
-                                    },
+# BRACKET_SURGEON: disabled
+#                                     },
                                 {
                                 "name": "Category",
                                     "value": alert.category.value,
                                     "inline": True,
-                                    },
+# BRACKET_SURGEON: disabled
+#                                     },
                                 {
                                 "name": "Current Value",
                                     "value": str(alert.current_value),
                                     "inline": True,
-                                    },
+# BRACKET_SURGEON: disabled
+#                                     },
                                 {
                                 "name": "Threshold",
                                     "value": str(alert.threshold),
                                     "inline": True,
-                                    },
+# BRACKET_SURGEON: disabled
+#                                     },
                                 {
                                 "name": "Alert ID",
                                     "value": f"`{alert.alert_id}`",
                                     "inline": False,
-                                    },
-                                ],
+# BRACKET_SURGEON: disabled
+#                                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
                             "timestamp": alert.created_at,
                             "footer": {"text": "Monitoring System"},
-                            }
-                ]
-            }
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
+# BRACKET_SURGEON: disabled
+#             }
 
             # Send to Discord
 
@@ -1266,7 +1464,9 @@ This is an automated alert from the monitoring system.
 
             response = requests.post(config["webhook_url"],
     json = payload,
-    timeout = 10)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 10)
             response.raise_for_status()
 
             return True
@@ -1294,7 +1494,8 @@ This is an automated alert from the monitoring system.
                     "threshold": alert.threshold,
                     "created_at": alert.created_at,
                     "metadata": alert.metadata,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Send to all webhook endpoints
 
@@ -1332,12 +1533,15 @@ This is an automated alert from the monitoring system.
             # Check if escalation is needed
             alert_age_minutes = (
                 current_time - datetime.fromisoformat(alert.created_at).timestamp()
-            )/60
+# BRACKET_SURGEON: disabled
+#             )/60
 
             for escalation in rule.escalation_rules:
                 if alert_age_minutes >= escalation[
                     "after_minutes"
-                ] and alert.escalation_level < len(rule.escalation_rules):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ] and alert.escalation_level < len(rule.escalation_rules):
 
                     # Escalate alert
                     alert.severity = AlertSeverity(escalation["severity"])
@@ -1353,7 +1557,9 @@ This is an automated alert from the monitoring system.
                         except ValueError:
                             self.logger.warning(
                                 f"Unknown notification channel in escalation: {channel_name}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Log escalation
                     audit_logger.log_security_event(
@@ -1363,8 +1569,11 @@ This is an automated alert from the monitoring system.
                             "alert_id": alert.alert_id,
                                 "escalation_level": alert.escalation_level,
                                 "new_severity": alert.severity.value,
-                                },
-                            )
+# BRACKET_SURGEON: disabled
+#                                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     break
 
@@ -1388,7 +1597,8 @@ This is an automated alert from the monitoring system.
                 # Check auto - resolve timeout
                 alert_age_minutes = (
                     current_time - datetime.fromisoformat(alert.created_at).timestamp()
-                )/60
+# BRACKET_SURGEON: disabled
+#                 )/60
 
                 if alert_age_minutes >= self.config["auto_resolve_timeout_minutes"]:
                     self._resolve_alert(alert_id, "auto_resolved")
@@ -1416,9 +1626,13 @@ This is an automated alert from the monitoring system.
                         "duration_minutes": (
                         datetime.fromisoformat(alert.resolved_at).timestamp()
                         - datetime.fromisoformat(alert.created_at).timestamp()
-                    )/60,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                     )/60,
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.logger.info(f"Alert {alert_id} resolved by {resolved_by}")
 
@@ -1428,14 +1642,17 @@ This is an automated alert from the monitoring system.
         current_time = time.time()
         cutoff_time = current_time - (
             self.config["alert_history_retention_days"] * 24 * 3600
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Cleanup old alert history
         while (
             self.alert_history
             and datetime.fromisoformat(self.alert_history[0].created_at).timestamp()
             < cutoff_time
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.alert_history.popleft()
 
         # Cleanup old metrics (already handled in _store_metric)
@@ -1458,8 +1675,11 @@ This is an automated alert from the monitoring system.
                     additional_data={
                     "alert_id": alert_id,
                         "acknowledged_by": acknowledged_by,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return True
 
@@ -1489,23 +1709,30 @@ This is an automated alert from the monitoring system.
             for alert in self.alert_history
             if datetime.fromisoformat(alert.created_at).timestamp()
             > current_time - 24 * 3600
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         # Calculate alert statistics
         alert_stats = {
             "total_alerts_24h": len(recent_alerts),
                 "critical_alerts_24h": len(
                 [a for a in recent_alerts if a.severity == AlertSeverity.CRITICAL]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "active_alerts": len(self.active_alerts),
                 "acknowledged_alerts": len(
                 [
                     a
                     for a in self.active_alerts.values()
                     if a.status == AlertStatus.ACKNOWLEDGED
-                ]
-            ),
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Get current system status
         system_status = {
@@ -1515,7 +1742,8 @@ This is an automated alert from the monitoring system.
                 "uptime_hours": uptime_seconds/3600,
                 "health_score": self._get_latest_metric_value("health.overall_score"),
                 "compliance_score": self._get_latest_metric_value("compliance.score"),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return {
             "report_id": f"monitoring_{datetime.now().strftime('%Y % m%d_ % H%M % S')}",
@@ -1526,37 +1754,46 @@ This is an automated alert from the monitoring system.
                     "last_metric_collection": datetime.fromtimestamp(
                     self.last_metric_collection
                 ).isoformat(),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "system_status": system_status,
                 "alert_statistics": alert_stats,
                 "active_alerts": [asdict(alert) for alert in self.active_alerts.values()],
                 "notification_channels": {
                 channel.value: config["enabled"]
                 for channel, config in self.notification_channels.items()
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 "alert_rules": {
                 "total_rules": len(self.alert_rules),
                     "enabled_rules": len(
                     [r for r in self.alert_rules.values() if r.enabled]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "rule_summary": {
                     rule_id: {
                         "name": rule.name,
                             "enabled": rule.enabled,
                             "severity": rule.severity.value,
                             "category": rule.category.value,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     for rule_id, rule in self.alert_rules.items()
-                },
-                    },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#                     },
                 "performance_metrics": {
                 "metrics_collected": len(self.metrics_buffer),
                     "total_metric_points": sum(
                     len(buffer) for buffer in self.metrics_buffer.values()
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "avg_evaluation_time_ms": 0,  # Would need to track this
-            },
-                }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#                 }
 
 # Global alert manager instance
 alert_manager = AlertManager()
@@ -1569,7 +1806,8 @@ def create_custom_alert(
         description: str,
         severity: AlertSeverity,
         category: AlertCategory = AlertCategory.APPLICATION,
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     """Create a custom alert"""
     alert_id = f"custom_{int(time.time())}"
 
@@ -1591,7 +1829,9 @@ def create_custom_alert(
             metadata={"custom": True},
             notification_history=[],
             escalation_level = 0,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     alert_manager.active_alerts[alert_id] = alert
     alert_manager._send_notifications(alert)
@@ -1605,9 +1845,11 @@ def get_system_health_summary() -> Dict[str, Any]:
         "cpu_percent": alert_manager._get_latest_metric_value("system.cpu_percent"),
             "memory_percent": alert_manager._get_latest_metric_value(
             "system.memory_percent"
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
             "disk_percent": alert_manager._get_latest_metric_value("system.disk_percent"),
             "health_score": alert_manager._get_latest_metric_value("health.overall_score"),
             "active_alerts": len(alert_manager.active_alerts),
             "monitoring_active": alert_manager.monitoring_active,
-            }
+# BRACKET_SURGEON: disabled
+#             }

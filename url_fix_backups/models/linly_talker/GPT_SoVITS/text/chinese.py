@@ -14,7 +14,8 @@ current_file_path = os.path.dirname(__file__)
 pinyin_to_symbol_map = {
     line.split("\\t")[0]: line.strip().split("\\t")[1]
     for line in open(os.path.join(current_file_path, "opencpop - strict.txt")).readlines()
-}
+# BRACKET_SURGEON: disabled
+# }
 
 import jieba_fast.posseg as psg
 
@@ -32,7 +33,8 @@ rep_map = {
     "$": ".",
     "/": ",",
     "—": "-",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 tone_modifier = ToneSandhi()
 
@@ -110,7 +112,8 @@ def _g2p(segments):
                         "uei": "ui",
                         "iou": "iu",
                         "uen": "un",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     if v_without_tone in v_rep_map.keys():
                         pinyin = c + v_rep_map[v_without_tone]
                 else:
@@ -120,7 +123,8 @@ def _g2p(segments):
                         "i": "yi",
                         "in": "yin",
                         "u": "wu",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     if pinyin in pinyin_rep_map.keys():
                         pinyin = pinyin_rep_map[pinyin]
                     else:
@@ -129,7 +133,8 @@ def _g2p(segments):
                             "e": "e",
                             "i": "y",
                             "u": "w",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         if pinyin[0] in single_rep_map.keys():
                             pinyin = single_rep_map[pinyin[0]] + pinyin[1:]
 

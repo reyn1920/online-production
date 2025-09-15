@@ -57,7 +57,8 @@ def _report_usage(
     error: Optional[str] = None,
     took_ms: Optional[int] = None,
     quota_remaining: Optional[int] = None,
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Report usage metrics to the integrations registry."""
     try:
         payload = {"key": provider_key, "success": success, "took_ms": took_ms}
@@ -83,7 +84,8 @@ def _geocode_location(location: str) -> Optional[Tuple[float, float]]:
             params=params,
             headers=headers,
             timeout=10,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if resp.status_code == 200:
             data = resp.json()
@@ -106,11 +108,13 @@ def _fetch_openmeteo_weather(lat: float, lon: float, location: str) -> Dict[str,
         "daily": "weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,precipitation_sum,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant",
         "timezone": "auto",
         "forecast_days": 7,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     resp = http_get_with_backoff(
         "https://api.open - meteo.com/v1/forecast", params=params, timeout=TIMEOUT_S
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -138,7 +142,8 @@ def _fetch_openmeteo_weather(lat: float, lon: float, location: str) -> Dict[str,
             95: "Thunderstorm",
             96: "Thunderstorm with slight hail",
             99: "Thunderstorm with heavy hail",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         current = data.get("current", {})
         current_weather_code = current.get("weather_code", 0)
@@ -161,10 +166,12 @@ def _fetch_openmeteo_weather(lat: float, lon: float, location: str) -> Dict[str,
                 "description": weather_codes.get(current_weather_code, "Unknown"),
                 "is_day": current.get("is_day", 1) == 1,
                 "timestamp": current.get("time"),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "forecast": [],
             "provider": "open - meteo",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add daily forecast
         daily = data.get("daily", {})
@@ -175,7 +182,8 @@ def _fetch_openmeteo_weather(lat: float, lon: float, location: str) -> Dict[str,
                         daily.get("weather_code", [])[i]
                         if i < len(daily.get("weather_code", []))
                         else 0
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     weather_data["forecast"].append(
                         {
                             "date": date,
@@ -183,52 +191,63 @@ def _fetch_openmeteo_weather(lat: float, lon: float, location: str) -> Dict[str,
                                 daily.get("temperature_2m_max", [])[i]
                                 if i < len(daily.get("temperature_2m_max", []))
                                 else None
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             "temperature_min": (
                                 daily.get("temperature_2m_min", [])[i]
                                 if i < len(daily.get("temperature_2m_min", []))
                                 else None
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             "weather_code": day_weather_code,
                             "description": weather_codes.get(day_weather_code, "Unknown"),
                             "precipitation_sum": (
                                 daily.get("precipitation_sum", [])[i]
                                 if i < len(daily.get("precipitation_sum", []))
                                 else None
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             "precipitation_probability": (
                                 daily.get("precipitation_probability_max", [])[i]
                                 if i < len(daily.get("precipitation_probability_max", []))
                                 else None
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             "wind_speed_max": (
                                 daily.get("wind_speed_10m_max", [])[i]
                                 if i < len(daily.get("wind_speed_10m_max", []))
                                 else None
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             "sunrise": (
                                 daily.get("sunrise", [])[i]
                                 if i < len(daily.get("sunrise", []))
                                 else None
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             "sunset": (
                                 daily.get("sunset", [])[i]
                                 if i < len(daily.get("sunset", []))
                                 else None
-                            ),
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                             ),
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
         return {
             "success": True,
             "weather": weather_data,
             "quota_remaining": None,  # Open - Meteo is free
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         return {
             "success": False,
             "error": f"Open - Meteo API error: {resp.status_code} - {resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def _fetch_openweathermap_weather(
@@ -242,13 +261,15 @@ def _fetch_openweathermap_weather(
         "https://api.openweathermap.org/data/2.5/weather",
         params=current_params,
         timeout=TIMEOUT_S,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if current_resp.status_code != 200:
         return {
             "success": False,
             "error": f"OpenWeatherMap current weather error: {current_resp.status_code} - {current_resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     current_data = current_resp.json()
 
@@ -259,13 +280,15 @@ def _fetch_openweathermap_weather(
         "appid": api_key,
         "units": "metric",
         "cnt": 5,  # 5 days
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     forecast_resp = http_get_with_backoff(
         "https://api.openweathermap.org/data/2.5/forecast",
         params=forecast_params,
         timeout=TIMEOUT_S,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     forecast_data = forecast_resp.json() if forecast_resp.status_code == 200 else {}
 
@@ -289,10 +312,12 @@ def _fetch_openweathermap_weather(
             "icon": current_data["weather"][0]["icon"],
             "is_day": "d" in current_data["weather"][0]["icon"],
             "timestamp": current_data["dt"],
-        },
+# BRACKET_SURGEON: disabled
+#         },
         "forecast": [],
         "provider": "openweathermap",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Add forecast data (group by day)
     if forecast_data.get("list"):
@@ -307,7 +332,8 @@ def _fetch_openweathermap_weather(
                     "precipitation": 0,
                     "wind_speeds": [],
                     "weather_codes": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             daily_forecasts[date]["temperatures"].append(item["main"]["temp"])
             daily_forecasts[date]["descriptions"].append(item["weather"][0]["description"])
@@ -327,27 +353,33 @@ def _fetch_openweathermap_weather(
                     "temperature_min": min(temps) if temps else None,
                     "weather_code": (
                         day_data["weather_codes"][0] if day_data["weather_codes"] else None
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "description": (
                         day_data["descriptions"][0].title()
                         if day_data["descriptions"]
                         else "Unknown"
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "precipitation_sum": day_data["precipitation"],
                     "precipitation_probability": None,  # Not available in this endpoint
                     "wind_speed_max": (
                         max(day_data["wind_speeds"]) if day_data["wind_speeds"] else None
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "sunrise": None,  # Not available in this endpoint
                     "sunset": None,  # Not available in this endpoint
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
     return {
         "success": True,
         "weather": weather_data,
         "quota_remaining": None,  # OpenWeatherMap doesn't provide quota in response
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def fetch_weather(
@@ -368,7 +400,8 @@ def fetch_weather(
                 "ok": False,
                 "error": f"Could not geocode location: {location}",
                 "took_ms": int((time.time() - start_time) * 1000),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         lat, lon = coords
 
     for attempt in range(max_retries + 1):
@@ -388,7 +421,8 @@ def fetch_weather(
                     False,
                     error_msg,
                     int((time.time() - start_time) * 1000),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return {"provider": provider_key, "ok": False, "error": error_msg}
 
             # Call appropriate provider
@@ -401,7 +435,8 @@ def fetch_weather(
                 result = {
                     "success": False,
                     "error": f"No adapter implementation for {provider_key}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             took_ms = int((time.time() - start_time) * 1000)
 
@@ -413,7 +448,8 @@ def fetch_weather(
                     "ok": True,
                     "data": result["weather"],
                     "took_ms": took_ms,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 # Failure - report and potentially rotate
                 error_msg = result.get("error", "Unknown error")
@@ -425,7 +461,8 @@ def fetch_weather(
                         logger.info(f"Rotating from failed provider {provider_key}")
                         rotate_resp = requests.post(
                             f"{BASE}/integrations/rotate?category = weather", timeout=10
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         if rotate_resp.status_code == 200:
                             rotation_data = rotate_resp.json()
                             logger.info(f"Rotated to {rotation_data.get('rotated_to', 'unknown')}")
@@ -441,7 +478,8 @@ def fetch_weather(
                     "ok": False,
                     "error": error_msg,
                     "took_ms": took_ms,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             took_ms = int((time.time() - start_time) * 1000)
@@ -460,7 +498,8 @@ def fetch_weather(
                 "ok": False,
                 "error": error_msg,
                 "took_ms": took_ms,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     # Should not reach here
     return {
@@ -468,7 +507,8 @@ def fetch_weather(
         "ok": False,
         "error": "Max retries exceeded",
         "took_ms": int((time.time() - start_time) * 1000),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Convenience function for backward compatibility

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 AI CEO Master Startup Script - Full Automation Launch
 
 This script launches the complete AI CEO automation system with:
@@ -12,7 +12,7 @@ This script launches the complete AI CEO automation system with:
 
 Author: TRAE.AI System
 Version: 2.0.0
-"""
+""""""
 
 import argparse
 import json
@@ -43,7 +43,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("ai_ceo_system.log"), logging.StreamHandler()],
-)
+# BRACKET_SURGEON: disabled
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +61,8 @@ class AICEOSystemLauncher:
             "healing_protocols",
             "master_controller",
             "monitoring_dashboard",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         self.shutdown_order = list(reversed(self.startup_order))
 
         # System configuration
@@ -86,7 +88,8 @@ class AICEOSystemLauncher:
                 "health_check_interval": 30,
                 "auto_restart": True,
                 "max_restart_attempts": 3,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "components": {
                 "decision_engine": {"enabled": True, "startup_delay": 0},
                 "pipeline": {"enabled": True, "startup_delay": 5},
@@ -96,28 +99,34 @@ class AICEOSystemLauncher:
                     "enabled": True,
                     "startup_delay": 20,
                     "port": 5000,
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "agents": {
                 "marketing_agent": True,
                 "financial_agent": True,
                 "monetization_agent": True,
                 "stealth_automation_agent": True,
                 "content_generation_agent": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "apis": {
                 "youtube_api": True,
                 "gmail_api": True,
                 "social_media_apis": True,
                 "payment_apis": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "monitoring": {
                 "enable_real_time_alerts": True,
                 "enable_performance_tracking": True,
                 "enable_business_metrics": True,
                 "dashboard_refresh_rate": 5,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         if config_file.exists():
             try:
@@ -169,7 +178,8 @@ class AICEOSystemLauncher:
                 # Apply startup delay
                 startup_delay = (
                     self.config["components"].get(component_name, {}).get("startup_delay", 0)
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if startup_delay > 0:
                     logger.info(f"⏳ Waiting {startup_delay}s before starting {component_name}")
                     time.sleep(startup_delay)
@@ -218,7 +228,8 @@ class AICEOSystemLauncher:
             self._check_system_resources,
             self._check_network_connectivity,
             self._check_database_access,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for check in checks:
             try:
@@ -247,7 +258,8 @@ class AICEOSystemLauncher:
             "autonomous_decision_engine.py",
             "self_healing_protocols.py",
             "monitoring_dashboard.py",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         missing_files = []
         for file_path in required_files:
@@ -271,7 +283,8 @@ class AICEOSystemLauncher:
             if available_memory < 1.0:
                 logger.error(
                     f"❌ Insufficient memory: {available_memory:.1f}GB available (1GB required)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return False
 
             # Check available disk space (minimum 1GB)
@@ -279,12 +292,14 @@ class AICEOSystemLauncher:
             if available_disk < 1.0:
                 logger.error(
                     f"❌ Insufficient disk space: {available_disk:.1f}GB available (1GB required)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return False
 
             logger.info(
                 f"✅ System resources: {available_memory:.1f}GB RAM, {available_disk:.1f}GB disk"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return True
 
         except ImportError:
@@ -406,7 +421,8 @@ class AICEOSystemLauncher:
                 pipeline=pipeline,
                 decision_engine=decision_engine,
                 healing_system=healing_protocols,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             master_controller.start_ai_ceo()
 
             self.components["master_controller"] = master_controller
@@ -429,7 +445,8 @@ class AICEOSystemLauncher:
                 pipeline=pipeline,
                 ai_ceo=master_controller,
                 healing_system=healing_protocols,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Start dashboard in separate thread
             dashboard_thread = threading.Thread(
@@ -437,9 +454,11 @@ class AICEOSystemLauncher:
                 kwargs={
                     "host": "0.0.0.0",
                     "port": self.config["components"]["monitoring_dashboard"].get("port", 5000),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 daemon=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             dashboard_thread.start()
 
             self.components["monitoring_dashboard"] = dashboard
@@ -493,7 +512,8 @@ class AICEOSystemLauncher:
                     if status.get("status") != "running":
                         logger.warning(
                             f"⚠️ Component {component_name} status: {status.get('status')}"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         # Auto-restart if enabled
                         if self.config["system"].get("auto_restart", True):
@@ -539,10 +559,13 @@ class AICEOSystemLauncher:
                         comp.get_status().get("status") == "running"
                         for comp in self.components.values()
                         if hasattr(comp, "get_status")
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     else "degraded"
-                ),
-            }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             }
 
             # Log to file periodically (every 10 minutes)
             if int(time.time()) % 600 == 0:
@@ -600,7 +623,8 @@ class AICEOSystemLauncher:
                 "components": component_status,
                 "startup_time": getattr(self, "startup_time", None),
                 "configuration": self.config,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"❌ Error getting system status: {e}")

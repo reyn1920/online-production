@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Minimal API Discovery Script
 
 Uses only built - in Python libraries to avoid dependency issues.
-"""
+""""""
 
 import json
 import sqlite3
@@ -29,7 +29,8 @@ class MinimalAPIDiscovery:
                 "Cors": "Yes",
                 "Link": "https://jsonplaceholder.typicode.com/",
                 "Category": "Development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "REST Countries",
                 "Description": "Get information about countries via a RESTful API",
@@ -38,17 +39,19 @@ class MinimalAPIDiscovery:
                 "Cors": "Yes",
                 "Link": "https://restcountries.com/",
                 "Category": "Government",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "OpenWeatherMap",
-                "Description": "Weather data including current weather, forecasts, \
-    and historical data",
+                "Description": "Weather data including current weather, forecasts, \"
+#     and historical data",
                 "Auth": "apiKey",
                 "HTTPS": True,
                 "Cors": "Unknown",
                 "Link": "https://openweathermap.org/api",
                 "Category": "Weather",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Cat Facts",
                 "Description": "Daily cat facts",
@@ -57,16 +60,18 @@ class MinimalAPIDiscovery:
                 "Cors": "No",
                 "Link": "https://catfact.ninja/",
                 "Category": "Animals",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Dog API",
-                "Description": "The internet's biggest collection of open source dog pictures",
+                "Description": "The internet's biggest collection of open source dog pictures",'
                 "Auth": "No",
                 "HTTPS": True,
                 "Cors": "No",
                 "Link": "https://dog.ceo/dog - api/",
                 "Category": "Animals",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Advice Slip",
                 "Description": "An API to give you advice",
@@ -75,16 +80,18 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "https://api.adviceslip.com/",
                 "Category": "Entertainment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Bored API",
-                "Description": "Find something to do when you're bored",
+                "Description": "Find something to do when you're bored",'
                 "Auth": "No",
                 "HTTPS": True,
                 "Cors": "Unknown",
                 "Link": "https://www.boredapi.com/",
                 "Category": "Entertainment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Numbers API",
                 "Description": "Interesting facts about numbers",
@@ -93,7 +100,8 @@ class MinimalAPIDiscovery:
                 "Cors": "No",
                 "Link": "http://numbersapi.com/",
                 "Category": "Science & Math",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "JokeAPI",
                 "Description": "Submit and receive jokes",
@@ -102,7 +110,8 @@ class MinimalAPIDiscovery:
                 "Cors": "Yes",
                 "Link": "https://jokeapi.dev/",
                 "Category": "Entertainment",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Quotable",
                 "Description": "A free, open source quotations API",
@@ -111,7 +120,8 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "https://github.com/lukePeavey/quotable",
                 "Category": "Text",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "IP Geolocation",
                 "Description": "IP Geolocation API - IPv4 and IPv6",
@@ -120,7 +130,8 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "https://ipapi.co/",
                 "Category": "Geocoding",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Zippopotam.us",
                 "Description": "Get information about place such as country, city, state, etc",
@@ -129,17 +140,19 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "http://www.zippopotam.us/",
                 "Category": "Geocoding",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "GitHub",
-                "Description": "Make use of GitHub repositories, code \
-    and user info programmatically",
+                "Description": "Make use of GitHub repositories, code \"
+#     and user info programmatically",
                 "Auth": "OAuth",
                 "HTTPS": True,
                 "Cors": "Yes",
                 "Link": "https://docs.github.com/en/rest",
                 "Category": "Development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Random User Generator",
                 "Description": "A free, open - source API for generating random user data",
@@ -148,7 +161,8 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "https://randomuser.me/",
                 "Category": "Development",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Lorem Picsum",
                 "Description": "The Lorem Ipsum for photos",
@@ -157,8 +171,10 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "https://picsum.photos/",
                 "Category": "Photography",
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         print(f"🔍 Generated {len(sample_apis)} sample free APIs for testing")
         return sample_apis
@@ -187,17 +203,18 @@ class MinimalAPIDiscovery:
                     # Determine complexity based on auth requirements
                     complexity = (
                         "low" if api.get("Auth", "").lower() in ["no", "none", ""] else "medium"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Insert into api_suggestions table
                     conn.execute(
-                        """
+                        """"""
                         INSERT OR REPLACE INTO api_suggestions (
                             api_name, api_description, signup_url, category,
                             use_case, integration_complexity, potential_value,
                             source_url, research_notes, status
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             api.get("API", "Unknown"),
                             api.get("Description", ""),
@@ -209,18 +226,20 @@ class MinimalAPIDiscovery:
                             api.get("Link", ""),
                             f"Discovered via minimal_api_discovery - Auth: {api.get('Auth', 'none')}, HTTPS: {api.get('HTTPS', False)}",
                             "added",
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Insert into api_discovery_tasks table
                     conn.execute(
-                        """
+                        """"""
                         INSERT OR REPLACE INTO api_discovery_tasks (
                             task_name, task_type, target_capability, search_parameters,
                             capability_gap, search_keywords, priority, status,
                             assigned_agent, progress_notes, apis_found, created_at, updated_at
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             f"Discovered: {api.get('API', 'Unknown')}",
                             "api_integration",
@@ -230,15 +249,19 @@ class MinimalAPIDiscovery:
                                     "link": api.get("Link", ""),
                                     "auth": api.get("Auth", "none"),
                                     "https": api.get("HTTPS", False),
-                                }
-                            ),
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                             ),
                             "Free API integration",
                             json.dumps(
                                 [
                                     api.get("API", "Unknown"),
                                     api.get("Category", "Other"),
-                                ]
-                            ),
+# BRACKET_SURGEON: disabled
+#                                 ]
+# BRACKET_SURGEON: disabled
+#                             ),
                             5,  # Medium priority
                             "completed",
                             "minimal_api_discovery",
@@ -246,8 +269,10 @@ class MinimalAPIDiscovery:
                             1,
                             datetime.now().isoformat(),
                             datetime.now().isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                     saved_count += 1
 
@@ -265,54 +290,63 @@ class MinimalAPIDiscovery:
             with sqlite3.connect(self.db_path) as conn:
                 # Update last discovery time
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO system_config (config_key,
     config_value,
     description,
-    category)
+# BRACKET_SURGEON: disabled
+#     category)
                     VALUES (?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         "last_api_discovery",
                         datetime.now().isoformat(),
                         "Last successful API discovery run",
                         "api_discovery",
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Update total discovered APIs count
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO system_config (config_key,
     config_value,
     description,
-    category)
+# BRACKET_SURGEON: disabled
+#     category)
                     VALUES (?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         "total_discovered_apis",
                         str(total_apis),
                         "Total number of discovered APIs",
                         "api_discovery",
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Mark API discovery system as active
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO system_config (config_key,
     config_value,
     description,
-    category)
+# BRACKET_SURGEON: disabled
+#     category)
                     VALUES (?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         "api_discovery_status",
                         "active",
                         "API discovery system status",
                         "api_discovery",
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
 
@@ -327,7 +361,7 @@ class MinimalAPIDiscovery:
 
                 # Get API statistics by category
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT
                         category,
                         COUNT(*) as count,
@@ -336,32 +370,35 @@ class MinimalAPIDiscovery:
                     WHERE status = 'added'
                     GROUP BY category
                     ORDER BY count DESC
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 category_stats = [dict(row) for row in cursor.fetchall()]
 
                 # Get total count
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT COUNT(*) as total_count
                     FROM api_suggestions
                     WHERE status = 'added'
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 total_count = cursor.fetchone()[0]
 
                 # Get recent discoveries
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT api_name, category, potential_value, discovered_at
                     FROM api_suggestions
                     WHERE status = 'added'
                     ORDER BY discovered_at DESC
                     LIMIT 10
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 recent_discoveries = [dict(row) for row in cursor.fetchall()]
 
@@ -369,7 +406,8 @@ class MinimalAPIDiscovery:
                     "total_apis": total_count,
                     "by_category": category_stats,
                     "recent_discoveries": recent_discoveries,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             print(f"❌ Error generating report: {e}")
@@ -414,7 +452,8 @@ class MinimalAPIDiscovery:
             "categories": list(categorized.keys()),
             "report": report,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Print summary
         print("\\n" + "=" * 40)
@@ -439,7 +478,8 @@ def main():
     # Save results to file
     results_file = (
         f"minimal_api_discovery_results_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     with open(results_file, "w") as f:
         json.dump(results, f, indent=2, default=str)
 

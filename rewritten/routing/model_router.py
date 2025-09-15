@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Intelligent Model Router for RouteLL API
 Routes requests to optimal models based on cost, performance, and task requirements
-"""
+""""""
 
 import json
 import logging
@@ -44,7 +44,7 @@ class ModelTier(Enum):
 
 @dataclass
 class ModelCapability:
-    """Represents a model's capabilities and characteristics"""
+    """Represents a model's capabilities and characteristics"""'
 
     name: str
     tier: ModelTier
@@ -58,15 +58,16 @@ class ModelCapability:
 
 
 class ModelRouter:
-    """
+    """"""
     Intelligent router that selects optimal models based on multiple factors
-    """
+    """"""
 
     def __init__(self, config_path: str = None, rate_limiter: RateLimiter = None):
         self.config_path = (
             config_path
             or "/Users/thomasbrianreynolds/online production/config/routellm_config.json"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.config = self._load_config()
         self.rate_limiter = rate_limiter or RateLimiter()
         self.optimizer = CreditOptimizer(self.rate_limiter)
@@ -104,12 +105,15 @@ class ModelRouter:
                 "learning_enabled": True,
                 "fallback_model": "route - llm",
                 "max_routing_time": 0.1,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "credit_system": {
                 "unlimited_models": ["llama - 3.1 - 8b", "gemma - 2 - 9b"],
                 "high_cost_models": ["gpt - 4", "claude - 3 - opus", "gemini - pro"],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _initialize_models(self) -> Dict[str, ModelCapability]:
         """Initialize the model registry with capabilities"""
@@ -126,7 +130,8 @@ class ModelRouter:
                 strengths=[TaskType.GENERAL_CHAT, TaskType.QUESTION_ANSWERING],
                 avg_response_time=2.0,
                 quality_score=0.7,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Premium models
         premium_models = self.config.get("credit_system", {}).get("high_cost_models", [])
@@ -140,10 +145,12 @@ class ModelRouter:
                     TaskType.CODE_GENERATION,
                     TaskType.ANALYSIS,
                     TaskType.CREATIVE_WRITING,
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 avg_response_time=3.0,
                 quality_score=0.95,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Default route - llm model
         models["route - llm"] = ModelCapability(
@@ -155,10 +162,12 @@ class ModelRouter:
                 TaskType.GENERAL_CHAT,
                 TaskType.SUMMARIZATION,
                 TaskType.QUESTION_ANSWERING,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             avg_response_time=1.5,
             quality_score=0.85,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Specialized models (if available)
         specialized_models = {
@@ -170,7 +179,8 @@ class ModelRouter:
                 strengths=[TaskType.CODE_GENERATION],
                 avg_response_time=2.5,
                 quality_score=0.9,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "math - llm": ModelCapability(
                 name="math - llm",
                 tier=ModelTier.SPECIALIZED,
@@ -179,8 +189,10 @@ class ModelRouter:
                 strengths=[TaskType.MATH_REASONING],
                 avg_response_time=3.0,
                 quality_score=0.92,
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         models.update(specialized_models)
         return models
@@ -203,7 +215,8 @@ class ModelRouter:
                 "html",
                 "css",
                 "react",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             TaskType.MATH_REASONING: [
                 "calculate",
                 "solve",
@@ -216,7 +229,8 @@ class ModelRouter:
                 "integral",
                 "derivative",
                 "theorem",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             TaskType.CREATIVE_WRITING: [
                 "story",
                 "poem",
@@ -229,7 +243,8 @@ class ModelRouter:
                 "imagine",
                 "fiction",
                 "novel",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             TaskType.ANALYSIS: [
                 "analyze",
                 "compare",
@@ -241,7 +256,8 @@ class ModelRouter:
                 "advantages",
                 "disadvantages",
                 "critique",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             TaskType.SUMMARIZATION: [
                 "summarize",
                 "summary",
@@ -252,7 +268,8 @@ class ModelRouter:
                 "tldr",
                 "condensed",
                 "abstract",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             TaskType.TRANSLATION: [
                 "translate",
                 "translation",
@@ -263,7 +280,8 @@ class ModelRouter:
                 "chinese",
                 "japanese",
                 "convert to",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             TaskType.QUESTION_ANSWERING: [
                 "what is",
                 "how to",
@@ -275,8 +293,10 @@ class ModelRouter:
                 "definition",
                 "meaning",
                 "help me understand",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
     def classify_task(self, messages: List[Dict]) -> TaskType:
         """Classify the task type based on message content"""
@@ -321,13 +341,16 @@ class ModelRouter:
             any(
                 word in content.lower()
                 for word in ["complex", "detailed", "comprehensive", "thorough"]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             content.count("?") > 2,  # Multiple questions
             any(
                 word in content.lower()
                 for word in ["analyze", "compare", "evaluate", "explain in detail"]
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
         base_complexity = 0.3
         complexity_boost = sum(complexity_indicators) * 0.15
@@ -336,8 +359,9 @@ class ModelRouter:
 
     def route_request(
         self, messages: List[Dict], preferences: Dict = None, constraints: Dict = None
-    ) -> Dict:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
+        """"""
         Route a request to the optimal model
 
         Args:
@@ -347,7 +371,7 @@ class ModelRouter:
 
         Returns:
             Dict with routing decision and optimized parameters
-        """
+        """"""
         start_time = time.time()
 
         # Default preferences
@@ -367,15 +391,18 @@ class ModelRouter:
             # Fallback to default model
             fallback_model = self.config.get("model_routing", {}).get(
                 "fallback_model", "route - llm"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return self._create_routing_result(
                 fallback_model, messages, task_type, "No suitable candidates"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Score and rank candidates
         scored_candidates = self._score_candidates(
             candidates, task_type, complexity, preferences, constraints
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Select the best model
         best_model = scored_candidates[0][0]  # (model_name, score)
@@ -394,8 +421,10 @@ class ModelRouter:
                 "candidates_count": len(candidates),
                 "routing_time": routing_time,
                 "preferences": preferences,
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         self.logger.info(f"✅ Selected model: {best_model} (routing time: {routing_time:.3f}s)")
         return result
@@ -451,7 +480,8 @@ class ModelRouter:
         task_type: TaskType,
         complexity: float,
         preferences: Dict,
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate a composite score for a model"""
         # Base scores (0 - 1 scale)
         quality_score = model.quality_score
@@ -472,7 +502,8 @@ class ModelRouter:
         if complexity > 0.7 and model.tier in [
             ModelTier.PREMIUM,
             ModelTier.SPECIALIZED,
-        ]:
+# BRACKET_SURGEON: disabled
+#         ]:
             quality_score *= 1.2  # Boost premium models for complex tasks
         elif complexity < 0.4 and model.tier == ModelTier.FREE:
             cost_score *= 1.3  # Boost free models for simple tasks
@@ -487,7 +518,8 @@ class ModelRouter:
             + cost_score * preferences.get("cost", 0.4)
             + task_score * 0.2
             + historical_boost * 0.1
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return min(1.0, composite_score)  # Cap at 1.0
 
@@ -504,7 +536,8 @@ class ModelRouter:
 
     def _create_routing_result(
         self, model_name: str, messages: List[Dict], task_type: TaskType, reason: str
-    ) -> Dict:
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
         """Create the final routing result with optimized parameters"""
         model = self.models.get(model_name)
         if not model:
@@ -517,7 +550,7 @@ class ModelRouter:
             preferences["cost"] = 0.1  # Don't worry about cost for free models
             preferences["quality"] = 0.5
 
-        optimized_params = self.optimizer.optimize_request(messages, preferences)
+        optimized_params = self.optimizer.optimize_request(messages, preferences):
 
         # Override with selected model
         optimized_params["model"] = model_name
@@ -531,7 +564,8 @@ class ModelRouter:
                 "model_tier": model.tier.value if model else "unknown",
                 "estimated_cost": model.cost_per_token if model else 0,
                 "timestamp": datetime.now().isoformat(),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "optimized_params": optimized_params,
             "model_info": {
                 "name": model_name,
@@ -539,8 +573,10 @@ class ModelRouter:
                 "cost_per_token": model.cost_per_token if model else 0,
                 "max_tokens": model.max_tokens if model else 4096,
                 "strengths": [s.value for s in model.strengths] if model else [],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         return result
 
@@ -559,7 +595,8 @@ class ModelRouter:
         success: bool,
         response_time: float,
         quality_rating: float = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Record the outcome of a routed request for learning"""
         cache_key = f"{model_name}_{task_type.value}"
 
@@ -569,7 +606,8 @@ class ModelRouter:
                 "total_count": 0,
                 "avg_response_time": 0,
                 "avg_quality": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         perf = self.performance_cache[cache_key]
         perf["total_count"] += 1
@@ -589,7 +627,8 @@ class ModelRouter:
         self.logger.info(
             f"📊 Updated performance for {model_name} on {task_type.value}: "
             f"success_rate={perf['success_rate']:.2f}, avg_time={perf['avg_response_time']:.2f}s"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def get_routing_analytics(self) -> Dict:
         """Get comprehensive routing analytics"""
@@ -623,11 +662,13 @@ class ModelRouter:
             "performance_cache": dict(self.performance_cache),
             "available_models": list(self.models.keys()),
             "model_tiers": {name: model.tier.value for name, model in self.models.items()},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def suggest_model_for_task(
         self, task_description: str, budget_constraint: float = None
-    ) -> Dict:
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
         """Suggest the best model for a specific task description"""
         # Create a mock message to classify the task
         messages = [{"role": "user", "content": task_description}]
@@ -646,7 +687,8 @@ class ModelRouter:
             "estimated_cost_per_token": result["model_info"]["cost_per_token"],
             "model_tier": result["model_info"]["tier"],
             "model_strengths": result["model_info"]["strengths"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Usage example and testing
@@ -665,7 +707,8 @@ if __name__ == "__main__":
         "Write a creative story about a robot",
         "Summarize the key points of machine learning",
         "Translate 'Hello world' to French",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     print("\\n🧪 Testing routing decisions:")
     for i, task in enumerate(test_cases, 1):
@@ -685,7 +728,8 @@ if __name__ == "__main__":
             success=True,
             response_time=2.0,
             quality_rating=0.85,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     # Show analytics
     analytics = router.get_routing_analytics()
@@ -698,5 +742,6 @@ if __name__ == "__main__":
     # Test model suggestion
     suggestion = router.suggest_model_for_task(
         "Help me debug this complex algorithm", budget_constraint=0.005
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(f"\\n💡 Model suggestion: {suggestion}")

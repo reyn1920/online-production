@@ -11,10 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
+""""""
 Rules to verbalize numbers into Chinese characters.
 https://zh.wikipedia.org / wiki / 中文数字#現代中文
-"""
+""""""
 
 import re
 from collections import OrderedDict
@@ -28,8 +28,10 @@ UNITS = OrderedDict(
         3: "千",
         4: "万",
         8: "亿",
-    }
-)
+# BRACKET_SURGEON: disabled
+#     }
+# BRACKET_SURGEON: disabled
+# )
 
 COM_QUANTIFIERS = "(封|艘|把|目|套|段|人|所|朵|匹|张|座|回|场|尾|条|个|首|阙|阵|网|炮|顶|丘|棵|只|支|袭|辆|挑|担|颗|壳|窠|曲|墙|群|腔|砣|座|客|贯|扎|捆|刀|令|打|手|罗|坡|山|岭|江|溪|钟|队|单|双|对|出|口|头|脚|板|跳|枝|件|贴|针|线|管|名|位|身|堂|课|本|页|家|户|层|丝|毫|厘|分|钱|两|斤|担|铢|石|钧|锱|忽|(千|毫|微)克|毫|厘|(公)分|分|寸|尺|丈|里|寻|常|铺|程|(千|分|厘|毫|微)米|米|撮|勺|合|升|斗|石|盘|碗|碟|叠|桶|笼|盆|盒|杯|钟|斛|锅|簋|篮|盘|桶|罐|瓶|壶|卮|盏|箩|箱|煲|啖|袋|钵|年|月|日|季|刻|时|周|天|秒|分|小时|旬|纪|岁|世|更|夜|春|夏|秋|冬|代|伏|辈|丸|泡|粒|颗|幢|堆|条|根|支|道|面|片|张|颗|块|元|(亿|千万|百万|万|千|百)|(亿|千万|百万|万|千|百|美|)元|(亿|千万|百万|万|千|百|十|)吨|(亿|千万|百万|万|千|百|)块|角|毛|分)"
 
@@ -38,12 +40,12 @@ RE_FRAC = re.compile(r"(-?)(\\d+)/(\\d+)")
 
 
 def replace_frac(match) -> str:
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
     sign = match.group(1)
     nominator = match.group(2)
     denominator = match.group(3)
@@ -59,12 +61,12 @@ RE_PERCENTAGE = re.compile(r"(-?)(\\d+(\\.\\d+)?)%")
 
 
 def replace_percentage(match) -> str:
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
     sign = match.group(1)
     percent = match.group(2)
     sign: str = "负" if sign else ""
@@ -79,12 +81,12 @@ RE_INTEGER = re.compile(r"(-)" r"(\\d+)")
 
 
 def replace_negative_num(match) -> str:
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
     sign = match.group(1)
     number = match.group(2)
     sign: str = "负" if sign else ""
@@ -99,12 +101,12 @@ RE_DEFAULT_NUM = re.compile(r"\\d{3}\\d*")
 
 
 def replace_default_num(match):
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
     number = match.group(0)
     return verbalize_digit(number, alt_one=True)
 
@@ -118,12 +120,12 @@ RE_NUMBER = re.compile(r"(-?)((\\d+)(\\.\\d+)?)" r"|(\\.(\\d+))")
 
 
 def replace_positive_quantifier(match) -> str:
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
     number = match.group(1)
     match_2 = match.group(2)
     if match_2 == "+":
@@ -136,12 +138,12 @@ def replace_positive_quantifier(match) -> str:
 
 
 def replace_number(match) -> str:
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
     sign = match.group(1)
     number = match.group(2)
     pure_decimal = match.group(5)
@@ -159,16 +161,17 @@ def replace_number(match) -> str:
 
 RE_RANGE = re.compile(
     r"((-?)((\\d+)(\\.\\d+)?)|(\\.(\\d+)))[-~]((-?)((\\d+)(\\.\\d+)?)|(\\.(\\d+)))"
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 def replace_range(match) -> str:
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
     first, second = match.group(1), match.group(8)
     first = RE_NUMBER.sub(replace_number, first)
     second = RE_NUMBER.sub(replace_number, second)
@@ -207,7 +210,8 @@ def verbalize_cardinal(value_string: str) -> str:
         len(result_symbols) >= 2
         and result_symbols[0] == DIGITS["1"]
         and result_symbols[1] == UNITS[1]
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         result_symbols = result_symbols[1:]
     return "".join(result_symbols)
 

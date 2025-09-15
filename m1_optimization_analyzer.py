@@ -1,51 +1,51 @@
 #!/usr/bin/env python3
-"""
+""""""
 MacBook Air M1 (16GB RAM) Optimization Analyzer
 Comprehensive system analysis and optimization recommendations
-"""
+""""""
 
 import json
-import os
 import platform
 import psutil
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 
 class M1OptimizationAnalyzer:
     """Comprehensive M1 MacBook Air optimization analyzer"""
-    
+
     def __init__(self):
         self.system_info = self._get_system_info()
         self.is_m1 = self._detect_m1_system()
         self.recommendations = []
-        
+
     def _detect_m1_system(self) -> bool:
         """Detect if running on M1 MacBook Air"""
         try:
             if platform.system() != "Darwin":
                 return False
-                
+
             result = subprocess.run(
                 ["sysctl", "-n", "machdep.cpu.brand_string"],
                 capture_output=True,
                 text=True,
                 timeout=5
-            )
-            
+# BRACKET_SURGEON: disabled
+#             )
+
             cpu_brand = result.stdout.strip()
             return "Apple" in cpu_brand
-            
+
         except Exception:
             return False
-    
+
     def _get_system_info(self) -> Dict[str, Any]:
         """Get comprehensive system information"""
         memory = psutil.virtual_memory()
         disk = psutil.disk_usage('/')
-        
+
         return {
             "platform": platform.platform(),
             "processor": platform.processor(),
@@ -59,13 +59,14 @@ class M1OptimizationAnalyzer:
             "disk_total_gb": round(disk.total / (1024**3), 2),
             "disk_free_gb": round(disk.free / (1024**3), 2),
             "disk_percent_used": round((disk.used / disk.total) * 100, 1)
-        }
-    
+# BRACKET_SURGEON: disabled
+#         }
+
     def analyze_memory_usage(self) -> Dict[str, Any]:
         """Analyze current memory usage and provide recommendations"""
         memory = psutil.virtual_memory()
         swap = psutil.swap_memory()
-        
+
         analysis = {
             "current_usage": {
                 "total_gb": round(memory.total / (1024**3), 2),
@@ -73,11 +74,13 @@ class M1OptimizationAnalyzer:
                 "available_gb": round(memory.available / (1024**3), 2),
                 "percent_used": memory.percent,
                 "swap_used_gb": round(swap.used / (1024**3), 2) if swap.used else 0
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "status": "optimal" if memory.percent < 70 else "warning" if memory.percent < 85 else "critical",
             "recommendations": []
-        }
-        
+# BRACKET_SURGEON: disabled
+#         }
+
         # Memory optimization recommendations
         if memory.percent > 85:
             analysis["recommendations"].extend([
@@ -85,80 +88,92 @@ class M1OptimizationAnalyzer:
                 "Close unnecessary applications and browser tabs",
                 "Consider restarting memory-intensive applications",
                 "Enable memory compression: sudo sysctl vm.compressor_mode=4"
-            ])
+# BRACKET_SURGEON: disabled
+#             ])
         elif memory.percent > 70:
             analysis["recommendations"].extend([
                 "🟡 WARNING: Memory usage is elevated (>70%)",
                 "Monitor memory-intensive processes",
                 "Consider closing unused applications"
-            ])
+# BRACKET_SURGEON: disabled
+#             ])
         else:
             analysis["recommendations"].append(
                 "✅ Memory usage is optimal (<70%)"
-            )
-            
+# BRACKET_SURGEON: disabled
+#             )
+
         if swap.used > 1024**3:  # > 1GB swap
             analysis["recommendations"].append(
                 "⚠️ High swap usage detected - consider adding more RAM or closing applications"
-            )
-            
+# BRACKET_SURGEON: disabled
+#             )
+
         return analysis
-    
+
     def analyze_cpu_performance(self) -> Dict[str, Any]:
         """Analyze CPU performance and core utilization"""
         cpu_percent = psutil.cpu_percent(interval=1)
         cpu_freq = psutil.cpu_freq()
-        
+
         analysis = {
             "current_usage": {
                 "cpu_percent": cpu_percent,
                 "cpu_count_physical": psutil.cpu_count(logical=False),
                 "cpu_count_logical": psutil.cpu_count(logical=True),
                 "frequency_mhz": cpu_freq.current if cpu_freq else "Unknown"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "m1_specific": {},
             "recommendations": []
-        }
-        
+# BRACKET_SURGEON: disabled
+#         }
+
         if self.is_m1:
             analysis["m1_specific"] = {
                 "performance_cores": 4,
                 "efficiency_cores": 4,
                 "total_cores": 8,
                 "architecture": "ARM64"
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             analysis["recommendations"].extend([
                 "✅ M1 chip detected - ARM64 optimizations available",
                 "Use ARM64 native packages when possible",
                 "Configure applications to use MPS (Metal Performance Shaders)"
-            ])
-        
+# BRACKET_SURGEON: disabled
+#             ])
+
         if cpu_percent > 80:
             analysis["recommendations"].extend([
                 "🔴 High CPU usage detected",
                 "Check for runaway processes with Activity Monitor",
                 "Consider task scheduling optimization"
-            ])
+# BRACKET_SURGEON: disabled
+#             ])
         elif cpu_percent > 60:
             analysis["recommendations"].append(
                 "🟡 Moderate CPU usage - monitor for sustained high usage"
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             analysis["recommendations"].append(
                 "✅ CPU usage is normal"
-            )
-            
+# BRACKET_SURGEON: disabled
+#             )
+
         return analysis
-    
+
     def analyze_thermal_state(self) -> Dict[str, Any]:
         """Analyze thermal state and power management"""
         analysis = {
             "thermal_state": "unknown",
             "power_adapter": "unknown",
             "recommendations": []
-        }
-        
+# BRACKET_SURGEON: disabled
+#         }
+
         try:
             # Get thermal state
             result = subprocess.run(
@@ -166,8 +181,9 @@ class M1OptimizationAnalyzer:
                 capture_output=True,
                 text=True,
                 timeout=5
-            )
-            
+# BRACKET_SURGEON: disabled
+#             )
+
             if "No thermal warning level" in result.stdout:
                 analysis["thermal_state"] = "normal"
                 analysis["recommendations"].append("✅ Thermal state is normal")
@@ -178,13 +194,15 @@ class M1OptimizationAnalyzer:
                     "Ensure proper ventilation",
                     "Close CPU-intensive applications",
                     "Consider using a laptop stand for better airflow"
-                ])
-                
+# BRACKET_SURGEON: disabled
+#                 ])
+
         except Exception:
             analysis["recommendations"].append(
                 "⚠️ Could not determine thermal state"
-            )
-            
+# BRACKET_SURGEON: disabled
+#             )
+
         try:
             # Get power adapter info
             result = subprocess.run(
@@ -192,26 +210,29 @@ class M1OptimizationAnalyzer:
                 capture_output=True,
                 text=True,
                 timeout=5
-            )
-            
+# BRACKET_SURGEON: disabled
+#             )
+
             if "No adapter attached" in result.stdout:
                 analysis["power_adapter"] = "battery"
                 analysis["recommendations"].extend([
                     "🔋 Running on battery power",
                     "Enable Low Power Mode for extended battery life",
                     "Reduce screen brightness and close unnecessary apps"
-                ])
+# BRACKET_SURGEON: disabled
+#                 ])
             else:
                 analysis["power_adapter"] = "connected"
                 analysis["recommendations"].append(
                     "🔌 Power adapter connected - optimal performance available"
-                )
-                
+# BRACKET_SURGEON: disabled
+#                 )
+
         except Exception:
             pass
-            
+
         return analysis
-    
+
     def analyze_development_environment(self) -> Dict[str, Any]:
         """Analyze development environment optimization"""
         analysis = {
@@ -219,25 +240,29 @@ class M1OptimizationAnalyzer:
             "node_environment": {},
             "docker_status": {},
             "recommendations": []
-        }
-        
+# BRACKET_SURGEON: disabled
+#         }
+
         # Python analysis
         analysis["python_environment"] = {
             "version": platform.python_version(),
             "executable": sys.executable,
             "architecture": platform.architecture()[0]
-        }
-        
+# BRACKET_SURGEON: disabled
+#         }
+
         # Check for ARM64 Python
         if platform.machine() == "arm64":
             analysis["recommendations"].append(
                 "✅ Running ARM64 native Python - optimal for M1"
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             analysis["recommendations"].append(
                 "⚠️ Consider using ARM64 native Python for better M1 performance"
-            )
-            
+# BRACKET_SURGEON: disabled
+#             )
+
         # Check Node.js
         try:
             result = subprocess.run(
@@ -245,17 +270,20 @@ class M1OptimizationAnalyzer:
                 capture_output=True,
                 text=True,
                 timeout=5
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if result.returncode == 0:
                 analysis["node_environment"]["version"] = result.stdout.strip()
                 analysis["recommendations"].append(
                     "✅ Node.js detected - ensure ARM64 version for M1 optimization"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         except Exception:
             analysis["recommendations"].append(
                 "💡 Consider installing Node.js ARM64 for web development"
-            )
-            
+# BRACKET_SURGEON: disabled
+#             )
+
         # Check Docker
         try:
             result = subprocess.run(
@@ -263,21 +291,24 @@ class M1OptimizationAnalyzer:
                 capture_output=True,
                 text=True,
                 timeout=5
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if result.returncode == 0:
                 analysis["docker_status"]["version"] = result.stdout.strip()
                 analysis["recommendations"].extend([
                     "✅ Docker detected",
                     "Use --platform=linux/arm64 for M1-optimized containers",
-                    "Enable Docker Desktop's 'Use Rosetta for x86/amd64 emulation' if needed"
-                ])
+                    "Enable Docker Desktop's 'Use Rosetta for x86/amd64 emulation' if needed"'
+# BRACKET_SURGEON: disabled
+#                 ])
         except Exception:
             analysis["recommendations"].append(
                 "💡 Consider Docker Desktop for containerized development"
-            )
-            
+# BRACKET_SURGEON: disabled
+#             )
+
         return analysis
-    
+
     def get_optimization_recommendations(self) -> List[str]:
         """Get comprehensive optimization recommendations"""
         recommendations = [
@@ -316,14 +347,15 @@ class M1OptimizationAnalyzer:
             "• Reduce screen brightness",
             "• Close unnecessary background applications",
             "• Use Terminal instead of resource-heavy terminals"
-        ]
-        
+# BRACKET_SURGEON: disabled
+#         ]
+
         return recommendations
-    
+
     def run_comprehensive_analysis(self) -> Dict[str, Any]:
         """Run comprehensive system analysis"""
         print("🔍 Running MacBook Air M1 Optimization Analysis...\n")
-        
+
         analysis_results = {
             "timestamp": datetime.now().isoformat(),
             "system_info": self.system_info,
@@ -333,10 +365,11 @@ class M1OptimizationAnalyzer:
             "thermal_analysis": self.analyze_thermal_state(),
             "development_analysis": self.analyze_development_environment(),
             "optimization_recommendations": self.get_optimization_recommendations()
-        }
-        
+# BRACKET_SURGEON: disabled
+#         }
+
         return analysis_results
-    
+
     def print_analysis_report(self, analysis: Dict[str, Any]):
         """Print formatted analysis report"""
         print("="*80)
@@ -345,7 +378,7 @@ class M1OptimizationAnalyzer:
         print(f"📅 Analysis Date: {analysis['timestamp']}")
         print(f"🖥️  M1 System Detected: {'✅ Yes' if analysis['is_m1_system'] else '❌ No'}")
         print()
-        
+
         # System Info
         print("📋 SYSTEM INFORMATION:")
         sys_info = analysis['system_info']
@@ -356,7 +389,7 @@ class M1OptimizationAnalyzer:
         print(f"   • Available Memory: {sys_info['available_memory_gb']} GB")
         print(f"   • Disk Space: {sys_info['disk_free_gb']} GB free of {sys_info['disk_total_gb']} GB")
         print()
-        
+
         # Memory Analysis
         print("💾 MEMORY ANALYSIS:")
         mem_analysis = analysis['memory_analysis']
@@ -368,7 +401,7 @@ class M1OptimizationAnalyzer:
         for rec in mem_analysis['recommendations']:
             print(f"   {rec}")
         print()
-        
+
         # CPU Analysis
         print("⚡ CPU ANALYSIS:")
         cpu_analysis = analysis['cpu_analysis']
@@ -379,7 +412,7 @@ class M1OptimizationAnalyzer:
         for rec in cpu_analysis['recommendations']:
             print(f"   {rec}")
         print()
-        
+
         # Thermal Analysis
         print("🌡️  THERMAL & POWER ANALYSIS:")
         thermal_analysis = analysis['thermal_analysis']
@@ -388,7 +421,7 @@ class M1OptimizationAnalyzer:
         for rec in thermal_analysis['recommendations']:
             print(f"   {rec}")
         print()
-        
+
         # Development Environment
         print("🛠️  DEVELOPMENT ENVIRONMENT:")
         dev_analysis = analysis['development_analysis']
@@ -400,13 +433,13 @@ class M1OptimizationAnalyzer:
         for rec in dev_analysis['recommendations']:
             print(f"   {rec}")
         print()
-        
+
         # Optimization Recommendations
         print("🚀 OPTIMIZATION RECOMMENDATIONS:")
         for rec in analysis['optimization_recommendations']:
             print(f"   {rec}")
         print()
-        
+
         print("="*80)
         print("💡 For more detailed optimization, run the M1 Performance Optimizer:")
         print("   python backend/m1_optimizer.py")
@@ -415,27 +448,27 @@ class M1OptimizationAnalyzer:
 def main():
     """Main function to run the analysis"""
     analyzer = M1OptimizationAnalyzer()
-    
+
     try:
         # Run comprehensive analysis
         analysis = analyzer.run_comprehensive_analysis()
-        
+
         # Print the report
         analyzer.print_analysis_report(analysis)
-        
+
         # Save results to file
         output_file = Path("m1_optimization_analysis.json")
         with open(output_file, 'w') as f:
             json.dump(analysis, f, indent=2, default=str)
-        
+
         print(f"📄 Detailed analysis saved to: {output_file}")
-        
+
     except KeyboardInterrupt:
         print("\n⚠️ Analysis interrupted by user")
     except Exception as e:
         print(f"❌ Error during analysis: {e}")
         return 1
-    
+
     return 0
 
 if __name__ == "__main__":

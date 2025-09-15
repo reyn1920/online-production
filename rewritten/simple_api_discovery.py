@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Simple API Discovery Script
 
 Standalone script to discover and integrate free APIs without complex dependencies.
-"""
+""""""
 
 import json
 import sqlite3
@@ -37,7 +37,8 @@ class SimpleAPIDiscovery:
                     for api in all_apis
                     if api.get("Auth", "").lower() in ["", "no", "none"]
                     or "free" in api.get("Description", "").lower()
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 print(f"✅ Found {len(free_apis)} free APIs out of {len(all_apis)} total")
                 return free_apis[:50]  # Limit to first 50 for processing
@@ -69,11 +70,11 @@ class SimpleAPIDiscovery:
                 for api in apis:
                     # Insert API data
                     conn.execute(
-                        """
-                        INSERT OR REPLACE INTO discovered_apis 
+                        """"""
+                        INSERT OR REPLACE INTO discovered_apis
                         (name, description, url, category, auth_required, https_support, cors_support)
                         VALUES (?, ?, ?, ?, ?, ?, ?)
-                        """,
+                        ""","""
                         (
                             api.get("API", "Unknown"),
                             api.get("Description", ""),
@@ -82,8 +83,10 @@ class SimpleAPIDiscovery:
                             api.get("Auth", "") != "",
                             api.get("HTTPS", False),
                             api.get("Cors", "unknown")
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
                     saved_count += 1
 
                 conn.commit()
@@ -101,14 +104,15 @@ class SimpleAPIDiscovery:
                 "last_discovery": datetime.now().isoformat(),
                 "apis_discovered": api_count,
                 "discovery_status": "completed"
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             with open("config/api_discovery.json", "w") as f:
                 json.dump(config, f, indent=2)
-            
+
             print(f"✅ Updated system config with {api_count} APIs")
             return True
-            
+
         except Exception as e:
             print(f"❌ Error updating config: {e}")
             return False
@@ -116,42 +120,45 @@ class SimpleAPIDiscovery:
     def generate_report(self) -> Dict[str, Any]:
         """Generate discovery report"""
         print("📊 Generating discovery report...")
-        
+
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
 
                 # Get category statistics
                 cursor = conn.execute(
-                    """
-                    SELECT category, COUNT(*) as count 
-                    FROM discovered_apis 
-                    GROUP BY category 
+                    """"""
+                    SELECT category, COUNT(*) as count
+                    FROM discovered_apis
+                    GROUP BY category
                     ORDER BY count DESC
-                    """
-                )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 category_stats = [dict(row) for row in cursor.fetchall()]
 
                 # Get total count
                 cursor = conn.execute(
-                    """
-                    SELECT COUNT(*) as total 
+                    """"""
+                    SELECT COUNT(*) as total
                     FROM discovered_apis
-                    """
-                )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 total_count = cursor.fetchone()[0]
 
                 # Get recent discoveries
                 cursor = conn.execute(
-                    """
-                    SELECT name, category, description 
-                    FROM discovered_apis 
-                    ORDER BY rowid DESC 
+                    """"""
+                    SELECT name, category, description
+                    FROM discovered_apis
+                    ORDER BY rowid DESC
                     LIMIT 10
-                    """
-                )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 recent_discoveries = [dict(row) for row in cursor.fetchall()]
 
@@ -160,7 +167,8 @@ class SimpleAPIDiscovery:
                     "categories": category_stats,
                     "recent_discoveries": recent_discoveries,
                     "generated_at": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             print(f"❌ Error generating report: {e}")
@@ -205,7 +213,8 @@ class SimpleAPIDiscovery:
             "categories": list(categorized.keys()),
             "duration": duration,
             "report": report,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def main():

@@ -1,52 +1,34 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Monetization Bundle
 
 Comprehensive monetization system for content creators and digital entrepreneurs.
 Provides automated tools for creating and selling digital products, managing
 newsletters, merchandise, and blog content with integrated analytics.
-"""
+""""""
 
 import asyncio
-import base64
-import json
 import logging
 import os
 import sys
-from dataclasses import dataclass
-from datetime import datetime, timedelta
-from io import BytesIO
-from pathlib import Path
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-import cv2
 import mailchimp3
 import markdown
-import numpy as np
-import pandas as pd
 import requests
-import stripe
-from bs4 import BeautifulSoup
 from docx import Document
-from docx.shared import Inches
 from dotenv import load_dotenv
-from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, HTTPException
 from jinja2 import Template
-from loguru import logger
 from PIL import Image, ImageDraw, ImageFont
 from pydantic import BaseModel
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4, letter
+from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import inch
-from reportlab.platypus import Image as RLImage
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from sqlalchemy import (
-    Boolean,
     Column,
     DateTime,
     Float,
@@ -54,9 +36,10 @@ from sqlalchemy import (
     String,
     Text,
     create_engine,
-)
+# BRACKET_SURGEON: disabled
+# )
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
@@ -77,7 +60,8 @@ class MonetizationConfig:
         self.stripe_api_key = os.getenv("STRIPE_API_KEY")
         self.database_url = os.getenv(
             "MONETIZATION_DB_URL", "sqlite:///monetization.db"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 class Product(Base):
@@ -183,7 +167,8 @@ class EbookGenerator:
 
     async def generate_ebook(
         self, title: str, content: str, author: str, format: str = "pdf"
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate ebook in specified format"""
         try:
             if format.lower() == "pdf":
@@ -214,14 +199,16 @@ class EbookGenerator:
             fontSize=24,
             spaceAfter=30,
             alignment=1,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         story.append(Paragraph(title, title_style))
         story.append(Spacer(1, 12))
 
         # Author
         author_style = ParagraphStyle(
             "Author", parent=styles["Normal"], fontSize=14, alignment=1
-        )
+# BRACKET_SURGEON: disabled
+#         )
         story.append(Paragraph(f"By {author}", author_style))
         story.append(Spacer(1, 24))
 
@@ -241,7 +228,7 @@ class EbookGenerator:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
         # Simple EPUB generation (would need proper EPUB library in production)
-        html_content = f"""
+        html_content = f""""""
         <!DOCTYPE html>
         <html>
         <head>
@@ -254,7 +241,7 @@ class EbookGenerator:
             <div>{markdown.markdown(content)}</div>
         </body>
         </html>
-        """
+        """"""
 
         with open(output_path.replace(".epub", ".html"), "w", encoding="utf-8") as f:
             f.write(html_content)
@@ -311,14 +298,16 @@ class GumroadPublisher:
                     "price": price,
                     "description": description,
                     "access_token": self.access_token,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 response = requests.post(
                     "https://api.gumroad.com/v2/products",
                     data=data,
                     files=files,
                     timeout=30,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if response.status_code == 200:
                     result = response.json()
@@ -326,12 +315,14 @@ class GumroadPublisher:
                         "success": True,
                         "product_id": result["product"]["id"],
                         "url": result["product"]["short_url"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     raise HTTPException(
                         status_code=response.status_code,
                         detail=f"Gumroad API error: {response.text}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
         except Exception as e:
             logging.getLogger(__name__).error(f"Gumroad publishing failed: {e}")
             raise
@@ -352,16 +343,19 @@ class NewsletterBot:
             if self.config.sendgrid_api_key:
                 self.sendgrid_client = SendGridAPIClient(
                     api_key=self.config.sendgrid_api_key
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             if self.config.mailchimp_api_key:
                 self.mailchimp_client = mailchimp3.MailChimp(
                     mc_api=self.config.mailchimp_api_key
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         except Exception as e:
             logging.getLogger(__name__).warning(
                 f"Email client initialization failed: {e}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def create_and_send_newsletter(
         self,
@@ -392,7 +386,8 @@ class NewsletterBot:
                         to_emails=subscriber,
                         subject=subject,
                         html_content=html_content,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     response = self.sendgrid_client.send(message)
                     if response.status_code == 202:
@@ -401,14 +396,16 @@ class NewsletterBot:
                 except Exception as e:
                     logging.getLogger(__name__).warning(
                         f"Failed to send to {subscriber}: {e}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             return {
                 "success": True,
                 "sent_count": sent_count,
                 "total_subscribers": len(subscribers),
                 "subject": subject,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logging.getLogger(__name__).error(f"Newsletter sending failed: {e}")
@@ -419,17 +416,18 @@ class NewsletterBot:
         affiliate_links = {
             "amazon": "https://amazon.com/?tag=traeai-20",
             "course": "https://course-platform.com/?ref=traeai",
-        }
-        
+# BRACKET_SURGEON: disabled
+#         }
+
         for keyword, link in affiliate_links.items():
             content = content.replace(keyword, f'<a href="{link}">{keyword}</a>')
-        
+
         return content
 
     async def _create_newsletter_html(self, subject: str, content: str) -> str:
         """Create HTML newsletter template"""
         template = Template(
-            """
+            """"""
         <!DOCTYPE html>
         <html>
         <head>
@@ -453,8 +451,9 @@ class NewsletterBot:
             </div>
         </body>
         </html>
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
         return template.render(subject=subject, content=content)
 
 
@@ -466,20 +465,23 @@ class MerchBot:
 
     async def create_merch_design(
         self, design_name: str, product_type: str, design_prompt: str
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Create merchandise design"""
         try:
             # For now, create a simple text-based design
             return await self._create_text_design(
                 design_name, product_type, design_prompt
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except Exception as e:
             logging.getLogger(__name__).error(f"Merch design creation failed: {e}")
             raise
 
     async def _create_text_design(
         self, design_name: str, product_type: str, design_prompt: str
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Create simple text-based design"""
         output_path = f"output/designs/{design_name.replace(' ', '_')}.png"
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -487,15 +489,15 @@ class MerchBot:
         # Create simple text design
         img = Image.new("RGB", (800, 600), color="white")
         draw = ImageDraw.Draw(img)
-        
+
         try:
             font = ImageFont.truetype("arial.ttf", 40)
         except OSError:
             font = ImageFont.load_default()
-        
+
         draw.text((400, 300), design_prompt, fill="black", font=font, anchor="mm")
         img.save(output_path)
-        
+
         return output_path
 
     async def publish_to_printful(
@@ -509,14 +511,16 @@ class MerchBot:
             headers = {
                 "Authorization": f"Bearer {self.config.printful_api_key}",
                 "Content-Type": "application/json",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Upload design file
             with open(design_path, "rb") as f:
                 files = {"file": f}
                 upload_response = requests.post(
                     "https://api.printful.com/files", files=files, headers=headers
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if upload_response.status_code == 200:
                     file_data = upload_response.json()
@@ -524,12 +528,14 @@ class MerchBot:
                         "success": True,
                         "file_id": file_data["result"]["id"],
                         "product_url": f"https://printful.com/product/{file_data['result']['id']}",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     raise HTTPException(
                         status_code=upload_response.status_code,
                         detail=f"Printful API error: {upload_response.text}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
         except Exception as e:
             logging.getLogger(__name__).error(f"Printful publishing failed: {e}")
             raise
@@ -554,13 +560,15 @@ class SEOPublisher:
             # Optimize content for SEO
             optimized_content = await self._optimize_content_for_seo(
                 content, seo_keywords
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Inject affiliate links if requested
             if include_affiliate_links:
                 optimized_content = await self._inject_affiliate_links(
                     optimized_content
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Publish to specified platform
             if platform.lower() == "wordpress":
@@ -589,11 +597,12 @@ class SEOPublisher:
         affiliate_links = {
             "tools": "https://tools-platform.com/?ref=traeai",
             "software": "https://software-store.com/?ref=traeai",
-        }
-        
+# BRACKET_SURGEON: disabled
+#         }
+
         for keyword, link in affiliate_links.items():
             content = content.replace(keyword, f'<a href="{link}">{keyword}</a>')
-        
+
         return content
 
     async def _publish_to_wordpress(self, title: str, content: str) -> Dict[str, Any]:
@@ -605,19 +614,22 @@ class SEOPublisher:
             headers = {
                 "Authorization": f"Bearer {self.config.wordpress_api_key}",
                 "Content-Type": "application/json",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             data = {
                 "title": title,
                 "content": content,
                 "status": "publish",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = requests.post(
                 f"{self.config.wordpress_url}/wp-json/wp/v2/posts",
                 json=data,
                 headers=headers,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 201:
                 result = response.json()
@@ -625,12 +637,14 @@ class SEOPublisher:
                     "success": True,
                     "post_id": result["id"],
                     "url": result["link"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 raise HTTPException(
                     status_code=response.status_code,
                     detail=f"WordPress API error: {response.text}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         except Exception as e:
             logging.getLogger(__name__).error(f"WordPress publishing failed: {e}")
             raise
@@ -644,12 +658,14 @@ class SEOPublisher:
             headers = {
                 "Authorization": f"Bearer {self.config.medium_token}",
                 "Content-Type": "application/json",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Get user ID first
             user_response = requests.get(
                 "https://api.medium.com/v1/me", headers=headers
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if user_response.status_code == 200:
                 user_data = user_response.json()
@@ -661,13 +677,15 @@ class SEOPublisher:
                     "contentFormat": "html",
                     "content": content,
                     "publishStatus": "public",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 post_response = requests.post(
                     f"https://api.medium.com/v1/users/{user_id}/posts",
                     json=post_data,
                     headers=headers,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if post_response.status_code == 201:
                     result = post_response.json()
@@ -675,17 +693,20 @@ class SEOPublisher:
                         "success": True,
                         "post_id": result["data"]["id"],
                         "url": result["data"]["url"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     raise HTTPException(
                         status_code=post_response.status_code,
                         detail=f"Medium API error: {post_response.text}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
             else:
                 raise HTTPException(
                     status_code=user_response.status_code,
                     detail=f"Medium user API error: {user_response.text}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         except Exception as e:
             logging.getLogger(__name__).error(f"Medium publishing failed: {e}")
             raise
@@ -697,20 +718,20 @@ class MonetizationBundle:
     def __init__(self, config: MonetizationConfig):
         self.config = config
         self.app = FastAPI(title="TRAE.AI Monetization Bundle")
-        
+
         # Initialize components
         self.ebook_generator = EbookGenerator(config)
         self.gumroad_publisher = GumroadPublisher(config)
         self.newsletter_bot = NewsletterBot(config)
         self.merch_bot = MerchBot(config)
         self.seo_publisher = SEOPublisher(config)
-        
+
         # Setup database
         self.engine = create_engine(config.database_url)
         Base.metadata.create_all(self.engine)
         SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
         self.db_session = SessionLocal()
-        
+
         self.setup_logging()
         self.setup_routes()
 
@@ -722,8 +743,10 @@ class MonetizationBundle:
             handlers=[
                 logging.FileHandler("monetization.log"),
                 logging.StreamHandler(sys.stdout),
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
     def setup_routes(self):
         """Setup FastAPI routes"""
@@ -737,7 +760,8 @@ class MonetizationBundle:
                 "gumroad_configured": bool(self.config.gumroad_access_token),
                 "email_configured": bool(self.config.sendgrid_api_key),
                 "printful_configured": bool(self.config.printful_api_key),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         @self.app.post("/ebook/create")
         async def create_ebook(request: EbookRequest):
@@ -746,7 +770,8 @@ class MonetizationBundle:
                 # Generate ebook
                 file_path = await self.ebook_generator.generate_ebook(
                     request.title, request.content, request.author, request.format
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Save to database
                 product = Product(
@@ -756,14 +781,16 @@ class MonetizationBundle:
                     price=request.price,
                     file_path=file_path,
                     status="generated",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.db_session.add(product)
                 self.db_session.commit()
 
                 # Publish to Gumroad
                 publish_result = await self.gumroad_publisher.publish_product(
                     request.title, request.price, file_path
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Update product with Gumroad info
                 product.platform = "gumroad"
@@ -778,7 +805,8 @@ class MonetizationBundle:
                     "gumroad_url": publish_result.get("url"),
                     "title": request.title,
                     "price": request.price,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             except Exception as e:
                 logging.getLogger(__name__).error(f"Ebook creation failed: {e}")
@@ -794,7 +822,8 @@ class MonetizationBundle:
                     request.content,
                     request.subscriber_list,
                     request.include_affiliate_links,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Save to database
                 newsletter = Newsletter(
@@ -802,7 +831,8 @@ class MonetizationBundle:
                     content=request.content,
                     subscriber_count=len(request.subscriber_list),
                     sent_at=datetime.utcnow(),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.db_session.add(newsletter)
                 self.db_session.commit()
 
@@ -811,7 +841,8 @@ class MonetizationBundle:
                     "newsletter_id": newsletter.id,
                     "sent_count": result.get("sent_count", 0),
                     "subject": request.subject,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             except Exception as e:
                 logging.getLogger(__name__).error(f"Newsletter sending failed: {e}")
@@ -824,7 +855,8 @@ class MonetizationBundle:
                 # Create design
                 design_path = await self.merch_bot.create_merch_design(
                     request.design_name, request.product_type, request.design_prompt
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Save to database
                 merch_design = MerchDesign(
@@ -833,14 +865,16 @@ class MonetizationBundle:
                     image_path=design_path,
                     platform=request.platform,
                     price=request.price,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.db_session.add(merch_design)
                 self.db_session.commit()
 
                 # Publish to platform
                 publish_result = await self.merch_bot.publish_to_printful(
                     design_path, request.product_type, request.price
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Update with platform info
                 merch_design.platform_id = publish_result.get("file_id")
@@ -853,7 +887,8 @@ class MonetizationBundle:
                     "product_url": publish_result.get("product_url"),
                     "design_name": request.design_name,
                     "price": request.price,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             except Exception as e:
                 logging.getLogger(__name__).error(f"Merch creation failed: {e}")
@@ -870,7 +905,8 @@ class MonetizationBundle:
                     request.platform,
                     request.seo_keywords,
                     request.include_affiliate_links,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Save to database
                 blog_post = BlogPost(
@@ -880,7 +916,8 @@ class MonetizationBundle:
                     platform_id=result.get("post_id"),
                     url=result.get("url"),
                     published_at=datetime.utcnow(),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.db_session.add(blog_post)
                 self.db_session.commit()
 
@@ -890,7 +927,8 @@ class MonetizationBundle:
                     "url": result.get("url"),
                     "title": request.title,
                     "platform": request.platform,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             except Exception as e:
                 logging.getLogger(__name__).error(f"Blog post publishing failed: {e}")
@@ -910,35 +948,44 @@ class MonetizationBundle:
                         "total": len(products),
                         "published": len(
                             [p for p in products if p.status == "published"]
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "total_revenue": sum(p.revenue for p in products),
                         "total_sales": sum(p.sales_count for p in products),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "newsletters": {
                         "total_sent": len(newsletters),
                         "total_subscribers": sum(
                             n.subscriber_count for n in newsletters
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "avg_open_rate": (
                             sum(n.open_rate for n in newsletters) / len(newsletters)
                             if newsletters
                             else 0
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "total_revenue": sum(n.revenue_generated for n in newsletters),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "merchandise": {
                         "total_designs": len(merch_designs),
                         "total_revenue": sum(m.revenue for m in merch_designs),
                         "total_sales": sum(m.sales_count for m in merch_designs),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "blog_posts": {
                         "total_posts": len(blog_posts),
                         "total_views": sum(b.views for b in blog_posts),
                         "affiliate_revenue": sum(
                             b.affiliate_revenue for b in blog_posts
-                        ),
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
             except Exception as e:
                 logging.getLogger(__name__).error(f"Revenue analytics failed: {e}")

@@ -11,7 +11,8 @@ from data.base_dataset import (
     apply_lm_affine,
     get_affine_mat,
     get_transform,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from PIL import Image
 from util.load_mats import load_lm3d
@@ -19,9 +20,9 @@ from util.preprocess import align_img, estimate_norm
 
 
 def default_flist_reader(flist):
-    """
-    flist format: impath label\\nimpath label\\n ...(same to caffe's filelist)
-    """
+    """"""
+    flist format: impath label\\nimpath label\\n ...(same to caffe's filelist)'
+    """"""
     imlist = []
     with open(flist, "r") as rf:
         for line in rf.readlines():
@@ -42,17 +43,17 @@ def parse_label(label):
 
 
 class FlistDataset(BaseDataset):
-    """
+    """"""
     It requires one directories to host training images '/path/to/data/train'
     You can train the model with the dataset flag '--dataroot/path/to/data'.
-    """
+    """"""
 
     def __init__(self, opt):
-        """Initialize this dataset class.
+        """Initialize this dataset class."""
 
         Parameters:
             opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
-        """
+        """"""
         BaseDataset.__init__(self, opt)
 
         self.lm3d_std = load_lm3d(opt.bfm_folder)
@@ -68,7 +69,7 @@ class FlistDataset(BaseDataset):
             self.name += "_" + opt.flist.split(os.sep)[-1].split("_")[0]
 
     def __getitem__(self, index):
-        """Return a data point and its metadata information.
+        """Return a data point and its metadata information."""
 
         Parameters:
             index (int)      -- a random integer for data indexing
@@ -79,7 +80,7 @@ class FlistDataset(BaseDataset):
             lm  (tensor)       -- its corresponding 3d landmarks
             im_paths (str)     -- image paths
             aug_flag (bool)    -- a flag used to tell whether its raw or augmented
-        """
+        """"""
         msk_path = self.msk_paths[index % self.size]  # make sure index is within then range
         img_path = msk_path.replace("mask/", "")
         lm_path = ".".join(msk_path.replace("mask", "landmarks").split(".")[:-1]) + ".txt"
@@ -110,7 +111,8 @@ class FlistDataset(BaseDataset):
             "im_paths": img_path,
             "aug_flag": aug_flag,
             "dataset": self.name,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _augmentation(self, img, lm, opt, msk=None):
         affine, affine_inv, flip = get_affine_mat(opt, img.size)

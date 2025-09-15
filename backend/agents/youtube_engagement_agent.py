@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI YouTube Community Engagement Agent
-
+""""""
 Intelligently monitors YouTube comments and generates appropriate, contextual replies
 using AI to build community engagement and foster meaningful conversations.
+"""
+
+TRAE.AI YouTube Community Engagement Agent
+
+
+
+""""""
+
 
 Features:
+
+
+
 - Smart comment discovery and analysis
 - AI - powered reply generation with context awareness
 - Engagement scoring and prioritization
@@ -16,6 +27,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import hashlib
@@ -77,7 +89,9 @@ class EngagementStatus(Enum):
 
 @dataclass
 class CommentContext:
-    """Context information for a YouTube comment."""
+    """
+Context information for a YouTube comment.
+
 
     comment_id: str
     video_id: str
@@ -92,12 +106,20 @@ class CommentContext:
     topic_keywords: List[str]
     relevance_score: float
     video_title: str
+   
+""""""
+
     video_category: str
+   
 
-
+    
+   
+"""
 @dataclass
 class EngagementOpportunity:
-    """Opportunity for community engagement."""
+    """
+Opportunity for community engagement.
+
 
     opportunity_id: str
     comment: CommentContext
@@ -108,12 +130,20 @@ class EngagementOpportunity:
     reasoning: str
     keywords_matched: List[str]
     created_at: datetime
+   
+""""""
+
     expires_at: datetime
+   
 
-
+    
+   
+"""
 @dataclass
 class EngagementResult:
-    """Result of an engagement action."""
+    """
+Result of an engagement action.
+
 
     opportunity_id: str
     status: EngagementStatus
@@ -121,12 +151,20 @@ class EngagementResult:
     comment_id: Optional[str]
     engagement_metrics: Dict[str, int]
     posted_at: Optional[datetime]
+   
+""""""
+
     error_message: Optional[str]
+   
 
-
+    
+   
+"""
 @dataclass
 class TopicProfile:
-    """Profile for topic - based engagement."""
+    """
+Profile for topic - based engagement.
+
 
     topic: str
     keywords: List[str]
@@ -134,15 +172,34 @@ class TopicProfile:
     engagement_style: str
     max_daily_engagements: int
     current_daily_count: int
+   
+""""""
+
     last_reset_date: datetime
+   
 
-
+    
+   
+"""
 class YouTubeEngagementAgent:
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
     Intelligent YouTube community engagement agent that monitors comments
     and generates contextual replies to build community engagement.
-    """
+   
 
+    
+   
+""""""
+    
+   """
     def __init__(self, db_path: str = "data/youtube_engagement.sqlite"):
         self.logger = setup_logger("youtube_engagement")
         self.db_path = db_path
@@ -155,7 +212,7 @@ class YouTubeEngagementAgent:
             "max_concurrent_requests": 3,
             "cache_enabled": True,
             "cache_ttl": 3600,
-        }
+         }
         self.ollama_integration = OllamaIntegration(ollama_config)
         self.secret_store = SecretStore()
 
@@ -167,7 +224,7 @@ class YouTubeEngagementAgent:
             "max_reply_length": 500,
             "sentiment_threshold": 0.3,
             "relevance_threshold": 0.5,
-        }
+         }
 
         # Initialize database
         self._init_database()
@@ -178,16 +235,49 @@ class YouTubeEngagementAgent:
         self.logger.info("YouTube Engagement Agent initialized successfully")
 
     def _init_database(self) -> None:
-        """Initialize SQLite database for engagement tracking."""
+        """
+Initialize SQLite database for engagement tracking.
+
         try:
+           
+""""""
+
             os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+           
+
+            
+           
+""""""
+
 
             with sqlite3.connect(self.db_path) as conn:
+
+            
+
+           
+""""""
+
+            os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+           
+
+            
+           
+""""""
+
+                
+               
+
                 cursor = conn.cursor()
+               
+""""""
 
                 # Comments table
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     CREATE TABLE IF NOT EXISTS comments (
                         comment_id TEXT PRIMARY KEY,
                             video_id TEXT NOT NULL,
@@ -204,13 +294,32 @@ class YouTubeEngagementAgent:
                             video_category TEXT,
                             processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (parent_comment_id) REFERENCES comments(comment_id)
-                    )
-                """
-                )
+                     )
+                """"""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                
+               """
+
+                cursor = conn.cursor()
+               
+
+                
+               
+"""
                 # Engagement opportunities table
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     CREATE TABLE IF NOT EXISTS engagement_opportunities (
                         opportunity_id TEXT PRIMARY KEY,
                             comment_id TEXT NOT NULL,
@@ -224,13 +333,25 @@ class YouTubeEngagementAgent:
                             expires_at TIMESTAMP NOT NULL,
                             status TEXT DEFAULT 'pending',
                             FOREIGN KEY (comment_id) REFERENCES comments(comment_id)
-                    )
+                     )
+                
+""""""
+
+                
+
+                 
+                
+"""
+                 )
                 """
-                )
+
+                 
+                
 
                 # Engagement results table
                 cursor.execute(
-                    """
+                   
+""""""
                     CREATE TABLE IF NOT EXISTS engagement_results (
                         result_id TEXT PRIMARY KEY,
                             opportunity_id TEXT NOT NULL,
@@ -242,13 +363,32 @@ class YouTubeEngagementAgent:
                             error_message TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (opportunity_id) REFERENCES engagement_opportunities(opportunity_id)
-                    )
-                """
-                )
+                     )
+                """"""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 # Topic profiles table
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     CREATE TABLE IF NOT EXISTS topic_profiles (
                         topic TEXT PRIMARY KEY,
                             keywords TEXT NOT NULL,
@@ -257,13 +397,25 @@ class YouTubeEngagementAgent:
                             max_daily_engagements INTEGER NOT NULL,
                             current_daily_count INTEGER DEFAULT 0,
                             last_reset_date DATE NOT NULL
-                    )
+                     )
+                
+""""""
+
+                
+
+                 
+                
+"""
+                 )
                 """
-                )
+
+                 
+                
 
                 # Engagement history table
                 cursor.execute(
-                    """
+                   
+""""""
                     CREATE TABLE IF NOT EXISTS engagement_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             video_id TEXT NOT NULL,
@@ -273,10 +425,25 @@ class YouTubeEngagementAgent:
                             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             response_text TEXT,
                             metrics TEXT
-                    )
-                """
-                )
+                     )
+                """"""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 conn.commit()
                 self.logger.info("Database initialized successfully")
 
@@ -285,11 +452,28 @@ class YouTubeEngagementAgent:
             raise
 
     def _load_topic_profiles(self) -> Dict[str, TopicProfile]:
-        """Load topic profiles from database or create defaults."""
-        profiles = {}
+        """
+Load topic profiles from database or create defaults.
 
+       
+""""""
+
+        profiles = {}
+       
+
+        
+       
+"""
         try:
             with sqlite3.connect(self.db_path) as conn:
+       """
+
+        
+       
+
+        profiles = {}
+       
+""""""
                 cursor = conn.cursor()
                 cursor.execute("SELECT * FROM topic_profiles")
                 rows = cursor.fetchall()
@@ -303,7 +487,7 @@ class YouTubeEngagementAgent:
                         max_daily,
                         current_count,
                         last_reset,
-                    ) = row
+#                     ) = row
                     keywords = json.loads(keywords_json)
                     last_reset_date = datetime.fromisoformat(last_reset)
 
@@ -315,7 +499,7 @@ class YouTubeEngagementAgent:
                         max_daily_engagements=max_daily,
                         current_daily_count=current_count,
                         last_reset_date=last_reset_date,
-                    )
+                     )
 
         except Exception as e:
             self.logger.warning(f"Failed to load topic profiles: {e}")
@@ -338,13 +522,13 @@ class YouTubeEngagementAgent:
                     "automation",
                     "technology",
                     "innovation",
-                ],
+                 ],
                 priority_weight=1.0,
                 engagement_style="informative",
                 max_daily_engagements=15,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
+             ),
             "content_creation": TopicProfile(
                 topic="content_creation",
                 keywords=[
@@ -355,13 +539,13 @@ class YouTubeEngagementAgent:
                     "production",
                     "creative",
                     "tutorial",
-                ],
+                 ],
                 priority_weight=0.9,
                 engagement_style="helpful",
                 max_daily_engagements=12,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
+             ),
             "business_growth": TopicProfile(
                 topic="business_growth",
                 keywords=[
@@ -371,13 +555,13 @@ class YouTubeEngagementAgent:
                     "strategy",
                     "entrepreneurship",
                     "startup",
-                ],
+                 ],
                 priority_weight=0.8,
                 engagement_style="professional",
                 max_daily_engagements=10,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
+             ),
             "community_support": TopicProfile(
                 topic="community_support",
                 keywords=[
@@ -387,14 +571,14 @@ class YouTubeEngagementAgent:
                     "problem",
                     "issue",
                     "assistance",
-                ],
+                 ],
                 priority_weight=1.2,
                 engagement_style="supportive",
                 max_daily_engagements=20,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
-        }
+             ),
+         }
 
         # Save to database
         try:
@@ -402,7 +586,8 @@ class YouTubeEngagementAgent:
                 cursor = conn.cursor()
                 for profile in default_profiles.values():
                     cursor.execute(
-                        """
+                        """"""
+
                         INSERT OR REPLACE INTO topic_profiles
                         (topic,
     keywords,
@@ -410,9 +595,11 @@ class YouTubeEngagementAgent:
     engagement_style,
     max_daily_engagements,
     current_daily_count,
-    last_reset_date)
+#     last_reset_date)
                         VALUES (?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    
+,
+"""
                         (
                             profile.topic,
                             json.dumps(profile.keywords),
@@ -421,8 +608,8 @@ class YouTubeEngagementAgent:
                             profile.max_daily_engagements,
                             profile.current_daily_count,
                             profile.last_reset_date.isoformat(),
-                        ),
-                    )
+                         ),
+                     )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to save default topic profiles: {e}")
@@ -430,11 +617,28 @@ class YouTubeEngagementAgent:
         return default_profiles
 
     async def monitor_video_comments(self, video_id: str) -> List[EngagementOpportunity]:
-        """Monitor comments on a specific video for engagement opportunities."""
-        opportunities = []
+        """
+Monitor comments on a specific video for engagement opportunities.
 
+       
+""""""
+
+        opportunities = []
+       
+
+        
+       
+"""
         try:
             # Get video details
+       """
+
+        
+       
+
+        opportunities = []
+       
+""""""
             video_details = self.youtube_integration.get_video_details(video_id)
             if not video_details:
                 self.logger.error(f"Could not fetch video details for {video_id}")
@@ -459,7 +663,7 @@ class YouTubeEngagementAgent:
 
             self.logger.info(
                 f"Found {len(opportunities)} engagement opportunities for video {video_id}"
-            )
+             )
 
         except Exception as e:
             self.logger.error(f"Failed to monitor comments for video {video_id}: {e}")
@@ -467,12 +671,30 @@ class YouTubeEngagementAgent:
         return opportunities
 
     async def _fetch_video_comments(self, video_id: str) -> List[Dict[str, Any]]:
-        """Fetch comments for a video using YouTube API."""
+        """
+Fetch comments for a video using YouTube API.
+
         try:
+           
+""""""
+
             # Use the YouTube integration to fetch comments
+           
+
+            
+           
+"""
             comment_data = self.youtube_integration.get_video_comments(
+           """
+
+            
+           
+
+            # Use the YouTube integration to fetch comments
+           
+""""""
                 video_id=video_id, max_results=50, order="time"
-            )
+             )
 
             self.logger.info(f"Fetched {len(comment_data)} comments for video {video_id}")
             return comment_data
@@ -483,11 +705,29 @@ class YouTubeEngagementAgent:
 
     def _create_comment_context(
         self, comment_data: Dict[str, Any], video_title: str, video_category: str
-    ) -> CommentContext:
-        """Create comment context from API data."""
+#     ) -> CommentContext:
+        """
+Create comment context from API data.
+
+       
+""""""
+
         # Handle both direct format and nested format from YouTube API
+       
+
+        
+       
+"""
         if "snippet" in comment_data and "topLevelComment" in comment_data["snippet"]:
             # Nested format from YouTube API
+       """
+
+        
+       
+
+        # Handle both direct format and nested format from YouTube API
+       
+""""""
             snippet = comment_data.get("snippet", {})
             top_level_comment = snippet.get("topLevelComment", {}).get("snippet", {})
             comment_text = top_level_comment.get("textDisplay", "")
@@ -524,7 +764,7 @@ class YouTubeEngagementAgent:
             comment_id=comment_id,
             video_id=comment_data.get("snippet", {}).get(
                 "videoId", comment_data.get("video_id", "")
-            ),
+             ),
             author_name=author_name,
             comment_text=comment_text,
             created_at=created_at,
@@ -537,12 +777,22 @@ class YouTubeEngagementAgent:
             relevance_score=relevance_score,
             video_title=video_title,
             video_category=video_category,
-        )
+         )
 
     def _analyze_sentiment(self, text: str) -> SentimentType:
-        """Analyze sentiment of comment text."""
+        """
+Analyze sentiment of comment text.
+
         try:
+           
+""""""
+
             # Simple keyword - based sentiment analysis
+           
+
+            
+           
+"""
             positive_words = [
                 "great",
                 "awesome",
@@ -552,7 +802,15 @@ class YouTubeEngagementAgent:
                 "fantastic",
                 "helpful",
                 "thanks",
-            ]
+             ]
+           """
+
+            
+           
+
+            # Simple keyword - based sentiment analysis
+           
+""""""
             negative_words = [
                 "bad",
                 "terrible",
@@ -562,7 +820,7 @@ class YouTubeEngagementAgent:
                 "useless",
                 "boring",
                 "stupid",
-            ]
+             ]
 
             text_lower = text.lower()
             positive_count = sum(1 for word in positive_words if word in text_lower)
@@ -582,23 +840,54 @@ class YouTubeEngagementAgent:
             return SentimentType.NEUTRAL
 
     def _extract_topic_keywords(self, text: str) -> List[str]:
-        """Extract relevant topic keywords from comment text."""
-        keywords = []
-        text_lower = text.lower()
+        """
+Extract relevant topic keywords from comment text.
 
+        keywords = []
+       
+""""""
+
+        text_lower = text.lower()
+       
+
+        
+       
+"""
         for profile in self.topic_profiles.values():
             for keyword in profile.keywords:
+       """
+
+        
+       
+
+        text_lower = text.lower()
+       
+""""""
+
                 if keyword.lower() in text_lower:
                     keywords.append(keyword)
 
         return list(set(keywords))  # Remove duplicates
 
     def _calculate_relevance_score(self, text: str, keywords: List[str]) -> float:
-        """Calculate relevance score based on keyword matches and text quality."""
+        
+Calculate relevance score based on keyword matches and text quality.
+"""
         if not text.strip():
+            """
+
             return 0.0
+            
+
+           
+""""""
 
         # Base score from keyword matches
+            
+
+            return 0.0
+            
+"""
         keyword_score = min(len(keywords) * 0.2, 0.8)
 
         # Quality indicators
@@ -623,10 +912,28 @@ class YouTubeEngagementAgent:
     async def _analyze_comment_for_engagement(
         self, context: CommentContext
     ) -> Optional[EngagementOpportunity]:
-        """Analyze a comment to determine if it presents an engagement opportunity."""
+        """
+Analyze a comment to determine if it presents an engagement opportunity.
+
         try:
+           
+""""""
+
             # Skip if relevance score is too low
+           
+
+            
+           
+"""
             if context.relevance_score < self.config["relevance_threshold"]:
+           """
+
+            
+           
+
+            # Skip if relevance score is too low
+           
+""""""
                 return None
 
             # Find best matching topic profile
@@ -641,7 +948,7 @@ class YouTubeEngagementAgent:
             # Generate contextual reply
             reply, confidence, reasoning = await self._generate_contextual_reply(
                 context, best_profile
-            )
+             )
 
             if confidence < self.config["min_confidence_score"]:
                 return None
@@ -665,18 +972,36 @@ class YouTubeEngagementAgent:
                 keywords_matched=context.topic_keywords,
                 created_at=datetime.now(),
                 expires_at=datetime.now() + timedelta(hours=24),
-            )
+             )
 
         except Exception as e:
             self.logger.error(f"Failed to analyze comment for engagement: {e}")
             return None
 
     def _find_best_topic_profile(self, context: CommentContext) -> Optional[TopicProfile]:
-        """Find the best matching topic profile for a comment."""
-        best_profile = None
-        best_score = 0.0
+        """
+Find the best matching topic profile for a comment.
 
+        best_profile = None
+       
+""""""
+
+        best_score = 0.0
+       
+
+        
+       
+"""
         for profile in self.topic_profiles.values():
+       """
+
+        
+       
+
+        best_score = 0.0
+       
+""""""
+
             score = 0.0
 
             # Calculate keyword match score
@@ -684,7 +1009,7 @@ class YouTubeEngagementAgent:
                 kw
                 for kw in context.topic_keywords
                 if kw.lower() in [pk.lower() for pk in profile.keywords]
-            ]
+             ]
             if matched_keywords:
                 score = len(matched_keywords) * profile.priority_weight
 
@@ -695,52 +1020,147 @@ class YouTubeEngagementAgent:
         return best_profile
 
     def _check_engagement_limits(self, profile: TopicProfile) -> bool:
-        """Check if engagement limits allow for new engagement."""
+        
+Check if engagement limits allow for new engagement.
+""""""
+
+        
+       
+
         # Reset daily count if it's a new day
+       
+""""""
+
         today = datetime.now().date()
+       
+
+        
+       
+"""
+        # Reset daily count if it's a new day
+       """
+
+        
+       
+
         if profile.last_reset_date < today:
             profile.current_daily_count = 0
             profile.last_reset_date = today
+           
+""""""
+
             self._update_topic_profile(profile)
+           
+
+            
+           
+""""""
+
+
+            
+
+           
+
+            self._update_topic_profile(profile)
+           
+""""""
 
         return profile.current_daily_count < profile.max_daily_engagements
 
     def _update_topic_profile(self, profile: TopicProfile) -> None:
-        """Update topic profile in database."""
+        
+Update topic profile in database.
+"""
         try:
+            """
+
             with sqlite3.connect(self.db_path) as conn:
+            
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+""""""
+
                     UPDATE topic_profiles
                     SET current_daily_count = ?, last_reset_date = ?
                     WHERE topic = ?
-                """,
+                
+,
+"""
                     (
                         profile.current_daily_count,
                         profile.last_reset_date.isoformat(),
                         profile.topic,
-                    ),
-                )
+                     ),
+                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to update topic profile: {e}")
+            """
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
 
     async def _generate_contextual_reply(
         self, context: CommentContext, profile: TopicProfile
     ) -> Tuple[str, float, str]:
-        """Generate a contextual reply using AI."""
+        
+Generate a contextual reply using AI.
+"""
         try:
-            # Create prompt for AI reply generation
-            style_guidance = self._get_style_guidance(profile.engagement_style, context.sentiment)
+           """
 
-            prompt = f"""
+            
+           
+
+            # Create prompt for AI reply generation
+           
+""""""
+
+           
+
+            
+           
+"""
+            style_guidance = self._get_style_guidance(profile.engagement_style, context.sentiment)
+           """"""
+            
+           """
+
+            # Create prompt for AI reply generation
+           
+
+            
+           
+""""""
+
+
+            
+
+           
+
+            prompt = f
+           
+""""""
+
+
+
 You are a helpful YouTube content creator responding to a comment on your video.
+
+"""
 
 Video Title: {context.video_title}
 Comment: "{context.comment_text}"
 Comment Sentiment: {context.sentiment.value}
 Author: {context.author_name}
+"""
+You are a helpful YouTube content creator responding to a comment on your video.
+
+
 
 Style Guidelines: {style_guidance}
 
@@ -751,12 +1171,26 @@ Generate a helpful, engaging reply that:
 4. Is under {self.config['max_reply_length']} characters
 5. Encourages further engagement
 
-Reply:"""
+Reply:
+""""""
+            # Generate reply using Ollama
+           """
+
+            
+           
+
+            response = await self.ollama_integration.generate_response(
+           
+""""""
 
             # Generate reply using Ollama
-            response = await self.ollama_integration.generate_response(
+           
+
+            
+           
+"""
                 prompt=prompt, model="llama3.1:8b", max_tokens=150
-            )
+             )
 
             if not response or not response.get("response"):
                 return "", 0.0, "Failed to generate AI response"
@@ -775,17 +1209,17 @@ Reply:"""
     def _get_style_guidance(self, engagement_style: str, sentiment: SentimentType) -> str:
         """Get style guidance for reply generation."""
         style_guides = {
-            "informative": "Be educational \
-    and provide useful information. Use clear explanations.",
-            "helpful": "Be supportive \
-    and offer practical assistance. Focus on solving problems.",
-            "professional": "Maintain a business - appropriate tone. Be courteous \
-    and authoritative.",
-            "supportive": "Be encouraging \
-    and empathetic. Show understanding \
-    and offer help.",
+            "informative": "Be educational \"
+#     and provide useful information. Use clear explanations.",
+            "helpful": "Be supportive \"
+#     and offer practical assistance. Focus on solving problems.",
+            "professional": "Maintain a business - appropriate tone. Be courteous \"
+#     and authoritative.",
+            "supportive": "Be encouraging \"
+#     and empathetic. Show understanding \
+#     and offer help.",
             "friendly": "Be warm and approachable. Use conversational language.",
-        }
+         }
 
         base_guidance = style_guides.get(engagement_style, "Be helpful and engaging.")
 
@@ -800,11 +1234,28 @@ Reply:"""
     def _evaluate_reply_quality(
         self, reply_text: str, context: CommentContext, profile: TopicProfile
     ) -> Tuple[float, str]:
-        """Evaluate the quality of a generated reply."""
-        score = 0.0
-        reasons = []
+        """
+Evaluate the quality of a generated reply.
 
+        score = 0.0
+       
+""""""
+
+        reasons = []
+       
+
+        
+       
+"""
         # Length check
+       """
+
+        
+       
+
+        reasons = []
+       
+""""""
         if len(reply_text) > self.config["max_reply_length"]:
             score -= 0.3
             reasons.append("Reply too long")
@@ -827,7 +1278,7 @@ Reply:"""
         # Quality indicators
         if "?" in context.comment_text and any(
             word in reply_text.lower() for word in ["yes", "no", "here", "try", "can"]
-        ):
+#         ):
             score += 0.2
             reasons.append("Addresses question")
 
@@ -836,7 +1287,7 @@ Reply:"""
             "thanks for watching",
             "please subscribe",
             "check out my other videos",
-        ]
+         ]
         if any(phrase in reply_text.lower() for phrase in generic_phrases):
             score -= 0.2
             reasons.append("Contains generic phrases")
@@ -853,13 +1304,29 @@ Reply:"""
 
     def _calculate_priority(
         self, context: CommentContext, profile: TopicProfile
-    ) -> CommentPriority:
-        """Calculate priority level for engagement opportunity."""
-        score = 0.0
+#     ) -> CommentPriority:
+        """
+Calculate priority level for engagement opportunity.
 
+       
+""""""
+
+        score = 0.0
+       
+
+        
+       
+"""
         # Base score from relevance and profile weight
         score += context.relevance_score * profile.priority_weight
+       """
 
+        
+       
+
+        score = 0.0
+       
+""""""
         # Engagement metrics bonus
         if context.like_count > 10:
             score += 0.2
@@ -894,14 +1361,25 @@ Reply:"""
             return CommentPriority.LOW
 
     def _save_opportunity(self, opportunity: EngagementOpportunity) -> None:
-        """Save engagement opportunity to database."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Save engagement opportunity to database.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 # Save comment context first
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     INSERT OR REPLACE INTO comments
                     (comment_id,
     video_id,
@@ -910,9 +1388,11 @@ Reply:"""
     created_at,
     like_count,
                         reply_count, is_reply, parent_comment_id, sentiment, relevance_score,
-                         video_title, video_category)
+#                          video_title, video_category)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+""","""
+
                     (
                         opportunity.comment.comment_id,
                         opportunity.comment.video_id,
@@ -927,21 +1407,34 @@ Reply:"""
                         opportunity.comment.relevance_score,
                         opportunity.comment.video_title,
                         opportunity.comment.video_category,
-                    ),
-                )
+                     ),
+                
+
+                 
+                
+"""
+                 )
+                """
+
+                 
+                
 
                 # Save opportunity
                 cursor.execute(
-                    """
+                   
+""""""
+
                     INSERT OR REPLACE INTO engagement_opportunities
                     (opportunity_id,
     comment_id,
     engagement_type,
     priority,
     suggested_reply,
-                        confidence_score, reasoning, keywords_matched, created_at, expires_at)
+#                         confidence_score, reasoning, keywords_matched, created_at, expires_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+,
+"""
                     (
                         opportunity.opportunity_id,
                         opportunity.comment.comment_id,
@@ -953,23 +1446,55 @@ Reply:"""
                         json.dumps(opportunity.keywords_matched),
                         opportunity.created_at,
                         opportunity.expires_at,
-                    ),
-                )
+                     ),
+                """
 
+                 
+                
+
+                 )
+                
+""""""
+
+                
+
+                 
+                
+"""
+                 )
+                """"""
                 conn.commit()
 
         except Exception as e:
             self.logger.error(f"Failed to save engagement opportunity: {e}")
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Process YouTube engagement tasks."""
+        """
+Process YouTube engagement tasks.
+
         try:
+           
+""""""
+
             # Check if community building is enabled
+           
+
+            
+           
+"""
             if not self.is_action_allowed("community_building"):
+           """
+
+            
+           
+
+            # Check if community building is enabled
+           
+""""""
                 return {
                     "status": "error",
                     "message": "Community building is disabled in configuration",
-                }
+                 }
 
             task_type = task.get("type")
 
@@ -983,7 +1508,7 @@ Reply:"""
                     "status": "success",
                     "opportunities_found": len(opportunities),
                     "opportunities": [asdict(opp) for opp in opportunities],
-                }
+                 }
 
             elif task_type == "get_engagement_opportunities":
                 opportunities = self._get_pending_opportunities()
@@ -1005,14 +1530,32 @@ Reply:"""
             return {"status": "error", "message": str(e)}
 
     def is_action_allowed(self, action: str) -> bool:
-        """Check if an action is allowed based on configuration."""
+        """
+Check if an action is allowed based on configuration.
+
         try:
+           
+""""""
+
             # Load configuration from state.json
+           
+
+            
+           
+"""
             config_path = os.path.join(
                 os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
                 "config",
                 "state.json",
-            )
+             )
+           """
+
+            
+           
+
+            # Load configuration from state.json
+           
+""""""
             if os.path.exists(config_path):
                 with open(config_path, "r") as f:
                     config = json.load(f)
@@ -1023,23 +1566,51 @@ Reply:"""
             return True
 
     def _get_pending_opportunities(self) -> List[Dict[str, Any]]:
-        """Get pending engagement opportunities from database."""
-        opportunities = []
+        """
+Get pending engagement opportunities from database.
 
+       
+""""""
+
+        opportunities = []
+       
+
+        
+       
+"""
         try:
             with sqlite3.connect(self.db_path) as conn:
+       """
+
+        
+       
+
+        opportunities = []
+       
+""""""
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT eo.*, c.comment_text, c.author_name, c.video_title
                     FROM engagement_opportunities eo
                     JOIN comments c ON eo.comment_id = c.comment_id
                     WHERE eo.status = 'pending' AND eo.expires_at > datetime('now')
                     ORDER BY eo.priority DESC, eo.confidence_score DESC
                     LIMIT 50
-                """
-                )
+                """"""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
                 rows = cursor.fetchall()
                 columns = [desc[0] for desc in cursor.description]
 
@@ -1054,21 +1625,46 @@ Reply:"""
         return opportunities
 
     async def _execute_engagement(self, opportunity_id: str) -> Dict[str, Any]:
-        """Execute an engagement opportunity."""
+        """
+Execute an engagement opportunity.
+
         try:
             # Get opportunity details
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT eo.*, c.*
                         FROM engagement_opportunities eo
                     JOIN comments c ON eo.comment_id = c.comment_id
                     WHERE eo.opportunity_id = ?
-                """,
-                    (opportunity_id,),
-                )
+                """
+,
 
+                    (opportunity_id,),
+                
+""""""
+
+                 )
+                
+
+                 
+                
+""""""
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
                 row = cursor.fetchone()
                 if not row:
                     return {"status": "error", "message": "Opportunity not found"}
@@ -1088,7 +1684,7 @@ Reply:"""
                     # Post a reply to the comment
                     api_result = self.youtube_integration.post_comment_reply(
                         parent_comment_id=comment_id, reply_text=suggested_reply
-                    )
+                     )
 
                     if api_result.get("status") == "success":
                         success = True
@@ -1111,7 +1707,7 @@ Reply:"""
                 engagement_metrics={"likes": 0, "replies": 0},
                 posted_at=datetime.now() if success else None,
                 error_message=error_message,
-            )
+             )
 
             # Save result
             self._save_engagement_result(result)
@@ -1120,13 +1716,16 @@ Reply:"""
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
+
                     UPDATE engagement_opportunities
                     SET status = ?
                     WHERE opportunity_id = ?
-                """,
+                
+,
+"""
                     ("posted" if success else "failed", opportunity_id),
-                )
+                 )
                 conn.commit()
 
             return {
@@ -1135,26 +1734,36 @@ Reply:"""
                     "Engagement executed successfully"
                     if success
                     else f"Engagement failed: {error_message}"
-                ),
+                 ),
                 "result": asdict(result),
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Failed to execute engagement: {e}")
             return {"status": "error", "message": str(e)}
 
     def _save_engagement_result(self, result: EngagementResult) -> None:
-        """Save engagement result to database."""
+        """
+Save engagement result to database.
+
         try:
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT INTO engagement_results
                     (result_id, opportunity_id, status, posted_content, comment_id,
-                        engagement_metrics, posted_at, error_message)
+#                         engagement_metrics, posted_at, error_message)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         hashlib.md5(
                             f"{result.opportunity_id}_{datetime.now().isoformat()}".encode()
@@ -1166,10 +1775,16 @@ Reply:"""
                         json.dumps(result.engagement_metrics),
                         result.posted_at,
                         result.error_message,
-                    ),
-                )
+                     ),
+                 )
                 conn.commit()
+            """
 
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
         except Exception as e:
             self.logger.error(f"Failed to save engagement result: {e}")
 
@@ -1182,7 +1797,7 @@ Reply:"""
             "success_rate": 0.0,
             "daily_engagement_counts": {},
             "top_topics": [],
-        }
+         }
 
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -1195,7 +1810,7 @@ Reply:"""
                 # Pending opportunities
                 cursor.execute(
                     "SELECT COUNT(*) FROM engagement_opportunities WHERE status = 'pending'"
-                )
+                 )
                 stats["pending_opportunities"] = cursor.fetchone()[0]
 
                 # Completed engagements
@@ -1206,14 +1821,14 @@ Reply:"""
                 if stats["total_opportunities"] > 0:
                     stats["success_rate"] = (
                         stats["completed_engagements"] / stats["total_opportunities"]
-                    )
+                     )
 
                 # Daily engagement counts by topic
                 for topic, profile in self.topic_profiles.items():
                     stats["daily_engagement_counts"][topic] = {
                         "current": profile.current_daily_count,
                         "max": profile.max_daily_engagements,
-                    }
+                     }
 
         except Exception as e:
             self.logger.error(f"Failed to get engagement stats: {e}")

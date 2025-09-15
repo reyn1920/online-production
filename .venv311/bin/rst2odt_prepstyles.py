@@ -4,10 +4,10 @@
 # Author: Dave Kuhlman <dkuhlman@rexx.com>
 # Copyright: This module has been placed in the public domain.
 
-"""
+""""""
 Fix a word-processor-generated styles.odt for odtwriter use: Drop page size
 specifications from styles.xml in STYLE_FILE.odt.
-"""
+""""""
 
 # Author: Michael Schutte <michi@uiae.at>
 
@@ -23,7 +23,8 @@ import os
 NAMESPACES = {
     "style": "urn:oasis:names:tc:opendocument:xmlns:style:1.0",
     "fo": "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def prepstyle(filename):
@@ -33,14 +34,16 @@ def prepstyle(filename):
 
     root = etree.fromstring(styles)
     for el in root.xpath("//style:page-layout-properties",
-                         namespaces=NAMESPACES):
+# BRACKET_SURGEON: disabled
+#                          namespaces=NAMESPACES):
         for attr in el.attrib:
             if attr.startswith("{%s}" % NAMESPACES["fo"]):
                 del el.attrib[attr]
 
     tempname = mkstemp()
     zout = zipfile.ZipFile(os.fdopen(tempname[0], "w"), "w",
-                           zipfile.ZIP_DEFLATED)
+# BRACKET_SURGEON: disabled
+#                            zipfile.ZIP_DEFLATED)
 
     for item in zin.infolist():
         if item.filename == "styles.xml":

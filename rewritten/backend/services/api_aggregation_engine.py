@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Aggregation Engine
 Combines multiple free APIs to create superior functionality than paid services
-"""
+""""""
 
 import asyncio
 import aiohttp
@@ -72,7 +72,8 @@ class SuperiorAPIAggregator:
             strategy=AggregationStrategy.HYBRID,
             weight_factors={"quality": 0.4, "creativity": 0.3, "speed": 0.3},
             min_sources=3,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Superior Image Analysis (vs Google Vision, AWS Rekognition)
         tasks["comprehensive_image_analysis"] = AggregationTask(
@@ -81,7 +82,8 @@ class SuperiorAPIAggregator:
             apis=["huggingface", "replicate"],
             strategy=AggregationStrategy.COMPREHENSIVE,
             weight_factors={"accuracy": 0.5, "detail": 0.3, "speed": 0.2},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Superior Market Intelligence (vs Bloomberg, Reuters)
         tasks["market_intelligence"] = AggregationTask(
@@ -90,7 +92,8 @@ class SuperiorAPIAggregator:
             apis=["alpha_vantage", "coinapi", "newsapi", "guardian"],
             strategy=AggregationStrategy.COMPREHENSIVE,
             weight_factors={"accuracy": 0.4, "timeliness": 0.3, "coverage": 0.3},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Superior Weather Intelligence (vs AccuWeather Pro)
         tasks["weather_intelligence"] = AggregationTask(
@@ -99,7 +102,8 @@ class SuperiorAPIAggregator:
             apis=["openweather", "weatherapi"],
             strategy=AggregationStrategy.CONSENSUS,
             weight_factors={"accuracy": 0.5, "detail": 0.3, "reliability": 0.2},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Superior Content Discovery (vs Shutterstock, Getty Images)
         tasks["content_discovery"] = AggregationTask(
@@ -108,7 +112,8 @@ class SuperiorAPIAggregator:
             apis=["unsplash", "pixabay", "pexels", "lorem_picsum"],
             strategy=AggregationStrategy.COMPREHENSIVE,
             weight_factors={"quality": 0.4, "variety": 0.3, "relevance": 0.3},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Superior Translation (vs Google Translate Pro)
         tasks["advanced_translation"] = AggregationTask(
@@ -117,7 +122,8 @@ class SuperiorAPIAggregator:
             apis=["mymemory", "libretranslate", "huggingface"],
             strategy=AggregationStrategy.CONSENSUS,
             weight_factors={"accuracy": 0.5, "naturalness": 0.3, "context": 0.2},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Superior News Intelligence (vs premium news services)
         tasks["news_intelligence"] = AggregationTask(
@@ -126,7 +132,8 @@ class SuperiorAPIAggregator:
             apis=["newsapi", "guardian"],
             strategy=AggregationStrategy.COMPREHENSIVE,
             weight_factors={"credibility": 0.4, "coverage": 0.3, "timeliness": 0.3},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Superior Data Analytics (vs premium analytics platforms)
         tasks["data_analytics"] = AggregationTask(
@@ -135,7 +142,8 @@ class SuperiorAPIAggregator:
             apis=["worldbank", "restcountries", "alpha_vantage"],
             strategy=AggregationStrategy.COMPREHENSIVE,
             weight_factors={"accuracy": 0.4, "completeness": 0.3, "relevance": 0.3},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return tasks
 
@@ -179,7 +187,8 @@ class SuperiorAPIAggregator:
                 "success": False,
                 "error": f"Insufficient sources: {len(api_results)}/{task.min_sources}",
                 "partial_results": api_results,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Apply aggregation strategy
         aggregated_result = await self._apply_aggregation_strategy(task, api_results)
@@ -198,7 +207,8 @@ class SuperiorAPIAggregator:
             "api_results": api_results,
             "advantages_over_paid": self._get_advantages_over_paid(task_name),
             "timestamp": time.time(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Cache result
         self.cache[cache_key] = final_result
@@ -219,7 +229,8 @@ class SuperiorAPIAggregator:
                 if api_name in self.catalog.apis:
                     api_task = asyncio.create_task(
                         self._safe_api_call(router, task.requirement, input_data, [api_name])
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     api_tasks.append((api_name, api_task))
 
             # Wait for all tasks with timeout
@@ -228,7 +239,8 @@ class SuperiorAPIAggregator:
                 completed_tasks = await asyncio.wait_for(
                     asyncio.gather(*[task for _, task in api_tasks], return_exceptions=True),
                     timeout=task.timeout,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 for i, result in enumerate(completed_tasks):
                     api_name = api_tasks[i][0]
@@ -301,7 +313,8 @@ class SuperiorAPIAggregator:
             "confidence_score": 0,
             "source_agreement": 0,
             "method": "consensus",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Collect all data points
         all_data = [result.get("data", {}) for result in api_results]
@@ -330,19 +343,22 @@ class SuperiorAPIAggregator:
                     total_weight = sum(value_weights)
                     aggregated["consensus_data"][key] = (
                         weighted_sum / total_weight if total_weight > 0 else 0
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     # Text data - majority vote or combine
                     aggregated["consensus_data"][key] = self._aggregate_text_values(
                         values, value_weights
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         # Calculate confidence based on agreement
         aggregated["confidence_score"] = self._calculate_consensus_confidence(api_results)
         aggregated["source_agreement"] = len(common_keys) / max(
             len(set().union(*[d.keys() if isinstance(d, dict) else [] for d in all_data])),
             1,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return aggregated
 
@@ -361,7 +377,8 @@ class SuperiorAPIAggregator:
             "quality_score": best_result.get("quality_weight", 0),
             "method": "best_quality",
             "alternatives_available": len(api_results) - 1,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _fastest_aggregation(self, api_results: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Use result from fastest API"""
@@ -378,7 +395,8 @@ class SuperiorAPIAggregator:
             "response_time": fastest_result.get("response_time", 0),
             "method": "fastest",
             "speed_advantage": self._calculate_speed_advantage(api_results),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _comprehensive_aggregation(self, api_results: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Combine all unique data from all sources"""
@@ -390,7 +408,8 @@ class SuperiorAPIAggregator:
             "source_breakdown": {},
             "total_data_points": 0,
             "method": "comprehensive",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for result in api_results:
             api_name = result.get("api_name", "unknown")
@@ -407,14 +426,17 @@ class SuperiorAPIAggregator:
                             "value": value,
                             "source": api_name,
                             "quality": result.get("quality_weight", 1.0),
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
                 comprehensive_data["source_breakdown"][api_name] = {
                     "data_points": len(data),
                     "quality_score": result.get("quality_weight", 1.0),
                     "response_time": result.get("response_time", 0),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 comprehensive_data["total_data_points"] += len(data)
 
@@ -434,7 +456,8 @@ class SuperiorAPIAggregator:
             "backup_data": [],
             "reliability_score": 0,
             "method": "redundant",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Use highest quality as primary
         sorted_results = sorted(api_results, key=lambda x: x.get("quality_weight", 0), reverse=True)
@@ -450,8 +473,10 @@ class SuperiorAPIAggregator:
                         "data": result.get("data", {}),
                         "source": result.get("api_name", "unknown"),
                         "quality": result.get("quality_weight", 1.0),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Calculate reliability based on redundancy
         redundant_data["reliability_score"] = min(len(api_results) / 3.0, 1.0)  # Max at 3 sources
@@ -478,15 +503,18 @@ class SuperiorAPIAggregator:
                 "consensus": consensus_result.get("consensus_data", {}),
                 "best_quality": best_quality_result.get("best_quality_data", {}),
                 "comprehensive": comprehensive_result.get("combined_data", {}),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "recommended_data": {},
             "confidence_breakdown": {
                 "consensus_confidence": consensus_result.get("confidence_score", 0),
                 "quality_confidence": best_quality_result.get("quality_score", 0),
                 "coverage_confidence": comprehensive_result.get("coverage_score", 0),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "method": "hybrid",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Intelligently select best data for each field
         all_keys = set()
@@ -498,7 +526,8 @@ class SuperiorAPIAggregator:
             # Choose best value based on context and confidence
             best_value = self._select_best_hybrid_value(
                 key, hybrid_data["hybrid_data"], weight_factors
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if best_value is not None:
                 hybrid_data["recommended_data"][key] = best_value
 
@@ -506,7 +535,8 @@ class SuperiorAPIAggregator:
         confidence_scores = list(hybrid_data["confidence_breakdown"].values())
         hybrid_data["overall_confidence"] = (
             statistics.mean(confidence_scores) if confidence_scores else 0
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return hybrid_data
 
@@ -555,14 +585,16 @@ class SuperiorAPIAggregator:
             "advantage": ((average_time - fastest_time) / average_time if average_time > 0 else 0),
             "fastest_time": fastest_time,
             "average_time": average_time,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _select_best_hybrid_value(
         self,
         key: str,
         strategy_data: Dict[str, Any],
         weight_factors: Optional[Dict[str, float]],
-    ) -> Any:
+# BRACKET_SURGEON: disabled
+#     ) -> Any:
         """Select best value for hybrid aggregation"""
         # Priority: consensus > best_quality > comprehensive
         if "consensus" in strategy_data and key in strategy_data["consensus"]:
@@ -590,7 +622,8 @@ class SuperiorAPIAggregator:
         task: AggregationTask,
         api_results: List[Dict[str, Any]],
         aggregated_result: Dict[str, Any],
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate overall quality score for the aggregated result"""
         if not api_results:
             return 0.0
@@ -613,7 +646,8 @@ class SuperiorAPIAggregator:
             + avg_quality * 0.4
             + data_completeness * 0.2
             + speed_score * 0.1
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return min(quality_score, 1.0)
 
@@ -625,7 +659,8 @@ class SuperiorAPIAggregator:
             "No vendor lock-in",
             "Transparent rate limits",
             "Community-driven improvements",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         task_specific = {
             "advanced_content_generation": [
@@ -633,26 +668,31 @@ class SuperiorAPIAggregator:
                 "Bias reduction through diversity",
                 "Creative variety from different sources",
                 "No content restrictions",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "comprehensive_image_analysis": [
                 "Multiple computer vision models",
                 "Cross-validation of results",
                 "Specialized model selection",
                 "Higher accuracy through consensus",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "market_intelligence": [
                 "Real-time data from multiple sources",
                 "Cross-referenced financial data",
                 "News sentiment integration",
                 "Global market coverage",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "weather_intelligence": [
                 "Multiple meteorological sources",
                 "Consensus-based accuracy",
                 "Redundant data for reliability",
                 "Local and global coverage",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         return base_advantages + task_specific.get(task_name, [])
 
@@ -672,8 +712,10 @@ class SuperiorAPIAggregator:
                 "quality_score": result["quality_score"],
                 "execution_time": result["execution_time"],
                 "sources_used": result["sources_used"],
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         # Keep only last 100 entries
         if len(self.performance_history[task_name]) > 100:
@@ -688,7 +730,8 @@ class SuperiorAPIAggregator:
             "average_quality_score": 0,
             "average_execution_time": 0,
             "task_performance": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         all_quality_scores = []
         all_execution_times = []
@@ -706,8 +749,10 @@ class SuperiorAPIAggregator:
                         "improving"
                         if len(task_quality) > 1 and task_quality[-1] > task_quality[0]
                         else "stable"
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
                 all_quality_scores.extend(task_quality)
                 all_execution_times.extend(task_times)
@@ -722,7 +767,8 @@ class SuperiorAPIAggregator:
         cache_hits = sum(1 for result in self.cache.values() if result.get("from_cache", False))
         analytics["cache_hit_rate"] = (
             (cache_hits / total_requests * 100) if total_requests > 0 else 0
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return analytics
 
@@ -732,7 +778,8 @@ class SuperiorAPIAggregator:
         requirement: str,
         apis: List[str],
         strategy: AggregationStrategy = AggregationStrategy.HYBRID,
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Create custom superior aggregation task"""
         task = AggregationTask(
             name=name,
@@ -740,7 +787,8 @@ class SuperiorAPIAggregator:
             apis=apis,
             strategy=strategy,
             min_sources=min(2, len(apis)),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.superior_tasks[name] = task
         return True
@@ -757,7 +805,8 @@ class SuperiorAPIAggregator:
                 "apis_count": len(task.apis),
                 "min_sources": task.min_sources,
                 "advantages": self._get_advantages_over_paid(task_name),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return tasks_info
 
@@ -791,7 +840,8 @@ async def demonstrate_superiority(requirement: str) -> Dict[str, Any]:
             "feature_comparison": "Superior through aggregation",
             "reliability": "Higher through redundancy",
             "vendor_independence": "No lock-in, multiple sources",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return result
 
@@ -804,11 +854,13 @@ if __name__ == "__main__":
             result = await aggregator.execute_superior_task(
                 "advanced_content_generation",
                 {"query": "Write a creative story about AI"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             print(
                 f"Superior task executed with quality score: {result.get('quality_score', 0):.2f}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             print(f"Sources used: {result.get('sources_used', 0)}")
             print(f"Advantages: {len(result.get('advantages_over_paid', []))}")
 

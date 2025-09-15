@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Verify Python File Integration Status
 Checks all .py files across the entire codebase
-"""
+""""""
 
 import importlib.util
 from pathlib import Path
@@ -36,7 +36,8 @@ def check_python_files():
         "orchestrator/main.py",
         "agents/content_agent.py",
         "marketing_agent/main.py",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     print("\\n🔍 Key Integration Files:")
     existing_key_files = []
@@ -55,10 +56,12 @@ def check_python_files():
         (
             "backend.content.universal_channel_protocol",
             "backend/content/universal_channel_protocol.py",
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         ("shared_utils", "shared_utils.py"),
         ("config.validator", "config/validator.py"),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for module_name, file_path in test_modules:
         if Path(file_path).exists():
@@ -85,7 +88,8 @@ def check_python_files():
     integration_score = (
         (len(existing_key_files) / len(key_files)) * 0.4
         + (importable_modules / len(test_modules)) * 0.6
-    ) * 100
+# BRACKET_SURGEON: disabled
+#     ) * 100
 
     print(f"\\n🎯 Python Integration Score: {integration_score:.1f}%")
 

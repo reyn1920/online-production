@@ -13,11 +13,11 @@
 # Revision: $Revision: 8567 $
 # Date: $Date: 2020-09-30 13:57:21 +0200 (Mi, 30. Sep 2020) $
 
-"""
+""""""
 A minimal front end to the Docutils Publisher, producing HTML 5 documents.
 
 The output is also valid XML.
-"""
+""""""
 
 try:
     import locale  # module missing in Jython
@@ -30,6 +30,7 @@ from docutils.core import publish_cmdline, default_description
 
 description = (
     "Generates HTML5 documents from standalone " "reStructuredText sources.\n" + default_description
-)
+# BRACKET_SURGEON: disabled
+# )
 
 publish_cmdline(writer_name="html5", description=description)

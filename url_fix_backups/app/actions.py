@@ -11,10 +11,11 @@ def dashboard_action(
         doc: str = "",
         public: bool = False,
         background: bool = False,
-):
-    """
+# BRACKET_SURGEON: disabled
+# ):
+    """"""
     Set background = True for long - running actions: returns {accepted: true, job_id: ...}
-    """
+    """"""
 
 
     def deco(fn: Callable):
@@ -24,7 +25,8 @@ def dashboard_action(
                 "doc": doc.strip(),
                 "public": public,
                 "background": background,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         @wraps(fn)
 
@@ -109,9 +111,11 @@ class ActionRegistry:
                         t = threading.Thread(
                             target = lambda: fn(**args),
                                 daemon = True,
-                                name = f"action:{
-                                meta['name']}:{job_id}",
-                                    )
+                                name = f"action:{"
+                                meta['name']}:{job_id}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                         t.start()
                         return jsonify({"ok": True, "accepted": True, "job_id": job_id})
                     try:
@@ -124,11 +128,13 @@ class ActionRegistry:
 
             self.app.add_url_rule(
                 route,
-                    f"act_{agent_name}_{
-                    meta['name']}",
+                    f"act_{agent_name}_{"
+                    meta['name']}","
                         mk(),
                     methods=[meta["method"]],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             self.logger.info(f"[actions] {meta['method']} {route}")
             added += 1
         self.logger.info(f"[actions] {agent_name}: {added} actions")
@@ -169,9 +175,11 @@ class ActionRegistry:
                     t = threading.Thread(
                         target = lambda: fn(**args),
                             daemon = True,
-                            name = f"action:{
-                            meta['name']}:{job_id}",
-                                )
+                            name = f"action:{"
+                            meta['name']}:{job_id}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                     t.start()
                     return jsonify({"ok": True, "accepted": True, "job_id": job_id})
                 try:
@@ -184,11 +192,13 @@ class ActionRegistry:
 
         self.app.add_url_rule(
             route,
-                f"act_{agent_name}_{
-                meta['name']}",
+                f"act_{agent_name}_{"
+                meta['name']}","
                     mk(),
                 methods=[meta["method"]],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.logger.info(f"[actions] {meta['method']} {route}")
         return 1
 

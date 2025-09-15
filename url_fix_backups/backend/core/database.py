@@ -1,16 +1,16 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Database Connection Manager
 
 This module provides database connection management \
-    and utilities for the TRAE.AI system.
+#     and utilities for the TRAE.AI system.
 It handles both SQLite (development) and PostgreSQL (production) database connections,
 connection pooling, and database initialization.
 
 Author: TRAE.AI System
 Version: 2.0.0
 Date: 2024
-"""
+""""""
 
 import logging
 import os
@@ -42,12 +42,12 @@ class DatabaseError(Exception):
 
 
 class DatabaseManager:
-    """
+    """"""
     Database connection manager for TRAE.AI system.
 
     Provides thread - safe database connections and utilities for SQLite operations.
     Handles connection pooling and automatic database initialization.
-    """
+    """"""
 
     def __init__(self, db_path: str = "data / trae_master.db"):
         self.db_path = Path(db_path)
@@ -69,7 +69,8 @@ class DatabaseManager:
                 # Check if database is initialized
                 cursor = conn.execute(
                     "SELECT name FROM sqlite_master WHERE type='table' AND name='task_queue'"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if not cursor.fetchone():
                     logger.info("Initializing database schema")
                     self._create_schema(conn)
@@ -88,7 +89,7 @@ class DatabaseManager:
         else:
             # Fallback basic schema
             conn.executescript(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS task_queue (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         task_id TEXT UNIQUE NOT NULL,
@@ -105,13 +106,15 @@ class DatabaseManager:
                         completed_at TIMESTAMP,
                         retry_count INTEGER DEFAULT 0,
                         max_retries INTEGER DEFAULT 3
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE INDEX IF NOT EXISTS idx_task_status ON task_queue(status);
                 CREATE INDEX IF NOT EXISTS idx_task_type ON task_queue(task_type);
                 CREATE INDEX IF NOT EXISTS idx_agent_id ON task_queue(agent_id);
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
     @contextmanager
     def get_connection(self):
@@ -162,7 +165,8 @@ def _get_database_manager():
     if PRODUCTION_DB_AVAILABLE and (
         database_url.startswith("postgresql://")
         or os.getenv("USE_PRODUCTION_DB", "").lower() == "true"
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         logger.info("Using ProductionDatabaseManager for PostgreSQL")
         return ProductionDatabaseManager(database_url)
     else:
@@ -171,7 +175,8 @@ def _get_database_manager():
             database_url
             if not database_url.startswith("postgresql://")
             else "data / trae_master.db"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 # Global database manager instance
@@ -192,7 +197,8 @@ def get_db_session():
     else:
         raise NotImplementedError(
             "SQLAlchemy sessions only available with ProductionDatabaseManager"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 def execute_query(query: str, params: tuple = ()) -> List[Dict[str, Any]]:

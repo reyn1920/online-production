@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 AI Integrated Dashboard - Direct Integration with ChatGPT, Gemini, and Abacus AI
 
 Replaces traditional dashboard functionality with direct AI platform integration.
@@ -15,7 +15,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 3.0.0 - AI Platform Integration
-"""
+""""""
 
 import os
 import json
@@ -62,21 +62,25 @@ class AIIntegratedDashboard:
         self.port = port
         self.app = Flask(__name__,
             template_folder='templates',
-                            static_folder='../static')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             static_folder='../static')
 
         # AI platforms - these specific sites are always open on this computer
         self.ai_platforms = {
             'chatgpt': 'https://chatgpt.com/',
                 'gemini': 'https://gemini.google.com / app',
                 'abacus': 'https://apps.abacus.ai / chatllm/?appId = 1024a18ebe'
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Fallback URLs (not needed since platforms are always open)
         self.fallback_platforms = {
             'chatgpt': 'https://chat.openai.com/',
                 'gemini': 'https://bard.google.com/',
                 'abacus': 'https://abacus.ai/'
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Current active platform
         self.active_platform = 'chatgpt'
@@ -85,8 +89,10 @@ class AIIntegratedDashboard:
         self._setup_routes()
 
         logger.info("Web - based AI Integrated Dashboard initialized")
-        logger.info("Using browser automation for ChatGPT, Gemini, \
-    and Abacus AI (no API keys required)")
+        logger.info("Using browser automation for ChatGPT, Gemini, \"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     and Abacus AI (no API keys required)")
 
 
     def _setup_routes(self):
@@ -99,7 +105,9 @@ class AIIntegratedDashboard:
             """Main dashboard page with AI platform integration."""
             return render_template('ai_integrated_dashboard.html',
                 platforms = self.ai_platforms,
-                                     active_platform = self.active_platform)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                      active_platform = self.active_platform)
 
         @self.app.route('/api / switch - platform', methods=['POST'])
 
@@ -119,7 +127,9 @@ class AIIntegratedDashboard:
                     'success': True,
                         'active_platform': self.active_platform,
                         'platform_url': self.ai_platforms[platform]
-                })
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 })
 
             except Exception as e:
                 logger.error(f"Error switching platform: {e}")
@@ -129,8 +139,8 @@ class AIIntegratedDashboard:
 
 
         def platform_status():
-            """Get status of all AI platforms - they are always available since they're open \
-    and minimized on this computer"""
+            """Get status of all AI platforms - they are always available since they're open \"""
+#     and minimized on this computer""""""
             # No HTTP checks needed - platforms are always open and minimized
             platforms = {
                 'chatgpt': {
@@ -138,28 +148,34 @@ class AIIntegratedDashboard:
                         'url': 'https://chatgpt.com/',
                         'fallback_url': 'https://chat.openai.com/',
                         'note': 'Always open and minimized - no login required'
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                     'gemini': {
                     'status': 'ready',
                         'url': 'https://gemini.google.com / app',
                         'fallback_url': 'https://bard.google.com/',
                         'note': 'Always open and minimized - no login required'
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                     'abacus': {
                     'status': 'ready',
                         'url': 'https://apps.abacus.ai / chatllm/?appId = 1024a18ebe',
                         'fallback_url': 'https://abacus.ai/',
                         'note': 'Always open and minimized - no login required'
-                }
-            }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
 
             return jsonify({
                 'platforms': platforms,
-                    'message': 'All AI platforms are always available (open \
-    and minimized on this computer)',
+                    'message': 'All AI platforms are always available (open \'
+#     and minimized on this computer)',
                     'no_login_required': True,
                     'timestamp': datetime.now().isoformat()
-            })
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             })
 
         @self.app.route('/api / validate - quality', methods=['POST'])
 
@@ -178,8 +194,8 @@ class AIIntegratedDashboard:
     503
 
                 # Real AI validation using web - based platforms (no API costs)
-                validation_prompt = f"Please evaluate this content for quality, clarity, \
-    and professionalism on a scale of 1 - 100. Provide a brief feedback comment. Content: {content}"
+                validation_prompt = f"Please evaluate this content for quality, clarity, \"
+#     and professionalism on a scale of 1 - 100. Provide a brief feedback comment. Content: {content}"
 
                 platform_results = {}
                 total_score = 0
@@ -189,7 +205,9 @@ class AIIntegratedDashboard:
                 for platform in [AIPlatform.CHATGPT, AIPlatform.GEMINI, AIPlatform.ABACUS_AI]:
                     try:
                         response = core_ai.process_with_ai(validation_prompt,
-    platform, "quality_validation")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     platform, "quality_validation")
                         if response.success:
                             # Extract score from response (simplified parsing)
                             score = self._extract_score_from_response(response.content)
@@ -199,7 +217,8 @@ class AIIntegratedDashboard:
                                     'status': 'approved' if score >= 70 else 'needs_improvement',
                                     'response_time': response.response_time_ms,
                                     'method': 'web_automation'
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             total_score += score
                             successful_validations += 1
                         else:
@@ -208,7 +227,8 @@ class AIIntegratedDashboard:
                                     'feedback': f'Web platform error: {response.error_message}',
                                     'status': 'error',
                                     'method': 'web_automation'
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     except Exception as e:
                         logger.error(f"Error validating with web platform {platform.value}: {e}")
                         platform_results[platform.value] = {
@@ -216,7 +236,8 @@ class AIIntegratedDashboard:
                                 'feedback': f'Web platform unavailable: {str(e)}',
                                 'status': 'error',
                                 'method': 'web_automation'
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 consensus_score = total_score / max(1, successful_validations)
 
@@ -229,7 +250,8 @@ class AIIntegratedDashboard:
                         'method': 'web_based_consensus',
                         'cost_model': 'no_api_costs',
                         'timestamp': datetime.now().isoformat()
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 return jsonify(validation_result)
 
@@ -257,9 +279,12 @@ class AIIntegratedDashboard:
                     'Quality Validation Consensus',
                     'Unified Interface',
                     'Zero API Costs'
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                 'timestamp': datetime.now().isoformat()
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Add AI integration stats if available
             if core_ai:
@@ -269,7 +294,8 @@ class AIIntegratedDashboard:
                         'platform_health': core_ai.get_platform_health(),
                         'recent_requests': core_ai.get_recent_request_count(),
                         'ai_integration_active': True
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     stats.update(ai_stats)
                 except Exception as e:
                     logger.error(f"Error getting AI stats: {e}")
@@ -288,13 +314,17 @@ class AIIntegratedDashboard:
                                 'success_rate': ai_stats['success_rate'],
                                 'platform_usage': ai_stats['core_stats']['platform_usage'],
                                 'most_used_platform': ai_stats['most_used_platform']
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                             'cost_tracking': {
                             'session_cost': cost_summary['session_cost'],
                                 'session_requests': cost_summary['session_requests'],
                                 'cost_recommendations': cost_summary['cost_recommendations'][:3]  # Top 3 recommendations
-                        }
-                    })
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     })
                 except Exception as e:
                     logger.error(f"Error getting AI stats: {e}")
                     stats['ai_integration_error'] = str(e)
@@ -345,14 +375,17 @@ class AIIntegratedDashboard:
                             'platform': platform,
                             'response_time_ms': response.response_time_ms,
                             'timestamp': datetime.now().isoformat()
-                    })
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     })
                 else:
                     return jsonify({
                         'success': False,
                             'error': response.error_message,
                             'platform': platform,
                             'timestamp': datetime.now().isoformat()
-                    }), 500
+# BRACKET_SURGEON: disabled
+#                     }), 500
 
             except Exception as e:
                 logger.error(f"Error in AI chat: {e}")
@@ -360,14 +393,14 @@ class AIIntegratedDashboard:
 
         @self.app.route('/api / ai - insights')
         def ai_insights():
-            """Get AI - powered real - time insights about system performance \
-    and user behavior."""
+            """Get AI - powered real - time insights about system performance \"""
+#     and user behavior.""""""
             try:
                 if not core_ai:
                     return jsonify({'error': 'AI integration not available'}), 503
 
                 # Generate real - time insights using AI
-                insights_prompt = f"""
+                insights_prompt = f""""""
                 Analyze the current system state and provide actionable insights:
                 - Current time: {datetime.now().isoformat()}
                 - Active platform: {self.active_platform}
@@ -378,7 +411,7 @@ class AIIntegratedDashboard:
                 2. User experience improvements
                 3. Potential issues or bottlenecks
                 4. Recommendations for better efficiency
-                """
+                """"""
 
                 from core_ai_integration import AIRequest
 
@@ -386,7 +419,9 @@ class AIIntegratedDashboard:
                     prompt = insights_prompt,
                     platform = AIPlatform.CHATGPT,
                     context={'type': 'system_insights'}
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 response = core_ai.process_request(ai_request)
 
@@ -396,7 +431,8 @@ class AIIntegratedDashboard:
                     'platform_used': 'ChatGPT',
                     'confidence_score': 0.85,
                     'recommendations': self._extract_recommendations(response.get('content', ''))
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 return jsonify(insights)
 
@@ -417,14 +453,17 @@ class AIIntegratedDashboard:
                     'usage_patterns': self._analyze_usage_patterns(),
                     'predictive_insights': self._generate_predictive_insights(),
                     'optimization_suggestions': self._get_optimization_suggestions()
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 return jsonify({
                     'analytics': analytics_data,
                     'generated_at': datetime.now().isoformat(),
                     'ai_powered': True,
                     'platforms_used': ['ChatGPT', 'Gemini', 'Abacus AI']
-                })
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 })
 
             except Exception as e:
                 logger.error(f"Error generating intelligent analytics: {e}")
@@ -445,7 +484,7 @@ class AIIntegratedDashboard:
                     return jsonify({'error': 'AI integration not available'}), 503
 
                 # Enhanced assistant prompt with dashboard context
-                assistant_prompt = f"""
+                assistant_prompt = f""""""
                 You are an AI assistant for the Trae AI dashboard. Help the user with their query:
 
                 User Query: {user_query}
@@ -458,7 +497,7 @@ class AIIntegratedDashboard:
                 - Analytics: Explain what metrics mean
                 - Features: Describe available functionality
                 - Troubleshooting: Provide step - by - step solutions
-                """
+                """"""
 
                 from core_ai_integration import AIRequest
 
@@ -466,19 +505,23 @@ class AIIntegratedDashboard:
                     prompt = assistant_prompt,
                     platform = AIPlatform.GEMINI,
                     context={'type': 'user_assistance', 'query': user_query}
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 response = core_ai.process_request(ai_request)
 
                 assistance = {
-                    'response': response.get('content', 'I apologize,
-    but I cannot assist with that query at the moment.'),
+                    'response': response.get('content', 'I apologize,'
+# BRACKET_SURGEON: disabled
+#     but I cannot assist with that query at the moment.'),'
                     'query': user_query,
                     'context_understood': bool(context),
                     'suggested_actions': self._extract_suggested_actions(response.get('content', '')),
                     'generated_at': datetime.now().isoformat(),
                     'platform_used': 'Gemini'
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 return jsonify(assistance)
 
@@ -494,7 +537,7 @@ class AIIntegratedDashboard:
                     return jsonify({'error': 'AI integration not available'}), 503
 
                 # Generate predictive analysis using Abacus AI
-                monitoring_prompt = f"""
+                monitoring_prompt = f""""""
                 Analyze system health and predict potential issues:
 
                 Current Metrics:
@@ -509,7 +552,7 @@ class AIIntegratedDashboard:
                 3. Performance degradation risks
                 4. Maintenance recommendations
                 5. Optimal usage patterns
-                """
+                """"""
 
                 from core_ai_integration import AIRequest
 
@@ -517,7 +560,9 @@ class AIIntegratedDashboard:
                     prompt = monitoring_prompt,
                     platform = AIPlatform.ABACUS_AI,
                     context={'type': 'predictive_monitoring'}
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 response = core_ai.process_request(ai_request)
 
@@ -529,7 +574,8 @@ class AIIntegratedDashboard:
                     'generated_at': datetime.now().isoformat(),
                     'platform_used': 'Abacus AI',
                     'confidence_level': 'high'
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 return jsonify(monitoring_data)
 
@@ -572,7 +618,9 @@ class AIIntegratedDashboard:
                 r'(\\d+)\\s*/\\s * 100',
                 r'(\\d+)\\s*(?:out of|/)?\\s * 100',
                 r'\\b([7 - 9]\\d|100)\\b'  # Numbers 70 - 100
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for pattern in patterns:
             match = re.search(pattern, response_text.lower())
@@ -622,7 +670,8 @@ class AIIntegratedDashboard:
             'requests_per_minute': 180,
             'error_rate_percent': 0.1,
             'uptime_hours': round(time.time()/3600, 2)
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _analyze_usage_patterns(self) -> Dict[str, Any]:
         """Analyze usage patterns for intelligent insights."""
@@ -633,7 +682,8 @@ class AIIntegratedDashboard:
             'user_engagement_score': 8.5,
             'feature_adoption_rate': 0.75,
             'session_duration_avg_minutes': 45
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _generate_predictive_insights(self) -> Dict[str, Any]:
         """Generate predictive insights using AI analysis."""
@@ -643,7 +693,8 @@ class AIIntegratedDashboard:
             'resource_scaling_recommendation': 'Consider adding 1 more instance',
             'user_growth_projection': '12% monthly increase',
             'performance_trend': 'stable with minor improvements needed'
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_optimization_suggestions(self) -> List[str]:
         """Get AI - powered optimization suggestions."""
@@ -653,7 +704,9 @@ class AIIntegratedDashboard:
             'Optimize database queries for better performance',
             'Consider CDN integration for static assets',
             'Implement request rate limiting for better stability'
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
     def _calculate_health_score(self) -> float:
         """Calculate overall system health score."""
@@ -675,7 +728,8 @@ class AIIntegratedDashboard:
             'availability_risk': 'low',
             'data_integrity_risk': 'low',
             'scalability_risk': 'medium'
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _generate_maintenance_schedule(self) -> Dict[str, Any]:
         """Generate AI - recommended maintenance schedule."""
@@ -690,8 +744,11 @@ class AIIntegratedDashboard:
                 'Update system dependencies',
                 'Optimize database indexes',
                 'Review security configurations'
-            ]
-        }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def run(self, debug = True):
@@ -706,8 +763,10 @@ class AIIntegratedDashboard:
         # Log AI integration status
         if core_ai:
             logger.info("Web - based AI Integration: ACTIVE")
-            logger.info("Browser automation for ChatGPT, Gemini, \
-    and Abacus AI enabled (no API costs)")
+            logger.info("Browser automation for ChatGPT, Gemini, \"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     and Abacus AI enabled (no API costs)")
         else:
             logger.warning("Web - based AI Integration: DISABLED - Limited functionality")
 

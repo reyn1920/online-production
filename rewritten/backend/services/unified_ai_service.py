@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Unified AI Service Layer
 Integrates ChatGPT, Gemini, and Abacus.AI with free APIs and cross-version compatibility
-"""
+""""""
 
 import os
 import asyncio
@@ -56,7 +56,7 @@ class RateLimit:
     current_minute_count: int = 0
     current_day_count: int = 0
     current_month_count: int = 0
-    last_reset_minute: datetime = field(default_factory=datetime.now)
+    last_reset_minute: datetime = field(default_factory=datetime.now):
     last_reset_day: datetime = field(default_factory=datetime.now)
     last_reset_month: datetime = field(default_factory=datetime.now)
 
@@ -95,31 +95,38 @@ class RateLimitManager:
         self.limits = {
             AIServiceType.OPENAI_FREE: RateLimit(
                 requests_per_minute=3, requests_per_day=200, requests_per_month=1000
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AIServiceType.GOOGLE_FREE: RateLimit(
                 requests_per_minute=15, requests_per_day=1500, requests_per_month=10000
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AIServiceType.HUGGINGFACE: RateLimit(
                 requests_per_minute=30,
                 requests_per_day=10000,
                 requests_per_month=100000,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AIServiceType.CHATGPT: RateLimit(
                 requests_per_minute=60,
                 requests_per_day=10000,
                 requests_per_month=100000,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AIServiceType.GEMINI: RateLimit(
                 requests_per_minute=60,
                 requests_per_day=10000,
                 requests_per_month=100000,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AIServiceType.ABACUS: RateLimit(
                 requests_per_minute=100,
                 requests_per_day=50000,
                 requests_per_month=500000,
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
         self.request_queues = {service: deque() for service in AIServiceType}
 
     async def check_rate_limit(self, service: AIServiceType) -> bool:
@@ -187,7 +194,8 @@ class CacheManager:
 
         content = json.dumps(
             {"type": request.request_type.value, "data": request.data}, sort_keys=True
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return hashlib.md5(content.encode()).hexdigest()
 
     async def get(self, request: AIRequest) -> Optional[AIResponse]:
@@ -249,18 +257,21 @@ class ChatGPTIntegration:
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             payload = {
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 2000,
                 "temperature": 0.7,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             async with session.post(
                 f"{self.base_url}/chat/completions", headers=headers, json=payload
-            ) as response:
+# BRACKET_SURGEON: disabled
+#             ) as response:
                 if response.status == 200:
                     data = await response.json()
                     content = data["choices"][0]["message"]["content"]
@@ -272,7 +283,8 @@ class ChatGPTIntegration:
                         service_used=AIServiceType.CHATGPT,
                         response_time=time.time() - start_time,
                         tokens_used=tokens_used,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     error_data = await response.text()
                     return AIResponse(
@@ -281,7 +293,8 @@ class ChatGPTIntegration:
                         service_used=AIServiceType.CHATGPT,
                         response_time=time.time() - start_time,
                         error_message=f"HTTP {response.status}: {error_data}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         except Exception as e:
             return AIResponse(
@@ -290,13 +303,15 @@ class ChatGPTIntegration:
                 service_used=AIServiceType.CHATGPT,
                 response_time=time.time() - start_time,
                 error_message=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def code_review(self, code_snippet: str) -> AIResponse:
         """Review code using ChatGPT"""
         prompt = (
             f"Please review this code and provide suggestions for improvement:\n\n{code_snippet}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return await self.generate_content(prompt)
 
     async def close(self):
@@ -338,7 +353,8 @@ class GeminiIntegration:
                         data=content,
                         service_used=AIServiceType.GEMINI,
                         response_time=time.time() - start_time,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     error_data = await response.text()
                     return AIResponse(
@@ -347,7 +363,8 @@ class GeminiIntegration:
                         service_used=AIServiceType.GEMINI,
                         response_time=time.time() - start_time,
                         error_message=f"HTTP {response.status}: {error_data}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         except Exception as e:
             return AIResponse(
@@ -356,7 +373,8 @@ class GeminiIntegration:
                 service_used=AIServiceType.GEMINI,
                 response_time=time.time() - start_time,
                 error_message=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def advanced_reasoning(self, query: str) -> AIResponse:
         """Perform advanced reasoning using Gemini"""
@@ -390,17 +408,20 @@ class AbacusAIIntegration:
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             payload = {
                 "app_id": self.app_id,
                 "service_type": service_type,
                 "data": data,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             async with session.post(
                 f"{self.base_url}/v1/inference", headers=headers, json=payload
-            ) as response:
+# BRACKET_SURGEON: disabled
+#             ) as response:
                 if response.status == 200:
                     result = await response.json()
 
@@ -409,7 +430,8 @@ class AbacusAIIntegration:
                         data=result,
                         service_used=AIServiceType.ABACUS,
                         response_time=time.time() - start_time,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     error_data = await response.text()
                     return AIResponse(
@@ -418,7 +440,8 @@ class AbacusAIIntegration:
                         service_used=AIServiceType.ABACUS,
                         response_time=time.time() - start_time,
                         error_message=f"HTTP {response.status}: {error_data}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         except Exception as e:
             return AIResponse(
@@ -427,7 +450,8 @@ class AbacusAIIntegration:
                 service_used=AIServiceType.ABACUS,
                 response_time=time.time() - start_time,
                 error_message=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def custom_model_inference(self, model_id: str, input_data: Any) -> AIResponse:
         """Run inference on custom model"""
@@ -460,13 +484,15 @@ class HuggingFaceIntegration:
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             async with session.post(
                 f"{self.base_url}/{model_name}",
                 headers=headers,
                 json={"inputs": inputs},
-            ) as response:
+# BRACKET_SURGEON: disabled
+#             ) as response:
                 if response.status == 200:
                     result = await response.json()
 
@@ -475,7 +501,8 @@ class HuggingFaceIntegration:
                         data=result,
                         service_used=AIServiceType.HUGGINGFACE,
                         response_time=time.time() - start_time,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     error_data = await response.text()
                     return AIResponse(
@@ -484,7 +511,8 @@ class HuggingFaceIntegration:
                         service_used=AIServiceType.HUGGINGFACE,
                         response_time=time.time() - start_time,
                         error_message=f"HTTP {response.status}: {error_data}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         except Exception as e:
             return AIResponse(
@@ -493,7 +521,8 @@ class HuggingFaceIntegration:
                 service_used=AIServiceType.HUGGINGFACE,
                 response_time=time.time() - start_time,
                 error_message=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def close(self):
         if self.session:
@@ -512,11 +541,13 @@ class AIServiceMonitor:
             "total_requests": defaultdict(int),
             "total_tokens": defaultdict(int),
             "total_cost": defaultdict(float),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def track_request(
         self, service: AIServiceType, request_type: RequestType, response: AIResponse
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Track service performance metrics"""
         service_key = service.value
 
@@ -545,7 +576,8 @@ class AIServiceMonitor:
                     "total_requests": self.metrics["total_requests"][service],
                     "total_tokens": self.metrics["total_tokens"][service],
                     "total_cost": self.metrics["total_cost"][service],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return report
 
@@ -568,7 +600,8 @@ class UnifiedAIService:
                 AIServiceType.CHATGPT,
                 AIServiceType.GEMINI,
                 AIServiceType.HUGGINGFACE,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             RequestType.CODE_GENERATION: [AIServiceType.CHATGPT, AIServiceType.GEMINI],
             RequestType.CODE_REVIEW: [AIServiceType.CHATGPT, AIServiceType.GEMINI],
             RequestType.CONTENT_CREATION: [AIServiceType.CHATGPT, AIServiceType.GEMINI],
@@ -577,18 +610,22 @@ class UnifiedAIService:
                 AIServiceType.CHATGPT,
                 AIServiceType.GEMINI,
                 AIServiceType.HUGGINGFACE,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             RequestType.SUMMARIZATION: [
                 AIServiceType.CHATGPT,
                 AIServiceType.GEMINI,
                 AIServiceType.HUGGINGFACE,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             RequestType.QUESTION_ANSWERING: [
                 AIServiceType.CHATGPT,
                 AIServiceType.GEMINI,
                 AIServiceType.ABACUS,
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
     async def process_request(self, request: AIRequest) -> AIResponse:
         """Process AI request with intelligent service selection"""
@@ -632,7 +669,8 @@ class UnifiedAIService:
             service_used=(services_to_try[0] if services_to_try else AIServiceType.CHATGPT),
             response_time=0,
             error_message="All available services failed or rate limited",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     async def _get_best_available_services(self, request_type: RequestType) -> List[AIServiceType]:
         """Get best available services for request type"""
@@ -660,14 +698,16 @@ class UnifiedAIService:
                     return await self.gemini.multimodal_analysis(
                         request.data.get("content_type", "text"),
                         request.data.get("data", ""),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     return await self.gemini.advanced_reasoning(request.data.get("query", ""))
 
             elif service == AIServiceType.ABACUS:
                 return await self.abacus.enterprise_ai_service(
                     request.request_type.value, request.data
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             elif service == AIServiceType.HUGGINGFACE:
                 model_name = request.data.get("model", "gpt2")
@@ -681,7 +721,8 @@ class UnifiedAIService:
                     service_used=service,
                     response_time=0,
                     error_message=f"Service {service.value} not implemented",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return AIResponse(
@@ -690,7 +731,8 @@ class UnifiedAIService:
                 service_used=service,
                 response_time=0,
                 error_message=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def get_performance_metrics(self) -> Dict[str, Any]:
         """Get performance metrics for all services"""
@@ -713,7 +755,8 @@ async def generate_text(prompt: str, preferred_service: Optional[AIServiceType] 
             request_type=RequestType.TEXT_GENERATION,
             data={"prompt": prompt},
             preferred_service=preferred_service,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         response = await service.process_request(request)
         return response.data if response.success else f"Error: {response.error_message}"
     finally:
@@ -728,7 +771,8 @@ async def review_code(code: str, preferred_service: Optional[AIServiceType] = No
             request_type=RequestType.CODE_REVIEW,
             data={"code": code},
             preferred_service=preferred_service,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         response = await service.process_request(request)
         return response.data if response.success else f"Error: {response.error_message}"
     finally:
@@ -737,7 +781,8 @@ async def review_code(code: str, preferred_service: Optional[AIServiceType] = No
 
 async def analyze_multimodal(
     content_type: str, data: Any, preferred_service: Optional[AIServiceType] = None
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     """Analyze multimodal content using the best available service"""
     service = UnifiedAIService()
     try:
@@ -745,7 +790,8 @@ async def analyze_multimodal(
             request_type=RequestType.MULTIMODAL_ANALYSIS,
             data={"content_type": content_type, "data": data},
             preferred_service=preferred_service or AIServiceType.GEMINI,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         response = await service.process_request(request)
         return response.data if response.success else f"Error: {response.error_message}"
     finally:
@@ -762,7 +808,8 @@ if __name__ == "__main__":
             request = AIRequest(
                 request_type=RequestType.TEXT_GENERATION,
                 data={"prompt": "Write a short story about AI"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response = await service.process_request(request)
             print(f"Response: {response.data}")
             print(f"Service used: {response.service_used.value}")

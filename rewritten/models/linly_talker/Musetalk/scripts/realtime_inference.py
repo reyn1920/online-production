@@ -15,11 +15,15 @@ import numpy as np
 import torch
 from musetalk.utils.blending import (get_image, get_image_blending,
 
-    get_image_prepare_material)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     get_image_prepare_material)
 
 from musetalk.utils.preprocessing import (coord_placeholder, get_landmark_and_bbox,
 
-    read_imgs)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     read_imgs)
 
 from musetalk.utils.utils import datagen, get_file_type, get_video_fps, load_all_model
 from omegaconf import OmegaConf
@@ -74,7 +78,8 @@ class Avatar:
             "avatar_id": avatar_id,
                 "video_path": video_path,
                 "bbox_shift": bbox_shift,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.preparation = preparation
         self.batch_size = batch_size
         self.idx = 0
@@ -86,7 +91,9 @@ class Avatar:
             if os.path.exists(self.avatar_path):
                 response = input(
                     f"{self.avatar_id} exists, Do you want to re - create it ? (y/n)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if response.lower() == "y":
                     shutil.rmtree(self.avatar_path)
                     print("*********************************")
@@ -98,8 +105,12 @@ class Avatar:
                                 self.full_imgs_path,
                                 self.video_out_path,
                                 self.mask_out_path,
-                                ]
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     self.prepare_material()
                 else:
                     self.input_latent_list_cycle = torch.load(self.latents_out_path)
@@ -107,21 +118,29 @@ class Avatar:
                         self.coord_list_cycle = pickle.load(f)
                     input_img_list = glob.glob(
                         os.path.join(self.full_imgs_path, "*.[jpJP][pnPN]*[gG]")
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     input_img_list = sorted(
                         input_img_list,
                             key = lambda x: int(os.path.splitext(os.path.basename(x))[0]),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     self.frame_list_cycle = read_imgs(input_img_list)
                     with open(self.mask_coords_path, "rb") as f:
                         self.mask_coords_list_cycle = pickle.load(f)
                     input_mask_list = glob.glob(
                         os.path.join(self.mask_out_path, "*.[jpJP][pnPN]*[gG]")
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     input_mask_list = sorted(
                         input_mask_list,
                             key = lambda x: int(os.path.splitext(os.path.basename(x))[0]),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     self.mask_list_cycle = read_imgs(input_mask_list)
             else:
                 print("*********************************")
@@ -133,14 +152,20 @@ class Avatar:
                             self.full_imgs_path,
                             self.video_out_path,
                             self.mask_out_path,
-                            ]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.prepare_material()
         else:
             if not os.path.exists(self.avatar_path):
                 print(
                     f"{self.avatar_id} does not exist, you should set preparation to True"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 sys.exit()
 
             with open(self.avatar_info_path, "r") as f:
@@ -148,9 +173,11 @@ class Avatar:
 
             if avatar_info["bbox_shift"] != self.avatar_info["bbox_shift"]:
                 response = input(
-                    f" 【bbox_shift】 is changed,
-    you need to re - create it ! (c/continue)"
-                )
+                    f" 【bbox_shift】 is changed,"
+    you need to re - create it ! (c/continue)""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if response.lower() == "c":
                     shutil.rmtree(self.avatar_path)
                     print("*********************************")
@@ -162,8 +189,12 @@ class Avatar:
                                 self.full_imgs_path,
                                 self.video_out_path,
                                 self.mask_out_path,
-                                ]
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     self.prepare_material()
                 else:
                     sys.exit()
@@ -173,21 +204,29 @@ class Avatar:
                     self.coord_list_cycle = pickle.load(f)
                 input_img_list = glob.glob(
                     os.path.join(self.full_imgs_path, "*.[jpJP][pnPN]*[gG]")
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 input_img_list = sorted(
                     input_img_list,
                         key = lambda x: int(os.path.splitext(os.path.basename(x))[0]),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.frame_list_cycle = read_imgs(input_img_list)
                 with open(self.mask_coords_path, "rb") as f:
                     self.mask_coords_list_cycle = pickle.load(f)
                 input_mask_list = glob.glob(
                     os.path.join(self.mask_out_path, "*.[jpJP][pnPN]*[gG]")
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 input_mask_list = sorted(
                     input_mask_list,
                         key = lambda x: int(os.path.splitext(os.path.basename(x))[0]),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.mask_list_cycle = read_imgs(input_mask_list)
 
 
@@ -206,10 +245,14 @@ class Avatar:
             for filename in files:
                 shutil.copyfile(
                     f"{self.video_path}/{filename}", f"{self.full_imgs_path}/{filename}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         input_img_list = sorted(
             glob.glob(os.path.join(self.full_imgs_path, "*.[jpJP][pnPN]*[gG]"))
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         print("extracting landmarks...")
         coord_list, frame_list = get_landmark_and_bbox(input_img_list, self.bbox_shift)
@@ -225,7 +268,9 @@ class Avatar:
             crop_frame = frame[y1:y2, x1:x2]
             resized_crop_frame = cv2.resize(
                 crop_frame, (256, 256), interpolation = cv2.INTER_LANCZOS4
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             latents = vae.get_latents_for_unet(resized_crop_frame)
             input_latent_list.append(latents)
 
@@ -268,7 +313,9 @@ class Avatar:
             bbox = self.coord_list_cycle[self.idx % (len(self.coord_list_cycle))]
             ori_frame = copy.deepcopy(
                 self.frame_list_cycle[self.idx % (len(self.frame_list_cycle))]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             x1, y1, x2, y2 = bbox
             try:
                 res_frame = cv2.resize(res_frame.astype(np.uint8), (x2 - x1, y2 - y1))
@@ -277,17 +324,23 @@ class Avatar:
             mask = self.mask_list_cycle[self.idx % (len(self.mask_list_cycle))]
             mask_crop_box = self.mask_coords_list_cycle[
                 self.idx % (len(self.mask_coords_list_cycle))
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             # combine_frame = get_image(ori_frame,res_frame,bbox)
             combine_frame = get_image_blending(
                 ori_frame, res_frame, bbox, mask, mask_crop_box
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if skip_save_images is False:
                 cv2.imwrite(
                     f"{self.avatar_path}/tmp/{str(self.idx).zfill(8)}.png",
                         combine_frame,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             self.idx = self.idx + 1
 
 
@@ -299,10 +352,14 @@ class Avatar:
         whisper_feature = audio_processor.audio2feat(audio_path)
         whisper_chunks = audio_processor.feature2chunks(
             feature_array = whisper_feature, fps = fps
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(
             f"processing audio:{audio_path} costs {(time.time() - start_time) * 1000}ms"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         ############################################## inference batch by batch ##############################################
         video_num = len(whisper_chunks)
         res_frame_queue = queue.Queue()
@@ -311,7 +368,9 @@ class Avatar:
         process_thread = threading.Thread(
             target = self.process_frames,
                 args=(res_frame_queue, video_num, skip_save_images),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         process_thread.start()
 
         gen = datagen(whisper_chunks, self.input_latent_list_cycle, self.batch_size)
@@ -320,17 +379,21 @@ class Avatar:
 
         for i, (whisper_batch, latent_batch) in enumerate(
             tqdm(gen, total = int(np.ceil(float(video_num)/self.batch_size)))
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             audio_feature_batch = torch.from_numpy(whisper_batch)
             audio_feature_batch = audio_feature_batch.to(
                 device = unet.device, dtype = unet.model.dtype
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             audio_feature_batch = pe(audio_feature_batch)
             latent_batch = latent_batch.to(dtype = unet.model.dtype)
 
             pred_latents = unet.model(
                 latent_batch, timesteps, encoder_hidden_states = audio_feature_batch
-            ).sample
+# BRACKET_SURGEON: disabled
+#             ).sample
             recon = vae.decode_latents(pred_latents)
             for res_frame in recon:
                 res_frame_queue.put(res_frame)
@@ -341,14 +404,22 @@ class Avatar:
             print(
                 "Total process time of {} frames without saving images = {}s".format(
                     video_num, time.time() - start_time
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             print(
                 "Total process time of {} frames including saving images = {}s".format(
                     video_num, time.time() - start_time
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if out_vid_name is not None and args.skip_save_images is False:
             # optional
@@ -367,34 +438,42 @@ class Avatar:
         print("\\n")
 
 if __name__ == "__main__":
-    """
+    """"""
     This script is used to simulate online chatting \
-    and applies necessary pre - processing such as face detection \
-    and face parsing in advance. During online chatting, only UNet \
-    and the VAE decoder are involved, which makes MuseTalk real - time.
-    """
+#     and applies necessary pre - processing such as face detection \
+#     and face parsing in advance. During online chatting, only UNet \
+#     and the VAE decoder are involved, which makes MuseTalk real - time.
+    """"""
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--inference_config",
             type = str,
             default="configs/inference/realtime.yaml",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--fps",
             type = int,
             default = 25,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--batch_size",
             type = int,
             default = 4,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--skip_save_images",
             action="store_true",
             help="Whether skip saving images for better generation speed calculation",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     args = parser.parse_args()
 
@@ -411,7 +490,9 @@ if __name__ == "__main__":
                 bbox_shift = bbox_shift,
                 batch_size = args.batch_size,
                 preparation = data_preparation,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         audio_clips = inference_config[avatar_id]["audio_clips"]
         for audio_num, audio_path in audio_clips.items():

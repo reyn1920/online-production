@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Autonomous Decision Engine - AI - Powered Business Decision Making System
 
 This engine provides:
@@ -14,7 +14,7 @@ This engine provides:
 
 Author: TRAE.AI System
 Version: 2.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -147,8 +147,11 @@ class AutonomousDecisionEngine:
                     "competitive_advantage": 0.15,
                     "implementation_feasibility": 0.15,
                     "risk_factor": 0.10,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Database for persistence
         self.db_path = "decision_engine.db"
@@ -175,17 +178,21 @@ class AutonomousDecisionEngine:
                         "competitive_advantage": 0.15,
                         "implementation_feasibility": 0.15,
                         "risk_factor": 0.10,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "learning_rate": 0.1,
                     "market_signal_sources": [
                     "internal_metrics",
                         "competitor_analysis",
                         "customer_feedback",
                         "market_trends",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "auto_execute_threshold": 0.9,
                     "simulation_runs": 1000,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             self._save_config(default_config)
             return default_config
 
@@ -203,7 +210,7 @@ class AutonomousDecisionEngine:
 
         # Decision recommendations table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS decision_recommendations (
                 id TEXT PRIMARY KEY,
                     category TEXT,
@@ -222,13 +229,17 @@ class AutonomousDecisionEngine:
                     timestamp TEXT,
                     executed BOOLEAN DEFAULT FALSE,
                     actual_outcome TEXT
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Market signals table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS market_signals (
                 id TEXT PRIMARY KEY,
                     signal_type TEXT,
@@ -238,13 +249,17 @@ class AutonomousDecisionEngine:
                     source TEXT,
                     timestamp TEXT,
                     metadata TEXT
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Performance tracking table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS decision_performance (
                 decision_id TEXT,
                     metric_name TEXT,
@@ -253,9 +268,13 @@ class AutonomousDecisionEngine:
                     variance REAL,
                     timestamp TEXT,
                     FOREIGN KEY (decision_id) REFERENCES decision_recommendations (id)
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         conn.commit()
         conn.close()
@@ -274,7 +293,8 @@ class AutonomousDecisionEngine:
                     "friday": 0.8,
                     "saturday": 0.7,
                     "sunday": 0.6,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "channel_multipliers": {
                 "email": 1.2,
                     "social_media": 0.8,
@@ -282,9 +302,11 @@ class AutonomousDecisionEngine:
                     "content": 1.0,
                     "referral": 1.8,
                     "direct": 1.3,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "market_conditions": {"bull": 1.3, "neutral": 1.0, "bear": 0.7},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _initialize_risk_model(self) -> Dict[str, Any]:
@@ -297,14 +319,17 @@ class AutonomousDecisionEngine:
                     "technology_risk": 0.15,
                     "execution_risk": 0.25,
                     "financial_risk": 0.15,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "risk_mitigation_factors": {
                 "diversification": 0.8,
                     "experience": 0.9,
                     "backup_plan": 0.85,
                     "gradual_rollout": 0.9,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _initialize_market_model(self) -> Dict[str, Any]:
@@ -315,13 +340,16 @@ class AutonomousDecisionEngine:
                     "market_share": 0.25,
                     "customer_satisfaction": 0.2,
                     "competitive_position": 0.25,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "timing_factors": {
                 "market_readiness": 0.4,
                     "competitive_landscape": 0.3,
                     "resource_availability": 0.3,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def analyze_business_state(
@@ -333,17 +361,21 @@ class AutonomousDecisionEngine:
         analysis = {
             "current_performance": await self._assess_current_performance(
                 business_metrics
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "market_signals": await self._collect_market_signals(),
                 "opportunity_areas": await self._identify_opportunity_areas(
                 business_metrics
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "risk_factors": await self._assess_risk_factors(business_metrics),
                 "competitive_position": await self._analyze_competitive_position(),
                 "resource_constraints": await self._analyze_resource_constraints(
                 business_metrics
-            ),
-                }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         return analysis
 
@@ -379,14 +411,18 @@ class AutonomousDecisionEngine:
         # Score and rank recommendations
         scored_recommendations = await self._score_and_rank_recommendations(
             recommendations, business_state
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Filter by thresholds
         filtered_recommendations = self._filter_recommendations(scored_recommendations)
 
         logger.info(
             f"📋 Generated {len(filtered_recommendations)} high - quality decision recommendations"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return filtered_recommendations
 
@@ -403,10 +439,12 @@ class AutonomousDecisionEngine:
             - (
                 metrics.get("operational_costs", 0)
                 / max(metrics.get("total_revenue", 1), 1)
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "growth_momentum": metrics.get("growth_rate", 0),
                 "profitability": metrics.get("profit_margin", 0),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Overall performance score
         performance["overall_score"] = sum(performance.values())/len(performance)
@@ -419,7 +457,9 @@ class AutonomousDecisionEngine:
         signals = []
 
         # Simulated market signals (in real implementation,
-    these would come from various APIs)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     these would come from various APIs)
         current_time = datetime.now()
 
         # Economic indicators
@@ -432,8 +472,12 @@ class AutonomousDecisionEngine:
                     source="economic_data",
                     timestamp = current_time,
                     metadata={"indicator": "consumer_confidence", "value": 0.7},
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Competitive signals
         signals.append(
@@ -445,8 +489,12 @@ class AutonomousDecisionEngine:
                     source="competitor_analysis",
                     timestamp = current_time,
                     metadata={"activity": "pricing_changes", "impact": "moderate"},
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Customer behavior signals
         signals.append(
@@ -458,8 +506,12 @@ class AutonomousDecisionEngine:
                     source="customer_analytics",
                     timestamp = current_time,
                     metadata={"behavior": "increased_engagement", "segment": "premium"},
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.market_signals.extend(signals)
         await self._save_market_signals(signals)
@@ -481,8 +533,11 @@ class AutonomousDecisionEngine:
                         "potential": 500 - metrics.get("daily_revenue", 0),
                         "confidence": 0.8,
                         "urgency": "high",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Conversion opportunities
         if metrics.get("conversion_rate", 0) < 0.05:  # Below 5%
@@ -492,8 +547,11 @@ class AutonomousDecisionEngine:
                         "potential": (0.05 - metrics.get("conversion_rate", 0)) * 100,
                         "confidence": 0.7,
                         "urgency": "medium",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Cost optimization opportunities
         if metrics.get("profit_margin", 0) < 0.3:  # Below 30%
@@ -503,8 +561,11 @@ class AutonomousDecisionEngine:
                         "potential": 0.3 - metrics.get("profit_margin", 0),
                         "confidence": 0.9,
                         "urgency": "high",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Market expansion opportunities
         if metrics.get("active_campaigns", 0) < 5:
@@ -514,8 +575,11 @@ class AutonomousDecisionEngine:
                         "potential": 100,  # Estimated additional daily revenue
                     "confidence": 0.6,
                         "urgency": "medium",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return opportunities
 
@@ -528,7 +592,8 @@ class AutonomousDecisionEngine:
                 "market_risk": self._calculate_market_risk(),
                 "competitive_risk": self._calculate_competitive_risk(),
                 "technology_risk": self._calculate_technology_risk(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Overall risk score
         risks["overall_risk"] = sum(risks.values())/len(risks)
@@ -600,7 +665,8 @@ class AutonomousDecisionEngine:
             "competitive_advantage": 0.7,  # Strong AI automation
             "differentiation": 0.8,  # High differentiation
             "barriers_to_entry": 0.6,  # Medium barriers
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     async def _analyze_resource_constraints(
@@ -612,7 +678,8 @@ class AutonomousDecisionEngine:
                 "operational_capacity": 0.8,  # 80% capacity utilization
             "technical_capacity": 0.9,  # High technical capability
             "human_resources": 0.7,  # Limited by automation focus
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     async def _generate_revenue_recommendations(
@@ -643,7 +710,8 @@ class AutonomousDecisionEngine:
                             implementation_feasibility = 0.8,
                             risk_adjusted_score = 0.76,
                             confidence_level = opp["confidence"],
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                         risk_level = RiskLevel.MEDIUM,
                         expected_roi = 2.5,
                         implementation_cost = 200.0,
@@ -655,35 +723,47 @@ class AutonomousDecisionEngine:
                                 "description": "Launch targeted social media campaign",
                                 "budget": 100.0,
                                 "duration": 7,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "type": "email_campaign",
                                 "description": "Send personalized email sequence",
                                 "budget": 50.0,
                                 "duration": 5,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "type": "content_optimization",
                                 "description": "Optimize landing pages for conversion",
                                 "budget": 50.0,
                                 "duration": 2,
-                                },
-                            ],
+# BRACKET_SURGEON: disabled
+#                                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         kpis_to_monitor=[
                         "daily_revenue",
                             "conversion_rate",
                             "customer_acquisition_cost",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         rollback_plan={
                         "trigger": "roi_below_1.5_after_7_days",
                             "actions": [
                             "pause_campaigns",
                                 "analyze_performance",
                                 "adjust_targeting",
-                                ],
-                            },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# BRACKET_SURGEON: disabled
+#                             },
                         timestamp = datetime.now(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 recommendations.append(rec)
 
         return recommendations
@@ -704,8 +784,8 @@ class AutonomousDecisionEngine:
                     id = str(uuid.uuid4()),
                         category = DecisionCategory.COST_REDUCTION,
                         title="Operational Cost Optimization",
-                        description="Optimize API usage \
-    and reduce operational overhead",
+                        description="Optimize API usage \"
+#     and reduce operational overhead",
                         rationale="Profit margin below target. High confidence in cost reduction potential.",
                         opportunity_score = OpportunityScore(
                         revenue_potential = 0.6,
@@ -715,7 +795,8 @@ class AutonomousDecisionEngine:
                             implementation_feasibility = 0.9,
                             risk_adjusted_score = 0.78,
                             confidence_level = opp["confidence"],
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                         risk_level = RiskLevel.LOW,
                         expected_roi = 3.0,
                         implementation_cost = 50.0,
@@ -727,31 +808,41 @@ class AutonomousDecisionEngine:
                                 "description": "Optimize API call patterns and caching",
                                 "budget": 0.0,
                                 "duration": 1,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "type": "resource_consolidation",
                                 "description": "Consolidate redundant services",
                                 "budget": 25.0,
                                 "duration": 2,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "type": "automation_enhancement",
                                 "description": "Enhance automation to reduce manual overhead",
                                 "budget": 25.0,
                                 "duration": 3,
-                                },
-                            ],
+# BRACKET_SURGEON: disabled
+#                                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         kpis_to_monitor=[
                         "operational_costs",
                             "profit_margin",
                             "system_efficiency",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         rollback_plan={
                         "trigger": "performance_degradation",
                             "actions": ["restore_previous_config", "gradual_rollback"],
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         timestamp = datetime.now(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 recommendations.append(rec)
 
         return recommendations
@@ -766,7 +857,9 @@ class AutonomousDecisionEngine:
         opportunities = business_state["opportunity_areas"]
         market_opps = [
             opp for opp in opportunities if opp["area"] == "market_expansion"
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for opp in market_opps:
             if opp["confidence"] >= 0.6:
@@ -774,8 +867,8 @@ class AutonomousDecisionEngine:
                     id = str(uuid.uuid4()),
                         category = DecisionCategory.MARKET_EXPANSION,
                         title="Multi - Channel Market Expansion",
-                        description="Expand to new marketing channels \
-    and customer segments",
+                        description="Expand to new marketing channels \"
+#     and customer segments",
                         rationale="Limited market presence. Opportunity for expansion with moderate confidence.",
                         opportunity_score = OpportunityScore(
                         revenue_potential = 0.8,
@@ -785,7 +878,8 @@ class AutonomousDecisionEngine:
                             implementation_feasibility = 0.7,
                             risk_adjusted_score = 0.70,
                             confidence_level = opp["confidence"],
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                         risk_level = RiskLevel.MEDIUM,
                         expected_roi = 2.0,
                         implementation_cost = 150.0,
@@ -797,34 +891,46 @@ class AutonomousDecisionEngine:
                                 "description": "Add new marketing channels",
                                 "budget": 75.0,
                                 "duration": 5,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "type": "audience_research",
                                 "description": "Research new customer segments",
                                 "budget": 25.0,
                                 "duration": 3,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "type": "content_localization",
                                 "description": "Create targeted content for new segments",
                                 "budget": 50.0,
                                 "duration": 7,
-                                },
-                            ],
+# BRACKET_SURGEON: disabled
+#                                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         kpis_to_monitor=[
                         "market_reach",
                             "customer_acquisition",
                             "channel_performance",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         rollback_plan={
                         "trigger": "poor_channel_performance_after_14_days",
                             "actions": [
                             "pause_underperforming_channels",
                                 "reallocate_budget",
-                                ],
-                            },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# BRACKET_SURGEON: disabled
+#                             },
                         timestamp = datetime.now(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 recommendations.append(rec)
 
         return recommendations
@@ -851,7 +957,8 @@ class AutonomousDecisionEngine:
                     implementation_feasibility = 0.9,
                     risk_adjusted_score = 0.82,
                     confidence_level = 0.85,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 risk_level = RiskLevel.LOW,
                 expected_roi = 2.8,
                 implementation_cost = 75.0,
@@ -863,27 +970,35 @@ class AutonomousDecisionEngine:
                         "description": "Automate manual processes",
                         "budget": 25.0,
                         "duration": 2,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "type": "performance_optimization",
                         "description": "Optimize system performance",
                         "budget": 25.0,
                         "duration": 1,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "type": "workflow_enhancement",
                         "description": "Enhance business workflows",
                         "budget": 25.0,
                         "duration": 3,
-                        },
-                    ],
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 kpis_to_monitor=["process_efficiency", "automation_rate", "response_time"],
                 rollback_plan={
                 "trigger": "system_instability",
                     "actions": ["restore_backup", "gradual_implementation"],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 timestamp = datetime.now(),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         recommendations.append(rec)
 
         return recommendations
@@ -912,7 +1027,8 @@ class AutonomousDecisionEngine:
                         implementation_feasibility = 0.8,
                         risk_adjusted_score = 0.72,
                         confidence_level = 0.8,
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                     risk_level = RiskLevel.LOW,  # Risk mitigation reduces risk
                 expected_roi = 1.8,
                     implementation_cost = 100.0,
@@ -924,31 +1040,41 @@ class AutonomousDecisionEngine:
                             "description": "Implement financial risk controls",
                             "budget": 30.0,
                             "duration": 2,
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         {
                         "type": "operational_backup",
                             "description": "Create operational backup systems",
                             "budget": 40.0,
                             "duration": 5,
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         {
                         "type": "market_diversification",
                             "description": "Diversify market exposure",
                             "budget": 30.0,
                             "duration": 7,
-                            },
-                        ],
+# BRACKET_SURGEON: disabled
+#                             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     kpis_to_monitor=[
                     "risk_score",
                         "system_stability",
                         "revenue_volatility",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     rollback_plan={
                     "trigger": "increased_operational_complexity",
                         "actions": ["simplify_systems", "focus_on_core_operations"],
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     timestamp = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             recommendations.append(rec)
 
         return recommendations
@@ -975,7 +1101,8 @@ class AutonomousDecisionEngine:
                 * self.decision_weights["implementation_feasibility"],
                     "risk_adjustment": (1 - self._risk_level_to_score(rec.risk_level))
                 * self.decision_weights["risk_factor"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             composite_score = sum(score_components.values())
 
@@ -991,7 +1118,9 @@ class AutonomousDecisionEngine:
         # Sort by risk - adjusted score (descending)
         recommendations.sort(
             key = lambda x: x.opportunity_score.risk_adjusted_score, reverse = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return recommendations
 
@@ -1004,7 +1133,8 @@ class AutonomousDecisionEngine:
                 RiskLevel.MEDIUM: 0.5,
                 RiskLevel.HIGH: 0.75,
                 RiskLevel.VERY_HIGH: 0.9,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return risk_scores.get(risk_level, 0.5)
 
 
@@ -1019,7 +1149,8 @@ class AutonomousDecisionEngine:
             if (
                 rec.opportunity_score.confidence_level
                 < self.config["min_confidence_threshold"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 continue
 
             # Check ROI threshold
@@ -1035,7 +1166,9 @@ class AutonomousDecisionEngine:
             if max_risk == "low" and rec.risk_level in [
                 RiskLevel.HIGH,
                     RiskLevel.VERY_HIGH,
-                    ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]:
                 continue
             elif max_risk == "medium" and rec.risk_level == RiskLevel.VERY_HIGH:
                 continue
@@ -1061,12 +1194,16 @@ class AutonomousDecisionEngine:
             statistics.mean(list(self._historical_values)[-7:])
             if len(self._historical_values) >= 7
             else current_value
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         older_avg = (
             statistics.mean(list(self._historical_values)[:-7])
             if len(self._historical_values) > 7
             else current_value
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if older_avg == 0:
             return 0.0
@@ -1082,12 +1219,14 @@ class AutonomousDecisionEngine:
 
             for signal in signals:
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO market_signals (
                         id, signal_type, strength, direction, confidence,
                             source, timestamp, metadata
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ""","""
                     (
                         str(uuid.uuid4()),
                             signal.signal_type,
@@ -1097,8 +1236,11 @@ class AutonomousDecisionEngine:
                             signal.source,
                             signal.timestamp.isoformat(),
                             json.dumps(signal.metadata),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             conn.commit()
             conn.close()
@@ -1114,15 +1256,17 @@ class AutonomousDecisionEngine:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO decision_recommendations (
                     id, category, title, description, rationale,
                         opportunity_score, risk_level, expected_roi,
                         implementation_cost, time_to_impact, success_probability,
                         recommended_actions, kpis_to_monitor, rollback_plan,
                         timestamp
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ""","""
                 (
                     recommendation.id,
                         recommendation.category.value,
@@ -1139,8 +1283,11 @@ class AutonomousDecisionEngine:
                         json.dumps(recommendation.kpis_to_monitor),
                         json.dumps(recommendation.rollback_plan),
                         recommendation.timestamp.isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
             conn.close()
@@ -1151,13 +1298,16 @@ class AutonomousDecisionEngine:
 
     async def learn_from_outcomes(
         self, decision_id: str, actual_outcomes: Dict[str, Any]
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Learn from decision outcomes to improve future recommendations."""
         try:
             # Find the original recommendation
             original_rec = next(
                 (r for r in self.decision_history if r.id == decision_id), None
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if not original_rec:
                 logger.warning(f"Decision {decision_id} not found in history")
                 return
@@ -1192,11 +1342,15 @@ class AutonomousDecisionEngine:
             # Save performance data
             await self._save_performance_data(
                 decision_id, original_rec, actual_outcomes
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             logger.info(
                 f"📚 Learned from decision {decision_id}: ROI accuracy {roi_accuracy:.2f}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             logger.error(f"Error learning from outcomes: {e}")
@@ -1207,7 +1361,8 @@ class AutonomousDecisionEngine:
             decision_id: str,
             recommendation: DecisionRecommendation,
             outcomes: Dict[str, Any],
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Save performance data for learning."""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -1215,31 +1370,39 @@ class AutonomousDecisionEngine:
 
             # Save ROI performance
             cursor.execute(
-                """
+                """"""
                 INSERT INTO decision_performance (
                     decision_id, metric_name, predicted_value, actual_value, variance, timestamp
-                ) VALUES (?, ?, ?, ?, ?, ?)
-            """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ) VALUES (?, ?, ?, ?, ?, ?)
+            ""","""
                 (
                     decision_id,
                         "roi",
                         recommendation.expected_roi,
                         outcomes.get("actual_roi", 0),
                         abs(recommendation.expected_roi - outcomes.get("actual_roi",
-    0)),
+# BRACKET_SURGEON: disabled
+#     0)),
                         datetime.now().isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Save other metrics if available
             for metric, actual_value in outcomes.items():
                 if metric != "actual_roi" and isinstance(actual_value, (int, float)):
                     cursor.execute(
-                        """
+                        """"""
                         INSERT INTO decision_performance (
                             decision_id, metric_name, predicted_value, actual_value, variance, timestamp
-                        ) VALUES (?, ?, ?, ?, ?, ?)
-                    """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) VALUES (?, ?, ?, ?, ?, ?)
+                    ""","""
                         (
                             decision_id,
                                 metric,
@@ -1247,8 +1410,11 @@ class AutonomousDecisionEngine:
                             actual_value,
                                 0,
                                 datetime.now().isoformat(),
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             conn.commit()
             conn.close()
@@ -1265,28 +1431,34 @@ class AutonomousDecisionEngine:
 
             # Get ROI prediction accuracy
             cursor.execute(
-                """
+                """"""
                 SELECT AVG(ABS(predicted_value - actual_value) / predicted_value) as avg_error
                     FROM decision_performance
                 WHERE metric_name = 'roi' AND predicted_value > 0
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             roi_accuracy_result = cursor.fetchone()
             roi_accuracy = 1 - (
                 roi_accuracy_result[0] if roi_accuracy_result[0] else 0.5
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Get decision category performance
             cursor.execute(
-                """
+                """"""
                 SELECT category,
     COUNT(*) as count,
     AVG(expected_roi) as avg_expected_roi
                 FROM decision_recommendations
                 WHERE executed = TRUE
                 GROUP BY category
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             category_performance = cursor.fetchall()
 
             conn.close()
@@ -1297,10 +1469,13 @@ class AutonomousDecisionEngine:
                     "category_performance": [
                     {"category": cat, "count": count, "avg_expected_roi": avg_roi}
                     for cat, count, avg_roi in category_performance
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "current_weights": self.decision_weights,
                     "market_signals_count": len(self.market_signals),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             logger.error(f"Error getting decision insights: {e}")
@@ -1325,7 +1500,8 @@ def main():
                 "total_revenue": 9000,
                 "active_campaigns": 3,
                 "growth_rate": 0.1,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         business_state = await engine.analyze_business_state(test_metrics)
         print("Business State Analysis:")

@@ -29,7 +29,8 @@ class BasicBlock(nn.Module):
             self.downsample = nn.Sequential(
                 nn.Conv2d(in_chan, out_chan, kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(out_chan),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def forward(self, x):
         residual = self.conv1(x)

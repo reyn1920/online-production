@@ -29,7 +29,7 @@ class ContentGenerationTask(Task):
 def generate_ai_content(
     self, content_type: str, specifications: Dict[str, Any]
 ) -> Dict[str, Any]:
-    """
+    """"""
     Generate AI content based on type and specifications
 
     Args:
@@ -38,7 +38,7 @@ def generate_ai_content(
 
     Returns:
         Dict containing generated content and metadata
-    """
+    """"""
     try:
         logger.info(f"Generating {content_type} content with specs: {specifications}")
 
@@ -54,7 +54,8 @@ def generate_ai_content(
                 "art_pack": generate_digital_art,
                 "product_mockup": generate_product_mockup,
                 "saas_boilerplate": generate_saas_code,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         generator_func = generators.get(content_type)
         if not generator_func:
@@ -69,7 +70,8 @@ def generate_ai_content(
                 "content": result,
                 "generated_at": datetime.utcnow().isoformat(),
                 "task_id": self.request.id,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
     except Exception as e:
         logger.error(f"Content generation failed: {str(e)}")
@@ -77,14 +79,14 @@ def generate_ai_content(
 
 
 def generate_children_story(specs: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate personalized children's storybook"""
+    """Generate personalized children's storybook"""'
 
     # OpenAI API call for story generation
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    prompt = f"""
-    Create a personalized children's story with these specifications:
-    - Child's name: {specs.get('child_name', 'Alex')}
+    prompt = f""""""
+    Create a personalized children's story with these specifications:'
+    - Child's name: {specs.get('child_name', 'Alex')}'
     - Age: {specs.get('age', 5)}
     - Theme: {specs.get('theme', 'adventure')}
     - Setting: {specs.get('setting', 'magical forest')}
@@ -92,30 +94,34 @@ def generate_children_story(specs: Dict[str, Any]) -> Dict[str, Any]:
     - Length: {specs.get('length', 'short')} story
 
     Include vivid descriptions for illustrations and make it age - appropriate.
-    """
+    """"""
 
     response = openai.ChatCompletion.create(
         model="gpt - 4",
             messages=[
             {
                 "role": "system",
-                    "content": "You are a creative children's book author who writes engaging, educational stories.",
-                    },
+                    "content": "You are a creative children's book author who writes engaging, educational stories.",'
+# BRACKET_SURGEON: disabled
+#                     },
                 {"role": "user", "content": prompt},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
             max_tokens = 2000,
             temperature = 0.8,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     story_text = response.choices[0].message.content
 
     return {
         "story_text": story_text,
-            "title": f"{specs.get('child_name', 'Alex')}'s {specs.get('theme', 'Adventure')}",
+            "title": f"{specs.get('child_name', 'Alex')}'s {specs.get('theme', 'Adventure')}",'
             "specifications": specs,
             "word_count": len(story_text.split()),
             "illustration_prompts": extract_illustration_prompts(story_text),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def generate_interior_design(specs: Dict[str, Any]) -> Dict[str, Any]:
@@ -123,7 +129,7 @@ def generate_interior_design(specs: Dict[str, Any]) -> Dict[str, Any]:
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    prompt = f"""
+    prompt = f""""""
     Create a comprehensive interior design plan:
     - Room type: {specs.get('room_type', 'living room')}
     - Style: {specs.get('style', 'modern')}
@@ -133,21 +139,24 @@ def generate_interior_design(specs: Dict[str, Any]) -> Dict[str, Any]:
     - Special requirements: {specs.get('requirements', 'none')}
 
     Provide detailed recommendations for furniture, colors, lighting, and decor.
-    """
+    """"""
 
     response = openai.ChatCompletion.create(
         model="gpt - 4",
             messages=[
             {
                 "role": "system",
-                    "content": "You are a professional interior designer with expertise in various styles \
-    and budgets.",
-                    },
+                    "content": "You are a professional interior designer with expertise in various styles \"
+#     and budgets.",
+# BRACKET_SURGEON: disabled
+#                     },
                 {"role": "user", "content": prompt},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
             max_tokens = 1500,
             temperature = 0.7,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     design_plan = response.choices[0].message.content
 
@@ -158,7 +167,8 @@ def generate_interior_design(specs: Dict[str, Any]) -> Dict[str, Any]:
             "budget_estimate": calculate_budget_estimate(specs),
             "shopping_list": extract_shopping_items(design_plan),
             "mood_board_elements": extract_mood_board_elements(design_plan),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def generate_brand_identity(specs: Dict[str, Any]) -> Dict[str, Any]:
@@ -166,7 +176,7 @@ def generate_brand_identity(specs: Dict[str, Any]) -> Dict[str, Any]:
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    prompt = f"""
+    prompt = f""""""
     Create a comprehensive brand identity for:
     - Business name: {specs.get('business_name', 'New Business')}
     - Industry: {specs.get('industry', 'technology')}
@@ -175,22 +185,25 @@ def generate_brand_identity(specs: Dict[str, Any]) -> Dict[str, Any]:
     - Values: {specs.get('values', 'quality and innovation')}
 
     Include logo concepts, color palette, typography, voice guidelines, \
-    and marketing materials.
-    """
+#     and marketing materials.
+    """"""
 
     response = openai.ChatCompletion.create(
         model="gpt - 4",
             messages=[
             {
                 "role": "system",
-                    "content": "You are a brand strategist \
-    and designer who creates cohesive brand identities.",
-                    },
+                    "content": "You are a brand strategist \"
+#     and designer who creates cohesive brand identities.",
+# BRACKET_SURGEON: disabled
+#                     },
                 {"role": "user", "content": prompt},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
             max_tokens = 2000,
             temperature = 0.7,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     brand_guide = response.choices[0].message.content
 
@@ -201,7 +214,8 @@ def generate_brand_identity(specs: Dict[str, Any]) -> Dict[str, Any]:
             "color_palette": extract_color_palette(brand_guide),
             "typography": extract_typography(brand_guide),
             "voice_guidelines": extract_voice_guidelines(brand_guide),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def generate_meditation_script(specs: Dict[str, Any]) -> Dict[str, Any]:
@@ -209,7 +223,7 @@ def generate_meditation_script(specs: Dict[str, Any]) -> Dict[str, Any]:
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    prompt = f"""
+    prompt = f""""""
     Create a meditation script with these parameters:
     - Duration: {specs.get('duration', 10)} minutes
     - Focus: {specs.get('focus', 'relaxation')}
@@ -218,7 +232,7 @@ def generate_meditation_script(specs: Dict[str, Any]) -> Dict[str, Any]:
     - Experience level: {specs.get('level', 'beginner')}
 
     Include timing cues and breathing instructions.
-    """
+    """"""
 
     response = openai.ChatCompletion.create(
         model="gpt - 4",
@@ -226,12 +240,15 @@ def generate_meditation_script(specs: Dict[str, Any]) -> Dict[str, Any]:
             {
                 "role": "system",
                     "content": "You are a meditation instructor who creates guided meditation scripts.",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {"role": "user", "content": prompt},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
             max_tokens = 1500,
             temperature = 0.6,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     script = response.choices[0].message.content
 
@@ -241,7 +258,8 @@ def generate_meditation_script(specs: Dict[str, Any]) -> Dict[str, Any]:
             "focus": specs.get("focus"),
             "timing_cues": extract_timing_cues(script),
             "audio_elements": extract_audio_elements(script),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def generate_fitness_plan(specs: Dict[str, Any]) -> Dict[str, Any]:
@@ -249,7 +267,7 @@ def generate_fitness_plan(specs: Dict[str, Any]) -> Dict[str, Any]:
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    prompt = f"""
+    prompt = f""""""
     Create a personalized fitness plan:
     - Fitness level: {specs.get('fitness_level', 'beginner')}
     - Goals: {specs.get('goals', 'general fitness')}
@@ -259,7 +277,7 @@ def generate_fitness_plan(specs: Dict[str, Any]) -> Dict[str, Any]:
     - Duration: {specs.get('plan_duration', '4 weeks')}
 
     Include detailed workout schedules, exercise descriptions, and progression plans.
-    """
+    """"""
 
     response = openai.ChatCompletion.create(
         model="gpt - 4",
@@ -267,12 +285,15 @@ def generate_fitness_plan(specs: Dict[str, Any]) -> Dict[str, Any]:
             {
                 "role": "system",
                     "content": "You are a certified fitness trainer who creates personalized workout plans.",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {"role": "user", "content": prompt},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
             max_tokens = 2000,
             temperature = 0.7,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     fitness_plan = response.choices[0].message.content
 
@@ -282,14 +303,14 @@ def generate_fitness_plan(specs: Dict[str, Any]) -> Dict[str, Any]:
             "exercise_library": extract_exercises(fitness_plan),
             "progression_plan": extract_progression(fitness_plan),
             "nutrition_tips": extract_nutrition_tips(fitness_plan),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def generate_music_composition(specs: Dict[str, Any]) -> Dict[str, Any]:
     """Generate AI music composition metadata and structure"""
 
-    # Note: This would integrate with AI music generation APIs like AIVA, Amper, \
-    or Mubert
+    # Note: This would integrate with AI music generation APIs like AIVA, Amper, or Mubert
     # For now, we'll generate the composition structure and metadata
 
     composition_data = {
@@ -305,8 +326,10 @@ def generate_music_composition(specs: Dict[str, Any]) -> Dict[str, Any]:
             "created_at": datetime.utcnow().isoformat(),
                 "license": "royalty - free",
                 "usage_rights": "commercial use allowed",
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
     return composition_data
 
@@ -316,7 +339,7 @@ def generate_infographic_content(specs: Dict[str, Any]) -> Dict[str, Any]:
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    prompt = f"""
+    prompt = f""""""
     Create content for a data - driven infographic:
     - Topic: {specs.get('topic', 'technology trends')}
     - Target audience: {specs.get('audience', 'business professionals')}
@@ -325,7 +348,7 @@ def generate_infographic_content(specs: Dict[str, Any]) -> Dict[str, Any]:
     - Key message: {specs.get('message', 'inform and educate')}
 
     Include statistics, key points, visual elements, and data visualizations.
-    """
+    """"""
 
     response = openai.ChatCompletion.create(
         model="gpt - 4",
@@ -333,12 +356,15 @@ def generate_infographic_content(specs: Dict[str, Any]) -> Dict[str, Any]:
             {
                 "role": "system",
                     "content": "You are a data visualization expert who creates compelling infographic content.",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {"role": "user", "content": prompt},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
             max_tokens = 1500,
             temperature = 0.7,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     content = response.choices[0].message.content
 
@@ -348,7 +374,8 @@ def generate_infographic_content(specs: Dict[str, Any]) -> Dict[str, Any]:
             "statistics": extract_statistics(content),
             "visual_elements": extract_visual_elements(content),
             "layout_suggestions": extract_layout_suggestions(content),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def generate_digital_art(specs: Dict[str, Any]) -> Dict[str, Any]:
@@ -369,7 +396,8 @@ def generate_digital_art(specs: Dict[str, Any]) -> Dict[str, Any]:
                 "composition": generate_composition_notes(),
                 "dimensions": specs.get("dimensions", "1920x1080"),
                 "format": specs.get("format", "PNG"),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         art_concepts.append(concept)
 
     return {
@@ -381,8 +409,10 @@ def generate_digital_art(specs: Dict[str, Any]) -> Dict[str, Any]:
             "license": "commercial use",
                 "formats": ["PNG", "JPG", "SVG"],
                 "resolutions": ["HD", "4K", "Print - ready"],
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def generate_product_mockup(specs: Dict[str, Any]) -> Dict[str, Any]:
@@ -405,8 +435,10 @@ def generate_product_mockup(specs: Dict[str, Any]) -> Dict[str, Any]:
                 "textures": True,
                 "branding": True,
                 "text": True,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
     return mockup_data
 
@@ -425,7 +457,8 @@ def generate_saas_code(specs: Dict[str, Any]) -> Dict[str, Any]:
             "configuration": generate_config_files(tech_stack),
             "documentation": generate_documentation_outline(features),
             "deployment": generate_deployment_config(tech_stack),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     return code_structure
 
@@ -451,8 +484,10 @@ def calculate_budget_estimate(specs: Dict[str, Any]) -> Dict[str, Any]:
                 "decor": 0.2,
                 "lighting": 0.1,
                 "miscellaneous": 0.1,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def extract_shopping_items(design_plan: str) -> List[str]:
@@ -473,7 +508,8 @@ def extract_mood_board_elements(design_plan: str) -> List[str]:
             "texture samples",
             "furniture images",
             "lighting examples",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
 
 def extract_logo_concepts(brand_guide: str) -> List[Dict[str, str]]:
@@ -482,17 +518,19 @@ def extract_logo_concepts(brand_guide: str) -> List[Dict[str, str]]:
         {"type": "wordmark", "description": "Text - based logo"},
             {"type": "symbol", "description": "Icon - based logo"},
             {"type": "combination", "description": "Text and symbol combined"},
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
 
 def extract_color_palette(brand_guide: str) -> Dict[str, str]:
     """Extract color palette"""
     return {
-        "primary": "#2563eb",
-            "secondary": "#64748b",
-            "accent": "#f59e0b",
-            "neutral": "#f8fafc",
-            }
+        "primary": "#2563eb","
+            "secondary": "#64748b","
+            "accent": "#f59e0b","
+            "neutral": "#f8fafc","
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def extract_typography(brand_guide: str) -> Dict[str, str]:
@@ -506,7 +544,8 @@ def extract_voice_guidelines(brand_guide: str) -> Dict[str, str]:
         "tone": "Professional yet approachable",
             "voice": "Confident and helpful",
             "style": "Clear and concise",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def extract_timing_cues(script: str) -> List[Dict[str, Any]]:
@@ -516,7 +555,8 @@ def extract_timing_cues(script: str) -> List[Dict[str, Any]]:
             {"time": "2:00", "action": "Body scan meditation"},
             {"time": "5:00", "action": "Mindfulness practice"},
             {"time": "8:00", "action": "Closing and return to awareness"},
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
 
 def extract_audio_elements(script: str) -> List[str]:
@@ -534,7 +574,8 @@ def extract_workout_schedule(fitness_plan: str) -> Dict[str, List[str]]:
             "friday": ["Full body circuit", "35 minutes"],
             "saturday": ["Flexibility/Yoga", "30 minutes"],
             "sunday": ["Rest day", "0 minutes"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def extract_exercises(fitness_plan: str) -> List[Dict[str, Any]]:
@@ -543,7 +584,8 @@ def extract_exercises(fitness_plan: str) -> List[Dict[str, Any]]:
         {"name": "Push - ups", "type": "strength", "muscle_groups": ["chest", "arms"]},
             {"name": "Squats", "type": "strength", "muscle_groups": ["legs", "glutes"]},
             {"name": "Plank", "type": "core", "muscle_groups": ["core", "shoulders"]},
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
 
 def extract_progression(fitness_plan: str) -> Dict[str, str]:
@@ -553,7 +595,8 @@ def extract_progression(fitness_plan: str) -> Dict[str, str]:
             "week_2": "Intensity increase",
             "week_3": "Skill development",
             "week_4": "Performance optimization",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def extract_nutrition_tips(fitness_plan: str) -> List[str]:
@@ -563,7 +606,8 @@ def extract_nutrition_tips(fitness_plan: str) -> List[str]:
             "Eat protein within 30 minutes post - workout",
             "Include complex carbohydrates for energy",
             "Focus on whole, unprocessed foods",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
 
 def generate_music_structure(specs: Dict[str, Any]) -> Dict[str, Any]:
@@ -575,7 +619,8 @@ def generate_music_structure(specs: Dict[str, Any]) -> Dict[str, Any]:
             "verse_2": {"duration": 30, "description": "Melody development"},
             "bridge": {"duration": 20, "description": "Contrasting section"},
             "outro": {"duration": 25, "description": "Gradual fade"},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def extract_statistics(content: str) -> List[Dict[str, Any]]:
@@ -584,7 +629,8 @@ def extract_statistics(content: str) -> List[Dict[str, Any]]:
         {"value": "75%", "description": "Market growth rate"},
             {"value": "2.5x", "description": "Performance improvement"},
             {"value": "$1.2B", "description": "Market size"},
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
 
 def extract_visual_elements(content: str) -> List[str]:
@@ -600,10 +646,11 @@ def extract_layout_suggestions(content: str) -> List[str]:
 def generate_color_scheme() -> Dict[str, str]:
     """Generate color scheme for digital art"""
     schemes = [
-        {"primary": "#ff6b6b", "secondary": "#4ecdc4", "accent": "#45b7d1"},
-            {"primary": "#96ceb4", "secondary": "#ffeaa7", "accent": "#dda0dd"},
-            {"primary": "#74b9ff", "secondary": "#fd79a8", "accent": "#fdcb6e"},
-            ]
+        {"primary": "#ff6b6b", "secondary": "#4ecdc4", "accent": "#45b7d1"},"
+            {"primary": "#96ceb4", "secondary": "#ffeaa7", "accent": "#dda0dd"},"
+            {"primary": "#74b9ff", "secondary": "#fd79a8", "accent": "#fdcb6e"},"
+# BRACKET_SURGEON: disabled
+#             ]
 
     import random
 
@@ -617,7 +664,8 @@ def generate_composition_notes() -> str:
             "Symmetrical balance with central emphasis",
             "Asymmetrical composition with visual flow",
             "Radial composition with outward movement",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
     import random
 
@@ -630,13 +678,16 @@ def generate_file_structure(tech_stack: str, features: List[str]) -> Dict[str, A
         "frontend": {
             "src": ["components", "pages", "hooks", "utils", "styles"],
                 "public": ["index.html", "favicon.ico"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             "backend": {
             "src": ["routes", "models", "middleware", "utils", "config"],
                 "tests": ["unit", "integration"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             "shared": ["types", "constants", "validators"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def generate_dependencies(tech_stack: str) -> Dict[str, List[str]]:
@@ -645,7 +696,8 @@ def generate_dependencies(tech_stack: str) -> Dict[str, List[str]]:
         "frontend": ["react", "typescript", "tailwindcss", "axios"],
             "backend": ["express", "typescript", "prisma", "bcrypt", "jsonwebtoken"],
             "dev": ["jest", "eslint", "prettier", "nodemon"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def generate_config_files(tech_stack: str) -> List[str]:
@@ -657,7 +709,8 @@ def generate_config_files(tech_stack: str) -> List[str]:
             "docker - compose.yml",
             ".gitignore",
             "README.md",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
 
 def generate_documentation_outline(features: List[str]) -> Dict[str, List[str]]:
@@ -666,7 +719,8 @@ def generate_documentation_outline(features: List[str]) -> Dict[str, List[str]]:
         "setup": ["Installation", "Configuration", "Environment Setup"],
             "api": ["Authentication", "Endpoints", "Error Handling"],
             "deployment": ["Docker", "CI/CD", "Environment Variables"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 def generate_deployment_config(tech_stack: str) -> Dict[str, Any]:
@@ -677,4 +731,5 @@ def generate_deployment_config(tech_stack: str) -> Dict[str, Any]:
             "ci_cd": "github - actions",
             "database": "postgresql",
             "caching": "redis",
-            }
+# BRACKET_SURGEON: disabled
+#             }

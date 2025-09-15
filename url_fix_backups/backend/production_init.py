@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Production Initialization Module for TRAE.AI
 Initializes all production services and agents
-"""
+""""""
 
 import asyncio
 import logging
@@ -109,7 +109,9 @@ class ProductionManager:
 
             from backend.agents.specialized_agents import (FinancialAgent,
 
-                ResearchAgent, SystemAgent)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ResearchAgent, SystemAgent)
 
             # Initialize ContentAgent
             if os.getenv("CONTENT_AGENT_ENABLED", "true").lower() == "true":
@@ -161,7 +163,8 @@ class ProductionManager:
                     if (
                         os.getenv("TWITTER_ENGAGEMENT_ENABLED", "true").lower()
                         == "true"
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
 
                         from backend.agents.twitter_engagement_agent import \\
 
@@ -184,7 +187,9 @@ class ProductionManager:
                 else:
                     logger.warning(
                         "⚠️ Twitter Integration connection failed - agents not initialized"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             logger.warning(f"⚠️ Twitter agents initialization failed: {e}")
@@ -287,15 +292,18 @@ class ProductionManager:
             "initialized": self.initialized,
                 "startup_time": (
                 self.startup_time.isoformat() if self.startup_time else None
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "services": {
                 name: service is not None for name, service in self.services.items()
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 "agents": {name: agent is not None for name,
     agent in self.agents.items()},
                 "environment": os.getenv("ENVIRONMENT", "development"),
                 "autonomous_mode": os.getenv("AUTONOMOUS_MODE", "false").lower() == "true",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 # Global production manager instance
 production_manager = ProductionManager()

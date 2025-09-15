@@ -4,9 +4,9 @@
 # Author: David Goodger <goodger@python.org>
 # Copyright: This module has been placed in the public domain.
 
-"""
+""""""
 A minimal front end to the Docutils Publisher, producing LaTeX.
-"""
+""""""
 
 try:
     import locale
@@ -21,6 +21,7 @@ description = ('Generates LaTeX documents from standalone reStructuredText '
                'Reads from <source> (default is stdin) and writes to '
                '<destination> (default is stdout).  See '
                '<http://docutils.sourceforge.net/docs/user/latex.html> for '
-               'the full reference.')
+# BRACKET_SURGEON: disabled
+#                'the full reference.')
 
 publish_cmdline(writer_name='latex', description=description)

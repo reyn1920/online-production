@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Stealth Automation Agent - Advanced Web Automation for Affiliate Monitoring
 
 This agent implements sophisticated stealth web automation capabilities for monitoring
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import hashlib
 import json
@@ -34,7 +34,8 @@ from typing import Any, Dict, List, Optional, Tuple
 from .base_agents import BaseAgent
 from .web_automation_tools import (
     WebAutomationAgent,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +90,7 @@ class StealthProfile:
     audio_fingerprint: str
     fonts_list: List[str]
     plugins_list: List[str]
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=datetime.now):
     last_used: Optional[datetime] = None
     detection_count: int = 0
     success_rate: float = 1.0
@@ -106,7 +107,7 @@ class AutomationSession:
     start_time: datetime
     end_time: Optional[datetime] = None
     status: SessionStatus = SessionStatus.ACTIVE
-    actions_performed: List[str] = field(default_factory=list)
+    actions_performed: List[str] = field(default_factory=list):
     data_extracted: Dict[str, Any] = field(default_factory=dict)
     detection_events: List[str] = field(default_factory=list)
     success: bool = False
@@ -200,7 +201,8 @@ class StealthAutomationAgent(BaseAgent):
             return {
                 "status": "disabled",
                 "message": "Stealth automation is currently disabled in configuration",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         task_type = task.get("type", "")
 
@@ -212,7 +214,8 @@ class StealthAutomationAgent(BaseAgent):
             elif task_type == "stealth_research":
                 return await self._conduct_stealth_research(
                     task.get("target_url"), task.get("research_params")
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif task_type == "rotate_profiles":
                 return await self._rotate_stealth_profiles()
             elif task_type == "test_detection":
@@ -234,7 +237,8 @@ class StealthAutomationAgent(BaseAgent):
             "dashboard_id": dashboard_id,
             "data_extracted": {},
             "session_id": "mock_session",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _verify_affiliate_payouts(self, dashboard_id: str) -> Dict[str, Any]:
         """Verify affiliate payouts with stealth techniques"""
@@ -246,7 +250,8 @@ class StealthAutomationAgent(BaseAgent):
             "dashboard_id": dashboard_id,
             "payouts_verified": [],
             "discrepancies": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _conduct_stealth_research(
         self, target_url: str, research_params: Dict[str, Any]
@@ -260,7 +265,8 @@ class StealthAutomationAgent(BaseAgent):
             "target_url": target_url,
             "research_data": {},
             "stealth_score": 0.95,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _rotate_stealth_profiles(self) -> Dict[str, Any]:
         """Rotate stealth profiles for enhanced anonymity"""
@@ -271,7 +277,8 @@ class StealthAutomationAgent(BaseAgent):
             "status": "success",
             "profiles_rotated": len(self.stealth_profiles),
             "new_profiles_generated": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _test_detection_evasion(self, target_site: str) -> Dict[str, Any]:
         """Test detection evasion capabilities"""
@@ -283,7 +290,8 @@ class StealthAutomationAgent(BaseAgent):
             "target_site": target_site,
             "detection_score": 0.02,
             "evasion_successful": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _setup_behavior_simulator(self):
         """Setup human behavior simulator for stealth operations"""
@@ -295,7 +303,8 @@ class StealthAutomationAgent(BaseAgent):
                 StealthLevel.MAXIMUM
                 if self.default_mode == AutomationMode.STEALTH_MAXIMUM
                 else StealthLevel.MODERATE
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             behavior_simulator = {
                 "stealth_ops": StealthOperations(stealth_level),
@@ -305,18 +314,22 @@ class StealthAutomationAgent(BaseAgent):
                     "click_delay": (0.1, 0.5),  # seconds before/after click
                     "page_load": (2, 5),  # seconds to wait for page load
                     "thinking": (1, 3),  # random thinking pauses
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "error_simulation": {
                     "typo_rate": 0.02 if self.human_behavior_enabled else 0,
                     "backspace_rate": 0.01 if self.human_behavior_enabled else 0,
                     "mouse_jitter": self.human_behavior_enabled,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "patterns": {
                     "scroll_behavior": "human_like",
                     "mouse_curves": True,
                     "variable_speed": True,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.info("Human behavior simulator initialized successfully")
             return behavior_simulator
@@ -341,13 +354,16 @@ class StealthAutomationAgent(BaseAgent):
                 "cookie_management": {
                     "clear_on_rotation": True,
                     "selective_persistence": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "fingerprint_entropy": {
                     "canvas_noise": 0.1,
                     "audio_noise": 0.05,
                     "timing_variance": 0.2,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.info("Fingerprint manager initialized successfully")
             return fingerprint_manager
@@ -366,23 +382,28 @@ class StealthAutomationAgent(BaseAgent):
                     "recaptcha_v3": True,
                     "hcaptcha": True,
                     "image_captcha": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "solving_methods": {
                     "audio_challenge": True,
                     "image_recognition": True,
                     "behavioral_analysis": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "fallback_options": {
                     "manual_intervention": False,
                     "skip_on_failure": True,
                     "retry_attempts": 3,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "detection_evasion": {
                     "mouse_movement": True,
                     "timing_randomization": True,
                     "human_like_solving": True,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.info("Captcha solver initialized successfully")
             return captcha_solver
@@ -428,7 +449,8 @@ class StealthAutomationAgent(BaseAgent):
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0",
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Generate profiles for each user agent
         for i, ua in enumerate(user_agents):
@@ -451,7 +473,8 @@ class StealthAutomationAgent(BaseAgent):
                 viewport_size=viewport_size,
                 timezone=random.choice(
                     ["America/New_York", "America/Los_Angeles", "Europe/London", "UTC"]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 language=random.choice(["en-US", "en-GB", "en-CA"]),
                 platform=platform,
                 screen_resolution=screen_resolution,
@@ -464,7 +487,8 @@ class StealthAutomationAgent(BaseAgent):
                 audio_fingerprint=self._generate_audio_fingerprint(),
                 fonts_list=self._generate_fonts_list(),
                 plugins_list=self._generate_plugins_list(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             profiles[profile_id] = profile
             self._save_stealth_profile(profile)
@@ -492,7 +516,8 @@ class StealthAutomationAgent(BaseAgent):
             "Google Inc. (AMD)",
             "Google Inc. (Intel)",
             "Mozilla",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         return random.choice(vendors)
 
     def _generate_webgl_renderer(self) -> str:
@@ -503,7 +528,8 @@ class StealthAutomationAgent(BaseAgent):
             "ANGLE (Intel, Intel(R) UHD Graphics 630 Direct3D11 vs_5_0 ps_5_0, D3D11)",
             "Mozilla -- ANGLE (NVIDIA, NVIDIA GeForce GTX 1660 Ti Direct3D11 vs_5_0 ps_5_0, D3D11)",
             "WebKit WebGL",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         return random.choice(renderers)
 
     def _generate_canvas_fingerprint(self) -> str:
@@ -534,14 +560,16 @@ class StealthAutomationAgent(BaseAgent):
             "Trebuchet MS",
             "Arial Black",
             "Impact",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Add some platform-specific fonts
         platform_fonts = {
             "Win32": ["Segoe UI", "Tahoma", "MS Sans Serif", "Calibri"],
             "MacIntel": ["San Francisco", "Helvetica Neue", "Lucida Grande"],
             "Linux x86_64": ["Ubuntu", "DejaVu Sans", "Liberation Sans"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Combine base fonts with some platform-specific ones
         all_fonts = base_fonts.copy()
@@ -559,7 +587,8 @@ class StealthAutomationAgent(BaseAgent):
             "Chromium PDF Viewer",
             "Microsoft Edge PDF Viewer",
             "WebKit built-in PDF",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         return random.sample(common_plugins, random.randint(1, 3))
 
     def _create_profile_from_data(self, profile_data: tuple) -> StealthProfile:
@@ -585,9 +614,11 @@ class StealthAutomationAgent(BaseAgent):
             success_rate=profile_data[17],
             created_at=(
                 datetime.fromisoformat(profile_data[18]) if profile_data[18] else datetime.now()
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             last_used=(datetime.fromisoformat(profile_data[19]) if profile_data[19] else None),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _save_stealth_profile(self, profile: StealthProfile):
         """Save stealth profile to database"""
@@ -597,7 +628,7 @@ class StealthAutomationAgent(BaseAgent):
             with sqlite3.connect(db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO stealth_profiles (
                         profile_id, user_agent, viewport_size, timezone, language,
                         platform, screen_resolution, color_depth, device_memory,
@@ -606,7 +637,7 @@ class StealthAutomationAgent(BaseAgent):
                         plugins_list, detection_count, success_rate,
                         created_at, last_used
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                     (
                         profile.profile_id,
                         profile.user_agent,
@@ -628,8 +659,10 @@ class StealthAutomationAgent(BaseAgent):
                         profile.success_rate,
                         profile.created_at.isoformat(),
                         profile.last_used.isoformat() if profile.last_used else None,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
         except Exception as e:
@@ -649,13 +682,15 @@ class StealthAutomationAgent(BaseAgent):
             "session_management",
             "covert_research",
             "profile_rotation",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def get_status(self) -> Dict[str, Any]:
         """Get current agent status"""
         active_sessions = len(
             [s for s in self.active_sessions.values() if s.status == SessionStatus.ACTIVE]
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return {
             "agent_type": self.agent_type,
@@ -666,7 +701,8 @@ class StealthAutomationAgent(BaseAgent):
             "human_behavior_enabled": self.human_behavior_enabled,
             "captcha_solving_enabled": self.captcha_solving_enabled,
             "capabilities": self.capabilities,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _execute_with_monitoring(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Execute task with monitoring and error handling"""
@@ -680,7 +716,8 @@ class StealthAutomationAgent(BaseAgent):
                 "result": result,
                 "execution_time": execution_time,
                 "agent_type": self.agent_type,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             execution_time = time.time() - start_time
             logger.error(f"StealthAutomationAgent task execution failed: {e}")
@@ -689,7 +726,8 @@ class StealthAutomationAgent(BaseAgent):
                 "error": str(e),
                 "execution_time": execution_time,
                 "agent_type": self.agent_type,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _rephrase_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Rephrase task for stealth automation context"""
@@ -712,18 +750,21 @@ class StealthAutomationAgent(BaseAgent):
                 "rephrased": rephrased,
                 "task_type": task_type,
                 "agent_context": "stealth_automation",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             logger.error(f"Task rephrasing failed: {e}")
             return {
                 "original": task.get("description", ""),
                 "rephrased": task.get("description", ""),
                 "error": str(e),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _validate_rephrase_accuracy(
         self, original: Dict[str, Any], rephrased: Dict[str, Any]
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate that rephrased task maintains original intent"""
         try:
             original_desc = original.get("description", "").lower()
@@ -758,7 +799,7 @@ class StealthAutomationAgent(BaseAgent):
 
                 # Stealth profiles table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS stealth_profiles (
                         profile_id TEXT PRIMARY KEY,
                             user_agent TEXT NOT NULL,
@@ -780,13 +821,15 @@ class StealthAutomationAgent(BaseAgent):
                             success_rate REAL DEFAULT 1.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             last_used TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Automation sessions table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS automation_sessions (
                         session_id TEXT PRIMARY KEY,
                             target_site TEXT NOT NULL,
@@ -801,13 +844,15 @@ class StealthAutomationAgent(BaseAgent):
                             success BOOLEAN DEFAULT FALSE,
                             error_message TEXT,
                             FOREIGN KEY (profile_id) REFERENCES stealth_profiles (profile_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Affiliate dashboards table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS affiliate_dashboards (
                         dashboard_id TEXT PRIMARY KEY,
                             program_name TEXT NOT NULL,
@@ -824,13 +869,15 @@ class StealthAutomationAgent(BaseAgent):
                             risk_level TEXT DEFAULT 'low',
                             last_accessed TIMESTAMP,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Payout records table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS payout_records (
                         record_id TEXT PRIMARY KEY,
                             dashboard_id TEXT NOT NULL,
@@ -844,13 +891,15 @@ class StealthAutomationAgent(BaseAgent):
                             notes TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (dashboard_id) REFERENCES affiliate_dashboards (dashboard_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Detection events table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS detection_events (
                         event_id TEXT PRIMARY KEY,
                             session_id TEXT NOT NULL,
@@ -863,9 +912,11 @@ class StealthAutomationAgent(BaseAgent):
                             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (session_id) REFERENCES automation_sessions (session_id),
                             FOREIGN KEY (profile_id) REFERENCES stealth_profiles (profile_id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 logger.info("Stealth automation database tables created successfully")

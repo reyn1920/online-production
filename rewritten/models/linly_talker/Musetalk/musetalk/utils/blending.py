@@ -55,7 +55,8 @@ def get_image(image, face, face_box, upper_boundary_ratio=0.5, expand=1.2):
     blur_kernel_size = int(0.1 * ori_shape[0] // 2 * 2) + 1
     mask_array = cv2.GaussianBlur(
         np.array(modified_mask_image), (blur_kernel_size, blur_kernel_size), 0
-    )
+# BRACKET_SURGEON: disabled
+#     )
     mask_image = Image.fromarray(mask_array)
 
     face_large.paste(face, (x - x_s, y - y_s, x1 - x_s, y1 - y_s))
@@ -89,7 +90,8 @@ def get_image_prepare_material(image, face_box, upper_boundary_ratio=0.5, expand
     blur_kernel_size = int(0.1 * ori_shape[0] // 2 * 2) + 1
     mask_array = cv2.GaussianBlur(
         np.array(modified_mask_image), (blur_kernel_size, blur_kernel_size), 0
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return mask_array, crop_box
 
 

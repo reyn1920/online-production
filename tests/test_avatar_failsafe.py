@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 Avatar Engine Failsafe Test Script
 
 This script tests the bulletproof failsafe mechanism for avatar generation,
 demonstrating automatic failover from Linly - Talker to Talking Heads.
-"""
+""""""
 
 import asyncio
 import sys
@@ -30,7 +30,8 @@ class AvatarFailsafeTest:
             text="Hello! This is a test of the primary avatar engine.",
             voice_settings={"voice_type": "professional", "speed": 1.0},
             video_settings={"resolution": "1080p", "fps": 30},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.test_results.append(
             {
@@ -39,8 +40,10 @@ class AvatarFailsafeTest:
                 "api_used": result.api_used.api_name if result.api_used else None,
                 "attempts": result.total_attempts,
                 "response_time": result.total_time_ms / 1000.0,
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         if result.status.value == "success":
             print(f"✅ SUCCESS: Avatar generated using {result.api_used.api_name}")
@@ -68,27 +71,30 @@ class AvatarFailsafeTest:
         with sqlite3.connect(self.orchestrator.db_path) as conn:
             # Set Linly - Talker to inactive to simulate failure
             conn.execute(
-                """
+                """"""
                 UPDATE api_registry
                 SET status = 'inactive'
                 WHERE api_name = 'linly - talker - enhanced'
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
         result = await self.orchestrator.request_avatar_generation(
             text="This should use the fallback engine due to primary failure.",
             voice_settings={"voice_type": "default", "speed": 1.1},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Restore primary engine status
         with sqlite3.connect(self.orchestrator.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 UPDATE api_registry
                 SET status = 'active'
                 WHERE api_name = 'linly - talker - enhanced'
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
         self.test_results.append(
             {
@@ -97,8 +103,10 @@ class AvatarFailsafeTest:
                 "api_used": result.api_used.api_name if result.api_used else None,
                 "attempts": result.total_attempts,
                 "response_time": result.total_time_ms / 1000.0,
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         if result.status.value == "success":
             print(f"✅ FAILOVER SUCCESS: Used fallback engine {result.api_used.api_name}")
@@ -113,7 +121,8 @@ class AvatarFailsafeTest:
                 else:
                     print(
                         f"   ⚠️  Expected talking - heads - fallback, got {result.api_used.api_name}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
         else:
             print(f"❌ FAILOVER FAILED: {result.error_message}")
 
@@ -121,7 +130,8 @@ class AvatarFailsafeTest:
             result.status.value == "success"
             and result.api_used
             and result.api_used.api_name == "talking - heads - fallback"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     async def test_capability_query(self):
         """Test capability - based API discovery"""
@@ -147,8 +157,10 @@ class AvatarFailsafeTest:
                 "engines_found": len(apis),
                 "has_primary": has_primary,
                 "has_fallback": has_fallback,
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         if has_primary and has_fallback:
             print("✅ Both engines properly registered")
@@ -187,7 +199,8 @@ class AvatarFailsafeTest:
             primary_priority is not None
             and fallback_priority is not None
             and primary_priority < fallback_priority
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.test_results.append(
             {
@@ -195,18 +208,22 @@ class AvatarFailsafeTest:
                 "success": priority_correct,
                 "primary_priority": primary_priority,
                 "fallback_priority": fallback_priority,
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         if priority_correct:
             print(
                 f"✅ Priority ordering correct: Primary({primary_priority}) < Fallback({fallback_priority})"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return True
         else:
             print(
                 f"❌ Priority ordering incorrect: Primary({primary_priority}) vs Fallback({fallback_priority})"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
     def print_test_summary(self):
@@ -252,7 +269,8 @@ async def main():
         tester.test_priority_ordering,
         tester.test_normal_operation,
         tester.test_primary_engine_failure,
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for test_func in test_functions:
         try:
@@ -261,7 +279,8 @@ async def main():
             print(f"❌ Test failed with exception: {e}")
             tester.test_results.append(
                 {"test": test_func.__name__, "success": False, "error": str(e)}
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     # Print final summary
     tester.print_test_summary()

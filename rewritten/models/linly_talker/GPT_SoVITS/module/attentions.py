@@ -19,7 +19,8 @@ class Encoder(nn.Module):
         window_size=4,
         isflow=False,
         **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.hidden_channels = hidden_channels
         self.filter_channels = filter_channels
@@ -42,8 +43,10 @@ class Encoder(nn.Module):
                     n_heads,
                     p_dropout=p_dropout,
                     window_size=window_size,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             self.norm_layers_1.append(LayerNorm(hidden_channels))
             self.ffn_layers.append(
                 FFN(
@@ -52,8 +55,10 @@ class Encoder(nn.Module):
                     filter_channels,
                     kernel_size,
                     p_dropout=p_dropout,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             self.norm_layers_2.append(LayerNorm(hidden_channels))
         if isflow:
             cond_layer = torch.nn.Conv1d(kwargs["gin_channels"], 2 * hidden_channels * n_layers, 1)
@@ -74,7 +79,8 @@ class Encoder(nn.Module):
                 g_l = g[:, cond_offset : cond_offset + 2 * self.hidden_channels, :]
                 x = commons.fused_add_tanh_sigmoid_multiply(
                     x, g_l, torch.IntTensor([self.hidden_channels])
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             y = self.attn_layers[i](x, x, attn_mask)
             y = self.drop(y)
             x = self.norm_layers_1[i](x + y)
@@ -98,7 +104,8 @@ class Decoder(nn.Module):
         proximal_bias=False,
         proximal_init=True,
         **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.hidden_channels = hidden_channels
         self.filter_channels = filter_channels
@@ -125,12 +132,15 @@ class Decoder(nn.Module):
                     p_dropout=p_dropout,
                     proximal_bias=proximal_bias,
                     proximal_init=proximal_init,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             self.norm_layers_0.append(LayerNorm(hidden_channels))
             self.encdec_attn_layers.append(
                 MultiHeadAttention(hidden_channels, hidden_channels, n_heads, p_dropout=p_dropout)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.norm_layers_1.append(LayerNorm(hidden_channels))
             self.ffn_layers.append(
                 FFN(
@@ -140,15 +150,17 @@ class Decoder(nn.Module):
                     kernel_size,
                     p_dropout=p_dropout,
                     causal=True,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             self.norm_layers_2.append(LayerNorm(hidden_channels))
 
     def forward(self, x, x_mask, h, h_mask):
-        """
+        """"""
         x: decoder input
         h: encoder output
-        """
+        """"""
         self_attn_mask = commons.subsequent_mask(x_mask.size(2)).to(device=x.device, dtype=x.dtype)
         encdec_attn_mask = h_mask.unsqueeze(2) * x_mask.unsqueeze(-1)
         x = x * x_mask
@@ -180,7 +192,8 @@ class MultiHeadAttention(nn.Module):
         block_length=None,
         proximal_bias=False,
         proximal_init=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         assert channels % n_heads == 0
 
@@ -207,10 +220,12 @@ class MultiHeadAttention(nn.Module):
             rel_stddev = self.k_channels**-0.5
             self.emb_rel_k = nn.Parameter(
                 torch.randn(n_heads_rel, window_size * 2 + 1, self.k_channels) * rel_stddev
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.emb_rel_v = nn.Parameter(
                 torch.randn(n_heads_rel, window_size * 2 + 1, self.k_channels) * rel_stddev
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         nn.init.xavier_uniform_(self.conv_q.weight)
         nn.init.xavier_uniform_(self.conv_k.weight)
@@ -243,21 +258,24 @@ class MultiHeadAttention(nn.Module):
             key_relative_embeddings = self._get_relative_embeddings(self.emb_rel_k, t_s)
             rel_logits = self._matmul_with_relative_keys(
                 query / math.sqrt(self.k_channels), key_relative_embeddings
-            )
+# BRACKET_SURGEON: disabled
+#             )
             scores_local = self._relative_position_to_absolute_position(rel_logits)
             scores = scores + scores_local
         if self.proximal_bias:
             assert t_s == t_t, "Proximal bias is only available for self - attention."
             scores = scores + self._attention_bias_proximal(t_s).to(
                 device=scores.device, dtype=scores.dtype
-            )
+# BRACKET_SURGEON: disabled
+#             )
         if mask is not None:
             scores = scores.masked_fill(mask == 0, -1e4)
             if self.block_length is not None:
                 assert t_s == t_t, "Local attention is only available for self - attention."
                 block_mask = (
                     torch.ones_like(scores).triu(-self.block_length).tril(self.block_length)
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 scores = scores.masked_fill(block_mask == 0, -1e4)
         p_attn = F.softmax(scores, dim=-1)  # [b, n_h, t_t, t_s]
         p_attn = self.drop(p_attn)
@@ -267,27 +285,28 @@ class MultiHeadAttention(nn.Module):
             value_relative_embeddings = self._get_relative_embeddings(self.emb_rel_v, t_s)
             output = output + self._matmul_with_relative_values(
                 relative_weights, value_relative_embeddings
-            )
+# BRACKET_SURGEON: disabled
+#             )
         output = (
             output.transpose(2, 3).contiguous().view(b, d, t_t)
         )  # [b, n_h, t_t, d_k] -> [b, d, t_t]
         return output, p_attn
 
     def _matmul_with_relative_values(self, x, y):
-        """
+        """"""
         x: [b, h, l, m]
         y: [h or 1, m, d]
         ret: [b, h, l, d]
-        """
+        """"""
         ret = torch.matmul(x, y.unsqueeze(0))
         return ret
 
     def _matmul_with_relative_keys(self, x, y):
-        """
+        """"""
         x: [b, h, l, d]
         y: [h or 1, m, d]
         ret: [b, h, l, m]
-        """
+        """"""
         ret = torch.matmul(x, y.unsqueeze(0).transpose(-2, -1))
         return ret
 
@@ -301,19 +320,21 @@ class MultiHeadAttention(nn.Module):
             padded_relative_embeddings = F.pad(
                 relative_embeddings,
                 commons.convert_pad_shape([[0, 0], [pad_length, pad_length], [0, 0]]),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             padded_relative_embeddings = relative_embeddings
         used_relative_embeddings = padded_relative_embeddings[
             :, slice_start_position:slice_end_position
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         return used_relative_embeddings
 
     def _relative_position_to_absolute_position(self, x):
-        """
+        """"""
         x: [b, h, l, 2 * l - 1]
         ret: [b, h, l, l]
-        """
+        """"""
         batch, heads, length, _ = x.size()
         # Concat columns of pad to shift from relative to absolute indexing.
         x = F.pad(x, commons.convert_pad_shape([[0, 0], [0, 0], [0, 0], [0, 1]]))
@@ -325,14 +346,15 @@ class MultiHeadAttention(nn.Module):
         # Reshape and slice out the padded elements.
         x_final = x_flat.view([batch, heads, length + 1, 2 * length - 1])[
             :, :, :length, length - 1 :
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         return x_final
 
     def _absolute_position_to_relative_position(self, x):
-        """
+        """"""
         x: [b, h, l, l]
         ret: [b, h, l, 2 * l - 1]
-        """
+        """"""
         batch, heads, length, _ = x.size()
         # padd along column
         x = F.pad(x, commons.convert_pad_shape([[0, 0], [0, 0], [0, 0], [0, length - 1]]))
@@ -343,12 +365,12 @@ class MultiHeadAttention(nn.Module):
         return x_final
 
     def _attention_bias_proximal(self, length):
-        """Bias for self - attention to encourage attention to close positions.
+        """Bias for self - attention to encourage attention to close positions."""
         Args:
           length: an integer scalar.
         Returns:
           a Tensor with shape [1, 1, length, length]
-        """
+        """"""
         r = torch.arange(length, dtype=torch.float32)
         diff = torch.unsqueeze(r, 0) - torch.unsqueeze(r, 1)
         return torch.unsqueeze(torch.unsqueeze(-torch.log1p(torch.abs(diff)), 0), 0)
@@ -364,7 +386,8 @@ class FFN(nn.Module):
         p_dropout=0.0,
         activation=None,
         causal=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -429,7 +452,8 @@ class Depthwise_Separable_Conv1D(nn.Module):
         padding_mode="zeros",  # TODO: refine this type
         device=None,
         dtype=None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.depth_conv = nn.Conv1d(
             in_channels=in_channels,
@@ -443,7 +467,8 @@ class Depthwise_Separable_Conv1D(nn.Module):
             padding_mode=padding_mode,
             device=device,
             dtype=dtype,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.point_conv = nn.Conv1d(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -451,7 +476,8 @@ class Depthwise_Separable_Conv1D(nn.Module):
             bias=bias,
             device=device,
             dtype=dtype,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, input):
         return self.point_conv(self.depth_conv(input))
@@ -479,7 +505,8 @@ class Depthwise_Separable_TransposeConv1D(nn.Module):
         padding_mode="zeros",  # TODO: refine this type
         device=None,
         dtype=None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.depth_conv = nn.ConvTranspose1d(
             in_channels=in_channels,
@@ -494,7 +521,8 @@ class Depthwise_Separable_TransposeConv1D(nn.Module):
             padding_mode=padding_mode,
             device=device,
             dtype=dtype,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.point_conv = nn.Conv1d(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -502,7 +530,8 @@ class Depthwise_Separable_TransposeConv1D(nn.Module):
             bias=bias,
             device=device,
             dtype=dtype,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, input):
         return self.point_conv(self.depth_conv(input))
@@ -519,7 +548,8 @@ class Depthwise_Separable_TransposeConv1D(nn.Module):
 def weight_norm_modules(module, name="weight", dim=0):
     if isinstance(module, Depthwise_Separable_Conv1D) or isinstance(
         module, Depthwise_Separable_TransposeConv1D
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         module.weight_norm()
         return module
     else:
@@ -529,7 +559,8 @@ def weight_norm_modules(module, name="weight", dim=0):
 def remove_weight_norm_modules(module, name="weight"):
     if isinstance(module, Depthwise_Separable_Conv1D) or isinstance(
         module, Depthwise_Separable_TransposeConv1D
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         module.remove_weight_norm()
     else:
         remove_weight_norm(module, name)
@@ -548,7 +579,8 @@ class FFT(nn.Module):
         proximal_init=True,
         isflow=False,
         **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.hidden_channels = hidden_channels
         self.filter_channels = filter_channels
@@ -577,8 +609,10 @@ class FFT(nn.Module):
                     p_dropout=p_dropout,
                     proximal_bias=proximal_bias,
                     proximal_init=proximal_init,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             self.norm_layers_0.append(LayerNorm(hidden_channels))
             self.ffn_layers.append(
                 FFN(
@@ -588,15 +622,17 @@ class FFT(nn.Module):
                     kernel_size,
                     p_dropout=p_dropout,
                     causal=True,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             self.norm_layers_1.append(LayerNorm(hidden_channels))
 
     def forward(self, x, x_mask, g=None):
-        """
+        """"""
         x: decoder input
         h: encoder output
-        """
+        """"""
         if g is not None:
             g = self.cond_layer(g)
 
@@ -609,7 +645,8 @@ class FFT(nn.Module):
                 g_l = g[:, cond_offset : cond_offset + 2 * self.hidden_channels, :]
                 x = commons.fused_add_tanh_sigmoid_multiply(
                     x, g_l, torch.IntTensor([self.hidden_channels])
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             y = self.self_attn_layers[i](x, x, self_attn_mask)
             y = self.drop(y)
             x = self.norm_layers_0[i](x + y)
@@ -634,7 +671,8 @@ class TransformerCouplingLayer(nn.Module):
         mean_only=False,
         wn_sharing_parameter=None,
         gin_channels=0,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         assert channels % 2 == 0, "channels should be divisible by 2"
         super().__init__()
         self.channels = channels
@@ -655,10 +693,12 @@ class TransformerCouplingLayer(nn.Module):
                 p_dropout,
                 isflow=True,
                 gin_channels=gin_channels,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if wn_sharing_parameter is None
             else wn_sharing_parameter
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.post = nn.Conv1d(hidden_channels, self.half_channels * (2 - mean_only), 1)
         self.post.weight.data.zero_()
         self.post.bias.data.zero_()

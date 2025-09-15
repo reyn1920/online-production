@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Progressive Self - Repair System Agent
 
 Implements intelligent, tiered escalation for component failures:
@@ -9,7 +9,7 @@ Implements intelligent, tiered escalation for component failures:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -86,8 +86,10 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                 "venv_path": config.get("venv_path", "./venv"),
                 "project_root": config.get("project_root", "."),
                 "max_snapshots": config.get("max_snapshots", 10),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         self._init_database()
 
@@ -100,7 +102,7 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                 # The repair_log table is already defined in right_perspective_schema.sql
                 # Just ensure it exists with the correct structure
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS repair_log (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             component_name TEXT NOT NULL,
@@ -111,13 +113,15 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                             execution_details TEXT,
                             attempt_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             resolution_time_seconds INTEGER
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Create component_health table for tracking component status
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS component_health (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             component_name TEXT NOT NULL UNIQUE,
@@ -128,9 +132,11 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                             last_failure_at TIMESTAMP,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 self.logger.info("Progressive Self - Repair database initialized successfully")
@@ -143,9 +149,10 @@ class ProgressiveSelfRepairAgent(BaseAgent):
         component_name: str,
         error_message: str,
         error_context: Optional[Dict] = None,
-    ) -> bool:
-        """Main entry point for handling component failures with enhanced pre - repair validation \
-    and Safe Mode protection."""
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
+        """Main entry point for handling component failures with enhanced pre - repair validation \"""
+#     and Safe Mode protection.""""""
         snapshot = None
         try:
             self.logger.info(f"Handling failure for component: {component_name}")
@@ -160,12 +167,14 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             # Create environment snapshot before attempting repair
             snapshot = self.safe_mode.create_snapshot(
                 f"Pre - repair snapshot for {component_name} failure"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not snapshot:
                 self.logger.warning(
                     "Failed to create pre - repair snapshot - proceeding without Safe Mode"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 self.logger.info(f"Created pre - repair snapshot: {snapshot.snapshot_id}")
 
@@ -189,7 +198,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             elif repair_tier == RepairTier.AI_RESEARCH:
                 success = self._execute_tier3_repair(
                     component_name, error_message, error_context, repair_history
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             repair_duration = time.time() - repair_start_time
 
@@ -197,19 +207,22 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             if success:
                 post_repair_validation = self._perform_post_repair_validation(
                     component_name, repair_duration
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if not post_repair_validation["stable"]:
                     self.logger.warning(
                         f"Post - repair validation failed: {post_repair_validation['issues']}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if snapshot:
                         self.logger.info("Initiating automatic rollback due to validation failure")
                         rollback_result = self.safe_mode.rollback_to_snapshot(
                             snapshot.snapshot_id,
                             f"Post - repair validation failed for {component_name}: {post_repair_validation['issues']}",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         if rollback_result.success:
                             success = False
@@ -218,14 +231,17 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                                 component_name,
                                 snapshot.snapshot_id,
                                 "validation_failure",
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                         else:
                             self.logger.error(
                                 f"Automatic rollback failed: {rollback_result.error_message}"
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             self._log_rollback_event(
                                 component_name, snapshot.snapshot_id, "rollback_failed"
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
             # Update component health based on final outcome
             if success:
@@ -247,16 +263,19 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     rollback_result = self.safe_mode.rollback_to_snapshot(
                         snapshot.snapshot_id,
                         f"Emergency rollback - Exception during {component_name} repair: {str(e)}",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     if rollback_result.success:
                         self.logger.info("Emergency rollback completed successfully")
                         self._log_rollback_event(
                             component_name, snapshot.snapshot_id, "exception_recovery"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                     else:
                         self.logger.error(
                             f"Emergency rollback failed: {rollback_result.error_message}"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 except Exception as rollback_error:
                     self.logger.error(f"Emergency rollback failed with exception: {rollback_error}")
 
@@ -274,7 +293,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             attempt
             for attempt in repair_history
             if datetime.fromisoformat(attempt["created_at"]) > recent_cutoff
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         tier1_attempts = len([a for a in recent_attempts if a["repair_tier"] == 1])
         tier2_attempts = len([a for a in recent_attempts if a["repair_tier"] == 2])
@@ -288,7 +308,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
 
     def _execute_tier1_repair(
         self, component_name: str, error_message: str, error_context: Optional[Dict]
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Tier 1: Simple component restart."""
         start_time = time.time()
         repair_action = f"Restarting component: {component_name}"
@@ -317,14 +338,17 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                 execution_details=execution_details,
                 error_context=error_context,
                 duration=time.time() - start_time,
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
 
         return success
 
     def _execute_tier2_repair(
         self, component_name: str, error_message: str, error_context: Optional[Dict]
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Tier 2: Dependency verification and repair."""
         start_time = time.time()
         repair_action = f"Checking dependencies for: {component_name}"
@@ -348,7 +372,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                 success = self._restart_component(component_name)
                 execution_details = (
                     f"No dependency issues found, restart {'successful' if success else 'failed'}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             outcome = RepairOutcome.SUCCESS if success else RepairOutcome.FAILURE
 
@@ -369,8 +394,10 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                 execution_details=execution_details,
                 error_context=error_context,
                 duration=time.time() - start_time,
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
 
         return success
 
@@ -380,7 +407,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
         error_message: str,
         error_context: Optional[Dict],
         repair_history: List[Dict],
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Tier 3: AI - powered research and novel solution generation."""
         start_time = time.time()
         repair_action = f"AI - powered repair research for: {component_name}"
@@ -406,7 +434,8 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                     success = False
                     execution_details = (
                         f"No executable code found in AI response: {solution[:200]}..."
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
             else:
                 success = False
                 execution_details = "Failed to get AI response"
@@ -430,21 +459,25 @@ class ProgressiveSelfRepairAgent(BaseAgent):
                 execution_details=execution_details,
                 error_context=error_context,
                 duration=time.time() - start_time,
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
 
         return success
 
     def _generate_ai_repair_prompt(
         self, component_name: str, error_message: str, repair_history: List[Dict]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate prompt for AI - powered repair research using the exact format specified in the Progressive Self - Repair Protocol."""
         # Format repair history as specified in the protocol
         if repair_history:
             failed_repairs = [
                 f"Tier {r['repair_tier']}: {r['repair_action']} - {r['outcome']}"
                 for r in repair_history[-10:]
-            ]  # Last 10 attempts
+# BRACKET_SURGEON: disabled
+#             ]  # Last 10 attempts
             history_summary = ", ".join(failed_repairs)
         else:
             history_summary = "None"
@@ -454,16 +487,17 @@ class ProgressiveSelfRepairAgent(BaseAgent):
             "linly_talker",
             "blender_compositor",
             "creative_pipeline",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         creative_context = ""
         if is_creative:
             creative_context = " Note: This component uses an isolated Python virtual environment (venv_creative) with creative dependencies (torch, opencv-python, librosa, etc.). Use 'source activate_creative.sh' before executing Python commands."
 
         # Use the exact prompt format from the Progressive Self - Repair Protocol specification
-        return f"""
+        return f""""""
 I am an autonomous system. The component '[{component_name}]' is failing with the error: '[{error_message}]'. I have already tried the following repairs: [{history_summary}].{creative_context} Based on this error, research \
-    and suggest a new, different command - line or Python - based repair strategy. Formulate the solution as executable code.
+#     and suggest a new, different command - line or Python - based repair strategy. Formulate the solution as executable code.
 
 Provide your response in this format:
 ```python
@@ -475,7 +509,7 @@ OR
 ```bash
 # Your shell commands here
 ```
-"""
+""""""
 
     def _extract_executable_code(self, ai_response: str) -> Optional[str]:
         """Extract executable code from AI response."""
@@ -504,7 +538,8 @@ OR
                 "linly_talker",
                 "blender_compositor",
                 "creative_pipeline",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             # Determine if it's Python or shell code
             if any(keyword in code for keyword in ["import ", "def ", "class ", "print("]):
@@ -521,14 +556,16 @@ OR
                             "bash",
                             "-c",
                             f"source activate_creative.sh && python {temp_file}",
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
                         result = subprocess.run(
                             cmd,
                             capture_output=True,
                             text=True,
                             timeout=300,
                             cwd=os.getcwd(),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         os.unlink(temp_file)
                         return result.returncode == 0
                     except Exception:
@@ -546,7 +583,8 @@ OR
                     code = f"source activate_creative.sh && {code}"
                 result = subprocess.run(
                     code, shell=True, capture_output=True, text=True, timeout=60
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return result.returncode == 0
         except Exception as e:
             self.logger.error(f"Failed to execute AI solution: {e}")
@@ -563,7 +601,8 @@ OR
             "linly_talker": "source activate_creative.sh && python -c \"from backend.content.animate_avatar import LinlyTalkerEngine; engine = LinlyTalkerEngine(); print('Linly-Talker restarted')\"",
             "blender_compositor": "source activate_creative.sh && python -c \"from backend.content.blender_compositor import BlenderCompositor; compositor = BlenderCompositor(); print('Blender compositor restarted')\"",
             "creative_pipeline": "source activate_creative.sh && python -c \"import torch, cv2, librosa; print('Creative pipeline dependencies verified')\"",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         command = restart_commands.get(component_name)
         if not command:
@@ -615,7 +654,8 @@ OR
             "linly_talker",
             "blender_compositor",
             "creative_pipeline",
-        ]:
+# BRACKET_SURGEON: disabled
+#         ]:
             # Check creative environment
             creative_env_path = "venv_creative"
             if not os.path.exists(creative_env_path):
@@ -628,11 +668,13 @@ OR
                             f"{creative_env_path}/bin/python",
                             "-c",
                             'import torch, cv2, librosa; print("Creative dependencies OK")',
-                        ],
+# BRACKET_SURGEON: disabled
+#                         ],
                         capture_output=True,
                         text=True,
                         timeout=30,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     if result.returncode != 0:
                         issues.append("creative_dependencies_missing")
                 except Exception:
@@ -659,26 +701,29 @@ OR
                     success = False
                 elif issue == "creative_environment_missing":
                     # Recreate creative environment
-                    result = subprocess.run(
+                    subprocess.run(
                         ["python", "scripts/setup_creative_environment.py"],
                         check=True,
                         timeout=300,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif issue == "creative_dependencies_missing":
                     # Reinstall creative dependencies
-                    result = subprocess.run(
+                    subprocess.run(
                         ["python", "scripts/setup_creative_environment.py", "--update"],
                         check=True,
                         timeout=300,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif issue == "creative_environment_corrupted":
                     # Remove and recreate creative environment
                     subprocess.run(["rm", "-rf", "venv_creative"], check=True)
-                    result = subprocess.run(
+                    subprocess.run(
                         ["python", "scripts/setup_creative_environment.py"],
                         check=True,
                         timeout=300,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 # Add more dependency fixes as needed
             except Exception as e:
                 self.logger.error(f"Failed to fix dependency {issue}: {e}")
@@ -693,14 +738,15 @@ OR
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM repair_log
                     WHERE component_name = ?
                     ORDER BY attempt_timestamp DESC
                     LIMIT ?
-                """,
+                ""","""
                     (component_name, limit),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return [dict(row) for row in cursor.fetchall()]
         except Exception as e:
             self.logger.error(f"Failed to get repair history: {e}")
@@ -720,12 +766,12 @@ OR
                     cursor.execute("ALTER TABLE repair_log ADD COLUMN snapshot_id TEXT")
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO repair_log (
                         component_name, error_message, repair_action, repair_tier,
                             outcome, execution_details, resolution_time_seconds, snapshot_id
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         attempt.component_name,
                         attempt.error_message,
@@ -738,19 +784,25 @@ OR
                                     "error_type": attempt.error_type,
                                     "error_context": attempt.error_context,
                                     "execution_details": attempt.execution_details,
-                                }
-                            )
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                             )
                             if attempt.execution_details or attempt.error_context
                             else None
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         int(attempt.duration) if attempt.duration else None,
                         snapshot_id,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
                 self.logger.info(
                     f"Logged repair attempt for {attempt.component_name}: {attempt.repair_action}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         except Exception as e:
             self.logger.error(f"Failed to log repair attempt: {e}")
 
@@ -764,7 +816,8 @@ OR
                 cursor.execute(
                     "SELECT id, consecutive_failures, total_failures FROM component_health WHERE component_name = ?",
                     (component_name,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 existing = cursor.fetchone()
 
                 if existing:
@@ -778,31 +831,33 @@ OR
                         total_failures += 1
 
                     cursor.execute(
-                        """
+                        """"""
                         UPDATE component_health
                         SET status = ?, last_check = CURRENT_TIMESTAMP,
                             consecutive_failures = ?, total_failures = ?,
                                 last_failure_at = CASE WHEN ? != 'healthy' THEN CURRENT_TIMESTAMP ELSE last_failure_at END,
                                 updated_at = CURRENT_TIMESTAMP
                         WHERE component_name = ?
-                    """,
+                    ""","""
                         (
                             status.value,
                             consecutive_failures,
                             total_failures,
                             status.value,
                             component_name,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     # Insert new record
                     cursor.execute(
-                        """
+                        """"""
                         INSERT INTO component_health (
                             component_name, status, consecutive_failures, total_failures,
                                 last_failure_at
                         ) VALUES (?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             component_name,
                             status.value,
@@ -812,9 +867,12 @@ OR
                                 datetime.now().isoformat()
                                 if status != ComponentStatus.HEALTHY
                                 else None
-                            ),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                             ),
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                 conn.commit()
         except Exception as e:
@@ -829,35 +887,38 @@ OR
 
                 # Get component health summary
                 cursor.execute(
-                    """
+                    """"""
                     SELECT status, COUNT(*) as count
                     FROM component_health
                     GROUP BY status
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 health_summary = {row["status"]: row["count"] for row in cursor.fetchall()}
 
                 # Get recent repair activity
                 cursor.execute(
-                    """
+                    """"""
                     SELECT repair_tier, repair_outcome, COUNT(*) as count
                     FROM repair_log
                     WHERE created_at > datetime('now', '-24 hours')
                     GROUP BY repair_tier, repair_outcome
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 repair_activity = [dict(row) for row in cursor.fetchall()]
 
                 # Get most problematic components
                 cursor.execute(
-                    """
+                    """"""
                     SELECT component_name, consecutive_failures, total_failures, status
                     FROM component_health
                     WHERE status != 'healthy'
                     ORDER BY consecutive_failures DESC, total_failures DESC
                     LIMIT 10
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 problematic_components = [dict(row) for row in cursor.fetchall()]
 
                 return {
@@ -867,8 +928,10 @@ OR
                     "problematic_components": problematic_components,
                     "system_status": (
                         "healthy" if health_summary.get("critical", 0) == 0 else "degraded"
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception as e:
             self.logger.error(f"Failed to generate health report: {e}")
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
@@ -882,13 +945,14 @@ OR
             "reason": None,
             "risk_level": "low",
             "recommendations": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Check system resources
             memory_usage = psutil.virtual_memory().percent
             disk_usage = psutil.disk_usage("/").percent
-            cpu_usage = psutil.cpu_percent(interval=1)
+            psutil.cpu_percent(interval=1)
 
             if memory_usage > 90:
                 validation_result["can_proceed"] = False
@@ -917,7 +981,8 @@ OR
                     validation_result["risk_level"] = "high"
                     validation_result["recommendations"].append(
                         "Consider scheduling repair during low usage"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Check error pattern for known dangerous scenarios
             dangerous_patterns = ["corruption", "segfault", "memory leak", "deadlock"]
@@ -925,11 +990,13 @@ OR
                 validation_result["risk_level"] = "high"
                 validation_result["recommendations"].append(
                     "High - risk error detected - proceed with caution"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             self.logger.info(
                 f"Pre - repair validation for {component_name}: {validation_result['risk_level']} risk"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return validation_result
 
         except Exception as e:
@@ -947,7 +1014,8 @@ OR
             "issues": [],
             "performance_impact": "none",
             "recommendations": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Basic system stability checks
@@ -965,7 +1033,8 @@ OR
                 validation_result["stable"] = False
                 validation_result["issues"].append(
                     f"Database integrity compromised: {str(db_error)}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Component - specific post - repair validation
             if component_name == "ollama_service":
@@ -975,18 +1044,21 @@ OR
                         validation_result["stable"] = False
                         validation_result["issues"].append(
                             "Ollama service not responding correctly"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 except Exception as ollama_error:
                     validation_result["stable"] = False
                     validation_result["issues"].append(
                         f"Ollama connectivity failed: {str(ollama_error)}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             elif component_name in [
                 "linly_talker",
                 "blender_compositor",
                 "creative_pipeline",
-            ]:
+# BRACKET_SURGEON: disabled
+#             ]:
                 # Validate creative environment
                 try:
                     result = subprocess.run(
@@ -994,11 +1066,13 @@ OR
                             "venv_creative/bin/python",
                             "-c",
                             'import torch, cv2, librosa; print("Creative environment OK")',
-                        ],
+# BRACKET_SURGEON: disabled
+#                         ],
                         capture_output=True,
                         text=True,
                         timeout=30,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     if result.returncode != 0:
                         validation_result["stable"] = False
                         validation_result["issues"].append("Creative environment validation failed")
@@ -1006,14 +1080,16 @@ OR
                     validation_result["stable"] = False
                     validation_result["issues"].append(
                         f"Creative environment error: {str(creative_error)}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Performance impact assessment
             if repair_duration > 60:
                 validation_result["performance_impact"] = "high"
                 validation_result["recommendations"].append(
                     "Long repair duration may indicate underlying issues"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif repair_duration > 30:
                 validation_result["performance_impact"] = "moderate"
 
@@ -1022,7 +1098,8 @@ OR
             if memory_usage > 85:
                 validation_result["issues"].append(
                     f"High memory usage after repair: {memory_usage}%"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 validation_result["recommendations"].append("Monitor memory usage closely")
 
             # Check for new error patterns
@@ -1034,7 +1111,8 @@ OR
 
             self.logger.info(
                 f"Post - repair validation for {component_name}: {'STABLE' if validation_result['stable'] else 'UNSTABLE'}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return validation_result
 
         except Exception as e:
@@ -1051,13 +1129,14 @@ OR
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM repair_log
                     WHERE attempt_timestamp > ?
                     ORDER BY attempt_timestamp DESC
-                """,
+                ""","""
                     (cutoff_time.isoformat(),),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return [dict(row) for row in cursor.fetchall()]
         except Exception as e:
             self.logger.error(f"Failed to get recent repair attempts: {e}")
@@ -1108,26 +1187,30 @@ OR
 
                 # Create rollback_log table if it doesn't exist
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS rollback_log (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             component_name TEXT NOT NULL,
                             snapshot_id TEXT NOT NULL,
                             rollback_reason TEXT NOT NULL,
                             rollback_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO rollback_log (component_name,
     snapshot_id,
-    rollback_reason)
+# BRACKET_SURGEON: disabled
+#     rollback_reason)
                     VALUES (?, ?, ?)
-                """,
+                ""","""
                     (component_name, snapshot_id, rollback_reason),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 self.logger.info(f"Logged rollback event for {component_name}: {rollback_reason}")

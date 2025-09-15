@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Production Deployment Script
 Implements secure, automated deployment following go - live rules
-"""
+""""""
 
 import json
 import os
@@ -30,7 +30,8 @@ class ProductionDeployment:
             "NETLIFY_SITE_ID",
             "ENVIRONMENT",
             "NODE_ENV",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Health check endpoints
         self.health_endpoints = [
@@ -38,7 +39,8 @@ class ProductionDeployment:
             "/api / production / health",
             "/api / production / readiness",
             "/api / production / liveness",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def log_step(self, message: str, status: str = "INFO"):
         """Log deployment step with timestamp"""
@@ -66,14 +68,16 @@ class ProductionDeployment:
             self.log_step(
                 "ENVIRONMENT must be set to 'production' for production deployment",
                 "ERROR",
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
         if os.getenv("NODE_ENV") != "production":
             self.log_step(
                 "NODE_ENV must be set to 'production' for production deployment",
                 "ERROR",
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
         # Check if we're on the main branch
@@ -83,13 +87,15 @@ class ProductionDeployment:
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             current_branch = result.stdout.strip()
             if current_branch != "main":
                 self.log_step(
                     f"Production deployment must be from 'main' branch, currently on '{current_branch}'",
                     "ERROR",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return False
         except subprocess.CalledProcessError:
             self.log_step("Failed to check current git branch", "ERROR")
@@ -125,18 +131,21 @@ class ProductionDeployment:
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             # Simple check for common secret patterns in recent commits
             secret_patterns = ["password", "secret", "key", "token", "api_key"]
             for line in result.stdout.lower().split("\\n"):
                 for pattern in secret_patterns:
                     if pattern in line and not any(
                         safe in line for safe in ["remove", "fix", "clean"]
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         self.log_step(
                             f"Potential secret detected in recent commit: {line}",
                             "WARNING",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
         except subprocess.CalledProcessError:
             self.log_step("Could not check recent commits for secrets", "WARNING")
 
@@ -190,11 +199,13 @@ class ProductionDeployment:
                 "dist",
                 "--message",
                 f"Production deployment {self.start_time.isoformat()}",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(
                 cmd, capture_output=True, text=True, check=True, cwd=self.project_root
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Extract deployment URL from output
             output_lines = result.stdout.split("\\n")
@@ -235,7 +246,8 @@ class ProductionDeployment:
                     self.log_step(
                         f"Health check failed: {endpoint} (status: {response.status_code})",
                         "WARNING",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     failed_checks.append(endpoint)
             except requests.exceptions.RequestException as e:
                 self.log_step(f"Health check error: {endpoint} - {str(e)}", "WARNING")
@@ -276,14 +288,16 @@ class ProductionDeployment:
             "git_branch": self._get_git_branch(),
             "git_commit": self._get_git_commit(),
             "logs": self.deployment_log,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Save report
         report_path = (
             self.project_root
             / "deployment_reports"
             / f"deployment_{int(self.start_time.timestamp())}.json"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         report_path.parent.mkdir(exist_ok=True)
 
         with open(report_path, "w") as f:
@@ -299,7 +313,8 @@ class ProductionDeployment:
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result.stdout.strip()
         except Exception:
             return "unknown"
@@ -311,7 +326,8 @@ class ProductionDeployment:
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result.stdout.strip()[:8]
         except Exception:
             return "unknown"

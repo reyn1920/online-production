@@ -2,7 +2,7 @@ import os
 
 from paddlespeech.cli.tts.infer import TTSExecutor
 
-"""
+""""""
 PaddleSpeech
 
 声码器说明：这里预制了三种声码器【PWGan】【WaveRnn】【HifiGan】, 三种声码器效果和生成时间有比较大的差距，请跟进自己的需要进行选择。不过只选择了前两种，因为WaveRNN太慢了
@@ -70,7 +70,7 @@ vc1 - FastSpeech2 Voice Clone with GE2E
   |        wavernn_csmsc         |    zh    |
   |         pwgan_male           |    zh    |
   |        hifigan_male          |    zh    |
-"""
+""""""
 
 
 class PaddleTTS:
@@ -93,13 +93,15 @@ class PaddleTTS:
                 voc=voc + "_male",
                 lang=lang,
                 use_onnx=use_onnx,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return wav_file
 
         assert am in [
             "tacotron2",
             "fastspeech2",
-        ], "am must be 'tacotron2' or 'fastspeech2'"
+# BRACKET_SURGEON: disabled
+#         ], "am must be 'tacotron2' or 'fastspeech2'"
 
         # 混合中文英文语音合成
         if lang == "mix":
@@ -118,11 +120,12 @@ class PaddleTTS:
                 "hifigan",
                 "style_melgan",
                 "mb_melgan",
-            ], "voc must be 'wavernn' \
-    or 'pwgan' \
-    or 'hifigan' \
-    or 'style_melgan' \
-    or 'mb_melgan'"
+# BRACKET_SURGEON: disabled
+#             ], "voc must be 'wavernn' \"
+#     or 'pwgan' \
+#     or 'hifigan' \
+#     or 'style_melgan' \
+#     or 'mb_melgan'"
             am += "_csmsc"
             voc += "_csmsc"
         elif lang == "canton":
@@ -144,7 +147,8 @@ class PaddleTTS:
                 lang=lang,
                 spk_id=spk_id,
                 use_onnx=use_onnx,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         return wav_file
 
 
@@ -158,4 +162,5 @@ if __name__ == "__main__":
         lang="en",
         male=False,
         save_path="output.wav",
-    )
+# BRACKET_SURGEON: disabled
+#     )

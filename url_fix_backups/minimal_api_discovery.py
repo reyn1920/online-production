@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 Minimal API Discovery Script
 
 Uses only built - in Python libraries to avoid dependency issues.
-"""
+""""""
 
 import json
 import sqlite3
@@ -30,7 +30,8 @@ class MinimalAPIDiscovery:
                 "Cors": "Yes",
                 "Link": "https://jsonplaceholder.typicode.com/",
                 "Category": "Development"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "REST Countries",
                 "Description": "Get information about countries via a RESTful API",
@@ -39,17 +40,19 @@ class MinimalAPIDiscovery:
                 "Cors": "Yes",
                 "Link": "https://restcountries.com/",
                 "Category": "Government"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "OpenWeatherMap",
-                "Description": "Weather data including current weather, forecasts, \
-    and historical data",
+                "Description": "Weather data including current weather, forecasts, \"
+#     and historical data",
                 "Auth": "apiKey",
                 "HTTPS": True,
                 "Cors": "Unknown",
                 "Link": "https://openweathermap.org / api",
                 "Category": "Weather"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Cat Facts",
                 "Description": "Daily cat facts",
@@ -58,16 +61,18 @@ class MinimalAPIDiscovery:
                 "Cors": "No",
                 "Link": "https://catfact.ninja/",
                 "Category": "Animals"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Dog API",
-                "Description": "The internet's biggest collection of open source dog pictures",
+                "Description": "The internet's biggest collection of open source dog pictures",'
                 "Auth": "No",
                 "HTTPS": True,
                 "Cors": "No",
                 "Link": "https://dog.ceo / dog - api/",
                 "Category": "Animals"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Advice Slip",
                 "Description": "An API to give you advice",
@@ -76,16 +81,18 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "https://api.adviceslip.com/",
                 "Category": "Entertainment"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Bored API",
-                "Description": "Find something to do when you're bored",
+                "Description": "Find something to do when you're bored",'
                 "Auth": "No",
                 "HTTPS": True,
                 "Cors": "Unknown",
                 "Link": "https://www.boredapi.com/",
                 "Category": "Entertainment"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Numbers API",
                 "Description": "Interesting facts about numbers",
@@ -94,7 +101,8 @@ class MinimalAPIDiscovery:
                 "Cors": "No",
                 "Link": "http://numbersapi.com/",
                 "Category": "Science & Math"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "JokeAPI",
                 "Description": "Submit and receive jokes",
@@ -103,7 +111,8 @@ class MinimalAPIDiscovery:
                 "Cors": "Yes",
                 "Link": "https://jokeapi.dev/",
                 "Category": "Entertainment"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Quotable",
                 "Description": "A free, open source quotations API",
@@ -112,7 +121,8 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "https://github.com / lukePeavey / quotable",
                 "Category": "Text"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "IP Geolocation",
                 "Description": "IP Geolocation API - IPv4 and IPv6",
@@ -121,7 +131,8 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "https://ipapi.co/",
                 "Category": "Geocoding"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Zippopotam.us",
                 "Description": "Get information about place such as country, city, state, etc",
@@ -130,17 +141,19 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "http://www.zippopotam.us/",
                 "Category": "Geocoding"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "GitHub",
-                "Description": "Make use of GitHub repositories, code \
-    and user info programmatically",
+                "Description": "Make use of GitHub repositories, code \"
+#     and user info programmatically",
                 "Auth": "OAuth",
                 "HTTPS": True,
                 "Cors": "Yes",
                 "Link": "https://docs.github.com / en / rest",
                 "Category": "Development"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Random User Generator",
                 "Description": "A free, open - source API for generating random user data",
@@ -149,7 +162,8 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "https://randomuser.me/",
                 "Category": "Development"
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "API": "Lorem Picsum",
                 "Description": "The Lorem Ipsum for photos",
@@ -158,17 +172,24 @@ class MinimalAPIDiscovery:
                 "Cors": "Unknown",
                 "Link": "https://picsum.photos/",
                 "Category": "Photography"
-            }
-        ]
+# BRACKET_SURGEON: disabled
+#             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         print(f"🔍 Generated {len(sample_apis)} sample free APIs for testing")
         return sample_apis
 
     def categorize_apis(self,
     apis: List[Dict[str,
-    Any]]) -> Dict[str,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     Any]]) -> Dict[str,
     List[Dict[str,
-    Any]]]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     Any]]]:
         """Categorize APIs by their category"""
         categorized = {}
 
@@ -193,13 +214,15 @@ class MinimalAPIDiscovery:
                     complexity = "low" if api.get('Auth', '').lower() in ['no', 'none', ''] else "medium"
 
                     # Insert into api_suggestions table
-                    conn.execute("""
+                    conn.execute(""""""
                         INSERT OR REPLACE INTO api_suggestions (
                             api_name, api_description, signup_url, category,
                             use_case, integration_complexity, potential_value,
                             source_url, research_notes, status
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """, (
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, ("""
                         api.get('API', 'Unknown'),
                         api.get('Description', ''),
                         api.get('Link', ''),
@@ -208,20 +231,25 @@ class MinimalAPIDiscovery:
                         complexity,
                         8.5,  # Default potential value
                         api.get('Link', ''),
-                        f"Discovered via minimal_api_discovery - Auth: {api.get('Auth', 'none')},
+                        f"Discovered via minimal_api_discovery - Auth: {api.get('Auth', 'none')},"
     HTTPS: {api.get('HTTPS',
-    False)}",
+# BRACKET_SURGEON: disabled
+#     False)}","
                         "added"
-                    ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ))
 
                     # Insert into api_discovery_tasks table
-                    conn.execute("""
+                    conn.execute(""""""
                         INSERT OR REPLACE INTO api_discovery_tasks (
                             task_name, task_type, target_capability, search_parameters,
                             capability_gap, search_keywords, priority, status,
                             assigned_agent, progress_notes, apis_found, created_at, updated_at
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """, (
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, ("""
                         f"Discovered: {api.get('API', 'Unknown')}",
                         "api_integration",
                         api.get('Category', 'Other'),
@@ -229,10 +257,13 @@ class MinimalAPIDiscovery:
                             "link": api.get('Link', ''),
                             "auth": api.get('Auth', 'none'),
                             "https": api.get('HTTPS', False)
-                        }),
+# BRACKET_SURGEON: disabled
+#                         }),
                         "Free API integration",
                         json.dumps([api.get('API', 'Unknown'),
-    api.get('Category', 'Other')]),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     api.get('Category', 'Other')]),
                         5,  # Medium priority
                         "completed",
                         "minimal_api_discovery",
@@ -240,7 +271,9 @@ class MinimalAPIDiscovery:
                         1,
                         datetime.now().isoformat(),
                         datetime.now().isoformat()
-                    ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ))
 
                     saved_count += 1
 
@@ -257,46 +290,58 @@ class MinimalAPIDiscovery:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 # Update last discovery time
-                conn.execute("""
+                conn.execute(""""""
                     INSERT OR REPLACE INTO system_config (config_key,
     config_value,
     description,
-    category)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     category)
                     VALUES (?, ?, ?, ?)
-                """, (
+                """, ("""
                     "last_api_discovery",
                     datetime.now().isoformat(),
                     "Last successful API discovery run",
                     "api_discovery"
-                ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ))
 
                 # Update total discovered APIs count
-                conn.execute("""
+                conn.execute(""""""
                     INSERT OR REPLACE INTO system_config (config_key,
     config_value,
     description,
-    category)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     category)
                     VALUES (?, ?, ?, ?)
-                """, (
+                """, ("""
                     "total_discovered_apis",
                     str(total_apis),
                     "Total number of discovered APIs",
                     "api_discovery"
-                ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ))
 
                 # Mark API discovery system as active
-                conn.execute("""
+                conn.execute(""""""
                     INSERT OR REPLACE INTO system_config (config_key,
     config_value,
     description,
-    category)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     category)
                     VALUES (?, ?, ?, ?)
-                """, (
+                """, ("""
                     "api_discovery_status",
                     "active",
                     "API discovery system status",
                     "api_discovery"
-                ))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ))
 
                 conn.commit()
 
@@ -310,7 +355,7 @@ class MinimalAPIDiscovery:
                 conn.row_factory = sqlite3.Row
 
                 # Get API statistics by category
-                cursor = conn.execute("""
+                cursor = conn.execute(""""""
                     SELECT
                         category,
                         COUNT(*) as count,
@@ -319,27 +364,33 @@ class MinimalAPIDiscovery:
                     WHERE status = 'added'
                     GROUP BY category
                     ORDER BY count DESC
-                """)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 """)"""
 
                 category_stats = [dict(row) for row in cursor.fetchall()]
 
                 # Get total count
-                cursor = conn.execute("""
+                cursor = conn.execute(""""""
                     SELECT COUNT(*) as total_count
                     FROM api_suggestions
                     WHERE status = 'added'
-                """)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 """)"""
 
                 total_count = cursor.fetchone()[0]
 
                 # Get recent discoveries
-                cursor = conn.execute("""
+                cursor = conn.execute(""""""
                     SELECT api_name, category, potential_value, discovered_at
                     FROM api_suggestions
                     WHERE status = 'added'
                     ORDER BY discovered_at DESC
                     LIMIT 10
-                """)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 """)"""
 
                 recent_discoveries = [dict(row) for row in cursor.fetchall()]
 
@@ -347,7 +398,8 @@ class MinimalAPIDiscovery:
                     "total_apis": total_count,
                     "by_category": category_stats,
                     "recent_discoveries": recent_discoveries
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             print(f"❌ Error generating report: {e}")
@@ -392,7 +444,8 @@ class MinimalAPIDiscovery:
             "categories": list(categorized.keys()),
             "report": report,
             "timestamp": datetime.now().isoformat()
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Print summary
         print("\\n" + "=" * 40)

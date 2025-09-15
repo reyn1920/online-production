@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Production Health Check Router
 Implements comprehensive health monitoring for go - live requirements
-"""
+""""""
 
 import asyncio
 import time
@@ -39,22 +39,27 @@ class ProductionHealthMonitor:
                     "count": psutil.cpu_count(),
                     "load_avg": (
                         list(psutil.getloadavg()) if hasattr(psutil, "getloadavg") else None
-                    ),
-                },
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 },
                 "memory": {
                     "total": memory.total,
                     "available": memory.available,
                     "percent": memory.percent,
                     "used": memory.used,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "disk": {
                     "total": disk.total,
                     "used": disk.used,
                     "free": disk.free,
                     "percent": (disk.used / disk.total) * 100,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "uptime_seconds": int(time.time() - self.start_time),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {"error": f"Failed to get system metrics: {str(e)}"}
 
@@ -70,19 +75,22 @@ class ProductionHealthMonitor:
                 "status_code": response.status_code,
                 "response_time_ms": round(response_time * 1000, 2),
                 "timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except requests.exceptions.Timeout:
             return {
                 "status": "timeout",
                 "error": "Service timeout",
                 "timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {
                 "status": "error",
                 "error": str(e),
                 "timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def get_application_health(self) -> Dict[str, Any]:
         """Get application - specific health metrics"""
@@ -94,13 +102,15 @@ class ProductionHealthMonitor:
             "services": {},
             "dependencies": {},
             "metrics": self.get_system_metrics(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Check critical services
         services_to_check = [
             ("main_api", "http://localhost:8000 / api / health"),
             ("dashboard", "http://localhost:8000 / dashboard / api / health"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         unhealthy_services = 0
         for service_name, service_url in services_to_check:
@@ -113,7 +123,8 @@ class ProductionHealthMonitor:
         if unhealthy_services > 0:
             health_data["status"] = (
                 "degraded" if unhealthy_services < len(services_to_check) else "unhealthy"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # System resource checks
         metrics = health_data["metrics"]
@@ -170,9 +181,11 @@ async def production_health_check():
                 "status": "error",
                 "error": str(e),
                 "timestamp": datetime.utcnow().isoformat(),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @production_health_router.get("/api / production / readiness")
@@ -186,20 +199,24 @@ async def readiness_check():
             return JSONResponse(
                 content={"status": "ready", "timestamp": datetime.utcnow().isoformat()},
                 status_code=status.HTTP_200_OK,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             return JSONResponse(
                 content={
                     "status": "not_ready",
                     "timestamp": datetime.utcnow().isoformat(),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            )
+# BRACKET_SURGEON: disabled
+#             )
     except Exception as e:
         return JSONResponse(
             content={"status": "error", "error": str(e)},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @production_health_router.get("/api / production / liveness")
@@ -212,14 +229,17 @@ async def liveness_check():
                 "status": "alive",
                 "timestamp": datetime.utcnow().isoformat(),
                 "uptime_seconds": int(time.time() - health_monitor.start_time),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             status_code=status.HTTP_200_OK,
-        )
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         return JSONResponse(
             content={"status": "error", "error": str(e)},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @production_health_router.get("/api / production / metrics")
@@ -230,8 +250,10 @@ async def production_metrics():
         return JSONResponse(
             content={"metrics": metrics, "timestamp": datetime.utcnow().isoformat()},
             status_code=status.HTTP_200_OK,
-        )
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         return JSONResponse(
             content={"error": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+# BRACKET_SURGEON: disabled
+#         )

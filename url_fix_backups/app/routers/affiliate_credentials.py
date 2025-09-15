@@ -56,7 +56,7 @@ class AffiliateCredentialsService:
 
                 # Get all affiliate dashboards
                 cursor.execute(
-                    """
+                    """"""
                     SELECT
                         id,
                             platform_name,
@@ -72,8 +72,9 @@ class AffiliateCredentialsService:
                             COALESCE(is_active, 1) as is_active
                     FROM affiliate_dashboards
                     ORDER BY platform_name
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 rows = cursor.fetchall()
 
@@ -85,7 +86,8 @@ class AffiliateCredentialsService:
                     # Determine status based on recent activity
                     status = self._determine_status(
                         row["last_login_attempt"], row["login_success_rate"]
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     credential = {
                         "id": row["id"],
@@ -101,7 +103,8 @@ class AffiliateCredentialsService:
                         "createdAt": row["created_at"],
                         "updatedAt": row["updated_at"],
                         "isActive": bool(row["is_active"]),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     credentials.append(credential)
 
                 # Calculate stats
@@ -111,7 +114,8 @@ class AffiliateCredentialsService:
                     "credentials": credentials,
                     "stats": stats,
                     "total": len(credentials),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except sqlite3.Error as e:
             logger.error(f"Database error: {e}")
@@ -189,10 +193,13 @@ class AffiliateCredentialsService:
                     datetime.now()
                     - datetime.fromisoformat(
                         c["createdAt"].replace("Z", "+00:00").replace("T", " ")
-                    )
-                ).days
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ).days
                 > 90
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if old_credentials > 0:
                 security_score -= min(10, old_credentials * 2)
 
@@ -203,7 +210,8 @@ class AffiliateCredentialsService:
             "pending": sum(1 for c in credentials if c["status"] == "pending"),
             "lastAccess": last_access,
             "securityScore": max(70, security_score),  # Minimum 70%
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def test_credential_login(self, credential_id: str) -> Dict[str, Any]:
         """Test login for a specific credential"""
@@ -213,13 +221,14 @@ class AffiliateCredentialsService:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT platform_name, login_url, username, encrypted_password
                     FROM affiliate_dashboards
                     WHERE id = ?
-                """,
+                ""","""
                     (credential_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 row = cursor.fetchone()
                 if not row:
@@ -232,7 +241,8 @@ class AffiliateCredentialsService:
                     "message": f"Login test for {row['platform_name']} completed successfully",
                     "timestamp": datetime.now().isoformat(),
                     "responseTime": 1.2,  # seconds
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except sqlite3.Error as e:
             logger.error(f"Database error during login test: {e}")
@@ -246,13 +256,14 @@ class AffiliateCredentialsService:
 
                 # Update the is_active status
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE affiliate_dashboards
                     SET is_active = ?, updated_at = ?
                     WHERE id = ?
-                """,
+                ""","""
                     (is_active, datetime.now().isoformat(), credential_id),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if cursor.rowcount == 0:
                     raise HTTPException(status_code=404, detail="Credential not found")
@@ -264,7 +275,8 @@ class AffiliateCredentialsService:
                     "message": f"Credential {'activated' if is_active else 'deactivated'} successfully",
                     "credentialId": credential_id,
                     "isActive": is_active,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except sqlite3.Error as e:
             logger.error(f"Database error during toggle: {e}")
@@ -280,7 +292,8 @@ class AffiliateCredentialsService:
                 cursor.execute(
                     "SELECT platform_name FROM affiliate_dashboards WHERE id = ?",
                     (credential_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 row = cursor.fetchone()
 
                 if not row:
@@ -296,7 +309,8 @@ class AffiliateCredentialsService:
                     "success": True,
                     "message": f"Credential for {platform_name} deleted successfully",
                     "credentialId": credential_id,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except sqlite3.Error as e:
             logger.error(f"Database error during deletion: {e}")
@@ -312,7 +326,8 @@ class AffiliateCredentialsService:
             "totalPrograms": data["total"],
             "stats": data["stats"],
             "programs": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for cred in data["credentials"]:
             export_cred = {
@@ -325,7 +340,8 @@ class AffiliateCredentialsService:
                 "lastAccess": cred["lastAccess"],
                 "createdAt": cred["createdAt"],
                 # Note: password is intentionally excluded for security
-            }
+# BRACKET_SURGEON: disabled
+#             }
             export_data["programs"].append(export_cred)
 
         return export_data
@@ -380,8 +396,10 @@ async def export_credentials(token: str = Depends(verify_token)):
             media_type="application / json",
             headers={
                 "Content - Disposition": f"attachment; filename = affiliate_credentials_{datetime.now().strftime('%Y % m%d')}.json"
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         logger.error(f"Error exporting credentials: {e}")
         raise HTTPException(status_code=500, detail="Failed to export credentials")
@@ -390,7 +408,8 @@ async def export_credentials(token: str = Depends(verify_token)):
 @router.post("/credentials/{credential_id}/toggle")
 async def toggle_credential_active(
     credential_id: str, is_active: bool, token: str = Depends(verify_token)
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Toggle the active status of a credential"""
     try:
         return credentials_service.toggle_credential_active(credential_id, is_active)
@@ -436,11 +455,13 @@ async def health_check():
             "database": "connected",
             "totalCredentials": count,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         logger.error(f"Health check failed: {e}")
         return {
             "status": "unhealthy",
             "error": str(e),
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }

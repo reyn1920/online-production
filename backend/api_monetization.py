@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 API Monetization System
 Provides API key management, usage tracking, rate limiting, and billing
-"""
+
+""""""
 
 import logging
 import sqlite3
@@ -56,26 +60,49 @@ class APIMonetization:
                 conn.close()
 
     def _init_database(self):
-        """Initialize database tables for API monetization"""
-        with self._get_db_connection() as conn:
-            cursor = conn.cursor()
+        """
+Initialize database tables for API monetization
 
+        
+"""
+        with self._get_db_connection() as conn:
+        """"""
+            cursor = conn.cursor()
+           """"""
+        with self._get_db_connection() as conn:
+        """"""
             # API keys table
             cursor.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS api_keys (
                     api_key TEXT PRIMARY KEY,
                         customer_email TEXT NOT NULL,
                         plan_type TEXT DEFAULT 'basic',
                         status TEXT DEFAULT 'active',
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
+                 )
+            
+""""""
+
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
             # API usage tracking table
             cursor.execute(
-                """
+               
+""""""
                 CREATE TABLE IF NOT EXISTS api_usage (
                     id TEXT PRIMARY KEY,
                         api_key TEXT NOT NULL,
@@ -85,13 +112,32 @@ class APIMonetization:
                         customer_id TEXT NOT NULL,
                         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (api_key) REFERENCES api_keys (api_key)
-                )
-            """
-            )
+                 )
+            """"""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             # Billing records table
             cursor.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS billing_records (
                     id TEXT PRIMARY KEY,
                         api_key TEXT NOT NULL,
@@ -103,21 +149,49 @@ class APIMonetization:
                         status TEXT DEFAULT 'pending',
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (api_key) REFERENCES api_keys (api_key)
-                )
-            """
-            )
+                 )
+            
+""""""
 
+            
+
+             
+            
+"""
+             )
+            """"""
             conn.commit()
         logger.info("API monetization database initialized")
+            """
+
+             
+            
+
+             )
+            
+""""""
 
     def _setup_routes(self):
-        """Setup Flask routes for API monetization"""
+        """
+        Setup Flask routes for API monetization
+        """
 
         @self.app.route("/api/monetization/generate - key", methods=["POST"])
         def generate_api_key():
-            """Generate a new API key for a customer"""
+            """
+Generate a new API key for a customer
+
+            
+"""
             try:
+            """
+
                 data = request.get_json()
+            
+
+            try:
+            
+"""
                 customer_email = data.get("customer_email")
                 plan_type = data.get("plan_type", "basic")
 
@@ -125,7 +199,7 @@ class APIMonetization:
                     return (
                         jsonify({"success": False, "error": "Customer email required"}),
                         400,
-                    )
+                     )
 
                 # Generate unique API key
                 api_key = f"ak_{int(time.time())}_{hash(customer_email) % 10000}"
@@ -135,19 +209,22 @@ class APIMonetization:
                     cursor = conn.cursor()
 
                     cursor.execute(
-                        """
+                        """"""
+
                         INSERT OR REPLACE INTO api_keys
                         (api_key, customer_email, plan_type, status, created_at)
                         VALUES (?, ?, ?, ?, ?)
-                    """,
+                    
+,
+"""
                         (
                             api_key,
                             customer_email,
                             plan_type,
                             "active",
                             datetime.now().isoformat(),
-                        ),
-                    )
+                         ),
+                     )
 
                     conn.commit()
 
@@ -157,8 +234,8 @@ class APIMonetization:
                         "api_key": api_key,
                         "plan_type": plan_type,
                         "rate_limits": self._get_rate_limits(plan_type),
-                    }
-                )
+                     }
+                 )
 
             except Exception as e:
                 logger.error(f"Error generating API key: {e}")
@@ -166,9 +243,20 @@ class APIMonetization:
 
         @self.app.route("/api/monetization/validate - key", methods=["POST"])
         def validate_api_key():
-            """Validate an API key and check rate limits"""
+            """
+Validate an API key and check rate limits
+
+            
+"""
             try:
+            """
+
                 data = request.get_json()
+            
+
+            try:
+            
+"""
                 api_key = data.get("api_key")
                 endpoint = data.get("endpoint", "general")
 
@@ -180,19 +268,28 @@ class APIMonetization:
                     cursor = conn.cursor()
 
                     cursor.execute(
-                        """
+                        """"""
+
                         SELECT customer_email, plan_type, status FROM api_keys
                         WHERE api_key = ?
-                    """,
+                    
+,
+"""
                         (api_key,),
-                    )
+                    """
 
+                     
+                    
+
+                     )
+                    
+""""""
                     result = cursor.fetchone()
                     if not result:
                         return (
                             jsonify({"success": False, "error": "Invalid API key"}),
                             401,
-                        )
+                         )
 
                     customer_email, plan_type, status = result
 
@@ -200,12 +297,12 @@ class APIMonetization:
                         return (
                             jsonify({"success": False, "error": "API key is inactive"}),
                             401,
-                        )
+                         )
 
                 # Check rate limits
                 rate_limit_ok, remaining_requests = self._check_rate_limit(
                     api_key, endpoint, plan_type
-                )
+                 )
 
                 if not rate_limit_ok:
                     return (
@@ -214,10 +311,10 @@ class APIMonetization:
                                 "success": False,
                                 "error": "Rate limit exceeded",
                                 "remaining_requests": 0,
-                            }
-                        ),
+                             }
+                         ),
                         429,
-                    )
+                     )
 
                 # Record API usage
                 self._record_api_usage(api_key, endpoint, customer_email)
@@ -228,8 +325,8 @@ class APIMonetization:
                         "customer_email": customer_email,
                         "plan_type": plan_type,
                         "remaining_requests": remaining_requests,
-                    }
-                )
+                     }
+                 )
 
             except Exception as e:
                 logger.error(f"Error validating API key: {e}")
@@ -237,23 +334,39 @@ class APIMonetization:
 
         @self.app.route("/api/monetization/usage/<api_key>", methods=["GET"])
         def get_api_usage(api_key):
-            """Get API usage statistics for a key"""
-            try:
-                with self._get_db_connection() as conn:
-                    cursor = conn.cursor()
+            """
+Get API usage statistics for a key
 
+            try:
+                
+"""
+                with self._get_db_connection() as conn:
+                """"""
+                    cursor = conn.cursor()
+                   """"""
+                with self._get_db_connection() as conn:
+                """"""
                     # Get current month usage
                     current_month = datetime.now().strftime("%Y-%m")
                     cursor.execute(
-                        """
+                        """"""
+
                         SELECT endpoint, SUM(requests_count) as total_requests
                         FROM api_usage
                         WHERE api_key = ? AND strftime('%Y-%m', usage_date) = ?
                         GROUP BY endpoint
-                    """,
+                    
+,
+"""
                         (api_key, current_month),
-                    )
+                    """
 
+                     
+                    
+
+                     )
+                    
+""""""
                     usage_by_endpoint = {}
                     total_requests = 0
 
@@ -264,12 +377,21 @@ class APIMonetization:
 
                     # Get plan info
                     cursor.execute(
-                        """
-                        SELECT plan_type FROM api_keys WHERE api_key = ?
-                    """,
-                        (api_key,),
-                    )
+                        """"""
 
+                        SELECT plan_type FROM api_keys WHERE api_key = ?
+                    
+,
+"""
+                        (api_key,),
+                    """
+
+                     
+                    
+
+                     )
+                    
+""""""
                     result = cursor.fetchone()
                     plan_type = result[0] if result else "basic"
 
@@ -285,8 +407,8 @@ class APIMonetization:
                         "usage_by_endpoint": usage_by_endpoint,
                         "rate_limits": rate_limits,
                         "remaining_requests": max(0, rate_limits["monthly_limit"] - total_requests),
-                    }
-                )
+                     }
+                 )
 
             except Exception as e:
                 logger.error(f"Error getting API usage: {e}")
@@ -294,39 +416,64 @@ class APIMonetization:
 
         @self.app.route("/api/monetization/billing/<api_key>", methods=["GET"])
         def get_api_billing(api_key):
-            """Calculate billing for API usage"""
-            try:
-                with self._get_db_connection() as conn:
-                    cursor = conn.cursor()
+            """
+Calculate billing for API usage
 
+            try:
+                
+"""
+                with self._get_db_connection() as conn:
+                """"""
+                    cursor = conn.cursor()
+                   """"""
+                with self._get_db_connection() as conn:
+                """"""
                     # Get current month usage
                     current_month = datetime.now().strftime("%Y-%m")
                     cursor.execute(
-                        """
+                        """"""
+
                         SELECT SUM(requests_count) as total_requests
                         FROM api_usage
                         WHERE api_key = ? AND strftime('%Y-%m', usage_date) = ?
-                    """,
+                    
+,
+"""
                         (api_key, current_month),
-                    )
+                    """
 
+                     
+                    
+
+                     )
+                    
+""""""
                     result = cursor.fetchone()
                     total_requests = result[0] if result and result[0] else 0
 
                     # Get plan info
                     cursor.execute(
-                        """
-                        SELECT plan_type, customer_email FROM api_keys WHERE api_key = ?
-                    """,
-                        (api_key,),
-                    )
+                        """"""
 
+                        SELECT plan_type, customer_email FROM api_keys WHERE api_key = ?
+                    
+,
+"""
+                        (api_key,),
+                    """
+
+                     
+                    
+
+                     )
+                    
+""""""
                     result = cursor.fetchone()
                     if not result:
                         return (
                             jsonify({"success": False, "error": "API key not found"}),
                             404,
-                        )
+                         )
 
                     plan_type, customer_email = result
 
@@ -338,8 +485,8 @@ class APIMonetization:
                         "customer_email": customer_email,
                         "billing_period": current_month,
                         "total_requests": total_requests,
-                    }
-                )
+                     }
+                 )
 
                 return jsonify({"success": True, "billing": billing_info})
 
@@ -362,8 +509,8 @@ class APIMonetization:
                         "Basic API Access",
                         "Email Support",
                         "Standard Rate Limits",
-                    ],
-                },
+                     ],
+                 },
                 "pro": {
                     "name": "Pro API Plan",
                     "price": 29.99,
@@ -376,8 +523,8 @@ class APIMonetization:
                         "Priority Support",
                         "Higher Rate Limits",
                         "Analytics Dashboard",
-                    ],
-                },
+                     ],
+                 },
                 "enterprise": {
                     "name": "Enterprise API Plan",
                     "price": 99.99,
@@ -391,9 +538,9 @@ class APIMonetization:
                         "Custom Rate Limits",
                         "Advanced Analytics",
                         "Dedicated Account Manager",
-                    ],
-                },
-            }
+                     ],
+                 },
+             }
 
             return jsonify({"success": True, "plans": plans})
 
@@ -405,41 +552,57 @@ class APIMonetization:
                 "requests_per_hour": 1000,
                 "monthly_limit": 10000,
                 "cost_per_request": 0.001,
-            },
+             },
             "pro": {
                 "requests_per_minute": 300,
                 "requests_per_hour": 10000,
                 "monthly_limit": 100000,
                 "cost_per_request": 0.0008,
-            },
+             },
             "enterprise": {
                 "requests_per_minute": 1000,
                 "requests_per_hour": 50000,
                 "monthly_limit": 1000000,
                 "cost_per_request": 0.0005,
-            },
-        }
+             },
+         }
         return limits.get(plan_type, limits["basic"])
 
     def _check_rate_limit(self, api_key, endpoint, plan_type):
-        """Check if API key has exceeded rate limits"""
-        try:
-            limits = self._get_rate_limits(plan_type)
+        """
+Check if API key has exceeded rate limits
 
+        
+"""
+        try:
+        """"""
+            limits = self._get_rate_limits(plan_type)
+           """"""
+        try:
+        """"""
             with self._get_db_connection() as conn:
                 cursor = conn.cursor()
 
                 # Check monthly limit
                 current_month = datetime.now().strftime("%Y-%m")
                 cursor.execute(
-                    """
+                    """"""
+
                     SELECT SUM(requests_count) as total_requests
                     FROM api_usage
                     WHERE api_key = ? AND strftime('%Y-%m', usage_date) = ?
-                """,
+                
+,
+"""
                     (api_key, current_month),
-                )
+                """
 
+                 
+                
+
+                 )
+                
+""""""
                 result = cursor.fetchone()
                 monthly_usage = result[0] if result and result[0] else 0
 
@@ -449,14 +612,23 @@ class APIMonetization:
                 # Check hourly limit (aggregate across all endpoints for this API key)
                 current_hour = datetime.now().strftime("%Y-%m-%d %H")
                 cursor.execute(
-                    """
+                    """"""
+
                     SELECT SUM(requests_count) as hourly_requests
                     FROM api_usage
                     WHERE api_key = ? AND strftime('%Y-%m-%d %H', created_at) = ?
-                """,
+                
+,
+"""
                     (api_key, current_hour),
-                )
+                """
 
+                 
+                
+
+                 )
+                
+""""""
                 result = cursor.fetchone()
                 hourly_usage = result[0] if result and result[0] else 0
 
@@ -466,14 +638,23 @@ class APIMonetization:
                 # Check per - minute limit (aggregate across all endpoints for this API key)
                 current_minute = datetime.now().strftime("%Y-%m-%d %H:%M")
                 cursor.execute(
-                    """
+                    """"""
+
                     SELECT SUM(requests_count) as minute_requests
                     FROM api_usage
                     WHERE api_key = ? AND strftime('%Y-%m-%d %H:%M', created_at) = ?
-                """,
+                
+,
+"""
                     (api_key, current_minute),
-                )
+                """
 
+                 
+                
+
+                 )
+                
+""""""
                 result = cursor.fetchone()
                 minute_usage = result[0] if result and result[0] else 0
 
@@ -487,11 +668,18 @@ class APIMonetization:
             return False, 0
 
     def _record_api_usage(self, api_key, endpoint, customer_email):
-        """Record API usage for billing and rate limiting"""
-        try:
-            with self._get_db_connection() as conn:
-                cursor = conn.cursor()
+        """
+Record API usage for billing and rate limiting
 
+        try:
+            
+"""
+            with self._get_db_connection() as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with self._get_db_connection() as conn:
+            """"""
                 current_time = datetime.now()
                 usage_date = current_time.date().isoformat()
                 # Generate more unique ID to avoid UNIQUE constraint failures
@@ -503,7 +691,8 @@ class APIMonetization:
                 # Always create a new record for each request to enable proper rate limiting
                 # This allows us to track individual requests with precise timestamps
                 cursor.execute(
-                    """
+                    """"""
+
                     INSERT INTO api_usage
                     (id,
     api_key,
@@ -511,9 +700,11 @@ class APIMonetization:
     requests_count,
     usage_date,
     customer_id,
-    created_at)
+#     created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+,
+"""
                     (
                         usage_id,
                         api_key,
@@ -522,18 +713,49 @@ class APIMonetization:
                         usage_date,
                         customer_email,
                         current_time.isoformat(),
-                    ),
-                )
+                     ),
+                """
+
+                 
+                
+
+                 )
+                
+""""""
 
                 conn.commit()
+                
 
+                 
+                
+"""
+                 )
+                """"""
         except Exception as e:
             logger.error(f"Error recording API usage: {e}")
 
     def _calculate_api_billing(self, plan_type, total_requests):
-        """Calculate billing amount for API usage"""
-        limits = self._get_rate_limits(plan_type)
+        """
+Calculate billing amount for API usage
 
+       
+""""""
+
+        limits = self._get_rate_limits(plan_type)
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        limits = self._get_rate_limits(plan_type)
+       
+""""""
         base_cost = {"basic": 9.99, "pro": 29.99, "enterprise": 99.99}.get(plan_type, 9.99)
 
         # Calculate overage if any
@@ -558,7 +780,7 @@ class APIMonetization:
             "overage_cost": overage_cost,
             "total_cost": total_cost,
             "cost_per_request": cost_per_request,
-        }
+         }
 
     def run(self, host="0.0.0.0", port=5002, debug=False):
         """Run the API monetization server"""

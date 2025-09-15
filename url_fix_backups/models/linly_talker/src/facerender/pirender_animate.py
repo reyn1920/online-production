@@ -40,7 +40,9 @@ class AnimateFromCoeff_PIRender:
         checkpoint_path = sadtalker_path["pirender_checkpoint"]
         checkpoint = torch.load(
             checkpoint_path, map_location = lambda storage, loc: storage
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.net_G_ema.load_state_dict(checkpoint["net_G_ema"], strict = False)
         print("load [net_G] and [net_G_ema] from {}".format(checkpoint_path))
         self.net_G = self.net_G_ema.eval()
@@ -57,7 +59,8 @@ class AnimateFromCoeff_PIRender:
             background_enhancer = None,
             preprocess="crop",
             img_size = 256,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
         source_image = x["source_image"].type(torch.FloatTensor)
         source_semantics = x["source_semantics"].type(torch.FloatTensor)
@@ -72,12 +75,16 @@ class AnimateFromCoeff_PIRender:
             for i in tqdm(range(target_semantics.shape[1]), "FaceRender:"):
                 predictions_video.append(
                     self.net_G(source_image, target_semantics[:, i])["fake_image"]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         predictions_video = torch.stack(predictions_video, dim = 1)
         predictions_video = predictions_video.reshape(
             (-1,) + predictions_video.shape[2:]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         video = []
         for idx in range(len(predictions_video)):
@@ -93,9 +100,13 @@ class AnimateFromCoeff_PIRender:
                 cv2.resize(
                     result_i,
                         (img_size, int(img_size * original_size[1] / original_size[0])),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 for result_i in result
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
         video_name = x["video_name"] + ".mp4"
         path = os.path.join(video_save_dir, "temp_" + video_name)
@@ -132,7 +143,9 @@ class AnimateFromCoeff_PIRender:
                     new_audio_path,
                     full_video_path,
                     extended_crop = True if "ext" in preprocess.lower() else False,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             print(f"The generated video is named {video_save_dir}/{video_name_full}")
         else:
             full_video_path = av_path
@@ -147,24 +160,36 @@ class AnimateFromCoeff_PIRender:
             try:
                 enhanced_images_gen_with_len = enhancer_generator_with_len(
                     full_video_path, method = enhancer, bg_upsampler = background_enhancer
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 imageio.mimsave(
                     enhanced_path, enhanced_images_gen_with_len, fps = float(25)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception:
                 enhanced_images_gen_with_len = enhancer_list(
                     full_video_path, method = enhancer, bg_upsampler = background_enhancer
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 imageio.mimsave(
                     enhanced_path, enhanced_images_gen_with_len, fps = float(25)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             save_video_with_watermark(
                 enhanced_path, new_audio_path, av_path_enhancer, watermark = False
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(
                 f"The generated video is named {video_save_dir}/{video_name_enhancer}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             os.remove(enhanced_path)
 
         os.remove(path)

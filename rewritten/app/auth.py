@@ -72,21 +72,25 @@ ROLE_PERMISSIONS = {
         Permission.SYSTEM_ADMIN,
         Permission.RESTART_SERVICES,
         Permission.VIEW_LOGS,
-    ],
+# BRACKET_SURGEON: disabled
+#     ],
     UserRole.MANAGER: [
         Permission.READ_DASHBOARD,
         Permission.WRITE_DASHBOARD,
         Permission.READ_ANALYTICS,
         Permission.EXPORT_DATA,
         Permission.VIEW_LOGS,
-    ],
+# BRACKET_SURGEON: disabled
+#     ],
     UserRole.ANALYST: [
         Permission.READ_DASHBOARD,
         Permission.READ_ANALYTICS,
         Permission.EXPORT_DATA,
-    ],
+# BRACKET_SURGEON: disabled
+#     ],
     UserRole.VIEWER: [Permission.READ_DASHBOARD],
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 @dataclass
@@ -112,7 +116,7 @@ class User:
         return permission in ROLE_PERMISSIONS.get(self.role, [])
 
     def get_permissions(self) -> List[Permission]:
-        """Get all permissions for user's role"""
+        """Get all permissions for user's role"""'
         return ROLE_PERMISSIONS.get(self.role, [])
 
     def to_dict(self) -> Dict[str, Any]:
@@ -159,7 +163,8 @@ class AuthManager:
                 "full_name": "System Administrator",
                 "role": UserRole.ADMIN,
                 "password": "admin123",  # In production, use secure password
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "manager_001",
                 "username": "manager",
@@ -167,7 +172,8 @@ class AuthManager:
                 "full_name": "Dashboard Manager",
                 "role": UserRole.MANAGER,
                 "password": "manager123",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "analyst_001",
                 "username": "analyst",
@@ -175,7 +181,8 @@ class AuthManager:
                 "full_name": "Data Analyst",
                 "role": UserRole.ANALYST,
                 "password": "analyst123",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "viewer_001",
                 "username": "viewer",
@@ -183,8 +190,10 @@ class AuthManager:
                 "full_name": "Dashboard Viewer",
                 "role": UserRole.VIEWER,
                 "password": "viewer123",
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         for user_data in default_users:
             password = user_data.pop("password")
@@ -248,7 +257,8 @@ class AuthManager:
             "permissions": [p.value for p in user.get_permissions()],
             "exp": expire,
             "iat": datetime.utcnow(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return jwt.encode(to_encode, JWT_SECRET, algorithm=ALGORITHM)
 
     def create_refresh_token(self, user: User) -> str:
@@ -259,7 +269,8 @@ class AuthManager:
             "type": "refresh",
             "exp": expire,
             "iat": datetime.utcnow(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return jwt.encode(to_encode, JWT_SECRET, algorithm=ALGORITHM)
 
     def verify_token(self, token: str) -> Optional[TokenData]:
@@ -281,7 +292,8 @@ class AuthManager:
                 permissions=payload.get("permissions", []),
                 exp=datetime.fromtimestamp(payload.get("exp")),
                 iat=datetime.fromtimestamp(payload.get("iat")),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return token_data
         except JWTError:
             return None
@@ -306,7 +318,8 @@ class AuthManager:
 
     def create_user(
         self, username: str, email: str, full_name: str, password: str, role: UserRole
-    ) -> User:
+# BRACKET_SURGEON: disabled
+#     ) -> User:
         """Create new user"""
         if username in self.users:
             raise ValueError("Username already exists")
@@ -319,7 +332,8 @@ class AuthManager:
             full_name=full_name,
             role=role,
             password_hash=self.hash_password(password),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.users[username] = user
         self._log_security_event(username, "user_created", {"role": role.value})
         return user
@@ -339,7 +353,8 @@ class AuthManager:
 
         self._log_security_event(
             user.username, "user_updated", {"updated_fields": list(kwargs.keys())}
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return user
 
     def delete_user(self, user_id: str) -> bool:
@@ -368,7 +383,8 @@ class AuthManager:
             1
             for user in self.users.values()
             if user.last_login and user.last_login > datetime.now() - timedelta(days=7)
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return {
             "total_users": total_users,
@@ -376,7 +392,8 @@ class AuthManager:
             "inactive_users": total_users - active_users,
             "role_distribution": role_counts,
             "recent_logins_7d": recent_logins,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _analyze_login_attempt(self, username: str, request_info: Dict[str, Any]) -> Dict[str, Any]:
         """AI-enhanced login attempt analysis"""
@@ -392,20 +409,23 @@ class AuthManager:
                 "timestamp": datetime.now().isoformat(),
                 "geolocation": request_info.get("geolocation"),
                 "device_fingerprint": request_info.get("device_fingerprint"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Get AI analysis from multiple platforms
             chatgpt_request = AIRequest(
                 platform=AIPlatform.CHATGPT,
                 prompt=f"Analyze this login attempt for security threats: {analysis_data}",
                 context="security_analysis",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             gemini_request = AIRequest(
                 platform=AIPlatform.GEMINI,
                 prompt=f"Security assessment of login attempt: {analysis_data}",
                 context="threat_detection",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             chatgpt_response = core_ai.process_request(chatgpt_request)
             gemini_response = core_ai.process_request(gemini_request)
@@ -418,7 +438,8 @@ class AuthManager:
                 "chatgpt_analysis": chatgpt_response.get("content", ""),
                 "gemini_analysis": gemini_response.get("content", ""),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.ai_security_logs.append(analysis_result)
             return analysis_result
@@ -427,7 +448,8 @@ class AuthManager:
             return {
                 "threat_level": "error",
                 "analysis": f"Analysis failed: {str(e)}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _analyze_user_behavior(self, user: User, request_info: Dict[str, Any]) -> None:
         """Analyze user behavior patterns with AI"""
@@ -443,7 +465,8 @@ class AuthManager:
                 "ip_address": request_info.get("ip_address"),
                 "user_agent": request_info.get("user_agent"),
                 "previous_login": (user.last_login.isoformat() if user.last_login else None),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Check for suspicious patterns
             if user.username not in self.suspicious_activities:
@@ -458,7 +481,8 @@ class AuthManager:
                 activity
                 for activity in self.suspicious_activities[user.username]
                 if datetime.fromisoformat(activity["login_time"]) > cutoff_date
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
         except Exception as e:
             self._log_security_event(user.username, "behavior_analysis_error", {"error": str(e)})
@@ -498,7 +522,8 @@ class AuthManager:
             "username": username,
             "event_type": event_type,
             "details": details,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.ai_security_logs.append(event)
 
         # Keep only recent logs (last 1000 events)
@@ -517,7 +542,8 @@ class AuthManager:
             failed_logins = sum(1 for log in recent_logs if log.get("event_type") == "failed_login")
             successful_logins = sum(
                 1 for log in recent_logs if log.get("event_type") == "successful_login"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Calculate security metrics
             total_attempts = failed_logins + successful_logins
@@ -533,8 +559,10 @@ class AuthManager:
                     "Monitor failed login patterns",
                     "Implement rate limiting",
                     "Enable multi-factor authentication",
-                ],
-            }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
@@ -544,7 +572,8 @@ class AuthManager:
             "user_stats": self.get_user_stats(),
             "ai_insights": self._get_ai_security_insights(),
             "recent_events": self.ai_security_logs[-20:],  # Last 20 events
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Global auth manager instance
@@ -554,13 +583,15 @@ auth_manager = AuthManager()
 # FastAPI dependencies
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> User:
+# BRACKET_SURGEON: disabled
+# ) -> User:
     """Get current authenticated user"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     token_data = auth_manager.verify_token(credentials.credentials)
     if token_data is None:
@@ -581,7 +612,8 @@ def require_permission(permission: Permission):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Permission required: {permission.value}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
         return current_user
 
     return permission_checker
@@ -595,7 +627,8 @@ def require_role(role: UserRole):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Role required: {role.value}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
         return current_user
 
     return role_checker
@@ -634,7 +667,7 @@ def validate_password_strength(password: str) -> Dict[str, Any]:
     else:
         score += 1
 
-    if not any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password):
+    if not any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password):"
         issues.append("Password must contain at least one special character")
     else:
         score += 1
@@ -647,4 +680,5 @@ def validate_password_strength(password: str) -> Dict[str, Any]:
         "strength": strength,
         "score": score,
         "issues": issues,
-    }
+# BRACKET_SURGEON: disabled
+#     }

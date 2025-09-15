@@ -1,7 +1,7 @@
 #!/usr / bin / env python3
-"""
+""""""
 Pytest configuration and shared fixtures for TRAE.AI test suite.
-"""
+""""""
 
 import asyncio
 import json
@@ -41,14 +41,16 @@ TEST_CONFIG = {
     "log_level": os.getenv("TEST_LOG_LEVEL", "INFO"),
     "save_artifacts": os.getenv("TEST_SAVE_ARTIFACTS", "true").lower() == "true",
     "cleanup_after_tests": os.getenv("TEST_CLEANUP_AFTER_TESTS", "true").lower() == "true",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # Ensure test directories exist
 for directory in [
     TEST_CONFIG["test_output_dir"],
     TEST_CONFIG["test_data_dir"],
     TEST_CONFIG["test_artifacts_dir"],
-]:
+# BRACKET_SURGEON: disabled
+# ]:
     directory.mkdir(parents=True, exist_ok=True)
 
 # pytest_plugins removed - not needed in non-top-level conftest
@@ -73,7 +75,8 @@ async def http_client() -> AsyncGenerator[httpx.AsyncClient, None]:
     """Provide an HTTP client for API testing."""
     async with httpx.AsyncClient(
         timeout=httpx.Timeout(TEST_CONFIG["timeout"]), follow_redirects=True
-    ) as client:
+# BRACKET_SURGEON: disabled
+#     ) as client:
         yield client
 
 
@@ -108,7 +111,8 @@ def test_video_data() -> Dict[str, Any]:
         "background_music": False,
         "resolution": "720p",
         "format": "mp4",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @pytest.fixture(scope="function")
@@ -120,19 +124,23 @@ def test_content_data() -> Dict[str, Any]:
             "tone": "professional",
             "length": "medium",
             "target_audience": "developers",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         "social_media": {
             "platform": "twitter",
             "message": "Test social media content",
-            "hashtags": ["#AI", "#Testing"],
+            "hashtags": ["#AI", "#Testing"],"
             "include_image": False,
-        },
+# BRACKET_SURGEON: disabled
+#         },
         "newsletter": {
             "subject": "Weekly AI Updates",
             "sections": ["news", "tutorials", "tools"],
             "tone": "friendly",
-        },
-    }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @pytest.fixture(scope="function")
@@ -148,7 +156,8 @@ def test_campaign_data() -> Dict[str, Any]:
         "objectives": ["increase_brand_awareness", "generate_leads"],
         "content_themes": ["innovation", "technology"],
         "geographic_targets": ["US", "CA", "UK"],
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @pytest.fixture(scope="function")
@@ -163,21 +172,25 @@ def mock_external_services():
         "twitter_api": Mock(),
         "instagram_api": Mock(),
         "tiktok_api": Mock(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Configure mock responses
     mocks["openai_client"].chat.completions.create.return_value = Mock(
         choices=[Mock(message=Mock(content="Mock AI response"))]
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     mocks["youtube_api"].videos.return_value.insert.return_value.execute.return_value = {
         "id": "mock_video_id",
         "snippet": {"title": "Mock Video"},
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     mocks["mailchimp_api"].lists.get_all_members.return_value = {
         "members": [{"email_address": "test@example.com"}]
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     return mocks
 
@@ -193,7 +206,8 @@ async def mock_database():
         "users": [],
         "videos": [],
         "revenue": [],
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     class MockDB:
         def __init__(self, data):
@@ -264,7 +278,8 @@ def test_artifacts_collector():
         "generated_files": [],
         "performance_metrics": {},
         "error_traces": [],
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     def add_artifact(artifact_type: str, data: Any, filename: str = None):
         if TEST_CONFIG["save_artifacts"]:
@@ -313,7 +328,8 @@ def performance_monitor():
         "start_memory": psutil.Process().memory_info().rss,
         "api_calls": 0,
         "file_operations": 0,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     def record_api_call():
         metrics["api_calls"] += 1
@@ -330,7 +346,8 @@ def performance_monitor():
             "memory_delta": current_memory - metrics["start_memory"],
             "api_calls": metrics["api_calls"],
             "file_operations": metrics["file_operations"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     metrics["record_api_call"] = record_api_call
     metrics["record_file_operation"] = record_file_operation
@@ -383,7 +400,8 @@ def mock_agents():
         "research": MockAgent("ResearchAgent"),
         "marketing": MockAgent("MarketingAgent"),
         "content": MockAgent("ContentAgent"),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @pytest.fixture
@@ -395,13 +413,16 @@ def sample_test_data():
             "id": "proj - test",
             "name": "Test Project",
             "status": "active",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         "test_agent_status": {
             "agent_id": "test - agent",
             "status": "running",
             "health": "good",
-        },
-    }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Test markers

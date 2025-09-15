@@ -1,16 +1,29 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Avatar Pipeline - 3D Character Creation System for TRAE.AI
-
+""""""
 This module provides a comprehensive 3D character creation pipeline that integrates:
 - MakeHuman or Daz3D for base model creation
 - Mixamo for rigging and animation
 - Blender for final compositing and rendering
+"""
+
+Avatar Pipeline - 3D Character Creation System for TRAE.AI
+
+
+
+"""
 
 Replaces the current single base image with Linly - Talker system with a full
 3D character creation workflow for Hollywood - level avatar production.
 
+"""
+
+
 Features:
+
+
+
 - Automated character generation from descriptions
 - Professional rigging and animation
 - Blender integration for final compositing
@@ -19,6 +32,7 @@ Features:
 
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
+
 """
 
 import logging
@@ -79,7 +93,9 @@ class AnimationSpec:
 
 @dataclass
 class AvatarResult:
-    """Result of avatar creation process."""
+    """
+Result of avatar creation process.
+
 
     character_name: str
     base_model_path: str
@@ -89,18 +105,32 @@ class AvatarResult:
     character_spec: CharacterSpec
     animation_spec: Optional[AnimationSpec]
     metadata: Dict[str, Any]
+   
+""""""
+
     created_at: datetime
+   
 
-
+    
+   
+"""
 class MakeHumanInterface:
-    """Interface for MakeHuman character creation."""
+    """
+Interface for MakeHuman character creation.
+
 
     def __init__(self, makehuman_path: Optional[str] = None):
-        """Initialize MakeHuman interface.
+        
+"""Initialize MakeHuman interface."""
+
 
         Args:
             makehuman_path: Path to MakeHuman installation
-        """
+       
+
+        
+       
+"""
         self.makehuman_path = self._find_makehuman(makehuman_path)
         self.assets_path = Path.home() / "Documents" / "MakeHuman" / "v1py3"
         self.output_dir = Path(tempfile.gettempdir()) / "trae_makehuman"
@@ -109,18 +139,25 @@ class MakeHumanInterface:
         logger.info(f"MakeHuman interface initialized: {self.makehuman_path}")
 
     def _find_makehuman(self, provided_path: Optional[str]) -> Optional[str]:
-        """Find MakeHuman installation."""
-        if provided_path and Path(provided_path).exists():
-            return provided_path
+        """
+Find MakeHuman installation.
 
+        if provided_path and Path(provided_path).exists():
+            
+"""
+            return provided_path
+            """"""
         # Common installation paths
+            """
+            return provided_path
+            """
         possible_paths = [
             "/Applications/MakeHuman.app/Contents/MacOS/MakeHuman",
             "/usr/local/bin/makehuman",
             "/opt/makehuman/makehuman",
             "C:\\\\Program Files\\\\MakeHuman\\\\makehuman.exe",
             "makehuman",  # In PATH
-        ]
+         ]
 
         for path in possible_paths:
             if shutil.which(path) or Path(path).exists():
@@ -130,7 +167,9 @@ class MakeHumanInterface:
         return None
 
     def create_base_character(self, spec: CharacterSpec, output_path: str) -> str:
-        """Create base character model using MakeHuman.
+        """
+Create base character model using MakeHuman.
+
 
         Args:
             spec: Character specification
@@ -138,12 +177,25 @@ class MakeHumanInterface:
 
         Returns:
             Path to created character model
-        """
+       
+""""""
+
         if not self.makehuman_path:
+            
+
             return self._create_fallback_character(spec, output_path)
+            
+""""""
+
+            
+           
 
         try:
             # Create MakeHuman script
+            
+"""
+            return self._create_fallback_character(spec, output_path)
+            """
             script_content = self._generate_makehuman_script(spec, output_path)
             script_path = self.output_dir / f"{spec.name}_script.py"
 
@@ -166,9 +218,18 @@ class MakeHumanInterface:
             return self._create_fallback_character(spec, output_path)
 
     def _generate_makehuman_script(self, spec: CharacterSpec, output_path: str) -> str:
-        """Generate MakeHuman Python script for character creation."""
-        script = f"""
+        """
+Generate MakeHuman Python script for character creation.
 
+       
+""""""
+
+        script = f
+       
+
+        
+       
+"""
 import mh
 import os
 
@@ -188,7 +249,7 @@ age_values = {{
         "teen": 0.3,
         "adult": 0.5,
         "elderly": 0.9
-}}
+# }}
 human.setDetail("macrodetails/Age", age_values.get("{spec.age_range}", 0.5))
 
 # Body type: {spec.body_type}
@@ -197,10 +258,10 @@ body_values = {{
         "average": 0.0,
         "muscular": 0.3,
         "heavy": 0.7
-}}
+# }}
 human.setDetail("macrodetails/universal - stature",
     body_values.get("{spec.body_type}",
-    0.0))
+#     0.0))
 
 # Ethnicity adjustments: {spec.ethnicity}
 ethnicity_settings = {{
@@ -208,7 +269,7 @@ ethnicity_settings = {{
         "asian": {{"macrodetails/Asian": 0.8}},
         "caucasian": {{"macrodetails/Caucasian": 0.8}},
         "hispanic": {{"macrodetails/Caucasian": 0.4, "macrodetails/African": 0.3}}
-}}
+# }}
 
 if "{spec.ethnicity}" in ethnicity_settings:
     for detail, value in ethnicity_settings["{spec.ethnicity}"].items():
@@ -220,7 +281,7 @@ hair_files = {{
         "long": "hair/long01/long01.mhclo",
         "curly": "hair/curly01/curly01.mhclo",
         "bald": None
-}}
+# }}
 
 hair_file = hair_files.get("{spec.hair_style.lower()}", "hair/short01/short01.mhclo")
 if hair_file:
@@ -231,7 +292,7 @@ clothing_files = {{
     "casual": "clothes/casual01/casual01.mhclo",
         "formal": "clothes/suit01/suit01.mhclo",
         "sport": "clothes/sport01/sport01.mhclo"
-}}
+# }}
 
 clothing_file = clothing_files.get("{spec.clothing_style.lower()}", "clothes/casual01/casual01.mhclo")
 if clothing_file:
@@ -242,17 +303,36 @@ output_path = "{output_path}"
 mh.exportObj(output_path, human)
 
 print(f"Character exported to: {{output_path}}")
+""""""
+
+        
+
+        return script
+        
+""""""
+
+        
+       
+
+        
 """
+
         return script
 
+        """"""
     def _create_fallback_character(self, spec: CharacterSpec, output_path: str) -> str:
         """Create a fallback character when MakeHuman is not available."""
         logger.info("Creating fallback character model")
 
         # Create a simple OBJ file with basic geometry
-        fallback_obj = """
+        fallback_obj = """"""
+
 # Fallback character model for {}
+
+
 # Generated by TRAE.AI Avatar Pipeline
+
+"""
 
 # Vertices (simple humanoid shape)
 v 0.0 0.0 0.0
@@ -263,6 +343,11 @@ v -0.2 1.0 0.0
 v 0.2 1.0 0.0
 v -0.1 0.0 0.0
 v 0.1 0.0 0.0
+"""
+
+# Generated by TRAE.AI Avatar Pipeline
+
+
 
 # Faces (basic structure)
 f 1 2 3
@@ -270,25 +355,45 @@ f 1 3 4
 f 2 5 6
 f 5 6 7
 f 6 7 8
-""".format(
-            spec.name
-        )
 
+""".format("""
+
+            spec.name
+        
+
+         
+        
+"""
+         )
+        """"""
         with open(output_path, "w") as f:
             f.write(fallback_obj)
+        """
+
+         
+        
+
+         )
+        
+""""""
 
         return output_path
 
 
 class MixamoInterface:
-    """Interface for Mixamo rigging and animation services."""
+    
+Interface for Mixamo rigging and animation services.
+"""
 
     def __init__(self, api_key: Optional[str] = None):
-        """Initialize Mixamo interface.
+        """
+Initialize Mixamo interface.
+
 
         Args:
             api_key: Mixamo API key (if available)
-        """
+       
+""""""
         self.api_key = api_key
         self.base_url = "https://www.mixamo.com/api/v1"
         self.session = requests.Session()
@@ -301,7 +406,9 @@ class MixamoInterface:
         logger.info("Mixamo interface initialized")
 
     def rig_character(self, model_path: str, output_path: str) -> str:
-        """Rig character model using Mixamo.
+        """
+Rig character model using Mixamo.
+
 
         Args:
             model_path: Path to character model
@@ -309,14 +416,27 @@ class MixamoInterface:
 
         Returns:
             Path to rigged character model
-        """
-        if not self.api_key:
-            return self._create_basic_rig(model_path, output_path)
+       
+""""""
 
+        if not self.api_key:
+            
+
+            return self._create_basic_rig(model_path, output_path)
+            
+""""""
+            
+           """
         try:
             # Upload model to Mixamo
             logger.info(f"Uploading model to Mixamo: {model_path}")
+            """
 
+            return self._create_basic_rig(model_path, output_path)
+            
+
+           
+""""""
             with open(model_path, "rb") as f:
                 files = {"file": f}
                 response = self.session.post(f"{self.base_url}/characters", files=files)
@@ -328,7 +448,7 @@ class MixamoInterface:
                 rig_response = self.session.post(
                     f"{self.base_url}/characters/{character_id}/rig",
                     json={"rig_type": "auto"},
-                )
+                 )
 
                 if rig_response.status_code == 200:
                     # Download rigged model
@@ -353,8 +473,10 @@ class MixamoInterface:
 
     def animate_character(
         self, rigged_model_path: str, animation_spec: AnimationSpec, output_path: str
-    ) -> str:
-        """Animate rigged character using Mixamo.
+#     ) -> str:
+        """
+Animate rigged character using Mixamo.
+
 
         Args:
             rigged_model_path: Path to rigged character model
@@ -363,12 +485,25 @@ class MixamoInterface:
 
         Returns:
             Path to animated character model
-        """
+       
+""""""
+
         if not self.api_key:
+            
+
             return self._create_basic_animation(rigged_model_path, animation_spec, output_path)
+            
+""""""
+
+            
+           
 
         try:
             # Get available animations
+            
+"""
+            return self._create_basic_animation(rigged_model_path, animation_spec, output_path)
+            """
             animations_response = self.session.get(f"{self.base_url}/animations")
 
             if animations_response.status_code == 200:
@@ -385,8 +520,8 @@ class MixamoInterface:
                             "character_file": rigged_model_path,
                             "duration": animation_spec.duration,
                             "loop": animation_spec.loop,
-                        },
-                    )
+                         },
+                     )
 
                     if animate_response.status_code == 200:
                         download_url = animate_response.json()["download_url"]
@@ -401,12 +536,12 @@ class MixamoInterface:
                         logger.error(f"Animation failed: {animate_response.text}")
                         return self._create_basic_animation(
                             rigged_model_path, animation_spec, output_path
-                        )
+                         )
                 else:
                     logger.error("No suitable animation found")
                     return self._create_basic_animation(
                         rigged_model_path, animation_spec, output_path
-                    )
+                     )
             else:
                 logger.error(f"Failed to get animations: {animations_response.text}")
                 return self._create_basic_animation(rigged_model_path, animation_spec, output_path)
@@ -416,15 +551,32 @@ class MixamoInterface:
             return self._create_basic_animation(rigged_model_path, animation_spec, output_path)
 
     def _find_animation(self, animations: List[Dict], spec: AnimationSpec) -> Optional[str]:
-        """Find suitable animation from available animations."""
+        """
+Find suitable animation from available animations.
+
+       
+""""""
+
         # Simple matching logic - in production, this would be more sophisticated
+       
+
+        
+       
+"""
         animation_keywords = {
             "idle": ["idle", "standing", "neutral"],
             "talking": ["talking", "speaking", "conversation"],
             "walking": ["walking", "walk", "stroll"],
             "dancing": ["dancing", "dance", "groove"],
-        }
+         }
+       """
 
+        
+       
+
+        # Simple matching logic - in production, this would be more sophisticated
+       
+""""""
         keywords = animation_keywords.get(spec.animation_type, [spec.animation_type])
 
         for animation in animations:
@@ -444,7 +596,7 @@ class MixamoInterface:
 
     def _create_basic_animation(
         self, model_path: str, spec: AnimationSpec, output_path: str
-    ) -> str:
+#     ) -> str:
         """Create basic animation when Mixamo is not available."""
         logger.info("Creating basic animation (fallback)")
         # Copy the rigged model as fallback
@@ -453,14 +605,22 @@ class MixamoInterface:
 
 
 class BlenderCompositor:
-    """Blender integration for final compositing and rendering."""
+    """
+Blender integration for final compositing and rendering.
+
 
     def __init__(self, blender_path: Optional[str] = None):
-        """Initialize Blender compositor.
+        
+"""Initialize Blender compositor."""
+
 
         Args:
             blender_path: Path to Blender executable
-        """
+       
+
+        
+       
+"""
         self.blender_path = self._find_blender(blender_path)
         self.output_dir = Path(tempfile.gettempdir()) / "trae_blender"
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -468,18 +628,25 @@ class BlenderCompositor:
         logger.info(f"Blender compositor initialized: {self.blender_path}")
 
     def _find_blender(self, provided_path: Optional[str]) -> Optional[str]:
-        """Find Blender installation."""
-        if provided_path and Path(provided_path).exists():
-            return provided_path
+        """
+Find Blender installation.
 
+        if provided_path and Path(provided_path).exists():
+            
+"""
+            return provided_path
+            """"""
         # Common installation paths
+            """
+            return provided_path
+            """
         possible_paths = [
             "/Applications/Blender.app/Contents/MacOS/Blender",
             "/usr/local/bin/blender",
             "/opt/blender/blender",
             "C:\\\\Program Files\\\\Blender Foundation\\\\Blender\\\\blender.exe",
             "blender",  # In PATH
-        ]
+         ]
 
         for path in possible_paths:
             if shutil.which(path) or Path(path).exists():
@@ -494,8 +661,10 @@ class BlenderCompositor:
         spec: CharacterSpec,
         output_path: str,
         render_settings: Optional[Dict] = None,
-    ) -> str:
-        """Composite avatar in Blender for final rendering.
+#     ) -> str:
+        """
+Composite avatar in Blender for final rendering.
+
 
         Args:
             animated_model_path: Path to animated character model
@@ -505,15 +674,28 @@ class BlenderCompositor:
 
         Returns:
             Path to final rendered avatar
-        """
+       
+""""""
+
         if not self.blender_path:
+            
+
             return self._create_fallback_composite(animated_model_path, output_path)
+            
+""""""
+
+            
+           
 
         try:
             # Create Blender script
+            
+"""
+            return self._create_fallback_composite(animated_model_path, output_path)
+            """
             script_content = self._generate_blender_script(
                 animated_model_path, spec, output_path, render_settings or {}
-            )
+             )
             script_path = self.output_dir / f"{spec.name}_composite.py"
 
             with open(script_path, "w") as f:
@@ -541,10 +723,19 @@ class BlenderCompositor:
         spec: CharacterSpec,
         output_path: str,
         render_settings: Dict,
-    ) -> str:
-        """Generate Blender Python script for compositing."""
-        script = f"""
+#     ) -> str:
+        """
+Generate Blender Python script for compositing.
 
+       
+""""""
+
+        script = f
+       
+
+        
+       
+"""
 import bpy
 import bmesh
 import os
@@ -626,9 +817,23 @@ scene.render.image_settings.color_mode = 'RGBA'
 bpy.ops.render.render(write_still = True)
 
 print(f"Render completed: {output_path}")
+""""""
+
+        
+
+        return script
+        
+""""""
+
+        
+       
+
+        
 """
+
         return script
 
+        """"""
     def _create_fallback_composite(self, model_path: str, output_path: str) -> str:
         """Create fallback composite when Blender is not available."""
         logger.info("Creating fallback composite")
@@ -638,7 +843,9 @@ print(f"Render completed: {output_path}")
 
 
 class AvatarPipeline:
-    """Main avatar creation pipeline orchestrator."""
+    """
+Main avatar creation pipeline orchestrator.
+
 
     def __init__(
         self,
@@ -646,15 +853,21 @@ class AvatarPipeline:
         mixamo_api_key: Optional[str] = None,
         blender_path: Optional[str] = None,
         cache_dir: Optional[str] = None,
-    ):
-        """Initialize avatar pipeline.
+#     ):
+        
+"""Initialize avatar pipeline."""
+
 
         Args:
             makehuman_path: Path to MakeHuman installation
             mixamo_api_key: Mixamo API key
             blender_path: Path to Blender installation
             cache_dir: Directory for caching intermediate files
-        """
+       
+
+        
+       
+"""
         self.cache_dir = Path(cache_dir) if cache_dir else Path.home() / ".trae_avatar_cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
@@ -666,14 +879,17 @@ class AvatarPipeline:
         logger.info("Avatar pipeline initialized")
 
     def create_base_model(self, spec: CharacterSpec) -> str:
-        """Create base character model.
+        """
+Create base character model.
+
 
         Args:
             spec: Character specification
 
         Returns:
             Path to base character model
-        """
+       
+""""""
         timestamp = datetime.now().strftime("%Y % m%d_ % H%M % S")
         output_path = str(self.cache_dir / f"{spec.name}_base_{timestamp}.obj")
 
@@ -686,7 +902,9 @@ class AvatarPipeline:
         spec: CharacterSpec,
         animation_spec: Optional[AnimationSpec] = None,
     ) -> Tuple[str, str]:
-        """Rig and animate character model.
+        """
+Rig and animate character model.
+
 
         Args:
             base_model_path: Path to base character model
@@ -695,7 +913,8 @@ class AvatarPipeline:
 
         Returns:
             Tuple of (rigged_model_path, animated_model_path)
-        """
+       
+""""""
         timestamp = datetime.now().strftime("%Y % m%d_ % H%M % S")
 
         # Rig the model
@@ -709,7 +928,7 @@ class AvatarPipeline:
             logger.info(f"Animating model for {spec.name}")
             animated_model = self.mixamo.animate_character(
                 rigged_model, animation_spec, animated_path
-            )
+             )
             return rigged_model, animated_model
         else:
             return rigged_model, rigged_model
@@ -719,8 +938,10 @@ class AvatarPipeline:
         animated_model_path: str,
         spec: CharacterSpec,
         render_settings: Optional[Dict] = None,
-    ) -> str:
-        """Composite avatar in Blender for final rendering.
+#     ) -> str:
+        """
+Composite avatar in Blender for final rendering.
+
 
         Args:
             animated_model_path: Path to animated character model
@@ -729,22 +950,25 @@ class AvatarPipeline:
 
         Returns:
             Path to final rendered avatar
-        """
+       
+""""""
         timestamp = datetime.now().strftime("%Y % m%d_ % H%M % S")
         output_path = str(self.cache_dir / f"{spec.name}_final_{timestamp}.png")
 
         logger.info(f"Compositing avatar for {spec.name} in Blender")
         return self.blender.composite_avatar(
             animated_model_path, spec, output_path, render_settings
-        )
+         )
 
     def create_full_avatar(
         self,
         spec: CharacterSpec,
         animation_spec: Optional[AnimationSpec] = None,
         render_settings: Optional[Dict] = None,
-    ) -> AvatarResult:
-        """Create complete avatar through full pipeline.
+#     ) -> AvatarResult:
+        """
+Create complete avatar through full pipeline.
+
 
         Args:
             spec: Character specification
@@ -753,7 +977,8 @@ class AvatarPipeline:
 
         Returns:
             AvatarResult with all generated assets
-        """
+       
+""""""
         start_time = datetime.now()
         logger.info(f"Starting full avatar creation for {spec.name}")
 
@@ -764,12 +989,12 @@ class AvatarPipeline:
             # Step 2: Rig and animate
             rigged_path, animated_path = self.rig_and_animate_model(
                 base_model_path, spec, animation_spec
-            )
+             )
 
             # Step 3: Composite in Blender
             final_render_path = self.composite_avatar_in_blender(
                 animated_path, spec, render_settings
-            )
+             )
 
             # Create result
             creation_time = (datetime.now() - start_time).total_seconds()
@@ -789,10 +1014,10 @@ class AvatarPipeline:
                         "makehuman": bool(self.makehuman.makehuman_path),
                         "mixamo": bool(self.mixamo.api_key),
                         "blender": bool(self.blender.blender_path),
-                    },
-                },
+                     },
+                 },
                 created_at=datetime.now(),
-            )
+             )
 
             logger.info(f"Avatar creation completed in {creation_time:.2f}s")
             return result
@@ -807,7 +1032,9 @@ class AvatarPipeline:
         animation_specs: Optional[List[AnimationSpec]] = None,
         render_settings: Optional[Dict] = None,
     ) -> List[AvatarResult]:
-        """Create multiple avatars in batch.
+        """
+Create multiple avatars in batch.
+
 
         Args:
             specs: List of character specifications
@@ -816,12 +1043,26 @@ class AvatarPipeline:
 
         Returns:
             List of AvatarResult objects
-        """
+       
+""""""
+
         results = []
+       
+
+        
+       
+"""
         total_specs = len(specs)
-
+       """"""
         logger.info(f"Starting batch avatar creation: {total_specs} characters")
+       """
 
+        
+       
+
+        total_specs = len(specs)
+       
+""""""
         for i, spec in enumerate(specs, 1):
             try:
                 animation_spec = None
@@ -841,19 +1082,47 @@ class AvatarPipeline:
         return results
 
     def cleanup_cache(self, max_age_days: int = 7) -> int:
-        """Clean up old cached files.
+        """
+Clean up old cached files.
+
 
         Args:
             max_age_days: Maximum age of files to keep in days
 
         Returns:
             Number of files deleted
-        """
-        try:
-            deleted_count = 0
-            current_time = datetime.now()
+       
+""""""
 
+        
+
+        try:
+        
+"""
+            deleted_count = 0
+        """
+
+        try:
+        
+
+           
+""""""
+
+            current_time = datetime.now()
+           
+
+            
+           
+"""
             for file_path in self.cache_dir.rglob("*"):
+           """
+
+            
+           
+
+            current_time = datetime.now()
+           
+""""""
                 if file_path.is_file():
                     file_age = current_time - datetime.fromtimestamp(file_path.stat().st_mtime)
 
@@ -888,7 +1157,7 @@ if __name__ == "__main__":
         personality_traits=["friendly", "confident", "creative"],
         animation_style="realistic",
         target_use="video",
-    )
+     )
 
     # Create test animation specification
     test_animation = AnimationSpec(
@@ -899,7 +1168,7 @@ if __name__ == "__main__":
         loop=True,
         facial_animation=True,
         lip_sync_text="Hello, this is a test of the new avatar pipeline!",
-    )
+     )
 
     try:
         print("🎭 Testing Avatar Pipeline...")
@@ -917,7 +1186,7 @@ if __name__ == "__main__":
         print("\\n🎬 Testing Blender compositing...")
         final_render = pipeline.composite_avatar_in_blender(
             animated, test_spec, {"width": 1920, "height": 1080, "samples": 64}
-        )
+         )
         print(f"✅ Final render: {final_render}")
 
         print("\\n🚀 Testing full pipeline...")

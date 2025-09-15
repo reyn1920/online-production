@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 MacBook Air M1 Performance Benchmark Script
 Based on the Docker / System Tuning guide from paste_content.txt lines 1 - 345
-"""
+""""""
 
 import asyncio
 import statistics
@@ -38,7 +38,8 @@ class AsyncBenchmark:
                 "duration": end_time - start_time,
                 "success": response.status_code == 200,
                 "size": len(response.content),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             end_time = time.perf_counter()
             return {
@@ -47,7 +48,8 @@ class AsyncBenchmark:
                 "success": False,
                 "error": str(e),
                 "size": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def run_concurrent_test(
         self, endpoint: str, concurrent_users: int = 50, duration_seconds: int = 30
@@ -111,7 +113,8 @@ class AsyncBenchmark:
                 "error": "No successful requests",
                 "total_requests": len(results),
                 "failed_requests": len(failed_requests),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         durations = [r["duration"] for r in successful_requests]
         sizes = [r["size"] for r in successful_requests]
@@ -133,17 +136,21 @@ class AsyncBenchmark:
                     round(statistics.quantiles(durations, n=20)[18] * 1000, 2)
                     if len(durations) > 20
                     else 0
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "p99": (
                     round(statistics.quantiles(durations, n=100)[98] * 1000, 2)
                     if len(durations) > 100
                     else 0
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             # Data transfer
             "total_bytes": sum(sizes),
             "avg_response_size": round(statistics.mean(sizes), 2) if sizes else 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return stats
 
@@ -195,7 +202,8 @@ async def main():
         ("/api / status", 25, 20, "FastAPI Health Check via Nginx (light)"),
         ("/paste/", 20, 15, "Flask Paste App via Nginx (medium)"),
         ("/", 30, 25, "Root endpoint via Nginx (static)"),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     print("🔥 MacBook Air M1 Performance Benchmark")
     print("🐳 Testing Docker + Nginx + FastAPI + Flask Stack")

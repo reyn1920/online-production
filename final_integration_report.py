@@ -79,7 +79,7 @@ def check_protocol_integrations():
         protocol = get_protocol()
         if protocol:
             print("  ✅ Universal Channel Protocol - Loaded")
-            
+
             # Test protocol methods
             test_methods = [
                 "validate_channel",
@@ -87,7 +87,7 @@ def check_protocol_integrations():
                 "handle_request",
                 "format_response",
             ]
-            
+
             working_methods = 0
             for method in test_methods:
                 if hasattr(protocol, method):
@@ -95,7 +95,7 @@ def check_protocol_integrations():
                     working_methods += 1
                 else:
                     print(f"    ❌ {method} - Missing")
-            
+
             print(f"\n📊 Protocol Methods: {working_methods}/{len(test_methods)} available")
             return working_methods == len(test_methods)
         else:
@@ -267,14 +267,14 @@ def main():
 
     try:
         success = generate_integration_report()
-        
+
         if success:
             print("\n✅ All integrations are working correctly!")
             print("🎯 System is ready for production deployment.")
         else:
             print("\n⚠️  Some integrations have issues.")
             print("🔧 Please review and fix the reported problems.")
-        
+
         return success
     except Exception as e:
         print(f"\n❌ Critical error during integration check: {e}")

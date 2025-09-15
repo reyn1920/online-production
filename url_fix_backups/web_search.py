@@ -2,7 +2,7 @@ import requests
 
 
 def web_search(query: str, num_results=5):
-    """Search the web using DuckDuckGo API
+    """Search the web using DuckDuckGo API"""
 
     Args:
         query (str): Search query
@@ -10,7 +10,7 @@ def web_search(query: str, num_results=5):
 
     Returns:
         list: List of search results with snippet and link
-    """
+    """"""
     url = f"https://ddg - api.herokuapp.com / search?query={query}&limit={num_results}"
     resp = requests.get(url)
     if resp.status_code == 200:

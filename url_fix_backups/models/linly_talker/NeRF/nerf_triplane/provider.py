@@ -14,7 +14,9 @@ from torch.utils.data import DataLoader
 
 from .utils import (AudDataset, convert_poses, get_audio_features, get_bg_coords,
 
-    get_rays)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     get_rays)
 
 # ref: https://github.com / NVlabs / instant - ngp / blob / b76004c8cf478880227401ae763be4c02f80b62f / include / neural - graphics - primitives / nerf_loader.h#L50
 
@@ -26,9 +28,13 @@ def nerf_matrix_to_ngp(pose, scale = 0.33, offset=[0, 0, 0]):
                 [pose[2, 0], -pose[2, 1], -pose[2, 2], pose[2, 3] * scale + offset[1]],
                 [pose[0, 0], -pose[0, 1], -pose[0, 2], pose[0, 3] * scale + offset[2]],
                 [0, 0, 0, 1],
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             dtype = np.float32,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     return new_pose
 
 
@@ -92,8 +98,12 @@ def visualize_poses(poses, size = 0.1):
                     [c, d],
                     [d, a],
                     [pos, o],
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         segs = trimesh.load_path(segs)
         objects.append(segs)
 
@@ -113,11 +123,13 @@ class NeRFDataset_Test:
         self.downscale = downscale
         self.scale = (
             opt.scale
-        )  # camera radius scale to make sure camera are inside the bounding box.
+# BRACKET_SURGEON: disabled
+#         )  # camera radius scale to make sure camera are inside the bounding box.
         self.offset = opt.offset  # camera offset
         self.bound = (
             opt.bound
-        )  # bounding box half length, also used as the radius to random sample poses.
+# BRACKET_SURGEON: disabled
+#         )  # bounding box half length, also used as the radius to random sample poses.
         self.fp16 = opt.fp16
 
         self.start_index = opt.data_range[0]
@@ -159,16 +171,22 @@ class NeRFDataset_Test:
                     parser.add_argument("--wav", type = str, default="")
                     parser.add_argument(
                         "--play", action="store_true", help="play out the audio"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     parser.add_argument(
                         "--model",
                             type = str,
                             default="cpierse / wav2vec2 - large - xlsr - 53 - esperanto",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     # parser.add_argument('--model',
     type = str,
-    default='facebook / wav2vec2 - large - 960h - lv60 - self')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     default='facebook / wav2vec2 - large - 960h - lv60 - self')
 
                     parser.add_argument("--save_feats", action="store_true")
                     # audio FPS
@@ -193,7 +211,9 @@ class NeRFDataset_Test:
                 elif self.opt.asr_model == "deepspeech":
                     os.system(
                         f"python NeRF / data_utils / deepspeech_features / extract_ds_features.py --input {self.opt.aud}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     aud_features = np.load(opt.aud.replace(".wav", ".npy"))
                 elif self.opt.asr_model == "ave":
 
@@ -201,12 +221,16 @@ class NeRFDataset_Test:
 
                     device = torch.device(
                         "cuda" if torch.cuda.is_available() else "cpu"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     model = AudioEncoder().to(device).eval()
                     ckpt = torch.load("./checkpoints / audio_visual_encoder.pth")
                     model.load_state_dict(
                         {f"audio_encoder.{k}": v for k, v in ckpt.items()}
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     dataset = AudDataset(self.opt.aud)
                     data_loader = DataLoader(dataset, batch_size = 64, shuffle = False)
                     outputs = []
@@ -220,14 +244,18 @@ class NeRFDataset_Test:
                     aud_features = torch.cat(
                         [first_frame.repeat(2, 1), outputs, last_frame.repeat(2, 1)],
                             dim = 0,
-                            ).numpy()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ).numpy()
                 else:
                     try:
                         aud_features = np.load(self.opt.aud)
                     except Exception:
                         print(
                             f"[ERROR] If do not use Audio Visual Encoder, replace it with the npy file path"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 raise NotImplementedError
 
@@ -238,12 +266,16 @@ class NeRFDataset_Test:
                 if len(aud_features.shape) == 3:
                     aud_features = aud_features.float().permute(
                         1, 0, 2
-                    )  # [N, 16, 29] --> [N, 29, 16]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )  # [N, 16, 29] --> [N, 29, 16]
 
                     if self.opt.emb:
                         print(
                             f"[INFO] argmax to aud features {aud_features.shape} for --emb mode"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         aud_features = aud_features.argmax(1)  # [N, 16]
 
                 else:
@@ -258,12 +290,16 @@ class NeRFDataset_Test:
                 if len(aud_features.shape) == 3:
                     aud_features = aud_features.float().permute(
                         0, 2, 1
-                    )  # [N, 16, 29] --> [N, 29, 16]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )  # [N, 16, 29] --> [N, 29, 16]
 
                     if self.opt.emb:
                         print(
                             f"[INFO] argmax to aud features {aud_features.shape} for --emb mode"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         aud_features = aud_features.argmax(1)  # [N, 16]
 
                 else:
@@ -286,7 +322,9 @@ class NeRFDataset_Test:
             if not self.opt.asr and self.opt.aud == "":
                 aud = aud_features[
                     min(f["aud_id"], aud_features.shape[0] - 1)
-                ]  # careful for the last frame...
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]  # careful for the last frame...
                 self.auds.append(aud)
 
             if self.opt.exp_eye:
@@ -309,7 +347,9 @@ class NeRFDataset_Test:
             if bg_img.shape[0] != self.H or bg_img.shape[1] != self.W:
                 bg_img = cv2.resize(
                     bg_img, (self.W, self.H), interpolation = cv2.INTER_AREA
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             bg_img = cv2.cvtColor(bg_img, cv2.COLOR_BGR2RGB)
             bg_img = bg_img.astype(np.float32)/255  # [H, W, 3 / 4]
 
@@ -374,7 +414,9 @@ class NeRFDataset_Test:
         # directly build the coordinate meshgrid in [-1, 1]^2
         self.bg_coords = get_bg_coords(
             self.H, self.W, self.device
-        )  # [1, H * W, 2] in [-1, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # [1, H * W, 2] in [-1, 1]
 
 
     def mirror_index(self, index):
@@ -406,7 +448,9 @@ class NeRFDataset_Test:
 
         rays = get_rays(
             poses, self.intrinsics, self.H, self.W, self.num_rays, self.opt.patch_size
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         results["index"] = index  # for ind. code
         results["H"] = self.H
@@ -448,7 +492,9 @@ class NeRFDataset_Test:
                 collate_fn = self.collate,
                 shuffle = False,
                 num_workers = 0,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         loader._data = self  # an ugly fix... we need poses in trainer.
 
         # do evaluate if has gt images and use self - driven setting
@@ -471,11 +517,13 @@ class NeRFDataset:
         self.preload = opt.preload  # 0 = disk, 1 = cpu, 2 = gpu
         self.scale = (
             opt.scale
-        )  # camera radius scale to make sure camera are inside the bounding box.
+# BRACKET_SURGEON: disabled
+#         )  # camera radius scale to make sure camera are inside the bounding box.
         self.offset = opt.offset  # camera offset
         self.bound = (
             opt.bound
-        )  # bounding box half length, also used as the radius to random sample poses.
+# BRACKET_SURGEON: disabled
+#         )  # bounding box half length, also used as the radius to random sample poses.
         self.fp16 = opt.fp16
 
         self.start_index = opt.data_range[0]
@@ -510,7 +558,8 @@ class NeRFDataset:
             _split = "val" if type == "test" else type
             with open(
                 os.path.join(self.root_path, f"transforms_{_split}.json"), "r"
-            ) as f:
+# BRACKET_SURGEON: disabled
+#             ) as f:
                 transform = json.load(f)
 
         # load image size
@@ -566,12 +615,16 @@ class NeRFDataset:
             if len(aud_features.shape) == 3:
                 aud_features = aud_features.float().permute(
                     0, 2, 1
-                )  # [N, 16, 29] --> [N, 29, 16]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )  # [N, 16, 29] --> [N, 29, 16]
 
                 if self.opt.emb:
                     print(
                         f"[INFO] argmax to aud features {aud_features.shape} for --emb mode"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     aud_features = aud_features.argmax(1)  # [N, 16]
 
             else:
@@ -615,7 +668,9 @@ class NeRFDataset:
             if self.preload > 0:
                 image = cv2.imread(
                     f_path, cv2.IMREAD_UNCHANGED
-                )  # [H, W, 3] o [H, W, 4]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )  # [H, W, 3] o [H, W, 4]
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 image = image.astype(np.float32)/255  # [H, W, 3 / 4]
 
@@ -627,12 +682,16 @@ class NeRFDataset:
 
             torso_img_path = os.path.join(
                 self.root_path, "torso_imgs", str(f["img_id"]) + ".png"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if self.preload > 0:
                 torso_img = cv2.imread(
                     torso_img_path, cv2.IMREAD_UNCHANGED
-                )  # [H, W, 4]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )  # [H, W, 4]
                 torso_img = cv2.cvtColor(torso_img, cv2.COLOR_BGRA2RGBA)
                 torso_img = torso_img.astype(np.float32)/255  # [H, W, 3 / 4]
 
@@ -644,17 +703,22 @@ class NeRFDataset:
             if not self.opt.asr and self.opt.aud == "":
                 aud = aud_features[
                     min(f["aud_id"], aud_features.shape[0] - 1)
-                ]  # careful for the last frame...
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]  # careful for the last frame...
                 self.auds.append(aud)
 
             # load lms and extract face
             lms = np.loadtxt(
                 os.path.join(self.root_path, "ori_imgs", str(f["img_id"]) + ".lms")
-            )  # [68, 2]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [68, 2]
 
             lh_xmin, lh_xmax = int(lms[31:36, 1].min()), int(
                 lms[:, 1].max()
-            )  # actually lower half area
+# BRACKET_SURGEON: disabled
+#             )  # actually lower half area
             xmin, xmax = int(lms[:, 1].min()), int(lms[:, 1].max())
             ymin, ymax = int(lms[:, 0].min()), int(lms[:, 0].max())
             self.face_rect.append([xmin, xmax, ymin, ymax])
@@ -711,7 +775,9 @@ class NeRFDataset:
             if bg_img.shape[0] != self.H or bg_img.shape[1] != self.W:
                 bg_img = cv2.resize(
                     bg_img, (self.W, self.H), interpolation = cv2.INTER_AREA
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             bg_img = cv2.cvtColor(bg_img, cv2.COLOR_BGR2RGB)
             bg_img = bg_img.astype(np.float32)/255  # [H, W, 3 / 4]
 
@@ -728,10 +794,14 @@ class NeRFDataset:
         if self.preload > 0:
             self.images = torch.from_numpy(
                 np.stack(self.images, axis = 0)
-            )  # [N, H, W, C]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [N, H, W, C]
             self.torso_img = torch.from_numpy(
                 np.stack(self.torso_img, axis = 0)
-            )  # [N, H, W, C]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [N, H, W, C]
         else:
             self.images = np.array(self.images)
             self.torso_img = np.array(self.torso_img)
@@ -767,7 +837,9 @@ class NeRFDataset:
         # calculate mean radius of all camera poses
         self.radius = self.poses[:, :3, 3].norm(dim=-1).mean(0).item()
         # print(f'[INFO] dataset camera poses: radius = {self.radius:.4f},
-    bound = {self.bound}')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     bound = {self.bound}')
 
         # [debug] uncomment to view all training poses.
         # visualize_poses(self.poses.numpy())
@@ -775,7 +847,9 @@ class NeRFDataset:
         # [debug] uncomment to view examples of randomly generated poses.
         # visualize_poses(rand_poses(100,
     self.device,
-    radius = self.radius).cpu().numpy())
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     radius = self.radius).cpu().numpy())
 
         if self.preload > 1:
             self.poses = self.poses.to(self.device)
@@ -797,22 +871,28 @@ class NeRFDataset:
         elif "fl_x" in transform or "fl_y" in transform:
             fl_x = (
                 transform["fl_x"] if "fl_x" in transform else transform["fl_y"]
-            ) / downscale
+# BRACKET_SURGEON: disabled
+#             ) / downscale
             fl_y = (
                 transform["fl_y"] if "fl_y" in transform else transform["fl_x"]
-            ) / downscale
+# BRACKET_SURGEON: disabled
+#             ) / downscale
         elif "camera_angle_x" in transform or "camera_angle_y" in transform:
             # blender, assert in radians. already downscaled since we use H / W
             fl_x = (
                 self.W / (2 * np.tan(transform["camera_angle_x"]/2))
                 if "camera_angle_x" in transform
                 else None
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             fl_y = (
                 self.H / (2 * np.tan(transform["camera_angle_y"]/2))
                 if "camera_angle_y" in transform
                 else None
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if fl_x is None:
                 fl_x = fl_y
             if fl_y is None:
@@ -820,7 +900,9 @@ class NeRFDataset:
         else:
             raise RuntimeError(
                 "Failed to load focal length, please check the transforms.json!"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         cx = (transform["cx"] / downscale) if "cx" in transform else (self.W / 2)
         cy = (transform["cy"] / downscale) if "cy" in transform else (self.H / 2)
@@ -830,7 +912,9 @@ class NeRFDataset:
         # directly build the coordinate meshgrid in [-1, 1]^2
         self.bg_coords = get_bg_coords(
             self.H, self.W, self.device
-        )  # [1, H * W, 2] in [-1, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # [1, H * W, 2] in [-1, 1]
 
 
     def mirror_index(self, index):
@@ -872,7 +956,9 @@ class NeRFDataset:
                     self.W,
                     self.num_rays,
                     self.opt.patch_size,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         results["index"] = index  # for ind. code
         results["H"] = self.H
@@ -888,7 +974,9 @@ class NeRFDataset:
                 & (rays["j"] < xmax)
                 & (rays["i"] >= ymin)
                 & (rays["i"] < ymax)
-            )  # [B, N]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [B, N]
             results["face_mask"] = face_mask
 
             xmin, xmax, ymin, ymax = self.lhalf_rect[index[0]]
@@ -897,7 +985,9 @@ class NeRFDataset:
                 & (rays["j"] < xmax)
                 & (rays["i"] >= ymin)
                 & (rays["i"] < ymax)
-            )  # [B, N]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [B, N]
             results["lhalf_mask"] = lhalf_mask
 
         if self.opt.exp_eye:
@@ -910,7 +1000,9 @@ class NeRFDataset:
                     & (rays["j"] < xmax)
                     & (rays["i"] >= ymin)
                     & (rays["i"] < ymax)
-                )  # [B, N]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )  # [B, N]
                 results["eye_mask"] = eye_mask
 
         else:
@@ -921,13 +1013,17 @@ class NeRFDataset:
         if self.preload == 0:  # on the fly loading
             bg_torso_img = cv2.imread(
                 bg_torso_img[0], cv2.IMREAD_UNCHANGED
-            )  # [H, W, 4]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [H, W, 4]
             bg_torso_img = cv2.cvtColor(bg_torso_img, cv2.COLOR_BGRA2RGBA)
             bg_torso_img = bg_torso_img.astype(np.float32)/255  # [H, W, 3 / 4]
             bg_torso_img = torch.from_numpy(bg_torso_img).unsqueeze(0)
         bg_torso_img = bg_torso_img[..., :3] * bg_torso_img[..., 3:] + self.bg_img * (
             1 - bg_torso_img[..., 3:]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         bg_torso_img = bg_torso_img.view(B, -1, 3).to(self.device)
 
         if not self.opt.torso:
@@ -938,14 +1034,18 @@ class NeRFDataset:
         if self.training:
             bg_img = torch.gather(
                 bg_img, 1, torch.stack(3 * [rays["inds"]], -1)
-            )  # [B, N, 3]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [B, N, 3]
 
         results["bg_color"] = bg_img
 
         if self.opt.torso and self.training:
             bg_torso_img = torch.gather(
                 bg_torso_img, 1, torch.stack(3 * [rays["inds"]], -1)
-            )  # [B, N, 3]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [B, N, 3]
             results["bg_torso_color"] = bg_torso_img
 
         images = self.images[index]  # [B, H, W, 3 / 4]
@@ -960,14 +1060,18 @@ class NeRFDataset:
             C = images.shape[-1]
             images = torch.gather(
                 images.view(B, -1, C), 1, torch.stack(C * [rays["inds"]], -1)
-            )  # [B, N, 3 / 4]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [B, N, 3 / 4]
 
         results["images"] = images
 
         if self.training:
             bg_coords = torch.gather(
                 self.bg_coords, 1, torch.stack(2 * [rays["inds"]], -1)
-            )  # [1, N, 2]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [1, N, 2]
         else:
             bg_coords = self.bg_coords  # [1, N, 2]
 
@@ -999,7 +1103,9 @@ class NeRFDataset:
                 collate_fn = self.collate,
                 shuffle = self.training,
                 num_workers = 0,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         loader._data = self  # an ugly fix... we need poses in trainer.
 
         # do evaluate if has gt images and use self - driven setting

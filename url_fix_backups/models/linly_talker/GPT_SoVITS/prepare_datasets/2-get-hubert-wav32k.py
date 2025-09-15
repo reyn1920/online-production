@@ -90,7 +90,8 @@ def name2go(wav_name):
     tmp_audio32 = (tmp_audio / tmp_max * (maxx * alpha * 32768)) + ((1 - alpha) * 32768) * tmp_audio
     tmp_audio32b = (tmp_audio / tmp_max * (maxx * alpha * 1145.14)) + (
         (1 - alpha) * 1145.14
-    ) * tmp_audio
+# BRACKET_SURGEON: disabled
+#     ) * tmp_audio
     tmp_audio = librosa.resample(tmp_audio32b, orig_sr=32000, target_sr=16000)  # 不是重采样问题
     tensor_wav16 = torch.from_numpy(tmp_audio)
     if is_half is True:
@@ -108,7 +109,8 @@ def name2go(wav_name):
         "%s/%s" % (wav32dir, wav_name),
         32000,
         tmp_audio32.astype("int16"),
-    )
+# BRACKET_SURGEON: disabled
+#     )
     my_save(ssl, hubert_path)
 
 

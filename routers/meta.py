@@ -1,23 +1,31 @@
+#!/usr/bin/env python3
+"""
+Meta Router
+
+Provides metadata and service information endpoints.
+Includes health checks and service status information.
+"""
+
 from fastapi import APIRouter
 from datetime import datetime
-import os
+from typing import Dict, Any
 
-meta = APIRouter(tags=["Meta"])
+meta = APIRouter()
 
-@meta.get("/api/version")
-def version():
-    return {"name": "TRAE AI Production API", "version": "1.0.0", "build": "full"}
-
-@meta.get("/api/system/status")
-def system_status():
+@meta.get("/api/meta")
+def get_meta() -> Dict[str, Any]:
+    """Get application metadata"""
     return {
-        "status": "operational",
+        "name": "Online Production App",
+        "version": "1.0.0",
+        "environment": "production",
         "uptime": datetime.utcnow().isoformat(),
         "services": ["creative", "rss_watcher", "monetization"]
     }
 
 @meta.get("/api/services")
-def list_services():
+def list_services() -> Dict[str, Any]:
+    """List available services and their status"""
     return {
         "creative": True,
         "rss_watcher": True,
@@ -26,31 +34,38 @@ def list_services():
     }
 
 @meta.get("/ws/info")
-def ws_info():
-    return {"message": "Websocket hub online", "channels": ["logs", "jobs", "rss"]}
-
-@meta.get("/health/ready")
-async def readiness_check():
-    """Production readiness check"""
-    # Check if core services are ready
-    app_initialized = True
-    router_loading = True
-    middleware_configured = True
-    
-    # Check external dependencies with optional flag
-    petfinder_api = False  # This would check actual API connectivity
-    optional_ok = os.getenv("REQUIRE_PETFINDER", "0") != "1"
-    
-    ready = all([app_initialized, router_loading, middleware_configured]) and (petfinder_api or optional_ok)
-    
+def websocket_info() -> Dict[str, Any]:
+    """Get WebSocket connection information"""
     return {
-        "ready": ready,
-        "timestamp": datetime.now().isoformat(),
-        "checks": {
-            "app_initialization": app_initialized,
-            "router_loading": router_loading,
-            "middleware_configuration": middleware_configured,
-            "petfinder_api": petfinder_api,
-            "petfinder_optional": optional_ok
+        "websocket_enabled": True,
+        "endpoint": "/ws",
+        "protocols": ["websocket"]
+    }
+
+@meta.get("/api/health")
+def health_check() -> Dict[str, Any]:
+    """Basic health check endpoint"""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "uptime": "running"
+    }
+
+@meta.get("/api/status")
+def status_check() -> Dict[str, Any]:
+    """Detailed status information"""
+    return {
+        "application": "online-production",
+        "status": "operational",
+        "version": "1.0.0",
+        "environment": "production",
+        "timestamp": datetime.utcnow().isoformat(),
+        "services": {
+            "api": "healthy",
+            "database": "healthy",
+            "cache": "healthy"
         }
     }
+
+# Export the router
+__all__ = ["meta"]

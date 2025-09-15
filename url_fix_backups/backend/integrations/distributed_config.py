@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 Distributed Processing Configuration
 
 Centralized configuration management for the distributed processing system.
 Handles environment - specific settings, worker configurations, and security.
-"""
+""""""
 
 import os
 import platform
@@ -53,7 +53,7 @@ class WorkerConfig:
     name: str
     platform: str
     max_workers: int = 4
-    capabilities: List[str] = field(default_factory=list)
+    capabilities: List[str] = field(default_factory=list):
     resource_limits: Dict[str, Any] = field(default_factory=dict)
     queues: List[str] = field(default_factory=lambda: ["default"])
     prefetch_multiplier: int = 1
@@ -67,7 +67,7 @@ class SecurityConfig:
     enable_auth: bool = True
     secret_key: str = ""
     token_expiry: int = 3600  # seconds
-    allowed_hosts: List[str] = field(default_factory=list)
+    allowed_hosts: List[str] = field(default_factory=list):
     ssl_cert_path: Optional[str] = None
     ssl_key_path: Optional[str] = None
 
@@ -107,7 +107,8 @@ class DistributedConfig:
             password=os.getenv("CELERY_BROKER_PASSWORD"),
             database=int(os.getenv("CELERY_BROKER_DB", "0")),
             ssl=os.getenv("CELERY_BROKER_SSL", "false").lower() == "true",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.security = SecurityConfig(
             enable_auth=os.getenv("ENABLE_AUTH", "true").lower() == "true",
@@ -115,15 +116,18 @@ class DistributedConfig:
             token_expiry=int(os.getenv("TOKEN_EXPIRY", "3600")),
             allowed_hosts=(
                 os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else []
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         self.monitoring = MonitoringConfig(
             enable_prometheus=os.getenv("ENABLE_PROMETHEUS", "true").lower() == "true",
             prometheus_port=int(os.getenv("PROMETHEUS_PORT", "9090")),
             log_level=os.getenv("LOG_LEVEL", "INFO"),
             log_format=os.getenv("LOG_FORMAT", "json"),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Load from YAML file if exists
         if os.path.exists(self.config_file):
@@ -190,7 +194,8 @@ class DistributedConfig:
                 "max_cpu_percent": 80,
                 "max_memory_gb": max(1, memory_gb * 0.7),
                 "max_disk_usage_gb": 10,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             max_workers = max(1, cpu_count - 1)
 
@@ -199,7 +204,8 @@ class DistributedConfig:
                 "max_cpu_percent": 80,
                 "max_memory_gb": 4,
                 "max_disk_usage_gb": 10,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             max_workers = 2
 
         return WorkerConfig(
@@ -208,7 +214,8 @@ class DistributedConfig:
             max_workers=max_workers,
             capabilities=capabilities,
             resource_limits=resource_limits,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def get_celery_config(self) -> Dict[str, Any]:
         """Generate Celery configuration dictionary"""
@@ -225,7 +232,8 @@ class DistributedConfig:
             "task_routes": self._generate_task_routes(),
             "worker_send_task_events": True,
             "task_send_sent_event": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _generate_task_routes(self) -> Dict[str, Dict[str, str]]:
         """Generate task routing configuration"""
@@ -238,24 +246,30 @@ class DistributedConfig:
                     "video_tasks.*": {"queue": "video_processing"},
                     "davinci_resolve.*": {"queue": "video_processing"},
                     "obs.*": {"queue": "video_processing"},
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         if "audio_processing" in self.worker.capabilities:
             routes.update(
                 {
                     "audio_tasks.*": {"queue": "audio_processing"},
                     "audacity.*": {"queue": "audio_processing"},
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         if "image_processing" in self.worker.capabilities:
             routes.update(
                 {
                     "image_tasks.*": {"queue": "image_processing"},
                     "gimp.*": {"queue": "image_processing"},
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return routes
 
@@ -270,7 +284,8 @@ class DistributedConfig:
                 "port": self.broker.port,
                 "database": self.broker.database,
                 "ssl": self.broker.ssl,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "worker": {
                 "name": self.worker.name,
                 "platform": self.worker.platform,
@@ -278,19 +293,23 @@ class DistributedConfig:
                 "capabilities": self.worker.capabilities,
                 "resource_limits": self.worker.resource_limits,
                 "queues": self.worker.queues,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "security": {
                 "enable_auth": self.security.enable_auth,
                 "token_expiry": self.security.token_expiry,
                 "allowed_hosts": self.security.allowed_hosts,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "monitoring": {
                 "enable_prometheus": self.monitoring.enable_prometheus,
                 "prometheus_port": self.monitoring.prometheus_port,
                 "log_level": self.monitoring.log_level,
                 "log_format": self.monitoring.log_format,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # Ensure directory exists
         os.makedirs(os.path.dirname(file_path), exist_ok=True)

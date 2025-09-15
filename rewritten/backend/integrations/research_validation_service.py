@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Research Validation Service
 
 This module provides a service layer that integrates the HypocrisyEngine with
@@ -15,7 +15,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import logging
@@ -28,7 +28,8 @@ try:
         HypocrisyEngine,
         ResearchClaim,
         ValidationResult,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     HypocrisyEngine = None
     ValidationResult = None
@@ -102,7 +103,8 @@ class ResearchValidationService:
 
     async def validate_research(
         self, request: ResearchValidationRequest
-    ) -> ResearchValidationResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> ResearchValidationResponse:
         """Validate a research claim or statement"""
         start_time = datetime.now()
         request_id = f"val_{int(start_time.timestamp() * 1000)}"
@@ -110,7 +112,8 @@ class ResearchValidationService:
         try:
             self.logger.info(
                 f"Starting research validation {request_id} for: {request.content[:100]}..."
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Check cache first
             if self.cache_results:
@@ -128,7 +131,8 @@ class ResearchValidationService:
             # Find content opportunities
             content_opportunities = await self._find_content_opportunities(
                 request, validation_result
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Calculate processing time
             processing_time = int((datetime.now() - start_time).total_seconds() * 1000)
@@ -140,19 +144,23 @@ class ResearchValidationService:
                 confidence_score=(validation_result.confidence_score if validation_result else 0.0),
                 validation_status=(
                     validation_result.fact_check_status if validation_result else "error"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 contradictions_found=(
                     validation_result.contradictions_found if validation_result else []
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 evidence_sources=(validation_result.evidence_sources if validation_result else []),
                 validation_notes=(
                     validation_result.validation_notes if validation_result else "Validation failed"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 recommendations=recommendations,
                 content_opportunities=content_opportunities,
                 processing_time_ms=processing_time,
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Cache the result
             if self.cache_results:
@@ -177,7 +185,8 @@ class ResearchValidationService:
                 content_opportunities=[],
                 processing_time_ms=processing_time,
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _perform_validation(
         self, request: ResearchValidationRequest
@@ -196,7 +205,8 @@ class ResearchValidationService:
                 date_published=datetime.now(),
                 topic_tags=[request.topic] if request.topic else [],
                 context=request.context,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Validate the claim
             result = await self.hypocrisy_engine.validate_research_claim(claim)
@@ -208,7 +218,8 @@ class ResearchValidationService:
                     new_statement=request.content,
                     source=request.source_url or "validation_service",
                     context=request.context,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if hypocrisy_finding:
                     self.logger.info(f"Detected potential hypocrisy for {request.author}")
@@ -220,8 +231,10 @@ class ResearchValidationService:
                             "current_statement": hypocrisy_finding.statement_2,
                             "confidence": hypocrisy_finding.confidence_score,
                             "severity": hypocrisy_finding.severity_score,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
             return result
 
@@ -241,7 +254,8 @@ class ResearchValidationService:
             if not validation_result:
                 recommendations.append(
                     "Manual fact - checking required - automated validation unavailable"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 recommendations.append("Verify claims through multiple independent sources")
                 return recommendations
 
@@ -257,7 +271,8 @@ class ResearchValidationService:
                 if validation_result.contradictions_found:
                     recommendations.append(
                         f"Investigate {len(validation_result.contradictions_found)} contradictions identified"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 recommendations.append("Consider fact - checking with primary sources")
 
@@ -269,8 +284,9 @@ class ResearchValidationService:
             # Content - type specific recommendations
             if request.validation_type == "statement" and request.author:
                 recommendations.append(
-                    f"Cross - reference with {request.author}'s historical statements"
-                )
+                    f"Cross - reference with {request.author}'s historical statements"'
+# BRACKET_SURGEON: disabled
+#                 )
                 recommendations.append("Check for context - dependent interpretations")
 
             return recommendations
@@ -303,14 +319,16 @@ class ResearchValidationService:
                         "content_angle": "fact_check",
                         "sources": [contradiction.get("source", request.source_url)],
                         "tags": ["fact - check", "contradiction", "research"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     opportunities.append(opportunity)
 
             # Get general content opportunities from hypocrisy engine
             if request.author:
                 engine_opportunities = self.hypocrisy_engine.get_content_opportunities(
                     limit=5, min_confidence=0.6
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 for opp in engine_opportunities:
                     if opp.get("subject_name") == request.author:
@@ -321,11 +339,13 @@ class ResearchValidationService:
                             "confidence": opp.get("confidence_score", 0.5),
                             "potential_impact": (
                                 "high" if opp.get("public_impact_score", 5) > 7 else "medium"
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             "content_angle": "investigative",
                             "sources": opp.get("evidence_links", []),
                             "tags": ["hypocrisy", "investigation", "politics"],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         opportunities.append(content_opp)
 
             return opportunities[:3]  # Return top 3 opportunities
@@ -359,7 +379,8 @@ class ResearchValidationService:
 
     def _cache_result(
         self, request: ResearchValidationRequest, response: ResearchValidationResponse
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Cache validation result"""
         try:
             cache_key = self._generate_cache_key(request)
@@ -367,14 +388,16 @@ class ResearchValidationService:
             self._validation_cache[cache_key] = {
                 "result": response,
                 "timestamp": datetime.now(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Clean up old cache entries (keep max 100 entries)
             if len(self._validation_cache) > 100:
                 # Remove oldest entries
                 sorted_entries = sorted(
                     self._validation_cache.items(), key=lambda x: x[1]["timestamp"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 for key, _ in sorted_entries[:20]:  # Remove oldest 20
                     del self._validation_cache[key]
@@ -391,7 +414,8 @@ class ResearchValidationService:
                 request.author or "unknown",
                 request.validation_type,
                 request.source_url or "no_source",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             return "|".join(key_components).replace(" ", "_").lower()
 
@@ -434,7 +458,8 @@ class ResearchValidationService:
                         content_opportunities=[],
                         processing_time_ms=0,
                         timestamp=datetime.now(),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     processed_results.append(error_response)
                 else:
                     processed_results.append(result)
@@ -457,7 +482,8 @@ class ResearchValidationService:
                 "max_concurrent_validations": self.max_concurrent_validations,
                 "validation_timeout_seconds": self.validation_timeout_seconds,
                 "cache_enabled": self.cache_results,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Add hypocrisy engine stats if available
             if self.hypocrisy_engine:
@@ -486,12 +512,14 @@ class ResearchValidationService:
 
 async def validate_claim(
     content: str, author: Optional[str] = None, source: Optional[str] = None
-) -> ResearchValidationResponse:
+# BRACKET_SURGEON: disabled
+# ) -> ResearchValidationResponse:
     """Quick validation of a research claim"""
     service = ResearchValidationService()
     request = ResearchValidationRequest(
         content=content, author=author, source_url=source, validation_type="claim"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return await service.validate_research(request)
 
 
@@ -500,7 +528,8 @@ async def validate_statement(
     author: str,
     source: Optional[str] = None,
     context: Optional[str] = None,
-) -> ResearchValidationResponse:
+# BRACKET_SURGEON: disabled
+# ) -> ResearchValidationResponse:
     """Quick validation of a statement for hypocrisy detection"""
     service = ResearchValidationService()
     request = ResearchValidationRequest(
@@ -509,5 +538,6 @@ async def validate_statement(
         source_url=source,
         validation_type="statement",
         context=context,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return await service.validate_research(request)

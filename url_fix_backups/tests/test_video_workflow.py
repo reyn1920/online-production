@@ -1,7 +1,7 @@
 #!/usr / bin / env python3
-"""
+""""""
 Test script for video creation workflow
-"""
+""""""
 
 import asyncio
 import os
@@ -30,7 +30,8 @@ except ImportError:
                 "title": f"Sample Video: {task.get('topic', 'Unknown Topic')}",
                 "content": f"This is a sample script for {task.get('topic', 'the topic')}",
                 "status": "completed",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         def get_active_jobs(self):
             return []
@@ -53,7 +54,8 @@ async def test_video_creation():
         "topic": "AI Technology Revolution",
         "duration": 120,
         "target_audience": "tech enthusiasts",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     try:
         script_result = await agent.process_task(script_task)
@@ -76,7 +78,8 @@ async def test_video_creation():
             "duration": 300,
             "target_audience": "creative professionals",
             "tone": "professional",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             advanced_result = await agent.process_task(advanced_script_task)
@@ -85,7 +88,8 @@ async def test_video_creation():
             print(f"Genre: {advanced_result.get('genre', 'N / A')}")
             print(
                 f"Estimated duration: {advanced_result.get('estimated_duration', 'N / A')} seconds"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             print(f"Word count: {advanced_result.get('word_count', 'N / A')}")
         except Exception as e:
             print(f"Advanced video script creation failed: {e}")

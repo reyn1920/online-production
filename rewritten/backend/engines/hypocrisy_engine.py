@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Hypocrisy Engine - Research Validation System
 
 This module provides a comprehensive engine for detecting, analyzing, and validating
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import logging
 import re
@@ -115,17 +115,20 @@ class HypocrisyEngine:
             # Calculate confidence score
             confidence_score = self._calculate_validation_confidence(
                 claim, contradictions, evidence_sources
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Determine validation status
             is_valid = (
                 len(contradictions) == 0 and confidence_score >= self.min_confidence_threshold
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Generate validation notes
             validation_notes = self._generate_validation_notes(
                 claim, contradictions, evidence_sources, confidence_score
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             result = ValidationResult(
                 is_valid=is_valid,
@@ -134,11 +137,13 @@ class HypocrisyEngine:
                 evidence_sources=evidence_sources,
                 validation_notes=validation_notes,
                 fact_check_status="validated" if is_valid else "disputed",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.logger.info(
                 f"Validation completed. Valid: {is_valid}, Confidence: {confidence_score:.2f}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
 
         except Exception as e:
@@ -150,7 +155,8 @@ class HypocrisyEngine:
                 evidence_sources=[],
                 validation_notes=f"Validation failed: {str(e)}",
                 fact_check_status="error",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _find_contradictions(self, claim: ResearchClaim) -> List[Dict[str, Any]]:
         """Find contradictory statements in the database"""
@@ -168,13 +174,15 @@ class HypocrisyEngine:
                 # Search existing findings
                 findings = self.db_manager.search_findings(
                     subject_name=claim.author, min_confidence=0.5, limit=20
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 for finding in findings:
                     # Check for semantic similarity
                     similarity_score = self._calculate_semantic_similarity(
                         claim.claim_text, finding["statement_1"]
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if similarity_score > self.similarity_threshold:
                         contradiction = {
@@ -186,7 +194,8 @@ class HypocrisyEngine:
                             "date": finding["date_2"],
                             "contradiction_type": finding["contradiction_type"],
                             "severity_score": finding["severity_score"],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         contradictions.append(contradiction)
 
             self.logger.info(f"Found {len(contradictions)} potential contradictions")
@@ -209,7 +218,8 @@ class HypocrisyEngine:
             if self.db_manager:
                 findings = self.db_manager.search_findings(
                     subject_name=claim.author, verification_status="verified", limit=10
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 for finding in findings:
                     if finding.get("evidence_links"):
@@ -232,7 +242,8 @@ class HypocrisyEngine:
         claim: ResearchClaim,
         contradictions: List[Dict],
         evidence_sources: List[str],
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate confidence score for validation"""
         try:
             base_confidence = 0.5
@@ -261,7 +272,8 @@ class HypocrisyEngine:
                 + author_bonus
                 + recency_bonus
                 - contradiction_penalty
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Clamp to valid range
             return max(0.0, min(1.0, confidence))
@@ -276,7 +288,8 @@ class HypocrisyEngine:
         contradictions: List[Dict],
         evidence_sources: List[str],
         confidence_score: float,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate human - readable validation notes"""
         notes = []
 
@@ -287,7 +300,8 @@ class HypocrisyEngine:
             for i, contradiction in enumerate(contradictions[:3], 1):
                 notes.append(
                     f"  {i}. Contradictory statement from {contradiction.get('source', 'unknown source')}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 notes.append(f"     Similarity: {contradiction.get('similarity_score', 0):.2f}")
         else:
             notes.append("No direct contradictions found in database.")
@@ -368,9 +382,12 @@ class HypocrisyEngine:
                         "VBN",
                         "VBP",
                         "VBZ",
-                    ]
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
             terms2 = set(
                 [
                     word.lower()
@@ -387,9 +404,12 @@ class HypocrisyEngine:
                         "VBN",
                         "VBP",
                         "VBZ",
-                    ]
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
             if not terms1 or not terms2:
                 return 0.0
@@ -424,13 +444,15 @@ class HypocrisyEngine:
             for finding in existing_findings:
                 similarity_score = self._calculate_semantic_similarity(
                     new_statement, finding["statement_1"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # If statements are similar but context suggests contradiction
                 if similarity_score > 0.3:  # Some similarity but potentially contradictory
                     contradiction_score = self._analyze_contradiction(
                         new_statement, finding["statement_1"]
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if contradiction_score > 0.6:  # Significant contradiction
                         # Create new hypocrisy finding
@@ -445,7 +467,8 @@ class HypocrisyEngine:
                                 datetime.fromisoformat(finding["date_1"])
                                 if finding.get("date_1")
                                 else None
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             date_2=datetime.now(),
                             source_1=finding.get("source_1"),
                             source_2=source,
@@ -458,7 +481,8 @@ class HypocrisyEngine:
                             analysis_notes=f"Auto - detected contradiction with similarity {similarity_score:.2f}",
                             public_impact_score=5,  # Default medium impact
                             created_by="hypocrisy_engine",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         # Store the finding
                         finding_id = self.db_manager.store_finding(hypocrisy_finding)
@@ -485,7 +509,8 @@ class HypocrisyEngine:
                     "nothing",
                     "neither",
                     "nor",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 words1 = statement1.lower().split()
                 words2 = statement2.lower().split()
@@ -518,14 +543,16 @@ class HypocrisyEngine:
                 ("approve", "disapprove"),
                 ("favor", "against"),
                 ("for", "against"),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             contradiction_score = polarity_diff * 0.5
 
             for term1, term2 in contradiction_indicators:
                 if (term1 in statement1.lower() and term2 in statement2.lower()) or (
                     term2 in statement1.lower() and term1 in statement2.lower()
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     contradiction_score += 0.3
 
             return min(1.0, contradiction_score)
@@ -545,7 +572,8 @@ class HypocrisyEngine:
 
             opportunities = self.db_manager.get_content_opportunities(
                 limit=limit, min_confidence=min_confidence
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Enhance opportunities with additional analysis
             enhanced_opportunities = []
@@ -613,21 +641,21 @@ class HypocrisyEngine:
             subject_name = opportunity.get("subject_name", "Unknown")
 
             if contradiction_type == "temporal":
-                angles.append(f"How {subject_name}'s Position Changed Over Time")
-                angles.append(f"The Evolution of {subject_name}'s Stance")
+                angles.append(f"How {subject_name}'s Position Changed Over Time")'
+                angles.append(f"The Evolution of {subject_name}'s Stance")'
             elif contradiction_type == "contextual":
                 angles.append(f"{subject_name} Says Different Things to Different Audiences")
-                angles.append(f"Context Matters: {subject_name}'s Contradictory Messages")
+                angles.append(f"Context Matters: {subject_name}'s Contradictory Messages")'
             elif contradiction_type == "policy_shift":
-                angles.append(f"{subject_name}'s Policy Flip - Flop Exposed")
-                angles.append(f"Before and After: {subject_name}'s Policy Reversal")
+                angles.append(f"{subject_name}'s Policy Flip - Flop Exposed")'
+                angles.append(f"Before and After: {subject_name}'s Policy Reversal")'
             else:
-                angles.append(f"{subject_name}'s Contradictory Statements Revealed")
-                angles.append(f"Fact - Check: {subject_name}'s Inconsistent Claims")
+                angles.append(f"{subject_name}'s Contradictory Statements Revealed")'
+                angles.append(f"Fact - Check: {subject_name}'s Inconsistent Claims")'
 
             # Add general angles
-            angles.append(f"Breaking Down {subject_name}'s Contradictions")
-            angles.append(f"What {subject_name} Doesn't Want You to Remember")
+            angles.append(f"Breaking Down {subject_name}'s Contradictions")'
+            angles.append(f"What {subject_name} Doesn't Want You to Remember")'
 
             return angles[:5]  # Return top 5 angles
 
@@ -652,13 +680,15 @@ class HypocrisyEngine:
                 "time_gap_threshold_days": self.time_gap_threshold_days,
                 "nlp_available": TextBlob is not None,
                 "database_available": self.db_manager is not None,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return {
                 "database_stats": db_stats,
                 "engine_config": engine_stats,
                 "last_updated": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error getting engine statistics: {e}")
@@ -682,7 +712,9 @@ class HypocrisyEngine:
                         evidence_sources=[],
                         validation_notes=f"Validation error: {str(e)}",
                         fact_check_status="error",
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return results

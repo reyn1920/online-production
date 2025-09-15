@@ -26,7 +26,9 @@ def create_basic_humanoid(name="Avatar", location=(0, 0, 0)):
     # Create body (torso)
     bpy.ops.mesh.primitive_cube_add(
         size = 1, location=(location[0], location[1], location[2] + 1)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     body = bpy.context.active_object
     body.name = f"{name}_Body"
     body.scale = (0.8, 0.4, 1.2)
@@ -34,21 +36,27 @@ def create_basic_humanoid(name="Avatar", location=(0, 0, 0)):
     # Create head
     bpy.ops.mesh.primitive_uv_sphere_add(
         radius = 0.35, location=(location[0], location[1], location[2] + 2.2)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     head = bpy.context.active_object
     head.name = f"{name}_Head"
 
     # Create arms
     bpy.ops.mesh.primitive_cube_add(
         size = 0.3, location=(location[0] + 1, location[1], location[2] + 1.5)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     arm_right = bpy.context.active_object
     arm_right.name = f"{name}_Arm_Right"
     arm_right.scale = (1, 0.5, 2)
 
     bpy.ops.mesh.primitive_cube_add(
         size = 0.3, location=(location[0] - 1, location[1], location[2] + 1.5)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     arm_left = bpy.context.active_object
     arm_left.name = f"{name}_Arm_Left"
     arm_left.scale = (1, 0.5, 2)
@@ -56,14 +64,18 @@ def create_basic_humanoid(name="Avatar", location=(0, 0, 0)):
     # Create legs
     bpy.ops.mesh.primitive_cube_add(
         size = 0.4, location=(location[0] + 0.3, location[1], location[2] - 0.5)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     leg_right = bpy.context.active_object
     leg_right.name = f"{name}_Leg_Right"
     leg_right.scale = (0.8, 0.8, 2)
 
     bpy.ops.mesh.primitive_cube_add(
         size = 0.4, location=(location[0] - 0.3, location[1], location[2] - 0.5)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     leg_left = bpy.context.active_object
     leg_left.name = f"{name}_Leg_Left"
     leg_left.scale = (0.8, 0.8, 2)
@@ -258,7 +270,8 @@ def create_avatar_from_config(config_dict, output_path):
             "avatar_parts": [part.name for part in avatar_parts],
             "armature": armature.name,
             "output_path": output_path,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 if __name__ == "__main__":
     # Example usage
@@ -267,7 +280,8 @@ if __name__ == "__main__":
             "gender": "female",
             "skin_color": [0.9, 0.8, 0.7, 1.0],
             "lighting": "studio",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     output_file = "/tmp/test_avatar.blend"
     result = create_avatar_from_config(config, output_file)

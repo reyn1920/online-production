@@ -21,24 +21,28 @@ def init_alignment_model(model_name, half=False, device="cuda", model_rootpath=N
         model = FAN(num_modules=4, num_landmarks=98, device=device)
         model_url = (
             "https://github.com/xinntao/facexlib/releases/download/v0.1.0/alignment_WFLW_4HG.pth"
-        )
+# BRACKET_SURGEON: disabled
+#         )
     elif model_name == "awing_fan_68":
         model = FAN(num_modules=4, num_landmarks=68, device=device)
         model_url = (
             "https://github.com/xinntao/facexlib/releases/download/v0.1.0/alignment_AFLW_4HG.pth"
-        )
+# BRACKET_SURGEON: disabled
+#         )
     elif model_name == "fan_2d":
         model = FAN(num_modules=2, num_landmarks=68, device=device)
         model_url = (
             "https://github.com/xinntao/facexlib/releases/download/v0.1.0/alignment_AFLW_2HG.pth"
-        )
+# BRACKET_SURGEON: disabled
+#         )
     else:
         # Default to awing_fan if model not recognized
         print(f"Warning: {model_name} not recognized, defaulting to awing_fan")
         model = FAN(num_modules=4, num_landmarks=98, device=device)
         model_url = (
             "https://github.com/xinntao/facexlib/releases/download/v0.1.0/alignment_WFLW_4HG.pth"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     model_path = load_file_from_url(
         url=model_url,
@@ -46,7 +50,8 @@ def init_alignment_model(model_name, half=False, device="cuda", model_rootpath=N
         progress=True,
         file_name=None,
         save_dir=model_rootpath,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     model.load_state_dict(torch.load(model_path, map_location=device)["state_dict"], strict=True)
     model.eval()
     model = model.to(device)
@@ -65,7 +70,8 @@ class KeypointExtractor:
         self.detector = init_alignment_model("awing_fan", device=device, model_rootpath=root_path)
         self.det_net = init_detection_model(
             "retinaface_resnet50", half=False, device=device, model_rootpath=root_path
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def extract_keypoint(self, images, name=None, info=True):
         if isinstance(images, list):
@@ -99,7 +105,8 @@ class KeypointExtractor:
                             int(bboxes[1]) : int(bboxes[3]),
                             int(bboxes[0]) : int(bboxes[2]),
                             :,
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
 
                         keypoints = landmark_98_to_68(self.detector.get_landmarks(img))  # [0]
 
@@ -163,7 +170,8 @@ if __name__ == "__main__":
     VIDEO_EXTENSIONS_LOWERCASE = {"mp4"}
     VIDEO_EXTENSIONS = VIDEO_EXTENSIONS_LOWERCASE.union(
         {f.upper() for f in VIDEO_EXTENSIONS_LOWERCASE}
-    )
+# BRACKET_SURGEON: disabled
+#     )
     extensions = VIDEO_EXTENSIONS
 
     for ext in extensions:

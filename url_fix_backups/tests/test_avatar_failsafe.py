@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 Avatar Engine Failsafe Test Script
 
 This script tests the bulletproof failsafe mechanism for avatar generation,
 demonstrating automatic failover from Linly - Talker to Talking Heads.
-"""
+""""""
 
 import asyncio
 import json
@@ -35,7 +35,9 @@ class AvatarFailsafeTest:
             text="Hello! This is a test of the primary avatar engine.",
                 voice_settings={"voice_type": "professional", "speed": 1.0},
                 video_settings={"resolution": "1080p", "fps": 30},
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.test_results.append(
             {
@@ -44,8 +46,11 @@ class AvatarFailsafeTest:
                     "api_used": result.api_used.api_name if result.api_used else None,
                     "attempts": result.total_attempts,
                     "response_time": result.total_time_ms / 1000.0,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if result.status.value == "success":
             print(f"✅ SUCCESS: Avatar generated using {result.api_used.api_name}")
@@ -56,9 +61,12 @@ class AvatarFailsafeTest:
                 orch_info = result.response_data["_orchestration"]
                 print(f"   Engine Priority: {orch_info.get('priority', 'unknown')}")
                 print(
-                    f"   Failover Triggered: {orch_info.get('failover_triggered',
-    False)}"
-                )
+                    f"   Failover Triggered: {orch_info.get('failover_triggered',"
+# BRACKET_SURGEON: disabled
+#     False)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         else:
             print(f"❌ FAILED: {result.error_message}")
 
@@ -77,27 +85,33 @@ class AvatarFailsafeTest:
         with sqlite3.connect(self.orchestrator.db_path) as conn:
             # Set Linly - Talker to inactive to simulate failure
             conn.execute(
-                """
+                """"""
                 UPDATE api_registry
                 SET status = 'inactive'
                 WHERE api_name = 'linly - talker - enhanced'
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         result = await self.orchestrator.request_avatar_generation(
             text="This should use the fallback engine due to primary failure.",
                 voice_settings={"voice_type": "default", "speed": 1.1},
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Restore primary engine status
         with sqlite3.connect(self.orchestrator.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 UPDATE api_registry
                 SET status = 'active'
                 WHERE api_name = 'linly - talker - enhanced'
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.test_results.append(
             {
@@ -106,28 +120,38 @@ class AvatarFailsafeTest:
                     "api_used": result.api_used.api_name if result.api_used else None,
                     "attempts": result.total_attempts,
                     "response_time": result.total_time_ms / 1000.0,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if result.status.value == "success":
             print(
                 f"✅ FAILOVER SUCCESS: Used fallback engine {result.api_used.api_name}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(f"   Response Time: {result.total_time_ms / 1000.0:.2f}s")
             print(f"   Attempts Made: {result.total_attempts}")
 
             if result.response_data and "_orchestration" in result.response_data:
                 orch_info = result.response_data["_orchestration"]
                 print(
-                    f"   Failover Triggered: {orch_info.get('failover_triggered',
-    False)}"
-                )
+                    f"   Failover Triggered: {orch_info.get('failover_triggered',"
+# BRACKET_SURGEON: disabled
+#     False)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if result.api_used.api_name == "talking - heads - fallback":
                     print("   ✅ Correctly used secondary engine")
                 else:
                     print(
                         f"   ⚠️  Expected talking - heads - fallback, got {result.api_used.api_name}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             print(f"❌ FAILOVER FAILED: {result.error_message}")
 
@@ -135,7 +159,9 @@ class AvatarFailsafeTest:
             result.status.value == "success"
             and result.api_used
             and result.api_used.api_name == "talking - heads - fallback"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     async def test_capability_query(self):
@@ -149,9 +175,11 @@ class AvatarFailsafeTest:
         print(f"Found {len(apis)} avatar generation engines:")
         for i, api in enumerate(apis, 1):
             print(
-                f"   {i}. {api.api_name} (Priority: {api.priority},
-    Status: {api.status})"
-            )
+                f"   {i}. {api.api_name} (Priority: {api.priority},"
+    Status: {api.status})""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Verify we have both engines registered
         api_names = [api.api_name for api in apis]
@@ -165,8 +193,11 @@ class AvatarFailsafeTest:
                     "engines_found": len(apis),
                     "has_primary": has_primary,
                     "has_fallback": has_fallback,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if has_primary and has_fallback:
             print("✅ Both engines properly registered")
@@ -206,7 +237,9 @@ class AvatarFailsafeTest:
             primary_priority is not None
             and fallback_priority is not None
             and primary_priority < fallback_priority
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.test_results.append(
             {
@@ -214,18 +247,25 @@ class AvatarFailsafeTest:
                     "success": priority_correct,
                     "primary_priority": primary_priority,
                     "fallback_priority": fallback_priority,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if priority_correct:
             print(
                 f"✅ Priority ordering correct: Primary({primary_priority}) < Fallback({fallback_priority})"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return True
         else:
             print(
                 f"❌ Priority ordering incorrect: Primary({primary_priority}) vs Fallback({fallback_priority})"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return False
 
 
@@ -272,7 +312,9 @@ async def main():
             tester.test_priority_ordering,
             tester.test_normal_operation,
             tester.test_primary_engine_failure,
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
     for test_func in test_functions:
         try:
@@ -281,7 +323,9 @@ async def main():
             print(f"❌ Test failed with exception: {e}")
             tester.test_results.append(
                 {"test": test_func.__name__, "success": False, "error": str(e)}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Print final summary
     tester.print_test_summary()

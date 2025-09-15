@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI YouTube Analytics Automation System
 
 Comprehensive analytics system that provides:
@@ -23,7 +23,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import base64
@@ -232,10 +232,10 @@ class CompetitorAnalysis:
 
 
 class YouTubeAnalyticsAutomation:
-    """
+    """"""
     Advanced YouTube analytics automation system with AI - powered insights,
         real - time monitoring, and automated optimization recommendations.
-    """
+    """"""
 
 
     def __init__(self, config_path: str = "config / analytics_config.json"):
@@ -288,38 +288,45 @@ class YouTubeAnalyticsAutomation:
                     "track_audience_metrics": True,
                     "track_revenue_metrics": True,
                     "historical_days": 90,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "insights": {
                 "generate_insights": True,
                     "insight_frequency_hours": 6,
                     "min_confidence_threshold": 0.7,
                     "max_insights_per_run": 10,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "alerts": {
                 "enabled": True,
                     "performance_drop_threshold": 0.3,  # 30% drop
                 "viral_threshold_multiplier": 5.0,  # 5x average views
                 "subscriber_milestone_intervals": [1000, 10000, 100000, 1000000],
                     "revenue_threshold_drop": 0.25,  # 25% revenue drop
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 "competitors": {
                 "track_competitors": True,
                     "competitor_channels": [],
                     "analysis_frequency_hours": 24,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "reporting": {
                 "generate_reports": True,
                     "report_frequency": "daily",
                     "email_reports": False,
                     "dashboard_updates": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "optimization": {
                 "auto_optimize": True,
                     "optimization_frequency_hours": 12,
                     "learning_enabled": True,
                     "a_b_testing": True,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _init_database(self):
@@ -329,7 +336,7 @@ class YouTubeAnalyticsAutomation:
         with sqlite3.connect(self.db_path) as conn:
             # Video metrics table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS video_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         video_id TEXT,
@@ -358,13 +365,17 @@ class YouTubeAnalyticsAutomation:
                         card_clicks INTEGER,
                         playlist_additions INTEGER,
                         recorded_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Channel metrics table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS channel_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         channel_id TEXT,
@@ -384,13 +395,17 @@ class YouTubeAnalyticsAutomation:
                         device_breakdown TEXT,
                         geography_breakdown TEXT,
                         recorded_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Analytics insights table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS analytics_insights (
                     id TEXT PRIMARY KEY,
                         insight_type TEXT,
@@ -405,13 +420,17 @@ class YouTubeAnalyticsAutomation:
                         priority TEXT,
                         created_at TIMESTAMP,
                         expires_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Performance alerts table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS performance_alerts (
                     id TEXT PRIMARY KEY,
                         alert_type TEXT,
@@ -427,13 +446,17 @@ class YouTubeAnalyticsAutomation:
                         created_at TIMESTAMP,
                         acknowledged BOOLEAN,
                         resolved BOOLEAN
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Competitor analysis table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS competitor_analysis (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         competitor_channel_id TEXT,
@@ -449,13 +472,17 @@ class YouTubeAnalyticsAutomation:
                         opportunities TEXT,
                         threats TEXT,
                         analyzed_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Performance trends table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS performance_trends (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         metric_type TEXT,
@@ -464,9 +491,13 @@ class YouTubeAnalyticsAutomation:
                         change_percentage REAL,
                         trend_direction TEXT,
                         recorded_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.commit()
 
@@ -508,12 +539,16 @@ class YouTubeAnalyticsAutomation:
                     # Get video analytics from YouTube API
                     analytics_data = await self.youtube_integration.get_video_analytics(
                         video_id
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     if analytics_data:
                         metrics = self._process_video_analytics(
                             video_id, analytics_data
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         video_metrics.append(metrics)
 
                         # Store in database
@@ -522,7 +557,9 @@ class YouTubeAnalyticsAutomation:
                 except Exception as e:
                     self.logger.error(
                         f"Error collecting metrics for video {video_id}: {e}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     continue
 
             self.logger.info(f"Collected metrics for {len(video_metrics)} videos")
@@ -535,7 +572,8 @@ class YouTubeAnalyticsAutomation:
 
     def _process_video_analytics(
         self, video_id: str, analytics_data: Dict[str, Any]
-    ) -> VideoMetrics:
+# BRACKET_SURGEON: disabled
+#     ) -> VideoMetrics:
         """Process raw analytics data into structured metrics."""
         try:
             # Extract metrics from analytics data
@@ -544,7 +582,8 @@ class YouTubeAnalyticsAutomation:
                     title = analytics_data.get("title", ""),
                     published_at = datetime.fromisoformat(
                     analytics_data.get("published_at", datetime.now().isoformat())
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     views = analytics_data.get("views", 0),
                     watch_time_minutes = analytics_data.get("watch_time_minutes", 0.0),
                     likes = analytics_data.get("likes", 0),
@@ -554,7 +593,8 @@ class YouTubeAnalyticsAutomation:
                     subscribers_gained = analytics_data.get("subscribers_gained", 0),
                     click_through_rate = analytics_data.get("click_through_rate", 0.0),
                     average_view_duration = analytics_data.get("average_view_duration",
-    0.0),
+# BRACKET_SURGEON: disabled
+#     0.0),
                     audience_retention = analytics_data.get("audience_retention", {}),
                     impressions = analytics_data.get("impressions", 0),
                     impression_ctr = analytics_data.get("impression_ctr", 0.0),
@@ -564,13 +604,16 @@ class YouTubeAnalyticsAutomation:
                     demographics = analytics_data.get("demographics", {}),
                     engagement_rate = self._calculate_engagement_rate(analytics_data),
                     thumbnail_impressions = analytics_data.get("thumbnail_impressions",
-    0),
+# BRACKET_SURGEON: disabled
+#     0),
                     thumbnail_ctr = analytics_data.get("thumbnail_ctr", 0.0),
                     end_screen_clicks = analytics_data.get("end_screen_clicks", 0),
                     card_clicks = analytics_data.get("card_clicks", 0),
                     playlist_additions = analytics_data.get("playlist_additions", 0),
                     recorded_at = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return metrics
 
@@ -607,7 +650,9 @@ class YouTubeAnalyticsAutomation:
         try:
             self.logger.info(
                 f"Collecting channel metrics for {len(channel_ids)} channels"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             channel_metrics = []
 
@@ -616,12 +661,16 @@ class YouTubeAnalyticsAutomation:
                     # Get channel analytics from YouTube API
                     analytics_data = (
                         await self.youtube_integration.get_channel_analytics(channel_id)
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     if analytics_data:
                         metrics = self._process_channel_analytics(
                             channel_id, analytics_data
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         channel_metrics.append(metrics)
 
                         # Store in database
@@ -630,7 +679,9 @@ class YouTubeAnalyticsAutomation:
                 except Exception as e:
                     self.logger.error(
                         f"Error collecting metrics for channel {channel_id}: {e}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     continue
 
             return channel_metrics
@@ -642,7 +693,8 @@ class YouTubeAnalyticsAutomation:
 
     def _process_channel_analytics(
         self, channel_id: str, analytics_data: Dict[str, Any]
-    ) -> ChannelMetrics:
+# BRACKET_SURGEON: disabled
+#     ) -> ChannelMetrics:
         """Process raw channel analytics data into structured metrics."""
         try:
             metrics = ChannelMetrics(
@@ -652,28 +704,35 @@ class YouTubeAnalyticsAutomation:
                     total_views = analytics_data.get("total_views", 0),
                     total_watch_time_minutes = analytics_data.get(
                     "total_watch_time_minutes", 0.0
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     total_videos = analytics_data.get("total_videos", 0),
                     subscriber_growth_rate = analytics_data.get(
                     "subscriber_growth_rate", 0.0
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     average_views_per_video = analytics_data.get(
                     "average_views_per_video", 0.0
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     average_engagement_rate = analytics_data.get(
                     "average_engagement_rate", 0.0
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     total_revenue = analytics_data.get("total_revenue", 0.0),
                     estimated_monthly_revenue = analytics_data.get(
                     "estimated_monthly_revenue", 0.0
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     top_performing_videos = analytics_data.get("top_performing_videos", []),
                     audience_demographics = analytics_data.get("audience_demographics", {}),
                     traffic_sources = analytics_data.get("traffic_sources", {}),
                     device_breakdown = analytics_data.get("device_breakdown", {}),
                     geography_breakdown = analytics_data.get("geography_breakdown", {}),
                     recorded_at = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return metrics
 
@@ -699,13 +758,19 @@ class YouTubeAnalyticsAutomation:
                 # Generate different types of insights
                 content_insights = await self._generate_content_insights(
                     channel_id, performance_data
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 audience_insights = await self._generate_audience_insights(
                     channel_id, performance_data
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 optimization_insights = await self._generate_optimization_insights(
                     channel_id, performance_data
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 insights.extend(content_insights)
                 insights.extend(audience_insights)
@@ -715,13 +780,17 @@ class YouTubeAnalyticsAutomation:
             min_confidence = self.config["insights"]["min_confidence_threshold"]
             filtered_insights = [
                 i for i in insights if i.confidence_level >= min_confidence
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             # Limit number of insights
             max_insights = self.config["insights"]["max_insights_per_run"]
             filtered_insights = sorted(
                 filtered_insights, key = lambda x: x.impact_score, reverse = True
-            )[:max_insights]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )[:max_insights]
 
             # Store insights
             for insight in filtered_insights:
@@ -751,7 +820,9 @@ class YouTubeAnalyticsAutomation:
             # Find top performing content characteristics
             top_videos = sorted(video_metrics,
     key = lambda x: x.views,
-    reverse = True)[:5]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     reverse = True)[:5]
             bottom_videos = sorted(video_metrics, key = lambda x: x.views)[:5]
 
             # Analyze title patterns
@@ -851,30 +922,37 @@ class YouTubeAnalyticsAutomation:
                     id = f"title_length_{int(time.time())}",
                         insight_type = InsightType.TITLE_OPTIMIZATION,
                         title="Title Length Optimization",
-                        description = f"Top performing videos have titles averaging {optimal_length} characters,
-    while lower performing videos average {int(bottom_avg_length)} characters.",
+                        description = f"Top performing videos have titles averaging {optimal_length} characters,"
+    while lower performing videos average {int(bottom_avg_length)} characters.","
                         impact_score = 75.0,
                         confidence_level = 0.8,
                         recommendations=[
                         f"Optimize video titles to approximately {optimal_length} characters",
                             "Focus on clear, descriptive titles that capture viewer interest",
                             "A / B test different title lengths for your content type",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         supporting_data={
                         "top_avg_length": top_avg_length,
                             "bottom_avg_length": bottom_avg_length,
                             "sample_top_titles": top_titles[:3],
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         actionable_items=[
                         "Review upcoming video titles",
                             "Adjust title length to optimal range",
                             "Monitor performance of optimized titles",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         expected_improvement="10 - 25% increase in click - through rate",
                         priority="high",
                         created_at = datetime.now(),
                         expires_at = datetime.now() + timedelta(days = 30),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         except Exception as e:
             self.logger.error(f"Error analyzing title patterns: {e}")
@@ -923,7 +1001,8 @@ class YouTubeAnalyticsAutomation:
                         "medium": "3 - 8 minutes",
                         "long": "8 - 15 minutes",
                         "very_long": "15+ minutes",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 return AnalyticsInsight(
                     id = f"video_length_{int(time.time())}",
@@ -936,22 +1015,29 @@ class YouTubeAnalyticsAutomation:
                         f"Focus on creating videos in the {duration_ranges[best_category]} range",
                             "Analyze top performing videos in this duration for content patterns",
                             "Test different content structures within optimal duration",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         supporting_data={
                         "duration_performance": dict(avg_performance),
                             "best_category": best_category,
                             "optimal_range": duration_ranges[best_category],
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         actionable_items=[
                         "Plan upcoming videos within optimal duration",
                             "Edit existing long - form content into optimal segments",
                             "Create content templates for optimal duration",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         expected_improvement="15 - 30% increase in engagement rate",
                         priority="high",
                         created_at = datetime.now(),
                         expires_at = datetime.now() + timedelta(days = 45),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         except Exception as e:
             self.logger.error(f"Error analyzing video length performance: {e}")
@@ -1005,7 +1091,9 @@ class YouTubeAnalyticsAutomation:
             recent_metrics = await self._get_recent_video_metrics(channel_id, days = 7)
             historical_metrics = await self._get_recent_video_metrics(
                 channel_id, days = 30
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if len(recent_metrics) < 3 or len(historical_metrics) < 10:
                 return alerts
@@ -1014,14 +1102,17 @@ class YouTubeAnalyticsAutomation:
             recent_avg_views = statistics.mean([m.views for m in recent_metrics])
             historical_avg_views = statistics.mean(
                 [m.views for m in historical_metrics]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Check for significant drop
             drop_threshold = self.config["alerts"]["performance_drop_threshold"]
             if recent_avg_views < historical_avg_views * (1 - drop_threshold):
                 drop_percentage = (
                     (historical_avg_views - recent_avg_views) / historical_avg_views
-                ) * 100
+# BRACKET_SURGEON: disabled
+#                 ) * 100
 
                 alert = PerformanceAlert(
                     id = f"perf_drop_{channel_id}_{int(time.time())}",
@@ -1039,11 +1130,15 @@ class YouTubeAnalyticsAutomation:
                             "Analyze audience feedback and comments",
                             "Check for algorithm changes or external factors",
                             "Consider adjusting content strategy",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         created_at = datetime.now(),
                         acknowledged = False,
                         resolved = False,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 alerts.append(alert)
 
@@ -1074,7 +1169,9 @@ class YouTubeAnalyticsAutomation:
             # Collect metrics
             video_metrics = await self._get_video_metrics_by_date_range(
                 channel_id, start_date, end_date
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             channel_metrics = await self._get_latest_channel_metrics(channel_id)
 
             # Calculate summary statistics
@@ -1099,9 +1196,11 @@ class YouTubeAnalyticsAutomation:
                     "alerts": [asdict(alert) for alert in alerts],
                     "recommendations": self._generate_report_recommendations(
                     video_metrics, insights, alerts
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "generated_at": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             return report
 
@@ -1122,12 +1221,16 @@ class YouTubeAnalyticsAutomation:
             total_watch_time = sum(vm.watch_time_minutes for vm in video_metrics)
             total_engagement = sum(
                 vm.likes + vm.comments + vm.shares for vm in video_metrics
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             avg_views = statistics.mean([vm.views for vm in video_metrics])
             avg_engagement_rate = statistics.mean(
                 [vm.engagement_rate for vm in video_metrics]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             avg_ctr = statistics.mean([vm.click_through_rate for vm in video_metrics])
 
             return {
@@ -1140,11 +1243,14 @@ class YouTubeAnalyticsAutomation:
                     "average_click_through_rate": avg_ctr,
                     "top_performing_video": max(
                     video_metrics, key = lambda x: x.views
-                ).video_id,
+# BRACKET_SURGEON: disabled
+#                 ).video_id,
                     "most_engaging_video": max(
                     video_metrics, key = lambda x: x.engagement_rate
-                ).video_id,
-                    }
+# BRACKET_SURGEON: disabled
+#                 ).video_id,
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Error calculating summary statistics: {e}")
@@ -1158,7 +1264,7 @@ class YouTubeAnalyticsAutomation:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO video_metrics
                     (video_id,
     title,
@@ -1170,9 +1276,11 @@ class YouTubeAnalyticsAutomation:
                         comments, shares, subscribers_gained, click_through_rate, average_view_duration,
                          audience_retention, impressions, impression_ctr, revenue, rpm, traffic_sources,
                          demographics, engagement_rate, thumbnail_impressions, thumbnail_ctr,
-                         end_screen_clicks, card_clicks, playlist_additions, recorded_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          end_screen_clicks, card_clicks, playlist_additions, recorded_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         metrics.video_id,
                             metrics.title,
@@ -1200,8 +1308,11 @@ class YouTubeAnalyticsAutomation:
                             metrics.card_clicks,
                             metrics.playlist_additions,
                             metrics.recorded_at.isoformat(),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing video metrics: {e}")
@@ -1240,25 +1351,31 @@ class YouTubeAnalyticsAutomation:
 
                 cursor = conn.execute(
                     "SELECT COUNT(*) FROM analytics_insights WHERE expires_at > datetime('now')"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 active_insights = cursor.fetchone()[0]
 
                 cursor = conn.execute(
                     "SELECT COUNT(*) FROM performance_alerts WHERE resolved = 0"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 active_alerts = cursor.fetchone()[0]
 
                 return {
                     "status": "active",
                         "last_update": (
                         self.last_update.isoformat() if self.last_update else None
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "video_metrics_count": video_count,
                         "channel_metrics_count": channel_count,
                         "active_insights": active_insights,
                         "active_alerts": active_alerts,
                         "config": self.config,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
         except Exception as e:
             self.logger.error(f"Error getting analytics status: {e}")
             return {"error": str(e)}
@@ -1326,7 +1443,8 @@ class YouTubeAnalyticsAutomation:
             if insight.priority == "high":
                 recommendations.extend(
                     insight.recommendations[:2]
-                )  # Top 2 recommendations
+# BRACKET_SURGEON: disabled
+#                 )  # Top 2 recommendations
 
         for alert in alerts:
             if alert.severity in ["critical", "warning"]:
@@ -1350,7 +1468,9 @@ if __name__ == "__main__":
     parser.add_argument("--collect", type = str, help="Collect metrics for channel ID")
     parser.add_argument("--insights",
     type = str,
-    help="Generate insights for channel ID")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     help="Generate insights for channel ID")
     parser.add_argument("--report", type = str, help="Generate report for channel ID")
     parser.add_argument("--monitor", type = str, help="Monitor alerts for channel ID")
     parser.add_argument("--status", action="store_true", help="Get system status")
@@ -1389,6 +1509,8 @@ if __name__ == "__main__":
 
     else:
         print(
-            "Use --collect, --insights, --report, --monitor, \
-    or --status with channel ID"
-        )
+            "Use --collect, --insights, --report, --monitor, \"
+#     or --status with channel ID"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )

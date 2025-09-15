@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Twitter Promotion Agent
 
 Automatically promotes new YouTube videos on Twitter with intelligent content generation,
@@ -15,7 +15,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -41,7 +41,8 @@ from backend.integrations.twitter_integration import (
     TweetData,
     TweetType,
     TwitterIntegration,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from backend.secret_store import SecretStore
 
@@ -114,10 +115,10 @@ class HashtagAnalysis:
 
 
 class TwitterPromotionAgent:
-    """
+    """"""
     Intelligent Twitter promotion agent that automatically creates and posts
     promotional tweets for new YouTube videos with AI - powered optimization.
-    """
+    """"""
 
     def __init__(self, db_path: str = "data / promotion_campaigns.sqlite"):
         self.logger = setup_logger("twitter_promotion")
@@ -133,7 +134,8 @@ class TwitterPromotionAgent:
             "max_concurrent_requests": 3,
             "cache_enabled": True,
             "cache_ttl": 3600,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.ollama = OllamaIntegration(ollama_config)
         self.secret_store = SecretStore()
 
@@ -148,9 +150,9 @@ class TwitterPromotionAgent:
         self.logger.info("Twitter Promotion Agent initialized")
 
     def _init_database(self) -> None:
-        """
+        """"""
         Initialize the promotion campaigns database.
-        """
+        """"""
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
 
         conn = sqlite3.connect(self.db_path)
@@ -158,7 +160,7 @@ class TwitterPromotionAgent:
 
         # Promotion campaigns table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS promotion_campaigns (
                 campaign_id TEXT PRIMARY KEY,
                     video_id TEXT NOT NULL,
@@ -175,13 +177,15 @@ class TwitterPromotionAgent:
                     engagement_metrics TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Hashtag performance tracking
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS hashtag_performance (
                 hashtag TEXT PRIMARY KEY,
                     usage_count INTEGER DEFAULT 0,
@@ -190,13 +194,15 @@ class TwitterPromotionAgent:
                     last_used TIMESTAMP,
                     trend_score REAL DEFAULT 0.0,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Video promotion history
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS video_promotions (
                 video_id TEXT PRIMARY KEY,
                     first_promoted TIMESTAMP,
@@ -204,9 +210,11 @@ class TwitterPromotionAgent:
                     best_performing_tweet TEXT,
                     total_engagement INTEGER DEFAULT 0,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -217,8 +225,9 @@ class TwitterPromotionAgent:
         self,
         video_metadata: VideoMetadata,
         strategy: PromotionStrategy = PromotionStrategy.IMMEDIATE,
-    ) -> str:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> str:
+        """"""
         Create a new promotion campaign for a YouTube video.
 
         Args:
@@ -227,7 +236,7 @@ class TwitterPromotionAgent:
 
         Returns:
             str: Campaign ID
-        """
+        """"""
         try:
             campaign_id = f"promo_{video_metadata.video_id}_{int(time.time())}"
 
@@ -254,14 +263,16 @@ class TwitterPromotionAgent:
                 engagement_metrics={},
                 created_at=datetime.now(),
                 updated_at=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Save to database
             self._save_campaign(campaign)
 
             self.logger.info(
                 f"Created promotion campaign {campaign_id} for video {video_metadata.video_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return campaign_id
 
         except Exception as e:
@@ -269,7 +280,7 @@ class TwitterPromotionAgent:
             raise
 
     def _generate_tweet_content(self, video_metadata: VideoMetadata) -> str:
-        """
+        """"""
         Generate optimized tweet content using AI.
 
         Args:
@@ -277,10 +288,10 @@ class TwitterPromotionAgent:
 
         Returns:
             str: Generated tweet content
-        """
+        """"""
         try:
             # Create prompt for AI content generation
-            prompt = f"""
+            prompt = f""""""
             Create an engaging Twitter post for this YouTube video:
 
             Title: {video_metadata.title}
@@ -297,12 +308,13 @@ class TwitterPromotionAgent:
             - Don't include hashtags (they'll be added separately)
 
             Generate only the tweet text, nothing else.
-            """
+            """"""
 
             # Generate content using Ollama
             response = self.ollama.generate_response(
                 prompt=prompt, model="llama3.2:3b", max_tokens=100, temperature=0.7
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Clean and validate content
             tweet_content = response.strip()
@@ -320,7 +332,7 @@ class TwitterPromotionAgent:
             return f"New video: {video_metadata.title[:100]} {video_metadata.url}"
 
     def _select_optimal_hashtags(self, video_metadata: VideoMetadata) -> List[str]:
-        """
+        """"""
         Select optimal hashtags based on video content and performance data.
 
         Args:
@@ -328,7 +340,7 @@ class TwitterPromotionAgent:
 
         Returns:
             List[str]: Selected hashtags
-        """
+        """"""
         try:
             # Get hashtag candidates from video tags and AI analysis
             candidates = set()
@@ -353,26 +365,28 @@ class TwitterPromotionAgent:
                     analysis = self._analyze_hashtag_performance(hashtag)
                     hashtag_scores.append(
                         (hashtag, analysis.relevance_score + analysis.trend_score)
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Sort by score and select top hashtags
             hashtag_scores.sort(key=lambda x: x[1], reverse=True)
             selected_hashtags = [
-                f"#{hashtag}" for hashtag, _ in hashtag_scores[: self.max_hashtags]
-            ]
+                f"#{hashtag}" for hashtag, _ in hashtag_scores[: self.max_hashtags]"
+# BRACKET_SURGEON: disabled
+#             ]
 
             # Ensure we have at least some basic hashtags
             if not selected_hashtags:
-                selected_hashtags = ["#YouTube", "#NewVideo"]
+                selected_hashtags = ["#YouTube", "#NewVideo"]"
 
             return selected_hashtags
 
         except Exception as e:
             self.logger.error(f"Failed to select hashtags: {e}")
-            return ["#YouTube", "#NewVideo"]
+            return ["#YouTube", "#NewVideo"]"
 
     def _generate_ai_hashtags(self, video_metadata: VideoMetadata) -> List[str]:
-        """
+        """"""
         Generate relevant hashtags using AI analysis.
 
         Args:
@@ -380,9 +394,9 @@ class TwitterPromotionAgent:
 
         Returns:
             List[str]: AI - generated hashtags
-        """
+        """"""
         try:
-            prompt = f"""
+            prompt = f""""""
             Generate 5 relevant hashtags for this YouTube video:
 
             Title: {video_metadata.title}
@@ -393,20 +407,21 @@ class TwitterPromotionAgent:
             - Hashtags should be relevant and popular
             - No spaces or special characters
             - 3 - 15 characters each
-            - Don't include # symbol
+            - Don't include # symbol'
             - One hashtag per line
 
             Generate only the hashtag words, nothing else.
-            """
+            """"""
 
             response = self.ollama.generate_response(
                 prompt=prompt, model="llama3.2:3b", max_tokens=50, temperature=0.5
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Parse hashtags from response
             hashtags = []
             for line in response.strip().split("\\n"):
-                hashtag = line.strip().lower().replace("#", "").replace(" ", "")
+                hashtag = line.strip().lower().replace("#", "").replace(" ", "")"
                 if hashtag and len(hashtag) >= 3 and len(hashtag) <= 15:
                     hashtags.append(hashtag)
 
@@ -417,7 +432,7 @@ class TwitterPromotionAgent:
             return []
 
     def _get_category_hashtags(self, category: str) -> List[str]:
-        """
+        """"""
         Get relevant hashtags based on video category.
 
         Args:
@@ -425,7 +440,7 @@ class TwitterPromotionAgent:
 
         Returns:
             List[str]: Category - specific hashtags
-        """
+        """"""
         category_map = {
             "Education": ["education", "learning", "tutorial", "howto"],
             "Entertainment": ["entertainment", "fun", "viral", "trending"],
@@ -435,12 +450,13 @@ class TwitterPromotionAgent:
             "Sports": ["sports", "fitness", "athlete", "training"],
             "News": ["news", "breaking", "update", "current"],
             "Comedy": ["comedy", "funny", "humor", "laugh"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return category_map.get(category, ["content", "video"])
 
     def _analyze_hashtag_performance(self, hashtag: str) -> HashtagAnalysis:
-        """
+        """"""
         Analyze hashtag performance based on historical data.
 
         Args:
@@ -448,7 +464,7 @@ class TwitterPromotionAgent:
 
         Returns:
             HashtagAnalysis: Performance analysis
-        """
+        """"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -483,7 +499,8 @@ class TwitterPromotionAgent:
                 engagement_rate=avg_engagement_rate,
                 relevance_score=relevance_score,
                 recommended=recommended,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Failed to analyze hashtag {hashtag}: {e}")
@@ -494,10 +511,11 @@ class TwitterPromotionAgent:
                 engagement_rate=0.5,
                 relevance_score=0.3,
                 recommended=False,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _calculate_optimal_posting_time(self, strategy: PromotionStrategy) -> Optional[datetime]:
-        """
+        """"""
         Calculate optimal posting time based on strategy.
 
         Args:
@@ -505,7 +523,7 @@ class TwitterPromotionAgent:
 
         Returns:
             Optional[datetime]: Scheduled posting time
-        """
+        """"""
         now = datetime.now()
 
         if strategy == PromotionStrategy.IMMEDIATE:
@@ -524,7 +542,8 @@ class TwitterPromotionAgent:
                 target_hour = self.optimal_posting_hours[0]
                 scheduled_time = (now + timedelta(days=1)).replace(
                     hour=target_hour, minute=0, second=0, microsecond=0
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             return scheduled_time
 
@@ -536,24 +555,24 @@ class TwitterPromotionAgent:
             return None
 
     def _save_campaign(self, campaign: PromotionCampaign) -> None:
-        """
+        """"""
         Save promotion campaign to database.
 
         Args:
             campaign (PromotionCampaign): Campaign to save
-        """
+        """"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO promotion_campaigns (
                     campaign_id, video_id, video_title, video_url, thumbnail_url,
                         strategy, status, tweet_content, hashtags, scheduled_time,
                         posted_time, tweet_id, engagement_metrics, updated_at
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     campaign.campaign_id,
                     campaign.video_metadata.video_id,
@@ -569,8 +588,10 @@ class TwitterPromotionAgent:
                     campaign.tweet_id,
                     json.dumps(campaign.engagement_metrics),
                     datetime.now(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
             conn.close()
@@ -580,7 +601,7 @@ class TwitterPromotionAgent:
             raise
 
     def execute_promotion(self, campaign_id: str) -> bool:
-        """
+        """"""
         Execute a promotion campaign by posting the tweet.
 
         Args:
@@ -588,7 +609,7 @@ class TwitterPromotionAgent:
 
         Returns:
             bool: True if successful
-        """
+        """"""
         try:
             # Load campaign
             campaign = self._load_campaign(campaign_id)
@@ -613,7 +634,8 @@ class TwitterPromotionAgent:
                 text=full_text,
                 tweet_type=TweetType.PROMOTION,
                 hashtags=None,  # Already included in text
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Post tweet
             result = self.twitter.post_tweet(tweet_data)
@@ -647,7 +669,7 @@ class TwitterPromotionAgent:
             return False
 
     def _load_campaign(self, campaign_id: str) -> Optional[PromotionCampaign]:
-        """
+        """"""
         Load campaign from database.
 
         Args:
@@ -655,7 +677,7 @@ class TwitterPromotionAgent:
 
         Returns:
             Optional[PromotionCampaign]: Loaded campaign or None
-        """
+        """"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -663,7 +685,8 @@ class TwitterPromotionAgent:
             cursor.execute(
                 "SELECT * FROM promotion_campaigns WHERE campaign_id = ?",
                 (campaign_id,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             result = cursor.fetchone()
             conn.close()
 
@@ -681,7 +704,8 @@ class TwitterPromotionAgent:
                 upload_time=datetime.now(),  # Approximate
                 tags=[],  # Not stored separately
                 category="",  # Not stored separately
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             campaign = PromotionCampaign(
                 campaign_id=result[0],
@@ -696,7 +720,8 @@ class TwitterPromotionAgent:
                 engagement_metrics=json.loads(result[12]) if result[12] else {},
                 created_at=datetime.fromisoformat(result[13]),
                 updated_at=datetime.fromisoformat(result[14]),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return campaign
 
@@ -705,32 +730,35 @@ class TwitterPromotionAgent:
             return None
 
     def _update_hashtag_usage(self, hashtags: List[str]) -> None:
-        """
+        """"""
         Update hashtag usage statistics.
 
         Args:
             hashtags (List[str]): Used hashtags
-        """
+        """"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
             for hashtag in hashtags:
-                clean_hashtag = hashtag.lstrip("#").lower()
+                clean_hashtag = hashtag.lstrip("#").lower()"
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO hashtag_performance (
                         hashtag, usage_count, last_used, updated_at
                     ) VALUES (
                         ?,
                             COALESCE((SELECT usage_count FROM hashtag_performance WHERE hashtag = ?),
-    0) + 1,
+# BRACKET_SURGEON: disabled
+#     0) + 1,
                             ?, ?
-                    )
-                """,
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
                     (clean_hashtag, clean_hashtag, datetime.now(), datetime.now()),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             conn.commit()
             conn.close()
@@ -739,12 +767,12 @@ class TwitterPromotionAgent:
             self.logger.error(f"Failed to update hashtag usage: {e}")
 
     def process_pending_campaigns(self) -> int:
-        """
+        """"""
         Process all pending and scheduled campaigns.
 
         Returns:
             int: Number of campaigns processed
-        """
+        """"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -752,14 +780,15 @@ class TwitterPromotionAgent:
             # Get campaigns ready for posting
             now = datetime.now()
             cursor.execute(
-                """
+                """"""
                 SELECT campaign_id FROM promotion_campaigns
                 WHERE status IN ('pending', 'scheduled')
                 AND (scheduled_time IS NULL OR scheduled_time <= ?)
                 ORDER BY created_at ASC
-            """,
+            ""","""
                 (now,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             campaign_ids = [row[0] for row in cursor.fetchall()]
             conn.close()
@@ -781,7 +810,7 @@ class TwitterPromotionAgent:
             return 0
 
     def get_campaign_analytics(self, days: int = 30) -> Dict[str, Any]:
-        """
+        """"""
         Get analytics for promotion campaigns.
 
         Args:
@@ -789,7 +818,7 @@ class TwitterPromotionAgent:
 
         Returns:
             Dict[str, Any]: Analytics data
-        """
+        """"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -798,33 +827,36 @@ class TwitterPromotionAgent:
 
             # Get campaign statistics
             cursor.execute(
-                """
+                """"""
                 SELECT
                     COUNT(*) as total_campaigns,
                         SUM(CASE WHEN status = 'posted' THEN 1 ELSE 0 END) as successful_posts,
                         SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as failed_posts,
                         AVG(CASE WHEN status = 'posted' THEN
                         (julianday(posted_time) - julianday(created_at)) * 24
-                        ELSE NULL END) as avg_posting_delay_hours
+# BRACKET_SURGEON: disabled
+#                         ELSE NULL END) as avg_posting_delay_hours
                 FROM promotion_campaigns
                 WHERE created_at >= ?
-            """,
+            ""","""
                 (cutoff_date,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             stats = cursor.fetchone()
 
             # Get top performing hashtags
             cursor.execute(
-                """
+                """"""
                 SELECT hashtag, usage_count, avg_engagement_rate
                 FROM hashtag_performance
                 WHERE updated_at >= ?
                 ORDER BY avg_engagement_rate DESC
                 LIMIT 10
-            """,
+            ""","""
                 (cutoff_date,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             top_hashtags = cursor.fetchall()
 
@@ -842,10 +874,13 @@ class TwitterPromotionAgent:
                         "hashtag": row[0],
                         "usage_count": row[1],
                         "engagement_rate": row[2],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     for row in top_hashtags
-                ],
-            }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Failed to get campaign analytics: {e}")
@@ -868,7 +903,8 @@ if __name__ == "__main__":
         upload_time=datetime.now(),
         tags=["AI", "MachineLearning", "Tutorial", "Programming"],
         category="Education",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Create and execute promotion
     try:

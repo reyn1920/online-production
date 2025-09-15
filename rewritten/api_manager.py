@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Manager - Central CLI for API Discovery and Management
 
 This script provides a unified interface for managing APIs, discovering new ones,
 and maintaining the API management table.
-"""
+""""""
 
 import argparse
 import json
@@ -58,7 +58,9 @@ class APIManager:
             "payment",
             "storage",
             "auth",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
     def _setup_logging(self) -> logging.Logger:
         """Setup logging configuration."""
@@ -68,8 +70,12 @@ class APIManager:
             handlers=[
                 logging.FileHandler("api_manager.log"),
                 logging.StreamHandler(sys.stdout),
-            ],
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return logging.getLogger(__name__)
 
     def discover_channel_apis(
@@ -81,20 +87,25 @@ class APIManager:
                 return {
                     "success": False,
                     "error": f'Unsupported channel: {channel}. Supported: {", ".join(self.supported_channels)}',
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             self.logger.info(f"🔍 Discovering APIs for channel: {channel}")
 
             # Run discovery and integration
             result = self.integration_service.add_channel_and_discover(
                 channel, budget_limit
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if result.get("success"):
                 self.logger.info(
-                    f"✅ Successfully discovered {result.get('apis_integrated',
-    0)} APIs for {channel}"
-                )
+                    f"✅ Successfully discovered {result.get('apis_integrated',"
+    0)} APIs for {channel}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Update the management table
                 self.integration_service._update_management_table_file()
@@ -104,7 +115,9 @@ class APIManager:
             else:
                 self.logger.error(
                     f"❌ Discovery failed for {channel}: {result.get('error')}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return result
 
@@ -132,7 +145,9 @@ class APIManager:
                     if "cost_analysis" in result:
                         total_cost += result["cost_analysis"].get(
                             "total_monthly_cost", 0
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Small delay between channels
 
@@ -148,11 +163,14 @@ class APIManager:
                 "estimated_monthly_cost": total_cost,
                 "results_by_channel": results,
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.logger.info(
                 f"\\n🎉 Discovery complete! Found {total_apis} APIs across {len(self.supported_channels)} channels"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.logger.info(f"💰 Estimated monthly cost: ${total_cost:.2f}")
 
             return summary
@@ -194,7 +212,8 @@ class APIManager:
                 "channel": channel,
                 "results": results,
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error searching APIs: {e}")
@@ -227,9 +246,11 @@ class APIManager:
                     "within_budget"
                     if stats.get("total_monthly_cost", 0) <= 25.0
                     else "over_budget"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "recommendations": self._get_cost_recommendations(stats),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return cost_info
 
@@ -248,19 +269,25 @@ class APIManager:
             recommendations.append("⚠️ Monthly cost exceeds $25 budget limit")
             recommendations.append(
                 "💡 Consider switching to free/freemium alternatives"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if paid_apis > 0:
             recommendations.append(
                 f"💰 You have {paid_apis} paid APIs - review if all are necessary"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if total_cost == 0:
             recommendations.append("🎉 All APIs are free! Great cost optimization")
 
         recommendations.append(
             "📊 Regularly monitor API usage to avoid unexpected charges"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         recommendations.append("🔄 Review and optimize API usage monthly")
 
         return recommendations
@@ -272,7 +299,9 @@ class APIManager:
 
         print(
             f"\\n📊 Discovery Summary for {result.get('channel', 'Unknown').upper()}:"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(f"   • APIs Discovered: {result.get('apis_discovered', 0)}")
         print(f"   • APIs Integrated: {result.get('apis_integrated', 0)}")
 
@@ -285,10 +314,14 @@ class APIManager:
             for api in result["integrated_apis"][:3]:  # Show top 3
                 status_emoji = {"free": "🟢", "freemium": "🟡", "paid": "🔴"}.get(
                     api["status"], "⚪"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 print(
                     f"     {status_emoji} {api['name']} ({api['provider']}) - Score: {api['quality_score']:.2f}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     def interactive_mode(self):
         """Run in interactive mode for easy API management."""
@@ -325,7 +358,9 @@ class APIManager:
                     if result.get("success"):
                         print(
                             "✅ Discovery complete! Check api_management_table.md for results"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     else:
                         print(f"❌ Error: {result.get('error')}")
 
@@ -335,7 +370,9 @@ class APIManager:
                     if result.get("success"):
                         print(
                             f"🔍 Search results for '{query}': {len(result.get('results', []))} found"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     else:
                         print(f"❌ Error: {result.get('error')}")
 
@@ -345,25 +382,40 @@ class APIManager:
                         print("\\n📊 System Statistics:")
                         print(f"   • Total APIs: {stats.get('total_apis', 0)}")
                         print(
-                            f"   • Free APIs: {stats.get('by_status', {}).get('free',
-    0)}"
-                        )
+                            f"   • Free APIs: {stats.get('by_status', {}).get('free',"
+# BRACKET_SURGEON: disabled
+#     0)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         print(
-                            f"   • Freemium APIs: {stats.get('by_status', {}).get('freemium',
-    0)}"
-                        )
+                            f"   • Freemium APIs: {stats.get('by_status', {}).get('freemium',"
+# BRACKET_SURGEON: disabled
+#     0)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         print(
-                            f"   • Paid APIs: {stats.get('by_status', {}).get('paid',
-    0)}"
-                        )
+                            f"   • Paid APIs: {stats.get('by_status', {}).get('paid',"
+# BRACKET_SURGEON: disabled
+#     0)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         print(
-                            f"   • Monthly Cost: ${stats.get('total_monthly_cost',
-    0):.2f}"
-                        )
+                            f"   • Monthly Cost: ${stats.get('total_monthly_cost',"
+# BRACKET_SURGEON: disabled
+#     0):.2f}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         print(
-                            f"   • Auto - discovered: {stats.get('auto_discovered_count',
-    0)}"
-                        )
+                            f"   • Auto - discovered: {stats.get('auto_discovered_count',"
+# BRACKET_SURGEON: disabled
+#     0)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     else:
                         print(f"❌ Error: {stats.get('error')}")
 
@@ -372,12 +424,17 @@ class APIManager:
                     if "error" not in costs:
                         print("\\n💰 Cost Analysis:")
                         print(
-                            f"   • Monthly Cost: ${costs.get('total_monthly_cost',
-    0):.2f}"
-                        )
+                            f"   • Monthly Cost: ${costs.get('total_monthly_cost',"
+# BRACKET_SURGEON: disabled
+#     0):.2f}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         print(
                             f"   • Budget Status: {costs.get('budget_status', 'unknown').replace('_', ' ').title()}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         print(f"   • Free APIs: {costs.get('free_apis', 0)}")
                         print(f"   • Freemium APIs: {costs.get('freemium_apis', 0)}")
                         print(f"   • Paid APIs: {costs.get('paid_apis', 0)}")
@@ -416,15 +473,17 @@ def main():
     parser = argparse.ArgumentParser(
         description="API Manager - Discover and manage APIs for marketing channels",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+        epilog=""""""
 Examples:
   python api_manager.py discover youtube
   python api_manager.py discover - all
   python api_manager.py search "email marketing APIs"
   python api_manager.py stats
   python api_manager.py interactive
-        """,
-    )
+        ""","""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     parser.add_argument(
         "command",
@@ -438,24 +497,34 @@ Examples:
             "update",
             "channels",
             "interactive",
-        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ],
         help="Command to execute",
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     parser.add_argument(
         "target",
         nargs="?",
         help="Target for the command (e.g., channel name, search query)",
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--budget",
         type=float,
         default=25.0,
         help="Budget limit for API costs (default: $25)",
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--output", choices=["json", "text"], default="text", help="Output format"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 
     args = parser.parse_args()
@@ -503,7 +572,8 @@ Examples:
             result = {
                 "supported_channels": manager.supported_channels,
                 "count": len(manager.supported_channels),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Output result
         if result:

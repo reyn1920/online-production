@@ -15,7 +15,8 @@ class MRTE(nn.Module):
         kernel_size=5,
         n_heads=4,
         ge_layer=2,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(MRTE, self).__init__()
         self.cross_attention = MultiHeadAttention(hidden_size, hidden_size, n_heads)
         self.c_pre = nn.Conv1d(content_enc_channels, hidden_size, 1)
@@ -35,14 +36,16 @@ class MRTE(nn.Module):
                     self.cross_attention(ssl_enc * ssl_mask, text_enc * text_mask, attn_mask)
                     + ssl_enc
                     + ge
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif test == 1:
                 x = ssl_enc + ge
             elif test == 2:
                 x = (
                     self.cross_attention(ssl_enc * 0 * ssl_mask, text_enc * text_mask, attn_mask)
                     + ge
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 raise ValueError("test should be 0,1,2")
         else:
@@ -50,7 +53,8 @@ class MRTE(nn.Module):
                 self.cross_attention(ssl_enc * ssl_mask, text_enc * text_mask, attn_mask)
                 + ssl_enc
                 + ge
-            )
+# BRACKET_SURGEON: disabled
+#             )
         x = self.c_post(x * ssl_mask)
         return x
 
@@ -62,7 +66,8 @@ class SpeakerEncoder(torch.nn.Module):
         model_num_layers=2,
         model_hidden_size=256,
         model_embedding_size=256,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(SpeakerEncoder, self).__init__()
         self.lstm = nn.LSTM(mel_n_channels, model_hidden_size, model_num_layers, batch_first=True)
         self.linear = nn.Linear(model_hidden_size, model_embedding_size)
@@ -84,7 +89,8 @@ class MELEncoder(nn.Module):
         kernel_size,
         dilation_rate,
         n_layers,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -126,7 +132,8 @@ class WN(torch.nn.Module):
                 kernel_size,
                 dilation=dilation,
                 padding=padding,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             in_layer = weight_norm(in_layer)
             self.in_layers.append(in_layer)
 

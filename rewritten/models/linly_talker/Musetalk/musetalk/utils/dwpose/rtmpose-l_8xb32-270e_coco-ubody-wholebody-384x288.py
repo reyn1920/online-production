@@ -16,7 +16,8 @@ optim_wrapper = dict(
     type="OptimWrapper",
     optimizer=dict(type="AdamW", lr=base_lr, weight_decay=0.05),
     paramwise_cfg=dict(norm_decay_mult=0, bias_decay_mult=0, bypass_duplicate=True),
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # learning rate
 param_scheduler = [
@@ -30,8 +31,10 @@ param_scheduler = [
         T_max=max_epochs // 2,
         by_epoch=True,
         convert_to_iter_based=True,
-    ),
-]
+# BRACKET_SURGEON: disabled
+#     ),
+# BRACKET_SURGEON: disabled
+# ]
 
 # automatically scaling LR based on the actual training batch size
 auto_scale_lr = dict(base_batch_size=512)
@@ -44,7 +47,8 @@ codec = dict(
     simcc_split_ratio=2.0,
     normalize=False,
     use_dark=False,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # model settings
 model = dict(
@@ -54,7 +58,8 @@ model = dict(
         mean=[123.675, 116.28, 103.53],
         std=[58.395, 57.12, 57.375],
         bgr_to_rgb=True,
-    ),
+# BRACKET_SURGEON: disabled
+#     ),
     backbone=dict(
         _scope_="mmdet",
         type="CSPNeXt",
@@ -71,8 +76,10 @@ model = dict(
             prefix="backbone.",
             checkpoint="https://download.openmmlab.com/mmpose/v1/projects/"
             "rtmpose/cspnext - l_udp - aic - coco_210e - 256x192 - 273b7631_20230130.pth",  # noqa: E501
-        ),
-    ),
+# BRACKET_SURGEON: disabled
+#         ),
+# BRACKET_SURGEON: disabled
+#     ),
     head=dict(
         type="RTMCCHead",
         in_channels=1024,
@@ -90,14 +97,18 @@ model = dict(
             act_fn="SiLU",
             use_rel_bias=False,
             pos_enc=False,
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         loss=dict(type="KLDiscretLoss", use_target_weight=True, beta=10.0, label_softmax=True),
         decoder=codec,
-    ),
+# BRACKET_SURGEON: disabled
+#     ),
     test_cfg=dict(
         flip_test=True,
-    ),
-)
+# BRACKET_SURGEON: disabled
+#     ),
+# BRACKET_SURGEON: disabled
+# )
 
 # base dataset settings
 dataset_type = "UBody2dDataset"
@@ -122,7 +133,8 @@ scenes = [
     "Movie",
     "LiveVlog",
     "VideoConference",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 train_datasets = [
     dict(
@@ -132,8 +144,10 @@ train_datasets = [
         ann_file="annotations/coco_wholebody_train_v1.0.json",
         data_prefix=dict(img="train2017/"),
         pipeline=[],
-    )
-]
+# BRACKET_SURGEON: disabled
+#     )
+# BRACKET_SURGEON: disabled
+# ]
 
 for scene in scenes:
     train_dataset = dict(
@@ -144,7 +158,8 @@ for scene in scenes:
         data_prefix=dict(img="images/"),
         pipeline=[],
         sample_interval=10,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     train_datasets.append(train_dataset)
 
 # pipelines
@@ -170,18 +185,23 @@ train_pipeline = [
                 min_height=0.2,
                 min_width=0.2,
                 p=1.0,
-            ),
-        ],
-    ),
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     ),
     dict(type="GenerateTarget", encoder=codec),
     dict(type="PackPoseInputs"),
-]
+# BRACKET_SURGEON: disabled
+# ]
 val_pipeline = [
     dict(type="LoadImage", backend_args=backend_args),
     dict(type="GetBBoxCenterScale"),
     dict(type="TopdownAffine", input_size=codec["input_size"]),
     dict(type="PackPoseInputs"),
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 train_pipeline_stage2 = [
     dict(type="LoadImage", backend_args=backend_args),
@@ -193,7 +213,8 @@ train_pipeline_stage2 = [
         shift_factor=0.0,
         scale_factor=[0.5, 1.5],
         rotate_factor=90,
-    ),
+# BRACKET_SURGEON: disabled
+#     ),
     dict(type="TopdownAffine", input_size=codec["input_size"]),
     dict(type="mmdet.YOLOXHSVRandomAug"),
     dict(
@@ -210,12 +231,16 @@ train_pipeline_stage2 = [
                 min_height=0.2,
                 min_width=0.2,
                 p=0.5,
-            ),
-        ],
-    ),
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     ),
     dict(type="GenerateTarget", encoder=codec),
     dict(type="PackPoseInputs"),
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 # data loaders
 train_dataloader = dict(
@@ -229,8 +254,10 @@ train_dataloader = dict(
         datasets=train_datasets,
         pipeline=train_pipeline,
         test_mode=False,
-    ),
-)
+# BRACKET_SURGEON: disabled
+#     ),
+# BRACKET_SURGEON: disabled
+# )
 
 val_dataloader = dict(
     batch_size=val_batch_size,
@@ -248,14 +275,17 @@ val_dataloader = dict(
         data_prefix=dict(img="coco/val2017/"),
         test_mode=True,
         pipeline=val_pipeline,
-    ),
-)
+# BRACKET_SURGEON: disabled
+#     ),
+# BRACKET_SURGEON: disabled
+# )
 test_dataloader = val_dataloader
 
 # hooks
 default_hooks = dict(
     checkpoint=dict(save_best="coco - wholebody/AP", rule="greater", max_keep_ckpts=1)
-)
+# BRACKET_SURGEON: disabled
+# )
 
 custom_hooks = [
     dict(
@@ -264,17 +294,21 @@ custom_hooks = [
         momentum=0.0002,
         update_buffers=True,
         priority=49,
-    ),
+# BRACKET_SURGEON: disabled
+#     ),
     dict(
         type="mmdet.PipelineSwitchHook",
         switch_epoch=max_epochs - stage2_num_epochs,
         switch_pipeline=train_pipeline_stage2,
-    ),
-]
+# BRACKET_SURGEON: disabled
+#     ),
+# BRACKET_SURGEON: disabled
+# ]
 
 # evaluators
 val_evaluator = dict(
     type="CocoWholeBodyMetric",
     ann_file="data/coco/annotations/coco_wholebody_val_v1.0.json",
-)
+# BRACKET_SURGEON: disabled
+# )
 test_evaluator = val_evaluator

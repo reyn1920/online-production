@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Hollywood - Level Creative Pipeline
 
 Autonomous content creation system that produces professional - grade videos,
@@ -20,7 +20,7 @@ Follows TRAE.AI System Constitution:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import os
@@ -134,11 +134,11 @@ class ProductionJob:
 
 
 class HollywoodCreativePipeline:
-    """
+    """"""
     Hollywood - level creative pipeline that produces professional - grade content
     using AI - powered tools and workflows. Integrates multiple services to
     create complete video productions from concept to publication.
-    """
+    """"""
 
     def __init__(self, db_path: str = "data/creative_pipeline.sqlite"):
         self.logger = setup_logger("hollywood_creative_pipeline")
@@ -161,7 +161,8 @@ class HollywoodCreativePipeline:
             QualityLevel.STANDARD: 0.75,
             QualityLevel.PREMIUM: 0.85,
             QualityLevel.HOLLYWOOD: 0.95,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Asset storage
         self.assets_dir = Path("data/assets")
@@ -181,7 +182,7 @@ class HollywoodCreativePipeline:
 
         # Production jobs table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS production_jobs (
                 job_id TEXT PRIMARY KEY,
                     title TEXT NOT NULL,
@@ -196,13 +197,15 @@ class HollywoodCreativePipeline:
                     completed_at TIMESTAMP,
                     brief_json TEXT,
                     metadata_json TEXT
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Content assets table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS content_assets (
                 asset_id TEXT PRIMARY KEY,
                     job_id TEXT NOT NULL,
@@ -216,13 +219,15 @@ class HollywoodCreativePipeline:
                     format TEXT,
                     metadata_json TEXT,
                     FOREIGN KEY (job_id) REFERENCES production_jobs (job_id)
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Quality metrics table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS quality_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     job_id TEXT NOT NULL,
@@ -233,13 +238,15 @@ class HollywoodCreativePipeline:
                     passed BOOLEAN,
                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (job_id) REFERENCES production_jobs (job_id)
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Production analytics
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS production_analytics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     date DATE NOT NULL,
@@ -250,9 +257,11 @@ class HollywoodCreativePipeline:
                     total_production_time_minutes INTEGER DEFAULT 0,
                     revenue_generated REAL DEFAULT 0.0,
                     cost_per_asset REAL DEFAULT 0.0
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -275,7 +284,8 @@ class HollywoodCreativePipeline:
             status="started",
             error_log=[],
             quality_checks={},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.active_jobs[job_id] = job
         self._save_job_to_db(job)
@@ -315,7 +325,8 @@ class HollywoodCreativePipeline:
             (ProductionStage.VIDEO_EDITING, self._stage_video_editing),
             (ProductionStage.THUMBNAIL_CREATION, self._stage_thumbnail_creation),
             (ProductionStage.SEO_OPTIMIZATION, self._stage_seo_optimization),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         total_stages = len(pipeline_stages)
 
@@ -354,7 +365,8 @@ class HollywoodCreativePipeline:
             f"Analyze target audience preferences for {brief.target_audience}",
             f"Find relevant statistics and data about {brief.topic}",
             f"Identify key pain points and solutions for {brief.topic}",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         research_data = {}
 
@@ -384,7 +396,8 @@ class HollywoodCreativePipeline:
             resolution=None,
             format="json",
             tags=["research", brief.topic],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self._save_asset_to_db(asset, job.job_id)
         return [asset]
@@ -401,7 +414,7 @@ class HollywoodCreativePipeline:
                 research_data = json.load(f)
 
         # Generate script prompt
-        script_prompt = f"""
+        script_prompt = f""""""
         Create a professional {brief.content_type.value} script for:
 
         Title: {brief.title}
@@ -428,7 +441,7 @@ class HollywoodCreativePipeline:
         NARRATOR: Dialogue
         [VISUAL CUE] - What to show on screen
         [B - ROLL] - Supplementary footage suggestions
-        """
+        """"""
 
         # Generate script using OpenAI
         script_content = self._call_openai(script_prompt, max_tokens=2000)
@@ -449,7 +462,8 @@ class HollywoodCreativePipeline:
                 "stage": "scripting",
                 "word_count": len(script_content.split()),
                 "estimated_duration": brief.duration_minutes,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             quality_score=quality_score,
             creation_time=datetime.now(),
             file_size_bytes=script_file.stat().st_size,
@@ -457,7 +471,8 @@ class HollywoodCreativePipeline:
             resolution=None,
             format="txt",
             tags=["script", brief.topic, brief.tone],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self._save_asset_to_db(asset, job.job_id)
         return [asset]
@@ -495,7 +510,8 @@ class HollywoodCreativePipeline:
                 "stage": "voiceover",
                 "text_length": len(narrator_text),
                 "voice_model": "elevenlabs" if audio_file.exists() else "local_tts",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             quality_score=0.85,  # Voiceover quality
             creation_time=datetime.now(),
             file_size_bytes=audio_file.stat().st_size if audio_file.exists() else 0,
@@ -503,7 +519,8 @@ class HollywoodCreativePipeline:
             resolution=None,
             format="mp3",
             tags=["voiceover", "audio", job.brief.tone],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self._save_asset_to_db(asset, job.job_id)
         return [asset]
@@ -543,7 +560,8 @@ class HollywoodCreativePipeline:
                             resolution="1920x1080",
                             format="png",
                             tags=["graphic", "visual", brief.topic],
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         assets.append(asset)
                         self._save_asset_to_db(asset, job.job_id)
@@ -579,7 +597,8 @@ class HollywoodCreativePipeline:
                 "includes_voiceover": True,
                 "includes_graphics": True,
                 "quality_level": job.brief.quality_level.value,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             quality_score=0.9,
             creation_time=datetime.now(),
             file_size_bytes=video_file.stat().st_size if video_file.exists() else 0,
@@ -587,7 +606,8 @@ class HollywoodCreativePipeline:
             resolution="1920x1080",
             format="mp4",
             tags=["final_video", job.brief.topic, job.brief.quality_level.value],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self._save_asset_to_db(asset, job.job_id)
         return [asset]
@@ -603,7 +623,7 @@ class HollywoodCreativePipeline:
             thumbnail_file = self.assets_dir / f"{job.job_id}_thumbnail_{i + 1}.png"
 
             # Generate thumbnail prompt
-            thumbnail_prompt = f"""
+            thumbnail_prompt = f""""""
             Create an eye - catching YouTube thumbnail for:
             Title: {brief.title}
             Topic: {brief.topic}
@@ -611,7 +631,7 @@ class HollywoodCreativePipeline:
             Target Audience: {brief.target_audience}
 
             Variation {i + 1}: Focus on {'emotion' if i == 0 else 'text overlay' if i == 1 else 'visual impact'}
-            """
+            """"""
 
             try:
                 # Generate thumbnail using Canva API or local generation
@@ -626,7 +646,8 @@ class HollywoodCreativePipeline:
                             "stage": "thumbnail_creation",
                             "variation": i + 1,
                             "style_focus": ["emotion", "text_overlay", "visual_impact"][i],
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         quality_score=0.85,
                         creation_time=datetime.now(),
                         file_size_bytes=thumbnail_file.stat().st_size,
@@ -634,7 +655,8 @@ class HollywoodCreativePipeline:
                         resolution="1280x720",
                         format="png",
                         tags=["thumbnail", brief.topic, f"variation_{i + 1}"],
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     thumbnails.append(asset)
                     self._save_asset_to_db(asset, job.job_id)
@@ -649,7 +671,7 @@ class HollywoodCreativePipeline:
         brief = job.brief
 
         # Generate SEO - optimized metadata
-        seo_prompt = f"""
+        seo_prompt = f""""""
         Generate SEO - optimized metadata for a YouTube video:
 
         Title: {brief.title}
@@ -665,7 +687,7 @@ class HollywoodCreativePipeline:
         5. End screen suggestions
 
         Format as JSON with keys: titles, description, tags, thumbnail_text, end_screen
-        """
+        """"""
 
         seo_content = self._call_openai(seo_prompt, max_tokens=1000)
 
@@ -691,7 +713,8 @@ class HollywoodCreativePipeline:
             metadata={
                 "stage": "seo_optimization",
                 "keywords_count": len(brief.keywords),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             quality_score=0.8,
             creation_time=datetime.now(),
             file_size_bytes=seo_file.stat().st_size,
@@ -699,7 +722,8 @@ class HollywoodCreativePipeline:
             resolution=None,
             format="json",
             tags=["seo", "metadata", "optimization"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self._save_asset_to_db(asset, job.job_id)
         return [asset]
@@ -736,10 +760,12 @@ class HollywoodCreativePipeline:
                         "-acodec",
                         "mp3",
                         output_file,
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     check=True,
                     capture_output=True,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Remove temporary AIFF file
                 os.remove(output_file.replace(".mp3", ".aiff"))
@@ -813,10 +839,12 @@ class HollywoodCreativePipeline:
                     "-t",
                     str(duration_minutes * 60),
                     output_file,
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 check=True,
                 capture_output=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except (subprocess.CalledProcessError, FileNotFoundError):
             # If ffmpeg not available, create empty file
@@ -881,11 +909,13 @@ class HollywoodCreativePipeline:
                     "-of",
                     "csv = p = 0",
                     audio_file,
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return int(float(result.stdout.strip()))
 
@@ -919,12 +949,13 @@ class HollywoodCreativePipeline:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT OR REPLACE INTO production_jobs
             (job_id, title, topic, content_type, quality_level, current_stage,
-                progress_percentage, status, brief_json, metadata_json)
+# BRACKET_SURGEON: disabled
+#                 progress_percentage, status, brief_json, metadata_json)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
             (
                 job.job_id,
                 job.brief.title,
@@ -941,10 +972,14 @@ class HollywoodCreativePipeline:
                         "assigned_agents": job.assigned_agents,
                         "error_log": job.error_log,
                         "quality_checks": job.quality_checks,
-                    }
-                ),
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -955,12 +990,12 @@ class HollywoodCreativePipeline:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             UPDATE production_jobs
             SET current_stage = ?, progress_percentage = ?, status = ?,
                 updated_at = CURRENT_TIMESTAMP, metadata_json = ?
             WHERE job_id = ?
-            """,
+            ""","""
             (
                 job.current_stage.value,
                 job.progress_percentage,
@@ -971,11 +1006,15 @@ class HollywoodCreativePipeline:
                         "assigned_agents": job.assigned_agents,
                         "error_log": job.error_log,
                         "quality_checks": job.quality_checks,
-                    }
-                ),
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 ),
                 job.job_id,
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -986,12 +1025,13 @@ class HollywoodCreativePipeline:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT OR REPLACE INTO content_assets
             (asset_id, job_id, content_type, file_path, quality_score,
-                file_size_bytes, duration_seconds, resolution, format, metadata_json)
+# BRACKET_SURGEON: disabled
+#                 file_size_bytes, duration_seconds, resolution, format, metadata_json)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
             (
                 asset.asset_id,
                 job_id,
@@ -1003,8 +1043,10 @@ class HollywoodCreativePipeline:
                 asset.resolution,
                 asset.format,
                 json.dumps(asset.metadata),
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -1023,7 +1065,8 @@ class HollywoodCreativePipeline:
                 "estimated_completion": job.estimated_completion.isoformat(),
                 "quality_checks": job.quality_checks,
                 "error_log": job.error_log,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Check database for completed jobs
         conn = sqlite3.connect(self.db_path)
@@ -1043,7 +1086,8 @@ class HollywoodCreativePipeline:
                 "progress_percentage": row[6],
                 "created_at": row[8],
                 "updated_at": row[9],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return None
 
@@ -1062,12 +1106,13 @@ class HollywoodCreativePipeline:
 
         # Get recent activity
         cursor.execute(
-            """
+            """"""
             SELECT status, COUNT(*) FROM production_jobs
             WHERE created_at >= datetime('now', '-7 days')
             GROUP BY status
-            """
-        )
+            """"""
+# BRACKET_SURGEON: disabled
+#         )
         recent_activity = dict(cursor.fetchall())
 
         conn.close()
@@ -1080,7 +1125,8 @@ class HollywoodCreativePipeline:
             "recent_activity": recent_activity,
             "active_jobs": len(self.active_jobs),
             "completed_jobs": len(self.completed_jobs),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Global pipeline instance
@@ -1115,7 +1161,8 @@ if __name__ == "__main__":
         deadline=datetime.now() + timedelta(hours=4),
         budget=100.0,
         special_requirements=["Include captions", "Mobile - optimized"],
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     try:
         # Create content

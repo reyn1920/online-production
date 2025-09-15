@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Live Deployment Script
 Deploys the fully integrated AI platform system to production
-"""
+""""""
 
 import os
 import sys
@@ -29,7 +29,9 @@ class LiveDeployment:
             'timestamp': timestamp,
                 'level': level,
                 'message': message
-        })
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         })
 
 
     def check_prerequisites(self):
@@ -52,7 +54,9 @@ class LiveDeployment:
                 'netlify.toml',
                 'package.json',
                 'GO_LIVE_CHECKLIST.md'
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for file in critical_files:
             if not os.path.exists(file):
@@ -76,7 +80,9 @@ class LiveDeployment:
         # Check Git status
         try:
             result = subprocess.run(['git', 'status', '--porcelain'],
-                capture_output = True, text = True, check = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 capture_output = True, text = True, check = True)
             if result.stdout.strip():
                 self.log("⚠️  Uncommitted changes detected", "WARN")
                 self.log("Consider committing changes before deployment", "WARN")
@@ -119,7 +125,9 @@ class LiveDeployment:
             if os.path.exists('tests') or os.path.exists('test_*.py'):
                 self.log("🐍 Running Python tests...")
                 result = subprocess.run(['python', '-m', 'pytest', '-v'],
-                    capture_output = True, text = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     capture_output = True, text = True)
                 if result.returncode == 0:
                     self.log("✅ Python tests passed")
                 else:
@@ -128,7 +136,9 @@ class LiveDeployment:
             # Run integration tests
             self.log("🔗 Running integration tests...")
             result = subprocess.run(['python', 'test_ai_integrations.py'],
-                capture_output = True, text = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 capture_output = True, text = True)
             if result.returncode == 0:
                 self.log("✅ Integration tests completed")
             else:
@@ -165,13 +175,17 @@ class LiveDeployment:
                 'deployment_log': self.deployment_log,
                 'status': 'READY_FOR_PRODUCTION',
                 'next_steps': [
-                'Configure GitHub repository secrets (NETLIFY_AUTH_TOKEN,
-    NETLIFY_SITE_ID)',
+                'Configure GitHub repository secrets (NETLIFY_AUTH_TOKEN,'
+# BRACKET_SURGEON: disabled
+#     NETLIFY_SITE_ID)','
                     'Set up Netlify site and environment variables',
                     'Trigger GitHub Actions deployment workflow',
                     'Monitor deployment and perform post - deployment verification'
-            ]
-        }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# BRACKET_SURGEON: disabled
+#         }
 
         with open('deployment_summary.json', 'w') as f:
             json.dump(deployment_summary, f, indent = 2)

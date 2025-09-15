@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Database Schema Validator
 Validates the master database schema and generates comprehensive reports
-"""
+""""""
 
 import sqlite3
 import json
@@ -26,7 +26,8 @@ class DatabaseValidator:
             "foreign_key_constraints": [],
             "missing_indexes": [],
             "recommendations": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def connect(self) -> bool:
         """Connect to the database"""
@@ -44,13 +45,15 @@ class DatabaseValidator:
 
         # Get all tables
         cursor.execute(
-            """
+            """"""
             SELECT name, type, sql
             FROM sqlite_master
             WHERE type='table' AND name NOT LIKE 'sqlite_%'
             ORDER BY name
-        """
-        )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         tables = []
         for row in cursor.fetchall():
@@ -75,8 +78,11 @@ class DatabaseValidator:
                     "columns": [dict(col) for col in columns],
                     "foreign_keys": [dict(fk) for fk in foreign_keys],
                     "indexes": [dict(idx) for idx in indexes],
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return tables
 
@@ -96,7 +102,8 @@ class DatabaseValidator:
             "System Monitoring": [],
             "Compliance & Security": [],
             "Other": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Define categorization rules
         category_keywords = {
@@ -106,34 +113,44 @@ class DatabaseValidator:
                 "audit_log",
                 "component_health",
                 "repair_log",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "Content Management": [
                 "author_personas",
                 "hypocrisy_tracker",
                 "content_",
                 "format_",
                 "evolution_",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "Analytics & Performance": [
                 "channels",
                 "video_performance",
                 "performance_",
                 "metrics",
                 "analytics",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "Monetization": [
                 "affiliate_",
                 "financial_",
                 "budget_",
                 "payout_",
                 "revenue",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "User Management": [
                 "contacts",
                 "audience_",
                 "segment_",
                 "workflow_executions",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "API Integration": ["api_", "cloud_software", "software_", "integration"],
             "Research & Evidence": ["evidence", "intelligence_", "news_", "research"],
             "Automation": ["automation_", "stealth_", "workflow", "campaign"],
@@ -142,29 +159,38 @@ class DatabaseValidator:
                 "financial_",
                 "budget_",
                 "resource_",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "Social Media": [
                 "comments",
                 "engagement_",
                 "topic_",
                 "user_interactions",
                 "promotion_",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "System Monitoring": [
                 "system_metrics",
                 "application_metrics",
                 "error_",
                 "alert_",
                 "monitoring",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "Compliance & Security": [
                 "compliance_",
                 "scan_",
                 "enforcement_",
                 "violations",
                 "detection_",
-            ],
-        }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         for table in tables:
             table_name = table["name"]
@@ -199,8 +225,11 @@ class DatabaseValidator:
                             "column": fk["from"],
                             "references": f"{referenced_table}({fk['to']})",
                             "issue": "Referenced table does not exist",
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         return fk_issues
 
@@ -218,7 +247,9 @@ class DatabaseValidator:
             ("_id", "ID columns should be indexed"),
             ("email", "Email columns should be indexed"),
             ("type", "Type columns should be indexed"),
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for table in tables:
             table_name = table["name"]
@@ -234,7 +265,9 @@ class DatabaseValidator:
                             # Check if any index exists on this column
                             has_index = any(
                                 column_name in str(idx) for idx in existing_indexes
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             if not has_index:
                                 missing_indexes.append(
                                     {
@@ -242,8 +275,11 @@ class DatabaseValidator:
                                         "column": column_name,
                                         "reason": reason,
                                         "suggested_index": expected_index,
-                                    }
-                                )
+# BRACKET_SURGEON: disabled
+#                                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
         return missing_indexes
 
@@ -260,40 +296,52 @@ class DatabaseValidator:
         if len(tables) > 100:
             recommendations.append(
                 f"Consider database partitioning - {len(tables)} tables detected"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Foreign key recommendations
         if fk_issues:
             recommendations.append(
                 f"Fix {len(fk_issues)} foreign key constraint issues"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Index recommendations
         if missing_indexes:
             recommendations.append(
                 f"Consider adding {len(missing_indexes)} recommended indexes for better performance"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Large table recommendations
         for table in tables:
             if len(table["columns"]) > 20:
                 recommendations.append(
                     f"Table '{table['name']}' has {len(table['columns'])} columns - consider normalization"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # JSON column recommendations
         json_tables = []
         for table in tables:
             json_columns = [
                 col["name"] for col in table["columns"] if "JSON" in col["type"]
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             if json_columns:
                 json_tables.append(f"{table['name']} ({', '.join(json_columns)})")
 
         if json_tables:
             recommendations.append(
                 f"Monitor JSON column performance in: {', '.join(json_tables[:3])}{'...' if len(json_tables) > 3 else ''}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return recommendations
 
@@ -312,7 +360,9 @@ class DatabaseValidator:
             cursor = self.connection.cursor()
             cursor.execute(
                 "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%'"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.validation_results["total_indexes"] = cursor.fetchone()[0]
 
             # Get trigger count
@@ -322,7 +372,9 @@ class DatabaseValidator:
             # Categorize tables
             self.validation_results["tables_by_category"] = self.categorize_tables(
                 tables
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Validate foreign keys
             fk_issues = self.validate_foreign_keys(tables)
@@ -335,7 +387,9 @@ class DatabaseValidator:
             # Generate recommendations
             recommendations = self.generate_recommendations(
                 tables, fk_issues, missing_indexes
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.validation_results["recommendations"] = recommendations
 
             # Schema integrity summary
@@ -347,17 +401,23 @@ class DatabaseValidator:
                         t
                         for t in tables
                         if any("JSON" in col["type"] for col in t["columns"])
-                    ]
-                ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ),
                 "tables_with_foreign_keys": len(
                     [t for t in tables if t["foreign_keys"]]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "average_columns_per_table": (
                     sum(len(t["columns"]) for t in tables) / len(tables)
                     if tables
                     else 0
-                ),
-            }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             }
 
             self.validation_results["validation_status"] = "completed"
 
@@ -409,21 +469,33 @@ class DatabaseValidator:
         report.append("-" * 40)
         report.append(f"Foreign Key Issues: {integrity.get('foreign_key_issues', 0)}")
         report.append(
-            f"Missing Recommended Indexes: {integrity.get('missing_recommended_indexes',
-    0)}"
-        )
+            f"Missing Recommended Indexes: {integrity.get('missing_recommended_indexes',"
+# BRACKET_SURGEON: disabled
+#     0)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         report.append(
-            f"Tables with JSON Columns: {integrity.get('tables_with_json_columns',
-    0)}"
-        )
+            f"Tables with JSON Columns: {integrity.get('tables_with_json_columns',"
+# BRACKET_SURGEON: disabled
+#     0)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         report.append(
-            f"Tables with Foreign Keys: {integrity.get('tables_with_foreign_keys',
-    0)}"
-        )
+            f"Tables with Foreign Keys: {integrity.get('tables_with_foreign_keys',"
+# BRACKET_SURGEON: disabled
+#     0)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         report.append(
-            f"Average Columns per Table: {integrity.get('average_columns_per_table',
-    0):.1f}"
-        )
+            f"Average Columns per Table: {integrity.get('average_columns_per_table',"
+# BRACKET_SURGEON: disabled
+#     0):.1f}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         report.append("")
 
         # Recommendations

@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Validation utilities for TRAE.AI System
 Provides bundle structure validation and data integrity checks
-"""
+""""""
 
 import json
 import os
@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional
 
 
 def validate_bundle_structure(bundle_path: str) -> Dict[str, Any]:
-    """
+    """"""
     Validate bundle directory structure and required files
 
     Args:
@@ -19,20 +19,22 @@ def validate_bundle_structure(bundle_path: str) -> Dict[str, Any]:
 
     Returns:
         Dict with validation results
-    """
+    """"""
     bundle_dir = Path(bundle_path)
 
     if not bundle_dir.exists():
         return {
             "valid": False,
             "error": f"Bundle directory does not exist: {bundle_path}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     if not bundle_dir.is_dir():
         return {
             "valid": False,
             "error": f"Bundle path is not a directory: {bundle_path}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     # Check for required files
     required_files = ["README.md"]
@@ -65,11 +67,12 @@ def validate_bundle_structure(bundle_path: str) -> Dict[str, Any]:
         "bundle_name": bundle_dir.name,
         "files_found": [f.name for f in bundle_dir.iterdir() if f.is_file()],
         "size_bytes": sum(f.stat().st_size for f in bundle_dir.rglob("*") if f.is_file()),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 def validate_csv_roadmap(csv_path: str) -> Dict[str, Any]:
-    """
+    """"""
     Validate CSV roadmap file structure
 
     Args:
@@ -77,7 +80,7 @@ def validate_csv_roadmap(csv_path: str) -> Dict[str, Any]:
 
     Returns:
         Dict with validation results
-    """
+    """"""
     csv_file = Path(csv_path)
 
     if not csv_file.exists():
@@ -99,7 +102,8 @@ def validate_csv_roadmap(csv_path: str) -> Dict[str, Any]:
             return {
                 "valid": False,
                 "error": f"Missing required columns: {required_columns}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return {"valid": True, "row_count": len(rows), "columns": reader.fieldnames}
 
@@ -108,7 +112,7 @@ def validate_csv_roadmap(csv_path: str) -> Dict[str, Any]:
 
 
 def validate_file_permissions(file_path: str, required_perms: str = "r") -> Dict[str, Any]:
-    """
+    """"""
     Validate file permissions
 
     Args:
@@ -117,7 +121,7 @@ def validate_file_permissions(file_path: str, required_perms: str = "r") -> Dict
 
     Returns:
         Dict with validation results
-    """
+    """"""
     file_obj = Path(file_path)
 
     if not file_obj.exists():

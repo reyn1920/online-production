@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 RouteLL Integration Setup Script
 Initializes and tests the complete RouteLL integration
-"""
+""""""
 
 import asyncio
 import json
@@ -68,7 +68,7 @@ def setup_environment():
 
     if "ROUTELLM_API_KEY" not in env_content:
         with open(env_file, "a") as f:
-            f.write(f"\\n# RouteLL API Configuration\\n")
+            f.write(f"\\n# RouteLL API Configuration\\n")"
             f.write(f"ROUTELLM_API_KEY={api_key}\\n")
         print(f"   ✅ Added ROUTELLM_API_KEY to .env file")
     else:
@@ -90,7 +90,8 @@ def verify_file_structure():
         "dashboard / routellm_dashboard.py",
         "examples / routellm_integration_example.py",
         "docs / RouteLL_Integration_Guide.md",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     missing_files = []
 
@@ -217,7 +218,8 @@ def test_integration():
         analytics = integrated_client.get_session_analytics()
         print(
             f"   📊 Session stats: {analytics['total_requests']} requests, {analytics['success_rate']:.1f}% success rate"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return True
 

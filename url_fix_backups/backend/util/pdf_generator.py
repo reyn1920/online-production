@@ -1,7 +1,7 @@
 #!/usr / bin / env python3
-"""
+""""""
 PDF generation utilities for TRAE.AI System
-"""
+""""""
 
 import json
 import os
@@ -30,7 +30,7 @@ class PDFGenerator:
 def generate_pdf_report(
     data: Dict[str, Any], output_path: str, template: str = "default"
 ) -> Dict[str, Any]:
-    """
+    """"""
     Generate a PDF report from data
 
     Args:
@@ -40,12 +40,12 @@ def generate_pdf_report(
 
     Returns:
         Dict containing generation results
-    """
+    """"""
     try:
         # For now, create a text - based report since we don't have PDF libraries
         # In production, this would use libraries like reportlab or weasyprint
 
-        report_content = f"""
+        report_content = f""""""
 TRAE.AI System Report
 ====================
 Generated: {datetime.now().isoformat()}
@@ -55,7 +55,7 @@ Data Summary:
 {json.dumps(data, indent = 2)}
 
 Report generated successfully.
-"""
+""""""
 
         # Write to text file (simulating PDF generation)
         text_path = output_path.replace(".pdf", ".txt")
@@ -68,14 +68,15 @@ Report generated successfully.
             "size_bytes": len(report_content.encode("utf - 8")),
             "format": "text",
             "note": "PDF generation simulated with text output",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         return {"success": False, "error": str(e), "output_path": None}
 
 
 def create_channel_report(channel_data: Dict[str, Any], output_dir: str) -> Dict[str, Any]:
-    """
+    """"""
     Create a report for channel execution results
 
     Args:
@@ -84,7 +85,7 @@ def create_channel_report(channel_data: Dict[str, Any], output_dir: str) -> Dict
 
     Returns:
         Dict containing report generation results
-    """
+    """"""
     try:
         os.makedirs(output_dir, exist_ok=True)
 
@@ -98,7 +99,8 @@ def create_channel_report(channel_data: Dict[str, Any], output_dir: str) -> Dict
             "status": channel_data.get("status", "Unknown"),
             "results": channel_data.get("results", {}),
             "metrics": channel_data.get("metrics", {}),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         result = generate_pdf_report(report_data, report_path, "channel")
 
@@ -113,7 +115,7 @@ def create_channel_report(channel_data: Dict[str, Any], output_dir: str) -> Dict
 
 
 def generate_bundle_documentation(bundle_path: str, output_path: str) -> Dict[str, Any]:
-    """
+    """"""
     Generate documentation PDF for a bundle
 
     Args:
@@ -122,7 +124,7 @@ def generate_bundle_documentation(bundle_path: str, output_path: str) -> Dict[st
 
     Returns:
         Dict containing generation results
-    """
+    """"""
     try:
         bundle_dir = Path(bundle_path)
 
@@ -131,7 +133,8 @@ def generate_bundle_documentation(bundle_path: str, output_path: str) -> Dict[st
                 "success": False,
                 "error": "Bundle directory not found",
                 "output_path": None,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Collect bundle information
         doc_data = {
@@ -139,7 +142,8 @@ def generate_bundle_documentation(bundle_path: str, output_path: str) -> Dict[st
             "bundle_path": str(bundle_path),
             "files": [],
             "structure": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Scan bundle files
         for file_path in bundle_dir.rglob("*"):
@@ -151,8 +155,10 @@ def generate_bundle_documentation(bundle_path: str, output_path: str) -> Dict[st
                         "path": str(relative_path),
                         "size": file_path.stat().st_size,
                         "extension": file_path.suffix,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Generate documentation
         result = generate_pdf_report(doc_data, output_path, "bundle_documentation")
@@ -168,7 +174,7 @@ def generate_bundle_documentation(bundle_path: str, output_path: str) -> Dict[st
 
 
 def create_system_status_report(status_data: Dict[str, Any], output_path: str) -> Dict[str, Any]:
-    """
+    """"""
     Create a system status report
 
     Args:
@@ -177,14 +183,15 @@ def create_system_status_report(status_data: Dict[str, Any], output_path: str) -
 
     Returns:
         Dict containing generation results
-    """
+    """"""
     try:
         # Enhance status data with timestamp
         enhanced_data = {
             "report_type": "system_status",
             "generated_at": datetime.now().isoformat(),
             "system_info": status_data,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         result = generate_pdf_report(enhanced_data, output_path, "system_status")
 

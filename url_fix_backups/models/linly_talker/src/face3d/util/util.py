@@ -53,21 +53,23 @@ def find_class_in_module(target_cls_name, module):
             cls = clsobj
 
     assert cls is not None, (
-        "In %s,
-    there should be a class whose name matches %s in lowercase without underscore(_)"
+        "In %s,"
+    there should be a class whose name matches %s in lowercase without underscore(_)""
         % (module, target_cls_name)
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     return cls
 
 
 def tensor2im(input_image, imtype = np.uint8):
-    """ "Converts a Tensor array into a numpy image array.
+    """ "Converts a Tensor array into a numpy image array."""
 
     Parameters:
         input_image (tensor) --  the input image tensor array, range(0, 1)
         imtype (type)        --  the desired type of the converted numpy array
-    """
+    """"""
     if not isinstance(input_image, np.ndarray):
         if isinstance(input_image, torch.Tensor):  # get the data from a variable
             image_tensor = input_image.data
@@ -75,24 +77,26 @@ def tensor2im(input_image, imtype = np.uint8):
             return input_image
         image_numpy = (
             image_tensor.clamp(0.0, 1.0).cpu().float().numpy()
-        )  # convert it into a numpy array
+# BRACKET_SURGEON: disabled
+#         )  # convert it into a numpy array
         if image_numpy.shape[0] == 1:  # grayscale to RGB
             image_numpy = np.tile(image_numpy, (3, 1, 1))
         image_numpy = (
             np.transpose(image_numpy, (1, 2, 0)) * 255.0
-        )  # post - processing: tranpose and scaling
+# BRACKET_SURGEON: disabled
+#         )  # post - processing: tranpose and scaling
     else:  # if it is a numpy array, do nothing
         image_numpy = input_image
     return image_numpy.astype(imtype)
 
 
 def diagnose_network(net, name="network"):
-    """Calculate and print the mean of average absolute(gradients)
+    """Calculate and print the mean of average absolute(gradients)"""
 
     Parameters:
         net (torch network) -- Torch network
         name (str) -- the name of the network
-    """
+    """"""
     mean = 0.0
     count = 0
     for param in net.parameters():
@@ -106,12 +110,12 @@ def diagnose_network(net, name="network"):
 
 
 def save_image(image_numpy, image_path, aspect_ratio = 1.0):
-    """Save a numpy image to the disk
+    """Save a numpy image to the disk"""
 
     Parameters:
         image_numpy (numpy array) -- input numpy array
         image_path (str)          -- the path of the image
-    """
+    """"""
 
     image_pil = Image.fromarray(image_numpy)
     h, w, _ = image_numpy.shape
@@ -126,12 +130,12 @@ def save_image(image_numpy, image_path, aspect_ratio = 1.0):
 
 
 def print_numpy(x, val = True, shp = False):
-    """Print the mean, min, max, median, std, and size of a numpy array
+    """Print the mean, min, max, median, std, and size of a numpy array"""
 
     Parameters:
         val (bool) -- if print the values of the numpy array
         shp (bool) -- if print the shape of the numpy array
-    """
+    """"""
     x = x.astype(np.float64)
     if shp:
         print("shape,", x.shape)
@@ -140,15 +144,17 @@ def print_numpy(x, val = True, shp = False):
         print(
             "mean = %3.3f, min = %3.3f, max = %3.3f, median = %3.3f, std=%3.3f"
             % (np.mean(x), np.min(x), np.max(x), np.median(x), np.std(x))
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
 def mkdirs(paths):
-    """create empty directories if they don't exist
+    """create empty directories if they don't exist"""
 
     Parameters:
         paths (str list) -- a list of directory paths
-    """
+    """"""
     if isinstance(paths, list) and not isinstance(paths, str):
         for path in paths:
             mkdir(path)
@@ -157,11 +163,11 @@ def mkdirs(paths):
 
 
 def mkdir(path):
-    """create a single empty directory if it didn't exist
+    """create a single empty directory if it didn't exist"""
 
     Parameters:
         path (str) -- a single directory path
-    """
+    """"""
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -193,24 +199,28 @@ def correct_resize(t, size, mode = Image.BICUBIC):
 
 
 def draw_landmarks(img, landmark, color="r", step = 2):
-    """
+    """"""
     Return:
         img              -- numpy.array, (B,
     H,
     W,
-    3) img with landmark,
+# BRACKET_SURGEON: disabled
+#     3) img with landmark,
     RGB order,
     range (0,
-    255)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     255)
 
     Parameters:
         img              -- numpy.array, (B, H, W, 3), RGB order, range (0, 255)
         landmark         -- numpy.array, (B,
     68,
-    2),
+# BRACKET_SURGEON: disabled
+#     2),
     y direction is opposite to v direction
         color            -- str, 'r' or 'b' (red or blue)
-    """
+    """"""
     if color == "r":
         c = np.array([255.0, 0, 0])
     else:

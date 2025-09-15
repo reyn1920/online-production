@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 AI - Driven Video Editing - Script Cue Parser for Dynamic Blender Effects
 
 This module implements AI - driven video editing that parses script cues like
@@ -9,7 +9,7 @@ Blender Python scripts for automated effect application.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -163,7 +163,8 @@ class ScriptCueParser:
                 r"\\[SUSPENSEFUL\\]",
                 r"tension builds",
                 r"atmosphere grows tense",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.DRAMATIC_PAUSE: [
                 r"\\[DRAMATIC[_\\s]*PAUSE\\]",
                 r"\\[PAUSE\\]",
@@ -171,7 +172,8 @@ class ScriptCueParser:
                 r"\\.\\.\\.",
                 r"long pause",
                 r"moment of silence",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.ACTION_SEQUENCE: [
                 r"\\[ACTION[_\\s]*SEQUENCE\\]",
                 r"\\[ACTION\\]",
@@ -179,14 +181,16 @@ class ScriptCueParser:
                 r"\\[CHASE\\]",
                 r"action packed",
                 r"intense action",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.EMOTIONAL_PEAK: [
                 r"\\[EMOTIONAL[_\\s]*PEAK\\]",
                 r"\\[CLIMAX\\]",
                 r"\\[BREAKDOWN\\]",
                 r"emotional climax",
                 r"tears in.*eyes",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.TRANSITION: [
                 r"\\[TRANSITION\\]",
                 r"\\[CUT[_\\s]*TO\\]",
@@ -194,92 +198,107 @@ class ScriptCueParser:
                 r"meanwhile",
                 r"later that day",
                 r"suddenly",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.EMPHASIS: [
                 r"\\[EMPHASIS\\]",
                 r"\\[IMPORTANT\\]",
                 r"\\[KEY[_\\s]*POINT\\]",
                 r"\\*\\*.*\\*\\*",
                 r"THIS IS IMPORTANT",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.SUSPENSE: [
                 r"\\[SUSPENSE\\]",
                 r"\\[MYSTERY\\]",
                 r"\\[OMINOUS\\]",
                 r"something.*wrong",
                 r"eerie silence",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.REVELATION: [
                 r"\\[REVELATION\\]",
                 r"\\[DISCOVERY\\]",
                 r"\\[REALIZATION\\]",
                 r"suddenly realizes",
                 r"the truth is",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.CLOSE_UP: [
                 r"\\[CLOSE[_\\s]*UP\\]",
                 r"\\[CU\\]",
                 r"close - up on",
                 r"zoom in on",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.WIDE_SHOT: [
                 r"\\[WIDE[_\\s]*SHOT\\]",
                 r"\\[WS\\]",
                 r"\\[ESTABLISHING[_\\s]*SHOT\\]",
                 r"wide view of",
                 r"panoramic view",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.ZOOM_IN: [
                 r"\\[ZOOM[_\\s]*IN\\]",
                 r"\\[PUSH[_\\s]*IN\\]",
                 r"camera moves closer",
                 r"zoom in on",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.ZOOM_OUT: [
                 r"\\[ZOOM[_\\s]*OUT\\]",
                 r"\\[PULL[_\\s]*BACK\\]",
                 r"camera pulls back",
                 r"zoom out to reveal",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.SHAKE: [
                 r"\\[SHAKE\\]",
                 r"\\[CAMERA[_\\s]*SHAKE\\]",
                 r"\\[EARTHQUAKE\\]",
                 r"ground shakes",
                 r"violent tremor",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.SLOW_MOTION: [
                 r"\\[SLOW[_\\s]*MOTION\\]",
                 r"\\[SLO[_\\s]*MO\\]",
                 r"time slows down",
                 r"in slow motion",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.FADE_IN: [
                 r"\\[FADE[_\\s]*IN\\]",
                 r"\\[FADE[_\\s]*FROM[_\\s]*BLACK\\]",
                 r"fade in from",
                 r"slowly appears",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.FADE_OUT: [
                 r"\\[FADE[_\\s]*OUT\\]",
                 r"\\[FADE[_\\s]*TO[_\\s]*BLACK\\]",
                 r"fade to black",
                 r"slowly disappears",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.FLASH: [
                 r"\\[FLASH\\]",
                 r"\\[LIGHTNING\\]",
                 r"\\[STROBE\\]",
                 r"bright flash",
                 r"blinding light",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             CueType.BLUR: [
                 r"\\[BLUR\\]",
                 r"\\[OUT[_\\s]*OF[_\\s]*FOCUS\\]",
                 r"vision blurs",
                 r"everything becomes hazy",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         # Intensity keywords
         self.intensity_keywords = {
@@ -291,15 +310,18 @@ class ScriptCueParser:
                 "powerful",
                 "dramatic",
                 "bold",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             EffectIntensity.EXTREME: [
                 "extreme",
                 "violent",
                 "explosive",
                 "massive",
                 "overwhelming",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
     def parse_script(self, script_content: str, duration: float, fps: int = 24) -> List[ScriptCue]:
         """Parse script content to extract cues."""
@@ -360,7 +382,8 @@ class ScriptCueParser:
                         timing=timing,
                         parameters=parameters,
                         context=line,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     cues.append(cue)
                     self.logger.debug(f"Found cue: {cue_type.value} at {start_time:.2f}s")
@@ -404,7 +427,8 @@ class ScriptCueParser:
                 CueType.FADE_OUT,
                 CueType.ZOOM_IN,
                 CueType.ZOOM_OUT,
-            ]:
+# BRACKET_SURGEON: disabled
+#             ]:
                 return EffectTiming.GRADUAL
             else:
                 return EffectTiming.INSTANT
@@ -416,7 +440,8 @@ class ScriptCueParser:
         # Look for duration specifications
         duration_match = re.search(
             r"(\\d+(?:\\.\\d+)?)\\s*(?:sec|second|s)\\b", context, re.IGNORECASE
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if duration_match:
             parameters["duration"] = float(duration_match.group(1))
 
@@ -451,7 +476,8 @@ class ScriptCueParser:
             CueType.SLOW_MOTION: 3.0,
             CueType.BLUR: 1.5,
             CueType.EMPHASIS: 0.5,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return duration_map.get(cue_type, min(line_duration, 2.0))
 
@@ -486,17 +512,20 @@ class BlenderEffectGenerator:
         if cue.cue_type == CueType.SHAKE:
             return self._create_camera_shake_effect(
                 cue, start_frame, end_frame, intensity_multiplier
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         elif cue.cue_type == CueType.ZOOM_IN:
             return self._create_zoom_effect(
                 cue, start_frame, end_frame, intensity_multiplier, zoom_in=True
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         elif cue.cue_type == CueType.ZOOM_OUT:
             return self._create_zoom_effect(
                 cue, start_frame, end_frame, intensity_multiplier, zoom_in=False
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         elif cue.cue_type == CueType.FADE_IN:
             return self._create_fade_effect(cue, start_frame, end_frame, fade_in=True)
@@ -536,12 +565,14 @@ class BlenderEffectGenerator:
             EffectIntensity.MODERATE: 0.6,
             EffectIntensity.STRONG: 1.0,
             EffectIntensity.EXTREME: 1.5,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return multipliers.get(intensity, 0.6)
 
     def _create_camera_shake_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, intensity: float
-    ) -> BlenderEffect:
+# BRACKET_SURGEON: disabled
+#     ) -> BlenderEffect:
         """Create camera shake effect."""
         shake_amount = 0.1 * intensity
         frequency = 10.0 * intensity
@@ -559,8 +590,10 @@ class BlenderEffectGenerator:
                     "location_x": shake_x,
                     "location_y": shake_y,
                     "interpolation": "LINEAR",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return BlenderEffect(
             name=f"camera_shake_{start_frame}",
@@ -571,9 +604,11 @@ class BlenderEffectGenerator:
                 "shake_amount": shake_amount,
                 "frequency": frequency,
                 "target": "location",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             keyframes=keyframes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_zoom_effect(
         self,
@@ -582,7 +617,8 @@ class BlenderEffectGenerator:
         end_frame: int,
         intensity: float,
         zoom_in: bool = True,
-    ) -> BlenderEffect:
+# BRACKET_SURGEON: disabled
+#     ) -> BlenderEffect:
         """Create zoom effect."""
         start_focal_length = 50.0  # Default focal length
         zoom_factor = 1.5 * intensity if zoom_in else 0.7 / intensity
@@ -593,9 +629,11 @@ class BlenderEffectGenerator:
                 "frame": start_frame,
                 "lens": start_focal_length,
                 "interpolation": "BEZIER",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {"frame": end_frame, "lens": end_focal_length, "interpolation": "BEZIER"},
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         return BlenderEffect(
             name=f"zoom_{'in' if zoom_in else 'out'}_{start_frame}",
@@ -606,13 +644,16 @@ class BlenderEffectGenerator:
                 "start_focal_length": start_focal_length,
                 "end_focal_length": end_focal_length,
                 "target": "lens",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             keyframes=keyframes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_fade_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, fade_in: bool = True
-    ) -> BlenderEffect:
+# BRACKET_SURGEON: disabled
+#     ) -> BlenderEffect:
         """Create fade effect."""
         start_alpha = 0.0 if fade_in else 1.0
         end_alpha = 1.0 if fade_in else 0.0
@@ -620,7 +661,8 @@ class BlenderEffectGenerator:
         keyframes = [
             {"frame": start_frame, "alpha": start_alpha, "interpolation": "LINEAR"},
             {"frame": end_frame, "alpha": end_alpha, "interpolation": "LINEAR"},
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         return BlenderEffect(
             name=f"fade_{'in' if fade_in else 'out'}_{start_frame}",
@@ -631,13 +673,16 @@ class BlenderEffectGenerator:
                 "start_alpha": start_alpha,
                 "end_alpha": end_alpha,
                 "node_type": "AlphaOver",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             keyframes=keyframes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_flash_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, intensity: float
-    ) -> BlenderEffect:
+# BRACKET_SURGEON: disabled
+#     ) -> BlenderEffect:
         """Create flash effect."""
         flash_brightness = 2.0 * intensity
 
@@ -648,7 +693,8 @@ class BlenderEffectGenerator:
             {"frame": start_frame, "energy": 1.0, "interpolation": "LINEAR"},
             {"frame": mid_frame, "energy": flash_brightness, "interpolation": "LINEAR"},
             {"frame": end_frame, "energy": 1.0, "interpolation": "LINEAR"},
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         return BlenderEffect(
             name=f"flash_{start_frame}",
@@ -659,13 +705,16 @@ class BlenderEffectGenerator:
                 "flash_brightness": flash_brightness,
                 "target": "energy",
                 "light_type": "SUN",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             keyframes=keyframes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_blur_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, intensity: float
-    ) -> BlenderEffect:
+# BRACKET_SURGEON: disabled
+#     ) -> BlenderEffect:
         """Create blur effect."""
         blur_amount = 5.0 * intensity
 
@@ -675,14 +724,17 @@ class BlenderEffectGenerator:
                 "frame": start_frame + (end_frame - start_frame) // 3,
                 "size": blur_amount,
                 "interpolation": "LINEAR",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "frame": end_frame - (end_frame - start_frame) // 3,
                 "size": blur_amount,
                 "interpolation": "LINEAR",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {"frame": end_frame, "size": 0.0, "interpolation": "LINEAR"},
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         return BlenderEffect(
             name=f"blur_{start_frame}",
@@ -691,11 +743,13 @@ class BlenderEffectGenerator:
             end_frame=end_frame,
             properties={"blur_amount": blur_amount, "node_type": "Blur"},
             keyframes=keyframes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_tension_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, intensity: float
-    ) -> BlenderEffect:
+# BRACKET_SURGEON: disabled
+#     ) -> BlenderEffect:
         """Create tension effect (desaturation + vignette)."""
         desaturation = 0.3 * intensity
         vignette_strength = 0.5 * intensity
@@ -706,14 +760,17 @@ class BlenderEffectGenerator:
                 "saturation": 1.0,
                 "vignette": 0.0,
                 "interpolation": "LINEAR",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "frame": end_frame,
                 "saturation": 1.0 - desaturation,
                 "vignette": vignette_strength,
                 "interpolation": "LINEAR",
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         return BlenderEffect(
             name=f"tension_{start_frame}",
@@ -724,13 +781,16 @@ class BlenderEffectGenerator:
                 "desaturation": desaturation,
                 "vignette_strength": vignette_strength,
                 "node_type": "ColorBalance",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             keyframes=keyframes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_dramatic_pause_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int
-    ) -> BlenderEffect:
+# BRACKET_SURGEON: disabled
+#     ) -> BlenderEffect:
         """Create dramatic pause effect (time dilation)."""
         return BlenderEffect(
             name=f"dramatic_pause_{start_frame}",
@@ -744,15 +804,19 @@ class BlenderEffectGenerator:
                     "frame": start_frame + 5,
                     "time_scale": 0.5,
                     "interpolation": "LINEAR",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {"frame": end_frame - 5, "time_scale": 0.5, "interpolation": "LINEAR"},
                 {"frame": end_frame, "time_scale": 1.0, "interpolation": "LINEAR"},
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_action_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int, intensity: float
-    ) -> BlenderEffect:
+# BRACKET_SURGEON: disabled
+#     ) -> BlenderEffect:
         """Create action sequence effect (increased contrast + saturation)."""
         contrast_boost = 0.2 * intensity
         saturation_boost = 0.3 * intensity
@@ -763,14 +827,17 @@ class BlenderEffectGenerator:
                 "contrast": 1.0,
                 "saturation": 1.0,
                 "interpolation": "LINEAR",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "frame": end_frame,
                 "contrast": 1.0 + contrast_boost,
                 "saturation": 1.0 + saturation_boost,
                 "interpolation": "LINEAR",
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         return BlenderEffect(
             name=f"action_{start_frame}",
@@ -781,13 +848,16 @@ class BlenderEffectGenerator:
                 "contrast_boost": contrast_boost,
                 "saturation_boost": saturation_boost,
                 "node_type": "ColorBalance",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             keyframes=keyframes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_slow_motion_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int
-    ) -> BlenderEffect:
+# BRACKET_SURGEON: disabled
+#     ) -> BlenderEffect:
         """Create slow motion effect."""
         return BlenderEffect(
             name=f"slow_motion_{start_frame}",
@@ -801,15 +871,19 @@ class BlenderEffectGenerator:
                     "frame": start_frame + 10,
                     "time_scale": 0.3,
                     "interpolation": "BEZIER",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {"frame": end_frame - 10, "time_scale": 0.3, "interpolation": "BEZIER"},
                 {"frame": end_frame, "time_scale": 1.0, "interpolation": "BEZIER"},
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_color_grade_effect(
         self, cue: ScriptCue, start_frame: int, end_frame: int
-    ) -> BlenderEffect:
+# BRACKET_SURGEON: disabled
+#     ) -> BlenderEffect:
         """Create color grading effect."""
         # Extract color from parameters if available
         target_color = cue.parameters.get("color", "blue")
@@ -821,7 +895,8 @@ class BlenderEffectGenerator:
             "orange": (0.1, 0.05, -0.1),
             "purple": (0.05, -0.05, 0.1),
             "yellow": (0.1, 0.1, -0.1),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         color_shift = color_shifts.get(target_color.lower(), (0.0, 0.0, 0.0))
 
@@ -832,15 +907,18 @@ class BlenderEffectGenerator:
                 "lift_g": 0.0,
                 "lift_b": 0.0,
                 "interpolation": "LINEAR",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "frame": end_frame,
                 "lift_r": color_shift[0],
                 "lift_g": color_shift[1],
                 "lift_b": color_shift[2],
                 "interpolation": "LINEAR",
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         return BlenderEffect(
             name=f"color_grade_{target_color}_{start_frame}",
@@ -851,9 +929,11 @@ class BlenderEffectGenerator:
                 "target_color": target_color,
                 "color_shift": color_shift,
                 "node_type": "ColorBalance",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             keyframes=keyframes,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 class BlenderScriptGenerator:
@@ -870,16 +950,17 @@ class BlenderScriptGenerator:
             "from mathutils import Vector, Euler",
             "import math",
             "",
-            "# Clear existing keyframes",
+            "# Clear existing keyframes","
             "bpy.context.scene.frame_set(1)",
             "for obj in bpy.data.objects:",
             "    obj.animation_data_clear()",
             "",
-            "# Set frame rate",
+            "# Set frame rate","
             f"bpy.context.scene.render.fps = {fps}",
             "",
-            "# Apply effects",
-        ]
+            "# Apply effects","
+# BRACKET_SURGEON: disabled
+#         ]
 
         for effect in effects:
             script_lines.extend(self._generate_effect_script(effect))
@@ -887,17 +968,19 @@ class BlenderScriptGenerator:
 
         script_lines.extend(
             [
-                "# Update scene",
+                "# Update scene","
                 "bpy.context.view_layer.update()",
                 "print('Effects applied successfully')",
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         return "\\n".join(script_lines)
 
     def _generate_effect_script(self, effect: BlenderEffect) -> List[str]:
         """Generate script lines for a specific effect."""
-        lines = [f"# Effect: {effect.name}"]
+        lines = [f"# Effect: {effect.name}"]"
 
         if effect.effect_type == "camera":
             lines.extend(self._generate_camera_effect_script(effect))
@@ -908,17 +991,18 @@ class BlenderScriptGenerator:
         elif effect.effect_type == "animation":
             lines.extend(self._generate_animation_effect_script(effect))
         else:
-            lines.append(f"# Unsupported effect type: {effect.effect_type}")
+            lines.append(f"# Unsupported effect type: {effect.effect_type}")"
 
         return lines
 
     def _generate_camera_effect_script(self, effect: BlenderEffect) -> List[str]:
         """Generate camera effect script."""
         lines = [
-            "# Get active camera",
+            "# Get active camera","
             "camera = bpy.context.scene.camera",
             "if camera:",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         target = effect.properties.get("target", "location")
 
@@ -935,8 +1019,10 @@ class BlenderScriptGenerator:
                         f"    camera.location.x += {x}",
                         f"    camera.location.y += {y}",
                         f"    camera.keyframe_insert(data_path='location', frame={frame})",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
         elif target == "lens":
             # Zoom effect
@@ -949,15 +1035,17 @@ class BlenderScriptGenerator:
                         f"    bpy.context.scene.frame_set({frame})",
                         f"    camera.data.lens = {lens}",
                         f"    camera.data.keyframe_insert(data_path='lens', frame={frame})",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
         return lines
 
     def _generate_lighting_effect_script(self, effect: BlenderEffect) -> List[str]:
         """Generate lighting effect script."""
         lines = [
-            "# Get or create light",
+            "# Get or create light","
             "light = None",
             "for obj in bpy.data.objects:",
             "    if obj.type == 'LIGHT':",
@@ -966,7 +1054,8 @@ class BlenderScriptGenerator:
             "if not light:",
             "    bpy.ops.object.light_add(type='SUN')",
             "    light = bpy.context.active_object",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for keyframe in effect.keyframes:
             frame = keyframe["frame"]
@@ -977,25 +1066,28 @@ class BlenderScriptGenerator:
                     f"bpy.context.scene.frame_set({frame})",
                     f"light.data.energy = {energy}",
                     f"light.data.keyframe_insert(data_path='energy', frame={frame})",
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
         return lines
 
     def _generate_compositor_effect_script(self, effect: BlenderEffect) -> List[str]:
         """Generate compositor effect script."""
         lines = [
-            "# Enable compositor",
+            "# Enable compositor","
             "bpy.context.scene.use_nodes = True",
             "tree = bpy.context.scene.node_tree",
             "",
-            "# Find or create effect nodes",
+            "# Find or create effect nodes","
             "effect_node = None",
             "for node in tree.nodes:",
             f"    if node.name == '{effect.name}':",
             "        effect_node = node",
             "        break",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         node_type = effect.properties.get("node_type", "ColorBalance")
 
@@ -1005,8 +1097,10 @@ class BlenderScriptGenerator:
                 f"    effect_node = tree.nodes.new('CompositorNode{node_type}')",
                 f"    effect_node.name = '{effect.name}'",
                 "    effect_node.location = (400, 0)",
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
         # Add keyframes for node properties
         for keyframe in effect.keyframes:
@@ -1020,14 +1114,16 @@ class BlenderScriptGenerator:
                             f"if hasattr(effect_node, '{prop}'):",
                             f"    effect_node.{prop} = {value}",
                             f"    effect_node.keyframe_insert(data_path='{prop}', frame={frame})",
-                        ]
-                    )
+# BRACKET_SURGEON: disabled
+#                         ]
+# BRACKET_SURGEON: disabled
+#                     )
 
         return lines
 
     def _generate_animation_effect_script(self, effect: BlenderEffect) -> List[str]:
         """Generate animation effect script."""
-        lines = ["# Animation effect (time remapping)", "scene = bpy.context.scene"]
+        lines = ["# Animation effect (time remapping)", "scene = bpy.context.scene"]"
 
         if effect.properties.get("target") == "frame_rate":
             # Time scale effect
@@ -1037,10 +1133,12 @@ class BlenderScriptGenerator:
 
                 lines.extend(
                     [
-                        f"# Time scale at frame {frame}: {time_scale}",
-                        "# Note: Time remapping requires post - processing",
-                    ]
-                )
+                        f"# Time scale at frame {frame}: {time_scale}","
+                        "# Note: Time remapping requires post - processing","
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
         return lines
 
@@ -1072,7 +1170,8 @@ class AIVideoEditor:
             "/usr/bin/blender",
             "/usr/local/bin/blender",
             "blender",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for path in possible_paths:
             if shutil.which(path) or Path(path).exists():
@@ -1088,7 +1187,8 @@ class AIVideoEditor:
         job_id: Optional[str] = None,
         fps: int = 24,
         duration: Optional[float] = None,
-    ) -> VideoEditingJob:
+# BRACKET_SURGEON: disabled
+#     ) -> VideoEditingJob:
         """Create a new video editing job."""
         if job_id is None:
             job_id = f"video_edit_{int(time.time())}_{len(self.active_jobs)}"
@@ -1115,8 +1215,10 @@ class AIVideoEditor:
                 "created_at": datetime.now().isoformat(),
                 "script_length": len(script_content),
                 "video_duration": duration,
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Video editing job created: {job_id}")
@@ -1183,7 +1285,8 @@ class AIVideoEditor:
                 "json",
                 "-show_format",
                 video_path,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
@@ -1207,7 +1310,8 @@ class AIVideoEditor:
                 "--factory - startup",
                 "--python",
                 script_path,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             self.logger.info(f"Applying effects in Blender: {' '.join(cmd)}")
 
@@ -1217,7 +1321,8 @@ class AIVideoEditor:
                 text=True,
                 timeout=600,
                 cwd=str(self.temp_dir),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode == 0:
                 self.logger.info("Effects applied successfully in Blender")
@@ -1262,13 +1367,15 @@ class AIVideoEditor:
 
     def process_script_with_effects(
         self, script_content: str, video_path: str, output_path: str
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Convenience method to process script and apply effects."""
         job = self.create_editing_job(
             script_content=script_content,
             video_path=video_path,
             output_path=output_path,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if self.process_job(job.job_id):
             return job.job_id
@@ -1285,21 +1392,21 @@ if __name__ == "__main__":
     video_editor = AIVideoEditor()
 
     # Example script with cues
-    sample_script = """
+    sample_script = """"""
     The hero walks into the dark room.
 
     [TENSE_MOMENT] Something feels wrong. The air is thick with danger.
 
     Suddenly, a shadow moves in the corner. [DRAMATIC_PAUSE]
 
-    [ZOOM_IN] The hero's eyes widen in realization.
+    [ZOOM_IN] The hero's eyes widen in realization.'
 
     [ACTION_SEQUENCE] A fight breaks out! Punches fly and furniture crashes.
 
     [SLOW_MOTION] Time slows as the final blow is delivered.
 
     [FADE_OUT] The scene fades to black.
-    """
+    """"""
 
     # Example usage
     try:
@@ -1307,7 +1414,8 @@ if __name__ == "__main__":
             script_content=sample_script,
             video_path="./assets/raw_video.mp4",
             output_path="./output/enhanced_video.blend",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         print(f"Video editing job created: {job_id}")
 

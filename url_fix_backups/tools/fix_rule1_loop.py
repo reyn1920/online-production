@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Rule - 1 Loop Fix Utility
 
 This script creates optimized scanning utilities to avoid scanning third - party
@@ -9,7 +9,7 @@ getting stuck in infinite loops when scanning large dependency directories.
 Created files:
 - rule1_scan_first_party.py: Scanner that only processes first - party files
 - .rule1_ignore: Ignore patterns for third - party dependencies
-"""
+""""""
 
 import os
 from pathlib import Path
@@ -18,10 +18,10 @@ from pathlib import Path
 def create_rule1_ignore():
     """Create .rule1_ignore file with common third - party patterns."""
     ignore_patterns = [
-        "# Rule - 1 Scanner Ignore Patterns",
-        "# Third - party dependencies and generated files",
+        "# Rule - 1 Scanner Ignore Patterns","
+        "# Third - party dependencies and generated files","
         "",
-        "# Python dependencies",
+        "# Python dependencies","
         "venv/",
         "venv_*/",
         ".venv/",
@@ -48,7 +48,7 @@ def create_rule1_ignore():
         ".installed.cfg",
         "*.egg",
         "",
-        "# Node.js dependencies",
+        "# Node.js dependencies","
         "node_modules/",
         "npm - debug.log*",
         "yarn - debug.log*",
@@ -56,19 +56,19 @@ def create_rule1_ignore():
         ".npm",
         ".yarn - integrity",
         "",
-        "# Version control",
+        "# Version control","
         ".git/",
         ".svn/",
         ".hg/",
         "",
-        "# IDE and editor files",
+        "# IDE and editor files","
         ".vscode/",
         ".idea/",
         "*.swp",
         "*.swo",
         "*~",
         "",
-        "# OS generated files",
+        "# OS generated files","
         ".DS_Store",
         ".DS_Store?",
         "._*",
@@ -77,7 +77,7 @@ def create_rule1_ignore():
         "ehthumbs.db",
         "Thumbs.db",
         "",
-        "# Logs and temporary files",
+        "# Logs and temporary files","
         "*.log",
         "*.tmp",
         "*.temp",
@@ -85,25 +85,25 @@ def create_rule1_ignore():
         "temp/",
         "tmp/",
         "",
-        "# Database files",
+        "# Database files","
         "*.db",
         "*.sqlite",
         "*.sqlite3",
         "",
-        "# Compiled and binary files",
+        "# Compiled and binary files","
         "*.so",
         "*.dll",
         "*.exe",
         "*.o",
         "*.a",
         "",
-        "# Documentation and assets (often third - party)",
+        "# Documentation and assets (often third - party)","
         "docs/",
         "documentation/",
         "assets / archive/",
         "assets / generated/",
         "",
-        "# Test outputs and coverage",
+        "# Test outputs and coverage","
         ".coverage",
         "htmlcov/",
         ".tox/",
@@ -112,12 +112,13 @@ def create_rule1_ignore():
         "test_outputs/",
         "test_output/",
         "",
-        "# Backup and snapshot directories",
+        "# Backup and snapshot directories","
         "backups/",
         "snapshots/",
         "*.bak",
         "*.backup",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     ignore_file = Path(".rule1_ignore")
     with open(ignore_file, "w") as f:
@@ -129,8 +130,8 @@ def create_rule1_ignore():
 
 def create_first_party_scanner():
     """Create rule1_scan_first_party.py script."""
-    scanner_content = '''#!/usr / bin / env python3
-"""
+    scanner_content = '''#!/usr / bin / env python3'''
+""""""
 Rule - 1 First - Party Scanner
 
 Optimized scanner that only processes first - party code files,
@@ -140,7 +141,7 @@ Usage:
     python3 tools / rule1_scan_first_party.py                    # Preview files
     python3 tools / rule1_scan_first_party.py --print - files      # Print file paths
     python3 tools / rule1_scan_first_party.py --scan             # Actually scan
-"""
+""""""
 
 import sys
 import os
@@ -162,7 +163,7 @@ def load_ignore_patterns() -> Set[str]:
         with open(ignore_file, 'r') as f:
             for line in f:
                 line = line.strip()
-                if line and not line.startswith('#'):
+                if line and not line.startswith('#'):'
                     patterns.add(line)
 
     return patterns
@@ -201,7 +202,8 @@ def get_first_party_files(root_dir: Path = None) -> List[Path]:
     include_extensions = {
         '.py', '.js', '.ts', '.jsx', '.tsx', '.html', '.css', '.scss',
             '.json', '.yaml', '.yml', '.md', '.txt', '.sql', '.sh', '.bash'
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     for file_path in root_dir.rglob('*'):
         if not file_path.is_file():
@@ -236,7 +238,8 @@ def main():
     parser.add_argument('--print - files', action='store_true',
         help='Print file paths only (for piping to scanner)')
     parser.add_argument('--scan', action='store_true',
-        help='Actually run the scanner on first - party files')
+# BRACKET_SURGEON: disabled
+#         help='Actually run the scanner on first - party files')
     parser.add_argument('--limit', type = int, default = 50,
         help='Limit number of files to show in preview (default: 50)')
 
@@ -307,7 +310,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-'''
+''''''
 
     scanner_file = Path("tools / rule1_scan_first_party.py")
     scanner_file.parent.mkdir(parents=True, exist_ok=True)
@@ -339,7 +342,8 @@ def main():
     print(f"2. Scan first - party only: python3 {scanner_file} --scan")
     print(
         f"3. Pipe to scanner: python3 {scanner_file} --print - files | python3 -m utils.rule1_scanner --files - from -"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 if __name__ == "__main__":

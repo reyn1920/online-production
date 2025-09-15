@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 M1 MacBook Air Optimized Linly - Talker Runner
 Optimized for Apple Silicon M1 with 16GB RAM
 
@@ -11,7 +11,7 @@ Modes:
     - webui: Run full WebUI with optimizations
     - api: Run API server only
     - benchmark: Run performance benchmark
-"""
+""""""
 
 import argparse
 import os
@@ -39,7 +39,8 @@ try:
         initialize_m1_optimizations,
         optimize_memory,
         print_system_info,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError as e:
     print(f"❌ Error importing M1 optimizations: {e}")
     sys.exit(1)
@@ -93,9 +94,10 @@ def run_demo_mode():
             title="Linly - Talker M1 Demo",
             theme=gr.themes.Soft(),
             css=".gradio - container {max - width: 1200px; margin: auto;}",
-        ) as demo:
+# BRACKET_SURGEON: disabled
+#         ) as demo:
             gr.Markdown(
-                """
+                """"""
                 # 🎭 Linly - Talker M1 Optimized Demo
 
                 **Optimized for MacBook Air M1 with 16GB RAM**
@@ -104,22 +106,25 @@ def run_demo_mode():
                 - 💾 **Memory**: Efficient memory usage (max 70% RAM)
                 - 🎬 **Quality**: Balanced quality and performance
                 - 🔊 **Audio**: 16kHz optimized processing
-                """
-            )
+                """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             with gr.Tab("💬 Text to Speech"):
                 with gr.Row():
                     with gr.Column():
                         text_input = gr.Textbox(
                             label="Enter text to convert to speech",
-                            placeholder="Hello! I'm your AI assistant optimized for M1 MacBook Air.",
+                            placeholder="Hello! I'm your AI assistant optimized for M1 MacBook Air.",'
                             lines=3,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         voice_select = gr.Dropdown(
                             choices=["Default", "Female", "Male", "Cheerful"],
                             value="Default",
                             label="Voice Style",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         tts_btn = gr.Button("🗣️ Generate Speech", variant="primary")
 
                     with gr.Column():
@@ -130,19 +135,22 @@ def run_demo_mode():
                     fn=demo_text_to_speech,
                     inputs=[text_input, voice_select],
                     outputs=[tts_output],
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             with gr.Tab("🎬 Avatar Animation"):
                 with gr.Row():
                     with gr.Column():
                         avatar_text = gr.Textbox(
                             label="Text for avatar to speak",
-                            placeholder="Hello! I'm your digital avatar.",
+                            placeholder="Hello! I'm your digital avatar.",'
                             lines=2,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         avatar_image = gr.Image(
                             label="Upload avatar image (optional)", type="filepath"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         avatar_btn = gr.Button("🎭 Generate Avatar", variant="primary")
 
                     with gr.Column():
@@ -153,19 +161,22 @@ def run_demo_mode():
                     fn=demo_avatar_animation,
                     inputs=[avatar_text, avatar_image],
                     outputs=[avatar_output],
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             with gr.Tab("🎤 Voice Cloning"):
                 with gr.Row():
                     with gr.Column():
                         voice_file = gr.Audio(
                             label="Upload voice sample (30s max)", type="filepath"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         clone_text = gr.Textbox(
                             label="Text to synthesize with cloned voice",
                             placeholder="This is a test of voice cloning.",
                             lines=2,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         clone_btn = gr.Button("🎤 Clone Voice", variant="primary")
 
                     with gr.Column():
@@ -176,7 +187,8 @@ def run_demo_mode():
                     fn=demo_voice_cloning,
                     inputs=[voice_file, clone_text],
                     outputs=[clone_output],
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             with gr.Tab("💬 AI Chat"):
                 chatbot = gr.Chatbot(label="AI Assistant", height=400)
@@ -188,7 +200,7 @@ def run_demo_mode():
 
             with gr.Tab("📊 System Info"):
                 gr.Markdown(
-                    f"""
+                    f""""""
                     ## 🖥️ System Configuration
 
                     - **Device**: {DEVICE}
@@ -210,8 +222,9 @@ def run_demo_mode():
                     - If you get memory errors, restart the application
                     - For slow performance, reduce video quality settings
                     - Check Activity Monitor for memory usage
-                    """
-                )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 refresh_btn = gr.Button("🔄 Refresh System Info")
                 system_info = gr.Textbox(label="Current System Status", lines=10)
@@ -220,14 +233,14 @@ def run_demo_mode():
                     import psutil
                     import torch
 
-                    status = f"""
+                    status = f""""""
                     Memory Usage: {psutil.virtual_memory().percent}%
                     Available Memory: {psutil.virtual_memory().available/(1024**3):.1f} GB
                     CPU Usage: {psutil.cpu_percent()}%
                     Device: {DEVICE}
                     PyTorch Version: {torch.__version__}
                     MPS Available: {torch.backends.mps.is_available() if hasattr(torch.backends, 'mps') else 'N / A'}
-                    """
+                    """"""
                     return status
 
                 refresh_btn.click(fn=get_current_status, outputs=[system_info])
@@ -239,7 +252,8 @@ def run_demo_mode():
         demo.queue(
             max_size=UI_SETTINGS["queue_max_size"],
             default_concurrency_limit=UI_SETTINGS["default_concurrency_limit"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         demo.launch(
             server_name=SERVER_CONFIG["host"],
@@ -248,7 +262,8 @@ def run_demo_mode():
             debug=UI_SETTINGS["debug"],
             show_error=UI_SETTINGS["show_error"],
             quiet=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         print(f"❌ Error starting demo: {e}")
@@ -328,7 +343,8 @@ def run_one_button_test_mode():
     print("🎯 Production Avatar API Integration Test")
     print(
         f"🌐 Test interface will be available at: http://{SERVER_CONFIG['host']}:{SERVER_CONFIG['port']}"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     try:
         # Import and run the one - button test
@@ -380,7 +396,8 @@ def run_one_button_test_mode():
             share=False,
             show_error=True,
             show_api=False,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except ImportError as e:
         print(f"\\n❌ Error: Could not import one - button test module: {e}")
@@ -398,34 +415,38 @@ def main():
     parser = argparse.ArgumentParser(
         description="M1 MacBook Air Optimized Linly - Talker Runner",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+        epilog=""""""
 Examples:
   python run_m1_optimized.py                    # Run demo mode
   python run_m1_optimized.py --mode webui       # Run WebUI
   python run_m1_optimized.py --mode benchmark   # Run benchmark
   python run_m1_optimized.py --port 7007        # Custom port
-        """,
-    )
+        ""","""
+# BRACKET_SURGEON: disabled
+#     )
 
     parser.add_argument(
         "--mode",
         choices=["demo", "webui", "api", "benchmark", "one - button - test"],
         default="demo",
         help="Run mode (default: demo)",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     parser.add_argument(
         "--port",
         type=int,
         default=SERVER_CONFIG["port"],
         help=f'Server port (default: {SERVER_CONFIG["port"]})',
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     parser.add_argument(
         "--host",
         default=SERVER_CONFIG["host"],
         help=f'Server host (default: {SERVER_CONFIG["host"]})',
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
 

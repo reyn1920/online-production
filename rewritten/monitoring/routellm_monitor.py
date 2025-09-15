@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 RouteLL Credit Monitoring and Alerting System
 Provides real - time credit tracking, usage analytics, and automated alerts
-"""
+""""""
 
 import json
 import logging
@@ -56,7 +56,8 @@ class CreditMonitor:
         self.config = self._load_config(config_path)
         self.db_path = (
             db_path or "/Users/thomasbrianreynolds/online production/data/routellm_usage.db"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.logger = self._setup_logging()
         self.alert_handlers: List[Callable] = []
         self.monitoring_active = False
@@ -88,16 +89,21 @@ class CreditMonitor:
                         "75_percent": 15000,
                         "90_percent": 18000,
                         "95_percent": 19000,
-                    },
-                },
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 },
                 "monitoring": {
                     "credit_tracking": {
                         "daily_usage_limit": 2000,
                         "hourly_usage_limit": 200,
                         "update_frequency_seconds": 60,
-                    }
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
     def _setup_logging(self) -> logging.Logger:
         """Setup logging for monitor"""
@@ -130,7 +136,7 @@ class CreditMonitor:
 
         # Create usage metrics table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS usage_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp TEXT NOT NULL,
@@ -140,13 +146,15 @@ class CreditMonitor:
                     success BOOLEAN NOT NULL,
                     user_id TEXT,
                     request_type TEXT
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Create alerts table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS alerts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     level TEXT NOT NULL,
@@ -155,13 +163,15 @@ class CreditMonitor:
                     timestamp TEXT NOT NULL,
                     metric_data TEXT,
                     acknowledged BOOLEAN DEFAULT FALSE
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Create daily summaries table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS daily_summaries (
                 date TEXT PRIMARY KEY,
                     total_credits_used INTEGER NOT NULL,
@@ -169,9 +179,11 @@ class CreditMonitor:
                     avg_response_time_ms REAL NOT NULL,
                     success_rate REAL NOT NULL,
                     top_models TEXT NOT NULL
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -184,15 +196,16 @@ class CreditMonitor:
         # Get today's usage
         today = datetime.now().date().isoformat()
         cursor.execute(
-            """
+            """"""
             SELECT
                 COALESCE(SUM(credits_used), 0) as daily_credits,
                     COUNT(*) as daily_requests
             FROM usage_metrics
             WHERE DATE(timestamp) = ?
-        """,
+        ""","""
             (today,),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         daily_result = cursor.fetchone()
         daily_credits, daily_requests = daily_result or (0, 0)
@@ -200,15 +213,16 @@ class CreditMonitor:
         # Get this hour's usage
         current_hour = datetime.now().replace(minute=0, second=0, microsecond=0)
         cursor.execute(
-            """
+            """"""
             SELECT
                 COALESCE(SUM(credits_used), 0) as hourly_credits,
                     COUNT(*) as hourly_requests
             FROM usage_metrics
             WHERE timestamp >= ?
-        """,
+        ""","""
             (current_hour.isoformat(),),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         hourly_result = cursor.fetchone()
         hourly_credits, hourly_requests = hourly_result or (0, 0)
@@ -216,15 +230,16 @@ class CreditMonitor:
         # Get monthly usage (current month)
         month_start = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         cursor.execute(
-            """
+            """"""
             SELECT
                 COALESCE(SUM(credits_used), 0) as monthly_credits,
                     COUNT(*) as monthly_requests
             FROM usage_metrics
             WHERE timestamp >= ?
-        """,
+        ""","""
             (month_start.isoformat(),),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         monthly_result = cursor.fetchone()
         monthly_credits, monthly_requests = monthly_result or (0, 0)
@@ -244,8 +259,10 @@ class CreditMonitor:
             "remaining_credits": monthly_limit - monthly_credits,
             "usage_percentage": (
                 (monthly_credits / monthly_limit) * 100 if monthly_limit > 0 else 0
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     def record_usage(self, metric: UsageMetric):
         """Record a usage metric"""
@@ -253,7 +270,7 @@ class CreditMonitor:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT INTO usage_metrics
             (timestamp,
     credits_used,
@@ -261,9 +278,10 @@ class CreditMonitor:
     response_time_ms,
     success,
     user_id,
-    request_type)
+# BRACKET_SURGEON: disabled
+#     request_type)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """,
+        ""","""
             (
                 metric.timestamp.isoformat(),
                 metric.credits_used,
@@ -272,8 +290,10 @@ class CreditMonitor:
                 metric.success,
                 metric.user_id,
                 metric.request_type,
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -286,7 +306,8 @@ class CreditMonitor:
 
         self.logger.info(
             f"Recorded usage: {metric.credits_used} credits, model: {metric.model_used}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _check_usage_alerts(self):
         """Check current usage against thresholds and trigger alerts"""
@@ -308,8 +329,10 @@ class CreditMonitor:
                     message=f"Monthly credit usage has reached {usage_pct:.1f}% ({monthly_credits}/{self.current_usage['monthly_limit']} credits). Immediate action required.",
                     timestamp=datetime.now(),
                     metric_data=self.current_usage,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
         elif usage_pct >= 90 and not self._recent_alert_exists("WARNING_USAGE_90"):
             self._trigger_alert(
                 Alert(
@@ -318,8 +341,10 @@ class CreditMonitor:
                     message=f"Monthly credit usage has reached {usage_pct:.1f}% ({monthly_credits}/{self.current_usage['monthly_limit']} credits). Consider optimizing usage.",
                     timestamp=datetime.now(),
                     metric_data=self.current_usage,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
         elif usage_pct >= 75 and not self._recent_alert_exists("INFO_USAGE_75"):
             self._trigger_alert(
                 Alert(
@@ -328,8 +353,10 @@ class CreditMonitor:
                     message=f"Monthly credit usage has reached {usage_pct:.1f}% ({monthly_credits}/{self.current_usage['monthly_limit']} credits).",
                     timestamp=datetime.now(),
                     metric_data=self.current_usage,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Daily usage alerts
         if daily_credits >= daily_limit and not self._recent_alert_exists("DAILY_LIMIT_REACHED"):
@@ -342,9 +369,12 @@ class CreditMonitor:
                     metric_data={
                         "daily_usage": daily_credits,
                         "daily_limit": daily_limit,
-                    },
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Hourly usage alerts
         if hourly_credits >= hourly_limit and not self._recent_alert_exists("HOURLY_LIMIT_REACHED"):
@@ -357,9 +387,12 @@ class CreditMonitor:
                     metric_data={
                         "hourly_usage": hourly_credits,
                         "hourly_limit": hourly_limit,
-                    },
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _recent_alert_exists(self, alert_type: str, hours: int = 1) -> bool:
         """Check if a similar alert was triggered recently"""
@@ -368,12 +401,13 @@ class CreditMonitor:
 
         cutoff_time = datetime.now() - timedelta(hours=hours)
         cursor.execute(
-            """
+            """"""
             SELECT COUNT(*) FROM alerts
             WHERE title LIKE ? AND timestamp > ?
-        """,
+        ""","""
             (f"%{alert_type}%", cutoff_time.isoformat()),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         count = cursor.fetchone()[0]
         conn.close()
@@ -387,18 +421,20 @@ class CreditMonitor:
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             INSERT INTO alerts (level, title, message, timestamp, metric_data)
             VALUES (?, ?, ?, ?, ?)
-        """,
+        ""","""
             (
                 alert.level.value,
                 alert.title,
                 alert.message,
                 alert.timestamp.isoformat(),
                 json.dumps(alert.metric_data) if alert.metric_data else None,
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -437,7 +473,8 @@ class CreditMonitor:
             with open(alert_log_path, "a") as f:
                 f.write(
                     f"[{alert.timestamp.isoformat()}] {alert.level.value.upper()}: {alert.title}\\n"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 f.write(f"Message: {alert.message}\\n")
                 if alert.metric_data:
                     f.write(f"Data: {json.dumps(alert.metric_data)}\\n")
@@ -454,7 +491,7 @@ class CreditMonitor:
 
         # Get daily breakdown
         cursor.execute(
-            """
+            """"""
             SELECT
                 DATE(timestamp) as date,
                     SUM(credits_used) as credits,
@@ -465,15 +502,16 @@ class CreditMonitor:
             WHERE DATE(timestamp) >= ?
             GROUP BY DATE(timestamp)
             ORDER BY date DESC
-        """,
+        ""","""
             (start_date,),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         daily_data = cursor.fetchall()
 
         # Get model usage breakdown
         cursor.execute(
-            """
+            """"""
             SELECT
                 model_used,
                     SUM(credits_used) as total_credits,
@@ -483,9 +521,10 @@ class CreditMonitor:
             WHERE DATE(timestamp) >= ?
             GROUP BY model_used
             ORDER BY total_credits DESC
-        """,
+        ""","""
             (start_date,),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         model_data = cursor.fetchall()
 
@@ -501,19 +540,24 @@ class CreditMonitor:
                     "requests": row[2],
                     "avg_response_time_ms": round(row[3], 2) if row[3] else 0,
                     "success_rate": round(row[4], 2) if row[4] else 0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for row in daily_data
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "model_breakdown": [
                 {
                     "model": row[0],
                     "total_credits": row[1],
                     "total_requests": row[2],
                     "avg_response_time_ms": round(row[3], 2) if row[3] else 0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for row in model_data
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_recent_alerts(self, hours: int = 24) -> List[Dict]:
         """Get recent alerts"""
@@ -522,14 +566,15 @@ class CreditMonitor:
 
         cutoff_time = datetime.now() - timedelta(hours=hours)
         cursor.execute(
-            """
+            """"""
             SELECT level, title, message, timestamp, acknowledged
             FROM alerts
             WHERE timestamp > ?
             ORDER BY timestamp DESC
-        """,
+        ""","""
             (cutoff_time.isoformat(),),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         alerts = cursor.fetchall()
         conn.close()
@@ -541,9 +586,11 @@ class CreditMonitor:
                 "message": row[2],
                 "timestamp": row[3],
                 "acknowledged": bool(row[4]),
-            }
+# BRACKET_SURGEON: disabled
+#             }
             for row in alerts
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def start_monitoring(self):
         """Start continuous monitoring in background thread"""
@@ -584,7 +631,7 @@ class CreditMonitor:
                 time.sleep(60)  # Wait longer on error
 
     def _generate_daily_summary_if_needed(self):
-        """Generate daily summary if it doesn't exist for yesterday"""
+        """Generate daily summary if it doesn't exist for yesterday"""'
         yesterday = (datetime.now() - timedelta(days=1)).date().isoformat()
 
         conn = sqlite3.connect(self.db_path)
@@ -598,48 +645,52 @@ class CreditMonitor:
 
         # Generate summary for yesterday
         cursor.execute(
-            """
+            """"""
             SELECT
                 COALESCE(SUM(credits_used), 0) as total_credits,
                     COUNT(*) as total_requests,
                     COALESCE(AVG(response_time_ms), 0) as avg_response_time,
                     COALESCE(SUM(CASE WHEN success THEN 1 ELSE 0 END) * 100.0/COUNT(*),
-    0) as success_rate
+# BRACKET_SURGEON: disabled
+#     0) as success_rate
             FROM usage_metrics
             WHERE DATE(timestamp) = ?
-        """,
+        ""","""
             (yesterday,),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         summary_data = cursor.fetchone()
 
         # Get top models
         cursor.execute(
-            """
+            """"""
             SELECT model_used, COUNT(*) as usage_count
             FROM usage_metrics
             WHERE DATE(timestamp) = ?
             GROUP BY model_used
             ORDER BY usage_count DESC
             LIMIT 5
-        """,
+        ""","""
             (yesterday,),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         top_models = [f"{row[0]}({row[1]})" for row in cursor.fetchall()]
 
         # Insert summary
         cursor.execute(
-            """
+            """"""
             INSERT INTO daily_summaries
             (date,
     total_credits_used,
     total_requests,
     avg_response_time_ms,
     success_rate,
-    top_models)
+# BRACKET_SURGEON: disabled
+#     top_models)
             VALUES (?, ?, ?, ?, ?, ?)
-        """,
+        ""","""
             (
                 yesterday,
                 summary_data[0],
@@ -647,8 +698,10 @@ class CreditMonitor:
                 summary_data[2],
                 summary_data[3],
                 json.dumps(top_models),
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -673,7 +726,8 @@ if __name__ == "__main__":
         success=True,
         user_id="test_user",
         request_type="chat_completion",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     monitor.record_usage(test_metric)
 

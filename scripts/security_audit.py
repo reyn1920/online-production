@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-"""
+""""""
 Base44 Pack Security Audit Script
 Comprehensive security scanning for forbidden tokens, secrets, and risky code patterns.
-"""
+""""""
 
-import os
 import re
 import sys
 import json
-import hashlib
 from pathlib import Path
-from typing import List, Dict, Any, Set
+from typing import List, Dict, Any
 from datetime import datetime
 
 # Forbidden tokens that should never appear in code
@@ -25,21 +23,22 @@ FORBIDDEN_TOKENS = [
     r'ghu_[a-zA-Z0-9]{36}',  # GitHub User tokens
     r'ghs_[a-zA-Z0-9]{36}',  # GitHub Server tokens
     r'ghr_[a-zA-Z0-9]{36}',  # GitHub Refresh tokens
-    
+
     # Database URLs and connection strings
     r'postgresql://[^\s]+',
     r'mysql://[^\s]+',
     r'mongodb://[^\s]+',
     r'redis://[^\s]+',
-    
+
     # JWT tokens
     r'eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*',
-    
+
     # Private keys
     r'-----BEGIN PRIVATE KEY-----',
     r'-----BEGIN RSA PRIVATE KEY-----',
     r'-----BEGIN OPENSSH PRIVATE KEY-----',
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 # Risky code patterns
 RISKY_PATTERNS = [
@@ -53,7 +52,8 @@ RISKY_PATTERNS = [
     r'yaml\.load\s*\(',  # unsafe YAML loading
     r'input\s*\(',  # input() calls (potential injection)
     r'raw_input\s*\(',  # raw_input() calls
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 # Files to exclude from scanning
 EXCLUDE_PATTERNS = [
@@ -76,7 +76,8 @@ EXCLUDE_PATTERNS = [
     r'\.db$',
     r'\.pid$',
     r'security_audit\.py$',  # Don't scan ourselves
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 class SecurityAudit:
     def __init__(self, root_path: str = "."):
@@ -84,26 +85,26 @@ class SecurityAudit:
         self.findings: List[Dict[str, Any]] = []
         self.scanned_files = 0
         self.excluded_files = 0
-        
+
     def should_exclude_file(self, file_path: Path) -> bool:
         """Check if file should be excluded from scanning."""
         relative_path = str(file_path.relative_to(self.root_path))
-        
+
         for pattern in EXCLUDE_PATTERNS:
             if re.search(pattern, relative_path):
                 return True
-                
+
         return False
-    
+
     def scan_file_for_secrets(self, file_path: Path) -> List[Dict[str, Any]]:
         """Scan a single file for forbidden tokens and secrets."""
         findings = []
-        
+
         try:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
                 lines = content.split('\n')
-                
+
             # Check for forbidden tokens
             for i, line in enumerate(lines, 1):
                 for pattern in FORBIDDEN_TOKENS:
@@ -118,8 +119,9 @@ class SecurityAudit:
                             'match': match.group(),
                             'severity': 'critical',
                             'description': f'Potential secret or API key detected: {match.group()[:20]}...'
-                        })
-                        
+# BRACKET_SURGEON: disabled
+#                         })
+
             # Check for risky code patterns
             for i, line in enumerate(lines, 1):
                 for pattern in RISKY_PATTERNS:
@@ -134,8 +136,9 @@ class SecurityAudit:
                             'match': match.group(),
                             'severity': 'high',
                             'description': f'Risky code pattern detected: {match.group()}'
-                        })
-                        
+# BRACKET_SURGEON: disabled
+#                         })
+
         except Exception as e:
             findings.append({
                 'type': 'scan_error',
@@ -143,27 +146,28 @@ class SecurityAudit:
                 'error': str(e),
                 'severity': 'medium',
                 'description': f'Error scanning file: {e}'
-            })
-            
+# BRACKET_SURGEON: disabled
+#             })
+
         return findings
-    
+
     def scan_directory(self) -> Dict[str, Any]:
         """Scan entire directory tree for security issues."""
         print(f"Starting security audit of {self.root_path}")
-        
+
         for file_path in self.root_path.rglob('*'):
             if file_path.is_file():
                 if self.should_exclude_file(file_path):
                     self.excluded_files += 1
                     continue
-                    
+
                 self.scanned_files += 1
                 file_findings = self.scan_file_for_secrets(file_path)
                 self.findings.extend(file_findings)
-                
+
                 if self.scanned_files % 100 == 0:
                     print(f"Scanned {self.scanned_files} files...")
-        
+
         # Generate summary
         summary = {
             'timestamp': datetime.now().isoformat(),
@@ -175,19 +179,20 @@ class SecurityAudit:
             'high_findings': len([f for f in self.findings if f.get('severity') == 'high']),
             'medium_findings': len([f for f in self.findings if f.get('severity') == 'medium']),
             'findings': self.findings
-        }
-        
+# BRACKET_SURGEON: disabled
+#         }
+
         return summary
-    
+
     def generate_report(self, output_file: str = None) -> str:
         """Generate a comprehensive security audit report."""
         audit_results = self.scan_directory()
-        
+
         if output_file:
             with open(output_file, 'w') as f:
                 json.dump(audit_results, f, indent=2)
             print(f"Security audit report saved to {output_file}")
-        
+
         # Print summary to console
         print("\n" + "="*60)
         print("SECURITY AUDIT SUMMARY")
@@ -198,19 +203,19 @@ class SecurityAudit:
         print(f"Critical findings: {audit_results['critical_findings']}")
         print(f"High risk findings: {audit_results['high_findings']}")
         print(f"Medium risk findings: {audit_results['medium_findings']}")
-        
+
         if audit_results['critical_findings'] > 0:
             print("\n⚠️  CRITICAL ISSUES FOUND:")
             for finding in audit_results['findings']:
                 if finding.get('severity') == 'critical':
                     print(f"  {finding['file']}:{finding['line']} - {finding['description']}")
-        
+
         if audit_results['high_findings'] > 0:
             print("\n🔍 HIGH RISK ISSUES:")
             for finding in audit_results['findings']:
                 if finding.get('severity') == 'high':
                     print(f"  {finding['file']}:{finding['line']} - {finding['description']}")
-        
+
         # Return status
         if audit_results['critical_findings'] > 0:
             return "CRITICAL_ISSUES_FOUND"
@@ -224,20 +229,20 @@ class SecurityAudit:
 def main():
     """Main entry point for security audit."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description='Base44 Pack Security Audit')
     parser.add_argument('--path', '-p', default='.', help='Path to scan (default: current directory)')
     parser.add_argument('--output', '-o', help='Output file for detailed report')
     parser.add_argument('--quiet', '-q', action='store_true', help='Suppress console output')
-    
+
     args = parser.parse_args()
-    
+
     auditor = SecurityAudit(args.path)
     status = auditor.generate_report(args.output)
-    
+
     if not args.quiet:
         print(f"\nAudit Status: {status}")
-    
+
     # Exit with appropriate code
     if status == "CRITICAL_ISSUES_FOUND":
         sys.exit(2)

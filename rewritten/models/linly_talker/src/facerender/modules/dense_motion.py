@@ -6,10 +6,10 @@ from torch import nn
 
 
 class DenseMotionNetwork(nn.Module):
-    """
+    """"""
     Module that predicting a dense motion from sparse motion representation given by kp_source \
-    and kp_driving
-    """
+#     and kp_driving
+    """"""
 
 
     def __init__(
@@ -22,34 +22,46 @@ class DenseMotionNetwork(nn.Module):
             reshape_depth,
             compress,
             estimate_occlusion_map = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super(DenseMotionNetwork, self).__init__()
         # self.hourglass = Hourglass(block_expansion = block_expansion,
     in_features=(num_kp + 1)*(feature_channel + 1),
     max_features = max_features,
-    num_blocks = num_blocks)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     num_blocks = num_blocks)
         self.hourglass = Hourglass(
             block_expansion = block_expansion,
                 in_features=(num_kp + 1) * (compress + 1),
                 max_features = max_features,
                 num_blocks = num_blocks,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.mask = nn.Conv3d(
             self.hourglass.out_filters, num_kp + 1, kernel_size = 7, padding = 3
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.compress = nn.Conv3d(feature_channel, compress, kernel_size = 1)
         self.norm = BatchNorm3d(compress, affine = True)
 
         if estimate_occlusion_map:
+            pass
             # self.occlusion = nn.Conv2d(reshape_channel * reshape_depth,
     1,
     kernel_size = 7,
-    padding = 3)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     padding = 3)
             self.occlusion = nn.Conv2d(
                 self.hourglass.out_filters * reshape_depth, 1, kernel_size = 7, padding = 3
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             self.occlusion = None
 
@@ -60,18 +72,25 @@ class DenseMotionNetwork(nn.Module):
         bs, _, d, h, w = feature.shape
         identity_grid = make_coordinate_grid((d,
     h,
-    w),
-    type = kp_source["value"].type())
+# BRACKET_SURGEON: disabled
+#     w),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     type = kp_source["value"].type())
         identity_grid = identity_grid.view(1, 1, d, h, w, 3)
         coordinate_grid = identity_grid - kp_driving["value"].view(
             bs, self.num_kp, 1, 1, 1, 3
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # if 'jacobian' in kp_driving:
         if "jacobian" in kp_driving and kp_driving["jacobian"] is not None:
             jacobian = torch.matmul(
                 kp_source["jacobian"], torch.inverse(kp_driving["jacobian"])
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             jacobian = jacobian.unsqueeze(-3).unsqueeze(-3).unsqueeze(-3)
             jacobian = jacobian.repeat(1, 1, d, h, w, 1, 1)
             coordinate_grid = torch.matmul(jacobian, coordinate_grid.unsqueeze(-1))
@@ -79,13 +98,16 @@ class DenseMotionNetwork(nn.Module):
 
         driving_to_source = coordinate_grid + kp_source["value"].view(
             bs, self.num_kp, 1, 1, 1, 3
-        )  # (bs, num_kp, d, h, w, 3)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # (bs, num_kp, d, h, w, 3)
 
         # adding background feature
         identity_grid = identity_grid.repeat(bs, 1, 1, 1, 1, 1)
         sparse_motions = torch.cat(
             [identity_grid, driving_to_source], dim = 1
-        )  # bs num_kp + 1 d h w 3
+# BRACKET_SURGEON: disabled
+#         )  # bs num_kp + 1 d h w 3
 
         # sparse_motions = driving_to_source
 
@@ -96,17 +118,23 @@ class DenseMotionNetwork(nn.Module):
         bs, _, d, h, w = feature.shape
         feature_repeat = (
             feature.unsqueeze(1).unsqueeze(1).repeat(1, self.num_kp + 1, 1, 1, 1, 1, 1)
-        )  # (bs, num_kp + 1, 1, c, d, h, w)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # (bs, num_kp + 1, 1, c, d, h, w)
         feature_repeat = feature_repeat.view(
             bs * (self.num_kp + 1), -1, d, h, w
-        )  # (bs*(num_kp + 1), c, d, h, w)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # (bs*(num_kp + 1), c, d, h, w)
         sparse_motions = sparse_motions.view(
             (bs * (self.num_kp + 1), d, h, w, -1)
         )  # (bs*(num_kp + 1), d, h, w, 3) !!!!
         sparse_deformed = F.grid_sample(feature_repeat, sparse_motions)
         sparse_deformed = sparse_deformed.view(
             (bs, self.num_kp + 1, -1, d, h, w)
-        )  # (bs, num_kp + 1, c, d, h, w)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # (bs, num_kp + 1, c, d, h, w)
         return sparse_deformed
 
 
@@ -114,16 +142,22 @@ class DenseMotionNetwork(nn.Module):
         spatial_size = feature.shape[3:]
         gaussian_driving = kp2gaussian(
             kp_driving, spatial_size = spatial_size, kp_variance = 0.01
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         gaussian_source = kp2gaussian(
             kp_source, spatial_size = spatial_size, kp_variance = 0.01
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         heatmap = gaussian_driving - gaussian_source
 
         # adding background feature
         zeros = torch.zeros(
             heatmap.shape[0], 1, spatial_size[0], spatial_size[1], spatial_size[2]
-        ).type(heatmap.type())
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).type(heatmap.type())
         heatmap = torch.cat([zeros, heatmap], dim = 1)
         heatmap = heatmap.unsqueeze(2)  # (bs, num_kp + 1, 1, d, h, w)
         return heatmap
@@ -142,7 +176,9 @@ class DenseMotionNetwork(nn.Module):
 
         heatmap = self.create_heatmap_representations(
             deformed_feature, kp_driving, kp_source
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         input_ = torch.cat([heatmap, deformed_feature], dim = 2)
         input_ = input_.view(bs, -1, d, h, w)
@@ -154,7 +190,9 @@ class DenseMotionNetwork(nn.Module):
     num_kp + 1 * c,
     d,
     h,
-    w)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     w)
 
         prediction = self.hourglass(input_)
 
@@ -168,7 +206,9 @@ class DenseMotionNetwork(nn.Module):
 
         sparse_motion = sparse_motion.permute(
             0, 1, 5, 2, 3, 4
-        )  # (bs, num_kp + 1, 3, d, h, w)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # (bs, num_kp + 1, 3, d, h, w)
         deformation = (sparse_motion * mask).sum(dim = 1)  # (bs, 3, d, h, w)
         deformation = deformation.permute(0, 2, 3, 4, 1)  # (bs, d, h, w, 3)
 

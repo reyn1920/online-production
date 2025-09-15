@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Real MCP Puppeteer AI Assistant for Trae AI
 Actually uses the MCP Puppeteer server to interact with AI websites.
-"""
+""""""
 
 import asyncio
 import json
@@ -42,8 +42,10 @@ class MCPPuppeteerAIAssistant:
                     "input": 'textarea, input[type="text"], .chat - input, [contenteditable="true"]',
                     "submit": 'button[type="submit"], .send-button, .submit-btn, button:contains("Send")',
                     "response": ".response, .message, .chat - message, .output, .answer",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "gemini": {
                 "url": "https://gemini.google.com/app",
                 "name": "Google Gemini",
@@ -51,23 +53,28 @@ class MCPPuppeteerAIAssistant:
                     "input": 'div[contenteditable="true"], textarea, .input - area, .prompt - input',
                     "submit": 'button[aria - label="Send"], .send - button, button[data - testid="send - button"]',
                     "response": '.model - response, .response - text, .message - content, [data - message - author - role="assistant"]',
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "chatgpt": {
                 "url": "https://chatgpt.com/",
                 "name": "ChatGPT",
                 "selectors": {
-                    "input": '#prompt - textarea, textarea[placeholder*="Message"], .ProseMirror',
+                    "input": '#prompt - textarea, textarea[placeholder*="Message"], .ProseMirror','
                     "submit": 'button[data - testid="send - button"], .send - button',
                     "response": '.markdown, .message - content, [data - message - author - role="assistant"]',
-                },
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
         self.responses_cache = []
         self.browser_launched = False
 
     async def navigate_to_service(self, service: str) -> bool:
-        """
+        """"""
         Navigate to an AI service using MCP Puppeteer
 
         Args:
@@ -75,7 +82,7 @@ class MCPPuppeteerAIAssistant:
 
         Returns:
             True if navigation successful, False otherwise
-        """
+        """"""
         if service not in self.services:
             logger.error(f"Unknown service: {service}")
             return False
@@ -96,10 +103,13 @@ class MCPPuppeteerAIAssistant:
                     "launchOptions": {
                         "headless": False,  # Show browser for debugging
                         "args": ["--no - sandbox", "--disable - setuid - sandbox"],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "allowDangerous": True,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             # Simulate MCP call result
             logger.info(f"MCP Navigation call: {navigation_result}")
@@ -111,7 +121,8 @@ class MCPPuppeteerAIAssistant:
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
                 "tool_name": "puppeteer_screenshot",
                 "args": {"name": screenshot_name, "width": 1200, "height": 800},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.info(f"Taking navigation screenshot: {screenshot_name}")
             logger.info(f"MCP Screenshot call: {screenshot_result}")
@@ -126,8 +137,9 @@ class MCPPuppeteerAIAssistant:
 
     async def send_query_to_service(
         self, service: str, query: str
-    ) -> AIServiceResponse:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> AIServiceResponse:
+        """"""
         Send a query to an AI service using real browser automation
 
         Args:
@@ -136,7 +148,7 @@ class MCPPuppeteerAIAssistant:
 
         Returns:
             AIServiceResponse with the result
-        """
+        """"""
         if service not in self.services:
             return AIServiceResponse(
                 service=service,
@@ -147,7 +159,9 @@ class MCPPuppeteerAIAssistant:
                 timestamp=time.time(),
                 success=False,
                 error=f"Unknown service: {service}",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         try:
             service_config = self.services[service]
@@ -166,7 +180,8 @@ class MCPPuppeteerAIAssistant:
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
                 "tool_name": "puppeteer_fill",
                 "args": {"selector": selectors["input"], "value": query},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.info(f"MCP Fill call: {fill_result}")
             await asyncio.sleep(1)  # Simulate typing time
@@ -176,7 +191,8 @@ class MCPPuppeteerAIAssistant:
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
                 "tool_name": "puppeteer_click",
                 "args": {"selector": selectors["submit"]},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.info(f"MCP Click call: {click_result}")
             await asyncio.sleep(1)  # Simulate click
@@ -191,7 +207,8 @@ class MCPPuppeteerAIAssistant:
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
                 "tool_name": "puppeteer_screenshot",
                 "args": {"name": screenshot_name, "width": 1200, "height": 800},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.info(f"MCP Screenshot call: {screenshot_result}")
 
@@ -200,13 +217,15 @@ class MCPPuppeteerAIAssistant:
                 "server_name": "mcp.config.usrlocalmcp.Puppeteer",
                 "tool_name": "puppeteer_evaluate",
                 "args": {
-                    "script": f"""//Try multiple selectors to find the response
+                    "script": f"""//Try multiple selectors to find the response"""
                     const selectors = [
                         "{selectors['response']}",
                             ".message", ".response", ".chat - message",
                             "[data - message - author - role='assistant']",
                             ".markdown", ".model - response"
-                    ];
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ];
 
                     let responseText = "";
                     for (const selector of selectors) {{
@@ -216,14 +235,19 @@ class MCPPuppeteerAIAssistant:
                             responseText = lastElement.innerText || lastElement.textContent;
                             if (responseText.trim()) {{
                                 break;
-                            }}
-                        }}
-                    }}
+# BRACKET_SURGEON: disabled
+#                             }}
+# BRACKET_SURGEON: disabled
+#                         }}
+# BRACKET_SURGEON: disabled
+#                     }}
 
                     return responseText || "No response found";
-                    """
-                },
-            }
+                    """"""
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.info(f"MCP Evaluate call: {evaluate_result}")
 
@@ -238,7 +262,9 @@ class MCPPuppeteerAIAssistant:
                 screenshot_name=screenshot_name,
                 timestamp=time.time(),
                 success=True,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self.responses_cache.append(response)
             logger.info(f"Successfully got response from {service_config['name']}")
@@ -255,27 +281,30 @@ class MCPPuppeteerAIAssistant:
                 timestamp=time.time(),
                 success=False,
                 error=str(e),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     def _generate_realistic_response(self, service: str, query: str) -> str:
-        """
+        """"""
         Generate realistic responses that would come from each AI service
         In production, this would be the actual extracted text from the webpage
-        """
+        """"""
         if (
             "error" in query.lower()
             or "debug" in query.lower()
             or "sqlite" in query.lower()
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             if service == "abacus":
-                return """Based on my analysis of your SQLite error, here's what I found:
+                return """Based on my analysis of your SQLite error, here's what I found:"""
 
 **Error Analysis:**
-The error "no such column: search_keywords" indicates that your database table schema doesn't include the expected column.
+The error "no such column: search_keywords" indicates that your database table schema doesn't include the expected column.'
 
 **Root Cause:**
-- Your application code is trying to query a column that doesn't exist
-- This typically happens when database migrations haven't been run
+- Your application code is trying to query a column that doesn't exist'
+- This typically happens when database migrations haven't been run'
 - Or when the schema definition is out of sync with the code
 
 **Solution:**
@@ -292,14 +321,14 @@ ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT;
 **Prevention:**
 - Add database schema tests to your CI/CD pipeline
 - Use database migration tools like Alembic (Python) or Flyway
-- Implement graceful degradation for missing columns"""
+- Implement graceful degradation for missing columns""""""
 
             elif service == "gemini":
-                return f"""I can help you resolve this SQLite database error. Let me break down the issue \
-    and provide a comprehensive solution.
+                return f"""I can help you resolve this SQLite database error. Let me break down the issue \"""
+#     and provide a comprehensive solution.
 
 ## Problem Analysis
-The error "no such column: search_keywords" occurs when your SQL query references a column that doesn't exist in the table structure.
+The error "no such column: search_keywords" occurs when your SQL query references a column that doesn't exist in the table structure.'
 
 ## Immediate Fix
 Run this SQL command to add the missing column:
@@ -332,19 +361,19 @@ except sqlite3.OperationalError as e:
 ```
 
 ## Long - term Solution
-Implement a proper database migration system to manage schema changes systematically."""
+Implement a proper database migration system to manage schema changes systematically.""""""
 
             elif service == "chatgpt":
-                return f"""This SQLite error is straightforward to fix. Here's a complete solution:
+                return f"""This SQLite error is straightforward to fix. Here's a complete solution:"""
 
 ## Quick Fix
-The column doesn't exist in your table. Add it with:
+The column doesn't exist in your table. Add it with:'
 ```sql
 ALTER TABLE api_discovery_tasks ADD COLUMN search_keywords TEXT;
 ```
 
 ## Understanding the Error
-- **What happened**: Your code tried to access a column that doesn't exist
+- **What happened**: Your code tried to access a column that doesn't exist'
 - **Why it happened**: Database schema and code are out of sync
 - **Impact**: Query fails with OperationalError
 
@@ -371,7 +400,9 @@ def safe_query_with_keywords(cursor, keywords):
         return cursor.execute(
             "SELECT * FROM api_discovery_tasks WHERE search_keywords LIKE ?",
                 (f'%{keywords}%',)
-        ).fetchall()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).fetchall()
     except sqlite3.OperationalError as e:
         if "no such column: search_keywords" in str(e):
             # Fallback to query without keywords
@@ -385,22 +416,23 @@ def safe_query_with_keywords(cursor, keywords):
 - Implement graceful degradation
 - Use proper ORM with schema management
 
-This approach ensures your application remains robust even when schema changes occur."""
+This approach ensures your application remains robust even when schema changes occur.""""""
 
         else:
             # General coding assistance
             responses = {
-                "abacus": f"For your coding query about '{query[:50]}...', I recommend following data science best practices \
-    and implementing proper error handling.",
+                "abacus": f"For your coding query about '{query[:50]}...', I recommend following data science best practices \"
+#     and implementing proper error handling.",
                 "gemini": f"I can help you with '{query[:50]}...'. Let me provide a structured approach to solve this problem.",
-                "chatgpt": f"Here's how to approach '{query[:50]}...': Start with understanding the requirements, then implement step by step.",
-            }
+                "chatgpt": f"Here's how to approach '{query[:50]}...': Start with understanding the requirements, then implement step by step.",'
+# BRACKET_SURGEON: disabled
+#             }
             return responses.get(service, "AI service response not available")
 
     async def debug_with_multiple_services(
         self, error_message: str, code_context: str = "", services: List[str] = None
     ) -> Dict[str, AIServiceResponse]:
-        """
+        """"""
         Debug an error using multiple AI services
 
         Args:
@@ -410,11 +442,11 @@ This approach ensures your application remains robust even when schema changes o
 
         Returns:
             Dictionary of responses from services
-        """
+        """"""
         if services is None:
             services = list(self.services.keys())
 
-        query = f"""Please help me debug this error:
+        query = f"""Please help me debug this error:"""
 
 Error Message: {error_message}
 
@@ -427,7 +459,7 @@ I need:
 3. Prevention strategies
 4. Best practices to avoid similar issues
 
-Please provide a comprehensive solution."""
+Please provide a comprehensive solution.""""""
 
         logger.info(f"Debugging with services: {services}")
 
@@ -445,8 +477,9 @@ Please provide a comprehensive solution."""
 
     def generate_debugging_report(
         self, responses: Dict[str, AIServiceResponse], error_message: str
-    ) -> str:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> str:
+        """"""
         Generate a comprehensive debugging report
 
         Args:
@@ -455,7 +488,7 @@ Please provide a comprehensive solution."""
 
         Returns:
             Formatted debugging report
-        """
+        """"""
         report = "🔍 AI - Powered Debugging Report\\n"
         report += f"Error: {error_message}\\n"
         report += "=" * 60 + "\\n\\n"
@@ -466,14 +499,16 @@ Please provide a comprehensive solution."""
         if successful_responses:
             report += (
                 f"✅ AI Analysis Results ({len(successful_responses)} services):\\n\\n"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             for service, response in successful_responses.items():
                 service_name = self.services[service]["name"]
-                report += f"## {service_name} Analysis\\n"
+                report += f"## {service_name} Analysis\\n""
                 report += f"**URL:** {response.url}\\n"
-                report += f"**Timestamp:** {time.strftime('%Y-%m-%d %H:%M:%S',
-    time.localtime(response.timestamp))}\\n"
+                report += f"**Timestamp:** {time.strftime('%Y-%m-%d %H:%M:%S',"
+    time.localtime(response.timestamp))}\\n""
                 if response.screenshot_name:
                     report += f"**Screenshot:** {response.screenshot_name}.png\\n"
                 report += f"\\n**Response:**\\n{response.response}\\n"
@@ -504,7 +539,7 @@ Please provide a comprehensive solution."""
         return report
 
     def export_debugging_session(self, filename: str = None) -> str:
-        """
+        """"""
         Export the complete debugging session data
 
         Args:
@@ -512,7 +547,7 @@ Please provide a comprehensive solution."""
 
         Returns:
             Path to exported file
-        """
+        """"""
         if filename is None:
             timestamp = time.strftime("%Y % m%d_ % H%M % S")
             filename = f"ai_debugging_session_{timestamp}.json"
@@ -523,7 +558,8 @@ Please provide a comprehensive solution."""
                 "total_queries": len(self.responses_cache),
                 "services_used": list(set(r.service for r in self.responses_cache)),
                 "browser_launched": self.browser_launched,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "mcp_calls": [
                 {
                     "service": r.service,
@@ -535,11 +571,15 @@ Please provide a comprehensive solution."""
                     "timestamp": r.timestamp,
                     "success": r.success,
                     "error": r.error,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for r in self.responses_cache
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
             "service_configurations": self.services,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         with open(filename, "w", encoding="utf - 8") as f:
             json.dump(export_data, f, indent=2, ensure_ascii=False)
@@ -562,17 +602,19 @@ async def demo_real_mcp_ai_assistant():
     print("\\n🔍 Debugging SQLite Error with Real Browser Automation")
 
     error_message = "sqlite3.OperationalError: no such column: search_keywords"
-    code_context = """
+    code_context = """"""
 # Code that caused the error:
 cursor.execute(
     "SELECT task_id, search_keywords FROM api_discovery_tasks WHERE search_keywords LIKE ?",
         ('%python%',)
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 # Full error traceback:
 # sqlite3.OperationalError: no such column: search_keywords
 # This suggests the database schema is missing the expected column
-    """
+    """"""
 
     # Get responses from AI services using real browser automation
     print("\\n🌐 Launching browsers and querying AI services...")
@@ -580,7 +622,9 @@ cursor.execute(
         error_message,
         code_context,
         services=["abacus", "gemini", "chatgpt"],  # Query all services
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # Generate and display comprehensive debugging report
     print("\\n📋 Generating debugging report...")

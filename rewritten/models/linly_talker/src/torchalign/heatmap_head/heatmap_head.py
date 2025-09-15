@@ -13,12 +13,14 @@ class HeatmapHead(nn.Module):
         self.decoder = transforms.__dict__[cfg.HEATMAP.DECODER](
             topk=cfg.HEATMAP.TOPK,
             stride=cfg.HEATMAP.STRIDE,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.head = blocks.__dict__[cfg.HEATMAP.BLOCK](
             in_channels=cfg.HEATMAP.IN_CHANNEL,
             proj_channels=cfg.HEATMAP.PROJ_CHANNEL,
             out_channels=cfg.HEATMAP.OUT_CHANNEL,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, input):
         return self.decoder(self.head(input))

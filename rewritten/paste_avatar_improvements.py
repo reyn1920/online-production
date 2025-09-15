@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Paste Avatar Improvements - Enhanced Avatar Features for Paste Application
 
 This module provides comprehensive improvements for the two avatar types in the paste application:
@@ -18,7 +18,7 @@ Features:
 
 Author: TRAE.AI Enhancement System
 Version: 2.0.0
-"""
+""""""
 
 import asyncio
 import logging
@@ -36,13 +36,15 @@ try:
         AnimateAvatar,
         AnimationConfig,
         AnimationQuality,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     from backend.services.avatar_engines import (
         AvatarEngineManager,
         AvatarRequest,
         AvatarResponse,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError as e:
     logging.warning(f"Avatar systems not fully available: {e}")
 
@@ -92,23 +94,28 @@ class EmotionDetector:
             "happy": [
                 r"\\b(happy|joy|excited|great|awesome|wonderful|amazing)\\b",
                 r"😊|😄|😃|🎉|✨",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "sad": [
                 r"\\b(sad|depressed|down|upset|disappointed|terrible)\\b",
                 r"😢|😭|💔|😞",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "angry": [
                 r"\\b(angry|mad|furious|annoyed|frustrated|hate)\\b",
                 r"😠|😡|🤬|💢",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "surprised": [
                 r"\\b(surprised|shocked|amazed|wow|incredible|unbelievable)\\b",
                 r"😲|😱|🤯|😮",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "neutral": [r"\\b(okay|fine|normal|standard|regular)\\b"],
             "professional": [r"\\b(meeting|presentation|business|corporate|formal)\\b"],
             "casual": [r"\\b(hey|hi|chat|talk|casual|informal)\\b"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def detect_emotion(self, text: str) -> Dict[str, float]:
         """Detect emotions in text with confidence scores."""
@@ -146,33 +153,39 @@ class VoiceStyleManager:
                 "pitch": 1.0,
                 "emphasis": 0.5,
                 "pause_duration": 0.3,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "professional": {
                 "speed": 0.9,
                 "pitch": 0.95,
                 "emphasis": 0.7,
                 "pause_duration": 0.4,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "casual": {
                 "speed": 1.1,
                 "pitch": 1.05,
                 "emphasis": 0.3,
                 "pause_duration": 0.2,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "dramatic": {
                 "speed": 0.8,
                 "pitch": 1.1,
                 "emphasis": 0.9,
                 "pause_duration": 0.5,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         self.accent_modifiers = {
             "british": {"pitch": 0.95, "speed": 0.95},
             "american": {"pitch": 1.0, "speed": 1.0},
             "australian": {"pitch": 1.05, "speed": 1.05},
             "neutral": {"pitch": 1.0, "speed": 1.0},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_voice_settings(self, style: str, accent: str, emotion: str) -> Dict[str, Any]:
         """Get optimized voice settings based on style, accent, and emotion."""
@@ -199,7 +212,8 @@ class VoiceStyleManager:
             "professional": {"speed": 0.95, "pitch": 0.98},
             "casual": {"speed": 1.05, "pitch": 1.02},
             "neutral": {"speed": 1.0, "pitch": 1.0},
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return modifiers.get(emotion, modifiers["neutral"])
 
 
@@ -214,36 +228,42 @@ class AvatarTemplateManager:
                 "clothing": "business_suit",
                 "gestures": "formal",
                 "eye_contact": "direct",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "teacher": {
                 "visual_style": "friendly_professional",
                 "background": "classroom",
                 "clothing": "smart_casual",
                 "gestures": "explanatory",
                 "eye_contact": "engaging",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "storyteller": {
                 "visual_style": "expressive",
                 "background": "cozy_library",
                 "clothing": "casual_warm",
                 "gestures": "animated",
                 "eye_contact": "warm",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "presenter": {
                 "visual_style": "confident",
                 "background": "modern_office",
                 "clothing": "business_professional",
                 "gestures": "confident",
                 "eye_contact": "authoritative",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "casual_chat": {
                 "visual_style": "relaxed",
                 "background": "home_office",
                 "clothing": "casual",
                 "gestures": "natural",
                 "eye_contact": "friendly",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_template(self, template_name: str) -> Dict[str, Any]:
         """Get avatar template configuration."""
@@ -290,7 +310,8 @@ class EnhancedPasteAvatarGenerator:
             # Step 3: Get optimized voice settings
             voice_settings = self.voice_manager.get_voice_settings(
                 config.voice_style, config.accent, primary_emotion
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Step 4: Apply template if specified
             if config.custom_template:
@@ -302,11 +323,13 @@ class EnhancedPasteAvatarGenerator:
             if config.avatar_type == "3d":
                 result = await self._generate_3d_avatar(
                     paste_content, config, voice_settings, template_config, analysis
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 result = await self._generate_standard_avatar(
                     paste_content, config, voice_settings, template_config, analysis
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Step 6: Apply post - processing enhancements
             if result["success"]:
@@ -330,7 +353,8 @@ class EnhancedPasteAvatarGenerator:
             "has_urls": bool(re.search(r"https?://", content)),
             "language_detected": "en",  # Could be enhanced with language detection
             "complexity": "medium",  # Could be enhanced with readability analysis
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Determine content type
         if analysis["has_code"]:
@@ -353,7 +377,8 @@ class EnhancedPasteAvatarGenerator:
             "interactive": "casual_chat",
             "presentation": "presenter",
             "casual": "casual_chat",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         template_name = template_mapping.get(content_type, "casual_chat")
         return self.template_manager.get_template(template_name)
@@ -375,15 +400,18 @@ class EnhancedPasteAvatarGenerator:
                     **voice_settings,
                     "language": config.language,
                     "quality": config.quality,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 video_settings={
                     "quality": config.quality,
                     "background_removal": config.background_removal,
                     "auto_gestures": config.auto_gestures,
                     "template": template_config,
                     "emotion_mapping": True,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             # Generate using avatar manager with failover
             response = await self.avatar_manager.generate_avatar_with_failover(request)
@@ -398,9 +426,11 @@ class EnhancedPasteAvatarGenerator:
                     "voice_optimization": True,
                     "template_applied": template_config,
                     "analysis": analysis,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "error": response.error_message if not response.success else None,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Error generating standard avatar: {e}")
@@ -425,7 +455,8 @@ class EnhancedPasteAvatarGenerator:
                 style=template_config.get("visual_style", "professional"),
                 clothing=template_config.get("clothing", "business_casual"),
                 background=template_config.get("background", "neutral"),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create animation specification
             animation_spec = AnimationSpec(
@@ -435,12 +466,14 @@ class EnhancedPasteAvatarGenerator:
                 voice_settings=voice_settings,
                 gesture_style=template_config.get("gestures", "natural"),
                 eye_contact_style=template_config.get("eye_contact", "natural"),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Generate 3D avatar
             result = await self.avatar_pipeline.create_avatar(
                 spec=character_spec, animation_spec=animation_spec
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "success": True,
@@ -451,15 +484,18 @@ class EnhancedPasteAvatarGenerator:
                     "base_model": result.base_model_path,
                     "rigged_model": result.rigged_model_path,
                     "animated_model": result.animated_model_path,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "enhancements_applied": {
                     "3d_pipeline": True,
                     "advanced_rigging": True,
                     "professional_animation": True,
                     "template_applied": template_config,
                     "analysis": analysis,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Error generating 3D avatar: {e}")
@@ -534,8 +570,10 @@ class EnhancedPasteAvatarGenerator:
                         "error": str(e),
                         "paste_id": paste_data.get("id"),
                         "batch_index": i,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return results
 
@@ -545,7 +583,8 @@ class EnhancedPasteAvatarGenerator:
         traits: List[str],
         voice_config: Dict[str, Any],
         visual_config: Dict[str, Any],
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Create a persistent avatar personality."""
         personality_id = str(uuid.uuid4())
 
@@ -558,7 +597,8 @@ class EnhancedPasteAvatarGenerator:
             memory={},
             created_at=datetime.now(),
             last_used=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.personalities[personality_id] = personality
         logger.info(f"Created avatar personality: {name} ({personality_id})")
@@ -579,8 +619,10 @@ class EnhancedPasteAvatarGenerator:
                     "traits": ["knowledgeable", "precise", "helpful"],
                     "template": "teacher",
                     "voice_style": "professional",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         if emotion == "happy":
             suggestions.append(
@@ -589,8 +631,10 @@ class EnhancedPasteAvatarGenerator:
                     "traits": ["energetic", "positive", "engaging"],
                     "template": "presenter",
                     "voice_style": "casual",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         if analysis["has_questions"]:
             suggestions.append(
@@ -599,8 +643,10 @@ class EnhancedPasteAvatarGenerator:
                     "traits": ["curious", "engaging", "responsive"],
                     "template": "casual_chat",
                     "voice_style": "natural",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Always include a neutral option
         suggestions.append(
@@ -609,8 +655,10 @@ class EnhancedPasteAvatarGenerator:
                 "traits": ["clear", "professional", "reliable"],
                 "template": "news_anchor",
                 "voice_style": "professional",
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         return suggestions
 
@@ -643,7 +691,8 @@ def create_paste_avatar_routes(app):
                 language=data.get("language", "en"),
                 accent=data.get("accent", "neutral"),
                 custom_template=data.get("template"),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Generate avatar
             result = await generator.generate_avatar_from_paste(paste_content, config)
@@ -669,7 +718,8 @@ def create_paste_avatar_routes(app):
                 avatar_type=data.get("avatar_type", "standard"),
                 voice_style=data.get("voice_style", "natural"),
                 quality=data.get("quality", "medium"),  # Use medium for batch to save time
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Generate avatars
             results = await generator.batch_generate_avatars(paste_list, config)
@@ -680,8 +730,10 @@ def create_paste_avatar_routes(app):
                     "results": results,
                     "total_processed": len(results),
                     "successful": len([r for r in results if r.get("success")]),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Error in batch paste avatar generation: {e}")
@@ -723,11 +775,11 @@ if __name__ == "__main__":
         generator = EnhancedPasteAvatarGenerator()
 
         # Test paste content
-        test_content = """
+        test_content = """"""
         Hello everyone! Welcome to our exciting new product presentation.
-        Today we'll be showcasing amazing features that will revolutionize
-        how you work with data. Are you ready to be amazed? Let's dive in!
-        """
+        Today we'll be showcasing amazing features that will revolutionize'
+        how you work with data. Are you ready to be amazed? Let's dive in!'
+        """"""
 
         # Create configuration
         config = PasteAvatarConfig(
@@ -737,7 +789,8 @@ if __name__ == "__main__":
             auto_gestures=True,
             quality="high",
             custom_template="presenter",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         print("🎬 Generating enhanced avatar from paste content...")
         result = await generator.generate_avatar_from_paste(test_content, config)

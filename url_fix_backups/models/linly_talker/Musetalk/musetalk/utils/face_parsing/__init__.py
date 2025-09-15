@@ -19,7 +19,8 @@ class FaceParsing:
         self,
         resnet_path="./Musetalk / models / face - parse - bisent / resnet18 - 5c106cde.pth",
         model_pth="./Musetalk / models / face - parse - bisent / 79999_iter.pth",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         net = BiSeNet(resnet_path)
         if torch.cuda.is_available():
             net.cuda()
@@ -34,8 +35,10 @@ class FaceParsing:
             [
                 transforms.ToTensor(),
                 transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
     def __call__(self, image, size=(512, 512)):
         if isinstance(image, str):

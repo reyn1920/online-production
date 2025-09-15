@@ -19,7 +19,8 @@ class YouTubeIntegration:
         self,
         secrets_db_path: str = "secrets.sqlite",
         config_path: str = "config / youtube.oauth.json",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.secrets_db_path = secrets_db_path
         self.config_path = config_path
         self.logger = logging.getLogger(__name__)
@@ -102,17 +103,21 @@ class YouTubeIntegration:
                         "auth_uri": "https://accounts.google.com / o/oauth2 / auth",
                         "token_uri": "https://oauth2.googleapis.com / token",
                         "redirect_uris": [config["global"]["redirect_uri"]],
-                    }
-                },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 },
                 scopes=config["global"]["scopes"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             flow.redirect_uri = config["global"]["redirect_uri"]
 
             # Generate authorization URL
             authorization_url, state = flow.authorization_url(
                 access_type="offline", prompt="consent", state=channel_id
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return authorization_url
 
@@ -141,10 +146,13 @@ class YouTubeIntegration:
                         "auth_uri": "https://accounts.google.com / o/oauth2 / auth",
                         "token_uri": "https://oauth2.googleapis.com / token",
                         "redirect_uris": [config["global"]["redirect_uri"]],
-                    }
-                },
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 },
                 scopes=config["global"]["scopes"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             flow.redirect_uri = config["global"]["redirect_uri"]
 
@@ -193,7 +201,8 @@ class YouTubeIntegration:
                 client_id=config["global"]["client_id"],
                 client_secret=config["global"]["client_secret"],
                 scopes=config["global"]["scopes"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Refresh the token
             self.credentials.refresh(Request())
@@ -228,14 +237,17 @@ class YouTubeIntegration:
                     "description": description,
                     "tags": tags or [],
                     "categoryId": "22",  # People & Blogs
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "status": {"privacyStatus": privacy_status},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Call the API's videos.insert method to create and upload the video
             insert_request = self.youtube_service.videos().insert(
                 part=",".join(body.keys()), body=body, media_body=video_path
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             response = insert_request.execute()
             video_id = response["id"]
@@ -256,7 +268,8 @@ class YouTubeIntegration:
         try:
             response = (
                 self.youtube_service.channels().list(part="snippet,statistics", mine=True).execute()
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response["items"]:
                 return response["items"][0]
@@ -292,12 +305,14 @@ class YouTubeIntegration:
                         "note": channel_data.get("note", "Unknown"),
                         "authorized_at": channel_data.get("authorized_at"),
                         "authorized": True,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     authorized[channel_id] = {
                         "note": channel_data.get("note", "Unknown"),
                         "authorized": False,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             return authorized
         except Exception as e:

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Security Middleware for TRAE AI Production
 
 This module provides comprehensive security middleware including:
@@ -9,7 +9,7 @@ This module provides comprehensive security middleware including:
 - Request validation
 - IP filtering
 - Session management
-"""
+""""""
 
 import json
 import logging
@@ -106,14 +106,16 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         for client_ip in list(self.clients.keys()):
             self.clients[client_ip] = [
                 req_time for req_time in self.clients[client_ip] if req_time > cutoff_time
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             if not self.clients[client_ip]:
                 del self.clients[client_ip]
 
         # Clean up expired blocked IPs
         expired_blocks = [
             ip for ip, unblock_time in self.blocked_ips.items() if current_time >= unblock_time
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         for ip in expired_blocks:
             del self.blocked_ips[ip]
 
@@ -128,8 +130,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                     "error": "Rate limit exceeded",
                     "message": "Too many requests. Please try again later.",
                     "retry_after": 60,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
         response = await call_next(request)
         return response
@@ -153,13 +157,16 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                 "img - src 'self' data: https:; "
                 "connect - src 'self' https: wss: ws:; "
                 "frame - ancestors 'none';"
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "Referrer - Policy": "strict - origin - when - cross - origin",
             "Permissions - Policy": (
                 "geolocation=(), microphone=(), camera=(), "
                 "payment=(), usb=(), magnetometer=(), gyroscope=()"
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     async def dispatch(self, request: Request, call_next):
         response = await call_next(request)
@@ -188,7 +195,7 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
             "onload=",
             "onerror=",
             "../",
-            "..\\\\",
+            "..\\\\","
             "SELECT",
             "INSERT",
             "DELETE",
@@ -198,7 +205,8 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
             "setTimeout(",
             "setInterval(",
             "Function(",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def dispatch(self, request: Request, call_next):
         # Check request size
@@ -207,7 +215,8 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
             return JSONResponse(
                 status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
                 content={"error": "Request too large"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Validate request path
         if any(pattern.lower() in str(request.url).lower() for pattern in self.suspicious_patterns):
@@ -215,7 +224,8 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
             return JSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 content={"error": "Invalid request"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         response = await call_next(request)
         return response
@@ -239,14 +249,16 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
                 return JSONResponse(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     content={"error": "Authentication required"},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Validate API key if provided
             if api_key and api_key != self.api_key:
                 return JSONResponse(
                     status_code=status.HTTP_403_FORBIDDEN,
                     content={"error": "Invalid API key"},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         response = await call_next(request)
         return response
@@ -280,7 +292,8 @@ def setup_security_middleware(app: FastAPI):
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Add compression middleware
     app.add_middleware(GZipMiddleware, minimum_size=1000)
@@ -288,7 +301,8 @@ def setup_security_middleware(app: FastAPI):
     # Add trusted host middleware
     app.add_middleware(
         TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "*.netlify.app"]
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Add custom security middleware
     app.add_middleware(LoggingMiddleware)

@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 Hypocrisy Tracker Database Manager
 
 This module provides database integration for the hypocrisy tracking system,
 handling storage, retrieval, \
-    and management of contradictory statements from public figures.
+#     and management of contradictory statements from public figures.
 
 Features:
 - SQLite database integration with proper schema
@@ -15,7 +15,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -73,7 +73,8 @@ class HypocrisyFinding:
             "value",
             "policy_shift",
             "audience_based",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         if self.contradiction_type not in valid_contradiction_types:
             self.contradiction_type = "direct"  # Default to 'direct' if invalid
 
@@ -85,7 +86,8 @@ class HypocrisyFinding:
             "politician",
             "celebrity",
             "influencer",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         if self.subject_type not in valid_subject_types:
             self.subject_type = "person"  # Default to 'person' if invalid
 
@@ -119,11 +121,13 @@ class HypocrisyFinding:
             "social_media_mentions": self.social_media_mentions,
             "fact_check_results": (
                 json.dumps(self.fact_check_results) if self.fact_check_results else None
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "created_by": self.created_by,
             "content_used": False,
             "content_used_at": None,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 class HypocrisyDatabaseManager:
@@ -169,7 +173,7 @@ class HypocrisyDatabaseManager:
 
                 # Create hypocrisy_tracker table with comprehensive schema
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS hypocrisy_tracker (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             subject_name TEXT NOT NULL,
@@ -200,9 +204,11 @@ class HypocrisyDatabaseManager:
                             reviewed_at TIMESTAMP,
                             content_used BOOLEAN DEFAULT FALSE,
                             content_used_at TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Create indexes for performance
                 indexes = [
@@ -214,21 +220,23 @@ class HypocrisyDatabaseManager:
                     "CREATE INDEX IF NOT EXISTS idx_hypocrisy_impact ON hypocrisy_tracker(public_impact_score DESC)",
                     "CREATE INDEX IF NOT EXISTS idx_hypocrisy_confidence ON hypocrisy_tracker(confidence_score DESC)",
                     "CREATE INDEX IF NOT EXISTS idx_hypocrisy_content_used ON hypocrisy_tracker(content_used)",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 for index_sql in indexes:
                     cursor.execute(index_sql)
 
                 # Create trigger for updated_at timestamp
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TRIGGER IF NOT EXISTS update_hypocrisy_tracker_timestamp
                     AFTER UPDATE ON hypocrisy_tracker
                     BEGIN
                         UPDATE hypocrisy_tracker SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
                     END
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 self.logger.info("Hypocrisy tracker database initialized successfully")
@@ -253,7 +261,8 @@ class HypocrisyDatabaseManager:
                 "value",
                 "policy_shift",
                 "audience_based",
-            }
+# BRACKET_SURGEON: disabled
+#             }
             if finding.contradiction_type not in valid_contradiction_types:
                 finding.contradiction_type = "direct"
                 self.logger.warning(f"Invalid contradiction_type, defaulting to 'direct'")
@@ -265,7 +274,8 @@ class HypocrisyDatabaseManager:
                 "politician",
                 "celebrity",
                 "influencer",
-            }
+# BRACKET_SURGEON: disabled
+#             }
             if finding.subject_type not in valid_subject_types:
                 finding.subject_type = "person"
                 self.logger.warning(f"Invalid subject_type, defaulting to 'person'")
@@ -275,7 +285,8 @@ class HypocrisyDatabaseManager:
                 "verified",
                 "disputed",
                 "debunked",
-            }
+# BRACKET_SURGEON: disabled
+#             }
             if finding.verification_status not in valid_verification_statuses:
                 finding.verification_status = "pending"
                 self.logger.warning(f"Invalid verification_status, defaulting to 'pending'")
@@ -285,12 +296,13 @@ class HypocrisyDatabaseManager:
 
                 # Check for duplicate findings
                 cursor.execute(
-                    """
+                    """"""
                     SELECT id FROM hypocrisy_tracker
                     WHERE subject_name = ? AND statement_1 = ? AND statement_2 = ?
-                """,
+                ""","""
                     (finding.subject_name, finding.statement_1, finding.statement_2),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if cursor.fetchone():
                     self.logger.warning(f"Duplicate hypocrisy finding for {finding.subject_name}")
@@ -302,19 +314,21 @@ class HypocrisyDatabaseManager:
                 placeholders = ", ".join(["?" for _ in finding_data])
 
                 cursor.execute(
-                    f"""
+                    f""""""
                     INSERT INTO hypocrisy_tracker ({columns})
                     VALUES ({placeholders})
-                """,
+                ""","""
                     list(finding_data.values()),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 finding_id = cursor.lastrowid
                 conn.commit()
 
                 self.logger.info(
                     f"Stored hypocrisy finding {finding_id} for {finding.subject_name}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return finding_id
 
         except sqlite3.IntegrityError as e:
@@ -333,7 +347,7 @@ class HypocrisyDatabaseManager:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT id, subject_name, subject_type, statement_1, statement_2,
                         context_1, context_2, date_1, date_2, source_1, source_2,
                                contradiction_type, severity_score, confidence_score,
@@ -344,9 +358,10 @@ class HypocrisyDatabaseManager:
                       AND confidence_score >= ?
                     ORDER BY public_impact_score DESC, severity_score DESC, confidence_score DESC, created_at DESC
                     LIMIT ?
-                """,
+                ""","""
                     (min_confidence, limit),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 opportunities = []
                 for row in cursor.fetchall():
@@ -354,7 +369,8 @@ class HypocrisyDatabaseManager:
                         "id": row["id"],
                         "subject_name": row[
                             "subject_name"
-                        ],  # Fixed: use 'subject_name' instead of 'figure'
+# BRACKET_SURGEON: disabled
+#                         ],  # Fixed: use 'subject_name' instead of 'figure'
                         "subject_type": row["subject_type"],
                         "statement_1": row["statement_1"],
                         "statement_2": row["statement_2"],
@@ -371,7 +387,8 @@ class HypocrisyDatabaseManager:
                         "tags": json.loads(row["tags"]) if row["tags"] else [],
                         "analysis_notes": row["analysis_notes"],
                         "discovered_at": row["created_at"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     opportunities.append(opportunity)
 
                 self.logger.info(f"Retrieved {len(opportunities)} hypocrisy content opportunities")
@@ -388,13 +405,14 @@ class HypocrisyDatabaseManager:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE hypocrisy_tracker
                     SET content_used = TRUE, content_used_at = CURRENT_TIMESTAMP
                     WHERE id = ?
-                """,
+                ""","""
                     (finding_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if cursor.rowcount > 0:
                     conn.commit()
@@ -410,26 +428,29 @@ class HypocrisyDatabaseManager:
 
     def update_verification_status(
         self, finding_id: int, status: str, reviewed_by: str = None
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Update the verification status of a finding"""
         try:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE hypocrisy_tracker
                     SET verification_status = ?, reviewed_by = ?, reviewed_at = CURRENT_TIMESTAMP
                     WHERE id = ?
-                """,
+                ""","""
                     (status, reviewed_by, finding_id),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if cursor.rowcount > 0:
                     conn.commit()
                     self.logger.info(
                         f"Updated verification status for finding {finding_id} to {status}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return True
                 else:
                     self.logger.warning(f"Hypocrisy finding {finding_id} not found")
@@ -451,22 +472,24 @@ class HypocrisyDatabaseManager:
 
                 # By verification status
                 cursor.execute(
-                    """
+                    """"""
                     SELECT verification_status, COUNT(*)
                     FROM hypocrisy_tracker
                     GROUP BY verification_status
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 by_status = dict(cursor.fetchall())
 
                 # By subject type
                 cursor.execute(
-                    """
+                    """"""
                     SELECT subject_type, COUNT(*)
                     FROM hypocrisy_tracker
                     GROUP BY subject_type
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 by_subject_type = dict(cursor.fetchall())
 
                 # Content usage
@@ -475,11 +498,12 @@ class HypocrisyDatabaseManager:
 
                 # Recent findings (last 7 days)
                 cursor.execute(
-                    """
+                    """"""
                     SELECT COUNT(*) FROM hypocrisy_tracker
                     WHERE created_at >= datetime('now', '-7 days')
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 recent_findings = cursor.fetchone()[0]
 
                 return {
@@ -489,7 +513,8 @@ class HypocrisyDatabaseManager:
                     "content_used": content_used,
                     "content_unused": total_findings - content_used,
                     "recent_findings_7_days": recent_findings,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             self.logger.error(f"Error getting statistics: {e}")
@@ -532,14 +557,15 @@ class HypocrisyDatabaseManager:
                 params.append(limit)
 
                 cursor.execute(
-                    f"""
+                    f""""""
                     SELECT * FROM hypocrisy_tracker
                     WHERE {where_clause}
                     ORDER BY created_at DESC
                     LIMIT ?
-                """,
+                ""","""
                     params,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 findings = []
                 for row in cursor.fetchall():
@@ -567,14 +593,16 @@ class HypocrisyDatabaseManager:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM hypocrisy_tracker
                     WHERE created_at >= datetime('now', '-{} hours')
                     ORDER BY created_at DESC
-                """.format(
+                """.format("""
                         hours
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 findings = []
                 for row in cursor.fetchall():
@@ -590,7 +618,8 @@ class HypocrisyDatabaseManager:
 
                 self.logger.info(
                     f"Found {len(findings)} recent hypocrisy findings from last {hours} hours"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return findings
 
         except Exception as e:
@@ -604,15 +633,17 @@ class HypocrisyDatabaseManager:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     DELETE FROM hypocrisy_tracker
                     WHERE created_at < datetime('now', '-{} days')
                       AND verification_status = 'debunked'
                       AND content_used = FALSE
-                """.format(
+                """.format("""
                         days_old
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 deleted_count = cursor.rowcount
                 conn.commit()

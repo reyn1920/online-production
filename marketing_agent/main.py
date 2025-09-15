@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Marketing Agent - Complete 11 - Point Marketing Engine
 Handles all marketing channels with real API integrations
-"""
+""""""
 
 import asyncio
 import os
@@ -31,7 +31,8 @@ from sqlalchemy import (
     String,
     Text,
     create_engine,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -196,7 +197,8 @@ class TwitterManager:
                     consumer_secret=self.config.twitter_api_secret,
                     access_token=self.config.twitter_access_token,
                     access_token_secret=self.config.twitter_access_token_secret,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Twitter API v1.1 for media upload
                 auth = tweepy.OAuth1UserHandler(
@@ -204,7 +206,8 @@ class TwitterManager:
                     self.config.twitter_api_secret,
                     self.config.twitter_access_token,
                     self.config.twitter_access_token_secret,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.api = tweepy.API(auth)
 
                 logger.info("✅ Twitter API initialized")
@@ -226,14 +229,16 @@ class TwitterManager:
             # Post tweet
             response = self.client.create_tweet(
                 text=content, media_ids=media_ids if media_ids else None
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "success": True,
                 "tweet_id": response.data["id"],
                 "content": content,
                 "media_attached": bool(media_ids),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Tweet posting failed: {e}")
@@ -251,13 +256,15 @@ class TwitterManager:
                         "like_count": metrics.get("like_count", 0),
                         "reply_count": metrics.get("reply_count", 0),
                         "quote_count": metrics.get("quote_count", 0),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             return {
                 "retweet_count": 0,
                 "like_count": 0,
                 "reply_count": 0,
                 "quote_count": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             logger.error(f"Error fetching tweet metrics: {e}")
             return {
@@ -265,7 +272,8 @@ class TwitterManager:
                 "like_count": 0,
                 "reply_count": 0,
                 "quote_count": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 class EmailMarketingManager:
@@ -284,7 +292,8 @@ class EmailMarketingManager:
                 if self.config.mailchimp_api_key:
                     self.mailchimp_client = mailchimp3.MailChimp(
                         mc_api=self.config.mailchimp_api_key
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     logger.info("✅ Mailchimp client initialized")
 
                 if self.config.sendgrid_api_key:
@@ -309,7 +318,8 @@ class EmailMarketingManager:
                     to_emails=recipient,
                     subject=subject,
                     html_content=content,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 response = self.sendgrid_client.send(message)
                 results.append(
@@ -317,8 +327,10 @@ class EmailMarketingManager:
                         "recipient": recipient,
                         "status_code": response.status_code,
                         "success": response.status_code == 202,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             success_count = sum(1 for r in results if r["success"])
 
@@ -327,7 +339,8 @@ class EmailMarketingManager:
                 "sent_count": success_count,
                 "total_recipients": len(recipients),
                 "results": results,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Email campaign failed: {e}")
@@ -341,28 +354,35 @@ class EmailMarketingManager:
                 response = self.sendgrid_client.client.stats.get(
                     query_params={
                         "start_date": (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
                 if response.status_code == 200:
                     stats = response.body
                     return {
                         "delivered": sum(
                             stat.get("stats", [{}])[0].get("metrics", {}).get("delivered", 0)
                             for stat in stats
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "opens": sum(
                             stat.get("stats", [{}])[0].get("metrics", {}).get("opens", 0)
                             for stat in stats
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "clicks": sum(
                             stat.get("stats", [{}])[0].get("metrics", {}).get("clicks", 0)
                             for stat in stats
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "bounces": sum(
                             stat.get("stats", [{}])[0].get("metrics", {}).get("bounces", 0)
                             for stat in stats
-                        ),
-                    }
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     }
             return {"delivered": 0, "opens": 0, "clicks": 0, "bounces": 0}
         except Exception as e:
             logger.error(f"Error fetching campaign metrics: {e}")
@@ -419,9 +439,12 @@ class SEOManager:
                                         if interest_data[keyword].iloc[-1]
                                         > interest_data[keyword].iloc[0]
                                         else "stable"
-                                    ),
-                                }
-                            )
+# BRACKET_SURGEON: disabled
+#                                     ),
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                             )
                     except Exception as e:
                         logger.warning(f"Error processing keyword {keyword}: {e}")
                         continue
@@ -442,7 +465,8 @@ class AffiliateManager:
             "amazon": self.config.amazon_associate_id,
             "commission_junction": self.config.commission_junction_api_key,
             "shareasale": self.config.shareasale_api_key,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def generate_affiliate_link(
         self, product_url: str, network: str = "amazon"
@@ -473,7 +497,8 @@ class AffiliateManager:
                             "affiliate_url": affiliate_url,
                             "commission_rate": 4.0,  # Amazon's typical rate
                             "network": "amazon",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             elif network.lower() == "shareasale":
                 # ShareASale link generation
@@ -485,7 +510,8 @@ class AffiliateManager:
                         "affiliate_url": affiliate_url,
                         "commission_rate": 8.0,
                         "network": "shareasale",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Fallback for unsupported networks
             return {
@@ -494,7 +520,8 @@ class AffiliateManager:
                 "affiliate_url": product_url,  # Return original URL
                 "commission_rate": 0.0,
                 "network": network,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Error generating affiliate link: {e}")
@@ -504,7 +531,8 @@ class AffiliateManager:
                 "affiliate_url": product_url,
                 "commission_rate": 0.0,
                 "network": network,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 
 class MarketingAgent:
@@ -537,13 +565,15 @@ class MarketingAgent:
             sys.stdout,
             level=self.config.log_level,
             format="<green>{time:YYYY - MM - DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logger.add(
             "./logs/marketing_agent.log",
             rotation="1 day",
             retention="30 days",
             level=self.config.log_level,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def setup_routes(self):
         """Setup FastAPI routes"""
@@ -556,9 +586,11 @@ class MarketingAgent:
                 "twitter_configured": bool(self.config.twitter_bearer_token),
                 "email_configured": bool(
                     self.config.sendgrid_api_key or self.config.mailchimp_api_key
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "affiliate_configured": bool(self.config.amazon_associate_id),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         @self.app.post("/campaigns")
         async def create_campaign(request: CampaignRequest):
@@ -568,7 +600,8 @@ class MarketingAgent:
                     name=request.name,
                     campaign_type=request.campaign_type,
                     budget=request.budget,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 self.db_session.add(campaign)
                 self.db_session.commit()
@@ -581,7 +614,8 @@ class MarketingAgent:
                     "name": campaign.name,
                     "channels": request.channels,
                     "budget": request.budget,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             except Exception as e:
                 logger.error(f"Campaign creation failed: {e}")
@@ -604,7 +638,8 @@ class MarketingAgent:
                     post_id=result.get("tweet_id") if result else None,
                     status="posted" if result and result.get("success") else "failed",
                     posted_at=(datetime.now() if result and result.get("success") else None),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 self.db_session.add(social_post)
                 self.db_session.commit()
@@ -614,7 +649,8 @@ class MarketingAgent:
                     "post_id": social_post.id,
                     "platform": request.platform,
                     "result": result,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             except Exception as e:
                 logger.error(f"Social post failed: {e}")
@@ -626,7 +662,8 @@ class MarketingAgent:
             try:
                 result = await self.email_manager.send_campaign(
                     request.subject, request.content, request.recipient_list
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Save to database
                 email_campaign = EmailCampaign(
@@ -635,7 +672,8 @@ class MarketingAgent:
                     recipient_count=len(request.recipient_list),
                     sent_count=result.get("sent_count", 0),
                     sent_at=datetime.now() if result.get("success") else None,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 self.db_session.add(email_campaign)
                 self.db_session.commit()
@@ -645,7 +683,8 @@ class MarketingAgent:
                     "campaign_id": email_campaign.id,
                     "sent_count": result.get("sent_count", 0),
                     "total_recipients": len(request.recipient_list),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             except Exception as e:
                 logger.error(f"Email campaign failed: {e}")
@@ -675,7 +714,8 @@ class MarketingAgent:
                         original_url=product_url,
                         affiliate_url=result["affiliate_url"],
                         commission_rate=result.get("commission_rate", 0.0),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     self.db_session.add(affiliate_link)
                     self.db_session.commit()
@@ -702,12 +742,14 @@ class MarketingAgent:
                         "active": len([c for c in campaigns if c.status == "active"]),
                         "total_budget": sum(c.budget for c in campaigns),
                         "total_spent": sum(c.spent for c in campaigns),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "social_media": {
                         "total_posts": len(social_posts),
                         "posted": len([p for p in social_posts if p.status == "posted"]),
                         "platforms": list(set(p.platform for p in social_posts)),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "email_marketing": {
                         "total_campaigns": len(email_campaigns),
                         "total_sent": sum(e.sent_count for e in email_campaigns),
@@ -715,14 +757,18 @@ class MarketingAgent:
                             sum(e.open_rate for e in email_campaigns) / len(email_campaigns)
                             if email_campaigns
                             else 0
-                        ),
-                    },
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     },
                     "affiliate_marketing": {
                         "total_links": len(affiliate_links),
                         "total_clicks": sum(a.clicks for a in affiliate_links),
                         "total_revenue": sum(a.revenue for a in affiliate_links),
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
             except Exception as e:
                 logger.error(f"Analytics dashboard failed: {e}")
@@ -779,7 +825,8 @@ class MarketingAgent:
             host="0.0.0.0",
             port=8002,
             log_level=self.config.log_level.lower(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         server = uvicorn.Server(config)
         await server.serve()
 

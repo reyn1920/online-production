@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Synthesize Release v3 - Add - only synthesizer for multi - bundle ingestion
 Creates immutable releases with comprehensive metadata and validation
-"""
+""""""
 
 import hashlib
 import json
@@ -45,7 +45,9 @@ class SynthesizerV3:
                 self.releases_dir,
                 self.temp_dir,
                 self.archive_dir,
-                ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]:
             dir_path.mkdir(parents = True, exist_ok = True)
 
         self.secret_store = get_secret_store()
@@ -67,7 +69,9 @@ class SynthesizerV3:
                     ".zip",
                         ".tar.gz",
                         ".tgz",
-                        ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]:
                     bundle_info = self._analyze_bundle(bundle_path)
                     if bundle_info:
                         bundles.append(bundle_info)
@@ -96,7 +100,8 @@ class SynthesizerV3:
                     "checksum": self._calculate_checksum(bundle_path),
                     "contents": [],
                     "metadata": {},
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Extract and analyze contents
             if bundle_path.suffix == ".zip":
@@ -106,17 +111,22 @@ class SynthesizerV3:
                     for name in zf.namelist():
                         if name.endswith(
                             ("manifest.json", "metadata.json", "bundle.json")
-                        ):
+# BRACKET_SURGEON: disabled
+#                         ):
                             try:
                                 with zf.open(name) as f:
                                     bundle_info["metadata"] = json.loads(
                                         f.read().decode("utf - 8")
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                                 break
                             except Exception as e:
                                 logger.warning(
                                     f"Failed to read metadata from {name}: {e}"
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
             elif bundle_path.suffix in [".tar.gz", ".tgz"]:
                 with tarfile.open(bundle_path, "r:gz") as tf:
@@ -125,19 +135,24 @@ class SynthesizerV3:
                     for name in tf.getnames():
                         if name.endswith(
                             ("manifest.json", "metadata.json", "bundle.json")
-                        ):
+# BRACKET_SURGEON: disabled
+#                         ):
                             try:
                                 member = tf.getmember(name)
                                 f = tf.extractfile(member)
                                 if f:
                                     bundle_info["metadata"] = json.loads(
                                         f.read().decode("utf - 8")
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                                 break
                             except Exception as e:
                                 logger.warning(
                                     f"Failed to read metadata from {name}: {e}"
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
             return bundle_info
 
@@ -156,7 +171,8 @@ class SynthesizerV3:
                     "format": "dir",
                     "size": sum(
                     f.stat().st_size for f in bundle_path.rglob("*") if f.is_file()
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "modified": datetime.fromtimestamp(
                     bundle_path.stat().st_mtime
                 ).isoformat(),
@@ -165,9 +181,12 @@ class SynthesizerV3:
                     str(p.relative_to(bundle_path))
                     for p in bundle_path.rglob("*")
                     if p.is_file()
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "metadata": {},
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Look for metadata files
             for metadata_file in ["manifest.json", "metadata.json", "bundle.json"]:
@@ -180,7 +199,9 @@ class SynthesizerV3:
                     except Exception as e:
                         logger.warning(
                             f"Failed to read metadata from {metadata_path}: {e}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             return bundle_info
 
@@ -225,7 +246,8 @@ class SynthesizerV3:
                 "invalid_bundles": [],
                 "warnings": [],
                 "total_size": 0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         for bundle in bundles:
             try:
@@ -235,8 +257,11 @@ class SynthesizerV3:
                         {
                             "bundle": bundle["name"],
                                 "error": "Empty bundle or failed to read contents",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     continue
 
                 # Size validation (max 1GB per bundle)
@@ -245,8 +270,11 @@ class SynthesizerV3:
                         {
                             "bundle": bundle["name"],
                                 "error": f"Bundle too large: {bundle['size']} bytes (max 1GB)",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     continue
 
                 # Content validation
@@ -256,7 +284,8 @@ class SynthesizerV3:
                     if any(
                         content_path.endswith(ext)
                         for ext in [".exe", ".bat", ".sh", ".ps1"]
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         suspicious_files.append(content_path)
 
                 if suspicious_files:
@@ -264,8 +293,11 @@ class SynthesizerV3:
                         {
                             "bundle": bundle["name"],
                                 "warning": f"Contains executable files: {suspicious_files[:5]}",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 # Metadata validation
                 if bundle.get("metadata"):
@@ -274,14 +306,19 @@ class SynthesizerV3:
                         field
                         for field in required_fields
                         if field not in bundle["metadata"]
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
                     if missing_fields:
                         validation_results["warnings"].append(
                             {
                                 "bundle": bundle["name"],
                                     "warning": f"Missing metadata fields: {missing_fields}",
-                                    }
-                        )
+# BRACKET_SURGEON: disabled
+#                                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 validation_results["valid_bundles"].append(bundle)
                 validation_results["total_size"] += bundle["size"]
@@ -291,17 +328,22 @@ class SynthesizerV3:
                     {
                         "bundle": bundle.get("name", "unknown"),
                             "error": f"Validation failed: {str(e)}",
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         logger.info(
-            f"Validation complete: {
+            f"Validation complete: {"
                 len(
-                    validation_results['valid_bundles'])} valid, "
-            f"{
+                    validation_results['valid_bundles'])} valid, ""
+            f"{"
                 len(
-                    validation_results['invalid_bundles'])} invalid bundles"
-        )
+                    validation_results['invalid_bundles'])} invalid bundles""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return validation_results
 
@@ -318,7 +360,8 @@ class SynthesizerV3:
             return {
                 "success": False,
                     "error": f"Release {release_version} already exists (immutable releases)",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         try:
             # Create release directory structure
@@ -337,10 +380,12 @@ class SynthesizerV3:
                     processed_bundles.append(bundle_result)
                 else:
                     logger.error(
-                        f"Failed to process bundle {
+                        f"Failed to process bundle {"
                             bundle['name']}: {
-                                bundle_result['error']}"
-                    )
+                                bundle_result['error']}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Create release manifest
             release_manifest = {
@@ -355,8 +400,10 @@ class SynthesizerV3:
                         "source_bundles": len(bundles),
                         "processed_bundles": len(processed_bundles),
                         "creation_timestamp": datetime.now().timestamp(),
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Write manifest
             manifest_path = metadata_dir / "release_manifest.json"
@@ -382,9 +429,11 @@ class SynthesizerV3:
             self.release_manifest = release_manifest
 
             logger.info(
-                f"Release {release_version} created successfully with {
-                    len(processed_bundles)} bundles"
-            )
+                f"Release {release_version} created successfully with {"
+                    len(processed_bundles)} bundles""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return {
                 "success": True,
@@ -393,7 +442,8 @@ class SynthesizerV3:
                     "bundles_processed": len(processed_bundles),
                     "total_size": release_manifest["total_size"],
                     "checksum": release_checksum,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             logger.error(f"Failed to create release: {e}")
@@ -438,7 +488,8 @@ class SynthesizerV3:
                     "processed_at": datetime.now().isoformat(),
                     "contents_count": len(bundle["contents"]),
                     "metadata": bundle.get("metadata", {}),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             return {
                 "success": True,
@@ -446,19 +497,21 @@ class SynthesizerV3:
                     "size": bundle_metadata["size"],
                     "checksum": bundle_metadata["release_checksum"],
                     "metadata": bundle_metadata,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             return {
                 "success": False,
                     "name": bundle.get("name", "unknown"),
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def _create_release_summary(self, manifest: Dict[str, Any], summary_path: Path):
         """Create human - readable release summary"""
-        summary_content = f"""# Release {manifest['version']} Summary
+        summary_content = f"""# Release {manifest['version']} Summary"""
 
 **Created:** {manifest['created_at']}
 **Synthesizer Version:** {manifest['metadata']['synthesizer_version']}
@@ -468,7 +521,7 @@ class SynthesizerV3:
 
 ## Processed Bundles
 
-"""
+""""""
 
         for i, bundle in enumerate(manifest["bundles"], 1):
             summary_content += f"{i}. **{bundle['name']}**\\n"
@@ -482,10 +535,12 @@ class SynthesizerV3:
                     summary_content += f"   - Description: {metadata['description']}\\n"
             summary_content += "\\n"
 
-        summary_content += f"\\n## Release Integrity\\n\\n"
+        summary_content += f"\\n## Release Integrity\\n\\n""
         summary_content += (
             f"This release is immutable and cryptographically verified.\\n"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         summary_content += f"Any modification will invalidate the release checksum.\\n"
 
         with open(summary_path, "w", encoding="utf - 8") as f:
@@ -507,11 +562,13 @@ class SynthesizerV3:
                     logger.info(f"Archived bundle: {bundle_path.name}")
             except Exception as e:
                 logger.warning(
-                    f"Failed to archive bundle {
+                    f"Failed to archive bundle {"
                         bundle.get(
                             'name',
-                                'unknown')}: {e}"
-                )
+                                'unknown')}: {e}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def get_release_manifest(
@@ -526,7 +583,9 @@ class SynthesizerV3:
 
         manifest_path = (
             self.releases_dir / release_version/"metadata"/"release_manifest.json"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if not manifest_path.exists():
             return {"error": f"Release manifest not found for {release_version}"}
@@ -556,8 +615,11 @@ class SynthesizerV3:
                                 "bundles_count": manifest.get("bundles_count", 0),
                                 "total_size": manifest.get("total_size", 0),
                                 "checksum": manifest.get("checksum", ""),
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # Sort by creation date (newest first)
         releases.sort(key = lambda x: x.get("created_at", ""), reverse = True)
@@ -578,7 +640,8 @@ class SynthesizerV3:
                     "success": False,
                         "error": "No bundles found in incoming directory",
                         "bundles_found": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             # Step 2: Validate bundles
             validation_results = self.validate_bundles(bundles)
@@ -587,12 +650,15 @@ class SynthesizerV3:
                     "success": False,
                         "error": "No valid bundles after validation",
                         "validation_results": validation_results,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             # Step 3: Create release
             release_result = self.create_release(
                 validation_results["valid_bundles"], release_version
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Combine results
             synthesis_result = {
@@ -603,7 +669,8 @@ class SynthesizerV3:
                     "validation_warnings": len(validation_results["warnings"]),
                     "validation_results": validation_results,
                     "release_result": release_result,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             if release_result["success"]:
                 synthesis_result.update(
@@ -611,8 +678,11 @@ class SynthesizerV3:
                         "release_version": release_result["release_version"],
                             "release_path": release_result["release_path"],
                             "total_size": release_result["total_size"],
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             logger.info(f"Synthesis completed: {synthesis_result['success']}")
             return synthesis_result
@@ -629,17 +699,25 @@ def main():
 
     parser = argparse.ArgumentParser(
         description="Synthesize Release v3 - Multi - bundle synthesizer"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--base - dir", default=".", help="Base directory (default: current)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--release - version",
     help="Specific release version (default: auto - generated)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--list - releases", action="store_true", help="List all releases"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--get - manifest", help="Get manifest for specific release")
 
     args = parser.parse_args()
@@ -653,7 +731,9 @@ def main():
             print(
                 f"  {release['version']} - {release['bundles_count']} bundles, "
                 f"{release['total_size']:,} bytes"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         return
 
     if args.get_manifest:

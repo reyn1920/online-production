@@ -38,7 +38,8 @@ class ConvReluNorm(nn.Module):
         kernel_size,
         n_layers,
         p_dropout,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.in_channels = in_channels
         self.hidden_channels = hidden_channels
@@ -52,7 +53,8 @@ class ConvReluNorm(nn.Module):
         self.norm_layers = nn.ModuleList()
         self.conv_layers.append(
             nn.Conv1d(in_channels, hidden_channels, kernel_size, padding=kernel_size // 2)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.norm_layers.append(LayerNorm(hidden_channels))
         self.relu_drop = nn.Sequential(nn.ReLU(), nn.Dropout(p_dropout))
         for _ in range(n_layers - 1):
@@ -62,8 +64,10 @@ class ConvReluNorm(nn.Module):
                     hidden_channels,
                     kernel_size,
                     padding=kernel_size // 2,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             self.norm_layers.append(LayerNorm(hidden_channels))
         self.proj = nn.Conv1d(hidden_channels, out_channels, 1)
         self.proj.weight.data.zero_()
@@ -80,9 +84,9 @@ class ConvReluNorm(nn.Module):
 
 
 class DDSConv(nn.Module):
-    """
+    """"""
     Dialted and Depth - Separable Convolution
-    """
+    """"""
 
     def __init__(self, channels, kernel_size, n_layers, p_dropout=0.0):
         super().__init__()
@@ -107,8 +111,10 @@ class DDSConv(nn.Module):
                     groups=channels,
                     dilation=dilation,
                     padding=padding,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             self.convs_1x1.append(nn.Conv1d(channels, channels, 1))
             self.norms_1.append(LayerNorm(channels))
             self.norms_2.append(LayerNorm(channels))
@@ -137,7 +143,8 @@ class WN(torch.nn.Module):
         n_layers,
         gin_channels=0,
         p_dropout=0,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(WN, self).__init__()
         assert kernel_size % 2 == 1
         self.hidden_channels = hidden_channels
@@ -164,7 +171,8 @@ class WN(torch.nn.Module):
                 kernel_size,
                 dilation=dilation,
                 padding=padding,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             in_layer = torch.nn.utils.weight_norm(in_layer, name="weight")
             self.in_layers.append(in_layer)
 
@@ -227,8 +235,10 @@ class ResBlock1(torch.nn.Module):
                         1,
                         dilation=dilation[0],
                         padding=get_padding(kernel_size, dilation[0]),
-                    )
-                ),
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ),
                 weight_norm(
                     Conv1d(
                         channels,
@@ -237,8 +247,10 @@ class ResBlock1(torch.nn.Module):
                         1,
                         dilation=dilation[1],
                         padding=get_padding(kernel_size, dilation[1]),
-                    )
-                ),
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ),
                 weight_norm(
                     Conv1d(
                         channels,
@@ -247,10 +259,14 @@ class ResBlock1(torch.nn.Module):
                         1,
                         dilation=dilation[2],
                         padding=get_padding(kernel_size, dilation[2]),
-                    )
-                ),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
         self.convs1.apply(init_weights)
 
         self.convs2 = nn.ModuleList(
@@ -263,8 +279,10 @@ class ResBlock1(torch.nn.Module):
                         1,
                         dilation=1,
                         padding=get_padding(kernel_size, 1),
-                    )
-                ),
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ),
                 weight_norm(
                     Conv1d(
                         channels,
@@ -273,8 +291,10 @@ class ResBlock1(torch.nn.Module):
                         1,
                         dilation=1,
                         padding=get_padding(kernel_size, 1),
-                    )
-                ),
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ),
                 weight_norm(
                     Conv1d(
                         channels,
@@ -283,10 +303,14 @@ class ResBlock1(torch.nn.Module):
                         1,
                         dilation=1,
                         padding=get_padding(kernel_size, 1),
-                    )
-                ),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
         self.convs2.apply(init_weights)
 
     def forward(self, x, x_mask=None):
@@ -324,8 +348,10 @@ class ResBlock2(torch.nn.Module):
                         1,
                         dilation=dilation[0],
                         padding=get_padding(kernel_size, dilation[0]),
-                    )
-                ),
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ),
                 weight_norm(
                     Conv1d(
                         channels,
@@ -334,10 +360,14 @@ class ResBlock2(torch.nn.Module):
                         1,
                         dilation=dilation[1],
                         padding=get_padding(kernel_size, dilation[1]),
-                    )
-                ),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
         self.convs.apply(init_weights)
 
     def forward(self, x, x_mask=None):
@@ -406,7 +436,8 @@ class ResidualCouplingLayer(nn.Module):
         p_dropout=0,
         gin_channels=0,
         mean_only=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         assert channels % 2 == 0, "channels should be divisible by 2"
         super().__init__()
         self.channels = channels
@@ -425,7 +456,8 @@ class ResidualCouplingLayer(nn.Module):
             n_layers,
             p_dropout=p_dropout,
             gin_channels=gin_channels,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.post = nn.Conv1d(hidden_channels, self.half_channels * (2 - mean_only), 1)
         self.post.weight.data.zero_()
         self.post.bias.data.zero_()
@@ -461,7 +493,8 @@ class ConvFlow(nn.Module):
         n_layers,
         num_bins=10,
         tail_bound=5.0,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.in_channels = in_channels
         self.filter_channels = filter_channels
@@ -489,7 +522,8 @@ class ConvFlow(nn.Module):
         unnormalized_widths = h[..., : self.num_bins] / math.sqrt(self.filter_channels)
         unnormalized_heights = h[..., self.num_bins : 2 * self.num_bins] / math.sqrt(
             self.filter_channels
-        )
+# BRACKET_SURGEON: disabled
+#         )
         unnormalized_derivatives = h[..., 2 * self.num_bins :]
 
         x1, logabsdet = piecewise_rational_quadratic_transform(
@@ -500,7 +534,8 @@ class ConvFlow(nn.Module):
             inverse=reverse,
             tails="linear",
             tail_bound=self.tail_bound,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         x = torch.cat([x0, x1], 1) * x_mask
         logdet = torch.sum(logabsdet * x_mask, [1, 2])
@@ -517,7 +552,8 @@ class LinearNorm(nn.Module):
         out_channels,
         bias=True,
         spectral_norm=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(LinearNorm, self).__init__()
         self.fc = nn.Linear(in_channels, out_channels, bias)
 
@@ -538,10 +574,10 @@ class Mish(nn.Module):
 
 
 class Conv1dGLU(nn.Module):
-    """
+    """"""
     Conv1d + GLU(Gated Linear Unit) with residual connection.
     For GLU refer to https://arxiv.org / abs / 1612.08083 paper.
-    """
+    """"""
 
     def __init__(self, in_channels, out_channels, kernel_size, dropout):
         super(Conv1dGLU, self).__init__()
@@ -569,7 +605,8 @@ class ConvNorm(nn.Module):
         dilation=1,
         bias=True,
         spectral_norm=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(ConvNorm, self).__init__()
 
         if padding is None:
@@ -584,7 +621,8 @@ class ConvNorm(nn.Module):
             padding=padding,
             dilation=dilation,
             bias=bias,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if spectral_norm:
             self.conv = nn.utils.spectral_norm(self.conv)
@@ -610,7 +648,8 @@ class MultiHeadAttention(nn.Module):
 
         self.attention = ScaledDotProductAttention(
             temperature=np.power(d_model, 0.5), dropout=dropout
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.fc = nn.Linear(n_head * d_v, d_model)
         self.dropout = nn.Dropout(dropout)
@@ -683,7 +722,8 @@ class MelStyleEncoder(nn.Module):
         style_kernel_size=5,
         style_head=2,
         dropout=0.1,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(MelStyleEncoder, self).__init__()
         self.in_dim = n_mel_channels
         self.hidden_dim = style_hidden
@@ -699,12 +739,14 @@ class MelStyleEncoder(nn.Module):
             LinearNorm(self.hidden_dim, self.hidden_dim),
             Mish(),
             nn.Dropout(self.dropout),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.temporal = nn.Sequential(
             Conv1dGLU(self.hidden_dim, self.hidden_dim, self.kernel_size, self.dropout),
             Conv1dGLU(self.hidden_dim, self.hidden_dim, self.kernel_size, self.dropout),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.slf_attn = MultiHeadAttention(
             self.n_head,
@@ -712,7 +754,8 @@ class MelStyleEncoder(nn.Module):
             self.hidden_dim // self.n_head,
             self.hidden_dim // self.n_head,
             self.dropout,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.fc = LinearNorm(self.hidden_dim, self.out_dim)
 
@@ -775,7 +818,8 @@ class MelStyleEncoderVAE(nn.Module):
         posterior = D.Normal(mu, torch.exp(logvar))
         kl_divergence = D.kl_divergence(
             posterior, D.Normal(torch.zeros_like(mu), torch.ones_like(logvar))
-        )
+# BRACKET_SURGEON: disabled
+#         )
         loss_kl = kl_divergence.mean()
 
         z = posterior.rsample()
@@ -790,7 +834,8 @@ class MelStyleEncoderVAE(nn.Module):
                 posterior = D.Normal(
                     torch.zeros(1, self.z_latent_dim, device=dev),
                     torch.ones(1, self.z_latent_dim, device=dev),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 z = posterior.rsample()
             else:
                 enc_out = self.ref_encoder(inputs.transpose(1, 2))

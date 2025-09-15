@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Realistic Avatar Demo - Instant Setup
 
 This demo script shows how to generate ultra - realistic Linly - Talker avatars
@@ -9,7 +9,7 @@ Run this script to see immediate results:
     python demo_realistic_avatar.py
 
 No additional setup or costs required!
-"""
+""""""
 
 import asyncio
 import sys
@@ -41,15 +41,16 @@ except ImportError:
 def print_banner():
     """Print welcome banner."""
     print(
-        """
+        """"""
 ╔══════════════════════════════════════════════════════════════╗
 ║                🎬 REALISTIC AVATAR DEMO 🎬                   ║
 ║                                                              ║
 ║  Generate 100% realistic talking avatars using FREE tools!  ║
 ║  No additional costs • No premium features • No limits      ║
 ╚══════════════════════════════════════════════════════════════╝
-"""
-    )
+""""""
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def show_demo_options():
@@ -64,7 +65,8 @@ def show_demo_options():
         "5": "🎬 Custom avatar - Use your own image and text",
         "6": "📊 Show performance benchmarks",
         "q": "❌ Quit",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     for key, description in options.items():
         print(f"  {key}. {description}")
@@ -81,31 +83,36 @@ def show_optimization_tips():
             "Use conversational language with filler words ('so', 'well', 'you know')",
             "Add natural pauses with '...' between sentences",
             "Vary sentence length - mix short and long sentences",
-            "Include contractions ('we're' not 'we are')",
-            "Write like you're talking to a friend, not reading a manual",
-        ],
+            "Include contractions ('we're' not 'we are')",'
+            "Write like you're talking to a friend, not reading a manual",'
+# BRACKET_SURGEON: disabled
+#         ],
         "🖼️ IMAGE PREPARATION": [
             "Use high - resolution images (1080p or higher)",
             "Ensure even, soft lighting on the face",
             "Choose front - facing or slight 3/4 angle shots",
             "Clean, uncluttered background works best",
             "Sharp focus with clear facial features",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "🎵 AUDIO OPTIMIZATION": [
             "Speak at conversational pace (not too fast)",
             "Add slight background room tone for realism",
             "Use natural pronunciation and emphasis",
             "Include breathing pauses between thoughts",
             "Maintain consistent volume levels",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "🎬 POST - PROCESSING": [
             "Enable face enhancement (GFPGan/RestoreFormer)",
             "Use video stabilization for smooth movement",
             "Add subtle camera motion (zoom/pan effects)",
             "Apply professional color grading",
             "Include natural eye blinking and micro - expressions",
-        ],
-    }
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     }
 
     for category, tip_list in tips.items():
         print(f"{category}:")
@@ -127,8 +134,10 @@ def show_realistic_configs():
                 "Video stabilization",
                 "Natural expressions",
                 "High resolution",
-            ],
-        },
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         },
         "conversational": {
             "description": "Natural, relaxed delivery for casual content",
             "best_for": "Educational videos, tutorials, personal messages",
@@ -136,8 +145,10 @@ def show_realistic_configs():
                 "Natural pacing",
                 "Relaxed expressions",
                 "Conversational tone",
-            ],
-        },
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         },
         "professional": {
             "description": "Polished, confident delivery for business",
             "best_for": "Corporate presentations, announcements, training",
@@ -145,14 +156,18 @@ def show_realistic_configs():
                 "Professional demeanor",
                 "Clear articulation",
                 "Confident posture",
-            ],
-        },
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         },
         "expressive": {
             "description": "Enhanced facial expressions for emotional content",
             "best_for": "Storytelling, entertainment, emotional messages",
             "features": ["Enhanced expressions", "Dynamic movement", "Emotional range"],
-        },
-    }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     }
 
     for config_name, details in configs.items():
         print(f"📋 {config_name.upper()}")
@@ -171,18 +186,22 @@ def show_workflow_guide():
             "Prepare high - quality source image (1080p+, well - lit)",
             "Write natural, conversational script with pauses",
             "Choose appropriate realistic configuration preset",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "Phase 2: Generation (3 minutes)": [
             "Run: python scripts/generate_realistic_avatar.py",
             "Specify --image, --text, and --config parameters",
             "Wait for processing to complete",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "Phase 3: Quality Check (1 minute)": [
             "Review lip - sync accuracy and facial expressions",
             "Check audio quality and natural pacing",
             "Verify professional polish and camera - like effects",
-        ],
-    }
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     }
 
     for phase, steps in workflow.items():
         print(f"🎬 {phase}")
@@ -199,7 +218,8 @@ def show_workflow_guide():
         "Professional lighting and color",
         "Clear, conversational audio",
         "High resolution output (1080p+)",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for item in checklist:
         print(f"   ☐ {item}")
@@ -215,11 +235,13 @@ def show_performance_benchmarks():
             "Professional",
             "Conversational",
             "Fast Mode",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "Quality Score": ["98/100", "95/100", "92/100", "88/100"],
         "Generation Time": ["45 seconds", "30 seconds", "25 seconds", "15 seconds"],
         "File Size": ["12MB/min", "8MB/min", "6MB/min", "4MB/min"],
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Print table header
     print(f"{'Configuration':<15} {'Quality':<10} {'Time':<12} {'Size':<10}")
@@ -241,13 +263,13 @@ async def run_quick_demo():
     print("\\n🚀 QUICK DEMO - REALISTIC AVATAR GENERATION\\n")
 
     # Sample data for demo
-    demo_text = """
+    demo_text = """"""
     Hello there! Welcome to our realistic avatar demonstration...
-    So, as you can see, we're using completely free tools to create
+    So, as you can see, we're using completely free tools to create'
     this ultra - realistic talking avatar... Actually, this is pretty
     amazing, you know? The lip - sync is perfect, the expressions
-    look natural, and well, it's ready for professional use right away!
-    """
+    look natural, and well, it's ready for professional use right away!'
+    """"""
 
     print("📝 Demo Script:")
     print(f'   "{demo_text.strip()}"')
@@ -268,7 +290,8 @@ async def run_quick_demo():
         "Applying face enhancement (GFPGan + RestoreFormer)",
         "Stabilizing video for professional camera motion",
         "Rendering final output at 1080p/30fps",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for i, step in enumerate(steps, 1):
         print(f"   {i}. {step}")
@@ -291,7 +314,8 @@ async def run_quick_demo():
         "Stabilized video with subtle camera motion",
         "Conversational pacing with natural pauses",
         "High - quality audio with room tone",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for feature in features:
         print(f"   ✓ {feature}")
@@ -299,14 +323,15 @@ async def run_quick_demo():
     print("\\n🚀 Ready to generate your own realistic avatar?")
     print(
         "   Run: python scripts/generate_realistic_avatar.py --image your_photo.jpg --text 'Your script here'"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def run_custom_avatar():
     """Guide user through creating a custom avatar."""
     print("\\n🎬 CUSTOM AVATAR GENERATOR\\n")
 
-    print("Let's create your personalized realistic avatar!\\n")
+    print("Let's create your personalized realistic avatar!\\n")'
 
     # Get user inputs
     image_path = input("📷 Enter path to your image file: ").strip()

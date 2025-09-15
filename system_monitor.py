@@ -29,14 +29,14 @@ import threading
 import time
 from collections import deque
 from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import psutil
 import requests
 from flask import Flask, jsonify, render_template_string
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 
 # Add project root to Python path
 project_root = Path(__file__).parent
@@ -147,23 +147,28 @@ class SystemMonitor:
                     "url": "http://localhost:8000/health",
                     "port": 8000,
                     "critical": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "paste_app": {
                     "url": "http://localhost:3001",
                     "port": 3001,
                     "critical": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "demo_avatar": {
                     "url": "http://localhost:3002",
                     "port": 3002,
                     "critical": False,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "static_server": {
                     "url": "http://localhost:3000",
                     "port": 3000,
                     "critical": False,
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "alert_thresholds": {
                 "cpu_percent": 80,
                 "memory_percent": 85,
@@ -197,7 +202,7 @@ class SystemMonitor:
 
             # System metrics table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS system_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp DATETIME,
@@ -208,13 +213,15 @@ class SystemMonitor:
                     network_bytes_recv INTEGER,
                     active_connections INTEGER,
                     load_average TEXT
-                )
-                """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+                """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Service metrics table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS service_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp DATETIME,
@@ -226,13 +233,15 @@ class SystemMonitor:
                     uptime_seconds INTEGER,
                     error_count INTEGER,
                     health_score REAL
-                )
-                """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+                """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Alerts table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS alerts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp DATETIME,
@@ -240,9 +249,11 @@ class SystemMonitor:
                     severity TEXT,
                     message TEXT,
                     resolved BOOLEAN DEFAULT FALSE
-                )
-                """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+                """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
             conn.close()
@@ -262,32 +273,38 @@ class SystemMonitor:
                 condition=f"cpu_percent > {thresholds.get('cpu_percent', 80)}",
                 severity="high",
                 cooldown_minutes=5,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AlertRule(
                 name="High Memory Usage",
                 condition=f"memory_percent > {thresholds.get('memory_percent', 85)}",
                 severity="high",
                 cooldown_minutes=5,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AlertRule(
                 name="High Disk Usage",
                 condition=f"disk_percent > {thresholds.get('disk_percent', 90)}",
                 severity="critical",
                 cooldown_minutes=10,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AlertRule(
                 name="Service Down",
                 condition="service_status == 'down'",
                 severity="critical",
                 cooldown_minutes=1,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AlertRule(
                 name="Slow Response Time",
                 condition=f"response_time_ms > {thresholds.get('response_time_ms', 5000)}",
                 severity="medium",
                 cooldown_minutes=3,
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
     def _setup_routes(self):
         """Setup Flask routes for web dashboard."""
@@ -304,10 +321,13 @@ class SystemMonitor:
                     "services": {
                         name: asdict(metrics)
                         for name, metrics in self.service_metrics.items()
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "alerts": [],  # TODO: Implement active alerts
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api/service/<service_name>/history")
         def get_service_history(service_name):
@@ -316,16 +336,17 @@ class SystemMonitor:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
-                    SELECT timestamp, status, cpu_percent, memory_mb, 
+                    """"""
+                    SELECT timestamp, status, cpu_percent, memory_mb,
                            response_time_ms, health_score
-                    FROM service_metrics 
-                    WHERE service_name = ? 
-                    ORDER BY timestamp DESC 
+                    FROM service_metrics
+                    WHERE service_name = ?
+                    ORDER BY timestamp DESC
                     LIMIT 100
-                    """,
+                    ""","""
                     (service_name,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 history = []
                 for row in cursor.fetchall():
@@ -337,8 +358,10 @@ class SystemMonitor:
                             "memory_mb": row[3],
                             "response_time_ms": row[4],
                             "health_score": row[5],
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
                 conn.close()
                 return jsonify(history)
@@ -434,7 +457,8 @@ class SystemMonitor:
                 network_bytes_recv=net_io.bytes_recv,
                 active_connections=active_connections,
                 load_average=load_avg,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Error collecting system metrics: {e}")
@@ -447,7 +471,8 @@ class SystemMonitor:
                 network_bytes_recv=0,
                 active_connections=0,
                 load_average=(0.0, 0.0, 0.0),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def store_metrics(self, system_metrics: SystemMetrics, service_metrics: Dict[str, ServiceMetrics]):
         """Store metrics in database."""
@@ -457,12 +482,13 @@ class SystemMonitor:
 
             # Store system metrics
             cursor.execute(
-                """
-                INSERT INTO system_metrics 
+                """"""
+                INSERT INTO system_metrics
                 (timestamp, cpu_percent, memory_percent, disk_percent,
-                 network_bytes_sent, network_bytes_recv, active_connections, load_average)
+# BRACKET_SURGEON: disabled
+#                  network_bytes_sent, network_bytes_recv, active_connections, load_average)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                 (
                     system_metrics.timestamp,
                     system_metrics.cpu_percent,
@@ -472,18 +498,21 @@ class SystemMonitor:
                     system_metrics.network_bytes_recv,
                     system_metrics.active_connections,
                     json.dumps(system_metrics.load_average),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             # Store service metrics
             for service_name, metrics in service_metrics.items():
                 cursor.execute(
-                    """
-                    INSERT INTO service_metrics 
+                    """"""
+                    INSERT INTO service_metrics
                     (timestamp, service_name, status, cpu_percent, memory_mb,
-                     response_time_ms, uptime_seconds, error_count, health_score)
+# BRACKET_SURGEON: disabled
+#                      response_time_ms, uptime_seconds, error_count, health_score)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                     (
                         metrics.last_check or datetime.now(),
                         service_name,
@@ -494,8 +523,10 @@ class SystemMonitor:
                         metrics.uptime_seconds,
                         metrics.error_count,
                         metrics.health_score,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
             conn.commit()
             conn.close()
@@ -516,7 +547,8 @@ class SystemMonitor:
                 rule.last_triggered
                 and (current_time - rule.last_triggered).total_seconds()
                 < rule.cooldown_minutes * 60
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 continue
 
             triggered = False
@@ -540,7 +572,7 @@ class SystemMonitor:
 
             elif "service_status" in rule.condition:
                 for service_name, metrics in service_metrics.items():
-                    if eval(rule.condition.replace("service_status", f"'{metrics.status}")):
+                    if eval(rule.condition.replace("service_status", f"'{metrics.status}'")):
                         triggered = True
                         message = f"Service {service_name} is {metrics.status}"
                         break
@@ -563,7 +595,8 @@ class SystemMonitor:
             "severity": rule.severity,
             "message": message,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.logger.warning(f"ALERT [{rule.severity.upper()}] {rule.name}: {message}")
 
@@ -574,7 +607,8 @@ class SystemMonitor:
             cursor.execute(
                 "INSERT INTO alerts (timestamp, name, severity, message) VALUES (?, ?, ?, ?)",
                 (datetime.now(), rule.name, rule.severity, message),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
             conn.close()
         except Exception as e:
@@ -615,9 +649,12 @@ class SystemMonitor:
                             "system": asdict(system_metrics),
                             "services": {
                                 name: asdict(metrics) for name, metrics in self.service_metrics.items()
-                            },
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
                 except Exception as e:
                     self.logger.error(f"Error emitting metrics update: {e}")
 
@@ -754,26 +791,32 @@ DASHBOARD_HTML = """
                     datasets: [{
                         label: 'CPU %',
                         data: [],
-                        borderColor: '#4a9eff',
+                        borderColor: '#4a9eff','
                         tension: 0.1
                     }, {
                         label: 'Memory %',
                         data: [],
-                        borderColor: '#ff9800',
+                        borderColor: '#ff9800','
                         tension: 0.1
-                    }]
-                },
+# BRACKET_SURGEON: disabled
+#                     }]
+# BRACKET_SURGEON: disabled
+#                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
                         y: { beginAtZero: true, max: 100 }
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     plugins: {
-                        legend: { labels: { color: '#fff' } }
-                    }
-                }
-            });
+                        legend: { labels: { color: '#fff' } }'
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             });
 
             const perfCtx = document.getElementById('performance-chart').getContext('2d');
             performanceChart = new Chart(perfCtx, {
@@ -783,18 +826,24 @@ DASHBOARD_HTML = """
                     datasets: [{
                         label: 'Response Time (ms)',
                         data: [],
-                        backgroundColor: '#4caf50'
-                    }]
-                },
+                        backgroundColor: '#4caf50''
+# BRACKET_SURGEON: disabled
+#                     }]
+# BRACKET_SURGEON: disabled
+#                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { labels: { color: '#fff' } }
-                    }
-                }
-            });
-        }
+                        legend: { labels: { color: '#fff' } }'
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             });
+# BRACKET_SURGEON: disabled
+#         }
 
         // Update system metrics display
         function updateSystemMetrics(system) {
@@ -813,10 +862,12 @@ DASHBOARD_HTML = """
                 systemChart.data.labels.shift();
                 systemChart.data.datasets[0].data.shift();
                 systemChart.data.datasets[1].data.shift();
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             systemChart.update('none');
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         // Update services display
         function updateServices(services) {
@@ -842,7 +893,7 @@ DASHBOARD_HTML = """
                         <span><span class="status-indicator ${statusClass}"></span>${name}</span>
                         <span class="metric-value">${metrics.status}</span>
                     </div>
-                    <div style="font-size: 0.8em; color: #aaa; margin-left: 20px;">
+                    <div style="font-size: 0.8em; color: #aaa; margin-left: 20px;">"
                         CPU: ${metrics.cpu_percent.toFixed(1)}% |
                         Memory: ${metrics.memory_mb.toFixed(0)}MB |
                         Response: ${metrics.response_time_ms.toFixed(0)}ms
@@ -852,13 +903,15 @@ DASHBOARD_HTML = """
 
                 serviceNames.push(name);
                 responseData.push(metrics.response_time_ms);
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             // Update performance chart
             performanceChart.data.labels = serviceNames;
             performanceChart.data.datasets[0].data = responseData;
             performanceChart.update('none');
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         // Update alerts display
         function updateAlerts(alerts) {
@@ -868,7 +921,8 @@ DASHBOARD_HTML = """
             if (alerts.length === 0) {
                 alertsList.innerHTML = '<div style="color: #4caf50;">✅ No active alerts</div>';
                 return;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             alerts.forEach(alert => {
                 const alertDiv = document.createElement('div');
@@ -879,13 +933,16 @@ DASHBOARD_HTML = """
                     <small>${new Date(alert.timestamp).toLocaleString()}</small>
                 `;
                 alertsList.appendChild(alertDiv);
-            });
-        }
+# BRACKET_SURGEON: disabled
+#             });
+# BRACKET_SURGEON: disabled
+#         }
 
         // Socket event handlers
         socket.on('connect', function() {
             console.log('Connected to monitoring system');
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         socket.on('metrics_update', function(data) {
             document.getElementById('refresh-indicator').style.display = 'block';
@@ -895,13 +952,16 @@ DASHBOARD_HTML = """
 
             setTimeout(() => {
                 document.getElementById('refresh-indicator').style.display = 'none';
-            }, 1000);
-        });
+# BRACKET_SURGEON: disabled
+#             }, 1000);
+# BRACKET_SURGEON: disabled
+#         });
 
         socket.on('alert', function(alert) {
             console.log('New alert:', alert);
             // Could add notification here
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -913,12 +973,15 @@ DASHBOARD_HTML = """
                 .then(data => {
                     if (data.system.length > 0) {
                         updateSystemMetrics(data.system[data.system.length - 1]);
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     updateServices(data.services);
                     updateAlerts(data.alerts);
-                })
+# BRACKET_SURGEON: disabled
+#                 })
                 .catch(error => console.error('Error loading initial data:', error));
-        });
+# BRACKET_SURGEON: disabled
+#         });
     </script>
 </body>
 </html>

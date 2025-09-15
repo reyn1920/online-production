@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Avatar Engine Services - Standardized Wrappers for Avatar Generation
 
 This module provides standardized wrapper services for different avatar generation engines:
@@ -11,7 +11,7 @@ handling engine - specific configurations and error handling.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import copy
@@ -41,21 +41,24 @@ from tqdm import tqdm
 try:
     sys.path.append(
         "/Users / thomasbrianreynolds / online production / models / linly_talker / Musetalk"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     from musetalk.utils.blending import get_image
     from musetalk.utils.preprocessing import (
         coord_placeholder,
         get_landmark_and_bbox,
         read_imgs,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     from musetalk.utils.utils import (
         datagen,
         get_file_type,
         get_video_fps,
         load_all_model,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     MUSETALK_AVAILABLE = True
 except ImportError as e:
@@ -187,7 +190,8 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                 self.is_initialized = True
                 self.logger.info(
                     "Linly - Talker engine initialized successfully with direct model inference"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return True
 
             except Exception as e:
@@ -217,7 +221,8 @@ class LinlyTalkerEngine(BaseAvatarEngine):
             # Check if models are loaded
             if not self.is_initialized or not all(
                 [self.audio_processor, self.vae, self.unet, self.pe]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 return False
 
             # Check if model files exist
@@ -226,7 +231,8 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                 model_dir / "models" / "musetalk" / "pytorch_model.bin",
                 model_dir / "models" / "whisper" / "tiny.pt",
                 model_dir / "models" / "sd - vae - ft - mse",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             for path in required_paths:
                 if not path.exists():
@@ -253,7 +259,8 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                         engine_used=self.engine_name,
                         processing_time=time.time() - start_time,
                         error_message="Engine not initialized",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             # In test mode, return mock response
             if self.test_mode:
@@ -270,8 +277,10 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                         "model_version": "test - v1.0",
                         "quality_score": 0.95,
                         "processing_details": "test_mode_simulation",
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Check health before processing
             if not await self.health_check():
@@ -282,16 +291,19 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                     engine_used=self.engine_name,
                     processing_time=time.time() - start_time,
                     error_message="Engine health check failed",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             self.logger.info(
                 f"Generating avatar with direct MuseTalk inference for request {request.request_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Run model inference in thread pool to avoid blocking
             result = await asyncio.get_event_loop().run_in_executor(
                 None, self._run_musetalk_inference, request
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             processing_time = time.time() - start_time
 
@@ -306,8 +318,10 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                         "model_version": "musetalk - v1.0",
                         "quality_score": result.get("quality_score", 0.9),
                         "processing_details": "direct_model_inference",
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 return AvatarResponse(
                     success=False,
@@ -316,7 +330,8 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                     engine_used=self.engine_name,
                     processing_time=processing_time,
                     error_message=result.get("error", "Unknown inference error"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             return AvatarResponse(
@@ -326,7 +341,8 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                 engine_used=self.engine_name,
                 processing_time=time.time() - start_time,
                 error_message=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _run_musetalk_inference(self, request: AvatarRequest) -> Dict[str, Any]:
         """Run MuseTalk model inference in a separate thread."""
@@ -356,7 +372,8 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                         Path(request.output_path).parent
                         if request.output_path
                         else Path("./generated")
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     output_dir.mkdir(exist_ok=True)
                     video_path = output_dir / f"avatar_{request.request_id}.mp4"
 
@@ -371,7 +388,8 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                         "video_path": str(video_path),
                         "duration": duration,
                         "quality_score": 0.9,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             finally:
                 os.chdir(original_cwd)
@@ -476,7 +494,8 @@ class TalkingHeadsEngine(BaseAvatarEngine):
             if self.test_mode:
                 self.logger.info(
                     "Running in test mode - skipping model loading and service startup"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.is_initialized = True
                 return True
 
@@ -557,7 +576,8 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                         engine_used=self.engine_name,
                         processing_time=time.time() - start_time,
                         error_message="Engine not initialized",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             # In test mode, return mock response
             if self.test_mode:
@@ -574,8 +594,10 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                         "model_version": "test - fallback - v1.0",
                         "quality_score": 0.88,
                         "fallback_used": True,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Check health before processing
             if not await self.health_check():
@@ -586,11 +608,13 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                     engine_used=self.engine_name,
                     processing_time=time.time() - start_time,
                     error_message="Engine health check failed",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             self.logger.info(
                 f"Generating avatar with Talking Heads for request {request.request_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Prepare request payload
             payload = {
@@ -599,12 +623,14 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                 "video_settings": request.video_settings,
                 "source_image": request.source_image,
                 "gender": request.gender or "neutral",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Make request to Talking Heads service
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=self.timeout)
-            ) as session:
+# BRACKET_SURGEON: disabled
+#             ) as session:
                 async with session.post(f"{self.base_url}/generate", json=payload) as response:
                     if response.status == 200:
                         result = await response.json()
@@ -621,8 +647,10 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                                 "model_version": result.get("model_version"),
                                 "quality_score": result.get("quality_score"),
                                 "fallback_used": True,
-                            },
-                        )
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         )
                     else:
                         error_text = await response.text()
                         return AvatarResponse(
@@ -632,7 +660,8 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                             engine_used=self.engine_name,
                             processing_time=time.time() - start_time,
                             error_message=f"HTTP {response.status}: {error_text}",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
         except asyncio.TimeoutError:
             return AvatarResponse(
@@ -642,7 +671,8 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                 engine_used=self.engine_name,
                 processing_time=time.time() - start_time,
                 error_message="Request timeout",
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except Exception as e:
             return AvatarResponse(
                 success=False,
@@ -651,7 +681,8 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                 engine_used=self.engine_name,
                 processing_time=time.time() - start_time,
                 error_message=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
 
 class AvatarEngineManager:
@@ -674,7 +705,8 @@ class AvatarEngineManager:
                 results[name] = await engine.initialize()
                 self.logger.info(
                     f"Engine {name} initialization: {'SUCCESS' if results[name] else 'FAILED'}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 results[name] = False
                 self.logger.error(f"Engine {name} initialization failed: {e}")
@@ -691,7 +723,8 @@ class AvatarEngineManager:
         self,
         request: AvatarRequest,
         preferred_engine: str = "linly - talker - enhanced",
-    ) -> AvatarResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> AvatarResponse:
         """Generate avatar with automatic failover."""
         # Try preferred engine first
         engine = await self.get_engine(preferred_engine)
@@ -702,7 +735,8 @@ class AvatarEngineManager:
 
             self.logger.warning(
                 f"Primary engine {preferred_engine} failed: {response.error_message}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Try fallback engines
         fallback_engines = [name for name in self.engines.keys() if name != preferred_engine]
@@ -716,7 +750,8 @@ class AvatarEngineManager:
 
                 self.logger.warning(
                     f"Fallback engine {engine_name} failed: {response.error_message}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # All engines failed
         return AvatarResponse(
@@ -726,7 +761,8 @@ class AvatarEngineManager:
             engine_used="none",
             processing_time=0,
             error_message="All avatar engines failed",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     async def health_check_all(self) -> Dict[str, bool]:
         """Check health of all engines."""
@@ -778,7 +814,8 @@ async def generate_avatar(
     source_image: Optional[str] = None,
     gender: Optional[str] = None,
     preferred_engine: str = "linly - talker - enhanced",
-) -> AvatarResponse:
+# BRACKET_SURGEON: disabled
+# ) -> AvatarResponse:
     """Generate avatar with automatic failover."""
     request = AvatarRequest(
         text=text,
@@ -786,7 +823,8 @@ async def generate_avatar(
         video_settings=video_settings,
         source_image=source_image,
         gender=gender,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     return await engine_manager.generate_avatar_with_failover(request, preferred_engine)
 

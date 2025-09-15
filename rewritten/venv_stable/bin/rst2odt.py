@@ -4,9 +4,9 @@
 # Author: Dave Kuhlman <dkuhlman@rexx.com>
 # Copyright: This module has been placed in the public domain.
 
-"""
+""""""
 A front end to the Docutils Publisher, producing OpenOffice documents.
-"""
+""""""
 
 
 try:
@@ -23,7 +23,8 @@ from docutils.writers.odf_odt import Writer, Reader
 description = (
     "Generates OpenDocument/OpenOffice/ODF documents from "
     "standalone reStructuredText sources.  " + default_description
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 writer = Writer()

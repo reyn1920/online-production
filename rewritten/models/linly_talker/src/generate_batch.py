@@ -43,7 +43,8 @@ def generate_blink_seq(num_frames):
                 0.7,
                 0.6,
                 0.5,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             frame_id = frame_id + start + 9
         else:
             break
@@ -64,7 +65,8 @@ def generate_blink_seq_randomly(num_frames):
                 1.0,
                 0.9,
                 0.5,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             frame_id = frame_id + start + 5
         else:
             break
@@ -81,7 +83,8 @@ def get_data(
     length_of_audio=False,
     use_blink=True,
     fps=25,
-):
+# BRACKET_SURGEON: disabled
+# ):
     syncnet_mel_step_size = 16
 
     pic_name = os.path.splitext(os.path.split(first_coeff_path)[-1])[0]
@@ -149,4 +152,5 @@ def get_data(
         "ratio_gt": ratio,
         "audio_name": audio_name,
         "pic_name": pic_name,
-    }
+# BRACKET_SURGEON: disabled
+#     }

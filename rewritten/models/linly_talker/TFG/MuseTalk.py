@@ -28,11 +28,15 @@ import torch
 from moviepy.editor import *
 from musetalk.utils.blending import (get_image, get_image_blending,
 
-    get_image_prepare_material)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     get_image_prepare_material)
 
 from musetalk.utils.preprocessing import (coord_placeholder, get_bbox_range,
 
-    get_landmark_and_bbox, read_imgs)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     get_landmark_and_bbox, read_imgs)
 
 from musetalk.utils.utils import datagen, get_file_type, get_video_fps, load_all_model
 from tqdm import tqdm
@@ -53,7 +57,9 @@ def download_model():
                 local_dir_use_symlinks = True,
                 force_download = True,
                 resume_download = False,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         # weight
         os.makedirs(f"{CheckpointsDir}/sd - vae - ft - mse/")
         snapshot_download(
@@ -63,7 +69,9 @@ def download_model():
                 local_dir_use_symlinks = True,
                 force_download = True,
                 resume_download = False,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         # dwpose
         os.makedirs(f"{CheckpointsDir}/dwpose/")
         snapshot_download(
@@ -73,7 +81,9 @@ def download_model():
                 local_dir_use_symlinks = True,
                 force_download = True,
                 resume_download = False,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         # vae
         url = "https://openaipublic.azureedge.net/main/whisper/models/65147644a518d12f04e32d6f3b26facc3f8dd46e5390956a9424a650c0ce22b9/tiny.pt"
         response = requests.get(url)
@@ -193,7 +203,9 @@ class MuseTalk_RealTime:
             bbox = self.coord_list_cycle[self.idx % (len(self.coord_list_cycle))]
             ori_frame = copy.deepcopy(
                 self.frame_list_cycle[self.idx % (len(self.frame_list_cycle))]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             x1, y1, x2, y2 = bbox
             try:
                 res_frame = cv2.resize(res_frame.astype(np.uint8), (x2 - x1, y2 - y1))
@@ -202,23 +214,30 @@ class MuseTalk_RealTime:
             mask = self.mask_list_cycle[self.idx % (len(self.mask_list_cycle))]
             mask_crop_box = self.mask_coords_list_cycle[
                 self.idx % (len(self.mask_coords_list_cycle))
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             # combine_frame = get_image(ori_frame,res_frame,bbox)
             combine_frame = get_image_blending(
                 ori_frame, res_frame, bbox, mask, mask_crop_box
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if self.skip_save_images is False:
                 cv2.imwrite(
                     f"{self.avatar_path}/tmp/{str(self.idx).zfill(8)}.png",
                         combine_frame,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             self.idx = self.idx + 1
 
 
     def prepare_material(
         self, video_path, bbox_shift, progress = gr.Progress(track_tqdm = True)
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.video_path = video_path
         self.bbox_shift = bbox_shift
         self.avatar_id = os.path.basename(video_path).split(".")[0]
@@ -241,8 +260,12 @@ class MuseTalk_RealTime:
                     self.full_imgs_path,
                     self.video_out_path,
                     self.mask_out_path,
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print("preparing data materials ... ...")
         progress(0, desc="preparing data materials ...")
         if os.path.isfile(video_path):
@@ -255,17 +278,23 @@ class MuseTalk_RealTime:
             for filename in files:
                 shutil.copyfile(
                     f"{video_path}/{filename}", f"{self.full_imgs_path}/{filename}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         input_img_list = sorted(
             glob.glob(os.path.join(self.full_imgs_path, "*.[jpJP][pnPN]*[gG]"))
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         # bbox_shift_text = get_bbox_range(input_img_list, self.bbox_shift)
 
         progress(0, desc="extracting landmarks...")
         print("extracting landmarks ...")
         coord_list, frame_list, bbox_shift_text = get_landmark_and_bbox(
             input_img_list, bbox_shift
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         input_latent_list = []
         idx = -1
         # maker if the bbox is not sufficient
@@ -278,7 +307,9 @@ class MuseTalk_RealTime:
             crop_frame = frame[y1:y2, x1:x2]
             resized_crop_frame = cv2.resize(
                 crop_frame, (256, 256), interpolation = cv2.INTER_LANCZOS4
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             latents = self.vae.get_latents_for_unet(resized_crop_frame)
             input_latent_list.append(latents)
 
@@ -323,10 +354,14 @@ class MuseTalk_RealTime:
             for filename in files:
                 shutil.copyfile(
                     f"{self.video_path}/{filename}", f"{self.full_imgs_path}/{filename}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         input_img_list = sorted(
             glob.glob(os.path.join(self.full_imgs_path, "*.[jpJP][pnPN]*[gG]"))
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         bbox_shift_text = get_bbox_range(input_img_list, self.bbox_shift)
         print("extracting landmarks...")
         coord_list, frame_list = get_landmark_and_bbox(input_img_list, self.bbox_shift)
@@ -342,7 +377,9 @@ class MuseTalk_RealTime:
             crop_frame = frame[y1:y2, x1:x2]
             resized_crop_frame = cv2.resize(
                 crop_frame, (256, 256), interpolation = cv2.INTER_LANCZOS4
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             latents = self.vae.get_latents_for_unet(resized_crop_frame)
             input_latent_list.append(latents)
 
@@ -379,7 +416,8 @@ class MuseTalk_RealTime:
             batch_size = 4,
             fps = 25,
             progress = gr.Progress(track_tqdm = True),
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
         out_vid_name = "res"
         if not self.avatar_path:
@@ -393,10 +431,14 @@ class MuseTalk_RealTime:
         whisper_feature = self.audio_processor.audio2feat(audio_path)
         whisper_chunks = self.audio_processor.feature2chunks(
             feature_array = whisper_feature, fps = fps
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(
             f"processing audio:{audio_path} costs {(time.time() - start_time) * 1000}ms"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         ############################################## inference batch by batch ##############################################
         video_num = len(whisper_chunks)
         res_frame_queue = queue.Queue()
@@ -404,7 +446,9 @@ class MuseTalk_RealTime:
         # # Create a sub - thread and start it
         process_thread = threading.Thread(
             target = self.process_frames, args=(res_frame_queue, video_num)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         process_thread.start()
 
         gen = datagen(whisper_chunks, self.input_latent_list_cycle, batch_size)
@@ -413,17 +457,21 @@ class MuseTalk_RealTime:
 
         for i, (whisper_batch, latent_batch) in enumerate(
             tqdm(gen, total = int(np.ceil(float(video_num)/batch_size)))
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             audio_feature_batch = torch.from_numpy(whisper_batch)
             audio_feature_batch = audio_feature_batch.to(
                 device = self.unet.device, dtype = self.unet.model.dtype
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             audio_feature_batch = self.pe(audio_feature_batch)
             latent_batch = latent_batch.to(dtype = self.unet.model.dtype)
 
             pred_latents = self.unet.model(
                 latent_batch, self.timesteps, encoder_hidden_states = audio_feature_batch
-            ).sample
+# BRACKET_SURGEON: disabled
+#             ).sample
             recon = self.vae.decode_latents(pred_latents)
             for res_frame in recon:
                 res_frame_queue.put(res_frame)
@@ -434,14 +482,22 @@ class MuseTalk_RealTime:
             print(
                 "Total process time of {} frames without saving images = {}s".format(
                     video_num, time.time() - start_time
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             print(
                 "Total process time of {} frames including saving images = {}s".format(
                     video_num, time.time() - start_time
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if out_vid_name is not None and self.skip_save_images is False:
             # optional
@@ -469,7 +525,8 @@ class MuseTalk_RealTime:
             batch_size = 4,
             fps = 25,
             progress = gr.Progress(track_tqdm = True),
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.video_path = source_video
         self.bbox_shift = bbox_shift
         self.avatar_id = os.path.basename(source_video).split(".")[0]
@@ -487,13 +544,19 @@ class MuseTalk_RealTime:
                     self.full_imgs_path,
                     self.video_out_path,
                     self.mask_out_path,
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         bbox_shift_text = None
         if os.path.exists(self.avatar_path):
             response = input(
                 f"{self.avatar_id} exists, Do you want to re - create it ? (y/n)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if response.lower() == "y":
                 shutil.rmtree(self.avatar_path)
                 print("*********************************")
@@ -505,8 +568,12 @@ class MuseTalk_RealTime:
                             self.full_imgs_path,
                             self.video_out_path,
                             self.mask_out_path,
-                            ]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 bbox_shift_text = self.prepare_material_()
             else:
                 self.input_latent_list_cycle = torch.load(self.latents_out_path)
@@ -514,21 +581,29 @@ class MuseTalk_RealTime:
                     self.coord_list_cycle = pickle.load(f)
                 input_img_list = glob.glob(
                     os.path.join(self.full_imgs_path, "*.[jpJP][pnPN]*[gG]")
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 input_img_list = sorted(
                     input_img_list,
                         key = lambda x: int(os.path.splitext(os.path.basename(x))[0]),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.frame_list_cycle = read_imgs(input_img_list)
                 with open(self.mask_coords_path, "rb") as f:
                     self.mask_coords_list_cycle = pickle.load(f)
                 input_mask_list = glob.glob(
                     os.path.join(self.mask_out_path, "*.[jpJP][pnPN]*[gG]")
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 input_mask_list = sorted(
                     input_mask_list,
                         key = lambda x: int(os.path.splitext(os.path.basename(x))[0]),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.mask_list_cycle = read_imgs(input_mask_list)
         else:
             print("*********************************")
@@ -540,8 +615,12 @@ class MuseTalk_RealTime:
                         self.full_imgs_path,
                         self.video_out_path,
                         self.mask_out_path,
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             bbox_shift_text = self.prepare_material_()
 
         if self.input_latent_list_cycle is None:
@@ -554,11 +633,15 @@ class MuseTalk_RealTime:
         if self.frame_list_cycle is None:
             input_img_list = glob.glob(
                 os.path.join(self.full_imgs_path, "*.[jpJP][pnPN]*[gG]")
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             input_img_list = sorted(
                 input_img_list,
                     key = lambda x: int(os.path.splitext(os.path.basename(x))[0]),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             self.frame_list_cycle = read_imgs(input_img_list)
 
         if self.mask_coords_list_cycle is None:
@@ -568,11 +651,15 @@ class MuseTalk_RealTime:
         if self.mask_list_cycle is None:
             input_mask_list = glob.glob(
                 os.path.join(self.mask_out_path, "*.[jpJP][pnPN]*[gG]")
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             input_mask_list = sorted(
                 input_mask_list,
                     key = lambda x: int(os.path.splitext(os.path.basename(x))[0]),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             self.mask_list_cycle = read_imgs(input_mask_list)
 
         with open(self.coords_path, "rb") as f:
@@ -588,10 +675,14 @@ class MuseTalk_RealTime:
         whisper_feature = self.audio_processor.audio2feat(audio_path)
         whisper_chunks = self.audio_processor.feature2chunks(
             feature_array = whisper_feature, fps = fps
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(
             f"processing audio:{audio_path} costs {(time.time() - start_time) * 1000}ms"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         ############################################## inference batch by batch ##############################################
         video_num = len(whisper_chunks)
         res_frame_queue = queue.Queue()
@@ -599,7 +690,9 @@ class MuseTalk_RealTime:
         # # Create a sub - thread and start it
         process_thread = threading.Thread(
             target = self.process_frames, args=(res_frame_queue, video_num)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         process_thread.start()
 
         gen = datagen(whisper_chunks, self.input_latent_list_cycle, batch_size)
@@ -608,17 +701,21 @@ class MuseTalk_RealTime:
 
         for i, (whisper_batch, latent_batch) in enumerate(
             tqdm(gen, total = int(np.ceil(float(video_num)/batch_size)))
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             audio_feature_batch = torch.from_numpy(whisper_batch)
             audio_feature_batch = audio_feature_batch.to(
                 device = self.unet.device, dtype = self.unet.model.dtype
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             audio_feature_batch = self.pe(audio_feature_batch)
             latent_batch = latent_batch.to(dtype = self.unet.model.dtype)
 
             pred_latents = self.unet.model(
                 latent_batch, self.timesteps, encoder_hidden_states = audio_feature_batch
-            ).sample
+# BRACKET_SURGEON: disabled
+#             ).sample
             recon = self.vae.decode_latents(pred_latents)
             for res_frame in recon:
                 res_frame_queue.put(res_frame)
@@ -629,14 +726,22 @@ class MuseTalk_RealTime:
             print(
                 "Total process time of {} frames without saving images = {}s".format(
                     video_num, time.time() - start_time
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             print(
                 "Total process time of {} frames including saving images = {}s".format(
                     video_num, time.time() - start_time
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if out_vid_name is not None and self.skip_save_images is False:
             # optional
@@ -683,7 +788,8 @@ class MuseTalk:
                 "batch_size": 8,
                 "output_vid_name": "",
                 "use_saved_coord": False,
-                }  # same with inferenece script
+# BRACKET_SURGEON: disabled
+#                 }  # same with inferenece script
         args = Namespace(**args_dict)
         print(args)
         input_basename = os.path.basename(video_path).split(".")[0]
@@ -691,10 +797,12 @@ class MuseTalk:
         output_basename = f"{input_basename}_{audio_basename}"
         result_img_save_path = os.path.join(
             args.result_dir, output_basename
-        )  # related to video & audio inputs
+# BRACKET_SURGEON: disabled
+#         )  # related to video & audio inputs
         crop_coord_save_path = os.path.join(
             result_img_save_path, input_basename + ".pkl"
-        )  # only related to video input
+# BRACKET_SURGEON: disabled
+#         )  # only related to video input
         os.makedirs(result_img_save_path, exist_ok = True)
 
         if args.output_vid_name == "":
@@ -715,21 +823,27 @@ class MuseTalk:
                 imageio.imwrite(f"{save_dir_full}/{i:08d}.png", im)
             input_img_list = sorted(
                 glob.glob(os.path.join(save_dir_full, "*.[jpJP][pnPN]*[gG]"))
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             fps = get_video_fps(video_path)
         else:  # input img folder
             input_img_list = glob.glob(os.path.join(video_path, "*.[jpJP][pnPN]*[gG]"))
             input_img_list = sorted(
                 input_img_list,
                     key = lambda x: int(os.path.splitext(os.path.basename(x))[0]),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             fps = args.fps
         # print(input_img_list)
         ############################################## extract audio feature ##############################################
         whisper_feature = self.audio_processor.audio2feat(audio_path)
         whisper_chunks = self.audio_processor.feature2chunks(
             feature_array = whisper_feature, fps = fps
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         ############################################## preprocess input image  ##############################################
         if os.path.exists(crop_coord_save_path) and args.use_saved_coord:
             print("using extracted coordinates")
@@ -751,7 +865,9 @@ class MuseTalk:
             crop_frame = frame[y1:y2, x1:x2]
             crop_frame = cv2.resize(
                 crop_frame, (256, 256), interpolation = cv2.INTER_LANCZOS4
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             latents = self.vae.get_latents_for_unet(crop_frame)
             input_latent_list.append(latents)
 
@@ -767,17 +883,20 @@ class MuseTalk:
         res_frame_list = []
         for i, (whisper_batch, latent_batch) in enumerate(
             tqdm(gen, total = int(np.ceil(float(video_num)/batch_size)))
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
 
             tensor_list = [torch.FloatTensor(arr) for arr in whisper_batch]
             audio_feature_batch = torch.stack(tensor_list).to(
                 self.unet.device
-            )  # torch, B, 5 * N,384
+# BRACKET_SURGEON: disabled
+#             )  # torch, B, 5 * N,384
             audio_feature_batch = self.pe(audio_feature_batch)
 
             pred_latents = self.unet.model(
                 latent_batch, self.timesteps, encoder_hidden_states = audio_feature_batch
-            ).sample
+# BRACKET_SURGEON: disabled
+#             ).sample
             recon = self.vae.decode_latents(pred_latents)
             for res_frame in recon:
                 res_frame_list.append(res_frame)
@@ -816,7 +935,9 @@ class MuseTalk:
         images = []
         files = [
             file for file in os.listdir(result_img_save_path) if is_valid_image(file)
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         files.sort(key = lambda x: int(x.split(".")[0]))
 
         for file in files:
@@ -831,7 +952,9 @@ class MuseTalk:
                 fps = fps,
                 codec="libx264",
                 pixelformat="yuv420p",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # cmd_combine_audio = f"ffmpeg -y -v fatal -i {audio_path} -i temp.mp4 {output_vid_name}"
         # print(cmd_combine_audio)
@@ -858,7 +981,9 @@ class MuseTalk:
     codec='libx264',
     audio_codec='aac',
     input_params=['-i',
-    audio_path])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     audio_path])
 
         # input_video = ffmpeg.input(input_video)
 
@@ -875,12 +1000,16 @@ class MuseTalk:
             #     audio_codec='aac',
             #     input_params=['-i', audio_path],
             #     output_params=['-y'],  # Add the '-y' flag to overwrite the output file if it exists
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
         # )
         # writer = imageio.get_writer(output_vid_name,
     fps = 25,
     codec='libx264',
     quality = 10,
-    pixelformat='yuvj444p')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     pixelformat='yuvj444p')
         # for im in frames:
         #     writer.append_data(im)
         # writer.close()
@@ -897,7 +1026,9 @@ class MuseTalk:
         # Write the output video
         video_clip.write_videofile(
             output_vid_name, codec="libx264", audio_codec="aac", fps = 25
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         os.remove("temp.mp4")
         # shutil.rmtree(result_img_save_path)
@@ -954,7 +1085,9 @@ class MuseTalk:
                 codec="libx264",
                 quality = 9,
                 pixelformat="yuv420p",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         return output_video
 
 if __name__ == "__main__":
@@ -973,5 +1106,7 @@ if __name__ == "__main__":
     # res_video,
     bbox_shift_scale = musetalk.inference(audio_path,
     video_path,
-    bbox_shift)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     bbox_shift)
     # print(bbox_shift_scale)

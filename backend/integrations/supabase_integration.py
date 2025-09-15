@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI Supabase Integration
-
+""""""
 Provides comprehensive Supabase database integration for cloud - based
 credential management, state persistence, and real - time data synchronization.
+"""
+
+TRAE.AI Supabase Integration
+
+
+
+""""""
+
 
 Features:
+
+
+
 - Secure credential and secrets management
 - Real - time data synchronization
 - User authentication and authorization
@@ -16,6 +27,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import asyncio
@@ -66,7 +78,9 @@ except ImportError:
             return FallbackAuth(self.logger)
 
     class APIError(Exception):
-        """Fallback APIError for when supabase-py is not available."""
+        """
+Fallback APIError for when supabase-py is not available.
+
 
         def __init__(self, message: str, code: str = None, details: dict = None):
             super().__init__(message)
@@ -74,14 +88,18 @@ except ImportError:
             self.details = details or {}
 
     class StorageException(Exception):
-        """Fallback StorageException for when supabase-py is not available."""
-
-        def __init__(self, message: str, status_code: int = None):
+    """
+    Fallback StorageException for when supabase-py is not available.
+    """
+    
+    def __init__(self, message: str, status_code: int = None):
             super().__init__(message)
             self.status_code = status_code
 
     class FallbackTable:
-        """Fallback table operations."""
+        
+Fallback table operations.
+"""
 
         def __init__(self, table_name: str, logger):
             self.table_name = table_name
@@ -110,7 +128,9 @@ except ImportError:
             return {"data": [], "error": "Supabase not available"}
 
     class FallbackStorage:
-        """Fallback storage operations."""
+        """
+Fallback storage operations.
+
 
         def __init__(self, logger):
             self.logger = logger
@@ -119,9 +139,11 @@ except ImportError:
             return FallbackBucket(bucket, self.logger)
 
     class FallbackBucket:
-        """Fallback bucket operations."""
-
-        def __init__(self, bucket_name: str, logger):
+    """
+    Fallback bucket operations.
+    """
+    
+    def __init__(self, bucket_name: str, logger):
             self.bucket_name = bucket_name
             self.logger = logger
 
@@ -214,7 +236,9 @@ class UserProfile:
 
 @dataclass
 class SecureCredential:
-    """Secure credential data structure."""
+    """
+Secure credential data structure.
+
 
     id: str
     user_id: str
@@ -225,12 +249,20 @@ class SecureCredential:
     expires_at: Optional[datetime] = None
     created_at: datetime = None
     updated_at: datetime = None
+   
+""""""
+
     metadata: Optional[Dict[str, Any]] = None
+   
 
-
+    
+   
+"""
 @dataclass
 class WorkflowState:
-    """Workflow state data structure."""
+    """
+Workflow state data structure.
+
 
     id: str
     user_id: str
@@ -240,12 +272,20 @@ class WorkflowState:
     state_data: Dict[str, Any]
     created_at: datetime = None
     updated_at: datetime = None
+   
+""""""
+
     version: int = 1
+   
 
-
+    
+   
+"""
 @dataclass
 class ExecutionRecord:
-    """Execution record data structure."""
+    """
+Execution record data structure.
+
 
     id: str
     user_id: str
@@ -255,15 +295,34 @@ class ExecutionRecord:
     finished_at: Optional[datetime] = None
     results: Optional[Dict[str, Any]] = None
     error_message: Optional[str] = None
+   
+""""""
+
     metrics: Optional[Dict[str, Any]] = None
+   
 
-
+    
+   
+"""
 class SupabaseIntegration:
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
     Comprehensive Supabase integration for TRAE.AI with secure
     credential management, real - time sync, and cloud persistence.
-    """
+   
 
+    
+   
+""""""
+    
+   """
     def __init__(self, secrets_db_path: str = "data/secrets.sqlite"):
         self.logger = setup_logger("supabase_integration")
         self.secret_store = SecretStore(secrets_db_path)
@@ -292,10 +351,21 @@ class SupabaseIntegration:
         self.logger.info("Supabase integration initialized successfully")
 
     def _load_config(self) -> SupabaseConfig:
-        """Load Supabase configuration from secure storage."""
+        """
+Load Supabase configuration from secure storage.
+
         try:
+            
+"""
             with self.secret_store as store:
+            """
+
                 config = SupabaseConfig(
+            
+
+            with self.secret_store as store:
+            
+"""
                     url=store.get_secret("SUPABASE_URL") or os.getenv("SUPABASE_URL"),
                     key=store.get_secret("SUPABASE_ANON_KEY") or os.getenv("SUPABASE_ANON_KEY"),
                     service_role_key=store.get_secret("SUPABASE_SERVICE_ROLE_KEY")
@@ -306,7 +376,7 @@ class SupabaseIntegration:
                     or os.getenv("SUPABASE_DB_PASSWORD"),
                     storage_bucket=store.get_secret("SUPABASE_STORAGE_BUCKET")
                     or "trae - ai - storage",
-                )
+                 )
 
                 if not config.url or not config.key:
                     self.logger.error("Missing required Supabase configuration")
@@ -319,15 +389,41 @@ class SupabaseIntegration:
             raise
 
     def _init_client(self) -> Optional[Client]:
-        """Initialize Supabase client."""
+        """
+Initialize Supabase client.
+
+        
+"""
         try:
+        """"""
             if not SUPABASE_AVAILABLE:
+        """
+
+        try:
+        
+
+       
+""""""
+
+                
+
+                return None
+                
+""""""
+
+                
+               
+
+                
+"""
+
                 return None
 
+                """
             client = create_client(self.config.url, self.config.key)
 
             # Test connection
-            response = client.table("users").select("id").limit(1).execute()
+            client.table("users").select("id").limit(1).execute()
 
             self.logger.info("Supabase client initialized and connected")
             return client
@@ -337,10 +433,22 @@ class SupabaseIntegration:
             return None
 
     def _get_encryption_key(self) -> bytes:
-        """Get or generate encryption key for credentials."""
+        """
+Get or generate encryption key for credentials.
+
         try:
+            
+"""
             with self.secret_store as store:
+            """
                 key = store.get_secret("CREDENTIAL_ENCRYPTION_KEY")
+            """
+
+            with self.secret_store as store:
+            
+
+           
+""""""
                 if not key:
                     # Generate new key
                     key = base64.b64encode(os.urandom(32)).decode("utf - 8")
@@ -354,10 +462,22 @@ class SupabaseIntegration:
             return hashlib.sha256(b"trae - ai - default - key").digest()
 
     def _encrypt_credential(self, value: str) -> str:
-        """Encrypt credential value."""
-        try:
-            from cryptography.fernet import Fernet
+        """
+Encrypt credential value.
 
+        
+"""
+        try:
+        """"""
+            """
+
+            from cryptography.fernet import Fernet
+            
+
+        
+"""
+        try:
+        """"""
             # Use first 32 bytes for Fernet key
             fernet_key = base64.urlsafe_b64encode(self.encryption_key)
             cipher = Fernet(fernet_key)
@@ -373,10 +493,22 @@ class SupabaseIntegration:
             return base64.b64encode(value.encode("utf - 8")).decode("utf - 8")
 
     def _decrypt_credential(self, encrypted_value: str) -> str:
-        """Decrypt credential value."""
-        try:
-            from cryptography.fernet import Fernet
+        """
+Decrypt credential value.
 
+        
+"""
+        try:
+        """"""
+            """
+
+            from cryptography.fernet import Fernet
+            
+
+        
+"""
+        try:
+        """"""
             fernet_key = base64.urlsafe_b64encode(self.encryption_key)
             cipher = Fernet(fernet_key)
 
@@ -398,13 +530,13 @@ class SupabaseIntegration:
                 "status": "unavailable",
                 "error": "Supabase client not initialized",
                 "timestamp": datetime.now().isoformat(),
-            }
+             }
 
         try:
             start_time = time.time()
 
             # Test database connection
-            response = self.client.table("users").select("id").limit(1).execute()
+            self.client.table("users").select("id").limit(1).execute()
 
             response_time = time.time() - start_time
 
@@ -414,14 +546,14 @@ class SupabaseIntegration:
                 "response_time": response_time,
                 "timestamp": datetime.now().isoformat(),
                 "tables_accessible": True,
-            }
+             }
 
         except Exception as e:
             return {
                 "status": "error",
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+             }
 
     async def create_user_profile(self, user_data: Dict[str, Any]) -> Optional[UserProfile]:
         """Create a new user profile."""
@@ -439,7 +571,7 @@ class SupabaseIntegration:
                 "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat(),
                 "metadata": user_data.get("metadata", {}),
-            }
+             }
 
             response = self.client.table(TableName.USERS.value).insert(profile_data).execute()
 
@@ -457,18 +589,29 @@ class SupabaseIntegration:
             return None
 
     async def get_user_profile(self, user_id: str) -> Optional[UserProfile]:
-        """Get user profile by ID."""
-        if not self.client:
-            return None
+        """
+Get user profile by ID.
 
+        if not self.client:
+            
+"""
+            return None
+            """"""
         # Check cache first
+            """
+
+            return None
+            
+
+           
+""""""
         if user_id in self.cache["users"]:
             return self.cache["users"][user_id]
 
         try:
             response = (
                 self.client.table(TableName.USERS.value).select("*").eq("id", user_id).execute()
-            )
+             )
 
             if response.data:
                 profile = UserProfile(**response.data[0])
@@ -490,11 +633,18 @@ class SupabaseIntegration:
         description: Optional[str] = None,
         expires_at: Optional[datetime] = None,
     ) -> Optional[SecureCredential]:
-        """Store encrypted credential."""
-        if not self.client:
-            return None
+        """
+Store encrypted credential.
 
+        if not self.client:
+            
+"""
+            return None
+            """"""
         try:
+            """
+            return None
+            """
             encrypted_value = self._encrypt_credential(value)
 
             credential_data = {
@@ -507,11 +657,11 @@ class SupabaseIntegration:
                 "expires_at": expires_at.isoformat() if expires_at else None,
                 "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat(),
-            }
+             }
 
             response = (
                 self.client.table(TableName.CREDENTIALS.value).insert(credential_data).execute()
-            )
+             )
 
             if response.data:
                 credential = SecureCredential(**response.data[0])
@@ -531,18 +681,25 @@ class SupabaseIntegration:
             return None
 
     async def get_credential(self, user_id: str, credential_id: str) -> Optional[str]:
-        """Get decrypted credential value."""
-        if not self.client:
-            return None
+        """
+Get decrypted credential value.
 
+        if not self.client:
+            
+"""
+            return None
+            """"""
         try:
+            """
+            return None
+            """
             response = (
                 self.client.table(TableName.CREDENTIALS.value)
                 .select("*")
                 .eq("id", credential_id)
                 .eq("user_id", user_id)
                 .execute()
-            )
+             )
 
             if response.data:
                 credential_data = response.data[0]
@@ -564,19 +721,26 @@ class SupabaseIntegration:
             return None
 
     async def list_user_credentials(self, user_id: str) -> List[SecureCredential]:
-        """List all credentials for a user (without values)."""
-        if not self.client:
-            return []
+        """
+List all credentials for a user (without values).
 
+        if not self.client:
+            
+"""
+            return []
+            """"""
         try:
+            """
+            return []
+            """
             response = (
                 self.client.table(TableName.CREDENTIALS.value)
                 .select(
                     "id, user_id, name, credential_type, description, expires_at, created_at, updated_at"
-                )
+                 )
                 .eq("user_id", user_id)
                 .execute()
-            )
+             )
 
             credentials = []
             for cred_data in response.data:
@@ -590,11 +754,18 @@ class SupabaseIntegration:
             return []
 
     async def store_workflow_state(self, workflow_state: WorkflowState) -> bool:
-        """Store workflow state."""
-        if not self.client:
-            return False
+        """
+Store workflow state.
 
+        if not self.client:
+            
+"""
+            return False
+            """"""
         try:
+            """
+            return False
+            """
             state_data = {
                 "id": workflow_state.id,
                 "user_id": workflow_state.user_id,
@@ -606,10 +777,10 @@ class SupabaseIntegration:
                     workflow_state.created_at.isoformat()
                     if workflow_state.created_at
                     else datetime.now().isoformat()
-                ),
+                 ),
                 "updated_at": datetime.now().isoformat(),
                 "version": workflow_state.version,
-            }
+             }
 
             response = self.client.table(TableName.WORKFLOWS.value).upsert(state_data).execute()
 
@@ -625,11 +796,22 @@ class SupabaseIntegration:
             return False
 
     async def get_workflow_state(self, user_id: str, workflow_id: str) -> Optional[WorkflowState]:
-        """Get workflow state."""
-        if not self.client:
-            return None
+        """
+Get workflow state.
 
+        if not self.client:
+            
+"""
+            return None
+            """"""
         # Check cache first
+            """
+
+            return None
+            
+
+           
+""""""
         if workflow_id in self.cache["workflows"]:
             return self.cache["workflows"][workflow_id]
 
@@ -640,7 +822,7 @@ class SupabaseIntegration:
                 .eq("id", workflow_id)
                 .eq("user_id", user_id)
                 .execute()
-            )
+             )
 
             if response.data:
                 workflow_data = response.data[0]
@@ -654,7 +836,7 @@ class SupabaseIntegration:
                     created_at=datetime.fromisoformat(workflow_data["created_at"]),
                     updated_at=datetime.fromisoformat(workflow_data["updated_at"]),
                     version=workflow_data["version"],
-                )
+                 )
 
                 self.cache["workflows"][workflow_id] = workflow_state
                 return workflow_state
@@ -666,11 +848,18 @@ class SupabaseIntegration:
             return None
 
     async def store_execution_record(self, execution: ExecutionRecord) -> bool:
-        """Store execution record."""
-        if not self.client:
-            return False
+        """
+Store execution record.
 
+        if not self.client:
+            
+"""
+            return False
+            """"""
         try:
+            """
+            return False
+            """
             execution_data = {
                 "id": execution.id,
                 "user_id": execution.user_id,
@@ -679,15 +868,15 @@ class SupabaseIntegration:
                 "started_at": execution.started_at.isoformat(),
                 "finished_at": (
                     execution.finished_at.isoformat() if execution.finished_at else None
-                ),
+                 ),
                 "results": execution.results,
                 "error_message": execution.error_message,
                 "metrics": execution.metrics,
-            }
+             }
 
             response = (
                 self.client.table(TableName.EXECUTIONS.value).upsert(execution_data).execute()
-            )
+             )
 
             if response.data:
                 self.cache["executions"][execution.id] = execution
@@ -703,11 +892,22 @@ class SupabaseIntegration:
     async def get_execution_record(
         self, user_id: str, execution_id: str
     ) -> Optional[ExecutionRecord]:
-        """Get execution record."""
-        if not self.client:
-            return None
+        """
+Get execution record.
 
+        if not self.client:
+            
+"""
+            return None
+            """"""
         # Check cache first
+            """
+
+            return None
+            
+
+           
+""""""
         if execution_id in self.cache["executions"]:
             return self.cache["executions"][execution_id]
 
@@ -718,7 +918,7 @@ class SupabaseIntegration:
                 .eq("id", execution_id)
                 .eq("user_id", user_id)
                 .execute()
-            )
+             )
 
             if response.data:
                 exec_data = response.data[0]
@@ -732,11 +932,11 @@ class SupabaseIntegration:
                         datetime.fromisoformat(exec_data["finished_at"])
                         if exec_data["finished_at"]
                         else None
-                    ),
+                     ),
                     results=exec_data["results"],
                     error_message=exec_data["error_message"],
                     metrics=exec_data["metrics"],
-                )
+                 )
 
                 self.cache["executions"][execution_id] = execution
                 return execution
@@ -754,12 +954,19 @@ class SupabaseIntegration:
         file_data: bytes,
         content_type: str = "application/octet - stream",
     ) -> Optional[str]:
-        """Upload file to Supabase storage."""
-        if not self.client:
-            return None
+        """
+Upload file to Supabase storage.
 
+        if not self.client:
+            
+"""
+            return None
+            """"""
         try:
             # Create user - specific path
+            """
+            return None
+            """
             storage_path = f"{user_id}/{file_path}"
 
             # Upload file
@@ -767,13 +974,13 @@ class SupabaseIntegration:
                 path=storage_path,
                 file=file_data,
                 file_options={"content - type": content_type},
-            )
+             )
 
             if response:
                 # Get public URL
                 public_url = self.client.storage.from_(self.config.storage_bucket).get_public_url(
                     storage_path
-                )
+                 )
 
                 self.logger.info(f"Uploaded file: {storage_path}")
                 return public_url
@@ -785,11 +992,18 @@ class SupabaseIntegration:
             return None
 
     async def delete_file(self, user_id: str, file_path: str) -> bool:
-        """Delete file from Supabase storage."""
-        if not self.client:
-            return False
+        """
+Delete file from Supabase storage.
 
+        if not self.client:
+            
+"""
+            return False
+            """"""
         try:
+            """
+            return False
+            """
             storage_path = f"{user_id}/{file_path}"
 
             response = self.client.storage.from_(self.config.storage_bucket).remove([storage_path])
@@ -806,12 +1020,19 @@ class SupabaseIntegration:
 
     async def subscribe_to_changes(
         self, table: str, callback: callable, filter_conditions: Optional[Dict] = None
-    ):
-        """Subscribe to real - time changes in a table."""
-        if not self.client:
-            return None
+#     ):
+        """
+Subscribe to real - time changes in a table.
 
+        if not self.client:
+            
+"""
+            return None
+            """"""
         try:
+            """
+            return None
+            """
             subscription = self.client.table(table).on("*", callback)
 
             if filter_conditions:
@@ -841,14 +1062,30 @@ class SupabaseIntegration:
                 self.logger.error(f"Error unsubscribing {subscription_id}: {e}")
 
     async def cleanup(self):
-        """Cleanup resources and close connections."""
+        """
+Cleanup resources and close connections.
+
         # Unsubscribe from all real - time subscriptions
         for subscription_id in list(self.subscriptions.keys()):
-            await self.unsubscribe(subscription_id)
+           
+""""""
 
+            await self.unsubscribe(subscription_id)
+           
+
+            
+           
+"""
         # Clear caches
         self.cache.clear()
+           """
 
+            
+           
+
+            await self.unsubscribe(subscription_id)
+           
+""""""
         self.logger.info("Supabase integration cleaned up")
 
 
@@ -868,7 +1105,7 @@ if __name__ == "__main__":
                 "email": "test@example.com",
                 "full_name": "Test User",
                 "subscription_tier": "pro",
-            }
+             }
 
             profile = await supabase.create_user_profile(user_data)
             if profile:
@@ -881,7 +1118,7 @@ if __name__ == "__main__":
                     value="sk - test - key - 12345",
                     credential_type=CredentialType.API_KEY,
                     description="OpenAI API key for GPT - 4",
-                )
+                 )
 
                 if credential:
                     print(f"Stored credential: {credential.name}")

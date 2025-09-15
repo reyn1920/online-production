@@ -37,12 +37,14 @@ def list_actions() -> List[dict]:
                 "doc": (fn.__doc__ or "").strip(),
                 "method": "POST",
                 "auth": "guarded",
-                "endpoint": f"/api/action/{getattr(fn, '_agent_pretty',
+                "endpoint": f"/api/action/{getattr(fn, '_agent_pretty',"
     agent_key)}/{getattr(fn, '_action_pretty',
-    action_key)}",
+#     action_key)}","
                 "tags": getattr(fn, "_tags", []),
-            }
-        )
+             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
     return out
 
 
@@ -86,7 +88,9 @@ def _seed_roadmap_if_missing():
                 "TEST_CHANNEL",
                 "QUICK_START",
                 "ADVANCED_FEATURES",
-            ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]:
                 w.writerow([c])
 
 
@@ -96,9 +100,17 @@ def _seed_roadmap_if_missing():
 @_expose("get_system_status", "Get system status", tags=["ops"])
 @register_action("get_system_status", "Get system status")
 def act_get_system_status(payload: dict) -> dict:
-    """RETURNS CURRENT SYSTEM HEALTH AND STATISTICS"""
+    """
+RETURNS CURRENT SYSTEM HEALTH AND STATISTICS
+
+    
+"""
     try:
+    """
         r = requests.get(f"{BACKEND_URL}/api/system/status", timeout=5)
+    """
+    try:
+    """
         sys = r.json()
     except Exception:
         sys = {"system": {"status": "unknown"}}
@@ -108,19 +120,51 @@ def act_get_system_status(payload: dict) -> dict:
 @_expose("reload_actions", "reload_actions", tags=["ops"])
 @register_action("reload_actions", "reload_actions")
 def act_reload_actions(payload: dict) -> dict:
-    """Rebuild the actions manifest"""
+    """
+Rebuild the actions manifest
+
+   
+""""""
+
     # Registry is static in this process; return manifest for the UI to reload.
+   
+
+    
+   
+"""
     return {"status": "ok", "count": len(list_actions())}
+   """
 
+    
+   
 
+    # Registry is static in this process; return manifest for the UI to reload.
+   
+""""""
 @_expose("restart_monitoring", "Restart monitoring", tags=["ops"])
 @register_action("restart_monitoring", "Restart monitoring")
 def act_restart_monitoring(payload: dict) -> dict:
-    """RESTARTS THE SYSTEM MONITORING THREAD"""
+    """
+RESTARTS THE SYSTEM MONITORING THREAD
+
+   
+""""""
+
     # If you have a monitoring thread, call into it here.
+   
+
+    
+   
+"""
     return {"status": "ok", "message": "Monitoring restart requested"}
+   """
 
+    
+   
 
+    # If you have a monitoring thread, call into it here.
+   
+""""""
 # ---------------- Max - Out actions ----------------
 
 
@@ -140,15 +184,33 @@ def act_maxout_manifest(payload: dict) -> dict:
 @_expose("maxout", "Synthesize bundles v3", tags=["maxout"])
 @register_action("maxout", "Synthesize bundles v3")
 def act_maxout_synthesize(payload: dict) -> dict:
-    """Add - only ingest of incoming artifacts"""
+    """
+Add - only ingest of incoming artifacts
+
+   
+""""""
+
     # Minimal real synthesis: list/assets/incoming/bundles and write a manifest
+   
+
+    
+   
+"""
     bundles_dir = ASSETS / "incoming" / "bundles"
+   """
+
+    
+   
+
+    # Minimal real synthesis: list/assets/incoming/bundles and write a manifest
+   
+""""""
     items = sorted([p.name for p in bundles_dir.glob("*") if p.is_file()])
     out = {
         "timestamp": time.strftime("%Y % m%dT % H%M % SZ", time.gmtime()),
         "ingested": items,
         "notes": "Add - only v3 synthesis",
-    }
+     }
     (ASSETS / "releases" / "v3").mkdir(parents=True, exist_ok=True)
     (ASSETS / "releases" / "v3" / "manifest.json").write_text(json.dumps(out, indent=2))
     return {"status": "ok", "result": out}
@@ -157,10 +219,35 @@ def act_maxout_synthesize(payload: dict) -> dict:
 @_expose("maxout", "Run one channel", tags=["maxout", "video"])
 @register_action("maxout", "Run one channel")
 def act_maxout_run_one_channel(payload: dict) -> dict:
-    """Reads roadmap, creates real MP4 + PDF (via channel executor)"""
+    """
+Reads roadmap, creates real MP4 + PDF (via channel executor)
+
+   
+""""""
+
     _seed_roadmap_if_missing()
+   
+
+    
+   
+""""""
+
+
+    
+
+   
 
     # Normalize payload
+   
+""""""
+
+   
+
+    
+   
+"""
+    _seed_roadmap_if_missing()
+   """"""
     channel = payload.get("channel") or "DEMO_CAPABILITY_REEL"
     minutes = int(payload.get("minutes") or 1)
     avatars = payload.get("avatars") or ["Linly - Talker", "TalkingHeads"]
@@ -169,6 +256,8 @@ def act_maxout_run_one_channel(payload: dict) -> dict:
     random_seed = int(payload.get("random_seed") or time.time())
 
     # Prefer calling an internal runner if available, otherwise fall back to the backend API if you wired one there
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
     # 1) Try internal channel executor (add - only, safe)
     try:
 
@@ -182,7 +271,9 @@ def act_maxout_run_one_channel(payload: dict) -> dict:
                 fresh=fresh,
                 produce_examples=produce_examples,
                 random_seed=random_seed,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             return {"status": "ok", **res}
     except Exception:
         # fall through to try API route
@@ -199,9 +290,11 @@ def act_maxout_run_one_channel(payload: dict) -> dict:
                 "fresh": fresh,
                 "produce_examples": produce_examples,
                 "random_seed": random_seed,
-            },
+             },
             timeout=300,
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         r.raise_for_status()
         j = r.json()
         return {"status": "ok", **j}
@@ -212,7 +305,7 @@ def act_maxout_run_one_channel(payload: dict) -> dict:
             "error": f"No runner available: {e}",
             "csv_path": str(
                 ROADMAP.relative_to(ASSETS.parent)
-            ),  # "assets/incoming/channel_roadmaps_10.csv"
-            "note": "Ensure channel executor is wired \
-    or the FastAPI/api/capability_reel exists.",
-        }
+#             ),  # "assets/incoming/channel_roadmaps_10.csv"
+            "note": "Ensure channel executor is wired \"
+#     or the FastAPI/api/capability_reel exists.",
+         }

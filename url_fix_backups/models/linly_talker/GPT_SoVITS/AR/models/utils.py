@@ -12,7 +12,7 @@ def sequence_mask(length, max_length = None):
 
 
 def make_pad_mask(lengths: torch.Tensor, max_len: int = 0) -> torch.Tensor:
-    """
+    """"""
     Args:
       lengths:
         A 1 - D tensor containing sentence lengths.
@@ -29,7 +29,7 @@ def make_pad_mask(lengths: torch.Tensor, max_len: int = 0) -> torch.Tensor:
         [False, False, False,  True,  True],
                 [False, False,  True,  True,  True],
                 [False, False, False, False, False]])
-    """
+    """"""
     assert lengths.ndim == 1, lengths.ndim
     max_len = max(max_len, lengths.max())
     n = lengths.size(0)
@@ -43,9 +43,10 @@ def make_pad_mask(lengths: torch.Tensor, max_len: int = 0) -> torch.Tensor:
 
 def top_k_top_p_filtering(
     logits, top_k = 0, top_p = 1.0, filter_value=-float("Inf"), min_tokens_to_keep = 1
-):
-    """Filter a distribution of logits using top - k \
-    and / or nucleus (top - p) filtering
+# BRACKET_SURGEON: disabled
+# ):
+    """Filter a distribution of logits using top - k \"""
+#     and / or nucleus (top - p) filtering
     Args:
         logits: logits distribution shape (batch size, vocabulary size)
         if top_k > 0: keep only top k tokens with highest probability (top - k filtering).
@@ -53,7 +54,7 @@ def top_k_top_p_filtering(
             Nucleus filtering is described in Holtzman et al. (http://arxiv.org / abs / 1904.09751)
         Make sure we keep at least min_tokens_to_keep per batch example in the output
     From: https://gist.github.com / thomwolf / 1a5a29f6962089e871b94cbd09daf317
-    """
+    """"""
     if top_k > 0:
         top_k = min(max(top_k, min_tokens_to_keep), logits.size(-1))  # Safety check
         # Remove all tokens with a probability less than the last token of the top - k
@@ -76,7 +77,8 @@ def top_k_top_p_filtering(
         # scatter sorted tensors to original indexing
         indices_to_remove = sorted_indices_to_remove.scatter(
             1, sorted_indices, sorted_indices_to_remove
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logits[indices_to_remove] = filter_value
     return logits
 
@@ -86,10 +88,10 @@ def topk_sampling(logits, top_k = 10, top_p = 1.0, temperature = 1.0):
     #     The value used to module the next token probabilities. Must be strictly positive. Default to 1.0.
     # top_k: (`optional`) int
     #     The number of highest probability vocabulary tokens to keep for top - k - filtering. Between 1 \
-    and infinity. Default to 50.
+#     and infinity. Default to 50.
     # top_p: (`optional`) float
     #     The cumulative probability of parameter highest probability vocabulary tokens to keep for nucleus sampling. Must be between 0 \
-    and 1. Default to 1.
+#     and 1. Default to 1.
 
     # Temperature (higher temperature => more likely to sample low probability tokens)
     if temperature != 1.0:
@@ -105,7 +107,8 @@ from typing import Optional, Tuple
 
 def multinomial_sample_one_no_sync(
     probs_sort,
-):  # Does multinomial sampling without a cuda synchronization
+# BRACKET_SURGEON: disabled
+# ):  # Does multinomial sampling without a cuda synchronization
     q = torch.empty_like(probs_sort).exponential_(1)
     return torch.argmax(probs_sort / q, dim=-1, keepdim = True).to(dtype = torch.int)
 
@@ -117,7 +120,8 @@ def logits_to_probs(
         top_k: Optional[int] = None,
         top_p: Optional[int] = None,
         repetition_penalty: float = 1.0,
-):
+# BRACKET_SURGEON: disabled
+# ):
     previous_tokens = previous_tokens.squeeze()
     # print(logits.shape,previous_tokens.shape)
     # pdb.set_trace()
@@ -126,19 +130,22 @@ def logits_to_probs(
         score = torch.gather(logits, dim = 0, index = previous_tokens)
         score = torch.where(
             score < 0, score * repetition_penalty, score / repetition_penalty
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logits.scatter_(dim = 0, index = previous_tokens, src = score)
 
     if top_p is not None and top_p < 1.0:
         sorted_logits, sorted_indices = torch.sort(logits, descending = True)
         cum_probs = torch.cumsum(
             torch.nn.functional.softmax(sorted_logits, dim=-1), dim=-1
-        )
+# BRACKET_SURGEON: disabled
+#         )
         sorted_indices_to_remove = cum_probs > top_p
         sorted_indices_to_remove[0] = False  # keep at least one option
         indices_to_remove = sorted_indices_to_remove.scatter(
             dim = 0, index = sorted_indices, src = sorted_indices_to_remove
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logits = logits.masked_fill(indices_to_remove, -float("Inf"))
 
     logits = logits / max(temperature, 1e-5)
@@ -159,6 +166,7 @@ def sample(
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     probs = logits_to_probs(
         logits = logits, previous_tokens = previous_tokens, **sampling_kwargs
-    )
+# BRACKET_SURGEON: disabled
+#     )
     idx_next = multinomial_sample_one_no_sync(probs)
     return idx_next, probs

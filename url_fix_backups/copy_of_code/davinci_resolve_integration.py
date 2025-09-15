@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 DaVinci Resolve Integration - Professional Video Editing & Finishing for TRAE.AI
 
 This module provides comprehensive integration with DaVinci Resolve for:
@@ -21,7 +21,7 @@ Features:
 
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -60,7 +60,7 @@ class VideoAsset:
     duration: float  # in seconds
     start_time: float  # timeline position in seconds
     asset_type: str  # "video", "audio", "image", "title"
-    track_index: int  # track number (1 - based)
+    track_index: int: # track number (1 - based)
     effects: List[str] = None
     color_grade: Optional[str] = None
     metadata: Dict[str, Any] = None
@@ -71,7 +71,7 @@ class ColorGradeSettings:
     """Color grading settings for video assets."""
 
     name: str
-    lift: Tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)  # RGBY
+    lift: Tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0): # RGBY
     gamma: Tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)  # RGBY
     gain: Tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)  # RGBY
     offset: Tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)  # RGBY
@@ -94,7 +94,7 @@ class RenderSettings:
 
     format: str = "mp4"  # "mp4", "mov", "avi", "mkv"
     codec: str = "H.264"  # "H.264", "H.265", "ProRes", "DNxHD"
-    resolution: Tuple[int, int] = (1920, 1080)
+    resolution: Tuple[int, int] = (1920, 1080):
     frame_rate: float = 24.0
     bitrate: Optional[int] = None  # Mbps
     quality: str = "high"  # "low", "medium", "high", "best"
@@ -109,7 +109,7 @@ class ProjectSettings:
     """DaVinci Resolve project settings."""
 
     name: str
-    timeline_resolution: Tuple[int, int] = (1920, 1080)
+    timeline_resolution: Tuple[int, int] = (1920, 1080):
     timeline_frame_rate: float = 24.0
     color_space: str = "Rec.709"
     gamma: str = "Rec.709"
@@ -134,11 +134,11 @@ class DaVinciResolveAPI:
             logger.warning("DaVinci Resolve API not available")
 
     def _connect_to_resolve(self) -> bool:
-        """Connect to DaVinci Resolve instance.
+        """Connect to DaVinci Resolve instance."""
 
         Returns:
             True if connection successful, False otherwise
-        """
+        """"""
         try:
             self.resolve = dvr_script.scriptapp("Resolve")
             if self.resolve:
@@ -153,14 +153,14 @@ class DaVinciResolveAPI:
             return False
 
     def create_project(self, settings: ProjectSettings) -> bool:
-        """Create new DaVinci Resolve project.
+        """Create new DaVinci Resolve project."""
 
         Args:
             settings: Project settings
 
         Returns:
             True if project created successfully
-        """
+        """"""
         if not self.project_manager:
             return False
 
@@ -184,7 +184,8 @@ class DaVinciResolveAPI:
                     "separateColorSpaceAndGamma": "1",
                     "colorScienceMode": "davinciYRGB",
                     "workingLuminance": str(settings.working_luminance),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 project.SetSetting(project_settings)
                 logger.info(f"Project '{settings.name}' created successfully")
@@ -198,14 +199,14 @@ class DaVinciResolveAPI:
             return False
 
     def open_project(self, project_name: str) -> bool:
-        """Open existing DaVinci Resolve project.
+        """Open existing DaVinci Resolve project."""
 
         Args:
             project_name: Name of project to open
 
         Returns:
             True if project opened successfully
-        """
+        """"""
         if not self.project_manager:
             return False
 
@@ -225,14 +226,14 @@ class DaVinciResolveAPI:
             return False
 
     def import_media(self, file_paths: List[str]) -> List[str]:
-        """Import media files into current project.
+        """Import media files into current project."""
 
         Args:
             file_paths: List of file paths to import
 
         Returns:
             List of successfully imported media item IDs
-        """
+        """"""
         if not self.media_pool:
             return []
 
@@ -257,7 +258,7 @@ class DaVinciResolveAPI:
             return []
 
     def create_timeline(self, name: str, frame_rate: float = 24.0) -> bool:
-        """Create new timeline in current project.
+        """Create new timeline in current project."""
 
         Args:
             name: Timeline name
@@ -265,7 +266,7 @@ class DaVinciResolveAPI:
 
         Returns:
             True if timeline created successfully
-        """
+        """"""
         if not self.media_pool:
             return False
 
@@ -288,14 +289,14 @@ class DaVinciResolveAPI:
             return False
 
     def add_media_to_timeline(self, assets: List[VideoAsset]) -> bool:
-        """Add media assets to current timeline.
+        """Add media assets to current timeline."""
 
         Args:
             assets: List of video assets to add
 
         Returns:
             True if all assets added successfully
-        """
+        """"""
         if not self.current_timeline or not self.media_pool:
             return False
 
@@ -325,8 +326,10 @@ class DaVinciResolveAPI:
                             "endFrame": start_frame + int(asset.duration * frame_rate),
                             "trackIndex": asset.track_index,
                             "recordFrame": start_frame,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if timeline_item:
                         success_count += 1
@@ -344,7 +347,7 @@ class DaVinciResolveAPI:
             return False
 
     def apply_color_grade(self, clip_name: str, grade_settings: ColorGradeSettings) -> bool:
-        """Apply color grading to a specific clip.
+        """Apply color grading to a specific clip."""
 
         Args:
             clip_name: Name of clip to grade
@@ -352,7 +355,7 @@ class DaVinciResolveAPI:
 
         Returns:
             True if color grade applied successfully
-        """
+        """"""
         if not self.current_timeline:
             return False
 
@@ -381,7 +384,8 @@ class DaVinciResolveAPI:
                         "Shadows": grade_settings.shadows,
                         "Whites": grade_settings.whites,
                         "Blacks": grade_settings.blacks,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Apply corrections (simplified - actual API may vary)
                     for correction, value in color_corrections.items():
@@ -398,14 +402,14 @@ class DaVinciResolveAPI:
             return False
 
     def render_timeline(self, render_settings: RenderSettings) -> bool:
-        """Render current timeline with specified settings.
+        """Render current timeline with specified settings."""
 
         Args:
             render_settings: Render configuration
 
         Returns:
             True if render started successfully
-        """
+        """"""
         if not self.current_timeline:
             return False
 
@@ -427,12 +431,14 @@ class DaVinciResolveAPI:
                 "VideoCodec": render_settings.codec,
                 "AudioCodec": render_settings.audio_codec,
                 "AudioBitRate": render_settings.audio_bitrate,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             if render_settings.bitrate:
                 render_job_settings["VideoBitRate"] = (
                     render_settings.bitrate * 1000000
-                )  # Convert to bps
+# BRACKET_SURGEON: disabled
+#                 )  # Convert to bps
 
             # Add render job to queue
             render_job_id = self.current_project.AddRenderJob(render_job_settings)
@@ -451,11 +457,11 @@ class DaVinciResolveAPI:
             return False
 
     def get_render_status(self) -> Dict[str, Any]:
-        """Get current render status.
+        """Get current render status."""
 
         Returns:
             Dictionary with render status information
-        """
+        """"""
         if not self.current_project:
             return {"status": "no_project", "progress": 0}
 
@@ -472,7 +478,8 @@ class DaVinciResolveAPI:
                     "progress": progress,
                     "job_id": latest_job.get("JobId"),
                     "output_path": latest_job.get("TargetDir"),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"status": "no_jobs", "progress": 0}
 
@@ -485,18 +492,19 @@ class DaVinciResolveIntegration:
     """Main DaVinci Resolve integration class for TRAE.AI."""
 
     def __init__(self, resolve_path: Optional[str] = None, projects_dir: Optional[str] = None):
-        """Initialize DaVinci Resolve integration.
+        """Initialize DaVinci Resolve integration."""
 
         Args:
             resolve_path: Path to DaVinci Resolve executable
             projects_dir: Directory for storing project files
-        """
+        """"""
         self.resolve_path = self._find_resolve(resolve_path)
         self.projects_dir = (
             Path(projects_dir)
             if projects_dir
             else Path.home() / "Documents" / "DaVinci Resolve" / "Projects"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.projects_dir.mkdir(parents=True, exist_ok=True)
 
         # Initialize API
@@ -518,7 +526,8 @@ class DaVinciResolveIntegration:
             "/opt / resolve / bin / resolve",
             "C:\\\\Program Files\\\\Blackmagic Design\\\\DaVinci Resolve\\\\Resolve.exe",
             "resolve",  # In PATH
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for path in possible_paths:
             if shutil.which(path) or Path(path).exists():
@@ -540,7 +549,8 @@ class DaVinciResolveIntegration:
                 temperature=-200,
                 shadows=-20,
                 highlights=-10,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "warm_natural": ColorGradeSettings(
                 name="Warm Natural",
                 temperature=300,
@@ -550,7 +560,8 @@ class DaVinciResolveIntegration:
                 saturation=1.1,
                 shadows=15,
                 highlights=-5,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "cool_modern": ColorGradeSettings(
                 name="Cool Modern",
                 temperature=-400,
@@ -560,7 +571,8 @@ class DaVinciResolveIntegration:
                 shadows=-10,
                 highlights=-15,
                 whites=20,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "high_contrast": ColorGradeSettings(
                 name="High Contrast",
                 contrast=1.5,
@@ -569,7 +581,8 @@ class DaVinciResolveIntegration:
                 shadows=-20,
                 highlights=-20,
                 saturation=1.2,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "vintage": ColorGradeSettings(
                 name="Vintage",
                 lift=(0.1, 0.05, 0.0, 0.0),
@@ -578,8 +591,10 @@ class DaVinciResolveIntegration:
                 temperature=500,
                 contrast=0.9,
                 saturation=0.7,
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         return presets
 
@@ -589,8 +604,9 @@ class DaVinciResolveIntegration:
         assets: List[VideoAsset],
         color_grades: Optional[Dict[str, str]] = None,
         render_settings: Optional[RenderSettings] = None,
-    ) -> str:
-        """Create complete video project from assets.
+# BRACKET_SURGEON: disabled
+#     ) -> str:
+        """Create complete video project from assets."""
 
         Args:
             project_name: Name for the new project
@@ -600,7 +616,7 @@ class DaVinciResolveIntegration:
 
         Returns:
             Path to rendered output file
-        """
+        """"""
         try:
             logger.info(f"Creating video project: {project_name}")
 
@@ -609,7 +625,8 @@ class DaVinciResolveIntegration:
                 name=project_name,
                 timeline_resolution=(1920, 1080),
                 timeline_frame_rate=24.0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create project
             if not self.api.create_project(project_settings):
@@ -647,7 +664,8 @@ class DaVinciResolveIntegration:
                     frame_rate=24.0,
                     quality="high",
                     output_path=str(self.projects_dir / f"{project_name}_final.mp4"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             if self.api.render_timeline(render_settings):
                 # Wait for render to complete
@@ -662,14 +680,14 @@ class DaVinciResolveIntegration:
             raise
 
     def _wait_for_render_completion(self, timeout: int = 3600) -> bool:
-        """Wait for current render to complete.
+        """Wait for current render to complete."""
 
         Args:
             timeout: Maximum wait time in seconds
 
         Returns:
             True if render completed successfully
-        """
+        """"""
         start_time = time.time()
 
         while time.time() - start_time < timeout:
@@ -691,14 +709,14 @@ class DaVinciResolveIntegration:
         return False
 
     def batch_process_videos(self, video_specs: List[Dict[str, Any]]) -> List[str]:
-        """Process multiple videos in batch.
+        """Process multiple videos in batch."""
 
         Args:
             video_specs: List of video specifications
 
         Returns:
             List of output file paths
-        """
+        """"""
         results = []
 
         for i, spec in enumerate(video_specs, 1):
@@ -710,7 +728,8 @@ class DaVinciResolveIntegration:
                     assets=spec["assets"],
                     color_grades=spec.get("color_grades"),
                     render_settings=spec.get("render_settings"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 results.append(output_path)
                 logger.info(f"Completed {i}/{len(video_specs)}")
@@ -723,8 +742,9 @@ class DaVinciResolveIntegration:
 
     def create_color_grade_from_reference(
         self, reference_image: str, target_clip: str
-    ) -> ColorGradeSettings:
-        """Create color grade by matching a reference image.
+# BRACKET_SURGEON: disabled
+#     ) -> ColorGradeSettings:
+        """Create color grade by matching a reference image."""
 
         Args:
             reference_image: Path to reference image
@@ -732,7 +752,7 @@ class DaVinciResolveIntegration:
 
         Returns:
             Generated color grade settings
-        """
+        """"""
         # This would implement automatic color matching
         # For now, return a basic grade
         logger.info(f"Creating color grade from reference: {reference_image}")
@@ -742,10 +762,11 @@ class DaVinciResolveIntegration:
             contrast=1.1,
             saturation=1.05,
             temperature=100,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def export_project_xml(self, project_name: str, output_path: str) -> bool:
-        """Export project as XML for external editing.
+        """Export project as XML for external editing."""
 
         Args:
             project_name: Name of project to export
@@ -753,13 +774,13 @@ class DaVinciResolveIntegration:
 
         Returns:
             True if export successful
-        """
+        """"""
         try:
             # This would export the timeline as XML / EDL
             logger.info(f"Exporting project XML: {project_name}")
 
             # Placeholder implementation
-            xml_content = f"""
+            xml_content = f""""""
 <?xml version="1.0" encoding="UTF - 8"?>
 <xmeml version="4">
     <project>
@@ -782,7 +803,7 @@ class DaVinciResolveIntegration:
         </children>
     </project>
 </xmeml>
-"""
+""""""
 
             with open(output_path, "w") as f:
                 f.write(xml_content)
@@ -795,14 +816,14 @@ class DaVinciResolveIntegration:
             return False
 
     def cleanup_projects(self, max_age_days: int = 30) -> int:
-        """Clean up old project files.
+        """Clean up old project files."""
 
         Args:
             max_age_days: Maximum age of projects to keep
 
         Returns:
             Number of projects cleaned up
-        """
+        """"""
         try:
             cleaned_count = 0
             current_time = datetime.now()
@@ -828,14 +849,14 @@ class DaVinciResolveIntegration:
 def create_assets_from_content_pipeline(
     content_data: Dict[str, Any],
 ) -> List[VideoAsset]:
-    """Create video assets from TRAE.AI content pipeline data.
+    """Create video assets from TRAE.AI content pipeline data."""
 
     Args:
         content_data: Content pipeline output data
 
     Returns:
         List of VideoAsset objects
-    """
+    """"""
     assets = []
 
     # Extract video segments
@@ -848,7 +869,8 @@ def create_assets_from_content_pipeline(
                 start_time=segment.get("start_time", i * 5.0),
                 asset_type="video",
                 track_index=1,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             assets.append(asset)
 
     # Extract audio tracks
@@ -861,7 +883,8 @@ def create_assets_from_content_pipeline(
                 start_time=audio.get("start_time", 0.0),
                 asset_type="audio",
                 track_index=2,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             assets.append(asset)
 
     return assets
@@ -870,7 +893,7 @@ def create_assets_from_content_pipeline(
 def integrate_with_blender_pipeline(
     blender_output_dir: str, resolve_project_name: str
 ) -> List[VideoAsset]:
-    """Integrate Blender 3D / VFX output with DaVinci Resolve pipeline.
+    """Integrate Blender 3D / VFX output with DaVinci Resolve pipeline."""
 
     Args:
         blender_output_dir: Directory containing Blender renders
@@ -878,7 +901,7 @@ def integrate_with_blender_pipeline(
 
     Returns:
         List of VideoAsset objects from Blender output
-    """
+    """"""
     assets = []
     blender_dir = Path(blender_output_dir)
 
@@ -897,7 +920,8 @@ def integrate_with_blender_pipeline(
                     track_index=1,
                     effects=["3D_Render"],
                     metadata={"source": "blender", "type": "3d_render"},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 assets.append(asset)
 
     return assets
@@ -917,7 +941,8 @@ if __name__ == "__main__":
             start_time=0.0,
             asset_type="video",
             track_index=1,
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         VideoAsset(
             name="main_content",
             file_path="/path / to / main.mp4",
@@ -925,7 +950,8 @@ if __name__ == "__main__":
             start_time=5.0,
             asset_type="video",
             track_index=1,
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         VideoAsset(
             name="background_music",
             file_path="/path / to / music.mp3",
@@ -933,8 +959,10 @@ if __name__ == "__main__":
             start_time=0.0,
             asset_type="audio",
             track_index=2,
-        ),
-    ]
+# BRACKET_SURGEON: disabled
+#         ),
+# BRACKET_SURGEON: disabled
+#     ]
 
     # Test color grading presets
     color_grades = {"intro_segment": "cinematic", "main_content": "warm_natural"}
@@ -947,7 +975,8 @@ if __name__ == "__main__":
         frame_rate=24.0,
         quality="high",
         output_path="/tmp / test_output.mp4",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     try:
         print("🎬 Testing DaVinci Resolve Integration...")
@@ -959,7 +988,8 @@ if __name__ == "__main__":
                 assets=test_assets,
                 color_grades=color_grades,
                 render_settings=render_settings,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             print(f"✅ Project created and rendered: {output_path}")
         else:
             print("⚠️ DaVinci Resolve API not available - testing fallback methods")
@@ -975,17 +1005,22 @@ if __name__ == "__main__":
                     "file_path": "/test / segment1.mp4",
                     "duration": 10.0,
                     "start_time": 0.0,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "file_path": "/test / segment2.mp4",
                     "duration": 15.0,
                     "start_time": 10.0,
-                },
-            ],
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ],
             "audio_tracks": [
                 {"file_path": "/test / audio.mp3", "duration": 25.0, "start_time": 0.0}
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         pipeline_assets = create_assets_from_content_pipeline(test_content_data)
         print(f"✅ Created {len(pipeline_assets)} assets from content pipeline")

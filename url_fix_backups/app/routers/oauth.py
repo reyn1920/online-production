@@ -31,7 +31,9 @@ def _cleanup_expired_states():
         k
         for k, v in OAUTH_STATES.items()
         if current_time - v.get("created_at", 0) > 600
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
     for key in expired_keys:
         del OAUTH_STATES[key]
 
@@ -54,7 +56,8 @@ async def tiktok_oauth_start(request: Request, redirect_uri: Optional[str] = Non
         "provider": "tiktok",
             "created_at": time.time(),
             "redirect_uri": redirect_uri or f"{_get_base_url(request)}/oauth / success",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     # Build TikTok OAuth URL
     base_url = _get_base_url(request)
@@ -66,11 +69,14 @@ async def tiktok_oauth_start(request: Request, redirect_uri: Optional[str] = Non
         "response_type": "code",
             "redirect_uri": callback_url,
             "state": state,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     auth_url = "https://www.tiktok.com / auth / authorize/?" + urllib.parse.urlencode(
         params
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     logger.info(f"Starting TikTok OAuth flow with state: {state}")
     return RedirectResponse(url = auth_url)
@@ -84,7 +90,8 @@ async def tiktok_oauth_callback(
         state: Optional[str] = Query(None),
         error: Optional[str] = Query(None),
         error_description: Optional[str] = Query(None),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Handle TikTok OAuth callback."""
     if error:
         logger.error(f"TikTok OAuth error: {error} - {error_description}")
@@ -106,7 +113,9 @@ async def tiktok_oauth_callback(
     if not client_id or not client_secret:
         raise HTTPException(
             status_code = 503, detail="TikTok OAuth credentials not configured"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     base_url = _get_base_url(request)
     callback_url = f"{base_url}/oauth / tiktok / callback"
@@ -117,14 +126,17 @@ async def tiktok_oauth_callback(
             "code": code,
             "grant_type": "authorization_code",
             "redirect_uri": callback_url,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     try:
         token_response = requests.post(
             "https://open - api.tiktok.com / oauth / access_token/",
                 json = token_data,
                 timeout = 30,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if token_response.status_code == 200:
             token_info = token_response.json()
@@ -136,9 +148,11 @@ async def tiktok_oauth_callback(
 
                 # TODO: Store tokens securely (database, encrypted storage)
                 logger.info(
-                    f"TikTok OAuth successful for user: {
-                        token_info['data'].get('open_id')}"
-                )
+                    f"TikTok OAuth successful for user: {"
+                        token_info['data'].get('open_id')}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Report success to integrations registry
                 try:
@@ -149,29 +163,40 @@ async def tiktok_oauth_callback(
                                 "success": True,
                                 "took_ms": 0,
                                 "quota_remaining": None,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             timeout = 10,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 except Exception as e:
                     logger.warning(f"Failed to report TikTok OAuth success: {e}")
 
                 # Redirect to success page or original redirect URI
                 redirect_uri = state_data.get(
                     "redirect_uri", f"{base_url}/oauth / success"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return RedirectResponse(
                     url = f"{redirect_uri}?provider = tiktok&status = success"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 logger.error(f"TikTok token response missing data: {token_info}")
                 raise HTTPException(status_code = 400, detail="Invalid token response")
         else:
             logger.error(
                 f"TikTok token request failed: {token_response.status_code} - {token_response.text}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             raise HTTPException(
                 status_code = 400, detail="Failed to exchange code for token"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     except requests.RequestException as e:
         logger.error(f"TikTok token request error: {e}")
@@ -196,7 +221,8 @@ async def instagram_oauth_start(request: Request, redirect_uri: Optional[str] = 
         "provider": "instagram",
             "created_at": time.time(),
             "redirect_uri": redirect_uri or f"{_get_base_url(request)}/oauth / success",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     # Build Instagram OAuth URL
     base_url = _get_base_url(request)
@@ -208,11 +234,14 @@ async def instagram_oauth_start(request: Request, redirect_uri: Optional[str] = 
             "scope": "user_profile,user_media",  # Basic scopes
         "response_type": "code",
             "state": state,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     auth_url = "https://api.instagram.com / oauth / authorize?" + urllib.parse.urlencode(
         params
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     logger.info(f"Starting Instagram OAuth flow with state: {state}")
     return RedirectResponse(url = auth_url)
@@ -226,7 +255,8 @@ async def instagram_oauth_callback(
         state: Optional[str] = Query(None),
         error: Optional[str] = Query(None),
         error_description: Optional[str] = Query(None),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Handle Instagram OAuth callback."""
     if error:
         logger.error(f"Instagram OAuth error: {error} - {error_description}")
@@ -248,7 +278,9 @@ async def instagram_oauth_callback(
     if not client_id or not client_secret:
         raise HTTPException(
             status_code = 503, detail="Instagram OAuth credentials not configured"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     base_url = _get_base_url(request)
     callback_url = f"{base_url}/oauth / instagram / callback"
@@ -259,12 +291,15 @@ async def instagram_oauth_callback(
             "grant_type": "authorization_code",
             "redirect_uri": callback_url,
             "code": code,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     try:
         token_response = requests.post(
             "https://api.instagram.com / oauth / access_token", data = token_data, timeout = 30
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if token_response.status_code == 200:
             token_info = token_response.json()
@@ -285,31 +320,44 @@ async def instagram_oauth_callback(
                                 "success": True,
                                 "took_ms": 0,
                                 "quota_remaining": None,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             timeout = 10,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                 except Exception as e:
                     logger.warning(f"Failed to report Instagram OAuth success: {e}")
 
                 # Redirect to success page or original redirect URI
                 redirect_uri = state_data.get(
                     "redirect_uri", f"{base_url}/oauth / success"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return RedirectResponse(
                     url = f"{redirect_uri}?provider = instagram&status = success"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 logger.error(
                     f"Instagram token response missing required fields: {token_info}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 raise HTTPException(status_code = 400, detail="Invalid token response")
         else:
             logger.error(
                 f"Instagram token request failed: {token_response.status_code} - {token_response.text}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             raise HTTPException(
                 status_code = 400, detail="Failed to exchange code for token"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     except requests.RequestException as e:
         logger.error(f"Instagram token request error: {e}")
@@ -320,14 +368,16 @@ async def instagram_oauth_callback(
 
 async def oauth_success(
     provider: Optional[str] = Query(None), status: Optional[str] = Query(None)
-):
+# BRACKET_SURGEON: disabled
+# ):
     """OAuth success page."""
     return {
         "message": "OAuth flow completed",
             "provider": provider,
             "status": status,
             "timestamp": time.time(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 @router.get("/status")
 
@@ -338,19 +388,24 @@ async def oauth_status():
         "tiktok": {
             "configured": bool(
                 os.getenv("TIKTOK_CLIENT_ID") and os.getenv("TIKTOK_CLIENT_SECRET")
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "client_id_set": bool(os.getenv("TIKTOK_CLIENT_ID")),
                 "client_secret_set": bool(os.getenv("TIKTOK_CLIENT_SECRET")),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             "instagram": {
             "configured": bool(
                 os.getenv("INSTAGRAM_CLIENT_ID")
                 and os.getenv("INSTAGRAM_CLIENT_SECRET")
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "client_id_set": bool(os.getenv("INSTAGRAM_CLIENT_ID")),
                 "client_secret_set": bool(os.getenv("INSTAGRAM_CLIENT_SECRET")),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             "active_states": len(OAUTH_STATES),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     return status

@@ -1,4 +1,4 @@
-"""TRAE AI Production FastAPI Application
+"""TRAE AI Production FastAPI Application"""
 
 Enterprise-grade FastAPI application with:
 - Structured logging
@@ -7,7 +7,7 @@ Enterprise-grade FastAPI application with:
 - Health checks
 - Error handling
 - CORS configuration
-"""
+""""""
 
 import logging
 import time
@@ -66,7 +66,8 @@ app = FastAPI(
     redoc_url="/redoc" if settings.DEBUG else None,
     openapi_url="/openapi.json" if settings.DEBUG else None,
     lifespan=lifespan,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Security middleware
 if settings.ALLOWED_HOSTS:
@@ -77,11 +78,13 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=(
         [settings.CORS_ORIGINS] if isinstance(settings.CORS_ORIGINS, str) else settings.CORS_ORIGINS
-    ),
+# BRACKET_SURGEON: disabled
+#     ),
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Log Headers middleware (logs HTTP headers for debugging)
 app.add_middleware(LogHeadersMiddleware)
@@ -106,8 +109,10 @@ async def logging_middleware(request: Request, call_next):
             "url": str(request.url),
             "client_ip": request.client.host if request.client else None,
             "user_agent": request.headers.get("user-agent"),
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
     response = await call_next(request)
 
@@ -120,8 +125,10 @@ async def logging_middleware(request: Request, call_next):
             "url": str(request.url),
             "status_code": response.status_code,
             "process_time": round(process_time, 4),
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
     return response
 
@@ -136,8 +143,10 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
             "url": str(request.url),
             "status_code": exc.status_code,
             "detail": exc.detail,
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
     return JSONResponse(
         status_code=exc.status_code,
@@ -146,9 +155,12 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
                 "code": exc.status_code,
                 "message": exc.detail,
                 "type": "http_exception",
-            }
-        },
-    )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @app.exception_handler(RequestValidationError)
@@ -160,8 +172,10 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             "method": request.method,
             "url": str(request.url),
             "errors": exc.errors(),
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -171,9 +185,12 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
                 "message": "Validation failed",
                 "type": "validation_error",
                 "details": exc.errors(),
-            }
-        },
-    )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @app.exception_handler(Exception)
@@ -185,8 +202,10 @@ async def general_exception_handler(request: Request, exc: Exception):
             "method": request.method,
             "url": str(request.url),
             "error_type": type(exc).__name__,
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -195,9 +214,12 @@ async def general_exception_handler(request: Request, exc: Exception):
                 "code": 500,
                 "message": "Internal server error" if not settings.DEBUG else str(exc),
                 "type": "internal_error",
-            }
-        },
-    )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 # Health check endpoints
@@ -213,19 +235,21 @@ async def readiness_check():
     try:
         # Check if all critical services are ready
         health_result = await health_check()
-        
+
         # Service is ready if health check passes and all critical components are healthy
         is_ready = (
             health_result.get("status") == "healthy" and
             health_result.get("checks", {}).get("database", {}).get("status") == "healthy"
-        )
-        
+# BRACKET_SURGEON: disabled
+#         )
+
         return {
             "ready": is_ready,
             "timestamp": health_result.get("timestamp"),
             "service": "trae-ai-production",
             "checks": health_result.get("checks", {})
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         logger.error(f"Readiness check failed: {e}")
         return {
@@ -233,7 +257,8 @@ async def readiness_check():
             "timestamp": datetime.now().isoformat(),
             "service": "trae-ai-production",
             "error": str(e)
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 @app.get("/health/live", tags=["Health"])
@@ -243,7 +268,7 @@ async def liveness_check():
         import os
         import threading
         from datetime import datetime
-        
+
         # Simple liveness check - if we can respond, we're alive
         return {
             "alive": True,
@@ -252,7 +277,8 @@ async def liveness_check():
             "version": "1.0.0",
             "thread_count": threading.active_count(),
             "pid": os.getpid()
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         logger.error(f"Liveness check failed: {e}")
         return {
@@ -260,7 +286,8 @@ async def liveness_check():
             "timestamp": datetime.now().isoformat(),
             "service": "trae-ai-production",
             "error": str(e)
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Root endpoint
@@ -272,7 +299,8 @@ async def root():
         "version": "1.0.0",
         "status": "operational",
         "docs": "/docs" if settings.DEBUG else "Documentation disabled in production",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Common browser requests to prevent 404 errors
@@ -303,4 +331,5 @@ if __name__ == "__main__":
         port=8000,
         reload=settings.DEBUG,
         log_level=settings.LOG_LEVEL.lower(),
-    )
+# BRACKET_SURGEON: disabled
+#     )

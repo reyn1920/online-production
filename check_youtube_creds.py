@@ -12,7 +12,8 @@ def check_youtube_credentials():
             "YOUTUBE_CLIENT_SECRET",
             "YOUTUBE_REFRESH_TOKEN",
             "YOUTUBE_ACCESS_TOKEN",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         print("\\n🔐 YouTube Credentials Status:")
         print("=" * 40)

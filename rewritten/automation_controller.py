@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Automation Controller - Master Control System
 
 This module provides centralized control and monitoring for all automation systems:
@@ -11,7 +11,7 @@ This module provides centralized control and monitoring for all automation syste
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -32,7 +32,8 @@ from breaking_news_watcher import RSSIntelligenceEngine
 
 from content_automation_pipeline import (
     ContentAutomationPipeline,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 logger = get_logger(__name__)
 
@@ -103,8 +104,10 @@ class AutomationController:
                     "min_engagement_score": 0.4,
                     "max_error_rate": 0.1,
                     "min_success_rate": 0.8,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             with open(self.config_path, "w") as f:
                 json.dump(default_config, f, indent=2)
@@ -118,7 +121,7 @@ class AutomationController:
 
         # System metrics table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS system_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -126,13 +129,15 @@ class AutomationController:
                     metric_name TEXT NOT NULL,
                     metric_value REAL NOT NULL,
                     metadata TEXT
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Error tracking table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS error_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -141,13 +146,15 @@ class AutomationController:
                     error_message TEXT,
                     stack_trace TEXT,
                     resolved BOOLEAN DEFAULT FALSE
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Content production metrics
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS content_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -157,9 +164,11 @@ class AutomationController:
                     engagement_prediction REAL,
                     success BOOLEAN DEFAULT TRUE,
                     project_id TEXT
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -188,14 +197,16 @@ class AutomationController:
             if self.config["content_pipeline_enabled"]:
                 self.content_thread = threading.Thread(
                     target=self._run_content_pipeline, daemon=True
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.content_thread.start()
                 logger.info("Content pipeline started")
 
             # Start performance monitoring
             self.monitor_thread = threading.Thread(
                 target=self._run_performance_monitoring, daemon=True
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.monitor_thread.start()
             logger.info("Performance monitoring started")
 
@@ -276,13 +287,15 @@ class AutomationController:
                 cursor.execute(
                     "INSERT INTO system_metrics (component, metric_name, metric_value) VALUES (?, ?, ?)",
                     ("system", "uptime_hours", uptime_hours),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Error count
             cursor.execute(
                 "INSERT INTO system_metrics (component, metric_name, metric_value) VALUES (?, ?, ?)",
                 ("system", "error_count", self.error_count),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Content pipeline metrics
             if "pending_opportunities" in pipeline_status:
@@ -292,8 +305,10 @@ class AutomationController:
                         "content_pipeline",
                         "pending_opportunities",
                         pipeline_status["pending_opportunities"],
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
             if "recent_projects_24h" in pipeline_status:
                 cursor.execute(
@@ -302,8 +317,10 @@ class AutomationController:
                         "content_pipeline",
                         "projects_24h",
                         pipeline_status["recent_projects_24h"],
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
             conn.commit()
             conn.close()
@@ -318,15 +335,17 @@ class AutomationController:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO error_log (component,
     error_type,
     error_message,
-    stack_trace)
+# BRACKET_SURGEON: disabled
+#     stack_trace)
                 VALUES (?, ?, ?, ?)
-            """,
+            ""","""
                 (component, error_type, message, stack_trace),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
             conn.close()
@@ -350,20 +369,22 @@ class AutomationController:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM content_projects
                 WHERE status = 'completed'
                 AND DATE(updated_at) = DATE('now')
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             completed_today = cursor.fetchone()[0]
 
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM content_projects
                 WHERE status IN ('planning', 'scripting', 'production')
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             active_projects = cursor.fetchone()[0]
 
             conn.close()
@@ -378,7 +399,8 @@ class AutomationController:
                 error_count=self.error_count,
                 last_update=datetime.now(),
                 uptime_hours=uptime_hours,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Error getting automation status: {e}")
@@ -391,7 +413,8 @@ class AutomationController:
                 error_count=self.error_count,
                 last_update=datetime.now(),
                 uptime_hours=0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _setup_api_routes(self):
         """Setup Flask API routes for automation control."""
@@ -434,13 +457,14 @@ class AutomationController:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM content_opportunities
                     WHERE status = 'pending'
                     ORDER BY priority DESC, estimated_engagement DESC
                     LIMIT 20
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 results = cursor.fetchall()
                 columns = [desc[0] for desc in cursor.description]
@@ -473,12 +497,13 @@ class AutomationController:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM content_projects
                     ORDER BY created_at DESC
                     LIMIT 50
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 results = cursor.fetchall()
                 columns = [desc[0] for desc in cursor.description]
@@ -527,11 +552,15 @@ class AutomationController:
                                 "title": p.title,
                                 "format": p.format.value,
                                 "status": p.status,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             for p in generated_projects
-                        ],
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 return jsonify({"error": str(e), "success": False}), 500
@@ -546,17 +575,19 @@ class AutomationController:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT component, metric_name, AVG(metric_value) as avg_value,
                         COUNT(*) as sample_count
                     FROM system_metrics
                     WHERE timestamp > datetime('now', '-{} days')
                     GROUP BY component, metric_name
                     ORDER BY component, metric_name
-                """.format(
+                """.format("""
                         days
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 metrics = []
                 for row in cursor.fetchall():
@@ -566,21 +597,25 @@ class AutomationController:
                             "metric": row[1],
                             "average_value": row[2],
                             "sample_count": row[3],
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Get recent errors
                 cursor.execute(
-                    """
+                    """"""
                     SELECT component, error_type, COUNT(*) as error_count
                     FROM error_log
                     WHERE timestamp > datetime('now', '-{} days')
                     GROUP BY component, error_type
                     ORDER BY error_count DESC
-                """.format(
+                """.format("""
                         days
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 errors = []
                 for row in cursor.fetchall():
@@ -614,13 +649,17 @@ class AutomationController:
             cursor.execute(
                 "DELETE FROM system_metrics WHERE timestamp < datetime('now', '-{} days')".format(
                     retention_days
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             cursor.execute(
                 "DELETE FROM error_log WHERE timestamp < datetime('now', '-{} days') AND resolved = TRUE".format(
                     retention_days
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
             conn.close()
@@ -639,7 +678,8 @@ def main():
     parser = argparse.ArgumentParser(description="TRAE.AI Automation Controller")
     parser.add_argument(
         "--config", default="automation_config.json", help="Configuration file path"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument("--api - only", action="store_true", help="Run API server only")
     parser.add_argument("--port", type=int, default=8082, help="API server port")
     parser.add_argument("--host", default="0.0.0.0", help="API server host")

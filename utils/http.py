@@ -19,7 +19,8 @@ class BackoffConfig:
         multiplier: float = 2.0,
         jitter: bool = True,
         max_retries: int = 3,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.initial_delay = initial_delay
         self.max_delay = max_delay
         self.multiplier = multiplier
@@ -49,14 +50,15 @@ def with_backoff(
     config: Optional[BackoffConfig] = None,
     exceptions: tuple = (Exception,),
     on_retry: Optional[Callable[[int, Exception], None]] = None,
-):
-    """Decorator to add exponential backoff to a function.
+# BRACKET_SURGEON: disabled
+# ):
+    """Decorator to add exponential backoff to a function."""
 
     Args:
         config: BackoffConfig instance. If None, uses default config.
         exceptions: Tuple of exception types to retry on.
         on_retry: Optional callback called on each retry with (attempt, exception).
-    """
+    """"""
     if config is None:
         config = BackoffConfig()
 
@@ -74,7 +76,8 @@ def with_backoff(
                     if attempt >= config.max_retries:
                         logger.error(
                             f"Function {func.__name__} failed after {config.max_retries + 1} attempts: {e}"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         raise e
 
                     delay = calculate_backoff_delay(attempt + 1, config)
@@ -85,7 +88,8 @@ def with_backoff(
                     logger.warning(
                         f"Function {func.__name__} failed on attempt {attempt + 1}/{config.max_retries + 1}: {e}. "
                         f"Retrying in {delay:.2f}s..."
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     time.sleep(delay)
 
@@ -104,8 +108,9 @@ def retry_with_backoff(
     exceptions: tuple = (Exception,),
     on_retry: Optional[Callable[[int, Exception], None]] = None,
     **kwargs,
-) -> Any:
-    """Execute a function with exponential backoff retry logic.
+# BRACKET_SURGEON: disabled
+# ) -> Any:
+    """Execute a function with exponential backoff retry logic."""
 
     Args:
         func: The function to execute.
@@ -120,7 +125,7 @@ def retry_with_backoff(
 
     Raises:
         The last exception if all retries are exhausted.
-    """
+    """"""
     if config is None:
         config = BackoffConfig()
 
@@ -135,7 +140,8 @@ def retry_with_backoff(
             if attempt >= config.max_retries:
                 logger.error(
                     f"Function {func.__name__} failed after {config.max_retries + 1} attempts: {e}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 raise e
 
             delay = calculate_backoff_delay(attempt + 1, config)
@@ -146,7 +152,8 @@ def retry_with_backoff(
             logger.warning(
                 f"Function {func.__name__} failed on attempt {attempt + 1}/{config.max_retries + 1}: {e}. "
                 f"Retrying in {delay:.2f}s..."
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             time.sleep(delay)
 
@@ -157,22 +164,26 @@ def retry_with_backoff(
 # Predefined configurations for common use cases
 HTTP_BACKOFF_CONFIG = BackoffConfig(
     initial_delay=0.5, max_delay=30.0, multiplier=2.0, jitter=True, max_retries=3
-)
+# BRACKET_SURGEON: disabled
+# )
 
 API_BACKOFF_CONFIG = BackoffConfig(
     initial_delay=1.0, max_delay=60.0, multiplier=1.5, jitter=True, max_retries=5
-)
+# BRACKET_SURGEON: disabled
+# )
 
 DATABASE_BACKOFF_CONFIG = BackoffConfig(
     initial_delay=0.1, max_delay=10.0, multiplier=2.0, jitter=True, max_retries=3
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Convenience functions for common HTTP scenarios
 
 
 def http_request_with_backoff(
     request_func: Callable, *args, config: Optional[BackoffConfig] = None, **kwargs
-) -> Any:
+# BRACKET_SURGEON: disabled
+# ) -> Any:
     """Execute an HTTP request with backoff on common HTTP errors."""
 
     import requests
@@ -186,7 +197,8 @@ def http_request_with_backoff(
         requests.exceptions.Timeout,
         requests.exceptions.HTTPError,
         requests.exceptions.RequestException,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     def on_retry(attempt: int, exception: Exception):
         logger.info(f"HTTP request retry {attempt}: {type(exception).__name__}: {exception}")
@@ -198,7 +210,8 @@ def http_request_with_backoff(
         exceptions=http_exceptions,
         on_retry=on_retry,
         **kwargs,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def http_get_with_backoff(url: str, config: Optional[BackoffConfig] = None, **kwargs) -> Any:
@@ -235,7 +248,8 @@ if __name__ == "__main__":
             requests.get,
             "https://httpbin.org/status/500",  # This will always return 500
             timeout=5,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     print("Testing backoff functionality...")
     try:

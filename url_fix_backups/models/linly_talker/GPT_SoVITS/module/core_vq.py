@@ -95,13 +95,13 @@ def kmeans(samples, num_clusters: int, num_iters: int = 10):
 
 
 class EuclideanCodebook(nn.Module):
-    """Codebook with Euclidean distance.
+    """Codebook with Euclidean distance."""
     Args:
         dim (int): Dimension.
         codebook_size (int): Codebook size.
         kmeans_init (bool): Whether to use k - means to initialize the codebooks.
             If set to true, run the k - means algorithm on the first training batch \
-    and use
+#     and use
             the learned centroids as initialization.
         kmeans_iters (int): Number of iterations used for k - means algorithm at initialization.
         decay (float): Decay for exponential moving average over the codebooks.
@@ -109,7 +109,7 @@ class EuclideanCodebook(nn.Module):
         threshold_ema_dead_code (int): Threshold for dead code expiration. Replace any codes
             that have an exponential moving average cluster size less than the specified threshold with
             randomly selected vector from the current batch.
-    """
+    """"""
 
     def __init__(
         self,
@@ -120,12 +120,14 @@ class EuclideanCodebook(nn.Module):
         decay: float = 0.99,
         epsilon: float = 1e-5,
         threshold_ema_dead_code: int = 2,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.decay = decay
         init_fn: tp.Union[tp.Callable[..., torch.Tensor], tp.Any] = (
             uniform_init if not kmeans_init else torch.zeros
-        )
+# BRACKET_SURGEON: disabled
+#         )
         embed = init_fn(codebook_size, dim)
 
         self.codebook_size = codebook_size
@@ -155,7 +157,8 @@ class EuclideanCodebook(nn.Module):
     def replace_(self, samples, mask):
         modified_codebook = torch.where(
             mask[..., None], sample_vectors(samples, self.codebook_size), self.embed
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.embed.data.copy_(modified_codebook)
 
     def expire_codes_(self, batch_samples):
@@ -222,7 +225,8 @@ class EuclideanCodebook(nn.Module):
             cluster_size = (
                 laplace_smoothing(self.cluster_size, self.codebook_size, self.epsilon)
                 * self.cluster_size.sum()
-            )
+# BRACKET_SURGEON: disabled
+#             )
             embed_normalized = self.embed_avg / cluster_size.unsqueeze(1)
             self.embed.data.copy_(embed_normalized)
 
@@ -230,7 +234,7 @@ class EuclideanCodebook(nn.Module):
 
 
 class VectorQuantization(nn.Module):
-    """Vector quantization implementation.
+    """Vector quantization implementation."""
     Currently supports only euclidean distance.
     Args:
         dim (int): Dimension
@@ -245,7 +249,7 @@ class VectorQuantization(nn.Module):
             that have an exponential moving average cluster size less than the specified threshold with
             randomly selected vector from the current batch.
         commitment_weight (float): Weight for commitment loss.
-    """
+    """"""
 
     def __init__(
         self,
@@ -258,7 +262,8 @@ class VectorQuantization(nn.Module):
         kmeans_iters: int = 50,
         threshold_ema_dead_code: int = 2,
         commitment_weight: float = 1.0,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         _codebook_dim: int = default(codebook_dim, dim)
 
@@ -277,7 +282,8 @@ class VectorQuantization(nn.Module):
             decay=decay,
             epsilon=epsilon,
             threshold_ema_dead_code=threshold_ema_dead_code,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.codebook_size = codebook_size
 
     @property
@@ -319,9 +325,9 @@ class VectorQuantization(nn.Module):
 
 
 class ResidualVectorQuantization(nn.Module):
-    """Residual vector quantization implementation.
+    """Residual vector quantization implementation."""
     Follows Algorithm 1. in https://arxiv.org / pdf / 2107.03312.pdf
-    """
+    """"""
 
     def __init__(self, *, num_quantizers, **kwargs):
         super().__init__()
@@ -352,7 +358,8 @@ class ResidualVectorQuantization(nn.Module):
 
     def encode(
         self, x: torch.Tensor, n_q: tp.Optional[int] = None, st: tp.Optional[int] = None
-    ) -> torch.Tensor:
+# BRACKET_SURGEON: disabled
+#     ) -> torch.Tensor:
         residual = x
         all_indices = []
         n_q = n_q or len(self.layers)

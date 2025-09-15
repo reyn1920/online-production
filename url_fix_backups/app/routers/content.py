@@ -19,7 +19,9 @@ try:
 
     from content_agent.main import (ContentAgent, ContentConfig, ContentRequest,
 
-        ContentResponse)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ContentResponse)
 except ImportError:
     try:
 
@@ -50,18 +52,26 @@ class ContentGenerationRequest(BaseModel):
     topic: str = Field(..., description="Topic or subject for content generation")
     format: Optional[str] = Field(
         default="educational", description="Content format style"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     target_length: Optional[int] = Field(
         default = 500, description="Target length in words"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     tone: Optional[str] = Field(default="professional", description="Content tone")
     audience: Optional[str] = Field(default="general", description="Target audience")
     keywords: Optional[List[str]] = Field(
         default=[], description="SEO keywords to include"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     include_images: Optional[bool] = Field(
         default = False, description="Include image suggestions"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 class VideoContentRequest(BaseModel):
@@ -70,13 +80,19 @@ class VideoContentRequest(BaseModel):
     style: Optional[str] = Field(default="educational", description="Video style")
     voice: Optional[str] = Field(
         default="default", description="Voice type for narration"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     resolution: Optional[str] = Field(
         default="1920x1080", description="Video resolution"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     include_avatar: Optional[bool] = Field(
         default = False, description="Include AI avatar"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 class ContentStatusResponse(BaseModel):
@@ -129,7 +145,9 @@ def get_content_agent():
                     content_agent_instance = ContentAgent()
                     logger.info(
                         "✅ ContentAgent initialized from backend.agents.content_agent"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 except ImportError:
                     # Final fallback to specialized agent
 
@@ -139,7 +157,9 @@ def get_content_agent():
 
                     content_agent_instance = SpecializedContentAgent(
                         agent_id="content_agent_001", name="ContentAgent"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     logger.info("✅ Specialized ContentAgent initialized")
             else:
                 logger.info("✅ ContentAgent retrieved from production manager")
@@ -168,9 +188,14 @@ async def content_interface(request: Request):
                     "video_script",
                     "product_description",
                     "newsletter",
-                    ],
-                },
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 @router.get("/health")
 
@@ -187,8 +212,10 @@ async def health_check():
                 "video_creation": agent is not None,
                 "tts_engine": agent is not None,
                 "avatar_generation": agent is not None,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
 @router.get("/trending")
 
@@ -204,37 +231,48 @@ async def get_trending_topics():
                 "title": "AI and Machine Learning Trends",
                     "category": "technology",
                     "score": 0.9,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "title": "Sustainable Business Practices",
                     "category": "business",
                     "score": 0.8,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "title": "Remote Work Productivity",
                     "category": "workplace",
                     "score": 0.7,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "title": "Digital Marketing Strategies",
                     "category": "marketing",
                     "score": 0.6,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "title": "Health and Wellness Tips",
                     "category": "lifestyle",
                     "score": 0.5,
-                    },
-                ]
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         return TrendingTopicsResponse(
             topics = fallback_topics, updated_at = datetime.now(), source="fallback"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     try:
         topics = agent.news_watcher.get_trending_topics(limit = 10)
         return TrendingTopicsResponse(
             topics = topics, updated_at = datetime.now(), source="live_feeds"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     except Exception as e:
         logger.error(f"Error getting trending topics: {e}")
         raise HTTPException(status_code = 500, detail="Failed to get trending topics")
@@ -244,7 +282,8 @@ async def get_trending_topics():
 
 async def generate_content(
     request: ContentGenerationRequest, background_tasks: BackgroundTasks
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Generate text content"""
     agent = get_content_agent()
 
@@ -262,7 +301,8 @@ async def generate_content(
             "updated_at": datetime.now(),
             "type": "text_content",
             "request": request.dict(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     # Start content generation in background
     background_tasks.add_task(_generate_text_content, job_id, request, agent)
@@ -274,7 +314,8 @@ async def generate_content(
 
 async def generate_video_content(
     request: VideoContentRequest, background_tasks: BackgroundTasks
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Generate video content"""
     agent = get_content_agent()
 
@@ -292,7 +333,8 @@ async def generate_video_content(
             "updated_at": datetime.now(),
             "type": "video_content",
             "request": request.dict(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     # Start video generation in background
     background_tasks.add_task(_generate_video_content, job_id, request, agent)
@@ -316,7 +358,9 @@ async def get_content_status(job_id: str):
             error = job_info.get("error"),
             created_at = job_info["created_at"],
             updated_at = job_info["updated_at"],
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 @router.get("/download/{job_id}")
 
@@ -329,7 +373,8 @@ async def download_content(job_id: str):
     job_info = content_jobs[job_id]
     if job_info["status"] != "completed" or not job_info.get("result", {}).get(
         "file_path"
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         raise HTTPException(status_code = 400, detail="Content not ready for download")
 
     file_path = job_info["result"]["file_path"]
@@ -345,7 +390,8 @@ async def download_content(job_id: str):
             ".txt": "text / plain",
             ".json": "application / json",
             ".pdf": "application / pdf",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     media_type = media_type_map.get(file_ext, "application / octet - stream")
     filename = f"content_{job_id}{file_ext}"
@@ -362,17 +408,20 @@ async def get_content_templates():
             "structure": ["introduction", "main_points", "conclusion"],
                 "recommended_length": "800 - 1200 words",
                 "tone_options": ["professional", "casual", "academic", "conversational"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             "blog_post": {
             "structure": ["hook", "problem", "solution", "call_to_action"],
                 "recommended_length": "600 - 1000 words",
                 "tone_options": ["friendly", "informative", "persuasive", "entertaining"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             "social_media": {
             "structure": ["hook", "value", "engagement"],
                 "recommended_length": "50 - 280 characters",
                 "tone_options": ["casual", "witty", "inspirational", "promotional"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             "video_script": {
             "structure": [
                 "hook",
@@ -380,16 +429,22 @@ async def get_content_templates():
                     "main_content",
                     "conclusion",
                     "call_to_action",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "recommended_length": "150 - 200 words per minute",
                 "tone_options": [
                 "educational",
                     "entertaining",
                     "promotional",
                     "documentary",
-                    ],
-                },
-            }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
     return {"templates": templates_data}
 
@@ -432,8 +487,11 @@ async def list_content_jobs():
                     "type": job_info.get("type"),
                     "created_at": job_info["created_at"],
                     "updated_at": job_info["updated_at"],
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     return {"jobs": jobs, "total": len(jobs)}
 
@@ -455,26 +513,31 @@ async def _generate_text_content(job_id: str, request: ContentGenerationRequest,
                     topic = request.topic,
                     target_length = request.target_length,
                     tone = request.tone,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             # Fallback content generation
             result = {
-                "content": f"Generated {
+                "content": f"Generated {"
                     request.type} about {
-                        request.topic}\\n\\nThis is a sample content generated for the topic '{
-                        request.topic}' in {
+                        request.topic}\\n\\nThis is a sample content generated for the topic '{'
+                        request.topic}' in {'
                         request.tone} tone. The content would be approximately {
                         request.target_length} words long and tailored for {
-                            request.audience} audience.",
-                                "title": f"{
+# BRACKET_SURGEON: disabled
+#                             request.audience} audience.","
+                                "title": f"{"
                     request.topic} - {
-                                    request.type.title()}",
+                                    request.type.title()}","
                                         "metadata": {
                     "word_count": request.target_length,
                         "tone": request.tone,
                         "type": request.type,
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Update progress
         content_jobs[job_id]["progress"] = 75.0
@@ -498,16 +561,22 @@ async def _generate_text_content(job_id: str, request: ContentGenerationRequest,
                         "title": result.get("title", ""),
                         "metadata": result.get("metadata", {}),
                         "file_path": str(file_path),
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "updated_at": datetime.now(),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except Exception as e:
         logger.error(f"Error generating text content: {e}")
         content_jobs[job_id].update(
             {"status": "failed", "error": str(e), "updated_at": datetime.now()}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
 async def _generate_video_content(job_id: str, request: VideoContentRequest, agent):
@@ -520,7 +589,9 @@ async def _generate_video_content(job_id: str, request: VideoContentRequest, age
         # Generate script
         script_data = await agent.script_generator.generate_script(
             topic = request.topic, duration = request.duration, style = request.style
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Update progress
         content_jobs[job_id]["progress"] = 30.0
@@ -535,7 +606,9 @@ async def _generate_video_content(job_id: str, request: VideoContentRequest, age
             text = script_data.get("transcript", ""),
                 output_path = str(audio_path),
                 voice = request.voice,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Update progress
         content_jobs[job_id]["progress"] = 60.0
@@ -548,7 +621,9 @@ async def _generate_video_content(job_id: str, request: VideoContentRequest, age
                 script_data = script_data,
                     audio_path = str(audio_path),
                     output_path = str(video_path),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             # Create simple video with text overlay
             final_video = str(video_path)
@@ -565,16 +640,22 @@ async def _generate_video_content(job_id: str, request: VideoContentRequest, age
                         "audio_path": str(audio_path),
                         "file_path": final_video,
                         "duration": request.duration,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "updated_at": datetime.now(),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except Exception as e:
         logger.error(f"Error generating video content: {e}")
         content_jobs[job_id].update(
             {"status": "failed", "error": str(e), "updated_at": datetime.now()}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 # Export router
 __all__ = ["router"]

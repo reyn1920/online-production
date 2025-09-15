@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Automated Go - Live Verification Script
 Demonstrates 100% automated production deployment readiness
-"""
+""""""
 
 import sys
 from datetime import datetime
@@ -46,7 +46,8 @@ class GoLiveVerification:
             "security.yml": "Security Scanning",
             "prod - health - watch.yml": "Production Monitoring",
             "deploy.yml": "Deployment Automation",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for workflow_file, description in required_workflows.items():
             workflow_path = workflows_dir / workflow_file
@@ -63,8 +64,10 @@ class GoLiveVerification:
                                 "Production deployment configured"
                                 if has_prod_deploy
                                 else "Missing production config"
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# BRACKET_SURGEON: disabled
+#                         )
                 except Exception:
                     self.log_check(f"Workflow: {description}", False, "Failed to read workflow")
             else:
@@ -80,7 +83,8 @@ class GoLiveVerification:
             ("http://localhost:8000/health", "Health Check API"),
             ("http://localhost:8000/api/version", "Version API"),
             ("http://localhost:8081", "Paste Application"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for url, name in api_endpoints:
             try:
@@ -89,7 +93,8 @@ class GoLiveVerification:
                     f"Live Test: {name}",
                     response.status_code == 200,
                     f"Status: {response.status_code}",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 self.log_check(f"Live Test: {name}", False, f"Error: {str(e)[:50]}")
 
@@ -111,8 +116,10 @@ class GoLiveVerification:
                         "Secrets properly excluded from Git"
                         if env_protected
                         else "Secrets not protected"
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
         else:
             self.log_check("Environment Secrets Protection", False, ".gitignore missing")
 
@@ -122,7 +129,8 @@ class GoLiveVerification:
             "Environment Template",
             env_example.exists(),
             ("Configuration template available" if env_example.exists() else "Template missing"),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Check security tools are configured
         requirements_path = Path("requirements.txt")
@@ -136,7 +144,8 @@ class GoLiveVerification:
                         f"Security Tool: {tool}",
                         tool_configured,
                         "Configured" if tool_configured else "Missing",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
     def verify_deployment_readiness(self):
         """Verify deployment configuration"""
@@ -149,7 +158,8 @@ class GoLiveVerification:
             "Netlify Configuration",
             netlify_config.exists(),
             "Deployment config ready" if netlify_config.exists() else "Config missing",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Check production startup script
         production_scripts = ["start_production.py", "launch_live.py"]
@@ -167,7 +177,8 @@ class GoLiveVerification:
             "Dependencies Configuration",
             requirements_path.exists(),
             ("Dependencies defined" if requirements_path.exists() else "Requirements missing"),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def demonstrate_go_live_process(self):
         """Demonstrate the automated go - live process"""
@@ -202,7 +213,8 @@ class GoLiveVerification:
 
         success_rate = (
             (self.checks_passed / self.total_checks) * 100 if self.total_checks > 0 else 0
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         print(f"Timestamp: {datetime.now().isoformat()}")
         print(f"Total Checks: {self.total_checks}")

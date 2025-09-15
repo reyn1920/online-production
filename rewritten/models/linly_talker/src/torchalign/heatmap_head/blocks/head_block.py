@@ -13,7 +13,8 @@ class BinaryHeadBlock(nn.Module):
             nn.BatchNorm2d(proj_channels),
             nn.ReLU(inplace=True),
             nn.Conv2d(proj_channels, out_channels * 2, 1, bias=False),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def forward(self, input):
         N, C, H, W = input.shape

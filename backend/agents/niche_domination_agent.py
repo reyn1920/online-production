@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Proactive Niche Domination Agent
-
+""""""
 Autonomously monitors growth metrics and expands into new channels/niches
 when opportunities are detected. Implements strategic market penetration
+"""
 with data - driven decision making.
 
+Proactive Niche Domination Agent
+""""""
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -104,18 +107,18 @@ class ProactiveNicheDominationAgent(BaseAgent):
         agent_id: str = "niche_domination_agent",
         name: str = "Niche Domination Agent",
         config: Dict[str, Any] = None,
-    ):
+#     ):
         super().__init__(agent_id, name)
         self.config = config or {}
         self.db_path = self.config.get("db_path", "right_perspective.db")
         self.ollama_client = OllamaIntegration(
             self.config.get("ollama_config", {"endpoint": "http://localhost:11434"})
-        )
+         )
         # Fix: Extract ollama_url as string from config to prevent rstrip() error on dict
         ollama_url = _as_str(
             self.config.get("ollama_url", "http://localhost:11434"),
             "http://localhost:11434",
-        )
+         )
         self.content_generator = AutomatedAuthor(ollama_url=ollama_url)
 
         # Thresholds for expansion triggers
@@ -133,14 +136,25 @@ class ProactiveNicheDominationAgent(BaseAgent):
         self._init_database()
 
     def _init_database(self):
-        """Initialize niche domination tracking tables."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Initialize niche domination tracking tables.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 # Growth metrics table
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     CREATE TABLE IF NOT EXISTS growth_metrics (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             channel TEXT NOT NULL,
@@ -152,13 +166,25 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             market_saturation REAL,
                             competition_density REAL,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
+                     )
+                
+""""""
+
+                
+
+                 
+                
+"""
+                 )
                 """
-                )
+
+                 
+                
 
                 # Niche opportunities table
                 cursor.execute(
-                    """
+                   
+""""""
                     CREATE TABLE IF NOT EXISTS niche_opportunities (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             niche_name TEXT NOT NULL,
@@ -175,13 +201,32 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             status TEXT DEFAULT 'identified',
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+                     )
+                """"""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 # Expansion tracking table
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     CREATE TABLE IF NOT EXISTS niche_expansions (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             opportunity_id INTEGER,
@@ -191,21 +236,35 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             roi_metrics TEXT,
                             status TEXT DEFAULT 'active',
                             FOREIGN KEY (opportunity_id) REFERENCES niche_opportunities (id)
-                    )
-                """
-                )
+                     )
+                
+""""""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
                 # Create indexes
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_growth_metrics_channel_niche ON growth_metrics(channel, niche)"
-                )
+                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_opportunities_score ON niche_opportunities(opportunity_score DESC)"
-                )
+                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_expansions_status ON niche_expansions(status)"
-                )
+                 )
+                """
 
+                 
+                
+
+                 )
+                
+""""""
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Database initialization failed: {e}")
@@ -215,7 +274,6 @@ class ProactiveNicheDominationAgent(BaseAgent):
         """Main analysis function to identify new niche opportunities."""
         self.logger.info("Starting comprehensive growth opportunity analysis")
 
-        opportunities = []
 
         # 1. Analyze current performance metrics
         current_metrics = self._collect_current_metrics()
@@ -240,14 +298,14 @@ class ProactiveNicheDominationAgent(BaseAgent):
             + trending_opportunities
             + competitor_weaknesses
             + seasonal_opportunities
-        )
+         )
 
         # Filter and rank opportunities
         qualified_opportunities = [
             opp
             for opp in all_opportunities
             if opp.opportunity_score >= self.opportunity_score_threshold
-        ]
+         ]
 
         # Sort by opportunity score
         qualified_opportunities.sort(key=lambda x: x.opportunity_score, reverse=True)
@@ -260,17 +318,39 @@ class ProactiveNicheDominationAgent(BaseAgent):
         return qualified_opportunities
 
     def _collect_current_metrics(self) -> List[GrowthMetrics]:
-        """Collect current performance metrics from all channels."""
-        metrics = []
+        """
+Collect current performance metrics from all channels.
 
+       
+""""""
+
+        metrics = []
+       
+
+        
+       
+"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
+       """
+
+        
+       
+
+        metrics = []
+       
+""""""
+
                 cursor = conn.cursor()
 
                 # Get recent performance data
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT channel, niche,
                         AVG(engagement_rate) as avg_engagement,
                                AVG(subscriber_growth) as avg_growth,
@@ -281,14 +361,36 @@ class ProactiveNicheDominationAgent(BaseAgent):
                     FROM growth_metrics
                     WHERE created_at > datetime('now', '-{} days')
                     GROUP BY channel, niche
-                """.format(
-                        self.analysis_window_days
-                    )
-                )
+                """
+.format(
 
+                        self.analysis_window_days
+                     )
+                
+""""""
+
+                 )
+                
+
+                 
+                
+"""
                 for row in cursor.fetchall():
                     metrics.append(
+                        """
+
                         GrowthMetrics(
+                        
+
+                
+""""""
+
+                 )
+                
+
+                 
+                
+"""
                             channel=row["channel"],
                             niche=row["niche"],
                             engagement_rate=row["avg_engagement"] or 0,
@@ -298,25 +400,42 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             market_saturation=row["avg_saturation"] or 0,
                             competition_density=row["avg_competition"] or 0,
                             timestamp=datetime.now(),
-                        )
-                    )
+                         )
+                     )
         except Exception as e:
             self.logger.error(f"Failed to collect current metrics: {e}")
 
         return metrics
 
     def _identify_high_performers(self, metrics: List[GrowthMetrics]) -> List[NicheOpportunity]:
-        """Identify high - performing niches suitable for expansion."""
-        opportunities = []
+        """
+Identify high - performing niches suitable for expansion.
 
+       
+""""""
+
+        opportunities = []
+       
+
+        
+       
+"""
         for metric in metrics:
             # Calculate opportunity score based on performance
+       """
+
+        
+       
+
+        opportunities = []
+       
+""""""
             performance_score = (
                 min(metric.engagement_rate / self.engagement_threshold, 1.0) * 0.3
                 + min(metric.subscriber_growth / self.growth_threshold, 1.0) * 0.25
                 + min(metric.view_velocity / 1000, 1.0) * 0.2  # Normalize view velocity
                 + min(metric.revenue_per_view * 1000, 1.0) * 0.25  # Normalize revenue
-            )
+             )
 
             # Only consider if performance is above threshold
             if performance_score >= 0.7:
@@ -336,22 +455,39 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             * 0.8,  # Conservative estimate
                             content_requirements=self._get_content_requirements(
                                 metric.niche, channel_type
-                            ),
+                             ),
                             recommended_strategy=self._generate_expansion_strategy(
                                 metric, channel_type
-                            ),
+                             ),
                             confidence_level=performance_score,
-                        )
+                         )
                         opportunities.append(opportunity)
 
         return opportunities
 
     def _analyze_market_gaps(self) -> List[NicheOpportunity]:
-        """Analyze market for underserved niches."""
-        opportunities = []
+        """
+Analyze market for underserved niches.
 
+       
+""""""
+
+        opportunities = []
+       
+
+        
+       
+"""
         try:
             # Use AI to identify market gaps
+       """
+
+        
+       
+
+        opportunities = []
+       
+""""""
             prompt = self._generate_market_gap_prompt()
             ai_response = self.ollama_client.generate_completion(prompt)
 
@@ -371,7 +507,7 @@ class ProactiveNicheDominationAgent(BaseAgent):
                         content_requirements=gap["content_requirements"],
                         recommended_strategy=gap["strategy"],
                         confidence_level=gap["confidence"],
-                    )
+                     )
                     opportunities.append(opportunity)
 
         except Exception as e:
@@ -380,11 +516,28 @@ class ProactiveNicheDominationAgent(BaseAgent):
         return opportunities
 
     def _analyze_trending_topics(self) -> List[NicheOpportunity]:
-        """Analyze trending topics for expansion opportunities."""
-        opportunities = []
+        """
+Analyze trending topics for expansion opportunities.
 
+       
+""""""
+
+        opportunities = []
+       
+
+        
+       
+"""
         try:
             # Get trending topics from various sources
+       """
+
+        
+       
+
+        opportunities = []
+       
+""""""
             trending_data = self._fetch_trending_data()
 
             for trend in trending_data:
@@ -404,7 +557,7 @@ class ProactiveNicheDominationAgent(BaseAgent):
                         content_requirements=trend["content_types"],
                         recommended_strategy=trend["strategy"],
                         confidence_level=trend["trend_strength"],
-                    )
+                     )
                     opportunities.append(opportunity)
 
         except Exception as e:
@@ -413,11 +566,28 @@ class ProactiveNicheDominationAgent(BaseAgent):
         return opportunities
 
     def _analyze_competitor_weaknesses(self) -> List[NicheOpportunity]:
-        """Identify opportunities based on competitor weaknesses."""
-        opportunities = []
+        """
+Identify opportunities based on competitor weaknesses.
 
+       
+""""""
+
+        opportunities = []
+       
+
+        
+       
+"""
         try:
             # Analyze competitor performance gaps
+       """
+
+        
+       
+
+        opportunities = []
+       
+""""""
             competitor_data = self._analyze_competitors()
 
             for weakness in competitor_data:
@@ -434,7 +604,7 @@ class ProactiveNicheDominationAgent(BaseAgent):
                         content_requirements=weakness["content_gaps"],
                         recommended_strategy=weakness["attack_strategy"],
                         confidence_level=weakness["confidence"],
-                    )
+                     )
                     opportunities.append(opportunity)
 
         except Exception as e:
@@ -443,10 +613,27 @@ class ProactiveNicheDominationAgent(BaseAgent):
         return opportunities
 
     def _analyze_seasonal_opportunities(self) -> List[NicheOpportunity]:
-        """Identify seasonal and temporal opportunities."""
-        opportunities = []
+        """
+Identify seasonal and temporal opportunities.
 
+       
+""""""
+
+        opportunities = []
+       
+
+        
+       
+"""
         try:
+       """
+
+        
+       
+
+        opportunities = []
+       
+""""""
             current_month = datetime.now().month
             seasonal_data = self._get_seasonal_trends(current_month)
 
@@ -463,7 +650,7 @@ class ProactiveNicheDominationAgent(BaseAgent):
                     content_requirements=season_opp["content_calendar"],
                     recommended_strategy=season_opp["timing_strategy"],
                     confidence_level=season_opp["predictability"],
-                )
+                 )
                 opportunities.append(opportunity)
 
         except Exception as e:
@@ -498,8 +685,8 @@ class ProactiveNicheDominationAgent(BaseAgent):
                     channel_setup,
                     deployment_success,
                     monitoring_setup,
-                ]
-            ):
+                 ]
+#             ):
                 # Record successful expansion
                 self._record_expansion(opportunity)
                 self.logger.info(f"Successfully expanded into {opportunity.niche_name}")
@@ -513,10 +700,20 @@ class ProactiveNicheDominationAgent(BaseAgent):
             return False
 
     def _generate_market_gap_prompt(self) -> str:
-        """Generate AI prompt for market gap analysis."""
-        return """
+        """
+Generate AI prompt for market gap analysis.
+
+        
+"""
+        return 
+        """
+
 Analyze the current digital content landscape \
-    and identify 5 underserved market niches with high growth potential.
+
+
+#     and identify 5 underserved market niches with high growth potential.
+
+"""
 
 For each niche, provide:
 1. Niche name and description
@@ -527,7 +724,7 @@ For each niche, provide:
     linkedin,
     podcast,
     blog,
-    newsletter)
+#     newsletter)
 3. Market size estimate (search volume/audience size)
 4. Competition level (0.0 - 1.0, where 1.0 is highly competitive)
 5. Entry difficulty (0.0 - 1.0, where 1.0 is very difficult)
@@ -536,6 +733,11 @@ For each niche, provide:
 8. Recommended strategy
 9. Opportunity score (0.0 - 1.0)
 10. Confidence level (0.0 - 1.0)
+"""
+
+#     and identify 5 underserved market niches with high growth potential.
+
+
 
 Focus on niches that are:
 - Growing rapidly but underserved
@@ -544,13 +746,23 @@ Focus on niches that are:
 - Have sustainable long - term potential
 
 Format as JSON array with these fields.
+
 """
 
     def _parse_market_gaps(self, ai_response: str) -> List[Dict]:
-        """Parse AI response for market gap opportunities."""
-        try:
-            # Extract JSON from AI response
+        """
+Parse AI response for market gap opportunities.
 
+        try:
+           
+""""""
+
+            # Extract JSON from AI response
+           
+
+            
+           
+"""
             import re
 
             json_match = re.search(r"\\[.*\\]", ai_response, re.DOTALL)
@@ -562,11 +774,28 @@ Format as JSON array with these fields.
         return []
 
     def _fetch_trending_data(self) -> List[Dict]:
-        """Fetch trending topics from various sources."""
-        trending_data = []
+        """
+Fetch trending topics from various sources.
 
+       
+""""""
+
+        trending_data = []
+       
+
+        
+       
+"""
         try:
             # Fetch from Google Trends
+       """
+
+        
+       
+
+        trending_data = []
+       
+""""""
             google_trends = self._fetch_google_trends()
             trending_data.extend(google_trends)
 
@@ -590,9 +819,27 @@ Format as JSON array with these fields.
         return trending_data
 
     def _evaluate_trend_opportunity(self, trend: Dict) -> float:
-        """Evaluate a trending topic for content opportunity."""
+        """
+Evaluate a trending topic for content opportunity.
+
+       
+""""""
+
         # Calculate opportunity score based on multiple factors
+       
+
+        
+       
+"""
         volume_score = min(trend["search_volume"] / 100000, 1.0)  # Normalize to 100k
+       """
+
+        
+       
+
+        # Calculate opportunity score based on multiple factors
+       
+""""""
         competition_score = 1.0 - trend["competition"]  # Lower competition is better
         monetization_score = trend["monetization_potential"]
         trend_strength_score = trend["trend_strength"]
@@ -602,16 +849,33 @@ Format as JSON array with these fields.
             + competition_score * 0.25
             + monetization_score * 0.25
             + trend_strength_score * 0.2
-        )
+         )
 
         return opportunity_score
 
     def _fetch_google_trends(self) -> List[Dict]:
-        """Fetch trending topics from Google Trends API."""
-        trends = []
+        """
+Fetch trending topics from Google Trends API.
 
+       
+""""""
+
+        trends = []
+       
+
+        
+       
+"""
         try:
             # Initialize pytrends
+       """
+
+        
+       
+
+        trends = []
+       
+""""""
             pytrends = TrendReq(hl="en - US", tz=360)
 
             # Get trending searches
@@ -636,8 +900,8 @@ Format as JSON array with these fields.
                             "strategy": "Capitalize on trending interest",
                             "trend_strength": min(avg_interest / 100, 1.0),
                             "source": "google_trends",
-                        }
-                    )
+                         }
+                     )
 
         except Exception as e:
             self.logger.error(f"Error fetching Google Trends: {e}")
@@ -645,12 +909,29 @@ Format as JSON array with these fields.
         return trends
 
     def _fetch_twitter_trends(self) -> List[Dict]:
-        """Fetch trending topics from Twitter API."""
-        trends = []
+        """
+Fetch trending topics from Twitter API.
 
+       
+""""""
+
+        trends = []
+       
+
+        
+       
+"""
         try:
             # Get Twitter API credentials from secret store
             with SecretStore() as store:
+       """
+
+        
+       
+
+        trends = []
+       
+""""""
                 api_key = store.get_secret("TWITTER_API_KEY")
                 api_secret = store.get_secret("TWITTER_API_SECRET")
                 access_token = store.get_secret("TWITTER_ACCESS_TOKEN")
@@ -672,7 +953,7 @@ Format as JSON array with these fields.
                     if trend["tweet_volume"]:  # Only trends with volume data
                         trends.append(
                             {
-                                "topic": trend["name"].replace("#", ""),
+                                "topic": trend["name"].replace("#", ""),"
                                 "search_volume": trend["tweet_volume"],
                                 "competition": 0.7,  # Twitter trends are competitive
                                 "best_channel": "twitter",
@@ -681,8 +962,8 @@ Format as JSON array with these fields.
                                 "strategy": "Real - time engagement with trending topics",
                                 "trend_strength": min(trend["tweet_volume"] / 100000, 1.0),
                                 "source": "twitter_trends",
-                            }
-                        )
+                             }
+                         )
 
         except Exception as e:
             self.logger.error(f"Error fetching Twitter trends: {e}")
@@ -690,12 +971,29 @@ Format as JSON array with these fields.
         return trends
 
     def _fetch_youtube_trending(self) -> List[Dict]:
-        """Fetch trending topics from YouTube API."""
-        trends = []
+        """
+Fetch trending topics from YouTube API.
 
+       
+""""""
+
+        trends = []
+       
+
+        
+       
+"""
         try:
             # Get YouTube API key from secret store
             with SecretStore() as store:
+       """
+
+        
+       
+
+        trends = []
+       
+""""""
                 api_key = store.get_secret("YOUTUBE_API_KEY")
 
                 if not api_key:
@@ -710,7 +1008,7 @@ Format as JSON array with these fields.
                     "regionCode": "US",
                     "maxResults": 20,
                     "key": api_key,
-                }
+                 }
 
                 response = requests.get(url, params=params)
                 response.raise_for_status()
@@ -730,7 +1028,7 @@ Format as JSON array with these fields.
                         if len(word) > 3:  # Filter short words
                             topic_counts[word] = topic_counts.get(word, 0) + int(
                                 stats.get("viewCount", 0)
-                            )
+                             )
 
                 # Convert to trend format
                 for topic, view_count in sorted(
@@ -747,8 +1045,8 @@ Format as JSON array with these fields.
                             "strategy": "Create content around trending video topics",
                             "trend_strength": min(view_count / 10000000, 1.0),
                             "source": "youtube_trending",
-                        }
-                    )
+                         }
+                     )
 
         except Exception as e:
             self.logger.error(f"Error fetching YouTube trends: {e}")
@@ -756,11 +1054,28 @@ Format as JSON array with these fields.
         return trends
 
     def _fetch_reddit_trends(self) -> List[Dict]:
-        """Fetch trending topics from Reddit."""
-        trends = []
+        """
+Fetch trending topics from Reddit.
 
+       
+""""""
+
+        trends = []
+       
+
+        
+       
+"""
         try:
             # Fetch hot posts from popular subreddits
+       """
+
+        
+       
+
+        trends = []
+       
+""""""
             subreddits = ["all", "popular", "trending"]
 
             for subreddit in subreddits:
@@ -785,8 +1100,8 @@ Format as JSON array with these fields.
                             "strategy": "Create content around Reddit discussions",
                             "trend_strength": min(post_data["score"] / 10000, 1.0),
                             "source": "reddit_trends",
-                        }
-                    )
+                         }
+                     )
 
         except Exception as e:
             self.logger.error(f"Error fetching Reddit trends: {e}")
@@ -806,7 +1121,7 @@ Format as JSON array with these fields.
                 "strategy": "Product reviews with affiliate links",
                 "trend_strength": 0.8,
                 "source": "fallback",
-            },
+             },
             {
                 "topic": "Health and Wellness",
                 "search_volume": 35000,
@@ -817,36 +1132,45 @@ Format as JSON array with these fields.
                 "strategy": "Wellness content with product partnerships",
                 "trend_strength": 0.75,
                 "source": "fallback",
-            },
-        ]
+             },
+         ]
 
     def _analyze_competitors(self) -> List[Dict]:
-        """Analyze competitor weaknesses for opportunities."""
+        """
+Analyze competitor weaknesses for opportunities.
+
         # Placeholder for competitor analysis
         # In production, this would analyze:
         # - Competitor content gaps
         # - Performance weaknesses
         # - Audience dissatisfaction
-        # - Market positioning gaps
+       
+""""""
 
+        # - Market positioning gaps
+       
+
+        
+       
+"""
         return []
 
     def _get_seasonal_trends(self, month: int) -> List[Dict]:
         """Get seasonal opportunities for the current month."""
         seasonal_calendar = {
             1: ["New Year Resolutions", "Winter Fitness", "Tax Preparation"],
-            2: ["Valentine's Day", "Winter Sports", "Home Organization"],
+            2: ["Valentine's Day", "Winter Sports", "Home Organization"],'
             3: ["Spring Cleaning", "Gardening Prep", "Easter Crafts"],
             4: ["Spring Fashion", "Outdoor Activities", "Tax Season"],
-            5: ["Mother's Day", "Graduation", "Summer Prep"],
-            6: ["Father's Day", "Summer Travel", "Wedding Season"],
+            5: ["Mother's Day", "Graduation", "Summer Prep"],'
+            6: ["Father's Day", "Summer Travel", "Wedding Season"],'
             7: ["Summer Activities", "Vacation Planning", "BBQ Recipes"],
             8: ["Back to School", "Late Summer Travel", "Harvest Prep"],
             9: ["Fall Fashion", "School Supplies", "Halloween Prep"],
             10: ["Halloween", "Fall Decorating", "Holiday Planning"],
             11: ["Thanksgiving", "Black Friday", "Holiday Shopping"],
             12: ["Christmas", "New Year Planning", "Gift Guides"],
-        }
+         }
 
         seasonal_topics = seasonal_calendar.get(month, [])
         opportunities = []
@@ -865,17 +1189,27 @@ Format as JSON array with these fields.
                         f"{topic} guide",
                         f"{topic} tips",
                         f"{topic} reviews",
-                    ],
+                     ],
                     "timing_strategy": f"Create {topic} content 2 - 4 weeks before peak demand",
                     "predictability": 0.9,  # Seasonal trends are predictable
-                }
-            )
+                 }
+             )
 
         return opportunities
 
     def _estimate_market_size(self, niche: str, channel_type: ChannelType) -> int:
-        """Estimate market size for a niche on a specific channel."""
+        """
+Estimate market size for a niche on a specific channel.
+
+       
+""""""
+
         # Placeholder estimation logic
+       
+
+        
+       
+"""
         base_sizes = {
             ChannelType.YOUTUBE: 100000,
             ChannelType.TIKTOK: 75000,
@@ -885,12 +1219,32 @@ Format as JSON array with these fields.
             ChannelType.PODCAST: 15000,
             ChannelType.BLOG: 25000,
             ChannelType.NEWSLETTER: 10000,
-        }
+        """
+
+         
+        
+
+         }
+        
+""""""
+
+       
+
+        
+       
+"""
+        # Placeholder estimation logic
+       """
+
+        
+       
 
         return base_sizes.get(channel_type, 50000)
 
     def _calculate_entry_difficulty(self, channel_type: ChannelType) -> float:
-        """Calculate entry difficulty for different channel types."""
+        
+"""Calculate entry difficulty for different channel types."""
+
         difficulty_scores = {
             ChannelType.YOUTUBE: 0.7,  # High production value needed
             ChannelType.TIKTOK: 0.3,  # Easy to start
@@ -900,8 +1254,24 @@ Format as JSON array with these fields.
             ChannelType.PODCAST: 0.6,  # Technical setup required
             ChannelType.BLOG: 0.4,
             ChannelType.NEWSLETTER: 0.3,
-        }
+        
 
+         
+        
+"""
+         }
+        """"""
+
+         
+
+        """
+
+         }
+        
+
+         
+        
+"""
         return difficulty_scores.get(channel_type, 0.5)
 
     def _get_content_requirements(self, niche: str, channel_type: ChannelType) -> List[str]:
@@ -912,7 +1282,7 @@ Format as JSON array with these fields.
                 "thumbnails",
                 "descriptions",
                 "tags",
-            ],
+             ],
             ChannelType.TIKTOK: ["short videos", "trending audio", "hashtags"],
             ChannelType.INSTAGRAM: ["images", "stories", "reels", "captions"],
             ChannelType.TWITTER: ["tweets", "threads", "images"],
@@ -920,7 +1290,7 @@ Format as JSON array with these fields.
             ChannelType.PODCAST: ["audio content", "show notes", "transcripts"],
             ChannelType.BLOG: ["articles", "SEO optimization", "images"],
             ChannelType.NEWSLETTER: ["email content", "subject lines", "CTAs"],
-        }
+         }
 
         return channel_requirements.get(channel_type, ["content"])
 
@@ -929,18 +1299,28 @@ Format as JSON array with these fields.
         return f"Leverage success in {metric.niche} on {metric.channel} by adapting content format for {channel_type.value}. Focus on {metric.niche} content with proven engagement patterns."
 
     def _store_opportunity(self, opportunity: NicheOpportunity):
-        """Store opportunity in database."""
+        """
+Store opportunity in database.
+
         try:
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT INTO niche_opportunities (
                         niche_name, channel_type, opportunity_score, trigger_type,
                             market_size, competition_level, entry_difficulty, revenue_potential,
                             content_requirements, recommended_strategy, confidence_level
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         opportunity.niche_name,
                         opportunity.channel_type.value,
@@ -953,31 +1333,68 @@ Format as JSON array with these fields.
                         json.dumps(opportunity.content_requirements),
                         opportunity.recommended_strategy,
                         opportunity.confidence_level,
-                    ),
-                )
+                     ),
+                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to store opportunity: {e}")
+            """
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
 
     def _create_content_strategy(self, opportunity: NicheOpportunity) -> bool:
-        """Create content strategy for niche expansion."""
+        
+Create content strategy for niche expansion.
+""""""
+
+        
+       
+
         # Placeholder for content strategy creation
+       
+""""""
+
+        
+
         return True
+        
+""""""
+
+        
+       
+
+        # Placeholder for content strategy creation
+       
+""""""
 
     def _generate_initial_content(self, opportunity: NicheOpportunity, strategy: Any) -> bool:
-        """Generate initial content batch for expansion."""
+        
+Generate initial content batch for expansion.
+"""
         # Use the automated content generator
+        """
+
         try:
+        
+
             content_count = 5  # Initial batch size
             for i in range(content_count):
+        
+"""
+        try:
+        """
                 content = self.content_generator.generate_content(
                     topic=opportunity.niche_name,
                     content_type=(
                         opportunity.content_requirements[0]
                         if opportunity.content_requirements
                         else "article"
-                    ),
-                )
+                     ),
+                 )
                 if not content:
                     return False
             return True
@@ -986,109 +1403,276 @@ Format as JSON array with these fields.
             return False
 
     def _setup_channel_presence(self, opportunity: NicheOpportunity) -> bool:
-        """Set up presence on the target channel."""
+        """
+Set up presence on the target channel.
+
+       
+""""""
+
         # Placeholder for channel setup
-        return True
+       
 
+        
+       
+""""""
+
+        return True
+        
+
+       
+""""""
+
+        # Placeholder for channel setup
+       
+
+        
+       
+"""
     def _deploy_initial_content(self, opportunity: NicheOpportunity, content: Any) -> bool:
-        """Deploy initial content to the target channel."""
+        """
+Deploy initial content to the target channel.
+
+       
+""""""
+
         # Placeholder for content deployment
-        return True
+       
 
+        
+       
+""""""
+
+        return True
+        
+
+       
+""""""
+
+        # Placeholder for content deployment
+       
+
+        
+       
+"""
     def _setup_expansion_monitoring(self, opportunity: NicheOpportunity) -> bool:
-        """Set up monitoring for the new expansion."""
+        """
+Set up monitoring for the new expansion.
+
+       
+""""""
+
         # Placeholder for monitoring setup
+       
+
+        
+       
+""""""
+
         return True
+        
 
+       
+""""""
+
+        # Placeholder for monitoring setup
+       
+
+        
+       
+"""
     def _record_expansion(self, opportunity: NicheOpportunity):
-        """Record successful expansion in database."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Record successful expansion in database.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 # Get opportunity ID
                 cursor.execute(
                     "SELECT id FROM niche_opportunities WHERE niche_name = ? AND channel_type = ?",
                     (opportunity.niche_name, opportunity.channel_type.value),
-                )
+                 )
                 opp_id = cursor.fetchone()
 
                 if opp_id:
                     cursor.execute(
-                        """
+                        """"""
+
                         INSERT INTO niche_expansions (
                             opportunity_id, initial_content_count, current_performance, status
                         ) VALUES (?, ?, ?, ?)
-                    """,
+                    
+,
+"""
                         (opp_id[0], 5, json.dumps({"status": "launched"}), "active"),
-                    )
+                     )
 
                     # Update opportunity status
                     cursor.execute(
                         "UPDATE niche_opportunities SET status = 'executed' WHERE id = ?",
                         (opp_id[0],),
-                    )
+                     )
 
                     conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to record expansion: {e}")
 
     def get_expansion_report(self) -> Dict[str, Any]:
-        """Generate comprehensive expansion report."""
+        """
+Generate comprehensive expansion report.
+
         try:
             with sqlite3.connect(self.db_path) as conn:
+               
+""""""
+
                 conn.row_factory = sqlite3.Row
+               
+
+                
+               
+""""""
+
+                
+               
+
                 cursor = conn.cursor()
+               
+""""""
+
+               
+
+                
+               
+"""
+                conn.row_factory = sqlite3.Row
+               """
+
+                
+               
 
                 # Get opportunity summary
                 cursor.execute(
-                    """
+                   
+""""""
                     SELECT status,
     COUNT(*) as count,
     AVG(opportunity_score) as avg_score
                     FROM niche_opportunities
                     GROUP BY status
-                """
-                )
+                """"""
+
+                
+
+                 
+                
+"""
+                 )
+                """"""
                 opportunity_summary = {
                     row["status"]: {
                         "count": row["count"],
                         "avg_score": row["avg_score"],
-                    }
+                     }
                     for row in cursor.fetchall()
-                }
+                 }
+                """
+
+                 
+                
+
+                 )
+                
+""""""
 
                 # Get active expansions
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT no.niche_name, no.channel_type, ne.expansion_date, ne.status
                     FROM niche_expansions ne
                     JOIN niche_opportunities no ON ne.opportunity_id = no.id
                     WHERE ne.status = 'active'
                     ORDER BY ne.expansion_date DESC
-                """
-                )
+                """"""
+
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                
+               """
+
                 active_expansions = [dict(row) for row in cursor.fetchall()]
+               
+
+                
+               
+""""""
+
+                 
+                
+
+                 )
+                
+""""""
 
                 # Get top opportunities
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT niche_name, channel_type, opportunity_score, trigger_type
                     FROM niche_opportunities
                     WHERE status = 'identified'
                     ORDER BY opportunity_score DESC
                     LIMIT 10
-                """
-                )
-                top_opportunities = [dict(row) for row in cursor.fetchall()]
+                """"""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                
+               """
+
+                top_opportunities = [dict(row) for row in cursor.fetchall()]
+               
+
+                
+               
+""""""
+
+                 
+                
+
+                 )
+                
+""""""
                 return {
                     "timestamp": datetime.now().isoformat(),
                     "opportunity_summary": opportunity_summary,
                     "active_expansions": active_expansions,
                     "top_opportunities": top_opportunities,
                     "total_opportunities": sum(s["count"] for s in opportunity_summary.values()),
-                }
+                 }
         except Exception as e:
             self.logger.error(f"Failed to generate expansion report: {e}")
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
@@ -1121,7 +1705,7 @@ Format as JSON array with these fields.
             "expand": "expand into new niches for",
             "monitor": "monitor growth metrics for",
             "dominate": "establish dominance in",
-        }
+         }
 
         rephrased = task_description.lower()
         for keyword, replacement in niche_keywords.items():
@@ -1133,9 +1717,19 @@ Format as JSON array with these fields.
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
-        """Validate rephrase accuracy - required by BaseAgent"""
+#     ) -> bool:
+        """
+Validate rephrase accuracy - required by BaseAgent
+
+       
+""""""
+
         # Simple validation - check if key niche domination terms are preserved
+       
+
+        
+       
+"""
         niche_terms = [
             "niche",
             "market",
@@ -1144,8 +1738,15 @@ Format as JSON array with these fields.
             "opportunity",
             "domination",
             "competition",
-        ]
+         ]
+       """
 
+        
+       
+
+        # Simple validation - check if key niche domination terms are preserved
+       
+""""""
         original_description = str(original_task.get("description", original_task))
         original_lower = original_description.lower()
         rephrased_lower = rephrased.lower()
@@ -1167,4 +1768,4 @@ Format as JSON array with these fields.
             "market_analysis": "analyze market gaps and competition",
             "trend_monitoring": "track trending topics across platforms",
             "growth_metrics": "monitor and analyze growth performance",
-        }
+         }

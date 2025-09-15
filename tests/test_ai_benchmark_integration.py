@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
 Test suite for AI Benchmark Integration System
-"""
+""""""
 
-import asyncio
 import json
 import pytest
 import os
-from unittest.mock import Mock, patch, AsyncMock
+from unittest.mock import patch
 from datetime import datetime
 
 # Add backend to path for imports
@@ -22,7 +21,9 @@ from ai_benchmark_integration import (
         BenchmarkProvider,
         QualityMetrics,
         BenchmarkResult
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 
 class TestAIBenchmarkIntegration:
@@ -60,7 +61,9 @@ class TestAIBenchmarkIntegration:
                 provider="chatgpt",
                 timestamp = datetime.now(),
                 response_time_ms = 500
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         assert metrics.correctness == 85.0
         assert metrics.clarity == 90.0
@@ -75,7 +78,9 @@ class TestAIBenchmarkIntegration:
         prompt = self.integration._create_validation_prompt(
             self.test_content,
                 self.test_content_type
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         assert "Correctness" in prompt
         assert "Clarity" in prompt
@@ -86,15 +91,16 @@ class TestAIBenchmarkIntegration:
 
     def test_parse_quality_scores_valid_json(self):
         """Test parsing valid JSON quality scores"""
-        response_text = '''
+        response_text = ''''''
         {
             "correctness": 85,
                 "clarity": 90,
                 "professionalism": 80,
                 "overall": 85,
                 "reasoning": "Good quality content"
-        }
-        '''
+# BRACKET_SURGEON: disabled
+#         }
+        ''''''
 
         scores = self.integration._parse_quality_scores(response_text)
 
@@ -124,20 +130,26 @@ class TestAIBenchmarkIntegration:
                     provider="chatgpt",
     timestamp = datetime.now(),
     response_time_ms = 500
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 QualityMetrics(
                 correctness = 85, clarity = 80, professionalism = 85, overall_score = 83,
                     provider="gemini",
     timestamp = datetime.now(),
     response_time_ms = 600
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 QualityMetrics(
                 correctness = 75, clarity = 90, professionalism = 80, overall_score = 82,
                     provider="abacus",
     timestamp = datetime.now(),
     response_time_ms = 700
-            )
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         consensus = self.integration._calculate_consensus_score(metrics)
 
@@ -160,8 +172,12 @@ class TestAIBenchmarkIntegration:
                     provider="chatgpt",
     timestamp = datetime.now(),
     response_time_ms = 500
-            )
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         recommendations = self.integration._generate_recommendations(metrics, "text")
 
@@ -179,8 +195,12 @@ class TestAIBenchmarkIntegration:
                     provider="chatgpt",
     timestamp = datetime.now(),
     response_time_ms = 500
-            )
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         recommendations = self.integration._generate_recommendations(metrics, "text")
 
@@ -196,13 +216,19 @@ class TestAIBenchmarkIntegration:
                     provider="chatgpt",
     timestamp = datetime.now(),
     response_time_ms = 500
-            )
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         recommendations = self.integration._generate_recommendations(metrics, "code")
 
         assert any("code" in rec.lower() \
-    or "bug" in rec.lower() for rec in recommendations)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     or "bug" in rec.lower() for rec in recommendations)
 
     @pytest.mark.asyncio
 
@@ -215,7 +241,9 @@ class TestAIBenchmarkIntegration:
         metrics = await self.integration._validate_with_abacus(
             self.test_content,
                 self.test_content_type
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         assert isinstance(metrics, QualityMetrics)
         assert metrics.provider == "abacus"
@@ -238,7 +266,9 @@ class TestAIBenchmarkIntegration:
             self.test_content,
                 self.test_content_type,
                 BenchmarkProvider.CHATGPT
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Should return default metrics on error
         assert isinstance(metrics, QualityMetrics)
@@ -264,7 +294,9 @@ class TestAIBenchmarkIntegration:
         with self.integration.app.test_client() as client:
             response = client.post('/api/benchmark/validate',
                 json={},
-                                     content_type='application/json')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                      content_type='application/json')
 
             assert response.status_code == 400
             data = json.loads(response.data)
@@ -285,19 +317,27 @@ class TestAIBenchmarkIntegration:
                         provider="chatgpt",
     timestamp = datetime.now(),
     response_time_ms = 500
-                )
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
                 consensus_score = 85.0,
                 passed_threshold = True,
                 recommendations=["Content meets quality standards"],
                 validation_id="test_123"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         mock_asyncio_run.return_value = mock_result
 
         with self.integration.app.test_client() as client:
             response = client.post('/api/benchmark/validate',
                 json={'content': self.test_content},
-                                     content_type='application/json')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                      content_type='application/json')
 
             assert response.status_code == 200
             data = json.loads(response.data)

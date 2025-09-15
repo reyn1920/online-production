@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Blender Compositor - Avatar Video Compositing with Checkpointed Rendering
 
 This module implements Blender integration for compositing avatar videos,
@@ -8,7 +8,7 @@ It supports batch processing, automated scene setup, and render optimization.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -100,7 +100,7 @@ class CompositeLayer:
     source_path: str
     blend_mode: str = "ALPHA_OVER"
     opacity: float = 1.0
-    position: Tuple[float, float] = (0.0, 0.0)
+    position: Tuple[float, float] = (0.0, 0.0):
     scale: Tuple[float, float] = (1.0, 1.0)
     rotation: float = 0.0
     start_frame: int = 1
@@ -161,11 +161,11 @@ class BlenderScriptGenerator:
                 "import sys",
                 "from mathutils import Vector",
                 "",
-                "# Clear existing mesh objects",
+                "# Clear existing mesh objects","
                 "bpy.ops.object.select_all(action='SELECT')",
                 "bpy.ops.object.delete(use_global = False)",
                 "",
-                "# Set render settings",
+                "# Set render settings","
                 f"bpy.context.scene.render.engine = '{job.config.engine.value}'",
                 f"bpy.context.scene.render.resolution_x = {job.config.resolution_x}",
                 f"bpy.context.scene.render.resolution_y = {job.config.resolution_y}",
@@ -176,48 +176,62 @@ class BlenderScriptGenerator:
                 f"bpy.context.scene.render.image_settings.file_format = '{job.config.output_format}'",
                 f"bpy.context.scene.render.image_settings.color_depth = '{job.config.color_depth}'",
                 "",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Add engine - specific settings
         if job.config.engine == RenderEngine.CYCLES:
             script_lines.extend(
                 [
-                    "# Cycles settings",
+                    "# Cycles settings","
                         f"bpy.context.scene.cycles.samples = {job.config.samples}",
                         f"bpy.context.scene.cycles.use_denoising = {job.config.use_denoising}",
                         f"bpy.context.scene.render.use_motion_blur = {job.config.use_motion_blur}",
                         "",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         elif job.config.engine == RenderEngine.EEVEE:
             script_lines.extend(
                 [
-                    "# Eevee settings",
+                    "# Eevee settings","
                         f"bpy.context.scene.eevee.taa_render_samples = {job.config.samples}",
                         "bpy.context.scene.eevee.use_bloom = True",
                         "bpy.context.scene.eevee.use_ssr = True",
                         "",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Setup compositor
             script_lines.extend(
             [
-                "# Enable compositor",
+                "# Enable compositor","
                     "bpy.context.scene.use_nodes = True",
                     "tree = bpy.context.scene.node_tree",
                     "tree.nodes.clear()",
                     "",
-                    "# Create render layers node",
+                    "# Create render layers node","
                     "render_layers = tree.nodes.new('CompositorNodeRLayers')",
                     "render_layers.location = (0, 0)",
                     "",
-                    "# Create composite output",
+                    "# Create composite output","
                     "composite = tree.nodes.new('CompositorNodeComposite')",
                     "composite.location = (800, 0)",
                     "",
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Add layers
         y_offset = 0
@@ -229,15 +243,19 @@ class BlenderScriptGenerator:
         script_lines.extend(
             [
                 "",
-                    "# Connect final composite",
+                    "# Connect final composite","
                     "if len(tree.nodes) > 2:",
                     "    last_node = [n for n in tree.nodes if n.type != 'COMPOSITE'][-1]",
                     "    tree.links.new(last_node.outputs[0], composite.inputs[0])",
                     "else:",
                     "    tree.links.new(render_layers.outputs[0], composite.inputs[0])",
                     "",
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Add checkpoint rendering logic
         script_lines.extend(self._generate_checkpoint_script(job))
@@ -250,42 +268,53 @@ class BlenderScriptGenerator:
     ) -> List[str]:
         """Generate compositor nodes for a layer."""
         lines = [
-            f"# Layer {index}: {layer.name}",
-                ]
+            f"# Layer {index}: {layer.name}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         if layer.type == "video":
             lines.extend(
                 [
                     f"movie_clip_{index} = tree.nodes.new('CompositorNodeMovieClip')",
                         f"movie_clip_{index}.location = (200, {y_offset})",
-                        f"# Load movie clip",
+                        f"# Load movie clip","
                         f"try:",
                         f"    clip = bpy.data.movieclips.load('{layer.source_path}')",
                         f"    movie_clip_{index}.clip = clip",
                         f"except Exception:",
                         f"    print('Failed to load video: {layer.source_path}')",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         elif layer.type == "image":
             lines.extend(
                 [
                     f"image_{index} = tree.nodes.new('CompositorNodeImage')",
                         f"image_{index}.location = (200, {y_offset})",
-                        f"# Load image",
+                        f"# Load image","
                         f"try:",
                         f"    img = bpy.data.images.load('{layer.source_path}')",
                         f"    image_{index}.image = img",
                         f"except Exception:",
                         f"    print('Failed to load image: {layer.source_path}')",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Add transform nodes
         if (
             layer.scale != (1.0, 1.0)
             or layer.position != (0.0, 0.0)
             or layer.rotation != 0.0
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             lines.extend(
                 [
                     f"transform_{index} = tree.nodes.new('CompositorNodeTransform')",
@@ -294,8 +323,12 @@ class BlenderScriptGenerator:
                         f"transform_{index}.inputs['Y'].default_value = {layer.position[1]}",
                         f"transform_{index}.inputs['Angle'].default_value = {layer.rotation}",
                         f"transform_{index}.inputs['Scale'].default_value = {layer.scale[0]}",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Add alpha over node for blending
         if index > 0:
@@ -304,8 +337,12 @@ class BlenderScriptGenerator:
                     f"alpha_over_{index} = tree.nodes.new('CompositorNodeAlphaOver')",
                         f"alpha_over_{index}.location = (600, {y_offset})",
                         f"alpha_over_{index}.inputs['Fac'].default_value = {layer.opacity}",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         lines.append("")
         return lines
@@ -314,64 +351,68 @@ class BlenderScriptGenerator:
     def _generate_checkpoint_script(self, job: RenderJob) -> List[str]:
         """Generate checkpointed rendering script."""
         return [
-            "# Checkpointed rendering function",
+            "# Checkpointed rendering function","
                 "def render_with_checkpoints():",
                 "    import json",
                 "    import os",
                 f"    checkpoint_file = '{job.output_path}_checkpoint.json'",
                 f"    ",
-                "    # Load checkpoint if exists",
+                "    # Load checkpoint if exists","
                 "    start_frame = bpy.context.scene.frame_start",
                 "    if os.path.exists(checkpoint_file):",
                 "        try:",
                 "            with open(checkpoint_file, 'r') as f:",
                 "                checkpoint = json.load(f)",
-                "            start_frame = checkpoint.get('last_frame',
-    start_frame) + 1",
+                "            start_frame = checkpoint.get('last_frame',"
+# BRACKET_SURGEON: disabled
+#     start_frame) + 1","
                 "            print(f'Resuming from frame {start_frame}')",
                 "        except Exception:",
                 "            print('Failed to load checkpoint,
-    starting from beginning')",
+# BRACKET_SURGEON: disabled
+#     starting from beginning')",
                 "    ",
-                "    # Render frames with checkpointing",
+                "    # Render frames with checkpointing","
                 "    for frame in range(start_frame, bpy.context.scene.frame_end + 1):",
                 "        try:",
                 "            bpy.context.scene.frame_set(frame)",
                 "            ",
-                "            # Set output filename with frame number",
+                "            # Set output filename with frame number","
                 f"            output_file = '{job.output_path}_' + str(frame).zfill(4)",
                 "            bpy.context.scene.render.filepath = output_file",
                 "            ",
-                "            # Render single frame",
+                "            # Render single frame","
                 "            bpy.ops.render.render(write_still = True)",
                 "            ",
                 "            print(f'Rendered frame {frame}')",
                 "            ",
-                "            # Save checkpoint every N frames",
+                "            # Save checkpoint every N frames","
                 f"            if frame % {job.config.checkpoint_interval} == 0:",
                 "                checkpoint_data = {",
                 "                    'last_frame': frame,",
                 "                    'timestamp': str(bpy.context.scene.frame_current),",
                 "                    'total_frames': bpy.context.scene.frame_end",
-                "                }",
+# BRACKET_SURGEON: disabled
+#                 "                }",
                 "                with open(checkpoint_file, 'w') as f:",
                 "                    json.dump(checkpoint_data, f)",
                 "                print(f'Checkpoint saved at frame {frame}')",
                 "            ",
                 "        except Exception as e:",
                 "            print(f'Error rendering frame {frame}: {e}')",
-                "            # Save error checkpoint",
+                "            # Save error checkpoint","
                 "            error_checkpoint = {",
                 "                'last_frame': frame - 1,",
                 "                'error_frame': frame,",
                 "                'error': str(e),",
                 "                'timestamp': str(bpy.context.scene.frame_current)",
-                "            }",
+# BRACKET_SURGEON: disabled
+#                 "            }",
                 "            with open(checkpoint_file, 'w') as f:",
                 "                json.dump(error_checkpoint, f)",
                 "            break",
                 "    ",
-                "    # Clean up checkpoint file on successful completion",
+                "    # Clean up checkpoint file on successful completion","
                 "    if frame == bpy.context.scene.frame_end:",
                 "        try:",
                 "            os.remove(checkpoint_file)",
@@ -379,9 +420,11 @@ class BlenderScriptGenerator:
                 "        except Exception:",
                 "            pass",
                 "",
-                "# Execute checkpointed rendering",
+                "# Execute checkpointed rendering","
                 "render_with_checkpoints()",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
 class BlenderCompositor:
@@ -415,7 +458,9 @@ class BlenderCompositor:
             "/usr/local/bin/blender",  # Linux
             "C:\\\\Program Files\\\\Blender Foundation\\\\Blender\\\\blender.exe",  # Windows
             "blender",  # In PATH
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for path in possible_paths:
             if shutil.which(path) or Path(path).exists():
@@ -432,7 +477,9 @@ class BlenderCompositor:
                     capture_output = True,
                     text = True,
                     timeout = 10,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if result.returncode == 0 and "Blender" in result.stdout:
                 self.logger.info(f"Blender found: {result.stdout.split()[1]}")
@@ -453,7 +500,8 @@ class BlenderCompositor:
             job_id: Optional[str] = None,
             config: Optional[RenderConfig] = None,
             mode: CompositeMode = CompositeMode.FULL_COMPOSITE,
-            ) -> RenderJob:
+# BRACKET_SURGEON: disabled
+#             ) -> RenderJob:
         """Create a new composite job."""
         if job_id is None:
             job_id = f"composite_{int(time.time())}_{len(self.active_jobs)}"
@@ -481,9 +529,13 @@ class BlenderCompositor:
                     "layer_count": len(layers),
                     "estimated_frames": (
                     config.frame_end - config.frame_start + 1 if config else 250
-                ),
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Composite job created: {job_id}")
@@ -552,13 +604,17 @@ class BlenderCompositor:
                 "--factory - startup",  # Start with factory settings
                 "--python",
                     script_path,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             # Add memory limit if specified
             if job.config.max_memory_gb > 0:
                 cmd.extend(
                     ["--", "--memory", str(int(job.config.max_memory_gb * 1024))]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             self.logger.info(f"Executing Blender: {' '.join(cmd)}")
 
@@ -569,7 +625,9 @@ class BlenderCompositor:
                     stderr = subprocess.PIPE,
                     text = True,
                     cwd = str(self.temp_dir),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Monitor progress
             self._monitor_render_progress(job, process)
@@ -593,7 +651,8 @@ class BlenderCompositor:
 
     def _monitor_render_progress(
         self, job: RenderJob, process: subprocess.Popen
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Monitor render progress and update job status."""
 
 
@@ -610,7 +669,9 @@ class BlenderCompositor:
 
                         current_frame = checkpoint.get(
                             "last_frame", job.config.frame_start
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         job.current_frame = current_frame
                         job.progress = min(90.0, (current_frame/total_frames) * 90.0)
 
@@ -633,7 +694,9 @@ class BlenderCompositor:
         for frame in range(job.config.frame_start, job.config.frame_end + 1):
             frame_file = (
                 output_dir/f"{base_name}_{frame:04d}.{job.config.output_format.lower()}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if frame_file.exists():
                 rendered_frames.append(frame)
 
@@ -650,7 +713,9 @@ class BlenderCompositor:
         if job.status not in ["failed", "paused"]:
             self.logger.warning(
                 f"Job {job_id} is not in a resumable state: {job.status}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return False
 
         self.logger.info(f"Resuming job: {job_id}")
@@ -712,7 +777,8 @@ class BlenderCompositor:
             background_image: str,
             output_path: str,
             effects: Optional[List[str]] = None,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Convenience method to create avatar composite."""
         layers = [
             CompositeLayer(
@@ -721,15 +787,19 @@ class BlenderCompositor:
                     source_path = background_image,
                     blend_mode="ALPHA_OVER",
                     opacity = 1.0,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 CompositeLayer(
                 name="avatar",
                     type="video",
                     source_path = avatar_video,
                     blend_mode="ALPHA_OVER",
                     opacity = 1.0,
-                    ),
-                ]
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Add effect layers if specified
         if effects:
@@ -742,12 +812,17 @@ class BlenderCompositor:
                                 "image"
                                 if effect.lower().endswith((".png", ".jpg", ".jpeg"))
                                 else "video"
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                                 source_path = effect,
                                 blend_mode="SCREEN",
                                 opacity = 0.5,
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         config = RenderConfig(
             engine = RenderEngine.EEVEE,
@@ -755,21 +830,27 @@ class BlenderCompositor:
                 resolution_x = 1920,
                 resolution_y = 1080,
                 fps = 24,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         job = self.create_composite_job(
             layers = layers,
                 output_path = output_path,
                 config = config,
                 mode = CompositeMode.AVATAR_BACKGROUND,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if self.process_job(job.job_id):
             return job.job_id
         else:
             raise RuntimeError(
                 f"Failed to create avatar composite: {job.error_message}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 # Example usage and testing
 if __name__ == "__main__":
@@ -787,7 +868,9 @@ if __name__ == "__main__":
                 background_image="./assets/office_background.jpg",
                 output_path="./output/final_composite",
                 effects=["./assets/particle_effect.mp4"],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         print(f"Avatar composite job created: {job_id}")
 

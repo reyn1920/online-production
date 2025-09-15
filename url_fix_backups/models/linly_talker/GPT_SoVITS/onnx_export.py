@@ -23,7 +23,8 @@ def spectrogram_torch(y, n_fft, sampling_rate, hop_size, win_size, center=False)
         y.unsqueeze(1),
         (int((n_fft - hop_size) / 2), int((n_fft - hop_size) / 2)),
         mode="reflect",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     y = y.squeeze(1)
     spec = torch.stft(
         y,
@@ -36,7 +37,8 @@ def spectrogram_torch(y, n_fft, sampling_rate, hop_size, win_size, center=False)
         normalized=False,
         onesided=True,
         return_complex=False,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     spec = torch.sqrt(spec.pow(2).sum(-1) + 1e-6)
     return spec
 
@@ -126,7 +128,8 @@ class T2SModel(nn.Module):
             if (
                 torch.argmax(logits, dim=-1)[0] == self.t2s_model.EOS
                 or samples[0, 0] == self.t2s_model.EOS
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 stop = True
             if stop:
                 break
@@ -143,7 +146,8 @@ class T2SModel(nn.Module):
         ssl_content,
         project_name,
         dynamo=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         # self.onnx_encoder = torch.jit.script(self.onnx_encoder)
         if dynamo:
             export_options = torch.onnx.ExportOptions(dynamic_shapes=True)
@@ -151,7 +155,8 @@ class T2SModel(nn.Module):
                 self.onnx_encoder,
                 (ref_seq, text_seq, ref_bert, text_bert, ssl_content),
                 export_options=export_options,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             onnx_encoder_export_output.save(f"onnx/{project_name}/{project_name}_t2s_encoder.onnx")
             return
         torch.onnx.export(
@@ -166,9 +171,11 @@ class T2SModel(nn.Module):
                 "ref_bert": [0],
                 "text_bert": [0],
                 "ssl_content": [2],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             opset_version=16,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         x, prompts = self.onnx_encoder(ref_seq, text_seq, ref_bert, text_bert, ssl_content)
         torch.exp
         torch.onnx.export(
@@ -180,10 +187,12 @@ class T2SModel(nn.Module):
             dynamic_axes={
                 "x": [1],
                 "prompts": [1],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             verbose=True,
             opset_version=16,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         y, k, v, y_emb, x_example = self.first_stage_decoder(x, prompts)
 
         torch.onnx.export(
@@ -198,10 +207,12 @@ class T2SModel(nn.Module):
                 "iv": [1],
                 "iy_emb": [1],
                 "ix_example": [1],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             verbose=True,
             opset_version=16,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 class VitsModel(nn.Module):
@@ -216,7 +227,8 @@ class VitsModel(nn.Module):
             self.hps.train.segment_size // self.hps.data.hop_length,
             n_speakers=self.hps.data.n_speakers,
             **self.hps.model,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.vq_model.eval()
         self.vq_model.load_state_dict(dict_s2["weight"], strict=False)
 
@@ -228,7 +240,8 @@ class VitsModel(nn.Module):
             self.hps.data.hop_length,
             self.hps.data.win_length,
             center=False,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return self.vq_model(pred_semantic, text_seq, refer)[0, 0]
 
 
@@ -251,7 +264,8 @@ class GptSoVits(nn.Module):
         ref_audio,
         ssl_content,
         project_name,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.t2s.export(ref_seq, text_seq, ref_bert, text_bert, ssl_content, project_name)
         pred_semantic = self.t2s(ref_seq, text_seq, ref_bert, text_bert, ssl_content)
         torch.onnx.export(
@@ -264,9 +278,11 @@ class GptSoVits(nn.Module):
                 "text_seq": [1],
                 "pred_semantic": [2],
                 "ref_audio": [1],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             opset_version=17,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 class SSLModel(nn.Module):
@@ -300,13 +316,18 @@ def export(vits_path, gpt_path, project_name):
                     "ai2",
                     "y",
                     "e4",
-                ]
-            )
-        ]
-    )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     )
     text_seq = torch.LongTensor(
         [cleaned_text_to_sequence(["w", "o3", "sh", "i4", "b", "ai2", "y", "e4"])]
-    )
+# BRACKET_SURGEON: disabled
+#     )
     ref_bert = torch.randn((ref_seq.shape[1], 1024)).float()
     text_bert = torch.randn((text_seq.shape[1], 1024)).float()
     ref_audio = torch.randn((1, 48000 * 5)).float()
@@ -328,13 +349,15 @@ def export(vits_path, gpt_path, project_name):
         .detach()
         .cpu()
         .numpy()
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # soundfile.write("out.wav", a, vits.hps.data.sampling_rate)
 
     gpt_sovits.export(
         ref_seq, text_seq, ref_bert, text_bert, ref_audio_sr, ssl_content, project_name
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     MoeVSConf = {
         "Folder": f"{project_name}",
@@ -347,7 +370,8 @@ def export(vits_path, gpt_path, project_name):
         "BertPath": "chinese - roberta - wwm - ext - large",
         "Symbol": symbols,
         "AddBlank": False,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     MoeVSConfJson = json.dumps(MoeVSConf)
     with open(f"onnx/{project_name}.json", "w") as MoeVsConfFile:

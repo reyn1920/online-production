@@ -91,7 +91,8 @@ class BaseMonetizationAPI(ABC):
             total=3,
             backoff_factor=1,
             status_forcelist=[429, 500, 502, 503, 504],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         adapter = HTTPAdapter(max_retries=retry_strategy)
         session.mount("http://", adapter)
@@ -118,7 +119,8 @@ class BaseMonetizationAPI(ABC):
         data: Optional[Dict] = None,
         params: Optional[Dict] = None,
         headers: Optional[Dict] = None,
-    ) -> requests.Response:
+# BRACKET_SURGEON: disabled
+#     ) -> requests.Response:
         """Make an authenticated API request with rate limiting."""
         self._enforce_rate_limit()
 
@@ -137,7 +139,8 @@ class BaseMonetizationAPI(ABC):
                 params=params,
                 headers=request_headers,
                 timeout=30,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 429:
                 raise RateLimitError("Rate limit exceeded")
@@ -156,7 +159,8 @@ class BaseMonetizationAPI(ABC):
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
             "User-Agent": "TRAE-AI-Monetization/1.0",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     @abstractmethod
     def create_product(self, product: Product) -> ProductResponse:
@@ -209,4 +213,5 @@ class BaseMonetizationAPI(ABC):
             "rate_limit": self.rate_limit,
             "last_request_time": self.last_request_time,
             "platform": self.get_platform_name(),
-        }
+# BRACKET_SURGEON: disabled
+#         }

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""
+""""""
 News Monitoring Service Startup Script
 
 This script starts the news - driven content trigger service that continuously
 monitors political RSS feeds and automatically triggers Right Perspective video
 content creation.
-"""
+""""""
 
 import asyncio
 import logging
@@ -76,7 +76,8 @@ class NewsMonitoringService:
                 "recent_triggers": pending_triggers[:5],  # Show last 5 triggers
                 "monitoring_interval": self.trigger_service.monitoring_interval,
                 "urgency_threshold": self.trigger_service.urgency_threshold,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             logger.error(f"Error getting service status: {e}")
             return {"status": "error", "message": str(e)}
@@ -103,8 +104,10 @@ if __name__ == "__main__":
         handlers=[
             logging.FileHandler("logs/news_monitoring.log"),
             logging.StreamHandler(sys.stdout),
-        ],
-    )
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     )
 
     # Ensure logs directory exists
     Path("logs").mkdir(exist_ok=True)

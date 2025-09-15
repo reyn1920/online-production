@@ -60,7 +60,8 @@ clients = {
     "linkedin": LinkedInClient.from_env(),
     "pinterest": PinterestClient.from_env(),
     "reddit": RedditClient.from_env(),
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 @router.get("/status")
@@ -71,7 +72,8 @@ async def get_provider_status():
         status[platform] = {
             "ready": client.ready(),
             "status": "🟢 Ready" if client.ready() else "🔴 Not Configured",
-        }
+# BRACKET_SURGEON: disabled
+#         }
     return status
 
 
@@ -109,14 +111,16 @@ async def post_content(request: PostRequest):
                     request.content,
                     request.media_url,
                     request.extra.get("board_id", ""),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 result = {"ok": False, "error": "Pinterest requires media_url"}
         elif platform == "reddit":
             subreddit = request.extra.get("subreddit", "test")
             result = client.submit_post(
                 subreddit, request.content[:300], request.content, request.media_url
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return {"platform": platform, "result": result}
 
@@ -143,7 +147,8 @@ async def schedule_post(request: ScheduleRequest):
         "extra": request.extra,
         "status": "scheduled",
         "created_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     schedule.append(scheduled_post)
     save_schedule(schedule)

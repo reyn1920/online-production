@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-09-11T06:41:22.902067",
+  "timestamp": "2025-09-15T08:04:56.467434",
   "project_root": "/Users/thomasbrianreynolds/online production",
   "readiness_check": {
-    "total_checks": 6,
-    "passed_checks": 5,
+    "total_checks": 7,
+    "passed_checks": 6,
     "failed_checks": 1,
-    "success_rate": 83.33
+    "success_rate": 85.71
   },
   "detailed_results": {
     "package_json": true,
@@ -13,7 +13,8 @@
     "github_workflow": true,
     "netlify_config": true,
     "environment_template": true,
-    "ai_integrations": true
+    "ai_integrations": true,
+    "github_secrets_info": true
   },
   "deployment_status": "NOT_READY",
   "next_steps": [

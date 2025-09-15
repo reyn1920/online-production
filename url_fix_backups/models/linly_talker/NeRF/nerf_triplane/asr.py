@@ -20,7 +20,9 @@ def _read_frame(stream, exit_event, queue, chunk):
         frame = stream.read(chunk, exception_on_overflow = False)
         frame = (
             np.frombuffer(frame, dtype = np.int16).astype(np.float32)/32767
-        )  # [chunk]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # [chunk]
         queue.put(frame)
 
 
@@ -49,7 +51,9 @@ class ASR:
         self.sample_rate = 16000
         self.chunk = (
             self.sample_rate // self.fps
-        )  # 320 samples per chunk (20ms * 16000 / 1000)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # 320 samples per chunk (20ms * 16000 / 1000)
         self.mode = "live" if opt.asr_wav == "" else "file"
 
         if "esperanto" in self.opt.asr_model:
@@ -73,7 +77,9 @@ class ASR:
         if self.stride_left_size > 0:
             self.frames.extend(
                 [np.zeros(self.chunk, dtype = np.float32)] * self.stride_left_size
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.exit_event = Event()
         self.audio_instance = pyaudio.PyAudio()
@@ -90,12 +96,16 @@ class ASR:
                     input = True,
                     output = False,
                     frames_per_buffer = self.chunk,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             self.queue = Queue()
             self.process_read_frame = Thread(
                 target = _read_frame,
                     args=(self.input_stream, self.exit_event, self.queue, self.chunk),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # play out the audio too...?
         if self.play:
@@ -106,7 +116,9 @@ class ASR:
                     input = False,
                     output = True,
                     frames_per_buffer = self.chunk,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             self.output_queue = Queue()
             self.process_play_frame = Thread(
                 target = _play_frame,
@@ -115,8 +127,11 @@ class ASR:
                         self.exit_event,
                         self.output_queue,
                         self.chunk,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # current location of audio
         self.idx = 0
@@ -139,7 +154,9 @@ class ASR:
                 self.audio_dim,
                 dtype = torch.float32,
                 device = self.device,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # TODO: hard coded 16 and 8 window size...
         self.front = self.feat_buffer_size * self.context_size - 8  # fake padding
@@ -147,7 +164,9 @@ class ASR:
         # attention window...
         self.att_feats = [
             torch.zeros(self.audio_dim, 16, dtype = torch.float32, device = self.device)
-        ] * 4  # 4 zero padding...
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ] * 4  # 4 zero padding...
 
         # warm up steps needed: mid + right + window_size + attention_size
         self.warm_up_steps = self.context_size + self.stride_right_size + 8 + 2 * 3
@@ -213,7 +232,9 @@ class ASR:
             else:
                 feat = torch.cat(
                     [self.feat_queue[self.front :], self.feat_queue[: self.tail]], dim = 0
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             self.front = (self.front + 2) % self.feat_queue.shape[0]
             self.tail = (self.tail + 2) % self.feat_queue.shape[0]
@@ -251,7 +272,8 @@ class ASR:
             if (
                 len(self.frames)
                 < self.stride_left_size + self.context_size + self.stride_right_size
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 return
 
         inputs = np.concatenate(self.frames)  # [N * chunk]
@@ -260,7 +282,9 @@ class ASR:
         if not self.terminated:
             self.frames = self.frames[
                 -(self.stride_left_size + self.stride_right_size) :
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
         logits, labels, text = self.frame_to_text(inputs)
         feats = logits  # better lips - sync than labels
@@ -291,19 +315,25 @@ class ASR:
                 padding = window_size // 2
                 feats = (
                     feats.view(-1, self.audio_dim).permute(1, 0).contiguous()
-                )  # [C, M]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )  # [C, M]
                 feats = feats.view(1, self.audio_dim, -1, 1)  # [1, C, M, 1]
                 unfold_feats = F.unfold(
                     feats,
                         kernel_size=(window_size, 1),
                         padding=(padding, 0),
                         stride=(2, 1),
-                        )  # [1, C * window_size, M / 2 + 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )  # [1, C * window_size, M / 2 + 1]
                 unfold_feats = (
                     unfold_feats.view(self.audio_dim, window_size, -1)
                     .permute(2, 1, 0)
                     .contiguous()
-                )  # [C, window_size, M / 2 + 1] --> [M / 2 + 1, window_size, C]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )  # [C, window_size, M / 2 + 1] --> [M / 2 + 1, window_size, C]
                 # print('[INFO] after unfold', unfold_feats.shape)
                 # save to a npy file
                 if "esperanto" in self.opt.asr_model:
@@ -326,10 +356,14 @@ class ASR:
         if sample_rate != self.sample_rate:
             print(
                 f"[WARN] audio sample rate is {sample_rate}, resampling into {self.sample_rate}."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             stream = resampy.resample(
                 x = stream, sr_orig = sample_rate, sr_new = self.sample_rate
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         print(f"[INFO] loaded audio stream {self.opt.asr_wav}: {stream.shape}")
 
@@ -352,8 +386,11 @@ class ASR:
             if (
                 audio.get_device_info_by_host_api_device_index(0, i).get(
                     "maxInputChannels"
-                )
-            ) > 0:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# BRACKET_SURGEON: disabled
+#             ) > 0:
                 name = audio.get_device_info_by_host_api_device_index(0, i).get("name")
                 print(f"[INFO] choose audio device {name}, id {i}")
                 break
@@ -366,7 +403,9 @@ class ASR:
                 rate = self.sample_rate,
                 input = True,
                 frames_per_buffer = self.chunk,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return audio, stream
 
@@ -397,7 +436,9 @@ class ASR:
 
         inputs = self.processor(
             frame, sampling_rate = self.sample_rate, return_tensors="pt", padding = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         with torch.no_grad():
             result = self.model(inputs.input_values.to(self.device))
@@ -407,7 +448,8 @@ class ASR:
         left = max(0, self.stride_left_size)
         right = min(
             logits.shape[1], logits.shape[1] - self.stride_right_size + 1
-        )  # +1 to make sure output is the same length as input.
+# BRACKET_SURGEON: disabled
+#         )  # +1 to make sure output is the same length as input.
 
         # do not cut right if terminated.
         if self.terminated:
@@ -454,7 +496,9 @@ class ASR:
 
         print(
             f"[INFO] warm up ASR live model, expected latency = {self.warm_up_steps / self.fps:.6f}s"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         t = time.time()
         for _ in range(self.warm_up_steps):
             self.run_step()
@@ -475,10 +519,14 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--model", type = str, default="cpierse / wav2vec2 - large - xlsr - 53 - esperanto"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     # parser.add_argument('--model',
     type = str,
-    default='facebook / wav2vec2 - large - 960h - lv60 - self')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     default='facebook / wav2vec2 - large - 960h - lv60 - self')
 
     parser.add_argument("--save_feats", action="store_true")
     # audio FPS

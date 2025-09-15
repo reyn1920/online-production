@@ -29,7 +29,8 @@ def init_alignment_model(model_name, half=False, device="cuda", model_rootpath=N
         progress=True,
         file_name=None,
         save_dir=model_rootpath,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     model.load_state_dict(torch.load(model_path, map_location=device)["state_dict"], strict=True)
     model.eval()
     model = model.to(device)
@@ -50,7 +51,8 @@ class KeypointExtractor:
         self.detector = init_alignment_model("awing_fan", device=device, model_rootpath=root_path)
         self.det_net = init_detection_model(
             "retinaface_resnet50", half=False, device=device, model_rootpath=root_path
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def extract_keypoint(self, images, name=None, info=True):
         if isinstance(images, list):
@@ -84,7 +86,8 @@ class KeypointExtractor:
                             int(bboxes[1]) : int(bboxes[3]),
                             int(bboxes[0]) : int(bboxes[2]),
                             :,
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
 
                         keypoints = landmark_98_to_68(self.detector.get_landmarks(img))  # [0]
 
@@ -148,7 +151,8 @@ if __name__ == "__main__":
     VIDEO_EXTENSIONS_LOWERCASE = {"mp4"}
     VIDEO_EXTENSIONS = VIDEO_EXTENSIONS_LOWERCASE.union(
         {f.upper() for f in VIDEO_EXTENSIONS_LOWERCASE}
-    )
+# BRACKET_SURGEON: disabled
+#     )
     extensions = VIDEO_EXTENSIONS
 
     for ext in extensions:

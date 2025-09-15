@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Database Connection Manager
+"""""""""
 
-This module provides database connection management \
-    and utilities for the TRAE.AI system.
+This module provides database connection management
+and utilities for the TRAE.AI system.
 It handles both SQLite (development) and PostgreSQL (production) database connections,
 connection pooling, and database initialization.
+
+
 
 Author: TRAE.AI System
 Version: 2.0.0
 Date: 2024
+
 """
 
 import os
@@ -35,19 +39,40 @@ logger = get_logger(__name__)
 
 
 class DatabaseError(Exception):
-    """Custom exception for database operations"""
+    """
+Custom exception for database operations
+
+
+   
+""""""
 
     pass
+   
 
-
+    
+   
+"""
 class DatabaseManager:
+   """
+    TODO: Add documentation
     """
+    
+   """
+
     Database connection manager for TRAE.AI system.
+   
 
-    Provides thread - safe database connections and utilities for SQLite operations.
+    
+   
+""""""
+
+    
+   
+
+    Provides thread-safe database connections and utilities for SQLite operations.
     Handles connection pooling and automatic database initialization.
-    """
-
+   
+""""""
     def __init__(self, db_path: str = "data/trae_master.db"):
         self.db_path = Path(db_path)
         self._local = threading.local()
@@ -55,9 +80,18 @@ class DatabaseManager:
         self._initialize_database()
 
     def _ensure_db_directory(self):
-        """Ensure the database directory exists"""
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        """
+Ensure the database directory exists
 
+       
+""""""
+
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+       
+
+        
+       
+"""
     def _initialize_database(self):
         """Initialize database with schema if needed"""
         try:
@@ -87,8 +121,8 @@ class DatabaseManager:
         else:
             # Fallback basic schema
             conn.executescript(
-                """
-                CREATE TABLE IF NOT EXISTS task_queue (
+               """
+CREATE TABLE IF NOT EXISTS task_queue (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         task_id TEXT UNIQUE NOT NULL,
                         task_type TEXT NOT NULL DEFAULT 'system',
@@ -104,17 +138,30 @@ class DatabaseManager:
                         completed_at TIMESTAMP,
                         retry_count INTEGER DEFAULT 0,
                         max_retries INTEGER DEFAULT 3
-                );
 
+#                 );
+""""""
                 CREATE INDEX IF NOT EXISTS idx_task_status ON task_queue(status);
                 CREATE INDEX IF NOT EXISTS idx_task_type ON task_queue(task_type);
                 CREATE INDEX IF NOT EXISTS idx_agent_id ON task_queue(agent_id);
-            """
+           """"""
+            
+           """
+
             )
+           
+
+            
+           
+""""""
+
+            
+           
 
     @contextmanager
     def get_connection(self):
-        """Get a database connection with automatic cleanup"""
+        
+"""Get a database connection with automatic cleanup"""
         conn = None
         try:
             conn = sqlite3.connect(str(self.db_path), timeout=30.0)
@@ -131,30 +178,104 @@ class DatabaseManager:
                 conn.close()
 
     def execute_query(self, query: str, params: tuple = ()) -> List[Dict[str, Any]]:
-        """Execute a SELECT query and return results"""
+        """
+Execute a SELECT query and return results
+
+        
+"""
         with self.get_connection() as conn:
+        """
+
             cursor = conn.execute(query, params)
+        
+
+        with self.get_connection() as conn:
+        
+""""""
+
+        
+       
+
+            
+"""
+            return [dict(row) for row in cursor.fetchall()]
+            """"""
+            """
+
+
             return [dict(row) for row in cursor.fetchall()]
 
+            
+
+           
+""""""
+
     def execute_update(self, query: str, params: tuple = ()) -> int:
-        """Execute an INSERT/UPDATE/DELETE query and return affected rows"""
+        
+Execute an INSERT/UPDATE/DELETE query and return affected rows
+""""""
+
         with self.get_connection() as conn:
+        
+
             cursor = conn.execute(query, params)
             conn.commit()
+        
+"""
+        with self.get_connection() as conn:
+        """"""
+            """
+
+            return cursor.rowcount
+            
+
+           
+""""""
+
+            
+
+
             return cursor.rowcount
 
+            
+""""""
+
+            
+           
+
     def execute_script(self, script: str) -> None:
-        """Execute a SQL script"""
+        
+"""Execute a SQL script"""
+
         with self.get_connection() as conn:
             conn.executescript(script)
-            conn.commit()
+           
 
+            
+           
+"""
+            conn.commit()
+           """"""
+
+            
+
+           """
+
+            conn.commit()
+           
+
+            
+           
+""""""
 
 # Initialize appropriate database manager based on environment
 
 
+
+
 def _get_database_manager():
-    """Get the appropriate database manager based on DATABASE_URL"""
+    
+"""Get the appropriate database manager based on DATABASE_URL"""
     database_url = os.getenv("DATABASE_URL", "data/trae_master.db")
 
     # Use production manager for PostgreSQL URLs or when explicitly requested
@@ -178,12 +299,27 @@ db_manager = _get_database_manager()
 
 
 def get_db_connection():
-    """Get database connection context manager"""
+    """
+Get database connection context manager
+
+    
+"""
+    return db_manager.get_connection()
+    """"""
+    """
+
+
     return db_manager.get_connection()
 
+    
+
+   
+""""""
 
 def get_db_session():
-    """Get SQLAlchemy session context manager (production only)"""
+        """
+        Get SQLAlchemy session context manager (production only)
+        """
     if hasattr(db_manager, "get_session"):
         return db_manager.get_session()
     else:
@@ -193,17 +329,48 @@ def get_db_session():
 
 
 def execute_query(query: str, params: tuple = ()) -> List[Dict[str, Any]]:
-    """Execute a SELECT query"""
+    """
+Execute a SELECT query
+
+    
+"""
+    return db_manager.execute_query(query, params)
+    """"""
+    """
+
+
     return db_manager.execute_query(query, params)
 
+    
+
+   
+""""""
 
 def execute_update(query: str, params: tuple = ()) -> int:
-    """Execute an INSERT/UPDATE/DELETE query"""
+    
+Execute an INSERT/UPDATE/DELETE query
+""""""
+
+    return db_manager.execute_update(query, params)
+    
+
+   
+""""""
+
+    
+
+
     return db_manager.execute_update(query, params)
 
+    
+""""""
+
+    
+   
 
 def database_health_check() -> Dict[str, Any]:
-    """Perform database health check"""
+    
+"""Perform database health check"""
     if hasattr(db_manager, "health_check"):
         return db_manager.health_check()
     else:

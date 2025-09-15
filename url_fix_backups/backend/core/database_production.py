@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Production Database Connection Manager
 
 This module provides database connection management for both development (SQLite)
@@ -9,7 +9,7 @@ and uses the appropriate database configuration.
 Author: TRAE.AI System
 Version: 2.0.0
 Date: 2024
-"""
+""""""
 
 import logging
 import os
@@ -56,19 +56,21 @@ class DatabaseError(Exception):
 
 
 class ProductionDatabaseManager:
-    """
+    """"""
     Production - ready database connection manager for TRAE.AI system.
 
-    Supports both SQLite (development) and PostgreSQL (production) based on
+    Supports both SQLite (development) and PostgreSQL (production) based on:
     the DATABASE_URL environment variable. Provides connection pooling,
         automatic failover, and environment - specific optimizations.
-    """
+    """"""
 
 
     def __init__(self, database_url: Optional[str] = None):
         self.database_url = database_url or os.getenv(
             "DATABASE_URL", "sqlite:///data / trae_master.db"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self._local = threading.local()
         self._connection_pool = None
         self._engine = None
@@ -100,7 +102,9 @@ class ProductionDatabaseManager:
         if not POSTGRES_AVAILABLE:
             raise DatabaseError(
                 "PostgreSQL dependencies not installed. Run: pip install psycopg2 - binary"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         try:
             # Parse PostgreSQL URL
@@ -116,7 +120,9 @@ class ProductionDatabaseManager:
                 user = parsed.username,
                     password = parsed.password,
                     cursor_factory = RealDictCursor,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Initialize SQLAlchemy engine if available
             if SQLALCHEMY_AVAILABLE:
@@ -126,7 +132,9 @@ class ProductionDatabaseManager:
                         max_overflow = 20,
                         pool_pre_ping = True,
                         pool_recycle = 3600,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self._session_factory = sessionmaker(bind = self._engine)
 
             logger.info("PostgreSQL connection pool initialized")
@@ -154,7 +162,9 @@ class ProductionDatabaseManager:
                     poolclass = StaticPool,
                     connect_args={"check_same_thread": False, "timeout": 30},
                     echo = False,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             self._session_factory = sessionmaker(bind = self._engine)
 
         # Initialize database schema
@@ -179,11 +189,15 @@ class ProductionDatabaseManager:
                 if self.db_type == "sqlite":
                     cursor = conn.execute(
                         "SELECT name FROM sqlite_master WHERE type='table' AND name='task_queue'"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     cursor = conn.execute(
                         "SELECT table_name FROM information_schema.tables WHERE table_name='task_queue'"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 if not cursor.fetchone():
                     logger.info("Initializing database schema")
@@ -207,7 +221,9 @@ class ProductionDatabaseManager:
                 # For PostgreSQL, execute statements individually
                 statements = [
                     stmt.strip() for stmt in schema_sql.split(";") if stmt.strip()
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
                 for stmt in statements:
                     if stmt and not stmt.startswith("--"):
                         conn.execute(stmt)
@@ -219,7 +235,7 @@ class ProductionDatabaseManager:
     def _create_fallback_schema(self, conn):
         """Create basic fallback schema"""
         if self.db_type == "sqlite":
-            schema_sql = """
+            schema_sql = """"""
                 CREATE TABLE IF NOT EXISTS task_queue (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         task_id TEXT UNIQUE NOT NULL,
@@ -236,17 +252,18 @@ class ProductionDatabaseManager:
                         completed_at TIMESTAMP,
                         retry_count INTEGER DEFAULT 0,
                         max_retries INTEGER DEFAULT 3
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE INDEX IF NOT EXISTS idx_task_status ON task_queue(status);
                 CREATE INDEX IF NOT EXISTS idx_task_type ON task_queue(task_type);
                 CREATE INDEX IF NOT EXISTS idx_agent_id ON task_queue(agent_id);
-            """
+            """"""
             conn.executescript(schema_sql)
         else:
             # PostgreSQL schema
             schema_statements = [
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS task_queue (
                     id SERIAL PRIMARY KEY,
                         task_id VARCHAR(255) UNIQUE NOT NULL,
@@ -263,12 +280,16 @@ class ProductionDatabaseManager:
                         completed_at TIMESTAMP,
                         retry_count INTEGER DEFAULT 0,
                         max_retries INTEGER DEFAULT 3
-                )
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+                ""","""
                     "CREATE INDEX IF NOT EXISTS idx_task_status ON task_queue(status)",
                     "CREATE INDEX IF NOT EXISTS idx_task_type ON task_queue(task_type)",
                     "CREATE INDEX IF NOT EXISTS idx_agent_id ON task_queue(agent_id)",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             for stmt in schema_statements:
                 conn.execute(stmt)
@@ -360,7 +381,9 @@ class ProductionDatabaseManager:
             if self.db_type == "postgresql":
                 statements = [
                     stmt.strip() for stmt in script.split(";") if stmt.strip()
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
                 cursor = conn.cursor()
                 for stmt in statements:
                     if stmt and not stmt.startswith("--"):
@@ -387,16 +410,19 @@ class ProductionDatabaseManager:
                         self.database_url.split("@")[0] + "@***"
                         if "@" in self.database_url
                         else "local"
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "timestamp": str(threading.current_thread().ident),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
         except Exception as e:
             return {
                 "status": "unhealthy",
                     "error": str(e),
                     "database_type": self.db_type,
                     "timestamp": str(threading.current_thread().ident),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def close(self):

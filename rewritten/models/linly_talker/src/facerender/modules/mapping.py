@@ -11,13 +11,15 @@ class MappingNet(nn.Module):
 
         self.first = nn.Sequential(
             torch.nn.Conv1d(coeff_nc, descriptor_nc, kernel_size=7, padding=0, bias=True)
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         for i in range(layer):
             net = nn.Sequential(
                 nonlinearity,
                 torch.nn.Conv1d(descriptor_nc, descriptor_nc, kernel_size=3, padding=0, dilation=3),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             setattr(self, "encoder" + str(i), net)
 
         self.pooling = nn.AdaptiveAvgPool1d(1)

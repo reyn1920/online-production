@@ -6,7 +6,7 @@ from web_search import web_search
 
 
 def ai_debug_sqlite_error(error_msg, num_results = 3):
-    """
+    """"""
     AI - powered SQLite error debugging using web search and Ollama.
 
     Args:
@@ -15,7 +15,7 @@ def ai_debug_sqlite_error(error_msg, num_results = 3):
 
     Returns:
         str: AI - generated fix suggestion
-    """
+    """"""
     print(f"🔍 Analyzing SQLite error: {error_msg}")
 
     # Search the web for solutions
@@ -26,8 +26,8 @@ def ai_debug_sqlite_error(error_msg, num_results = 3):
     context = f"Error:\\n{error_msg}\\n\\nWeb Results:\\n" + "\\n".join(results)
 
     # Enhanced prompt for better AI analysis
-    prompt = f"""You are a SQLite database expert. Analyze this error \
-    and provide a specific, actionable fix.
+    prompt = f"""You are a SQLite database expert. Analyze this error \"""
+#     and provide a specific, actionable fix.
 
 {context}
 
@@ -36,7 +36,7 @@ Provide:
 2. Exact SQL command to fix the issue
 3. Prevention tips for the future
 
-Be concise and practical."""
+Be concise and practical.""""""
 
     print("🤖 Asking CodeLlama for expert analysis...")
     fix = ask_ollama("codellama:latest", prompt)
@@ -45,9 +45,9 @@ Be concise and practical."""
 
 
 def auto_debug_with_ai():
-    """
+    """"""
     Demonstration of the AI debugging workflow.
-    """
+    """"""
     # Example SQLite error
         error_msg = "sqlite3.OperationalError: no such column: search_keywords"
 

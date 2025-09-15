@@ -1,17 +1,27 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI Task Queue Manager
-
+""""""
 This module provides the TaskQueueManager class for managing database - backed task queues
 within the TRAE.AI system. It handles task creation, retrieval, status updates, and
 queue management operations.
+"""
+
+TRAE.AI Task Queue Manager
+
+
+
+""""""
 
 The TaskQueueManager integrates with the SQLite database schema defined in schema.sql
 and provides a robust interface for task orchestration across the agentic framework.
 
+
+
 Author: TRAE.AI System
 Version: 1.0.0
 Date: 2024
+
 """
 
 import asyncio
@@ -80,40 +90,89 @@ class TaskType(Enum):
 
 
 class TaskQueueError(Exception):
-    """Custom exception for task queue operations."""
+    """
+Custom exception for task queue operations.
+
+
+   
+""""""
 
     pass
+   
 
-
+    
+   
+"""
 class TaskQueueManager:
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
+   
+
+    
+   
+"""
     TaskQueueManager handles all database - backed task queue operations.
+   """"""
+    
+   """
 
     This class provides a comprehensive interface for managing tasks within the TRAE.AI
     system, including task creation, retrieval, status updates, and queue management.
 
+   
+
+
+    
+
+   
+"""
     Features:
+
+   """
+
+
+    
+
+   
+
     - Database - backed task persistence
     - Task priority and status management
     - Agent assignment and tracking
     - Performance monitoring
     - Error handling and retry logic
     - Task dependencies and scheduling
-    """
-
+   
+""""""
     @staticmethod
     def _serialize_safe(obj: Any) -> str:
-        """
+        """"""
+
         Safely serialize objects to JSON, handling coroutines \
-    and other non - serializable types.
+
+
+#     and other non - serializable types.
+
+"""
 
         Args:
             obj: Object to serialize
+"""
+
+#     and other non - serializable types.
+
+
 
         Returns:
             str: JSON string representation
-        """
-
+       
+""""""
         def _convert_obj(item):
             if inspect.iscoroutine(item):
                 return f"<coroutine: {item.__name__ if hasattr(item, '__name__') else str(type(item))}>"
@@ -144,18 +203,44 @@ class TaskQueueManager:
         self,
         db_path: str = "data/trae_master.db",
         secret_store: Optional[SecretStore] = None,
-    ):
-        """
+#     ):
+        """"""
+
+       
+
+        
+       
+"""
         Initialize the TaskQueueManager.
+       """
+
+        
+       
 
         Args:
             db_path: Path to the SQLite database file
             secret_store: Optional SecretStore instance for secure operations
-        """
+       
+""""""
+
         self.db_path = Path(db_path)
         self.secret_store = secret_store
-        self.logger = get_logger(__name__)
+       
 
+        
+       
+"""
+        self.logger = get_logger(__name__)
+       """"""
+        
+       """
+
+        Initialize the TaskQueueManager.
+       
+
+        
+       
+"""
         # Ensure database directory exists
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -165,27 +250,81 @@ class TaskQueueManager:
         self.logger.info(f"TaskQueueManager initialized with database: {self.db_path}")
 
     def _initialize_database(self) -> None:
-        """
-        Initialize the database with required tables if they don't exist.
+       """
+
+        
+       
+
+    TODO: Add documentation
+   
+""""""
+
+       
+
+        
+       
+"""
+        Initialize the database with required tables if they don't exist.'
+       """"""
+        
+       """
 
         This method ensures the task_queue table exists with the proper schema.
-        """
+       
+
+        
+       
+"""
         try:
+            """
+
             with self._get_db_connection() as conn:
+            
+
+               
+""""""
+
                 cursor = conn.cursor()
+               
+
+                
+               
+""""""
+
+            with self._get_db_connection() as conn:
+            
+
+           
+""""""
 
                 # Check if task_queue table exists
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT name FROM sqlite_master
                     WHERE type='table' AND name='task_queue'
+                """"""
+
+                
+
+                 
+                
+"""
+                 )
                 """
-                )
+
+                 
+                
 
                 if not cursor.fetchone():
                     # Create task_queue table based on schema.sql
                     cursor.execute(
-                        """
+                        
+""""""
+
                         CREATE TABLE task_queue (
                             id TEXT PRIMARY KEY,
                                 task_type TEXT NOT NULL,
@@ -204,64 +343,151 @@ class TaskQueueManager:
                                 completed_at TIMESTAMP,
                                 dependencies TEXT,
                                 metadata TEXT
-                        )
-                    """
-                    )
+                         )
+                   
+
+                    
+                   
+""""""
+
+                     
+                    
+
+                     )
+                    
+""""""
 
                     # Create indexes for performance
                     cursor.execute(
-                        """
-                        CREATE INDEX idx_task_queue_status ON task_queue(status)
-                    """
-                    )
-                    cursor.execute(
-                        """
-                        CREATE INDEX idx_task_queue_priority ON task_queue(priority)
-                    """
-                    )
-                    cursor.execute(
-                        """
-                        CREATE INDEX idx_task_queue_type ON task_queue(task_type)
-                    """
-                    )
-                    cursor.execute(
-                        """
-                        CREATE INDEX idx_task_queue_agent ON task_queue(assigned_agent)
-                    """
-                    )
-                    cursor.execute(
-                        """
-                        CREATE INDEX idx_task_queue_created ON task_queue(created_at)
-                    """
-                    )
+                       
 
+                        
+                       
+"""
+                        CREATE INDEX idx_task_queue_status ON task_queue(status)
+                    """"""
+
+                     )
+                    cursor.execute(
+                       
+
+                        
+                       
+"""
+                        CREATE INDEX idx_task_queue_priority ON task_queue(priority)
+                    """"""
+
+                     )
+                    cursor.execute(
+                       
+
+                        
+                       
+"""
+                        CREATE INDEX idx_task_queue_type ON task_queue(task_type)
+                    """"""
+
+                     )
+                    cursor.execute(
+                       
+
+                        
+                       
+"""
+                        CREATE INDEX idx_task_queue_agent ON task_queue(assigned_agent)
+                    """"""
+
+                     )
+                    cursor.execute(
+                       
+
+                        
+                       
+"""
+                        CREATE INDEX idx_task_queue_created ON task_queue(created_at)
+                    """"""
+
+                    
+
+                     
+                    
+"""
+                     )
+                    """"""
+                     
+                    """
+
+                     )
+                    
+
+                     
+                    
+"""
                     # Create trigger for updated_at
                     cursor.execute(
-                        """
+                       """
+
+                        
+                       
+
                         CREATE TRIGGER update_task_queue_timestamp
                         AFTER UPDATE ON task_queue
                         BEGIN
                             UPDATE task_queue SET updated_at = CURRENT_TIMESTAMP
                             WHERE id = NEW.id;
                         END
-                    """
-                    )
+                    
+""""""
 
+                    
+
+                     
+                    
+"""
+                     )
+                    """"""
                     conn.commit()
                     self.logger.info("Task queue table created successfully")
+                    """
 
+                     
+                    
+
+                     )
+                    
+""""""
         except sqlite3.Error as e:
             self.logger.error(f"Database initialization failed: {e}")
             raise TaskQueueError(f"Failed to initialize database: {e}")
 
     @contextmanager
     def _get_db_connection(self):
-        """
+       """
+
+        
+       
+
+    TODO: Add documentation
+   
+""""""
+
+       
+
+        
+       
+"""
         Get a database connection with proper error handling.
+       """"""
+        
+       """
 
         Yields:
             sqlite3.Connection: Database connection
-        """
+       
+
+        
+       
+"""
         conn = None
         try:
             conn = sqlite3.connect(str(self.db_path), timeout=30.0)
@@ -287,9 +513,19 @@ class TaskQueueManager:
         dependencies: Optional[List[str]] = None,
         metadata: Optional[Dict[str, Any]] = None,
         max_retries: int = 3,
-    ) -> str:
-        """
+#     ) -> str:
+        """"""
+
+       
+
+        
+       
+"""
         Add a new task to the queue.
+       """
+
+        
+       
 
         Args:
             task_type: Type of task (system, research, content, etc.)
@@ -300,16 +536,40 @@ class TaskQueueManager:
             dependencies: Optional list of task IDs this task depends on
             metadata: Optional additional metadata
             max_retries: Maximum number of retry attempts
+       
+""""""
 
+        Add a new task to the queue.
+       
+
+        
+       
+"""
         Returns:
             str: Unique task ID
 
         Raises:
             TaskQueueError: If task creation fails
-        """
-        task_id = str(uuid.uuid4())
+       """"""
+        
+       """
 
+        task_id = str(uuid.uuid4())
+       
+
+        
+       
+"""
         # Convert enums to strings if necessary
+       """
+
+        
+       
+
+        task_id = str(uuid.uuid4())
+       
+""""""
+
         if isinstance(task_type, TaskType):
             task_type = task_type.value
         if isinstance(priority, TaskPriority):
@@ -320,12 +580,18 @@ class TaskQueueManager:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT INTO task_queue (
                         id, task_type, priority, payload, assigned_agent,
                             scheduled_at, dependencies, metadata, max_retries
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                """
+,
+
                     (
                         task_id,
                         task_type,
@@ -336,14 +602,28 @@ class TaskQueueManager:
                         self._serialize_safe(dependencies) if dependencies else None,
                         self._serialize_safe(metadata) if metadata else None,
                         max_retries,
-                    ),
-                )
+                     ),
+                
+""""""
 
+                 )
+                
+
+                 
+                
+"""
                 conn.commit()
+                """
 
+                 
+                
+
+                 )
+                
+""""""
                 self.logger.info(
                     f"Task {task_id} added to queue: type={task_type}, priority={priority}"
-                )
+                 )
 
                 return task_id
 
@@ -354,28 +634,77 @@ class TaskQueueManager:
     def get_next_task(
         self, agent_id: Optional[str] = None, task_types: Optional[List[str]] = None
     ) -> Optional[Dict[str, Any]]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Retrieve the next pending task from the queue.
+       """
+
+        
+       
 
         Args:
             agent_id: Optional agent ID to filter tasks
             task_types: Optional list of task types to filter
+       
+""""""
 
+        Retrieve the next pending task from the queue.
+       
+
+        
+       
+"""
         Returns:
             Dict containing task data or None if no tasks available
-        """
-        try:
-            with self._get_db_connection() as conn:
-                cursor = conn.cursor()
+       """
 
+        
+       
+
+        try:
+            
+"""
+            with self._get_db_connection() as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with self._get_db_connection() as conn:
+            """"""
                 # Build query with filters
-                query = """
+                """
+
+                query = 
+                
+
                     SELECT * FROM task_queue
                     WHERE status = 'pending'
                     AND (scheduled_at IS NULL OR scheduled_at <= ?)
-                """
-                params = [datetime.now().isoformat()]
+                
+""""""
 
+               
+
+                
+               
+"""
+                params = [datetime.now().isoformat()]
+               """"""
+
+                
+
+               """
+
+                params = [datetime.now().isoformat()]
+               
+
+                
+               
+"""
                 if agent_id:
                     query += " AND (assigned_agent IS NULL OR assigned_agent = ?)"
                     params.append(agent_id)
@@ -386,7 +715,8 @@ class TaskQueueManager:
                     params.extend(task_types)
 
                 # Order by priority and creation time
-                query += """
+                query += """"""
+
                     ORDER BY
                         CASE priority
                             WHEN 'urgent' THEN 1
@@ -396,11 +726,37 @@ class TaskQueueManager:
                         END,
                             created_at ASC
                     LIMIT 1
-                """
+               
+
+                
+               
+""""""
+
+
+                
+
+               
 
                 cursor.execute(query, params)
-                row = cursor.fetchone()
+               
+""""""
 
+               
+
+                
+               
+"""
+                row = cursor.fetchone()
+               """"""
+                
+               """
+
+                cursor.execute(query, params)
+               
+
+                
+               
+"""
                 if row:
                     task = dict(row)
 
@@ -409,7 +765,7 @@ class TaskQueueManager:
                     task["result"] = json.loads(task["result"]) if task["result"] else None
                     task["dependencies"] = (
                         json.loads(task["dependencies"]) if task["dependencies"] else []
-                    )
+                     )
                     task["metadata"] = json.loads(task["metadata"]) if task["metadata"] else {}
 
                     # Mark task as in_progress
@@ -425,16 +781,44 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to retrieve next task: {e}")
 
     async def get_task_for_agent(self, agent_id: str) -> Optional[Dict[str, Any]]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Get the next available task for a specific agent.
+       """
+
+        
+       
 
         Args:
             agent_id: The agent ID to get a task for
+       
+""""""
 
+        Get the next available task for a specific agent.
+       
+
+        
+       
+"""
         Returns:
             Dict containing task data or None if no tasks available
-        """
+       """"""
         return self.get_next_task(agent_id=agent_id)
+        """"""
+        """
+
+
+        return self.get_next_task(agent_id=agent_id)
+
+        
+
+       
+""""""
 
     def update_task_status(
         self,
@@ -443,9 +827,19 @@ class TaskQueueManager:
         agent_id: Optional[str] = None,
         result: Optional[Dict[str, Any]] = None,
         error_message: Optional[str] = None,
-    ) -> bool:
-        """
+#     ) -> bool:
+       
+
+        
+       
+""""""
+
+        
+       
+
         Update the status of a task.
+       
+""""""
 
         Args:
             task_id: Unique task identifier
@@ -453,15 +847,45 @@ class TaskQueueManager:
             agent_id: Optional agent ID for assignment
             result: Optional task result data
             error_message: Optional error message for failed tasks
+       
+
+        
+       
+"""
+        Update the status of a task.
+       """
+
+        
+       
 
         Returns:
             bool: True if update was successful
-        """
+       
+""""""
+
         if isinstance(status, TaskStatus):
+           
+
+            
+           
+"""
             status = status.value
+           """
+
+            
+           
 
         try:
             with self._get_db_connection() as conn:
+           
+""""""
+
+            status = status.value
+           
+
+            
+           
+"""
                 cursor = conn.cursor()
 
                 # Prepare update fields
@@ -487,7 +911,7 @@ class TaskQueueManager:
                     TaskStatus.COMPLETED.value,
                     TaskStatus.FAILED.value,
                     TaskStatus.CANCELLED.value,
-                ]:
+#                 ]:
                     update_fields.append("completed_at = CURRENT_TIMESTAMP")
 
                 params.append(task_id)
@@ -509,19 +933,46 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to update task status: {e}")
 
     def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Retrieve a specific task by ID.
+       """
+
+        
+       
 
         Args:
             task_id: Unique task identifier
+       
+""""""
 
+        Retrieve a specific task by ID.
+       
+
+        
+       
+"""
         Returns:
             Dict containing task data or None if not found
-        """
-        try:
-            with self._get_db_connection() as conn:
-                cursor = conn.cursor()
+       """
 
+        
+       
+
+        try:
+            
+"""
+            with self._get_db_connection() as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with self._get_db_connection() as conn:
+            """"""
                 cursor.execute("SELECT * FROM task_queue WHERE id = ?", (task_id,))
                 row = cursor.fetchone()
 
@@ -533,7 +984,7 @@ class TaskQueueManager:
                     task["result"] = json.loads(task["result"]) if task["result"] else None
                     task["dependencies"] = (
                         json.loads(task["dependencies"]) if task["dependencies"] else []
-                    )
+                     )
                     task["metadata"] = json.loads(task["metadata"]) if task["metadata"] else {}
 
                     return task
@@ -551,20 +1002,63 @@ class TaskQueueManager:
         task_types: Optional[List[str]] = None,
         limit: int = 100,
     ) -> List[Dict[str, Any]]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Retrieve pending tasks from the queue.
+       """
+
+        
+       
 
         Args:
             agent_id: Optional agent ID to filter tasks
             agent_type: Optional agent type to filter tasks
             task_types: Optional list of task types to filter
             limit: Maximum number of tasks to return
+       
+""""""
 
+        Retrieve pending tasks from the queue.
+       
+
+        
+       
+"""
         Returns:
             List of pending task dictionaries
-        """
+       """"""
+        
+       """
+
         # Use agent_type as agent_id if provided (for backward compatibility)
+       
+
+        
+       
+""""""
+
+        
+       
+
         effective_agent_id = agent_type if agent_type else agent_id
+       
+""""""
+
+       
+
+        
+       
+"""
+        # Use agent_type as agent_id if provided (for backward compatibility)
+       """
+
+        
+       
 
         return self.get_tasks(status=TaskStatus.PENDING, agent_id=effective_agent_id, limit=limit)
 
@@ -576,8 +1070,19 @@ class TaskQueueManager:
         limit: int = 100,
         offset: int = 0,
     ) -> List[Dict[str, Any]]:
-        """
+       
+""""""
+
+       
+
+        
+       
+"""
         Retrieve multiple tasks with optional filtering.
+       """
+
+        
+       
 
         Args:
             status: Optional status filter
@@ -585,14 +1090,31 @@ class TaskQueueManager:
             agent_id: Optional agent ID filter
             limit: Maximum number of tasks to return
             offset: Number of tasks to skip
+       
+""""""
 
+        Retrieve multiple tasks with optional filtering.
+       
+
+        
+       
+"""
         Returns:
             List of task dictionaries
-        """
-        try:
-            with self._get_db_connection() as conn:
-                cursor = conn.cursor()
+       """
 
+        
+       
+
+        try:
+            
+"""
+            with self._get_db_connection() as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with self._get_db_connection() as conn:
+            """"""
                 # Build query with filters
                 query = "SELECT * FROM task_queue WHERE 1 = 1"
                 params = []
@@ -628,7 +1150,7 @@ class TaskQueueManager:
                     task["result"] = json.loads(task["result"]) if task["result"] else None
                     task["dependencies"] = (
                         json.loads(task["dependencies"]) if task["dependencies"] else []
-                    )
+                     )
                     task["metadata"] = json.loads(task["metadata"]) if task["metadata"] else {}
 
                     tasks.append(task)
@@ -640,24 +1162,51 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to retrieve tasks: {e}")
 
     def retry_task(self, task_id: str) -> bool:
-        """
-        Retry a failed task if it hasn't exceeded max retries.
+        """"""
+
+       
+
+        
+       
+"""
+        Retry a failed task if it hasn't exceeded max retries.'
+       """
+
+        
+       
 
         Args:
             task_id: Unique task identifier
+       
+""""""
 
+        Retry a failed task if it hasn't exceeded max retries.'
+       
+
+        
+       
+"""
         Returns:
             bool: True if task was queued for retry
-        """
-        try:
-            with self._get_db_connection() as conn:
-                cursor = conn.cursor()
+       """
 
+        
+       
+
+        try:
+            
+"""
+            with self._get_db_connection() as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with self._get_db_connection() as conn:
+            """"""
                 # Get current task info
                 cursor.execute(
                     "SELECT retry_count, max_retries FROM task_queue WHERE id = ?",
                     (task_id,),
-                )
+                 )
                 row = cursor.fetchone()
 
                 if not row:
@@ -672,21 +1221,65 @@ class TaskQueueManager:
 
                 # Update task for retry
                 cursor.execute(
-                    """
+                    """"""
+
                     UPDATE task_queue
+                   
+
+                    
+                   
+"""
                     SET status = 'pending',
+                   """
+
+                    
+                   
+
                         retry_count = retry_count + 1,
+                   
+""""""
+
+                    SET status = 'pending',
+                   
+
+                    
+                   
+"""
                             error_message = NULL,
                             started_at = NULL,
                             completed_at = NULL,
                             updated_at = CURRENT_TIMESTAMP
                     WHERE id = ?
-                """,
+                """
+,
+
                     (task_id,),
-                )
+                
+""""""
+
+                 )
+                
+
+                 
+                
+""""""
+
+
+                
+
+               
 
                 conn.commit()
+               
+""""""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
                 if cursor.rowcount > 0:
                     self.logger.info(f"Task {task_id} queued for retry (attempt {retry_count + 1})")
                     return True
@@ -698,76 +1291,240 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to retry task: {e}")
 
     def cancel_task(self, task_id: str) -> bool:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Cancel a pending or in - progress task.
+       """
+
+        
+       
 
         Args:
             task_id: Unique task identifier
+       
+""""""
 
+        Cancel a pending or in - progress task.
+       
+
+        
+       
+"""
         Returns:
             bool: True if task was cancelled
-        """
+       """"""
         return self.update_task_status(task_id, TaskStatus.CANCELLED)
+        """"""
+        """
+
+
+        return self.update_task_status(task_id, TaskStatus.CANCELLED)
+
+        
+
+       
+""""""
 
     def get_queue_stats(self) -> Dict[str, Any]:
         """
+        
+        """
+    TODO: Add documentation
+   """"""
+        
+       """
+
         Get statistics about the task queue.
+       
+
+        
+       
+""""""
+
+        
+       
 
         Returns:
             Dict containing queue statistics
-        """
+       
+""""""
+
         try:
+            
+
             with self._get_db_connection() as conn:
+            
+""""""
+
+                
+               
+
                 cursor = conn.cursor()
+               
+""""""
+
+            
+
+            with self._get_db_connection() as conn:
+            
+""""""
+
+            
+           
 
                 # Get status counts
                 cursor.execute(
-                    """
+                   
+""""""
                     SELECT status, COUNT(*) as count
                     FROM task_queue
                     GROUP BY status
-                """
-                )
+                """"""
+
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                
+               """
+
                 status_counts = {row[0]: row[1] for row in cursor.fetchall()}
+               
+
+                
+               
+""""""
+
+                 
+                
+
+                 )
+                
+""""""
 
                 # Get type counts
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT task_type, COUNT(*) as count
                     FROM task_queue
                     GROUP BY task_type
-                """
-                )
+                """"""
+
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                
+               """
+
                 type_counts = {row[0]: row[1] for row in cursor.fetchall()}
+               
+
+                
+               
+""""""
+
+                 
+                
+
+                 )
+                
+""""""
 
                 # Get priority counts
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT priority, COUNT(*) as count
                     FROM task_queue
                     GROUP BY priority
-                """
-                )
-                priority_counts = {row[0]: row[1] for row in cursor.fetchall()}
+                """"""
 
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                
+               """
+
+                priority_counts = {row[0]: row[1] for row in cursor.fetchall()}
+               
+
+                
+               
+""""""
+
+                 
+                
+
+                 )
+                
+""""""
                 # Get total count
                 cursor.execute("SELECT COUNT(*) FROM task_queue")
                 total_tasks = cursor.fetchone()[0]
 
                 # Get average execution time for completed tasks
                 cursor.execute(
-                    """
+                    """"""
+
                     SELECT AVG(
                         (julianday(completed_at) - julianday(started_at)) * 24 * 60 * 60
-                    ) as avg_execution_time
+#                     ) as avg_execution_time
                     FROM task_queue
                     WHERE status = 'completed'
                     AND started_at IS NOT NULL
                     AND completed_at IS NOT NULL
-                """
-                )
-                avg_execution_time = cursor.fetchone()[0] or 0
+               
 
+                
+               
+""""""
+
+                 
+                
+
+                 )
+                
+""""""
+
+               
+
+                
+               
+"""
+                avg_execution_time = cursor.fetchone()[0] or 0
+               """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 return {
                     "total_tasks": total_tasks,
                     "status_counts": status_counts,
@@ -775,45 +1532,141 @@ class TaskQueueManager:
                     "priority_counts": priority_counts,
                     "avg_execution_time_seconds": round(avg_execution_time, 2),
                     "timestamp": datetime.now().isoformat(),
-                }
+                 }
 
         except sqlite3.Error as e:
             self.logger.error(f"Failed to get queue stats: {e}")
             raise TaskQueueError(f"Failed to get queue stats: {e}")
 
     def get_task_stats(self) -> Dict[str, Any]:
-        """Alias for get_queue_stats for dashboard compatibility."""
+        """
+Alias for get_queue_stats for dashboard compatibility.
+
+        
+"""
+        return self.get_queue_stats()
+        """"""
+        """
+
+
         return self.get_queue_stats()
 
+        
+
+       
+""""""
+
     def cleanup_old_tasks(self, days_old: int = 30) -> int:
-        """
+       
+
+        
+       
+""""""
+
+        
+       
+
         Clean up completed tasks older than specified days.
+       
+""""""
 
         Args:
             days_old: Number of days to keep completed tasks
+       
+
+        
+       
+"""
+        Clean up completed tasks older than specified days.
+       """
+
+        
+       
 
         Returns:
             int: Number of tasks cleaned up
-        """
+       
+""""""
+
+        
+
         try:
+        
+""""""
+
+            
+           
+
             cutoff_date = datetime.now() - timedelta(days=days_old)
+           
+""""""
+
+        
+
+        try:
+        
+""""""
+
+        
+       
 
             with self._get_db_connection() as conn:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                   
+""""""
+
                     DELETE FROM task_queue
                     WHERE status IN ('completed', 'cancelled')
                     AND completed_at < ?
-                """,
+                
+,
+"""
                     (cutoff_date.isoformat(),),
-                )
+                """
 
+                 
+                
+
+                 )
+                
+""""""
+
+               
+
+
+                
+
+               
+"""
                 conn.commit()
-                deleted_count = cursor.rowcount
+               """"""
+                 
+                """
 
+                 )
+                
+
+                 
+                
+""""""
+
+                
+               
+
+                deleted_count = cursor.rowcount
+               
+""""""
                 self.logger.info(f"Cleaned up {deleted_count} old tasks")
+               """
+
+                
+               
+
+                deleted_count = cursor.rowcount
+               
+""""""
                 return deleted_count
 
         except sqlite3.Error as e:
@@ -821,36 +1674,119 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to cleanup old tasks: {e}")
 
     def get_tasks_for_agent(self, agent_name: str) -> List[Dict[str, Any]]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Get tasks assigned to a specific agent.
+       """
+
+        
+       
 
         Args:
             agent_name: Name of the agent to get tasks for
+       
+""""""
 
+        Get tasks assigned to a specific agent.
+       
+
+        
+       
+"""
         Returns:
             List of task dictionaries assigned to the agent
+       """"""
+        return self.get_pending_tasks(agent_id=agent_name)
+        """"""
         """
+
+
         return self.get_pending_tasks(agent_id=agent_name)
 
+        
+
+       
+""""""
+
     def get_all_tasks(self, limit: int = 1000) -> List[Dict[str, Any]]:
-        """
+       
+
+        
+       
+""""""
+
+        
+       
+
         Get all tasks from the queue.
+       
+""""""
 
         Args:
             limit: Maximum number of tasks to return
+       
+
+        
+       
+"""
+        Get all tasks from the queue.
+       """
+
+        
+       
 
         Returns:
             List of all task dictionaries
-        """
+       
+""""""
+
+        
+
+        return self.get_tasks(limit=limit)
+        
+""""""
+
+        
+       
+
+        
+"""
+
         return self.get_tasks(limit=limit)
 
+        """"""
     def health_check(self) -> Dict[str, Any]:
-        """
+       """
+
+        
+       
+
+    TODO: Add documentation
+   
+""""""
+
+       
+
+        
+       
+"""
         Perform a health check on the task queue system.
+       """"""
+        
+       """
 
         Returns:
             Dict containing health check results
-        """
+       
+
+        
+       
+"""
         try:
             with PerformanceTimer("database_cleanup") as timer:
                 with self._get_db_connection() as conn:
@@ -864,14 +1800,40 @@ class TaskQueueManager:
 
                     # Check for stuck tasks (in_progress for too long)
                     cursor.execute(
-                        """
+                        """"""
+
                         SELECT COUNT(*) FROM task_queue
                         WHERE status = 'in_progress'
                         AND started_at < datetime('now', '-1 hour')
-                    """
-                    )
-                    stuck_tasks = cursor.fetchone()[0]
+                   
 
+                    
+                   
+""""""
+
+                     
+                    
+
+                     )
+                    
+""""""
+
+                   
+
+                    
+                   
+"""
+                    stuck_tasks = cursor.fetchone()[0]
+                   """"""
+                     
+                    """
+
+                     )
+                    
+
+                     
+                    
+"""
                     return {
                         "status": "healthy",
                         "database_connection": "ok",
@@ -879,7 +1841,7 @@ class TaskQueueManager:
                         "queue_stats": stats,
                         "stuck_tasks": stuck_tasks,
                         "timestamp": datetime.now().isoformat(),
-                    }
+                     }
 
         except Exception as e:
             self.logger.error(f"Health check failed: {e}")
@@ -887,7 +1849,7 @@ class TaskQueueManager:
                 "status": "unhealthy",
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+             }
 
     def create_video_task(self, script_content: str, output_path: str = None) -> str:
         """Create a video generation task that produces real MP4 files."""
@@ -908,11 +1870,11 @@ class TaskQueueManager:
             "created_at": datetime.now().isoformat(),
             "duration": 10,  # Default 10 second video
             "resolution": "1920x1080",
-        }
+         }
 
         return self.add_task(
             task_type=TaskType.CONTENT, payload=task_data, priority=TaskPriority.HIGH
-        )
+         )
 
     def _create_real_video(self, script_content: str, output_path: str, duration: int = 10) -> bool:
         """Create a real MP4 video file using FFmpeg or fallback method."""
@@ -946,7 +1908,7 @@ class TaskQueueManager:
                     "-r",
                     "30",
                     output_path,
-                ]
+                 ]
 
                 result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
 
@@ -1004,8 +1966,8 @@ class TaskQueueManager:
                     0x64,
                     0x61,
                     0x74,
-                ]
-            )
+                 ]
+             )
 
             with open(output_path, "wb") as f:
                 f.write(mp4_header)
@@ -1023,9 +1985,17 @@ class TaskQueueManager:
             return False
 
     def process_content_task(self, task_data: Dict[str, Any]) -> bool:
-        """Process content generation tasks including video creation."""
+        """
+Process content generation tasks including video creation.
+
+        
+"""
         try:
+        """
             payload = task_data.get("payload", {})
+        """
+        try:
+        """
             task_id = task_data.get("id")
 
             # Check if this is a video generation task
@@ -1037,7 +2007,7 @@ class TaskQueueManager:
                     script_content=payload["script_content"],
                     output_path=payload["output_path"],
                     duration=payload.get("duration", 10),
-                )
+                 )
 
                 if success:
                     # Update task with video file path
@@ -1045,7 +2015,7 @@ class TaskQueueManager:
                         "status": "completed",
                         "output_path": payload["output_path"],
                         "timestamp": datetime.now().isoformat(),
-                    }
+                     }
                     self.update_task_status(task_id, TaskStatus.COMPLETED, result=result)
                     self.logger.info(f"Video created successfully: {payload['output_path']}")
                     return True
@@ -1055,7 +2025,7 @@ class TaskQueueManager:
                         task_id,
                         TaskStatus.FAILED,
                         error_message="Video creation failed",
-                    )
+                     )
                     return False
 
             # Handle other content tasks
@@ -1070,7 +2040,7 @@ class TaskQueueManager:
                 "status": "completed",
                 "output": f"Content generated for {task_type}",
                 "timestamp": datetime.now().isoformat(),
-            }
+             }
 
             self.update_task_status(task_id, TaskStatus.COMPLETED, result=result)
             return True
@@ -1092,18 +2062,18 @@ if __name__ == "__main__":
         task_type=TaskType.CONTENT,
         payload={"action": "create_blog_post", "topic": "AI Technology"},
         priority=TaskPriority.HIGH,
-    )
+     )
 
     task2_id = tqm.add_task(
         task_type=TaskType.RESEARCH,
         payload={"query": "market trends 2024", "sources": ["web", "reports"]},
         priority=TaskPriority.MEDIUM,
-    )
+     )
 
     # Create a video task
     video_task_id = tqm.create_video_task(
         script_content="Welcome to TRAE.AI - the future of autonomous content creation!"
-    )
+     )
 
     # Get next task and process it
     next_task = tqm.get_next_task()
@@ -1120,7 +2090,7 @@ if __name__ == "__main__":
                 next_task["id"],
                 TaskStatus.COMPLETED,
                 result={"status": "success", "output": "Task completed successfully"},
-            )
+             )
 
     # Get queue statistics
     stats = tqm.get_queue_stats()

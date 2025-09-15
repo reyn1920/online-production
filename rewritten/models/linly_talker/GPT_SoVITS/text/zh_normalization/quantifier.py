@@ -37,16 +37,17 @@ measure_dict = {
     "m": "米",
     "mm": "毫米",
     "s": "秒",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def replace_temperature(match) -> str:
-    """
+    """"""
     Args:
         match (re.Match)
     Returns:
         str
-    """
+    """"""
     sign = match.group(1)
     temperature = match.group(2)
     unit = match.group(3)

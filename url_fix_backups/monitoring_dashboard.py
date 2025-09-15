@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Monitoring Dashboard - Real - time AI CEO Operations Control Center
 
 Provides:
@@ -14,7 +14,7 @@ Provides:
 
 Author: TRAE.AI System
 Version: 2.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -45,7 +45,8 @@ try:
         FullAutomationPipeline,
         PipelineStatus,
         TaskPriority,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError as e:
     logging.warning(f"Some components not available: {e}")
 
@@ -102,7 +103,8 @@ class MonitoringDashboard:
             "business_metrics": deque(maxlen=100),
             "system_metrics": deque(maxlen=100),
             "agent_performance": deque(maxlen=100),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Alert system
         self.alerts = self._setup_default_alerts()
@@ -117,7 +119,8 @@ class MonitoringDashboard:
             "customer_acquisition_cost": 0.0,
             "lifetime_value": 0.0,
             "churn_rate": 0.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Database connection
         self.db_path = "dashboard.db"
@@ -144,7 +147,8 @@ class MonitoringDashboard:
             AlertConfig("Agent Failure", "agent_success_rate < 0.5", 0.5, "high"),
             AlertConfig("High Response Time", "response_time > 5.0", 5.0, "medium"),
             AlertConfig("Revenue Drop", "daily_revenue_change < -0.2", -0.2, "high"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def _init_dashboard_database(self):
         """Initialize dashboard database."""
@@ -153,7 +157,7 @@ class MonitoringDashboard:
 
         # Dashboard metrics table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS dashboard_metrics (
                 timestamp TEXT PRIMARY KEY,
                     active_users INTEGER,
@@ -165,13 +169,15 @@ class MonitoringDashboard:
                     memory_usage REAL,
                     disk_usage REAL,
                     network_io TEXT
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Alerts table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS alerts (
                 id TEXT PRIMARY KEY,
                     name TEXT,
@@ -182,13 +188,15 @@ class MonitoringDashboard:
                     resolved_at TEXT,
                     message TEXT,
                     acknowledged BOOLEAN DEFAULT FALSE
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # Business KPIs table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS business_kpis (
                 date TEXT PRIMARY KEY,
                     daily_revenue REAL,
@@ -197,13 +205,15 @@ class MonitoringDashboard:
                     customer_acquisition_cost REAL,
                     lifetime_value REAL,
                     churn_rate REAL
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         # User sessions table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS user_sessions (
                 session_id TEXT PRIMARY KEY,
                     user_id TEXT,
@@ -211,9 +221,11 @@ class MonitoringDashboard:
                     end_time TEXT,
                     actions_performed INTEGER,
                     ip_address TEXT
-            )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#             )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -234,13 +246,15 @@ class MonitoringDashboard:
                 status_data = {
                     "pipeline": (
                         self.pipeline.get_status() if self.pipeline else {"status": "disconnected"}
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "dashboard": asdict(self.metrics),
                     "system": self._get_system_metrics(),
                     "business": self.business_kpis,
                     "alerts": [alert for alert in self.active_alerts],
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 return jsonify(status_data)
             except Exception as e:
                 logger.error(f"Error getting status: {e}")
@@ -257,8 +271,10 @@ class MonitoringDashboard:
                         "business_metrics": list(self.real_time_data["business_metrics"]),
                         "system_metrics": list(self.real_time_data["system_metrics"]),
                         "agent_performance": list(self.real_time_data["agent_performance"]),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 logger.error(f"Error getting metrics: {e}")
                 return jsonify({"error": str(e)}), 500
@@ -295,9 +311,12 @@ class MonitoringDashboard:
                                 "restart_agent": "/api / agents/<agent_name>/restart",
                                 "pause_agent": "/api / agents/<agent_name>/pause",
                                 "resume_agent": "/api / agents/<agent_name>/resume",
-                            },
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     return jsonify({"error": "Pipeline not connected"}), 503
             except Exception as e:
@@ -352,8 +371,10 @@ class MonitoringDashboard:
                     {
                         "active_alerts": self.active_alerts,
                         "alert_configs": [asdict(alert) for alert in self.alerts],
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 logger.error(f"Error getting alerts: {e}")
                 return jsonify({"error": str(e)}), 500
@@ -443,8 +464,10 @@ class MonitoringDashboard:
                         "command": command,
                         "result": result,
                         "timestamp": datetime.now().isoformat(),
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 emit(
                     "command_error",
@@ -452,22 +475,26 @@ class MonitoringDashboard:
                         "command": command,
                         "error": str(e),
                         "timestamp": datetime.now().isoformat(),
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
     def _get_current_status(self) -> Dict[str, Any]:
         """Get current comprehensive status."""
         return {
             "pipeline": (
                 self.pipeline.get_status() if self.pipeline else {"status": "disconnected"}
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "dashboard": asdict(self.metrics),
             "system": self._get_system_metrics(),
             "business": self.business_kpis,
             "alerts": self.active_alerts,
             "connected_clients": len(self.connected_clients),
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_system_metrics(self) -> Dict[str, Any]:
         """Get current system metrics."""
@@ -497,7 +524,8 @@ class MonitoringDashboard:
                 "network_bytes_sent": network.bytes_sent,
                 "network_bytes_recv": network.bytes_recv,
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             logger.error(f"Error getting system metrics: {e}")
             return {}
@@ -538,10 +566,12 @@ class MonitoringDashboard:
             "health_score": max(0, health_score),
             "status": (
                 "healthy" if health_score > 80 else "warning" if health_score > 50 else "critical"
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "issues": issues,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _execute_dashboard_command(self, command: str, params: Dict[str, Any]) -> Dict[str, Any]:
         """Execute dashboard command."""
@@ -574,12 +604,14 @@ class MonitoringDashboard:
                     return {
                         "success": True,
                         "message": f"Agent {agent_name} restart initiated",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     return {
                         "success": False,
                         "message": "Invalid agent name or pipeline not connected",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             elif command == "clear_alerts":
                 self.active_alerts.clear()
@@ -592,7 +624,8 @@ class MonitoringDashboard:
                     "success": True,
                     "message": "Metrics exported",
                     "data": export_data,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             else:
                 return {"success": False, "message": f"Unknown command: {command}"}
@@ -624,8 +657,10 @@ class MonitoringDashboard:
                     mode="lines + markers",
                     name="Success Rate",
                     line=dict(color="green"),
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             fig.add_trace(
                 go.Scatter(
@@ -635,8 +670,10 @@ class MonitoringDashboard:
                     name="Active Tasks",
                     yaxis="y2",
                     line=dict(color="blue"),
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             fig.update_layout(
                 title="Pipeline Performance Over Time",
@@ -644,7 +681,8 @@ class MonitoringDashboard:
                 yaxis_title="Success Rate",
                 yaxis2=dict(title="Active Tasks", overlaying="y", side="right"),
                 hovermode="x unified",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return json.loads(plotly.utils.PlotlyJSONEncoder().encode(fig))
 
@@ -676,8 +714,10 @@ class MonitoringDashboard:
                     mode="lines + markers",
                     name="Daily Revenue",
                     line=dict(color="green"),
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             fig.add_trace(
                 go.Scatter(
@@ -687,8 +727,10 @@ class MonitoringDashboard:
                     name="Conversion Rate",
                     yaxis="y2",
                     line=dict(color="orange"),
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             fig.update_layout(
                 title="Business Metrics Over Time",
@@ -696,7 +738,8 @@ class MonitoringDashboard:
                 yaxis_title="Revenue ($)",
                 yaxis2=dict(title="Conversion Rate (%)", overlaying="y", side="right"),
                 hovermode="x unified",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return json.loads(plotly.utils.PlotlyJSONEncoder().encode(fig))
 
@@ -729,8 +772,10 @@ class MonitoringDashboard:
                     mode="lines + markers",
                     name="CPU Usage (%)",
                     line=dict(color="red"),
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             fig.add_trace(
                 go.Scatter(
@@ -739,8 +784,10 @@ class MonitoringDashboard:
                     mode="lines + markers",
                     name="Memory Usage (%)",
                     line=dict(color="blue"),
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             fig.add_trace(
                 go.Scatter(
@@ -749,15 +796,18 @@ class MonitoringDashboard:
                     mode="lines + markers",
                     name="Disk Usage (%)",
                     line=dict(color="green"),
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             fig.update_layout(
                 title="System Health Over Time",
                 xaxis_title="Time",
                 yaxis_title="Usage (%)",
                 hovermode="x unified",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return json.loads(plotly.utils.PlotlyJSONEncoder().encode(fig))
 
@@ -776,7 +826,8 @@ class MonitoringDashboard:
                 "business_kpis": self.business_kpis,
                 "dashboard_metrics": asdict(self.metrics),
                 "export_timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Save to file
             filename = f"metrics_export_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
@@ -787,7 +838,8 @@ class MonitoringDashboard:
                 "filename": filename,
                 "record_count": sum(len(data) for data in self.real_time_data.values()),
                 "file_size": os.path.getsize(filename),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Error exporting metrics: {e}")
@@ -851,19 +903,22 @@ class MonitoringDashboard:
             # Add to real - time data
             self.real_time_data["system_metrics"].append(
                 {"timestamp": datetime.now().isoformat(), **system_metrics}
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Update pipeline metrics if available
             if self.pipeline:
                 pipeline_status = self.pipeline.get_status()
                 self.real_time_data["pipeline_status"].append(
                     {"timestamp": datetime.now().isoformat(), **pipeline_status}
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Update business metrics (simulated for now)
             self.real_time_data["business_metrics"].append(
                 {"timestamp": datetime.now().isoformat(), **self.business_kpis}
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Error updating dashboard metrics: {e}")
@@ -885,7 +940,8 @@ class MonitoringDashboard:
                     if (
                         alert_config.last_triggered
                         and (current_time - alert_config.last_triggered).total_seconds() < 300
-                    ):  # 5 minutes
+# BRACKET_SURGEON: disabled
+#                     ):  # 5 minutes
                         continue
 
                     # Create alert
@@ -898,7 +954,8 @@ class MonitoringDashboard:
                         "threshold": alert_config.threshold,
                         "triggered_at": current_time.isoformat(),
                         "acknowledged": False,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     self.active_alerts.append(alert)
                     alert_config.last_triggered = current_time
@@ -979,7 +1036,7 @@ def create_dashboard_templates():
     templates_dir.mkdir(exist_ok=True)
 
     # Main dashboard template
-    dashboard_html = """
+    dashboard_html = """"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -997,25 +1054,29 @@ def create_dashboard_templates():
             border - radius: 10px;
             padding: 20px;
             margin - bottom: 20px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .alert - card {
             border - left: 4px solid #dc3545;
             margin - bottom: 10px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .status - indicator {
             width: 12px;
             height: 12px;
             border - radius: 50%;
             display: inline - block;
             margin - right: 8px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .status - running { background - color: #28a745; }
         .status - stopped { background - color: #dc3545; }
         .status - paused { background - color: #ffc107; }
         .chart - container {
             height: 400px;
             margin - bottom: 30px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
     </style>
 </head>
 <body>
@@ -1139,33 +1200,39 @@ def create_dashboard_templates():
         socket.on('connect', function() {
             document.getElementById('connection - status').className = 'status - indicator status - running';
             document.getElementById('connection - text').textContent = 'Connected';
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         socket.on('disconnect', function() {
             document.getElementById('connection - status').className = 'status - indicator status - stopped';
             document.getElementById('connection - text').textContent = 'Disconnected';
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         // Status updates
         socket.on('status_update', function(data) {
             updateDashboard(data);
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         // New alerts
         socket.on('new_alert', function(alert) {
             addAlert(alert);
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         // Command results
         socket.on('command_result', function(result) {
             console.log('Command result:', result);
             alert('Command executed: ' + result.result.message);
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         socket.on('command_error', function(error) {
             console.error('Command error:', error);
             alert('Command failed: ' + error.error);
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         // Update dashboard with new data
         function updateDashboard(data) {
@@ -1190,7 +1257,8 @@ def create_dashboard_templates():
 
             // Update charts
             updateCharts();
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         // Add new alert
         function addAlert(alert) {
@@ -1199,7 +1267,8 @@ def create_dashboard_templates():
             // Clear "no alerts" message
             if (container.children.length === 1 && container.children[0].textContent === 'No active alerts') {
                 container.innerHTML = '';
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             const alertDiv = document.createElement('div');
             alertDiv.className = 'alert alert-' + getSeverityClass(alert.severity) + ' alert - card';
@@ -1216,15 +1285,18 @@ def create_dashboard_templates():
             `;
 
             container.appendChild(alertDiv);
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         // Execute command
             function executeCommand(command, params = {}) {
             socket.emit('execute_command', {
                 command: command,
                     params: params
-            });
-        }
+# BRACKET_SURGEON: disabled
+#             });
+# BRACKET_SURGEON: disabled
+#         }
 
         // Acknowledge alert
         function acknowledgeAlert(alertId) {
@@ -1234,9 +1306,12 @@ def create_dashboard_templates():
                 if (response.ok) {
                     // Remove alert from display
                     location.reload();
-                }
-            });
-        }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             });
+# BRACKET_SURGEON: disabled
+#         }
 
         // Update charts
         function updateCharts() {
@@ -1246,8 +1321,10 @@ def create_dashboard_templates():
                 .then(data => {
                     if (!data.error) {
                         Plotly.newPlot('pipeline - chart', data.data, data.layout);
-                    }
-                });
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 });
 
             // System health chart
             fetch('/api / charts / system - health')
@@ -1255,16 +1332,20 @@ def create_dashboard_templates():
                 .then(data => {
                     if (!data.error) {
                         Plotly.newPlot('system - chart', data.data, data.layout);
-                    }
-                });
-        }
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 });
+# BRACKET_SURGEON: disabled
+#         }
 
         // Utility functions
         function formatUptime(seconds) {
             const hours = Math.floor(seconds / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
             return `${hours}h ${minutes}m`;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function getSeverityClass(severity) {
             const classes = {
@@ -1272,9 +1353,11 @@ def create_dashboard_templates():
                     'medium': 'warning',
                     'high': 'danger',
                     'critical': 'danger'
-            };
+# BRACKET_SURGEON: disabled
+#             };
             return classes[severity] || 'info';
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         // Initialize dashboard
         socket.emit('request_update');
@@ -1282,11 +1365,12 @@ def create_dashboard_templates():
         // Auto - refresh every 30 seconds
         setInterval(() => {
             socket.emit('request_update');
-        }, 30000);
+# BRACKET_SURGEON: disabled
+#         }, 30000);
     </script>
 </body>
 </html>
-    """
+    """"""
 
     with open(templates_dir / "dashboard.html", "w") as f:
         f.write(dashboard_html)
@@ -1303,7 +1387,8 @@ def main():
     parser.add_argument("--port", type=int, default=5000, help="Dashboard port")
     parser.add_argument(
         "--create - templates", action="store_true", help="Create dashboard templates"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     args = parser.parse_args()
 
     # Setup logging
@@ -1311,7 +1396,8 @@ def main():
         level=logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[logging.FileHandler("dashboard.log"), logging.StreamHandler()],
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if args.create_templates:
         create_dashboard_templates()

@@ -16,7 +16,8 @@ from tqdm import tqdm
 
 def gen_composed_video(
     args, device, first_frame_coeff, coeff_path, audio_path, save_path, exp_dim=64
-):
+# BRACKET_SURGEON: disabled
+# ):
     coeff_first = scio.loadmat(first_frame_coeff)["full_3dmm"]
 
     coeff_pred = scio.loadmat(coeff_path)["coeff_3dmm"]
@@ -51,5 +52,6 @@ def gen_composed_video(
 
     command = "ffmpeg -v quiet -y -i {} -i {} -strict -2 -q:v 1 {}".format(
         audio_path, tmp_video_path, save_path
-    )
+# BRACKET_SURGEON: disabled
+#     )
     subprocess.call(command, shell=platform.system() != "Windows")

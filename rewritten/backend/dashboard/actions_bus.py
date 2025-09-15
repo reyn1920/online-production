@@ -37,12 +37,16 @@ def list_actions() -> List[dict]:
                 "doc": (fn.__doc__ or "").strip(),
                 "method": "POST",
                 "auth": "guarded",
-                "endpoint": f"/api/action/{getattr(fn, '_agent_pretty',
+                "endpoint": f"/api/action/{getattr(fn, '_agent_pretty',"
     agent_key)}/{getattr(fn, '_action_pretty',
-    action_key)}",
+# BRACKET_SURGEON: disabled
+#     action_key)}","
                 "tags": getattr(fn, "_tags", []),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     return out
 
 
@@ -86,7 +90,9 @@ def _seed_roadmap_if_missing():
                 "TEST_CHANNEL",
                 "QUICK_START",
                 "ADVANCED_FEATURES",
-            ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]:
                 w.writerow([c])
 
 
@@ -148,7 +154,8 @@ def act_maxout_synthesize(payload: dict) -> dict:
         "timestamp": time.strftime("%Y % m%dT % H%M % SZ", time.gmtime()),
         "ingested": items,
         "notes": "Add - only v3 synthesis",
-    }
+# BRACKET_SURGEON: disabled
+#     }
     (ASSETS / "releases" / "v3").mkdir(parents=True, exist_ok=True)
     (ASSETS / "releases" / "v3" / "manifest.json").write_text(json.dumps(out, indent=2))
     return {"status": "ok", "result": out}
@@ -169,6 +176,8 @@ def act_maxout_run_one_channel(payload: dict) -> dict:
     random_seed = int(payload.get("random_seed") or time.time())
 
     # Prefer calling an internal runner if available, otherwise fall back to the backend API if you wired one there
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
     # 1) Try internal channel executor (add - only, safe)
     try:
 
@@ -182,7 +191,9 @@ def act_maxout_run_one_channel(payload: dict) -> dict:
                 fresh=fresh,
                 produce_examples=produce_examples,
                 random_seed=random_seed,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return {"status": "ok", **res}
     except Exception:
         # fall through to try API route
@@ -199,9 +210,12 @@ def act_maxout_run_one_channel(payload: dict) -> dict:
                 "fresh": fresh,
                 "produce_examples": produce_examples,
                 "random_seed": random_seed,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             timeout=300,
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         r.raise_for_status()
         j = r.json()
         return {"status": "ok", **j}
@@ -212,7 +226,9 @@ def act_maxout_run_one_channel(payload: dict) -> dict:
             "error": f"No runner available: {e}",
             "csv_path": str(
                 ROADMAP.relative_to(ASSETS.parent)
-            ),  # "assets/incoming/channel_roadmaps_10.csv"
-            "note": "Ensure channel executor is wired \
-    or the FastAPI/api/capability_reel exists.",
-        }
+# BRACKET_SURGEON: disabled
+#             ),  # "assets/incoming/channel_roadmaps_10.csv"
+            "note": "Ensure channel executor is wired \"
+#     or the FastAPI/api/capability_reel exists.",
+# BRACKET_SURGEON: disabled
+#         }

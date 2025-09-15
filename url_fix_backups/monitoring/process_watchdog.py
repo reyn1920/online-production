@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Process Watchdog - Advanced process monitoring and management
 Integrates with startup_system.py to provide comprehensive process oversight
-"""
+""""""
 
 import asyncio
 import json
@@ -22,7 +22,8 @@ import psutil
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -40,7 +41,7 @@ class ProcessInfo:
     restart_count: int = 0
     last_restart: Optional[datetime] = None
     stuck_since: Optional[datetime] = None
-    response_times: List[float] = field(default_factory=list)
+    response_times: List[float] = field(default_factory=list):
 
 
 @dataclass
@@ -90,8 +91,10 @@ class ProcessWatchdog:
                 max_memory_percent=75.0,
                 stuck_threshold=180,
                 restart_on_stuck=True,
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.add_rule(
             WatchdogRule(
@@ -100,8 +103,10 @@ class ProcessWatchdog:
                 max_cpu_percent=80.0,
                 max_memory_percent=70.0,
                 stuck_threshold=240,
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.add_rule(
             WatchdogRule(
@@ -112,8 +117,10 @@ class ProcessWatchdog:
                 stuck_threshold=120,
                 restart_on_stuck=True,
                 restart_command=["python3", "main.py"],
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
 
     def add_rule(self, rule: WatchdogRule):
         """Add a monitoring rule"""
@@ -140,8 +147,10 @@ class ProcessWatchdog:
                     "cpu_percent",
                     "memory_percent",
                     "status",
-                ]
-            ):
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             ):
                 try:
                     info = proc.info
                     if not info["cmdline"]:
@@ -169,7 +178,8 @@ class ProcessWatchdog:
                             cpu_percent=info["cpu_percent"] or 0.0,
                             memory_percent=info["memory_percent"] or 0.0,
                             status=info["status"],
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                     current_processes[pid] = process_info
 
@@ -177,7 +187,8 @@ class ProcessWatchdog:
                     psutil.NoSuchProcess,
                     psutil.AccessDenied,
                     psutil.ZombieProcess,
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     continue
 
         except Exception as e:
@@ -199,7 +210,8 @@ class ProcessWatchdog:
             if (
                 rule.process_pattern.lower() in process_name.lower()
                 or rule.process_pattern.lower() in cmdline_str
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 matching.append(rule)
 
         return matching
@@ -249,7 +261,8 @@ class ProcessWatchdog:
             if is_stuck:
                 logger.warning(
                     f"🔒 Stuck process detected: PID {process.pid} ({process.name}) - {stuck_reason}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 stuck_processes.append(process)
 
         return stuck_processes
@@ -292,7 +305,7 @@ class ProcessWatchdog:
                 try:
                     proc.wait(timeout=10)
                 except psutil.TimeoutExpired:
-                    logger.warning(f"Process {process.pid} didn't terminate gracefully, killing...")
+                    logger.warning(f"Process {process.pid} didn't terminate gracefully, killing...")'
                     proc.kill()
                     proc.wait(timeout=5)
 
@@ -310,7 +323,8 @@ class ProcessWatchdog:
                     *rule.restart_command,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Update restart count
                 process.restart_count += 1
@@ -323,12 +337,14 @@ class ProcessWatchdog:
                     logger.info(f"✅ Process restarted successfully")
                     self.alert_queue.put(
                         f"Process {process.name} (PID {process.pid}) restarted successfully"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return True
                 else:
                     logger.error(
                         f"❌ Process restart failed with exit code: {new_process.returncode}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return False
             else:
                 logger.warning(f"No restart command configured for rule: {rule.name}")
@@ -364,7 +380,8 @@ class ProcessWatchdog:
                 if issue_processes:
                     logger.warning(
                         f"⚠️ {issue_type.replace('_', ' ').title()} issues detected in {len(issue_processes)} processes"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Store statistics
             stats = {
@@ -374,7 +391,8 @@ class ProcessWatchdog:
                 "resource_issues": {k: len(v) for k, v in resource_issues.items()},
                 "system_cpu": psutil.cpu_percent(),
                 "system_memory": psutil.virtual_memory().percent,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.stats_history.append(stats)
             if len(self.stats_history) > self.max_history:
@@ -416,10 +434,13 @@ class ProcessWatchdog:
                     "status": proc.status,
                     "restart_count": proc.restart_count,
                     "stuck_since": (proc.stuck_since.isoformat() if proc.stuck_since else None),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for pid, proc in self.processes.items()
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Global watchdog instance

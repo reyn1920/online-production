@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 Validation utilities for TRAE.AI System
 Provides bundle structure validation and data integrity checks
-"""
+
+""""""
 
 import json
 import os
@@ -11,32 +15,65 @@ from typing import Any, Dict
 
 
 def validate_bundle_structure(bundle_path: str) -> Dict[str, Any]:
-    """
+    """"""
+
+   
+
+    
+   
+"""
     Validate bundle directory structure and required files
+   """
+
+    
+   
 
     Args:
         bundle_path: Path to bundle directory
+   
+""""""
 
+    Validate bundle directory structure and required files
+   
+
+    
+   
+"""
     Returns:
         Dict with validation results
-    """
-    bundle_dir = Path(bundle_path)
+   """"""
+    
+   """
 
+    bundle_dir = Path(bundle_path)
+   
+
+    
+   
+""""""
+
+
+    
+
+   
+
+    bundle_dir = Path(bundle_path)
+   
+""""""
     if not bundle_dir.exists():
         return {
             "valid": False,
             "error": f"Bundle directory does not exist: {bundle_path}",
-        }
+         }
 
     if not bundle_dir.is_dir():
         return {
             "valid": False,
             "error": f"Bundle path is not a directory: {bundle_path}",
-        }
+         }
 
     # Check for required files
     required_files = ["README.md"]
-    optional_files = ["config.json", "metadata.json"]
 
     missing_required = []
     for req_file in required_files:
@@ -65,21 +102,55 @@ def validate_bundle_structure(bundle_path: str) -> Dict[str, Any]:
         "bundle_name": bundle_dir.name,
         "files_found": [f.name for f in bundle_dir.iterdir() if f.is_file()],
         "size_bytes": sum(f.stat().st_size for f in bundle_dir.rglob("*") if f.is_file()),
-    }
+     }
 
 
 def validate_csv_roadmap(csv_path: str) -> Dict[str, Any]:
-    """
+    """"""
+
+   
+
+    
+   
+"""
     Validate CSV roadmap file structure
+   """
+
+    
+   
 
     Args:
         csv_path: Path to CSV file
+   
+""""""
 
+    Validate CSV roadmap file structure
+   
+
+    
+   
+"""
     Returns:
         Dict with validation results
-    """
-    csv_file = Path(csv_path)
+   """"""
+    
+   """
 
+    csv_file = Path(csv_path)
+   
+
+    
+   
+""""""
+
+
+    
+
+   
+
+    csv_file = Path(csv_path)
+   
+""""""
     if not csv_file.exists():
         return {"valid": False, "error": f"CSV file does not exist: {csv_path}"}
 
@@ -99,7 +170,7 @@ def validate_csv_roadmap(csv_path: str) -> Dict[str, Any]:
             return {
                 "valid": False,
                 "error": f"Missing required columns: {required_columns}",
-            }
+             }
 
         return {"valid": True, "row_count": len(rows), "columns": reader.fieldnames}
 
@@ -108,18 +179,52 @@ def validate_csv_roadmap(csv_path: str) -> Dict[str, Any]:
 
 
 def validate_file_permissions(file_path: str, required_perms: str = "r") -> Dict[str, Any]:
-    """
+    """"""
+
+   
+
+    
+   
+"""
     Validate file permissions
+   """
+
+    
+   
 
     Args:
         file_path: Path to file
         required_perms: Required permissions (r/w/x)
+   
+""""""
 
+    Validate file permissions
+   
+
+    
+   
+"""
     Returns:
         Dict with validation results
-    """
-    file_obj = Path(file_path)
+   """"""
+    
+   """
 
+    file_obj = Path(file_path)
+   
+
+    
+   
+""""""
+
+
+    
+
+   
+
+    file_obj = Path(file_path)
+   
+""""""
     if not file_obj.exists():
         return {"valid": False, "error": f"File does not exist: {file_path}"}
 

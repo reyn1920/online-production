@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Task Queue Manager
 
 This module provides the TaskQueueManager class for managing database - backed task queues
@@ -12,7 +12,7 @@ and provides a robust interface for task orchestration across the agentic framew
 Author: TRAE.AI System
 Version: 1.0.0
 Date: 2024
-"""
+""""""
 
 import asyncio
 import inspect
@@ -86,7 +86,7 @@ class TaskQueueError(Exception):
 
 
 class TaskQueueManager:
-    """
+    """"""
     TaskQueueManager handles all database - backed task queue operations.
 
     This class provides a comprehensive interface for managing tasks within the TRAE.AI
@@ -99,20 +99,20 @@ class TaskQueueManager:
     - Performance monitoring
     - Error handling and retry logic
     - Task dependencies and scheduling
-    """
+    """"""
 
     @staticmethod
     def _serialize_safe(obj: Any) -> str:
-        """
+        """"""
         Safely serialize objects to JSON, handling coroutines \
-    and other non - serializable types.
+#     and other non - serializable types.
 
         Args:
             obj: Object to serialize
 
         Returns:
             str: JSON string representation
-        """
+        """"""
 
         def _convert_obj(item):
             if inspect.iscoroutine(item):
@@ -144,14 +144,15 @@ class TaskQueueManager:
         self,
         db_path: str = "data/trae_master.db",
         secret_store: Optional[SecretStore] = None,
-    ):
-        """
+# BRACKET_SURGEON: disabled
+#     ):
+        """"""
         Initialize the TaskQueueManager.
 
         Args:
             db_path: Path to the SQLite database file
             secret_store: Optional SecretStore instance for secure operations
-        """
+        """"""
         self.db_path = Path(db_path)
         self.secret_store = secret_store
         self.logger = get_logger(__name__)
@@ -165,27 +166,28 @@ class TaskQueueManager:
         self.logger.info(f"TaskQueueManager initialized with database: {self.db_path}")
 
     def _initialize_database(self) -> None:
-        """
-        Initialize the database with required tables if they don't exist.
+        """"""
+        Initialize the database with required tables if they don't exist.'
 
         This method ensures the task_queue table exists with the proper schema.
-        """
+        """"""
         try:
             with self._get_db_connection() as conn:
                 cursor = conn.cursor()
 
                 # Check if task_queue table exists
                 cursor.execute(
-                    """
+                    """"""
                     SELECT name FROM sqlite_master
                     WHERE type='table' AND name='task_queue'
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if not cursor.fetchone():
                     # Create task_queue table based on schema.sql
                     cursor.execute(
-                        """
+                        """"""
                         CREATE TABLE task_queue (
                             id TEXT PRIMARY KEY,
                                 task_type TEXT NOT NULL,
@@ -204,48 +206,56 @@ class TaskQueueManager:
                                 completed_at TIMESTAMP,
                                 dependencies TEXT,
                                 metadata TEXT
-                        )
-                    """
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Create indexes for performance
                     cursor.execute(
-                        """
+                        """"""
                         CREATE INDEX idx_task_queue_status ON task_queue(status)
-                    """
-                    )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                     )
                     cursor.execute(
-                        """
+                        """"""
                         CREATE INDEX idx_task_queue_priority ON task_queue(priority)
-                    """
-                    )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                     )
                     cursor.execute(
-                        """
+                        """"""
                         CREATE INDEX idx_task_queue_type ON task_queue(task_type)
-                    """
-                    )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                     )
                     cursor.execute(
-                        """
+                        """"""
                         CREATE INDEX idx_task_queue_agent ON task_queue(assigned_agent)
-                    """
-                    )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                     )
                     cursor.execute(
-                        """
+                        """"""
                         CREATE INDEX idx_task_queue_created ON task_queue(created_at)
-                    """
-                    )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Create trigger for updated_at
                     cursor.execute(
-                        """
+                        """"""
                         CREATE TRIGGER update_task_queue_timestamp
                         AFTER UPDATE ON task_queue
                         BEGIN
                             UPDATE task_queue SET updated_at = CURRENT_TIMESTAMP
                             WHERE id = NEW.id;
                         END
-                    """
-                    )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                     )
 
                     conn.commit()
                     self.logger.info("Task queue table created successfully")
@@ -256,12 +266,12 @@ class TaskQueueManager:
 
     @contextmanager
     def _get_db_connection(self):
-        """
+        """"""
         Get a database connection with proper error handling.
 
         Yields:
             sqlite3.Connection: Database connection
-        """
+        """"""
         conn = None
         try:
             conn = sqlite3.connect(str(self.db_path), timeout=30.0)
@@ -287,8 +297,9 @@ class TaskQueueManager:
         dependencies: Optional[List[str]] = None,
         metadata: Optional[Dict[str, Any]] = None,
         max_retries: int = 3,
-    ) -> str:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> str:
+        """"""
         Add a new task to the queue.
 
         Args:
@@ -306,7 +317,7 @@ class TaskQueueManager:
 
         Raises:
             TaskQueueError: If task creation fails
-        """
+        """"""
         task_id = str(uuid.uuid4())
 
         # Convert enums to strings if necessary
@@ -320,12 +331,12 @@ class TaskQueueManager:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO task_queue (
                         id, task_type, priority, payload, assigned_agent,
                             scheduled_at, dependencies, metadata, max_retries
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         task_id,
                         task_type,
@@ -336,14 +347,17 @@ class TaskQueueManager:
                         self._serialize_safe(dependencies) if dependencies else None,
                         self._serialize_safe(metadata) if metadata else None,
                         max_retries,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
 
                 self.logger.info(
                     f"Task {task_id} added to queue: type={task_type}, priority={priority}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return task_id
 
@@ -354,7 +368,7 @@ class TaskQueueManager:
     def get_next_task(
         self, agent_id: Optional[str] = None, task_types: Optional[List[str]] = None
     ) -> Optional[Dict[str, Any]]:
-        """
+        """"""
         Retrieve the next pending task from the queue.
 
         Args:
@@ -363,17 +377,17 @@ class TaskQueueManager:
 
         Returns:
             Dict containing task data or None if no tasks available
-        """
+        """"""
         try:
             with self._get_db_connection() as conn:
                 cursor = conn.cursor()
 
                 # Build query with filters
-                query = """
+                query = """"""
                     SELECT * FROM task_queue
                     WHERE status = 'pending'
                     AND (scheduled_at IS NULL OR scheduled_at <= ?)
-                """
+                """"""
                 params = [datetime.now().isoformat()]
 
                 if agent_id:
@@ -386,7 +400,7 @@ class TaskQueueManager:
                     params.extend(task_types)
 
                 # Order by priority and creation time
-                query += """
+                query += """"""
                     ORDER BY
                         CASE priority
                             WHEN 'urgent' THEN 1
@@ -396,7 +410,7 @@ class TaskQueueManager:
                         END,
                             created_at ASC
                     LIMIT 1
-                """
+                """"""
 
                 cursor.execute(query, params)
                 row = cursor.fetchone()
@@ -409,7 +423,8 @@ class TaskQueueManager:
                     task["result"] = json.loads(task["result"]) if task["result"] else None
                     task["dependencies"] = (
                         json.loads(task["dependencies"]) if task["dependencies"] else []
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     task["metadata"] = json.loads(task["metadata"]) if task["metadata"] else {}
 
                     # Mark task as in_progress
@@ -425,7 +440,7 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to retrieve next task: {e}")
 
     async def get_task_for_agent(self, agent_id: str) -> Optional[Dict[str, Any]]:
-        """
+        """"""
         Get the next available task for a specific agent.
 
         Args:
@@ -433,7 +448,7 @@ class TaskQueueManager:
 
         Returns:
             Dict containing task data or None if no tasks available
-        """
+        """"""
         return self.get_next_task(agent_id=agent_id)
 
     def update_task_status(
@@ -443,8 +458,9 @@ class TaskQueueManager:
         agent_id: Optional[str] = None,
         result: Optional[Dict[str, Any]] = None,
         error_message: Optional[str] = None,
-    ) -> bool:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
+        """"""
         Update the status of a task.
 
         Args:
@@ -456,7 +472,7 @@ class TaskQueueManager:
 
         Returns:
             bool: True if update was successful
-        """
+        """"""
         if isinstance(status, TaskStatus):
             status = status.value
 
@@ -487,7 +503,8 @@ class TaskQueueManager:
                     TaskStatus.COMPLETED.value,
                     TaskStatus.FAILED.value,
                     TaskStatus.CANCELLED.value,
-                ]:
+# BRACKET_SURGEON: disabled
+#                 ]:
                     update_fields.append("completed_at = CURRENT_TIMESTAMP")
 
                 params.append(task_id)
@@ -509,7 +526,7 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to update task status: {e}")
 
     def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
-        """
+        """"""
         Retrieve a specific task by ID.
 
         Args:
@@ -517,7 +534,7 @@ class TaskQueueManager:
 
         Returns:
             Dict containing task data or None if not found
-        """
+        """"""
         try:
             with self._get_db_connection() as conn:
                 cursor = conn.cursor()
@@ -533,7 +550,8 @@ class TaskQueueManager:
                     task["result"] = json.loads(task["result"]) if task["result"] else None
                     task["dependencies"] = (
                         json.loads(task["dependencies"]) if task["dependencies"] else []
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     task["metadata"] = json.loads(task["metadata"]) if task["metadata"] else {}
 
                     return task
@@ -551,7 +569,7 @@ class TaskQueueManager:
         task_types: Optional[List[str]] = None,
         limit: int = 100,
     ) -> List[Dict[str, Any]]:
-        """
+        """"""
         Retrieve pending tasks from the queue.
 
         Args:
@@ -562,7 +580,7 @@ class TaskQueueManager:
 
         Returns:
             List of pending task dictionaries
-        """
+        """"""
         # Use agent_type as agent_id if provided (for backward compatibility)
         effective_agent_id = agent_type if agent_type else agent_id
 
@@ -576,7 +594,7 @@ class TaskQueueManager:
         limit: int = 100,
         offset: int = 0,
     ) -> List[Dict[str, Any]]:
-        """
+        """"""
         Retrieve multiple tasks with optional filtering.
 
         Args:
@@ -588,7 +606,7 @@ class TaskQueueManager:
 
         Returns:
             List of task dictionaries
-        """
+        """"""
         try:
             with self._get_db_connection() as conn:
                 cursor = conn.cursor()
@@ -628,7 +646,8 @@ class TaskQueueManager:
                     task["result"] = json.loads(task["result"]) if task["result"] else None
                     task["dependencies"] = (
                         json.loads(task["dependencies"]) if task["dependencies"] else []
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     task["metadata"] = json.loads(task["metadata"]) if task["metadata"] else {}
 
                     tasks.append(task)
@@ -640,15 +659,15 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to retrieve tasks: {e}")
 
     def retry_task(self, task_id: str) -> bool:
-        """
-        Retry a failed task if it hasn't exceeded max retries.
+        """"""
+        Retry a failed task if it hasn't exceeded max retries.'
 
         Args:
             task_id: Unique task identifier
 
         Returns:
             bool: True if task was queued for retry
-        """
+        """"""
         try:
             with self._get_db_connection() as conn:
                 cursor = conn.cursor()
@@ -657,7 +676,8 @@ class TaskQueueManager:
                 cursor.execute(
                     "SELECT retry_count, max_retries FROM task_queue WHERE id = ?",
                     (task_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 row = cursor.fetchone()
 
                 if not row:
@@ -672,7 +692,7 @@ class TaskQueueManager:
 
                 # Update task for retry
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE task_queue
                     SET status = 'pending',
                         retry_count = retry_count + 1,
@@ -681,9 +701,10 @@ class TaskQueueManager:
                             completed_at = NULL,
                             updated_at = CURRENT_TIMESTAMP
                     WHERE id = ?
-                """,
+                ""","""
                     (task_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
 
@@ -698,7 +719,7 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to retry task: {e}")
 
     def cancel_task(self, task_id: str) -> bool:
-        """
+        """"""
         Cancel a pending or in - progress task.
 
         Args:
@@ -706,48 +727,51 @@ class TaskQueueManager:
 
         Returns:
             bool: True if task was cancelled
-        """
+        """"""
         return self.update_task_status(task_id, TaskStatus.CANCELLED)
 
     def get_queue_stats(self) -> Dict[str, Any]:
-        """
+        """"""
         Get statistics about the task queue.
 
         Returns:
             Dict containing queue statistics
-        """
+        """"""
         try:
             with self._get_db_connection() as conn:
                 cursor = conn.cursor()
 
                 # Get status counts
                 cursor.execute(
-                    """
+                    """"""
                     SELECT status, COUNT(*) as count
                     FROM task_queue
                     GROUP BY status
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 status_counts = {row[0]: row[1] for row in cursor.fetchall()}
 
                 # Get type counts
                 cursor.execute(
-                    """
+                    """"""
                     SELECT task_type, COUNT(*) as count
                     FROM task_queue
                     GROUP BY task_type
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 type_counts = {row[0]: row[1] for row in cursor.fetchall()}
 
                 # Get priority counts
                 cursor.execute(
-                    """
+                    """"""
                     SELECT priority, COUNT(*) as count
                     FROM task_queue
                     GROUP BY priority
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 priority_counts = {row[0]: row[1] for row in cursor.fetchall()}
 
                 # Get total count
@@ -756,16 +780,18 @@ class TaskQueueManager:
 
                 # Get average execution time for completed tasks
                 cursor.execute(
-                    """
+                    """"""
                     SELECT AVG(
                         (julianday(completed_at) - julianday(started_at)) * 24 * 60 * 60
-                    ) as avg_execution_time
+# BRACKET_SURGEON: disabled
+#                     ) as avg_execution_time
                     FROM task_queue
                     WHERE status = 'completed'
                     AND started_at IS NOT NULL
                     AND completed_at IS NOT NULL
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 avg_execution_time = cursor.fetchone()[0] or 0
 
                 return {
@@ -775,7 +801,8 @@ class TaskQueueManager:
                     "priority_counts": priority_counts,
                     "avg_execution_time_seconds": round(avg_execution_time, 2),
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except sqlite3.Error as e:
             self.logger.error(f"Failed to get queue stats: {e}")
@@ -786,7 +813,7 @@ class TaskQueueManager:
         return self.get_queue_stats()
 
     def cleanup_old_tasks(self, days_old: int = 30) -> int:
-        """
+        """"""
         Clean up completed tasks older than specified days.
 
         Args:
@@ -794,7 +821,7 @@ class TaskQueueManager:
 
         Returns:
             int: Number of tasks cleaned up
-        """
+        """"""
         try:
             cutoff_date = datetime.now() - timedelta(days=days_old)
 
@@ -802,13 +829,14 @@ class TaskQueueManager:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     DELETE FROM task_queue
                     WHERE status IN ('completed', 'cancelled')
                     AND completed_at < ?
-                """,
+                ""","""
                     (cutoff_date.isoformat(),),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 deleted_count = cursor.rowcount
@@ -821,7 +849,7 @@ class TaskQueueManager:
             raise TaskQueueError(f"Failed to cleanup old tasks: {e}")
 
     def get_tasks_for_agent(self, agent_name: str) -> List[Dict[str, Any]]:
-        """
+        """"""
         Get tasks assigned to a specific agent.
 
         Args:
@@ -829,11 +857,11 @@ class TaskQueueManager:
 
         Returns:
             List of task dictionaries assigned to the agent
-        """
+        """"""
         return self.get_pending_tasks(agent_id=agent_name)
 
     def get_all_tasks(self, limit: int = 1000) -> List[Dict[str, Any]]:
-        """
+        """"""
         Get all tasks from the queue.
 
         Args:
@@ -841,16 +869,16 @@ class TaskQueueManager:
 
         Returns:
             List of all task dictionaries
-        """
+        """"""
         return self.get_tasks(limit=limit)
 
     def health_check(self) -> Dict[str, Any]:
-        """
+        """"""
         Perform a health check on the task queue system.
 
         Returns:
             Dict containing health check results
-        """
+        """"""
         try:
             with PerformanceTimer("database_cleanup") as timer:
                 with self._get_db_connection() as conn:
@@ -864,12 +892,13 @@ class TaskQueueManager:
 
                     # Check for stuck tasks (in_progress for too long)
                     cursor.execute(
-                        """
+                        """"""
                         SELECT COUNT(*) FROM task_queue
                         WHERE status = 'in_progress'
                         AND started_at < datetime('now', '-1 hour')
-                    """
-                    )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                     )
                     stuck_tasks = cursor.fetchone()[0]
 
                     return {
@@ -879,7 +908,8 @@ class TaskQueueManager:
                         "queue_stats": stats,
                         "stuck_tasks": stuck_tasks,
                         "timestamp": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Health check failed: {e}")
@@ -887,7 +917,8 @@ class TaskQueueManager:
                 "status": "unhealthy",
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def create_video_task(self, script_content: str, output_path: str = None) -> str:
         """Create a video generation task that produces real MP4 files."""
@@ -908,11 +939,13 @@ class TaskQueueManager:
             "created_at": datetime.now().isoformat(),
             "duration": 10,  # Default 10 second video
             "resolution": "1920x1080",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return self.add_task(
             task_type=TaskType.CONTENT, payload=task_data, priority=TaskPriority.HIGH
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _create_real_video(self, script_content: str, output_path: str, duration: int = 10) -> bool:
         """Create a real MP4 video file using FFmpeg or fallback method."""
@@ -946,7 +979,8 @@ class TaskQueueManager:
                     "-r",
                     "30",
                     output_path,
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
 
@@ -1004,8 +1038,10 @@ class TaskQueueManager:
                     0x64,
                     0x61,
                     0x74,
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
             with open(output_path, "wb") as f:
                 f.write(mp4_header)
@@ -1037,7 +1073,8 @@ class TaskQueueManager:
                     script_content=payload["script_content"],
                     output_path=payload["output_path"],
                     duration=payload.get("duration", 10),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if success:
                     # Update task with video file path
@@ -1045,7 +1082,8 @@ class TaskQueueManager:
                         "status": "completed",
                         "output_path": payload["output_path"],
                         "timestamp": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     self.update_task_status(task_id, TaskStatus.COMPLETED, result=result)
                     self.logger.info(f"Video created successfully: {payload['output_path']}")
                     return True
@@ -1055,7 +1093,8 @@ class TaskQueueManager:
                         task_id,
                         TaskStatus.FAILED,
                         error_message="Video creation failed",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return False
 
             # Handle other content tasks
@@ -1070,7 +1109,8 @@ class TaskQueueManager:
                 "status": "completed",
                 "output": f"Content generated for {task_type}",
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.update_task_status(task_id, TaskStatus.COMPLETED, result=result)
             return True
@@ -1092,18 +1132,21 @@ if __name__ == "__main__":
         task_type=TaskType.CONTENT,
         payload={"action": "create_blog_post", "topic": "AI Technology"},
         priority=TaskPriority.HIGH,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     task2_id = tqm.add_task(
         task_type=TaskType.RESEARCH,
         payload={"query": "market trends 2024", "sources": ["web", "reports"]},
         priority=TaskPriority.MEDIUM,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Create a video task
     video_task_id = tqm.create_video_task(
         script_content="Welcome to TRAE.AI - the future of autonomous content creation!"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Get next task and process it
     next_task = tqm.get_next_task()
@@ -1120,7 +1163,8 @@ if __name__ == "__main__":
                 next_task["id"],
                 TaskStatus.COMPLETED,
                 result={"status": "success", "output": "Task completed successfully"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     # Get queue statistics
     stats = tqm.get_queue_stats()

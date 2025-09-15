@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Task Queue System - Database - Backed Resilient Operations Management
+"""""""""
 
 A robust, database - backed task queue system designed for resilience and
 autonomous operation. Provides task scheduling, priority management,
+
+
 retry logic, and failure recovery for the TRAE.AI agent ecosystem.
+
+""""""
+
+
+
 
 Key Features:
 - SQLite - based persistence for reliability
@@ -14,7 +22,9 @@ Key Features:
 - Task dependencies and workflows
 - Real - time monitoring and metrics
 - Agent coordination and load balancing
-"""
+
+""""""
+
 
 import json
 import logging
@@ -30,7 +40,9 @@ from typing import Any, Callable, Dict, List, Optional
 
 
 class TaskStatus(Enum):
-    """Task status enumeration"""
+    
+Task status enumeration
+"""
 
     PENDING = "pending"
     RUNNING = "running"
@@ -42,7 +54,9 @@ class TaskStatus(Enum):
 
 
 class TaskPriority(Enum):
-    """Task priority levels"""
+    """
+Task priority levels
+
 
     URGENT = 1
     HIGH = 2
@@ -52,7 +66,9 @@ class TaskPriority(Enum):
 
 @dataclass
 class Task:
-    """Task definition"""
+    
+"""Task definition"""
+
 
     task_id: str
     task_type: str
@@ -70,12 +86,22 @@ class Task:
     result: Optional[Dict[str, Any]]
     metadata: Dict[str, Any]
     created_at: datetime
-    updated_at: datetime
+   
 
+    
+   
+"""
+    updated_at: datetime
+   """
+
+    
+   
 
 @dataclass
 class TaskMetrics:
-    """Task execution metrics"""
+    
+"""Task execution metrics"""
+
 
     total_tasks: int
     pending_tasks: int
@@ -85,12 +111,22 @@ class TaskMetrics:
     dead_letter_tasks: int
     average_execution_time: float
     success_rate: float
-    throughput_per_hour: float
+   
 
+    
+   
+"""
+    throughput_per_hour: float
+   """
+
+    
+   
 
 @dataclass
 class AgentWorker:
-    """Agent worker definition"""
+    
+"""Agent worker definition"""
+
 
     worker_id: str
     agent_type: str
@@ -100,12 +136,22 @@ class AgentWorker:
     last_heartbeat: datetime
     capabilities: List[str]
     max_concurrent_tasks: int
-    current_load: int
+   
 
+    
+   
+"""
+    current_load: int
+   """
+
+    
+   
 
 class TaskQueue:
-    """Database - backed resilient task queue system"""
-
+    """
+    Database - backed resilient task queue system
+    """
+    
     def __init__(self, db_path: str = "data/right_perspective.db"):
         self.db_path = db_path
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -136,13 +182,18 @@ class TaskQueue:
             TaskPriority.HIGH: queue.PriorityQueue(),
             TaskPriority.MEDIUM: queue.PriorityQueue(),
             TaskPriority.LOW: queue.PriorityQueue(),
-        }
+         }
 
     def initialize_database(self):
-        """Initialize task queue database"""
+        """
+Initialize task queue database
+
         with sqlite3.connect(self.db_path) as conn:
+            
+"""
             conn.execute(
-                """
+            """
+
                 CREATE TABLE IF NOT EXISTS tasks (
                     task_id TEXT PRIMARY KEY,
                         task_type TEXT NOT NULL,
@@ -161,12 +212,24 @@ class TaskQueue:
                         metadata TEXT NOT NULL,
                         created_at TIMESTAMP NOT NULL,
                         updated_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+                 )
+            
+)
+""""""
 
             conn.execute(
-                """
+            
+
+           
+""""""
+
+            
+
+
+            conn.execute(
+
+            
+"""
                 CREATE TABLE IF NOT EXISTS agent_workers (
                     worker_id TEXT PRIMARY KEY,
                         agent_type TEXT NOT NULL,
@@ -177,12 +240,21 @@ class TaskQueue:
                         capabilities TEXT NOT NULL,
                         max_concurrent_tasks INTEGER NOT NULL,
                         current_load INTEGER NOT NULL
-                )
+                 )
             """
-            )
+)
+
+            
+"""
+            conn.execute(
+            """"""
+            """
+
 
             conn.execute(
-                """
+
+            
+
                 CREATE TABLE IF NOT EXISTS task_dependencies (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         task_id TEXT NOT NULL,
@@ -190,12 +262,26 @@ class TaskQueue:
                         created_at TIMESTAMP NOT NULL,
                         FOREIGN KEY (task_id) REFERENCES tasks (task_id),
                         FOREIGN KEY (dependency_id) REFERENCES tasks (task_id)
-                )
-            """
-            )
+                 )
+            
+""")"""
+
+            
 
             conn.execute(
-                """
+            
+""""""
+
+            
+           
+
+            
+"""
+
+            conn.execute(
+
+            """
+
                 CREATE TABLE IF NOT EXISTS task_execution_log (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         task_id TEXT NOT NULL,
@@ -204,29 +290,45 @@ class TaskQueue:
                         details TEXT,
                         timestamp TIMESTAMP NOT NULL,
                         FOREIGN KEY (task_id) REFERENCES tasks (task_id)
-                )
-            """
-            )
+                 )
+            
+)
+""""""
 
+            conn.execute(
+            
+
+           
+""""""
             # Create indexes for performance
             conn.execute("CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks (status)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks (priority)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_tasks_agent_type ON tasks (agent_type)")
             conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_tasks_scheduled_at ON tasks (scheduled_at)"
-            )
+             )
             conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_workers_agent_type ON agent_workers (agent_type)"
-            )
+             )
             conn.execute("CREATE INDEX IF NOT EXISTS idx_workers_status ON agent_workers (status)")
 
     def start(self):
-        """Start the task queue system"""
+        """
+Start the task queue system
+
         if self.running:
+            
+"""
             return
-
+            """"""
         self.running = True
+            """
 
+            return
+            
+
+           
+""""""
         # Start scheduler thread
         self.scheduler_thread = threading.Thread(target=self._scheduler_loop, daemon=True)
         self.scheduler_thread.start()
@@ -242,15 +344,51 @@ class TaskQueue:
         self.logger.info("Task queue system started")
 
     def stop(self):
-        """Stop the task queue system"""
+        """
+Stop the task queue system
+
+       
+""""""
+
         self.running = False
+       
 
+        
+       
+"""
         # Stop all worker threads
-        for worker_thread in self.worker_threads.values():
-            if worker_thread.is_alive():
-                worker_thread.join(timeout=5)
+        """
 
+        for worker_thread in self.worker_threads.values():
+        
+
+       
+""""""
+
+        self.running = False
+       
+
+        
+       
+"""
+            if worker_thread.is_alive():
+               """
+
+                
+               
+
+                worker_thread.join(timeout=5)
+               
+""""""
         self.logger.info("Task queue system stopped")
+               """
+
+                
+               
+
+                worker_thread.join(timeout=5)
+               
+""""""
 
     def submit_task(
         self,
@@ -263,7 +401,9 @@ class TaskQueue:
         scheduled_at: datetime = None,
         metadata: Dict[str, Any] = None,
     ) -> str:
-        """Submit a new task to the queue"""
+        
+Submit a new task to the queue
+"""
 
         task_id = str(uuid.uuid4())
 
@@ -294,7 +434,7 @@ class TaskQueue:
             metadata=metadata,
             created_at=datetime.now(),
             updated_at=datetime.now(),
-        )
+         )
 
         self._save_task(task)
 
@@ -306,12 +446,29 @@ class TaskQueue:
         return task_id
 
     def submit_workflow(self, workflow_definition: Dict[str, Any]) -> List[str]:
-        """Submit a workflow (multiple dependent tasks)"""
-        task_ids = []
-        task_map = {}
+        """
+Submit a workflow (multiple dependent tasks)
 
+        task_ids = []
+       
+""""""
+
+        task_map = {}
+       
+
+        
+       
+"""
         # First pass: create all tasks
         for step in workflow_definition["steps"]:
+       """
+
+        
+       
+
+        task_map = {}
+       
+""""""
             task_id = self.submit_task(
                 task_type=step["task_type"],
                 agent_type=step["agent_type"],
@@ -319,7 +476,7 @@ class TaskQueue:
                 priority=TaskPriority(step.get("priority", TaskPriority.MEDIUM.value)),
                 max_retries=step.get("max_retries", 3),
                 metadata=step.get("metadata", {}),
-            )
+             )
             task_ids.append(task_id)
             task_map[step["step_id"]] = task_id
 
@@ -338,7 +495,7 @@ class TaskQueue:
         agent_instance: Any,
         capabilities: List[str] = None,
         max_concurrent_tasks: int = 1,
-    ) -> str:
+#     ) -> str:
         """Register an agent worker"""
         worker_id = f"{agent_type}_{uuid.uuid4().hex[:8]}"
 
@@ -355,7 +512,7 @@ class TaskQueue:
             capabilities=capabilities,
             max_concurrent_tasks=max_concurrent_tasks,
             current_load=0,
-        )
+         )
 
         self.agent_registry[worker_id] = {"worker": worker, "instance": agent_instance}
 
@@ -388,15 +545,28 @@ class TaskQueue:
                 "error_message": task["error_message"],
                 "retry_count": task["retry_count"],
                 "max_retries": task["max_retries"],
-            }
+             }
         return None
 
     def cancel_task(self, task_id: str) -> bool:
-        """Cancel a pending or running task"""
+        """
+Cancel a pending or running task
+
         task = self._get_task(task_id)
         if not task:
+            
+"""
+            return False
+            """"""
+            """
+
+
             return False
 
+            
+
+           
+""""""
         if task["status"] in [TaskStatus.PENDING.value, TaskStatus.RETRYING.value]:
             self._update_task_status(task_id, TaskStatus.CANCELLED)
             self.logger.info(f"Task cancelled: {task_id}")
@@ -405,18 +575,60 @@ class TaskQueue:
         return False
 
     def get_queue_metrics(self) -> TaskMetrics:
-        """Get current queue metrics"""
+        """
+Get current queue metrics
+
+       
+""""""
+
         # Update metrics if cache is stale
+       
+
+        
+       
+"""
         if datetime.now() - self.last_metrics_update > timedelta(minutes=1):
+           """
+
+            
+           
+
             self._update_metrics_cache()
+           
+""""""
+
+       
+
+        
+       
+"""
+        # Update metrics if cache is stale
+       """
+
+        
+       
 
         return TaskMetrics(**self.metrics_cache)
 
     def get_agent_status(self) -> Dict[str, Dict[str, Any]]:
-        """Get status of all registered agents"""
+        
+"""Get status of all registered agents""""""
         status = {}
+       """
+
+        
+       
 
         for worker_id, agent_data in self.agent_registry.items():
+       
+""""""
+
+        status = {}
+       
+
+        
+       
+"""
             worker = agent_data["worker"]
             status[worker_id] = {
                 "agent_type": worker.agent_type,
@@ -427,20 +639,39 @@ class TaskQueue:
                 "max_concurrent_tasks": worker.max_concurrent_tasks,
                 "last_heartbeat": worker.last_heartbeat.isoformat(),
                 "capabilities": worker.capabilities,
-            }
+             }
 
         return status
 
     def _scheduler_loop(self):
-        """Main scheduler loop"""
+        """
+Main scheduler loop
+
         while self.running:
             try:
                 # Process tasks from priority queues
+                
+"""
                 for priority in TaskPriority:
+                """"""
                     if not self.priority_queues[priority].empty():
                         try:
-                            scheduled_time, task_id = self.priority_queues[priority].get_nowait()
+                           """
 
+                            
+                           
+
+                            scheduled_time, task_id = self.priority_queues[priority].get_nowait()
+                           
+""""""
+
+                
+
+                for priority in TaskPriority:
+                
+""""""
+                
+               """
                             # Check if it's time to run the task
                             if datetime.fromtimestamp(scheduled_time) <= datetime.now():
                                 self._schedule_task_for_execution(task_id)
@@ -464,10 +695,21 @@ class TaskQueue:
                 time.sleep(5)
 
     def _worker_loop(self, worker_id: str):
-        """Worker loop for processing tasks"""
+        """
+Worker loop for processing tasks
+
         while self.running and worker_id in self.agent_registry:
+            
+"""
             try:
+            """
+
                 worker_data = self.agent_registry[worker_id]
+            
+
+            try:
+            
+"""
                 worker = worker_data["worker"]
                 agent_instance = worker_data["instance"]
 
@@ -530,7 +772,7 @@ class TaskQueue:
             self._update_task_completion(task_id, result, execution_time)
             self._log_task_execution(
                 task_id, worker_id, "completed", {"execution_time": execution_time}
-            )
+             )
 
             # Update worker
             worker.status = "active"
@@ -545,11 +787,20 @@ class TaskQueue:
             self._handle_task_failure(task_id, worker_id, str(e))
 
     def _handle_task_failure(self, task_id: str, worker_id: str, error_message: str):
-        """Handle task execution failure"""
+        """
+Handle task execution failure
+
         task = self._get_task(task_id)
         if not task:
+            
+"""
+            return
+            """"""
+            """
+
             return
 
+            """
         retry_count = task["retry_count"] + 1
 
         if retry_count <= task["max_retries"]:
@@ -564,17 +815,17 @@ class TaskQueue:
                 worker_id,
                 "failed_retry_scheduled",
                 {"error": error_message, "retry_delay": retry_delay},
-            )
+             )
 
             self.logger.warning(
                 f"Task failed, scheduling retry {retry_count}/{task['max_retries']}: {task_id}"
-            )
+             )
         else:
             # Move to dead letter queue
             self._update_task_status(task_id, TaskStatus.DEAD_LETTER)
             self._log_task_execution(
                 task_id, worker_id, "moved_to_dead_letter", {"error": error_message}
-            )
+             )
 
             self.logger.error(f"Task moved to dead letter queue: {task_id}")
 
@@ -586,36 +837,130 @@ class TaskQueue:
             worker.current_load -= 1
 
     def _cleanup_loop(self):
-        """Cleanup loop for maintenance tasks"""
+        """
+Cleanup loop for maintenance tasks
+
         while self.running:
             try:
+               
+""""""
+
                 # Clean up old completed tasks
+               
+
+                
+               
+"""
                 cutoff_date = datetime.now() - timedelta(days=7)
                 with sqlite3.connect(self.db_path) as conn:
                     conn.execute(
-                        """
+                       """
+
+                        
+                       
+
                         DELETE FROM tasks
                         WHERE status = 'completed' AND completed_at < ?
-                    """,
+                    
+""","""
+
                         (cutoff_date.isoformat(),),
-                    )
+                    
+
+                     
+                    
+"""
+                     )
+                    """"""
+                
+               """
+
+                # Clean up old completed tasks
+               
+
+                
+               
+""""""
+
+
+                
+
+               
 
                 # Clean up old execution logs
+               
+""""""
+
                 log_cutoff_date = datetime.now() - timedelta(days=30)
                 with sqlite3.connect(self.db_path) as conn:
                     conn.execute(
-                        """
+                       
+
+                        
+                       
+"""
                         DELETE FROM task_execution_log
                         WHERE timestamp < ?
-                    """,
+                    """
+,
+
                         (log_cutoff_date.isoformat(),),
-                    )
+                    
+""""""
+
+                     )
+                    
+
+                     
+                    
+""""""
+
+                
+               
+
+                # Clean up old execution logs
+               
+""""""
+
+               
+
+
+                
+
+               
+"""
+                # Remove offline workers
+               """
+
+                
+               
+
+                timeout_cutoff = datetime.now() - timedelta(seconds=self.heartbeat_timeout)
+               
+""""""
 
                 # Remove offline workers
-                timeout_cutoff = datetime.now() - timedelta(seconds=self.heartbeat_timeout)
+               
+
+                
+               
+""""""
+
+                
+               
+
                 offline_workers = []
+               
+""""""
 
                 for worker_id, agent_data in self.agent_registry.items():
+               
+
+                
+               
+"""
+                offline_workers = []
+               """"""
                     if agent_data["worker"].last_heartbeat < timeout_cutoff:
                         offline_workers.append(worker_id)
 
@@ -641,16 +986,22 @@ class TaskQueue:
     # Database helper methods
 
     def _save_task(self, task: Task):
-        """Save task to database"""
+        """
+Save task to database
+
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               
+""""""
+
                 INSERT OR REPLACE INTO tasks
                 (task_id, task_type, agent_type, priority, payload, dependencies,
                     max_retries, retry_count, status, scheduled_at, started_at,
-                     completed_at, error_message, result, metadata, created_at, updated_at)
+#                      completed_at, error_message, result, metadata, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            
+,
+"""
                 (
                     task.task_id,
                     task.task_type,
@@ -669,13 +1020,28 @@ class TaskQueue:
                     json.dumps(task.metadata),
                     task.created_at.isoformat(),
                     task.updated_at.isoformat(),
-                ),
-            )
+                 ),
+            """
+
+             
+            
+
+             )
+            
+""""""
 
     def _get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
-        """Get task from database"""
+        
+Get task from database
+""""""
         with sqlite3.connect(self.db_path) as conn:
+        """
             cursor = conn.execute("SELECT * FROM tasks WHERE task_id = ?", (task_id,))
+        """
+
+        with sqlite3.connect(self.db_path) as conn:
+        
+
             row = cursor.fetchone()
             if row:
                 columns = [description[0] for description in cursor.description]
@@ -683,65 +1049,132 @@ class TaskQueue:
         return None
 
     def _update_task_status(self, task_id: str, status: TaskStatus):
-        """Update task status"""
+        
+"""Update task status"""
+
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               
+
+                
+               
+"""
                 UPDATE tasks
                 SET status = ?, updated_at = ?
                 WHERE task_id = ?
-            """,
-                (status.value, datetime.now().isoformat(), task_id),
-            )
+            """
+,
 
+                (status.value, datetime.now().isoformat(), task_id),
+            
+""""""
+
+             )
+            
+
+             
+            
+"""
     def _update_task_completion(self, task_id: str, result: Dict[str, Any], execution_time: float):
-        """Update task with completion data"""
+        """
+Update task with completion data
+
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               
+""""""
+
                 UPDATE tasks
                 SET status = 'completed', completed_at = ?, result = ?, updated_at = ?
                 WHERE task_id = ?
-            """,
+            
+,
+"""
                 (
                     datetime.now().isoformat(),
                     json.dumps(result),
                     datetime.now().isoformat(),
                     task_id,
-                ),
-            )
+                 ),
+            """
+
+             
+            
+
+             )
+            
+""""""
 
     def _update_task_retry(
         self, task_id: str, retry_count: int, error_message: str, retry_time: datetime
-    ):
-        """Update task for retry"""
+#     ):
+        
+Update task for retry
+"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               """
+
+                
+               
+
                 UPDATE tasks
+               
+""""""
+
                 SET status = 'retrying', retry_count = ?, error_message = ?,
+               
+
+                
+               
+"""
                     scheduled_at = ?, updated_at = ?
                 WHERE task_id = ?
-            """,
+            """
+,
+
                 (
                     retry_count,
                     error_message,
                     retry_time.isoformat(),
                     datetime.now().isoformat(),
                     task_id,
-                ),
-            )
+                 ),
+            
+""""""
+
+             )
+            
+
+             
+            
+""""""
+
+                
+               
+
+                SET status = 'retrying', retry_count = ?, error_message = ?,
+               
+""""""
 
     def _save_agent_worker(self, worker: AgentWorker):
-        """Save agent worker to database"""
+        
+Save agent worker to database
+"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               """
+
+                
+               
+
                 INSERT OR REPLACE INTO agent_workers
                 (worker_id, agent_type, status, current_task_id, tasks_completed,
-                    last_heartbeat, capabilities, max_concurrent_tasks, current_load)
+#                     last_heartbeat, capabilities, max_concurrent_tasks, current_load)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            
+""","""
+
                 (
                     worker.worker_id,
                     worker.agent_type,
@@ -752,35 +1185,68 @@ class TaskQueue:
                     json.dumps(worker.capabilities),
                     worker.max_concurrent_tasks,
                     worker.current_load,
-                ),
-            )
+                 ),
+            
+
+             
+            
+"""
+             )
+            """
+
+             
+            
 
     def _log_task_execution(
         self, task_id: str, worker_id: str, action: str, details: Dict[str, Any] = None
-    ):
-        """Log task execution event"""
+#     ):
+        
+"""Log task execution event"""
+
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               
+
+                
+               
+"""
                 INSERT INTO task_execution_log
                 (task_id, worker_id, action, details, timestamp)
                 VALUES (?, ?, ?, ?, ?)
-            """,
+            """
+,
+
                 (
                     task_id,
                     worker_id,
                     action,
                     json.dumps(details) if details else None,
                     datetime.now().isoformat(),
-                ),
-            )
+                 ),
+            
+""""""
 
+             )
+            
+
+             
+            
+"""
     def _are_dependencies_satisfied(self, task_id: str) -> bool:
-        """Check if task dependencies are satisfied"""
+        """
+Check if task dependencies are satisfied
+
         task = self._get_task(task_id)
         if not task:
+            
+"""
+            return False
+            """"""
+            """
+
             return False
 
+            """
         dependencies = json.loads(task["dependencies"])
         if not dependencies:
             return True
@@ -795,18 +1261,44 @@ class TaskQueue:
         return True
 
     def _get_next_task_for_agent(self, agent_type: str) -> Optional[str]:
-        """Get next available task for agent type"""
+        """
+Get next available task for agent type
+
+        
+"""
         with sqlite3.connect(self.db_path) as conn:
+        """
+
             cursor = conn.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT task_id FROM tasks
                 WHERE agent_type = ? AND status = 'pending'
                 AND scheduled_at <= ?
                 ORDER BY priority ASC, scheduled_at ASC
                 LIMIT 1
-            """,
+            """
+,
+
                 (agent_type, datetime.now().isoformat()),
-            )
+            
+""""""
+
+             )
+            
+
+             
+            
+""""""
+
+        with sqlite3.connect(self.db_path) as conn:
+        
+
+       
+""""""
 
             row = cursor.fetchone()
             if row:
@@ -818,54 +1310,188 @@ class TaskQueue:
         return None
 
     def _schedule_task_for_execution(self, task_id: str):
-        """Schedule task for execution by updating its status"""
+        
+Schedule task for execution by updating its status
+"""
         if self._are_dependencies_satisfied(task_id):
+           """
+
+            
+           
+
             self._update_task_status(task_id, TaskStatus.PENDING)
+           
+""""""
+
+           
+
+
+            
+
+           
+"""
+            self._update_task_status(task_id, TaskStatus.PENDING)
+           """
+
+            
+           
 
     def _check_retry_tasks(self):
-        """Check for tasks that need to be retried"""
+        
+"""Check for tasks that need to be retried"""
+
+        
+
         with sqlite3.connect(self.db_path) as conn:
+        
+"""
             cursor = conn.execute(
-                """
+               """
+
+                
+               
+
                 SELECT task_id FROM tasks
                 WHERE status = 'retrying' AND scheduled_at <= ?
-            """,
+            
+""","""
+
                 (datetime.now().isoformat(),),
-            )
+            
+
+             
+            
+"""
+             )
+            """"""
+        with sqlite3.connect(self.db_path) as conn:
+        """"""
+            """
+
 
             for row in cursor.fetchall():
+
+            
+
                 task_id = row[0]
+               
+""""""
+
                 self._update_task_status(task_id, TaskStatus.PENDING)
+               
+
+                
+               
+""""""
+
+            for row in cursor.fetchall():
+            
+
+           
+""""""
 
     def _check_stuck_tasks(self):
-        """Check for tasks that appear to be stuck"""
+        """
+        Check for tasks that appear to be stuck
+        """"""
+
+        
+       
+
         stuck_timeout = datetime.now() - timedelta(hours=1)
+       
+""""""
 
         with sqlite3.connect(self.db_path) as conn:
+       
+
+        
+       
+"""
+        stuck_timeout = datetime.now() - timedelta(hours=1)
+       """
+
+        
+       
+
             cursor = conn.execute(
-                """
+               
+""""""
+
                 SELECT task_id FROM tasks
                 WHERE status = 'running' AND started_at < ?
-            """,
+            
+,
+"""
                 (stuck_timeout.isoformat(),),
-            )
+            """
+
+             
+            
+
+             )
+            
+""""""
+
+            
+
 
             for row in cursor.fetchall():
+
+            
+""""""
+
+             
+            
+
+             )
+            
+""""""
                 task_id = row[0]
                 self.logger.warning(f"Detected stuck task: {task_id}")
                 self._handle_task_failure(task_id, "system", "Task timeout - marked as stuck")
 
     def _update_metrics_cache(self):
-        """Update metrics cache"""
+        """
+Update metrics cache
+
         with sqlite3.connect(self.db_path) as conn:
+           
+""""""
+
             # Get task counts by status
+           
+
+            
+           
+"""
             cursor = conn.execute(
-                """
+               """
+
+                
+               
+
                 SELECT status, COUNT(*) FROM tasks
                 GROUP BY status
-            """
-            )
+            
+""""""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+            
+           """
+
+            # Get task counts by status
+           
+
+            
+           
+"""
             status_counts = dict(cursor.fetchall())
 
             total_tasks = sum(status_counts.values())
@@ -876,25 +1502,49 @@ class TaskQueue:
 
             # Calculate average execution time
             cursor = conn.execute(
-                """
+                """"""
+
                 SELECT AVG(julianday(completed_at) - julianday(started_at)) * 86400
                 FROM tasks
                 WHERE status = 'completed' AND started_at IS NOT NULL
-            """
-            )
+           
+
+            
+           
+""""""
+
+             
+            
+
+             )
+            
+""""""
 
             avg_execution_time = cursor.fetchone()[0] or 0
 
             # Calculate throughput (tasks per hour in last 24 hours)
             last_24h = datetime.now() - timedelta(hours=24)
             cursor = conn.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT COUNT(*) FROM tasks
                 WHERE status = 'completed' AND completed_at > ?
-            """,
-                (last_24h.isoformat(),),
-            )
+            """
+,
 
+                (last_24h.isoformat(),),
+            
+""""""
+
+             )
+            
+
+             
+            
+"""
             completed_last_24h = cursor.fetchone()[0]
             throughput_per_hour = completed_last_24h / 24
 
@@ -908,7 +1558,7 @@ class TaskQueue:
                 "average_execution_time": avg_execution_time,
                 "success_rate": success_rate,
                 "throughput_per_hour": throughput_per_hour,
-            }
+             }
 
             self.last_metrics_update = datetime.now()
 
@@ -930,45 +1580,114 @@ class TaskQueue:
         return 0.0
 
     def _update_task_dependencies(self, task_id: str, dependencies: List[str]):
-        """Update task dependencies"""
+        """
+Update task dependencies
+
         with sqlite3.connect(self.db_path) as conn:
             # Update task record
             conn.execute(
-                """
+               
+""""""
+
                 UPDATE tasks SET dependencies = ?, updated_at = ?
                 WHERE task_id = ?
-            """,
+            
+,
+"""
                 (json.dumps(dependencies), datetime.now().isoformat(), task_id),
-            )
+            """
+
+             
+            
+
+             )
+            
+""""""
 
             # Add dependency records
             for dep_id in dependencies:
                 conn.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT OR IGNORE INTO task_dependencies
                     (task_id, dependency_id, created_at)
                     VALUES (?, ?, ?)
-                """,
+                """
+,
+
                     (task_id, dep_id, datetime.now().isoformat()),
-                )
+                
+""""""
+
+                 )
+                
+
+                 
+                
+""""""
+
+             
+            
+
+             )
+            
+""""""
 
     def _update_agent_heartbeat(self, worker_id: str):
-        """Update agent heartbeat"""
+        
+Update agent heartbeat
+"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               """
+
+                
+               
+
                 UPDATE agent_workers
                 SET last_heartbeat = ?
                 WHERE worker_id = ?
-            """,
+            
+""","""
+
                 (datetime.now().isoformat(), worker_id),
-            )
+            
+
+             
+            
+"""
+             )
+            """
+
+             
+            
 
     def _remove_offline_worker(self, worker_id: str):
-        """Remove offline worker"""
-        if worker_id in self.agent_registry:
-            del self.agent_registry[worker_id]
+        
+"""Remove offline worker"""
 
+        if worker_id in self.agent_registry:
+           
+
+            
+           
+"""
+            del self.agent_registry[worker_id]
+           """"""
+
+            
+
+           """
+
+            del self.agent_registry[worker_id]
+           
+
+            
+           
+"""
         if worker_id in self.worker_threads:
             del self.worker_threads[worker_id]
 
@@ -1000,7 +1719,7 @@ if __name__ == "__main__":
             agent_type="TestAgent",
             payload={"data": f"test_data_{i}"},
             priority=TaskPriority.MEDIUM,
-        )
+         )
         task_ids.append(task_id)
 
     # Submit a workflow
@@ -1012,16 +1731,16 @@ if __name__ == "__main__":
                 "agent_type": "TestAgent",
                 "payload": {"data": "workflow_step_1"},
                 "priority": TaskPriority.HIGH.value,
-            },
+             },
             {
                 "step_id": "step2",
                 "task_type": "test_task",
                 "agent_type": "TestAgent",
                 "payload": {"data": "workflow_step_2"},
                 "depends_on": ["step1"],
-            },
-        ]
-    }
+             },
+         ]
+     }
 
     workflow_task_ids = task_queue.submit_workflow(workflow)
 
@@ -1031,7 +1750,7 @@ if __name__ == "__main__":
             metrics = task_queue.get_queue_metrics()
             print(
                 f"Queue metrics: {metrics.pending_tasks} pending, {metrics.completed_tasks} completed"
-            )
+             )
             time.sleep(1)
     except KeyboardInterrupt:
         pass

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 API Security and Compliance Validator
 Comprehensive security validation and compliance checking for 100+ APIs
 
@@ -15,7 +15,7 @@ Features:
 
 Usage:
     python api_security_compliance.py
-"""
+""""""
 
 import asyncio
 import base64
@@ -46,7 +46,9 @@ from cryptography.hazmat.backends import default_backend
 # Configure logging
 logging.basicConfig(
     level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -128,7 +130,8 @@ class APISecurityCompliance:
                 "user_agent": "SecurityScanner / 1.0",
                 "rate_limit_test_requests": 100,
                 "penetration_test_payloads": self.load_penetration_payloads(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def load_compliance_frameworks(self) -> Dict[str, Any]:
@@ -146,8 +149,10 @@ class APISecurityCompliance:
                         "privacy_by_design": "Implement privacy controls by default",
                         "dpo_appointment": "Appoint Data Protection Officer if required",
                         "impact_assessment": "Conduct privacy impact assessments",
-                        },
-                    },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
                 "CCPA": {
                 "name": "California Consumer Privacy Act",
                     "region": "California, US",
@@ -158,8 +163,10 @@ class APISecurityCompliance:
                         "deletion_rights": "Enable data deletion requests",
                         "non_discrimination": "No discrimination for privacy choices",
                         "third_party_disclosure": "Disclose third - party data sharing",
-                        },
-                    },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
                 "SOC2": {
                 "name": "Service Organization Control 2",
                     "region": "US",
@@ -169,8 +176,10 @@ class APISecurityCompliance:
                         "processing_integrity": "Ensure data processing accuracy",
                         "confidentiality_protection": "Protect confidential information",
                         "privacy_safeguards": "Implement privacy protection measures",
-                        },
-                    },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
                 "HIPAA": {
                 "name": "Health Insurance Portability and Accountability Act",
                     "region": "US",
@@ -181,15 +190,17 @@ class APISecurityCompliance:
                         "breach_notification": "Report breaches to authorities",
                         "business_associate": "Manage business associate agreements",
                         "minimum_necessary": "Limit data access to minimum necessary",
-                        },
-                    },
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
                 "PCI_DSS": {
                 "name": "Payment Card Industry Data Security Standard",
                     "region": "Global",
                     "requirements": {
                     "firewall_configuration": "Maintain secure firewall configuration",
-                        "default_passwords": "Change default passwords \
-    and security parameters",
+                        "default_passwords": "Change default passwords \"
+#     and security parameters",
                         "cardholder_data": "Protect stored cardholder data",
                         "data_transmission": "Encrypt cardholder data transmission",
                         "antivirus_software": "Use and maintain antivirus software",
@@ -197,14 +208,17 @@ class APISecurityCompliance:
                         "access_control": "Restrict access to cardholder data",
                         "unique_ids": "Assign unique ID to each person with access",
                         "physical_access": "Restrict physical access to cardholder data",
-                        "network_monitoring": "Track \
-    and monitor access to network resources",
-                        "security_testing": "Regularly test security systems \
-    and processes",
+                        "network_monitoring": "Track \"
+#     and monitor access to network resources",
+                        "security_testing": "Regularly test security systems \"
+#     and processes",
                         "information_security": "Maintain information security policy",
-                        },
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         return frameworks
 
@@ -214,43 +228,56 @@ class APISecurityCompliance:
         return {
             "sql_injection": [
                 "' OR '1'='1",
-                    "'; DROP TABLE users; --",
-                    "' UNION SELECT * FROM users --",
-                    "admin'--",
+                    "'; DROP TABLE users; --",'
+                    "' UNION SELECT * FROM users --",'
+                    "admin'--",'
                     "' OR 1 = 1#",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "xss": [
                 "<script > alert('XSS')</script>",
                     "javascript:alert('XSS')",
                     "<img src = x onerror = alert('XSS')>",
                     "<svg onload = alert('XSS')>",
-                    "'><script > alert('XSS')</script>",
-                    ],
+                    "'><script > alert('XSS')</script>",'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "command_injection": [
                 "; ls -la",
                     "| whoami",
                     "&& cat /etc / passwd",
                     "`id`",
                     "$(whoami)",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "path_traversal": [
                 "../../../etc / passwd",
                     "..\\\\..\\\\..\\\\windows\\\\system32\\\\drivers\\\\etc\\\\hosts",
                     "....//....//....//etc / passwd",
                     "%2e % 2e % 2f % 2e % 2e % 2f % 2e % 2e % 2fetc % 2fpasswd",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "ldap_injection": [
                 "*)(uid=*))(|(uid=*",
                     "*)(|(password=*))",
                     "admin)(&(password=*))",
-                    "*))%00",
-                    ],
-                }
+# BRACKET_SURGEON: disabled
+#                     "*))%00",
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def scan_api_security(
         self, api_key: str, api_config: Dict[str, Any]
-    ) -> SecurityTestResult:
+# BRACKET_SURGEON: disabled
+#     ) -> SecurityTestResult:
         """Comprehensive security scan for a single API"""
         logger.info(f"Starting security scan for {api_key}")
 
@@ -274,7 +301,9 @@ class APISecurityCompliance:
                 penetration_test={},
                 recommendations=[],
                 next_scan_date=(start_time + timedelta(days = 30)).isoformat(),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         try:
             # 1. SSL / TLS Certificate Analysis
@@ -283,7 +312,9 @@ class APISecurityCompliance:
             # 2. Authentication Security Testing
             result.authentication_security = await self.test_authentication_security(
                 api_config
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # 3. Rate Limiting Validation
             result.rate_limiting = await self.test_rate_limiting(api_config)
@@ -313,7 +344,9 @@ class APISecurityCompliance:
 
             logger.info(
                 f"Security scan completed for {api_key}: Grade {result.security_grade} ({result.overall_score:.1f}/100)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             logger.error(f"Security scan failed for {api_key}: {e}")
@@ -327,8 +360,12 @@ class APISecurityCompliance:
                         affected_endpoints=["all"],
                         remediation_effort="medium",
                         compliance_impact=["all"],
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return result
 
@@ -352,7 +389,8 @@ class APISecurityCompliance:
                         "score": 0,
                         "issues": ["API does not use HTTPS"],
                         "recommendations": ["Enable HTTPS / SSL encryption"],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             # Get certificate
             context = ssl.create_default_context()
@@ -378,7 +416,8 @@ class APISecurityCompliance:
                     "san_domains": [],
                     "issues": [],
                     "recommendations": [],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Check expiration
             days_until_expiry = (cert.not_valid_after - datetime.now()).days
@@ -388,7 +427,9 @@ class APISecurityCompliance:
             elif days_until_expiry < 30:
                 analysis["issues"].append(
                     f"Certificate expires in {days_until_expiry} days"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 analysis["score"] -= 20
                 analysis["recommendations"].append("Renew SSL certificate soon")
 
@@ -396,7 +437,9 @@ class APISecurityCompliance:
             if analysis["public_key_size"] < 2048:
                 analysis["issues"].append(
                     f'Weak key size: {analysis["public_key_size"]} bits'
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 analysis["score"] -= 30
                 analysis["recommendations"].append("Use at least 2048 - bit RSA keys")
 
@@ -405,20 +448,27 @@ class APISecurityCompliance:
             if any(
                 alg in analysis["signature_algorithm"].lower()
                 for alg in weak_algorithms
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 analysis["issues"].append(
                     f'Weak signature algorithm: {analysis["signature_algorithm"]}'
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 analysis["score"] -= 25
                 analysis["recommendations"].append(
                     "Use SHA - 256 or stronger signature algorithm"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Extract SAN domains
             try:
                 san_extension = cert.extensions.get_extension_for_oid(
                     x509.oid.ExtensionOID.SUBJECT_ALTERNATIVE_NAME
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 analysis["san_domains"] = [name.value for name in san_extension.value]
             except x509.ExtensionNotFound:
                 pass
@@ -432,7 +482,8 @@ class APISecurityCompliance:
                     "error": str(e),
                     "issues": [f"SSL analysis failed: {str(e)}"],
                     "recommendations": ["Investigate SSL configuration"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def test_authentication_security(
@@ -448,34 +499,46 @@ class APISecurityCompliance:
                 "issues": [],
                 "recommendations": [],
                 "tests": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         try:
             async with aiohttp.ClientSession(
                 timeout = aiohttp.ClientTimeout(total = 30)
-            ) as session:
+# BRACKET_SURGEON: disabled
+#             ) as session:
                 # Test 1: No authentication
                 analysis["tests"]["no_auth"] = await self.test_no_auth_access(
                     session, base_url
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Test 2: Invalid credentials
                 analysis["tests"]["invalid_creds"] = (
                     await self.test_invalid_credentials(session, base_url, auth_methods)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Test 3: Brute force protection
                 analysis["tests"]["brute_force"] = (
                     await self.test_brute_force_protection(
                         session, base_url, auth_methods
-                    )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Test 4: Token security
                 if "bearer" in auth_methods or "jwt" in auth_methods:
                     analysis["tests"]["token_security"] = (
                         await self.test_token_security(session, base_url)
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 # Calculate score based on test results
                 total_tests = len(analysis["tests"])
@@ -483,23 +546,31 @@ class APISecurityCompliance:
                     1
                     for test in analysis["tests"].values()
                     if test.get("passed", False)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 analysis["score"] = (
                     (passed_tests / total_tests * 100) if total_tests > 0 else 0
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Generate recommendations
                 if analysis["tests"]["no_auth"].get("vulnerable", False):
                     analysis["issues"].append("API allows unauthenticated access")
                     analysis["recommendations"].append(
                         "Implement proper authentication"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 if analysis["tests"]["brute_force"].get("vulnerable", False):
                     analysis["issues"].append("No brute force protection detected")
                     analysis["recommendations"].append(
                         "Implement rate limiting and account lockout"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             analysis["error"] = str(e)
@@ -519,7 +590,8 @@ class APISecurityCompliance:
                 "vulnerable": False,
                 "accessible_endpoints": [],
                 "protected_endpoints": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         for endpoint in test_endpoints:
             try:
@@ -560,21 +632,28 @@ class APISecurityCompliance:
                                     "endpoint": endpoint,
                                         "status": response.status,
                                         "headers": dict(response.headers),
-                                        }
-                            )
+# BRACKET_SURGEON: disabled
+#                                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     elif method == "basic":
                         headers = {
                             "Authorization": "Basic aW52YWxpZDppbnZhbGlk"
-                        }  # invalid:invalid
+# BRACKET_SURGEON: disabled
+#                         }  # invalid:invalid
                         async with session.get(url, headers = headers) as response:
                             method_results["responses"].append(
                                 {
                                     "endpoint": endpoint,
                                         "status": response.status,
                                         "headers": dict(response.headers),
-                                        }
-                            )
+# BRACKET_SURGEON: disabled
+#                                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Check for information disclosure
                     if response.status == 200:
@@ -584,7 +663,9 @@ class APISecurityCompliance:
                 except Exception as e:
                     method_results["responses"].append(
                         {"endpoint": endpoint, "error": str(e)}
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             results["tests"][method] = method_results
 
@@ -600,7 +681,8 @@ class APISecurityCompliance:
                 "vulnerable": False,
                 "rate_limited": False,
                 "attempts": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         login_endpoint = urljoin(base_url, "/api / login")
 
@@ -618,7 +700,8 @@ class APISecurityCompliance:
                             "status": response.status,
                             "response_time": end_time - start_time,
                             "headers": dict(response.headers),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     results["attempts"].append(attempt_result)
 
@@ -632,7 +715,8 @@ class APISecurityCompliance:
                         i > 0
                         and attempt_result["response_time"]
                         > results["attempts"][0]["response_time"] * 2
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         results["rate_limited"] = True
 
             except Exception as e:
@@ -672,7 +756,9 @@ class APISecurityCompliance:
                 "Bearer ",
                 "Bearer invalid.token.format",
                 "NotBearer validtoken",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for token in malformed_tokens:
             try:
@@ -699,18 +785,22 @@ class APISecurityCompliance:
                 "effective": False,
                 "bypass_attempts": [],
                 "recommendations": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         if not base_url:
             analysis["recommendations"].append(
                 "Configure base URL for rate limit testing"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return analysis
 
         try:
             async with aiohttp.ClientSession(
                 timeout = aiohttp.ClientTimeout(total = 60)
-            ) as session:
+# BRACKET_SURGEON: disabled
+#             ) as session:
                 test_endpoint = urljoin(base_url, "/api / test")
 
                 # Test 1: Rapid requests
@@ -740,12 +830,16 @@ class APISecurityCompliance:
                 if not analysis["implemented"]:
                     analysis["recommendations"].append(
                         "Implement rate limiting to prevent abuse"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 if analysis["implemented"] and not analysis["effective"]:
                     analysis["recommendations"].append(
                         "Improve rate limiting effectiveness"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             analysis["error"] = str(e)
@@ -763,7 +857,8 @@ class APISecurityCompliance:
                 "requests_sent": 0,
                 "responses": [],
                 "rate_limit_triggered_at": None,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Send rapid requests
         for i in range(self.security_config["rate_limit_test_requests"]):
@@ -777,7 +872,8 @@ class APISecurityCompliance:
                             "status": response.status,
                             "response_time": end_time - start_time,
                             "headers": dict(response.headers),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     results["responses"].append(response_data)
                     results["requests_sent"] += 1
@@ -786,7 +882,8 @@ class APISecurityCompliance:
                     if (
                         response.status == 429
                         or "rate - limit" in str(response.headers).lower()
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         results["rate_limited"] = True
                         results["rate_limit_triggered_at"] = i + 1
                         break
@@ -820,8 +917,11 @@ class APISecurityCompliance:
                             "ip": ip,
                                 "status": response.status,
                                 "headers": dict(response.headers),
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             except Exception as e:
                 results["attempts"].append({"ip": ip, "error": str(e)})
 
@@ -830,7 +930,9 @@ class APISecurityCompliance:
             attempt.get("status")
             for attempt in results["attempts"]
             if "status" in attempt
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         if len(set(statuses)) > 1:
             results["effective"] = True
 
@@ -857,7 +959,9 @@ class APISecurityCompliance:
                     async with session.get(endpoint, headers = headers) as response:
                         user_results["requests"].append(
                             {"request": i + 1, "status": response.status}
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                         if response.status == 429:
                             user_results["rate_limited"] = True
@@ -873,7 +977,9 @@ class APISecurityCompliance:
             len(user["requests"])
             for user in results["test_users"]
             if user["rate_limited"]
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         if len(set(rate_limited_counts)) > 1:
             results["different_limits"] = True
             results["effective"] = True
@@ -892,20 +998,24 @@ class APISecurityCompliance:
                 "data_retention": {"policy_exists": False, "automated_deletion": False},
                 "third_party_sharing": {"disclosed": False, "controlled": False},
                 "recommendations": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         base_url = api_config.get("base_url", "")
 
         if not base_url:
             analysis["recommendations"].append(
                 "Configure base URL for privacy assessment"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return analysis
 
         try:
             async with aiohttp.ClientSession(
                 timeout = aiohttp.ClientTimeout(total = 30)
-            ) as session:
+# BRACKET_SURGEON: disabled
+#             ) as session:
                 # Check for privacy policy
                 privacy_urls = ["/privacy", "/privacy - policy", "/legal / privacy"]
                 for url in privacy_urls:
@@ -925,7 +1035,8 @@ class APISecurityCompliance:
                     "access": ["/api / data - access", "/api / user / data"],
                         "deletion": ["/api / delete - account", "/api / user / delete"],
                         "portability": ["/api / export - data", "/api / user / export"],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 for right, endpoints in rights_endpoints.items():
                     for endpoint in endpoints:
@@ -936,7 +1047,9 @@ class APISecurityCompliance:
                                     200,
                                         401,
                                         403,
-                                        ]:  # Endpoint exists
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         ]:  # Endpoint exists
                                     analysis["user_rights"][right] = True
                                     analysis["score"] += 15
                                     break
@@ -960,17 +1073,23 @@ class APISecurityCompliance:
                 if not analysis["privacy_policy"]["exists"]:
                     analysis["recommendations"].append(
                         "Create and publish privacy policy"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 if not any(analysis["user_rights"].values()):
                     analysis["recommendations"].append(
                         "Implement data subject rights endpoints"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 if not analysis["consent_management"]["implemented"]:
                     analysis["recommendations"].append(
                         "Implement consent management system"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             analysis["error"] = str(e)
@@ -988,33 +1107,43 @@ class APISecurityCompliance:
                 "vulnerabilities_found": [],
                 "tests_conducted": [],
                 "recommendations": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         base_url = api_config.get("base_url", "")
 
         if not base_url:
             analysis["recommendations"].append(
                 "Configure base URL for penetration testing"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return analysis
 
         try:
             async with aiohttp.ClientSession(
                 timeout = aiohttp.ClientTimeout(total = 30)
-            ) as session:
+# BRACKET_SURGEON: disabled
+#             ) as session:
                 # Test each vulnerability category
                 for category, payloads in self.security_config[
                     "penetration_test_payloads"
-                ].items():
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ].items():
                     test_result = await self.test_vulnerability_category(
                         session, base_url, category, payloads
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     analysis["tests_conducted"].append(test_result)
 
                     if test_result.get("vulnerable", False):
                         analysis["vulnerabilities_found"].extend(
                             test_result.get("vulnerabilities", [])
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         analysis["score"] -= test_result.get("score_impact", 10)
 
                 # Ensure score doesn't go below 0
@@ -1024,16 +1153,24 @@ class APISecurityCompliance:
                 if analysis["vulnerabilities_found"]:
                     analysis["recommendations"].append(
                         "Address identified security vulnerabilities immediately"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     analysis["recommendations"].append(
                         "Implement input validation and sanitization"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     analysis["recommendations"].append(
                         "Use parameterized queries to prevent injection attacks"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     analysis["recommendations"].append(
                         "Implement proper output encoding"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             analysis["error"] = str(e)
@@ -1056,7 +1193,8 @@ class APISecurityCompliance:
                 "vulnerabilities": [],
                 "score_impact": 0,
                 "tested_endpoints": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Common test endpoints
         test_endpoints = ["/api / search", "/api / user", "/api / data", "/login"]
@@ -1071,7 +1209,9 @@ class APISecurityCompliance:
                         {"params": {"q": payload}},  # Query parameter
                         {"json": {"input": payload}},  # JSON body
                         {"headers": {"X - Test": payload}},  # Header
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
                     for test_case in test_cases:
                         async with session.get(full_url, **test_case) as response:
@@ -1080,20 +1220,24 @@ class APISecurityCompliance:
                             # Check for vulnerability indicators
                             if self.is_vulnerable_response(
                                 category, payload, response, response_text
-                            ):
+# BRACKET_SURGEON: disabled
+#                             ):
                                 vulnerability = {
                                     "endpoint": endpoint,
                                         "payload": payload,
                                         "injection_point": list(test_case.keys())[0],
                                         "response_status": response.status,
                                         "evidence": response_text[:200],  # First 200 chars
-                                }
+# BRACKET_SURGEON: disabled
+#                                 }
 
                                 result["vulnerabilities"].append(vulnerability)
                                 result["vulnerable"] = True
                                 result["score_impact"] = self.get_vulnerability_impact(
                                     category
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                 except Exception:
                     continue  # Continue testing other payloads
@@ -1109,7 +1253,8 @@ class APISecurityCompliance:
             payload: str,
             response: aiohttp.ClientResponse,
             response_text: str,
-            ) -> bool:
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
         """Check if response indicates vulnerability"""
         if category == "sql_injection":
             # Look for SQL error messages
@@ -1125,14 +1270,18 @@ class APISecurityCompliance:
             command_indicators = ["uid=", "gid=", "root:", "/bin/", "windows"]
             return any(
                 indicator in response_text.lower() for indicator in command_indicators
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         elif category == "path_traversal":
             # Look for file contents
             file_indicators = ["root:x:", "[boot loader]", "etc / passwd"]
             return any(
                 indicator in response_text.lower() for indicator in file_indicators
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         elif category == "ldap_injection":
             # Look for LDAP errors or unexpected data
@@ -1150,7 +1299,8 @@ class APISecurityCompliance:
                 "command_injection": 35,
                 "path_traversal": 25,
                 "ldap_injection": 20,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return impacts.get(category, 15)
 
 
@@ -1166,7 +1316,9 @@ class APISecurityCompliance:
                 # Assess compliance for this requirement
                 status = await self.assess_compliance_requirement(
                     api_config, framework_name, req_id, req_description
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 compliance_results.append(
                     ComplianceRequirement(
@@ -1178,8 +1330,12 @@ class APISecurityCompliance:
                             remediation_steps = status["remediation_steps"],
                             deadline = status.get("deadline"),
                             risk_level = status["risk_level"],
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return compliance_results
 
@@ -1194,7 +1350,8 @@ class APISecurityCompliance:
                 "evidence": [],
                 "remediation_steps": [],
                 "risk_level": "medium",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # GDPR - specific assessments
         if framework == "GDPR":
@@ -1204,12 +1361,16 @@ class APISecurityCompliance:
                     assessment["status"] = "compliant"
                     assessment["evidence"].append(
                         "API configured for minimal data collection"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     assessment["status"] = "non_compliant"
                     assessment["remediation_steps"].append(
                         "Review and minimize data collection"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             elif req_id == "consent_management":
                 # Check for consent endpoints
@@ -1217,12 +1378,16 @@ class APISecurityCompliance:
                     assessment["status"] = "compliant"
                     assessment["evidence"].append(
                         "Consent management endpoints available"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     assessment["status"] = "non_compliant"
                     assessment["remediation_steps"].append(
                         "Implement consent management system"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # SOC2 - specific assessments
         elif framework == "SOC2":
@@ -1233,7 +1398,9 @@ class APISecurityCompliance:
                     assessment["status"] = "compliant"
                     assessment["evidence"].append(
                         f"Security score: {security_score}/100"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     assessment["status"] = "partial"
                     assessment["remediation_steps"].append("Improve security controls")
@@ -1269,15 +1436,20 @@ class APISecurityCompliance:
                     severity="high",
                         category="authentication",
                         description="No authentication mechanism configured",
-                        recommendation="Implement strong authentication (OAuth2,
+                        recommendation="Implement strong authentication (OAuth2,"
     JWT,
-    API keys)",
+# BRACKET_SURGEON: disabled
+#     API keys)","
                         cve_id = None,
                         affected_endpoints=["all"],
                         remediation_effort="medium",
                         compliance_impact=["GDPR", "SOC2", "HIPAA"],
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # 2. Missing HTTPS
         base_url = api_config.get("base_url", "")
@@ -1292,8 +1464,12 @@ class APISecurityCompliance:
                         affected_endpoints=["all"],
                         remediation_effort="low",
                         compliance_impact=["PCI_DSS", "HIPAA", "SOC2"],
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # 3. No rate limiting
         rate_limits = api_config.get("rate_limits", {})
@@ -1303,14 +1479,18 @@ class APISecurityCompliance:
                     severity="medium",
                         category="availability",
                         description="No rate limiting configured",
-                        recommendation="Implement rate limiting to prevent abuse \
-    and DoS attacks",
+                        recommendation="Implement rate limiting to prevent abuse \"
+#     and DoS attacks",
                         cve_id = None,
                         affected_endpoints=["all"],
                         remediation_effort="medium",
                         compliance_impact=["SOC2"],
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # 4. Weak API key format
         api_key_format = api_config.get("api_key_format", "")
@@ -1320,14 +1500,18 @@ class APISecurityCompliance:
                     severity="medium",
                         category="authentication",
                         description="API keys may be too short or predictable",
-                        recommendation="Use cryptographically secure,
-    long API keys (32+ characters)",
+                        recommendation="Use cryptographically secure,"
+    long API keys (32+ characters)","
                         cve_id = None,
                         affected_endpoints=["authenticated"],
                         remediation_effort="low",
                         compliance_impact=["SOC2"],
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return vulnerabilities
 
@@ -1415,7 +1599,9 @@ class APISecurityCompliance:
         if auth_issues:
             recommendations.extend(
                 result.authentication_security.get("recommendations", [])
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Rate limiting recommendations
         rate_recommendations = result.rate_limiting.get("recommendations", [])
@@ -1474,7 +1660,8 @@ class APISecurityCompliance:
                 "critical_issues": [],
                 "recommendations": [],
                 "api_details": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Analyze compliance across all APIs
         framework_stats = {}
@@ -1489,11 +1676,14 @@ class APISecurityCompliance:
                     "overall_score": result.overall_score,
                     "critical_vulnerabilities": len(
                     [v for v in result.vulnerabilities if v.severity == "critical"]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "compliance_issues": len(
                     [c for c in result.compliance_status if c.status == "non_compliant"]
-                ),
-                    }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Aggregate framework compliance
             for compliance in result.compliance_status:
@@ -1505,7 +1695,8 @@ class APISecurityCompliance:
                             "non_compliant": 0,
                             "partial": 0,
                             "unknown": 0,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                 framework_stats[framework]["total_requirements"] += 1
                 framework_stats[framework][compliance.status] += 1
@@ -1518,8 +1709,11 @@ class APISecurityCompliance:
                             "api": api_key,
                                 "vulnerability": vuln.description,
                                 "recommendation": vuln.recommendation,
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # Calculate framework compliance percentages
         for framework, stats in framework_stats.items():
@@ -1527,30 +1721,38 @@ class APISecurityCompliance:
                 (stats["compliant"] / stats["total_requirements"] * 100)
                 if stats["total_requirements"] > 0
                 else 0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             report["framework_compliance"][framework] = {
                 "compliance_rate": compliance_rate,
                     "status": (
                     "compliant"
                     if compliance_rate >= 90
                     else "partial" if compliance_rate >= 70 else "non_compliant"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     **stats,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Overall compliance score
         if framework_stats:
             overall_compliance_rate = sum(
                 fc["compliance_rate"] for fc in report["framework_compliance"].values()
-            ) / len(report["framework_compliance"])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ) / len(report["framework_compliance"])
             report["overall_compliance"] = {
                 "rate": overall_compliance_rate,
                     "status": (
                     "compliant"
                     if overall_compliance_rate >= 90
                     else "partial" if overall_compliance_rate >= 70 else "non_compliant"
-                ),
-                    }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Generate top recommendations
         all_recommendations = []
@@ -1558,7 +1760,9 @@ class APISecurityCompliance:
             if api_key in self.security_results:
                 all_recommendations.extend(
                     self.security_results[api_key].recommendations
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Count recommendation frequency
         recommendation_counts = {}
@@ -1568,7 +1772,9 @@ class APISecurityCompliance:
         # Top 10 most common recommendations
         report["recommendations"] = sorted(
             recommendation_counts.items(), key = lambda x: x[1], reverse = True
-        )[:10]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )[:10]
 
         return report
 
@@ -1596,7 +1802,9 @@ class APISecurityCompliance:
                 scan_with_semaphore(api_key, config)
                 for api_key, config in api_configs.items()
                 if config.is_configured
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             results = await asyncio.gather(*tasks, return_exceptions = True)
 
@@ -1673,7 +1881,9 @@ class APISecurityCompliance:
         api_configs = self.config_manager.api_configs
         configured_apis = [
             key for key, config in api_configs.items() if config.is_configured
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         if not configured_apis:
             print("❌ No configured APIs found")
@@ -1698,7 +1908,9 @@ class APISecurityCompliance:
                 print(f"Vulnerabilities: {len(result.vulnerabilities)}")
                 print(
                     f"Compliance Issues: {len([c for c in result.compliance_status if c.status == 'non_compliant'])}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 print("❌ Invalid selection")
         except ValueError:
@@ -1715,7 +1927,9 @@ class APISecurityCompliance:
             try:
                 max_workers = int(
                     input("Max parallel workers (1 - 10, default 5): ") or "5"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 max_workers = max(1, min(10, max_workers))
             except ValueError:
                 max_workers = 5
@@ -1723,7 +1937,9 @@ class APISecurityCompliance:
             max_workers = 1
 
         results = await self.scan_all_apis(parallel = parallel,
-    max_workers = max_workers)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     max_workers = max_workers)
 
         print(f"\\n✅ Scan completed! Processed {len(results)} APIs")
 
@@ -1733,13 +1949,18 @@ class APISecurityCompliance:
             sum(result.overall_score for result in results.values())/len(results)
             if results
             else 0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         print(f"Average Security Score: {avg_score:.1f}/100")
         print(
-            f"Grade Distribution: {dict(zip(*np.unique(grades,
-    return_counts = True))) if grades else 'None'}"
-        )
+            f"Grade Distribution: {dict(zip(*np.unique(grades,"
+# BRACKET_SURGEON: disabled
+#     return_counts = True))) if grades else 'None'}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def show_security_results(self):
@@ -1760,7 +1981,9 @@ class APISecurityCompliance:
             # Show critical vulnerabilities
             critical_vulns = [
                 v for v in result.vulnerabilities if v.severity == "critical"
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             if critical_vulns:
                 print(f"   ⚠️  Critical Issues: {len(critical_vulns)}")
 
@@ -1787,7 +2010,9 @@ class APISecurityCompliance:
                 "✅"
                 if stats["status"] == "compliant"
                 else "⚠️" if stats["status"] == "partial" else "❌"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(f"   {status_emoji} {framework}: {stats['compliance_rate']:.1f}%")
 
         if report["critical_issues"]:
@@ -1798,7 +2023,9 @@ class APISecurityCompliance:
         # Save report
         report_file = (
             self.reports_dir / f"compliance_report_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         with open(report_file, "w") as f:
             json.dump(report, f, indent = 2, default = str)
 
@@ -1833,7 +2060,9 @@ class APISecurityCompliance:
             (api, vuln)
             for api, vuln in all_vulnerabilities
             if vuln.severity == "critical"
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         if critical_vulns:
             print("\\n🚨 Critical Vulnerabilities:")
             for api_key, vuln in critical_vulns[:10]:  # Show first 10
@@ -1860,7 +2089,8 @@ class APISecurityCompliance:
                             "non_compliant": 0,
                             "partial": 0,
                             "total": 0,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                 framework_stats[framework][compliance.status] += 1
                 framework_stats[framework]["total"] += 1
@@ -1868,12 +2098,16 @@ class APISecurityCompliance:
         for framework, stats in framework_stats.items():
             compliance_rate = (
                 (stats["compliant"] / stats["total"] * 100) if stats["total"] > 0 else 0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             status_emoji = (
                 "✅"
                 if compliance_rate >= 90
                 else "⚠️" if compliance_rate >= 70 else "❌"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             print(f"\\n{status_emoji} {framework}")
             print(f"   Compliance Rate: {compliance_rate:.1f}%")
@@ -1903,7 +2137,9 @@ class APISecurityCompliance:
         # Sort by frequency
         sorted_recommendations = sorted(
             recommendation_counts.items(), key = lambda x: x[1], reverse = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         print(f"Top {min(15, len(sorted_recommendations))} Recommendations:")
         for i, (recommendation, count) in enumerate(sorted_recommendations[:15], 1):
@@ -1943,17 +2179,23 @@ class APISecurityCompliance:
                 "total_apis": len(self.security_results),
                     "average_score": sum(
                     r.overall_score for r in self.security_results.values()
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 / len(self.security_results),
                     "total_vulnerabilities": sum(
                     len(r.vulnerabilities) for r in self.security_results.values()
-                ),
-                    },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     },
                 "results": {
                 api_key: asdict(result)
                 for api_key, result in self.security_results.items()
-            },
-                }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#                 }
 
         report_file = self.reports_dir / f"security_report_{timestamp}.json"
         with open(report_file, "w") as f:
@@ -1985,8 +2227,12 @@ class APISecurityCompliance:
                         "Low Vulns",
                         "Compliance Issues",
                         "Last Scan",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Data rows
             for api_key, result in self.security_results.items():
@@ -1996,7 +2242,9 @@ class APISecurityCompliance:
 
                 compliance_issues = len(
                     [c for c in result.compliance_status if c.status == "non_compliant"]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 writer.writerow(
                     [
@@ -2010,8 +2258,12 @@ class APISecurityCompliance:
                             vuln_counts["low"],
                             compliance_issues,
                             result.test_timestamp[:19],
-                            ]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         print(f"✅ CSV report exported to: {report_file}")
 
@@ -2029,7 +2281,7 @@ class APISecurityCompliance:
 
     def generate_html_report(self) -> str:
         """Generate HTML security report"""
-        html = f"""
+        html = f""""""
 <!DOCTYPE html>
 <html>
 <head>
@@ -2063,29 +2315,29 @@ class APISecurityCompliance:
         <p><strong > Average Score:</strong> {sum(r.overall_score for r in self.security_results.values())/len(self.security_results):.1f}/100</p>
         <p><strong > Total Vulnerabilities:</strong> {sum(len(r.vulnerabilities) for r in self.security_results.values())}</p>
     </div>
-"""
+""""""
 
         for api_key, result in self.security_results.items():
             grade_class = f"grade-{result.security_grade[0]}"
 
-            html += f"""
+            html += f""""""
     <div class="api - result {grade_class}">
         <h3>🔧 {api_key}</h3>
         <p><strong > Security Grade:</strong> {result.security_grade} ({result.overall_score:.1f}/100)</p>
         <p><strong > Last Scan:</strong> {result.test_timestamp[:19]}</p>
 
         <h4>🛡️ Vulnerabilities ({len(result.vulnerabilities)})</h4>
-"""
+""""""
 
             for vuln in result.vulnerabilities[:10]:  # Show first 10
                 html += f'<div class="vulnerability {vuln.severity}"><strong>{vuln.severity.upper()}:</strong> {vuln.description}</div>\\n'
 
             html += "</div>\\n"
 
-        html += """
+        html += """"""
 </body>
 </html>
-"""
+""""""
 
         return html
 
@@ -2098,7 +2350,9 @@ class APISecurityCompliance:
         print(f"Current timeout: {self.security_config['timeout']}s")
         new_timeout = input(
             "New timeout (seconds, press Enter to keep current): "
-        ).strip()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).strip()
         if new_timeout.isdigit():
             self.security_config["timeout"] = int(new_timeout)
 
@@ -2109,10 +2363,14 @@ class APISecurityCompliance:
 
         print(
             f"Current rate limit test requests: {self.security_config['rate_limit_test_requests']}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         new_requests = input(
             "New rate limit test requests (press Enter to keep current): "
-        ).strip()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).strip()
         if new_requests.isdigit():
             self.security_config["rate_limit_test_requests"] = int(new_requests)
 

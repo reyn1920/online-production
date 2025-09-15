@@ -15,7 +15,8 @@ class Linly:
         mode="api",
         model_path="Linly - AI/Chinese - LLaMA - 2 - 7B - hf",
         prefix_prompt="""请用少于25个字回答以下问题\\n\\n""",
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         # mode = api need
         # 定义设置的api的服务器,首先记得运行Linly - api - fast.py 填入ip地址和端口号
         self.url = f"http://{ip}:{api_port}"  # local server: http://ip:port
@@ -34,7 +35,8 @@ class Linly:
             device_map="cuda:0",
             torch_dtype=torch.bfloat16,
             trust_remote_code=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         tokenizer = AutoTokenizer.from_pretrained(path, use_fast=False, trust_remote_code=True)
         return model, tokenizer
 
@@ -54,13 +56,14 @@ class Linly:
                     eos_token_id=2,
                     bos_token_id=1,
                     pad_token_id=0,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 response = self.tokenizer.batch_decode(
                     generate_ids,
                     skip_special_tokens=True,
                     clean_up_tokenization_spaces=False,
                 )[0]
-                response = response.split("### Response:")[-1]
+                response = response.split("### Response:")[-1]"
                 return response
             except Exception:
                 return "对不起，你的请求出错了，请再次尝试。\\nSorry, your request has encountered an error. Please try again.\\n"
@@ -72,7 +75,7 @@ class Linly:
         for interaction in self.history:
             user_prompt, bot_prompt = str(interaction[0]).strip(" "), str(interaction[1]).strip(" ")
             system_prompt = f"{system_prompt} User: {user_prompt} Bot: {bot_prompt}"
-        prompt = f"{system_prompt} ### Instruction:{message.strip()}  ### Response:"
+        prompt = f"{system_prompt} ### Instruction:{message.strip()}  ### Response:""
         return prompt
 
     def predict_api(self, question):

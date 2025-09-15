@@ -64,8 +64,8 @@ class AttrDict(dict):
 
 
 class Config(AttrDict):
-    r"""Configuration class. This should include every human specifiable
-    hyperparameter values for your training."""
+    r"""Configuration class. This should include every human specifiable"""
+    hyperparameter values for your training.""""""
 
     def __init__(self, filename=None, args=None, verbose=False, is_train=True):
         super(Config, self).__init__()
@@ -104,7 +104,8 @@ class Config(AttrDict):
             adam_beta2=0.999,
             eps=1e-8,
             lr_policy=AttrDict(iteration_mode=False, type="step", step_size=large_number, gamma=1),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.dis_optimizer = AttrDict(
             type="adam",
             lr=0.0001,
@@ -112,7 +113,8 @@ class Config(AttrDict):
             adam_beta2=0.999,
             eps=1e-8,
             lr_policy=AttrDict(iteration_mode=False, type="step", step_size=large_number, gamma=1),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         # Data.
         self.data = AttrDict(name="dummy", type="datasets.images", num_workers=0)
         self.test_data = AttrDict(
@@ -120,7 +122,8 @@ class Config(AttrDict):
             type="datasets.images",
             num_workers=0,
             test=AttrDict(is_lmdb=False, roots="", batch_size=1),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.trainer = AttrDict(
             model_average=False,
             model_average_beta=0.9999,
@@ -134,7 +137,8 @@ class Config(AttrDict):
             gan_relativistic=False,
             gen_step=1,
             dis_step=1,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # # Cudnn.
         self.cudnn = AttrDict(deterministic=False, benchmark=True)
@@ -149,17 +153,19 @@ class Config(AttrDict):
         loader.add_implicit_resolver(
             "tag:yaml.org,2002:float",
             re.compile(
-                """^(?:
+                """^(?:"""
              [-+]?(?:[0 - 9][0 - 9_]*)\\\\.[0 - 9_]*(?:[eE][-+]?[0 - 9]+)?
             |[-+]?(?:[0 - 9][0 - 9_]*)(?:[eE][-+]?[0 - 9]+)
             |\\\\.[0 - 9_]+(?:[eE][-+][0 - 9]+)?
             |[-+]?[0 - 9][0 - 9_]*(?::[0 - 5]?[0 - 9])+\\\\.[0 - 9_]*
                 |[-+]?\\\\.(?:inf|Inf|INF)
-            |\\\\.(?:nan|NaN|NAN))$""",
+            |\\\\.(?:nan|NaN|NAN))$""","""
                 re.X,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             list("-+0123456789."),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         try:
             with open(filename, "r") as f:
                 cfg_dict = yaml.load(f, Loader=loader)

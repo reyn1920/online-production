@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Credit Optimizer - Intelligent credit usage optimization
 Optimizes API calls to minimize credit consumption while maintaining quality
-"""
+""""""
 
 import asyncio
 import logging
@@ -52,7 +52,8 @@ class CreditOptimizer:
             "speed_weight": 0.3,
             "pattern_decay_hours": 24,
             "confidence_threshold": 0.7,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Model cost estimates (credits per 1k tokens)
         self.model_costs = {
@@ -64,7 +65,8 @@ class CreditOptimizer:
             "gemini - pro": 0.001,
             "llama - 2 - 70b": 0.0007,
             "mixtral - 8x7b": 0.0006,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Quality scores (subjective, 0 - 1)
         self.model_quality = {
@@ -76,7 +78,8 @@ class CreditOptimizer:
             "mixtral - 8x7b": 0.80,
             "llama - 2 - 70b": 0.78,
             "claude - 3 - haiku": 0.75,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Speed estimates (requests per minute)
         self.model_speed = {
@@ -88,7 +91,8 @@ class CreditOptimizer:
             "claude - 3 - sonnet": 30,
             "gpt - 4": 20,
             "claude - 3 - opus": 15,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.logger.info("Credit optimizer initialized")
 
@@ -113,7 +117,8 @@ class CreditOptimizer:
             (quality * config["quality_weight"])
             + (normalized_speed * config["speed_weight"])
             + ((1 - min(cost, 0.05) / 0.05) * config["cost_weight"])
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return efficiency
 
@@ -123,8 +128,9 @@ class CreditOptimizer:
         task_type: str = "general",
         budget_limit: float = None,
         speed_priority: bool = False,
-    ) -> OptimizationRecommendation:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> OptimizationRecommendation:
+        """"""
         Get optimized model recommendation
 
         Args:
@@ -135,7 +141,7 @@ class CreditOptimizer:
 
         Returns:
             Optimization recommendation
-        """
+        """"""
         estimated_tokens = self.estimate_token_count(messages)
 
         # Task - specific model preferences
@@ -145,7 +151,8 @@ class CreditOptimizer:
             "coding": ["gpt - 4", "claude - 3 - sonnet", "gpt - 3.5 - turbo"],
             "general": ["gpt - 3.5 - turbo", "claude - 3 - sonnet", "gemini - pro"],
             "fast": ["claude - 3 - haiku", "gpt - 3.5 - turbo", "gemini - pro"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if speed_priority:
             task_type = "fast"
@@ -178,8 +185,10 @@ class CreditOptimizer:
                     "efficiency": efficiency,
                     "estimated_cost": estimated_cost,
                     "estimated_tokens": estimated_tokens,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Sort by efficiency score
         model_scores.sort(key=lambda x: x["efficiency"], reverse=True)
@@ -195,7 +204,8 @@ class CreditOptimizer:
                 confidence_score=0.3,
                 reasoning="Fallback to most cost - effective model",
                 fallback_options=["gpt - 3.5 - turbo", "gemini - pro"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         best_model = model_scores[0]
         fallback_options = [score["model"] for score in model_scores[1:3]]
@@ -222,7 +232,8 @@ class CreditOptimizer:
             confidence_score=confidence,
             reasoning=reasoning,
             fallback_options=fallback_options,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def record_usage(
         self,
@@ -231,8 +242,9 @@ class CreditOptimizer:
         success: bool,
         response_time: float,
         quality_score: float = None,
-    ):
-        """
+# BRACKET_SURGEON: disabled
+#     ):
+        """"""
         Record actual usage for pattern learning
 
         Args:
@@ -241,7 +253,7 @@ class CreditOptimizer:
             success: Whether the request was successful
             response_time: Response time in seconds
             quality_score: Optional quality assessment (0 - 1)
-        """
+        """"""
         now = datetime.now()
 
         if model not in self.usage_patterns:
@@ -253,7 +265,8 @@ class CreditOptimizer:
                 avg_response_time=response_time,
                 cost_efficiency=quality_score or self.model_quality.get(model, 0.5),
                 last_updated=now,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             # Update existing pattern with exponential moving average
             pattern = self.usage_patterns[model]
@@ -261,34 +274,40 @@ class CreditOptimizer:
 
             pattern.avg_credits_per_request = (
                 alpha * actual_credits + (1 - alpha) * pattern.avg_credits_per_request
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             pattern.success_rate = (
                 alpha * (1.0 if success else 0.0) + (1 - alpha) * pattern.success_rate
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             pattern.avg_response_time = (
                 alpha * response_time + (1 - alpha) * pattern.avg_response_time
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if quality_score:
                 pattern.cost_efficiency = (
                     alpha * quality_score + (1 - alpha) * pattern.cost_efficiency
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             pattern.last_updated = now
 
         self.logger.debug(
             f"Recorded usage for {model}: {actual_credits:.4f} credits, success: {success}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def get_budget_recommendation(
         self,
         available_credits: float,
         expected_requests: int,
         task_distribution: Dict[str, float] = None,
-    ) -> Dict:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
+        """"""
         Get budget allocation recommendations
 
         Args:
@@ -298,7 +317,7 @@ class CreditOptimizer:
 
         Returns:
             Budget allocation recommendations
-        """
+        """"""
         if not task_distribution:
             task_distribution = {"general": 1.0}
 
@@ -314,7 +333,8 @@ class CreditOptimizer:
         avg_cost_per_request = sum(
             task_costs[task_type] * proportion
             for task_type, proportion in task_distribution.items()
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         total_estimated_cost = avg_cost_per_request * expected_requests
 
@@ -330,10 +350,13 @@ class CreditOptimizer:
                     "estimated_requests": int(expected_requests * proportion),
                     "cost_per_request": task_costs[task_type],
                     "total_cost": task_costs[task_type] * expected_requests * proportion,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for task_type, proportion in task_distribution.items()
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add warnings
         if total_estimated_cost > available_credits:
@@ -352,7 +375,8 @@ class CreditOptimizer:
             "model_performance": {},
             "cost_insights": {},
             "recommendations": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Analyze model performance
         for model, pattern in self.usage_patterns.items():
@@ -362,7 +386,8 @@ class CreditOptimizer:
                 "avg_response_time": pattern.avg_response_time,
                 "cost_efficiency": pattern.cost_efficiency,
                 "last_used": pattern.last_updated.isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Cost insights
         if self.usage_patterns:
@@ -379,7 +404,8 @@ class CreditOptimizer:
                 "least_efficient_model": least_efficient[0],
                 "efficiency_gap": most_efficient[1].cost_efficiency
                 - least_efficient[1].cost_efficiency,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Generate recommendations
         recommendations = []
@@ -389,25 +415,29 @@ class CreditOptimizer:
             if pattern.success_rate < 0.8:
                 recommendations.append(
                     f"Consider avoiding {model} due to low success rate ({pattern.success_rate:.1%})"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             if pattern.cost_efficiency < 0.5:
                 recommendations.append(
                     f"Review usage of {model} - low cost efficiency ({pattern.cost_efficiency:.2f})"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Check for optimization opportunities
         if len(self.usage_patterns) > 1:
             efficiency_scores = [
                 (model, pattern.cost_efficiency) for model, pattern in self.usage_patterns.items()
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             efficiency_scores.sort(key=lambda x: x[1], reverse=True)
 
             if len(efficiency_scores) >= 2:
                 best_model = efficiency_scores[0][0]
                 recommendations.append(
                     f"Consider using {best_model} more frequently for better efficiency"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         analytics["recommendations"] = recommendations
 
@@ -418,13 +448,15 @@ class CreditOptimizer:
         # Clean up old patterns
         cutoff_time = datetime.now() - timedelta(
             hours=self.optimization_config["pattern_decay_hours"]
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         expired_models = [
             model
             for model, pattern in self.usage_patterns.items()
             if pattern.last_updated < cutoff_time
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for model in expired_models:
             del self.usage_patterns[model]
@@ -432,7 +464,8 @@ class CreditOptimizer:
         self.logger.info(
             f"Credit optimizer cleanup completed, "
             f"removed {len(expired_models)} expired patterns"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 # Example usage and testing
@@ -449,8 +482,10 @@ if __name__ == "__main__":
             {
                 "role": "user",
                 "content": "Write a creative story about a robot learning to paint",
-            }
-        ]
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         ]
 
         recommendation = optimizer.get_model_recommendation(messages, task_type="creative")
         print("\\n📊 Creative Task Recommendation:")
@@ -463,7 +498,8 @@ if __name__ == "__main__":
         # Test 2: Budget - constrained recommendation
         budget_rec = optimizer.get_model_recommendation(
             messages, task_type="general", budget_limit=0.005
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print("\\n💰 Budget - Constrained Recommendation:")
         print(f"   Model: {budget_rec.recommended_model}")
         print(f"   Estimated credits: {budget_rec.estimated_credits:.4f}")
@@ -485,7 +521,8 @@ if __name__ == "__main__":
             available_credits=1.0,
             expected_requests=100,
             task_distribution={"general": 0.6, "creative": 0.3, "analytical": 0.1},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         print("\\n📈 Budget Analysis:")
         print(f"   Estimated total cost: {budget_analysis['estimated_total_cost']:.4f}")
@@ -503,7 +540,8 @@ if __name__ == "__main__":
         for model, perf in analytics["model_performance"].items():
             print(
                 f"   {model}: {perf['success_rate']:.1%} success, {perf['avg_credits']:.4f} credits"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         if analytics["recommendations"]:
             print("\\n💡 Recommendations:")

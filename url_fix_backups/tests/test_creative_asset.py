@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Creative Asset Test Script
 
 This script simulates the Creative Asset Test functionality described in the
@@ -8,7 +8,7 @@ dashboard, task queue, and content generation agents.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -66,11 +66,16 @@ class CreativeAssetTester:
                             "name": "Dr. Evelyn Reed",
                             "voice_profile": "Trustworthy - Female - US - Standard",
                             "base_face_image": "/assets / avatars / tech_evelyn_face.svg",
-                        }
-                    ]
-                }
-            }
-        }
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
     def run_creative_asset_test(
         self,
@@ -96,12 +101,14 @@ class CreativeAssetTester:
                 "avatar": avatar,
                 "voice": voice,
                 "topic": topic,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "status": "completed",
             "steps": [],
             "output_file": None,
             "duration_seconds": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         start_time = time.time()
 
@@ -162,9 +169,9 @@ class CreativeAssetTester:
     def _generate_test_script(self, topic: str) -> str:
         """Generate a test script for the given topic."""
         script_templates = {
-            "Quantum Computing Explained": """
-            Welcome to Next Gen Tech Today. I'm Dr. Evelyn Reed, \
-    and today we're diving deep
+            "Quantum Computing Explained": """"""
+            Welcome to Next Gen Tech Today. I'm Dr. Evelyn Reed, \'
+#     and today we're diving deep
             into the fascinating world of quantum computing.
 
             Quantum computing represents a fundamental shift in how we process information.
@@ -176,10 +183,11 @@ class CreativeAssetTester:
             classical computers thousands of years to complete. From cryptography to drug
             discovery, quantum computing is set to transform our digital landscape.
 
-            Thank you for watching Next Gen Tech Today. Don't forget to subscribe for more
+            Thank you for watching Next Gen Tech Today. Don't forget to subscribe for more'
             cutting - edge technology insights.
-            """
-        }
+            """"""
+# BRACKET_SURGEON: disabled
+#         }
 
         return script_templates.get(topic, f"Generated script content for: {topic}")
 
@@ -190,9 +198,9 @@ class CreativeAssetTester:
 
         # Create a placeholder audio file
         with open(audio_path, "w") as f:
-            f.write(f"# Simulated audio file for voice: {voice}\\n")
-            f.write(f"# Script length: {len(script)} characters\\n")
-            f.write(f"# Generated at: {timestamp}\\n")
+            f.write(f"# Simulated audio file for voice: {voice}\\n")"
+            f.write(f"# Script length: {len(script)} characters\\n")"
+            f.write(f"# Generated at: {timestamp}\\n")"
 
         self.logger.info(f"Voice generation simulated: {audio_file}")
         return str(audio_path)
@@ -204,9 +212,9 @@ class CreativeAssetTester:
 
         # Create a placeholder video file
         with open(avatar_path, "w") as f:
-            f.write(f"# Simulated avatar animation for: {avatar}\\n")
-            f.write(f"# Audio source: {audio_file}\\n")
-            f.write(f"# Generated at: {timestamp}\\n")
+            f.write(f"# Simulated avatar animation for: {avatar}\\n")"
+            f.write(f"# Audio source: {audio_file}\\n")"
+            f.write(f"# Generated at: {timestamp}\\n")"
 
         self.logger.info(f"Avatar animation simulated: {avatar_video}")
         return str(avatar_path)
@@ -218,15 +226,16 @@ class CreativeAssetTester:
 
         # Create the actual final test video file
         with open(final_path, "w") as f:
-            f.write(f"# TRAE.AI Creative Asset Test Output\\n")
-            f.write(f"# Generated: {datetime.now().isoformat()}\\n")
-            f.write(f"# Topic: {topic}\\n")
-            f.write(f"# Avatar Video: {avatar_video}\\n")
-            f.write(f"# Generated at: {timestamp}\\n")
-            f.write(f"# Status: Production - ready test video\\n")
+            f.write(f"# TRAE.AI Creative Asset Test Output\\n")"
+            f.write(f"# Generated: {datetime.now().isoformat()}\\n")"
+            f.write(f"# Topic: {topic}\\n")"
+            f.write(f"# Avatar Video: {avatar_video}\\n")"
+            f.write(f"# Generated at: {timestamp}\\n")"
+            f.write(f"# Status: Production - ready test video\\n")"
             f.write(
-                f"\\n# This is a test video file demonstrating the Creative Asset generation pipeline.\\n"
-            )
+                f"\\n# This is a test video file demonstrating the Creative Asset generation pipeline.\\n""
+# BRACKET_SURGEON: disabled
+#             )
 
         self.logger.info(f"Final video composite created: {final_video}")
         return str(final_path)
@@ -238,7 +247,8 @@ class CreativeAssetTester:
             "task_id": task_id,
             "status": "completed",
             "message": "Test completed successfully",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def main():
@@ -247,7 +257,8 @@ def main():
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Create tester instance
     tester = CreativeAssetTester()
@@ -258,7 +269,8 @@ def main():
         avatar="Dr. Evelyn Reed",
         voice="Trustworthy - Female - US - Standard",
         topic="Quantum Computing Explained",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Print results
     print("\\n" + "=" * 60)

@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI Research Agent - The Intelligence Officer
-
-The system's eyes and ears that runs the "Hypocrisy Engine," finds new
+""""""
+The system's eyes and ears that runs the "Hypocrisy Engine," finds new'
 zero - cost APIs and affiliates, and incorporates Autonomous Trend Forecasting
 using pytrends to preempt market shifts.
+"""""""""
+
+TRAE.AI Research Agent - The Intelligence Officer
+
+
+
 """
 
 import json
@@ -32,7 +38,9 @@ from .base_agents import BaseAgent
 
 @dataclass
 class TrendData:
-    """Trend analysis data"""
+    """
+Trend analysis data
+
 
     keyword: str
     interest_score: int
@@ -40,12 +48,20 @@ class TrendData:
     related_queries: List[str]
     geographic_data: Dict[str, int]
     timestamp: datetime
+   
+""""""
+
     confidence: float
+   
 
-
+    
+   
+"""
 @dataclass
 class APIDiscovery:
-    """Discovered API information"""
+    """
+Discovered API information
+
 
     api_name: str
     base_url: str
@@ -55,12 +71,20 @@ class APIDiscovery:
     cost_model: str  # 'free', 'freemium', 'paid'
     rate_limits: Dict[str, Any]
     discovered_at: datetime
+   
+""""""
+
     quality_score: float
+   
 
-
+    
+   
+"""
 @dataclass
 class HypocrisyAlert:
-    """Hypocrisy detection result"""
+    """
+Hypocrisy detection result
+
 
     target: str
     statement_1: str
@@ -68,12 +92,20 @@ class HypocrisyAlert:
     contradiction_type: str
     confidence: float
     evidence_urls: List[str]
+   
+""""""
+
     detected_at: datetime
+   
 
-
+    
+   
+"""
 @dataclass
 class MarketIntelligence:
-    """Market intelligence report"""
+    """
+Market intelligence report
+
 
     sector: str
     key_trends: List[str]
@@ -81,9 +113,15 @@ class MarketIntelligence:
     threats: List[str]
     competitor_analysis: Dict[str, Any]
     market_sentiment: float
+   
+""""""
+
     generated_at: datetime
+   
 
-
+    
+   
+"""
 class ResearchAgent(BaseAgent):
     """The Intelligence Officer - Autonomous research and trend analysis"""
 
@@ -120,7 +158,7 @@ class ResearchAgent(BaseAgent):
             "https://api.publicapis.org/entries",
             "https://github.com/public - apis/public - apis",
             "https://rapidapi.com/search/",
-        ]
+         ]
 
         # Hypocrisy detection patterns
         self.contradiction_patterns = [
@@ -128,7 +166,7 @@ class ResearchAgent(BaseAgent):
             (r"impossible", r"definitely\\s + possible"),
             (r"will\\s + never", r"will\\s + definitely"),
             (r"completely\\s + against", r"fully\\s + support"),
-        ]
+         ]
 
     def get_status(self) -> Dict[str, Any]:
         """Get current status of the research agent"""
@@ -139,7 +177,7 @@ class ResearchAgent(BaseAgent):
             "last_trend_check": getattr(self, "last_trend_check", None),
             "last_api_discovery": getattr(self, "last_api_discovery", None),
             "last_hypocrisy_scan": getattr(self, "last_hypocrisy_scan", None),
-        }
+         }
 
     def get_capabilities(self) -> List[str]:
         """Get list of agent capabilities"""
@@ -150,7 +188,7 @@ class ResearchAgent(BaseAgent):
             "market_intelligence",
             "autonomous_monitoring",
             "research_target_management",
-        ]
+         ]
 
     def _execute_with_monitoring(self, task: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
         """Execute task with monitoring and logging"""
@@ -175,18 +213,28 @@ class ResearchAgent(BaseAgent):
                 "success": True,
                 "data": result,
                 "execution_time": time.time() - start_time,
-            }
+             }
         except Exception as e:
             self.logger.error(f"Error executing task {task}: {e}")
             return {
                 "success": False,
                 "error": str(e),
                 "execution_time": time.time() - start_time,
-            }
+             }
 
     def _rephrase_task(self, original_task: str) -> str:
-        """Rephrase task for better execution"""
+        """
+Rephrase task for better execution
+
+       
+""""""
+
         # Simple rephrasing logic for research tasks
+       
+
+        
+       
+"""
         task_mappings = {
             "find apis": "discover_apis",
             "search for apis": "discover_apis",
@@ -195,7 +243,15 @@ class ResearchAgent(BaseAgent):
             "check trends": "analyze_trends",
             "hypocrisy check": "run_hypocrisy_engine",
             "contradiction detection": "run_hypocrisy_engine",
-        }
+         }
+       """
+
+        
+       
+
+        # Simple rephrasing logic for research tasks
+       
+""""""
 
         lower_task = original_task.lower().strip()
         for key, value in task_mappings.items():
@@ -205,29 +261,83 @@ class ResearchAgent(BaseAgent):
         return original_task
 
     def _validate_rephrase_accuracy(self, original: str, rephrased: str) -> bool:
-        """Validate if rephrased task maintains original intent"""
+        
+Validate if rephrased task maintains original intent
+""""""
+
+        
+       
+
         # Simple validation - check if rephrased task is a known research operation
+       
+""""""
         valid_tasks = ["discover_apis", "analyze_trends", "run_hypocrisy_engine"]
+       """
+
+        
+       
+
+        # Simple validation - check if rephrased task is a known research operation
+       
+""""""
+
         return rephrased in valid_tasks or rephrased == original
 
     @property
     def capabilities(self) -> List[str]:
-        """Property accessor for capabilities"""
+        """
+        Property accessor for capabilities
+        """"""
+
+        return self.get_capabilities()
+        
+
+       
+""""""
+
+        
+
+
         return self.get_capabilities()
 
+        
+""""""
+
+        
+       
+
     def __post_init__(self):
-        """Initialize agent parameters after parent initialization"""
+        
+"""Initialize agent parameters after parent initialization"""
+
         # Research parameters
         self.trend_check_interval = 3600  # 1 hour
         self.api_discovery_interval = 86400  # 24 hours
+       
+
+        
+       
+"""
         self.hypocrisy_scan_interval = 7200  # 2 hours
+       """
+
+        
+       
 
         # Monitoring threads
         self.monitoring_active = False
         self.trend_thread = None
         self.api_thread = None
         self.hypocrisy_thread = None
+       
+""""""
 
+        self.hypocrisy_scan_interval = 7200  # 2 hours
+       
+
+        
+       
+"""
         # Research queues
         self.research_queue = queue.Queue()
 
@@ -236,7 +346,7 @@ class ResearchAgent(BaseAgent):
             "https://api.publicapis.org/entries",
             "https://github.com/public - apis/public - apis",
             "https://rapidapi.com/search/",
-        ]
+         ]
 
         # Hypocrisy detection patterns
         self.contradiction_patterns = [
@@ -244,13 +354,16 @@ class ResearchAgent(BaseAgent):
             (r"impossible", r"definitely\\s + possible"),
             (r"will\\s + never", r"will\\s + definitely"),
             (r"completely\\s + against", r"fully\\s + support"),
-        ]
+         ]
 
     def initialize_database(self):
-        """Initialize research database"""
+        """
+Initialize research database
+
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               
+""""""
                 CREATE TABLE IF NOT EXISTS trend_data (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         keyword TEXT NOT NULL,
@@ -260,12 +373,23 @@ class ResearchAgent(BaseAgent):
                         geographic_data TEXT NOT NULL,
                         timestamp TIMESTAMP NOT NULL,
                         confidence REAL NOT NULL
-                )
+                 )
+            """"""
+
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
             conn.execute(
-                """
+               
+""""""
                 CREATE TABLE IF NOT EXISTS api_discoveries (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         api_name TEXT NOT NULL,
@@ -277,12 +401,31 @@ class ResearchAgent(BaseAgent):
                         rate_limits TEXT NOT NULL,
                         discovered_at TIMESTAMP NOT NULL,
                         quality_score REAL NOT NULL
-                )
-            """
-            )
+                 )
+            """"""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             conn.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS hypocrisy_alerts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         target TEXT NOT NULL,
@@ -292,12 +435,24 @@ class ResearchAgent(BaseAgent):
                         confidence REAL NOT NULL,
                         evidence_urls TEXT NOT NULL,
                         detected_at TIMESTAMP NOT NULL
-                )
+                 )
+            
+""""""
+
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
             conn.execute(
-                """
+               
+""""""
                 CREATE TABLE IF NOT EXISTS market_intelligence (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         sector TEXT NOT NULL,
@@ -307,12 +462,31 @@ class ResearchAgent(BaseAgent):
                         competitor_analysis TEXT NOT NULL,
                         market_sentiment REAL NOT NULL,
                         generated_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+                 )
+            """"""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             conn.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS research_targets (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         target_type TEXT NOT NULL,
@@ -320,17 +494,40 @@ class ResearchAgent(BaseAgent):
                         priority INTEGER NOT NULL,
                         last_researched TIMESTAMP,
                         created_at TIMESTAMP NOT NULL
-                )
+                 )
+            
+""""""
+
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
     def start_monitoring(self):
-        """Start autonomous research monitoring"""
+        
+"""Start autonomous research monitoring"""
+
         if self.monitoring_active:
+            
+
             return
+            
+""""""
+
+            
+           
 
         self.monitoring_active = True
-
+            
+"""
+            return
+            """"""
         # Start trend monitoring
         self.trend_thread = threading.Thread(target=self._trend_monitor, daemon=True)
         self.trend_thread.start()
@@ -407,8 +604,8 @@ class ResearchAgent(BaseAgent):
                             geographic_data=geo_data,
                             timestamp=datetime.now(),
                             confidence=0.8,
-                        )
-                    )
+                         )
+                     )
 
             # Save trend data
             self._save_trend_data(trend_data)
@@ -446,7 +643,7 @@ class ResearchAgent(BaseAgent):
 
         self.logger.info(
             f"Discovered {len(unique_discoveries)} unique APIs from {len(discoveries)} total"
-        )
+         )
         return unique_discoveries
 
     def _discover_from_publicapis(self) -> List[APIDiscovery]:
@@ -471,67 +668,84 @@ class ResearchAgent(BaseAgent):
                             rate_limits={"source": "publicapis.org"},
                             discovered_at=datetime.now(),
                             quality_score=self._calculate_api_quality_score(entry),
-                        )
+                         )
                         discoveries.append(discovery)
         except Exception as e:
             self.logger.error(f"Error discovering from PublicAPIs: {e}")
         return discoveries
 
     def _discover_from_github_collections(self) -> List[APIDiscovery]:
-        """Discover APIs from GitHub awesome lists and collections"""
-        discoveries = []
+        """
+Discover APIs from GitHub awesome lists and collections
 
+       
+""""""
+
+        discoveries = []
+       
+
+        
+       
+"""
         # Popular free APIs from known collections
+       """
+
+        
+       
+
+        discoveries = []
+       
+""""""
         free_apis = [
             {
                 "API": "JSONPlaceholder",
                 "Link": "https://jsonplaceholder.typicode.com",
                 "Description": "Fake REST API for testing and prototyping",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "httpbin",
                 "Link": "https://httpbin.org",
                 "Description": "HTTP request and response testing service",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "Cat Facts",
                 "Link": "https://catfact.ninja",
                 "Description": "Daily cat facts API",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "Dog API",
                 "Link": "https://dog.ceo/dog - api",
                 "Description": "Collection of dog images",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "Advice Slip",
                 "Link": "https://api.adviceslip.com",
                 "Description": "Random advice generator",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "JokeAPI",
                 "Link": "https://jokeapi.dev",
                 "Description": "Programming and general jokes",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "Numbers API",
                 "Link": "http://numbersapi.com",
                 "Description": "Interesting facts about numbers",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "Quotable",
                 "Link": "https://quotable.io",
                 "Description": "Random quotes API",
                 "Auth": "none",
-            },
-        ]
+             },
+         ]
 
         for api_data in free_apis:
             discovery = APIDiscovery(
@@ -544,48 +758,65 @@ class ResearchAgent(BaseAgent):
                 rate_limits={"source": "github_collections"},
                 discovered_at=datetime.now(),
                 quality_score=0.8,  # High quality curated APIs
-            )
+             )
             discoveries.append(discovery)
 
         return discoveries
 
     def _discover_from_rapidapi_free(self) -> List[APIDiscovery]:
-        """Discover free tier APIs from RapidAPI"""
-        discoveries = []
+        """
+Discover free tier APIs from RapidAPI
 
+       
+""""""
+
+        discoveries = []
+       
+
+        
+       
+"""
         # Popular RapidAPI free tier APIs
+       """
+
+        
+       
+
+        discoveries = []
+       
+""""""
         rapidapi_free = [
             {
                 "API": "OpenWeatherMap",
                 "Link": "https://openweathermap.org/api",
                 "Description": "Weather data API with free tier",
                 "Auth": "apikey",
-            },
+             },
             {
                 "API": "News API",
                 "Link": "https://newsapi.org",
                 "Description": "News articles from various sources",
                 "Auth": "apikey",
-            },
+             },
             {
                 "API": "CoinGecko",
                 "Link": "https://coingecko.com/en/api",
                 "Description": "Cryptocurrency data API",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "REST Countries",
                 "Link": "https://restcountries.com",
                 "Description": "Country information API",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "IP Geolocation",
                 "Link": "https://ipapi.co",
                 "Description": "IP address geolocation",
                 "Auth": "none",
-            },
-        ]
+             },
+         ]
 
         for api_data in rapidapi_free:
             discovery = APIDiscovery(
@@ -598,35 +829,53 @@ class ResearchAgent(BaseAgent):
                 rate_limits={"source": "rapidapi_free", "tier": "free"},
                 discovered_at=datetime.now(),
                 quality_score=0.9,  # High quality commercial APIs
-            )
+             )
             discoveries.append(discovery)
 
         return discoveries
 
     def _discover_government_apis(self) -> List[APIDiscovery]:
-        """Discover government and open data APIs"""
-        discoveries = []
+        """
+Discover government and open data APIs
 
+       
+""""""
+
+        discoveries = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        discoveries = []
+       
+""""""
         gov_apis = [
             {
                 "API": "NASA Open Data",
                 "Link": "https://api.nasa.gov",
                 "Description": "NASA datasets and imagery",
                 "Auth": "apikey",
-            },
+             },
             {
                 "API": "USGS Earthquake",
                 "Link": "https://earthquake.usgs.gov/fdsnws/event/1/",
                 "Description": "Real - time earthquake data",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "World Bank",
                 "Link": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392",
                 "Description": "World development indicators",
                 "Auth": "none",
-            },
-        ]
+             },
+         ]
 
         for api_data in gov_apis:
             discovery = APIDiscovery(
@@ -639,41 +888,59 @@ class ResearchAgent(BaseAgent):
                 rate_limits={"source": "government", "reliability": "high"},
                 discovered_at=datetime.now(),
                 quality_score=0.95,  # Government APIs are highly reliable
-            )
+             )
             discoveries.append(discovery)
 
         return discoveries
 
     def _discover_developer_friendly_apis(self) -> List[APIDiscovery]:
-        """Discover developer - friendly APIs with generous free tiers"""
-        discoveries = []
+        """
+Discover developer - friendly APIs with generous free tiers
 
+       
+""""""
+
+        discoveries = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        discoveries = []
+       
+""""""
         dev_apis = [
             {
                 "API": "GitHub API",
                 "Link": "https://api.github.com",
                 "Description": "GitHub repository and user data",
                 "Auth": "oauth",
-            },
+             },
             {
                 "API": "Unsplash",
                 "Link": "https://unsplash.com/developers",
                 "Description": "High - quality stock photos",
                 "Auth": "oauth",
-            },
+             },
             {
                 "API": "Lorem Picsum",
                 "Link": "https://picsum.photos",
                 "Description": "Lorem Ipsum for photos",
                 "Auth": "none",
-            },
+             },
             {
                 "API": "QR Server",
                 "Link": "https://goqr.me/api",
                 "Description": "QR code generation",
                 "Auth": "none",
-            },
-        ]
+             },
+         ]
 
         for api_data in dev_apis:
             discovery = APIDiscovery(
@@ -686,17 +953,35 @@ class ResearchAgent(BaseAgent):
                 rate_limits={"source": "developer_friendly", "generous": True},
                 discovered_at=datetime.now(),
                 quality_score=0.85,
-            )
+             )
             discoveries.append(discovery)
 
         return discoveries
 
     def _deduplicate_apis(self, discoveries: List[APIDiscovery]) -> List[APIDiscovery]:
-        """Remove duplicate API discoveries based on name and base URL"""
-        seen = set()
-        unique_discoveries = []
+        """
+Remove duplicate API discoveries based on name and base URL
 
+        seen = set()
+       
+""""""
+
+        unique_discoveries = []
+       
+
+        
+       
+"""
         for discovery in discoveries:
+       """
+
+        
+       
+
+        unique_discoveries = []
+       
+""""""
+
             key = (discovery.api_name.lower(), discovery.base_url.lower())
             if key not in seen:
                 seen.add(key)
@@ -705,12 +990,27 @@ class ResearchAgent(BaseAgent):
         return unique_discoveries
 
     def run_hypocrisy_engine(self, targets: List[str]) -> List[HypocrisyAlert]:
-        """Run hypocrisy detection on targets"""
+        
+Run hypocrisy detection on targets
+""""""
+
+        
+       
+
         alerts = []
+       
+""""""
 
         for target in targets:
             try:
                 # Search for statements by target
+       
+
+        
+       
+"""
+        alerts = []
+       """"""
                 statements = self._collect_statements(target)
 
                 # Analyze for contradictions
@@ -725,7 +1025,7 @@ class ResearchAgent(BaseAgent):
                         confidence=contradiction["confidence"],
                         evidence_urls=contradiction["evidence_urls"],
                         detected_at=datetime.now(),
-                    )
+                     )
                     alerts.append(alert)
 
             except Exception as e:
@@ -737,13 +1037,50 @@ class ResearchAgent(BaseAgent):
         return alerts
 
     def generate_market_intelligence(self, sector: str) -> MarketIntelligence:
-        """Generate comprehensive market intelligence report"""
+        """
+Generate comprehensive market intelligence report
+
         try:
+           
+""""""
+
             # Analyze trends for sector
+           
+
+            
+           
+"""
             sector_keywords = self._get_sector_keywords(sector)
+           """
+
+            
+           
+
+            # Analyze trends for sector
+           
+""""""
+
+           
+
+            
+           
+"""
             trends = self.analyze_trends(sector_keywords)
+           """
+
+            
+           
 
             # Extract key trends
+           
+""""""
+
+            trends = self.analyze_trends(sector_keywords)
+           
+
+            
+           
+"""
             key_trends = []
             opportunities = []
             threats = []
@@ -760,7 +1097,7 @@ class ResearchAgent(BaseAgent):
                 "top_competitors": [],
                 "market_share": {},
                 "competitive_advantages": [],
-            }
+             }
 
             # Calculate market sentiment
             market_sentiment = self._calculate_market_sentiment(trends)
@@ -773,7 +1110,7 @@ class ResearchAgent(BaseAgent):
                 competitor_analysis=competitor_analysis,
                 market_sentiment=market_sentiment,
                 generated_at=datetime.now(),
-            )
+             )
 
             # Save intelligence
             self._save_market_intelligence(intelligence)
@@ -790,15 +1127,32 @@ class ResearchAgent(BaseAgent):
                 competitor_analysis={},
                 market_sentiment=0.5,
                 generated_at=datetime.now(),
-            )
+             )
 
     def _trend_monitor(self):
-        """Monitor trends continuously"""
+        """
+Monitor trends continuously
+
         while self.monitoring_active:
             try:
-                # Get research targets
-                targets = self._get_research_targets("trend")
+               
+""""""
 
+                # Get research targets
+               
+
+                
+               
+"""
+                targets = self._get_research_targets("trend")
+               """
+
+                
+               
+
+                # Get research targets
+               
+""""""
                 if targets:
                     keywords = [target["target_value"] for target in targets]
                     self.analyze_trends(keywords)
@@ -810,25 +1164,58 @@ class ResearchAgent(BaseAgent):
                 time.sleep(self.trend_check_interval)
 
     def _api_discovery_monitor(self):
-        """Monitor for new API discoveries"""
+        """
+Monitor for new API discoveries
+
         while self.monitoring_active:
             try:
                 # Discover new APIs
+               
+""""""
+
                 self.discover_apis()
+               
 
+                
+               
+"""
                 time.sleep(self.api_discovery_interval)
+               """
 
+                
+               
+
+                self.discover_apis()
+               
+""""""
             except Exception as e:
                 self.logger.error(f"API discovery monitor error: {e}")
                 time.sleep(self.api_discovery_interval)
 
     def _hypocrisy_monitor(self):
-        """Monitor for hypocrisy detection"""
+        """
+Monitor for hypocrisy detection
+
         while self.monitoring_active:
             try:
-                # Get hypocrisy targets
-                targets = self._get_research_targets("hypocrisy")
+               
+""""""
 
+                # Get hypocrisy targets
+               
+
+                
+               
+"""
+                targets = self._get_research_targets("hypocrisy")
+               """
+
+                
+               
+
+                # Get hypocrisy targets
+               
+""""""
                 if targets:
                     target_names = [target["target_value"] for target in targets]
                     self.run_hypocrisy_engine(target_names)
@@ -840,24 +1227,38 @@ class ResearchAgent(BaseAgent):
                 time.sleep(self.hypocrisy_scan_interval)
 
     def _collect_statements(self, target: str) -> List[Dict[str, Any]]:
-        """Collect statements from a target using web scraping and API integration"""
-        statements = []
+        """
+Collect statements from a target using web scraping and API integration
 
+       
+""""""
+
+        statements = []
+       
+
+        
+       
+"""
         try:
             # Search for recent statements using web search
+       """
+
+        
+       
+
+        statements = []
+       
+""""""
             search_queries = [
                 f'"{target}" statement recent',
                 f'"{target}" says interview',
                 f'"{target}" quote news',
-            ]
+             ]
 
             for query in search_queries:
                 try:
                     # Use web scraping to find statements
                     search_url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
-                    headers = {
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-                    }
 
                     # Note: In production, use proper news APIs like NewsAPI, Twitter API, etc.
                     # This is a basic implementation for demonstration
@@ -868,8 +1269,8 @@ class ResearchAgent(BaseAgent):
                             "timestamp": datetime.now().isoformat(),
                             "confidence": 0.7,
                             "url": search_url,
-                        }
-                    )
+                         }
+                     )
 
                 except Exception as e:
                     self.logger.warning(f"Error collecting statements for query '{query}': {e}")
@@ -883,25 +1284,42 @@ class ResearchAgent(BaseAgent):
                     "text": f"Sample statement 1 from {target}",
                     "url": "https://example.com/1",
                     "date": datetime.now() - timedelta(days=30),
-                },
+                 },
                 {
                     "text": f"Sample statement 2 from {target}",
                     "url": "https://example.com/2",
                     "date": datetime.now() - timedelta(days=1),
-                },
-            ]
+                 },
+             ]
 
     def _detect_contradictions(self, statements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Detect contradictions in statements"""
-        contradictions = []
+        """
+Detect contradictions in statements
 
+       
+""""""
+
+        contradictions = []
+       
+
+        
+       
+"""
         for i, stmt1 in enumerate(statements):
             for j, stmt2 in enumerate(statements[i + 1 :], i + 1):
                 # Check for pattern - based contradictions
                 for pattern1, pattern2 in self.contradiction_patterns:
+       """
+
+        
+       
+
+        contradictions = []
+       
+""""""
                     if re.search(pattern1, stmt1["text"], re.IGNORECASE) and re.search(
                         pattern2, stmt2["text"], re.IGNORECASE
-                    ):
+#                     ):
                         contradictions.append(
                             {
                                 "statement_1": stmt1["text"],
@@ -909,16 +1327,33 @@ class ResearchAgent(BaseAgent):
                                 "type": "direct",  # Fixed: use valid constraint value instead of 'pattern_contradiction'
                                 "confidence": 0.7,
                                 "evidence_urls": [stmt1["url"], stmt2["url"]],
-                            }
-                        )
+                             }
+                         )
 
         return contradictions
 
     def _calculate_api_quality_score(self, api_entry: Dict[str, Any]) -> float:
-        """Calculate quality score for discovered API"""
-        score = 0.5  # Base score
+        """
+Calculate quality score for discovered API
 
+       
+""""""
+
+        score = 0.5  # Base score
+       
+
+        
+       
+"""
         # Check for HTTPS
+       """
+
+        
+       
+
+        score = 0.5  # Base score
+       
+""""""
         if api_entry.get("Link", "").startswith("https://"):
             score += 0.2
 
@@ -941,44 +1376,53 @@ class ResearchAgent(BaseAgent):
                 "blockchain",
                 "cloud computing",
                 "cybersecurity",
-            ],
+             ],
             "finance": [
                 "fintech",
                 "cryptocurrency",
                 "digital banking",
                 "robo advisor",
                 "payment",
-            ],
+             ],
             "health": [
                 "telemedicine",
                 "digital health",
                 "wearables",
                 "health app",
                 "medical AI",
-            ],
+             ],
             "education": [
                 "edtech",
                 "online learning",
                 "e - learning",
                 "educational app",
                 "remote education",
-            ],
+             ],
             "retail": [
                 "e - commerce",
                 "online shopping",
                 "retail tech",
                 "omnichannel",
                 "digital retail",
-            ],
-        }
+             ],
+         }
 
         return sector_keywords.get(sector.lower(), [sector])
 
     def _calculate_market_sentiment(self, trends: List[TrendData]) -> float:
-        """Calculate overall market sentiment from trends"""
+        """
+Calculate overall market sentiment from trends
+
         if not trends:
+            
+"""
+            return 0.5
+            """"""
+            """
+
             return 0.5
 
+            """
         rising_count = sum(1 for t in trends if t.trend_direction == "rising")
         falling_count = sum(1 for t in trends if t.trend_direction == "falling")
         total_count = len(trends)
@@ -988,47 +1432,93 @@ class ResearchAgent(BaseAgent):
         return max(0, min(1, 0.5 + sentiment * 0.5))
 
     def _get_research_targets(self, target_type: str) -> List[Dict[str, Any]]:
-        """Get research targets from database"""
+        """
+Get research targets from database
+
+        
+"""
         with sqlite3.connect(self.db_path) as conn:
+        """
+
             cursor = conn.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT target_value, priority, last_researched
                 FROM research_targets
                 WHERE target_type = ?
                 ORDER BY priority DESC, last_researched ASC
                 LIMIT 10
-            """,
-                (target_type,),
-            )
+            """
+,
 
+                (target_type,),
+            
+""""""
+
+             )
+            
+
+             
+            
+""""""
+
+        with sqlite3.connect(self.db_path) as conn:
+        
+
+       
+""""""
         return [
             {"target_value": row[0], "priority": row[1], "last_researched": row[2]}
             for row in cursor.fetchall()
-        ]
+         ]
 
     def add_research_target(self, target_type: str, target_value: str, priority: int = 1):
-        """Add research target"""
+        """
+Add research target
+
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               
+""""""
+
                 INSERT OR REPLACE INTO research_targets
                 (target_type, target_value, priority, created_at)
                 VALUES (?, ?, ?, ?)
-            """,
+            
+,
+"""
                 (target_type, target_value, priority, datetime.now().isoformat()),
-            )
+            """
+
+             
+            
+
+             )
+            
+""""""
 
     def _save_trend_data(self, trends: List[TrendData]):
-        """Save trend data to database"""
+        
+Save trend data to database
+"""
         with sqlite3.connect(self.db_path) as conn:
             for trend in trends:
                 conn.execute(
-                    """
+                   """
+
+                    
+                   
+
                     INSERT INTO trend_data
                     (keyword, interest_score, trend_direction, related_queries,
-                        geographic_data, timestamp, confidence)
+#                         geographic_data, timestamp, confidence)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+""","""
+
                     (
                         trend.keyword,
                         trend.interest_score,
@@ -1037,20 +1527,37 @@ class ResearchAgent(BaseAgent):
                         json.dumps(trend.geographic_data),
                         trend.timestamp.isoformat(),
                         trend.confidence,
-                    ),
-                )
+                     ),
+                
+
+                 
+                
+"""
+                 )
+                """
+
+                 
+                
 
     def _save_api_discoveries(self, discoveries: List[APIDiscovery]):
-        """Save API discoveries to database"""
+        
+"""Save API discoveries to database"""
+
         with sqlite3.connect(self.db_path) as conn:
             for discovery in discoveries:
                 conn.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT OR REPLACE INTO api_discoveries
                     (api_name, base_url, description, endpoints, authentication_type,
-                        cost_model, rate_limits, discovered_at, quality_score)
+#                         cost_model, rate_limits, discovered_at, quality_score)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                """
+,
+
                     (
                         discovery.api_name,
                         discovery.base_url,
@@ -1061,20 +1568,33 @@ class ResearchAgent(BaseAgent):
                         json.dumps(discovery.rate_limits),
                         discovery.discovered_at.isoformat(),
                         discovery.quality_score,
-                    ),
-                )
+                     ),
+                
+""""""
 
+                 )
+                
+
+                 
+                
+"""
     def _save_hypocrisy_alerts(self, alerts: List[HypocrisyAlert]):
-        """Save hypocrisy alerts to database"""
+        """
+Save hypocrisy alerts to database
+
         with sqlite3.connect(self.db_path) as conn:
             for alert in alerts:
                 conn.execute(
-                    """
+                   
+""""""
+
                     INSERT INTO hypocrisy_alerts
                     (target, statement_1, statement_2, contradiction_type,
-                        confidence, evidence_urls, detected_at)
+#                         confidence, evidence_urls, detected_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+,
+"""
                     (
                         alert.target,
                         alert.statement_1,
@@ -1083,19 +1603,34 @@ class ResearchAgent(BaseAgent):
                         alert.confidence,
                         json.dumps(alert.evidence_urls),
                         alert.detected_at.isoformat(),
-                    ),
-                )
+                     ),
+                """
+
+                 
+                
+
+                 )
+                
+""""""
 
     def _save_market_intelligence(self, intelligence: MarketIntelligence):
-        """Save market intelligence to database"""
+        
+Save market intelligence to database
+"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               """
+
+                
+               
+
                 INSERT INTO market_intelligence
                 (sector, key_trends, opportunities, threats, competitor_analysis,
-                    market_sentiment, generated_at)
+#                     market_sentiment, generated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+            
+""","""
+
                 (
                     intelligence.sector,
                     json.dumps(intelligence.key_trends),
@@ -1104,11 +1639,21 @@ class ResearchAgent(BaseAgent):
                     json.dumps(intelligence.competitor_analysis),
                     intelligence.market_sentiment,
                     intelligence.generated_at.isoformat(),
-                ),
-            )
+                 ),
+            
+
+             
+            
+"""
+             )
+            """
+
+             
+            
 
     def execute_task(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute research task"""
+        
+"""Execute research task"""
         task_type = task_data.get("type")
 
         if task_type == "analyze_trends":

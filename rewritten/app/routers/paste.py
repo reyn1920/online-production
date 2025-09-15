@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Paste Router - Handles paste functionality and place search integration
 Provides endpoints for creating, retrieving, and managing text pastes
-"""
+""""""
 
 from datetime import datetime
 from typing import List, Optional
@@ -26,14 +26,17 @@ PROVIDER_STATUS = {
         "color": "green",
         "last_error": None,
         "requires_key": False,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "nominatim": {
         "name": "OpenStreetMap Nominatim",
         "color": "green",
         "last_error": None,
         "requires_key": False,
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 
 class PasteCreate(BaseModel):
@@ -55,7 +58,8 @@ async def api_status():
         "status": "healthy",
         "providers": PROVIDER_STATUS,
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/health")
@@ -82,7 +86,8 @@ async def create_paste(paste_data: PasteCreate):
         "content": paste_data.content,
         "title": paste_data.title,
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     pastes_storage.append(new_paste)
     return new_paste
@@ -113,20 +118,22 @@ _OSM_TAGS = {
     "pharmacy": {"amenity": "pharmacy"},
     "pet_store": {"shop": "pet"},
     "dog_park": {"leisure": "dog_park"},
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def _overpass_query(lat, lng, radius_m, tag_key, tag_val, limit):
     """Query Overpass API for places"""
-    query = f"""
+    query = f""""""
     [out:json][timeout:25];
     (
         node["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
       way["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
       relation["{tag_key}"="{tag_val}"](around:{radius_m},{lat},{lng});
-    );
+# BRACKET_SURGEON: disabled
+#     );
     out center {limit};
-    """
+    """"""
 
     try:
         response = requests.post("https://overpass-api.de/api/interpreter", data=query, timeout=30)
@@ -172,7 +179,8 @@ async def places_search(
     lng: float = -74.0060,
     radius_m: int = 5000,
     limit: int = 50,
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Search for places using OpenStreetMap data"""
     if category not in _OSM_TAGS:
         raise HTTPException(status_code=400, detail=f"Unknown category: {category}")
@@ -197,83 +205,94 @@ async def places_search(
                 "lng": lng,
                 "radius_m": radius_m,
                 "limit": limit,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Place search failed: {str(e)}")
 
 
-PASTE_HTML_TEMPLATE = """
+PASTE_HTML_TEMPLATE = """"""
 <!DOCTYPE html>
 <html>
 <head>
     <title>Paste App</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 40px; 
-            background: #f5f5f5; 
-        }
-        .container { 
-            max-width: 800px; 
-            margin: 0 auto; 
-            background: white; 
-            padding: 20px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-        }
-        h1 { 
-            color: #333; 
-            text-align: center; 
-        }
-        textarea { 
-            width: 100%; 
-            height: 300px; 
-            margin: 10px 0; 
-            padding: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
-            font-family: monospace; 
-        }
-        button { 
-            padding: 10px 20px; 
-            margin: 5px; 
-            background: #007bff; 
-            color: white; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer; 
-        }
-        button:hover { 
-            background: #0056b3; 
-        }
-        .paste-item { 
-            border: 1px solid #ddd; 
-            margin: 10px 0; 
-            padding: 15px; 
-            border-radius: 4px; 
-            background: #f9f9f9; 
-        }
-        .paste-meta { 
-            color: #666; 
-            font-size: 0.9em; 
-            margin-bottom: 10px; 
-        }
-        pre { 
-            background: #f8f9fa; 
-            padding: 10px; 
-            border-radius: 4px; 
-            overflow-x: auto; 
-        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+# BRACKET_SURGEON: disabled
+#         }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+# BRACKET_SURGEON: disabled
+#         }
+        h1 {
+            color: #333;
+            text-align: center;
+# BRACKET_SURGEON: disabled
+#         }
+        textarea {
+            width: 100%;
+            height: 300px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+# BRACKET_SURGEON: disabled
+#         }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+# BRACKET_SURGEON: disabled
+#         }
+        button:hover {
+            background: #0056b3;
+# BRACKET_SURGEON: disabled
+#         }
+        .paste-item {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 4px;
+            background: #f9f9f9;
+# BRACKET_SURGEON: disabled
+#         }
+        .paste-meta {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+# BRACKET_SURGEON: disabled
+#         }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+# BRACKET_SURGEON: disabled
+#         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Paste App</h1>
         <form id="pasteForm">
-            <input type="text" id="title" placeholder="Optional title..." 
-                   style="width: 100%; margin-bottom: 10px; padding: 8px; 
+            <input type="text" id="title" placeholder="Optional title..."
+                   style="width: 100%; margin-bottom: 10px; padding: 8px;"
                           border: 1px solid #ddd; border-radius: 4px;">
             <textarea id="content" placeholder="Enter your text here..."></textarea><br>
             <button type="submit">Save Paste</button>
@@ -296,12 +315,15 @@ PASTE_HTML_TEMPLATE = """
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         body: JSON.stringify({
                             content: content,
                             title: title || null
-                        })
-                    });
+# BRACKET_SURGEON: disabled
+#                         })
+# BRACKET_SURGEON: disabled
+#                     });
 
                     if (response.ok) {
                         document.getElementById('content').value = '';
@@ -309,12 +331,16 @@ PASTE_HTML_TEMPLATE = """
                         loadPastes();
                     } else {
                         alert('Failed to save paste');
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 } catch (error) {
                     alert('Error saving paste: ' + error.message);
-                }
-            }
-        });
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         });
 
         async function loadPastes() {
             try {
@@ -322,11 +348,14 @@ PASTE_HTML_TEMPLATE = """
                 if (response.ok) {
                     pastes = await response.json();
                     renderPastes();
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             } catch (error) {
                 console.error('Error loading pastes:', error);
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         function renderPastes() {
             const container = document.getElementById('pastes');
@@ -339,14 +368,15 @@ PASTE_HTML_TEMPLATE = """
                     <pre>${paste.content}</pre>
                 </div>
             `).join('');
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         // Load pastes on page load
         loadPastes();
     </script>
 </body>
 </html>
-"""
+""""""
 
 
 @router.get("/", response_class=HTMLResponse)

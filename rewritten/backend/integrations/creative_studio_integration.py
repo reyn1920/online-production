@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Creative Studio Integration
 Integrates local creative studio components based on Apple Silicon architecture:
 - Ollama LLM Engine for local language models
@@ -8,7 +8,7 @@ Integrates local creative studio components based on Apple Silicon architecture:
 - Cloud software integration (Lingo Blaster, Captionizer)
 
 Based on research findings and paste_content.txt architecture.
-"""
+""""""
 
 import asyncio
 import json
@@ -74,7 +74,7 @@ class CloudSoftwareConfig:
     lingo_blaster_api: Optional[str] = None
     captionizer_api: Optional[str] = None
     youtube_api_key: Optional[str] = None
-    translation_languages: List[str] = field(default_factory=lambda: ["en", "es", "fr", "de", "zh"])
+    translation_languages: List[str] = field(default_factory=lambda: ["en", "es", "fr", "de", "zh"]):
 
 
 class OllamaLLMEngine:
@@ -95,8 +95,10 @@ class OllamaLLMEngine:
                 "options": {
                     "temperature": self.config.temperature,
                     "num_predict": self.config.max_tokens,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             if system_prompt:
                 payload["system"] = system_prompt
@@ -104,7 +106,8 @@ class OllamaLLMEngine:
             # Make API request to Ollama
             response = self.session.post(
                 f"{self.config.base_url}/api/generate", json=payload, timeout=60
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 if self.config.stream:
@@ -134,11 +137,13 @@ class OllamaLLMEngine:
                 "model": self.config.model,
                 "messages": messages,
                 "stream": False,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self.session.post(
                 f"{self.config.base_url}/api/chat", json=payload, timeout=60
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 data = response.json()
@@ -218,7 +223,8 @@ class ComfyUIVisualEngine:
         try:
             ws_url = (
                 f"ws://{self.config.base_url.replace('http://', '')}/ws?clientId={self.client_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             ws = websocket.WebSocket()
             ws.connect(ws_url)
 
@@ -231,7 +237,8 @@ class ComfyUIVisualEngine:
                         if (
                             exec_data.get("node") is None
                             and exec_data.get("prompt_id") == prompt_id
-                        ):
+# BRACKET_SURGEON: disabled
+#                         ):
                             ws.close()
                             return True
 
@@ -258,7 +265,8 @@ class ComfyUIVisualEngine:
                             image_info["filename"],
                             image_info.get("subfolder", ""),
                             image_info.get("type", "output"),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         if image_data:
                             images.append(image_data)
 
@@ -325,7 +333,8 @@ class LinlyTalkerEngine:
                 "text": text,
                 "voice_clone": self.config.voice_clone,
                 "multi_modal": self.config.multi_modal,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             if voice_sample and self.config.voice_clone:
                 files["voice_sample"] = ("voice.wav", voice_sample, "audio/wav")
@@ -336,7 +345,8 @@ class LinlyTalkerEngine:
                 files=files,
                 data=data,
                 timeout=120,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 return response.content
@@ -360,7 +370,8 @@ class LinlyTalkerEngine:
                 files=files,
                 data=data,
                 timeout=60,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 return response.content
@@ -391,19 +402,22 @@ class CloudSoftwareIntegration:
                 "target_languages": target_languages,
                 "auto_rank": True,
                 "use_youtube_api": True,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             headers = {
                 "Authorization": f"Bearer {self.config.lingo_blaster_api}",
                 "Content - Type": "application/json",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = requests.post(
                 "https://api.lingoblaster.com/v1/translate",
                 json=payload,
                 headers=headers,
                 timeout=300,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 return response.json()
@@ -428,7 +442,8 @@ class CloudSoftwareIntegration:
                 "auto_translate": True,
                 "languages": ",".join(self.config.translation_languages),
                 "style": "modern",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             headers = {"Authorization": f"Bearer {self.config.captionizer_api}"}
 
@@ -438,7 +453,8 @@ class CloudSoftwareIntegration:
                 data=data,
                 headers=headers,
                 timeout=300,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 return response.json()
@@ -510,7 +526,8 @@ class CreativeStudioOrchestrator:
             enhanced_prompt = await self.llm_engine.generate_text(
                 f"Enhance this creative prompt for visual generation: {prompt}",
                 "You are a creative director. Enhance prompts for visual AI generation.",
-            )
+# BRACKET_SURGEON: disabled
+#             )
             results["enhanced_prompt"] = enhanced_prompt
 
             # Step 2: Generate visual content using ComfyUI
@@ -520,7 +537,8 @@ class CreativeStudioOrchestrator:
                 custom_inputs = {
                     "6 - text": enhanced_prompt,  # Assuming node 6 is the text prompt
                     "3 - seed": 42,  # Fixed seed for reproducibility
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 images = await self.visual_engine.execute_workflow(workflow, custom_inputs)
                 results["generated_images"] = len(images)
@@ -529,7 +547,8 @@ class CreativeStudioOrchestrator:
                 if reference_image and images:
                     avatar_video = await self.avatar_engine.generate_avatar_video(
                         prompt, reference_image, voice_sample
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     results["avatar_video"] = avatar_video is not None
 
             # Step 4: Generate captions and translations
@@ -558,17 +577,22 @@ class CreativeStudioOrchestrator:
                     "steps": 20,
                     "sampler_name": "euler",
                     "scheduler": "normal",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "4": {
                 "class_type": "CheckpointLoaderSimple",
                 "inputs": {"ckpt_name": "sd_xl_base_1.0.safetensors"},
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "6": {
                 "class_type": "CLIPTextEncode",
                 "inputs": {"text": "placeholder prompt"},
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def get_system_info(self) -> Dict[str, Any]:
         """Get comprehensive system information"""
@@ -578,17 +602,22 @@ class CreativeStudioOrchestrator:
                 "ollama": {
                     "models": self.llm_engine.list_models(),
                     "config": self.ollama_config.__dict__,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "comfyui": {"config": self.comfyui_config.__dict__},
                 "linly_talker": {"config": self.linly_config.__dict__},
                 "cloud_software": {
                     "configured": bool(
                         self.cloud_config.lingo_blaster_api or self.cloud_config.captionizer_api
-                    )
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "health": await self.health_check(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return info
 
@@ -611,7 +640,8 @@ if __name__ == "__main__":
         if health.get("ollama", False):
             result = await orchestrator.create_complete_media_workflow(
                 "Create a futuristic cityscape with flying cars"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             print(f"Workflow Result: {result}")
 
     asyncio.run(main())

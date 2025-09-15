@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 AI Web Assistant for Trae AI Integration
 Automatically uses external AI services for coding, debugging, research, \
-    and error fixing.
-"""
+#     and error fixing.
+""""""
 
 import asyncio
 import json
@@ -38,17 +38,19 @@ class AIWebAssistant:
             "abacus": "https://apps.abacus.ai / chatllm/?appId = 1024a18ebe",
             "gemini": "https://gemini.google.com / app",
             "chatgpt": "https://chatgpt.com/",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         # Enhanced web search with multiple engines
         self.search_engines = {
             "duckduckgo": "https://api.duckduckgo.com/?q={}&format = json",
             "serp": "https://serpapi.com / search?q={}&api_key={}",
             "bing": "https://api.bing.microsoft.com / v7.0 / search?q={}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.responses_cache = []
 
     async def query_ai_service(self, service: str, query: str, context: str = "") -> AIResponse:
-        """
+        """"""
         Query an AI service with a coding / debugging question
 
         Args:
@@ -58,7 +60,7 @@ class AIWebAssistant:
 
         Returns:
             AIResponse object with the service response
-        """
+        """"""
         if service not in self.services:
             return AIResponse(
                 service=service,
@@ -67,7 +69,8 @@ class AIWebAssistant:
                 timestamp=time.time(),
                 success=False,
                 error=f"Unknown service: {service}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         try:
             # Format the query for the AI service
@@ -82,7 +85,8 @@ class AIWebAssistant:
                 response=response_text,
                 timestamp=time.time(),
                 success=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.responses_cache.append(response)
             return response
@@ -96,13 +100,14 @@ class AIWebAssistant:
                 timestamp=time.time(),
                 success=False,
                 error=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _format_query_for_service(self, service: str, query: str, context: str) -> str:
-        """
+        """"""
         Format the query appropriately for each AI service
-        """
-        base_prompt = f"""I'm working on a coding project and need help with:
+        """"""
+        base_prompt = f"""I'm working on a coding project and need help with:"""
 
 Query: {query}
 
@@ -113,7 +118,7 @@ Please provide:
 2. Specific code fixes or suggestions
 3. Best practices to prevent similar issues
 
-Respond with clear, actionable advice."""
+Respond with clear, actionable advice.""""""
 
         if service == "abacus":
             return f"Code Analysis Request: {base_prompt}"
@@ -125,30 +130,32 @@ Respond with clear, actionable advice."""
         return base_prompt
 
     async def _interact_with_service(self, service: str, query: str) -> str:
-        """
+        """"""
         Use Puppeteer to interact with the AI service
         This is a placeholder - actual implementation would use the MCP Puppeteer server
-        """
+        """"""
         # This would be implemented using the Puppeteer MCP server
         # For now, return a simulated response
         logger.info(f"Querying {service} with: {query[:100]}...")
 
         # Simulate different response patterns for each service
         if service == "abacus":
-            return f"Abacus AI Analysis: Based on your query, I recommend checking the data pipeline \
-    and model configuration. The issue might be related to feature engineering or model validation."
+            return f"Abacus AI Analysis: Based on your query, I recommend checking the data pipeline \"
+#     and model configuration. The issue might be related to feature engineering or model validation."
         elif service == "gemini":
-            return f"Gemini Response: I can help you debug this code. The error suggests a schema mismatch. Try adding proper column validation \
-    and ensure your database migrations are up to date."
+            return f"Gemini Response: I can help you debug this code. The error suggests a schema mismatch. Try adding proper column validation \"
+#     and ensure your database migrations are up to date."
         elif service == "chatgpt":
-            return f"ChatGPT Analysis: This looks like a common database schema issue. Here's what I recommend: 1) Check if the column exists, 2) Run proper migrations, 3) Add error handling for missing columns."
+            pass
+# BRACKET_SURGEON: disabled
+#             return f"ChatGPT Analysis: This looks like a common database schema issue. Here's what I recommend: 1) Check if the column exists, 2) Run proper migrations, 3) Add error handling for missing columns."'
 
         return "Service response not available"
 
     async def debug_error(
         self, error_message: str, code_context: str = ""
     ) -> Dict[str, AIResponse]:
-        """
+        """"""
         Send an error to multiple AI services for debugging assistance
 
         Args:
@@ -157,7 +164,7 @@ Respond with clear, actionable advice."""
 
         Returns:
             Dictionary of service responses
-        """
+        """"""
         query = f"Debug this error: {error_message}"
         context = f"Code context: {code_context}"
 
@@ -171,7 +178,7 @@ Respond with clear, actionable advice."""
     async def research_topic(
         self, topic: str, programming_language: str = "python"
     ) -> Dict[str, AIResponse]:
-        """
+        """"""
         Research a programming topic across multiple AI services
 
         Args:
@@ -180,10 +187,10 @@ Respond with clear, actionable advice."""
 
         Returns:
             Dictionary of service responses
-        """
+        """"""
         query = f"Explain {topic} in {programming_language}"
-        context = f"I need to understand {topic} for a {programming_language} project. Please provide examples \
-    and best practices."
+        context = f"I need to understand {topic} for a {programming_language} project. Please provide examples \"
+#     and best practices."
 
         # Query all services concurrently
         tasks = [self.query_ai_service(service, query, context) for service in self.services.keys()]
@@ -193,7 +200,7 @@ Respond with clear, actionable advice."""
         return {response.service: response for response in responses}
 
     def get_cached_responses(self, limit: int = 10) -> List[AIResponse]:
-        """
+        """"""
         Get recent cached responses
 
         Args:
@@ -201,11 +208,11 @@ Respond with clear, actionable advice."""
 
         Returns:
             List of recent AIResponse objects
-        """
+        """"""
         return sorted(self.responses_cache, key=lambda x: x.timestamp, reverse=True)[:limit]
 
     def export_responses(self, filename: str = "ai_responses.json") -> str:
-        """
+        """"""
         Export all cached responses to a JSON file
 
         Args:
@@ -213,7 +220,7 @@ Respond with clear, actionable advice."""
 
         Returns:
             Path to the exported file
-        """
+        """"""
         export_data = [
             {
                 "service": r.service,
@@ -222,9 +229,11 @@ Respond with clear, actionable advice."""
                 "timestamp": r.timestamp,
                 "success": r.success,
                 "error": r.error,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             for r in self.responses_cache
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         with open(filename, "w") as f:
             json.dump(export_data, f, indent=2)
@@ -242,7 +251,7 @@ class TraeAIIntegration:
         self.assistant = AIWebAssistant()
 
     async def auto_debug(self, error_message: str, code_snippet: str = "") -> str:
-        """
+        """"""
         Automatically debug an error using multiple AI services
 
         Args:
@@ -251,7 +260,7 @@ class TraeAIIntegration:
 
         Returns:
             Consolidated debugging advice
-        """
+        """"""
         responses = await self.assistant.debug_error(error_message, code_snippet)
 
         # Consolidate responses
@@ -268,7 +277,7 @@ class TraeAIIntegration:
         return consolidated
 
     async def research_and_implement(self, feature_request: str, language: str = "python") -> str:
-        """
+        """"""
         Research a feature and get implementation guidance
 
         Args:
@@ -277,7 +286,7 @@ class TraeAIIntegration:
 
         Returns:
             Research results and implementation guidance
-        """
+        """"""
         responses = await self.assistant.research_topic(feature_request, language)
 
         # Consolidate research results
@@ -314,7 +323,8 @@ async def demo_ai_web_assistant():
     print("\\n📋 Demo 2: Research Database Migrations")
     research_result = await trae_integration.research_and_implement(
         "database migration best practices", "python"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(research_result)
 
     # Demo 3: Show cached responses
@@ -323,7 +333,8 @@ async def demo_ai_web_assistant():
     for i, response in enumerate(recent_responses, 1):
         print(
             f"{i}. {response.service}: {response.query[:50]}... -> {'✅' if response.success else '❌'}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     # Export responses
     export_file = trae_integration.assistant.export_responses()

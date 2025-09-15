@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Avatar generation and 3D pipeline router
 
 Handles avatar generation requests using various engines and 3D pipeline.
-"""
+""""""
 
 import logging
 import os
@@ -23,7 +23,8 @@ try:
         AvatarRequest,
         AvatarResponse,
         engine_manager,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     engine_manager = None
     logging.warning("Avatar engines not available - check backend structure")
@@ -36,7 +37,8 @@ except ImportError:
             AnimationSpec,
             AvatarPipeline,
             CharacterSpec,
-        )
+# BRACKET_SURGEON: disabled
+#         )
     except ImportError:
         AvatarPipeline = None
         logging.warning("Avatar pipeline not available - check backend structure")
@@ -54,7 +56,8 @@ class AvatarGenerationRequest(BaseModel):
     video_settings: Optional[Dict[str, Any]] = Field(default={}, description="Video configuration")
     source_image: Optional[str] = Field(
         None, description="Base64 encoded source image or image URL"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     engine: Optional[str] = Field("linly-talker", description="Avatar engine to use")
     gender: Optional[str] = Field("neutral", description="Avatar gender (neutral, male, female)")
 
@@ -91,8 +94,10 @@ async def avatar_interface(request: Request):
             "request": request,
             "title": "Avatar Generation",
             "engines": await get_available_engines(),
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/health")
@@ -103,7 +108,8 @@ async def health_check():
         "timestamp": datetime.now().isoformat(),
         "engines": {},
         "pipeline": AvatarPipeline is not None,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     if engine_manager:
         try:
@@ -138,8 +144,10 @@ async def get_available_engines():
                         "name": engine_name,
                         "healthy": health,
                         "capabilities": getattr(engine, "capabilities", []),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return {"engines": engine_info}
     except Exception as e:
@@ -163,14 +171,16 @@ async def generate_avatar(request: AvatarGenerationRequest):
             raise HTTPException(
                 status_code=400,
                 detail=f"Engine {request.engine} not available",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check engine health
         if not await engine.health_check():
             raise HTTPException(
                 status_code=503,
                 detail=f"Engine {request.engine} is not responding",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Create avatar request
         avatar_request = AvatarRequest(
@@ -179,7 +189,8 @@ async def generate_avatar(request: AvatarGenerationRequest):
             video_settings=request.video_settings,
             source_image=request.source_image,
             gender=request.gender,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Store job info
         avatar_jobs[job_id] = {
@@ -190,7 +201,8 @@ async def generate_avatar(request: AvatarGenerationRequest):
             "updated_at": datetime.now(),
             "engine": request.engine,
             "request": avatar_request.dict(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Start generation (async)
         try:
@@ -201,8 +213,10 @@ async def generate_avatar(request: AvatarGenerationRequest):
                     "progress": 100.0,
                     "result_url": result.output_path,
                     "updated_at": datetime.now(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
         except Exception as e:
             logger.error(f"Avatar generation failed: {e}")
             avatar_jobs[job_id].update(
@@ -210,8 +224,10 @@ async def generate_avatar(request: AvatarGenerationRequest):
                     "status": "failed",
                     "error": str(e),
                     "updated_at": datetime.now(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {"job_id": job_id, "status": "processing"}
 
@@ -235,13 +251,15 @@ async def generate_3d_avatar(request: Avatar3DRequest):
             description=request.character_description,
             gender=request.gender,
             quality=request.quality,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Create animation spec
         animation_spec = AnimationSpec(
             type=request.animation_type,
             voice_text=request.voice_text,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Store job info
         avatar_jobs[job_id] = {
@@ -252,14 +270,16 @@ async def generate_3d_avatar(request: Avatar3DRequest):
             "updated_at": datetime.now(),
             "type": "3d",
             "request": request.dict(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Start 3D generation (async)
         try:
             pipeline = AvatarPipeline()
             result = await pipeline.generate_avatar(
                 character_spec, animation_spec, request.export_format
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             avatar_jobs[job_id].update(
                 {
@@ -267,8 +287,10 @@ async def generate_3d_avatar(request: Avatar3DRequest):
                     "progress": 100.0,
                     "result_url": result.output_path,
                     "updated_at": datetime.now(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
         except Exception as e:
             logger.error(f"3D Avatar generation failed: {e}")
             avatar_jobs[job_id].update(
@@ -276,8 +298,10 @@ async def generate_3d_avatar(request: Avatar3DRequest):
                     "status": "failed",
                     "error": str(e),
                     "updated_at": datetime.now(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {"job_id": job_id, "status": "processing"}
 
@@ -301,7 +325,8 @@ async def get_avatar_status(job_id: str):
         error=job.get("error"),
         created_at=job["created_at"],
         updated_at=job["updated_at"],
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/download/{job_id}")
@@ -322,7 +347,8 @@ async def download_avatar(job_id: str):
         result_path,
         media_type="application/octet-stream",
         filename=f"avatar_{job_id}.mp4",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.post("/upload-image")
@@ -344,7 +370,8 @@ async def upload_source_image(file: UploadFile = File(...)):
             "size": len(content),
             "temp_path": temp_path,
             "upload_id": str(uuid.uuid4()),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         logger.error(f"Error uploading image: {e}")
@@ -386,8 +413,10 @@ async def list_avatar_jobs():
                 "updated_at": job["updated_at"].isoformat(),
                 "type": job.get("type", "2d"),
                 "engine": job.get("engine"),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     return {"jobs": jobs, "total": len(jobs)}
 

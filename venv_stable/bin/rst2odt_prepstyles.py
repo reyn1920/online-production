@@ -4,10 +4,10 @@
 # Author: Dave Kuhlman <dkuhlman@rexx.com>
 # Copyright: This module has been placed in the public domain.
 
-"""
+""""""
 Fix a word-processor-generated styles.odt for odtwriter use: Drop page size
 specifications from styles.xml in STYLE_FILE.odt.
-"""
+""""""
 
 # Author: Michael Schutte <michi@uiae.at>
 
@@ -23,7 +23,8 @@ import os
 NAMESPACES = {
     "style": "urn:oasis:names:tc:opendocument:xmlns:style:1.0",
     "fo": "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def prepstyle(filename):

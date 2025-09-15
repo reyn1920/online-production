@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Dashboard Router - FastAPI router for dashboard functionality
 Integrates dashboard endpoints with the main FastAPI application
-"""
+""""""
 
 import json
 import logging
@@ -19,11 +19,15 @@ from pydantic import BaseModel, EmailStr
 
 from ..analytics import (analytics_engine, track_api_call, track_page_view,
 
-    track_user_action)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     track_user_action)
 
 from ..auth import (Permission, User, UserRole, auth_manager, get_current_user,
 
-    require_permission, require_role, validate_password_strength)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     require_permission, require_role, validate_password_strength)
 
 # Initialize router
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
@@ -38,20 +42,24 @@ dashboard_data = {
         "status": "operational",
             "uptime": "99.9%",
             "last_updated": datetime.now().isoformat(),
-            },
+# BRACKET_SURGEON: disabled
+#             },
         "metrics": {
         "total_users": 1250,
             "active_sessions": 45,
             "api_calls_today": 8750,
             "revenue_today": 2340.50,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         "services": {
         "youtube_automation": {"status": "active", "last_run": "2024 - 01 - 15T10:30:00Z"},
             "content_pipeline": {"status": "active", "last_run": "2024 - 01 - 15T11:15:00Z"},
             "marketing_agent": {"status": "active", "last_run": "2024 - 01 - 15T09:45:00Z"},
             "financial_tracking": {"status": "active", "last_run": "2024 - 01 - 15T12:00:00Z"},
-            },
-}
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+# }
 
 @router.get("/", response_class = HTMLResponse)
 
@@ -65,13 +73,16 @@ async def dashboard_home(request: Request):
                 "request": request,
                     "title": "Production Dashboard",
                     "data": dashboard_data,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
     except Exception as e:
         logger.error(f"Error loading dashboard: {e}")
         # Fallback to simple HTML response
         return HTMLResponse(
-            content="""
+            content=""""""
             <!DOCTYPE html>
             <html>
             <head>
@@ -84,7 +95,8 @@ async def dashboard_home(request: Request):
                     .header { text - align: center; margin - bottom: 40px; }
                     .metrics { display: grid; grid - template - columns: repeat(auto - fit,
     minmax(250px,
-    1fr)); gap: 20px; margin - bottom: 40px; }
+# BRACKET_SURGEON: disabled
+#     1fr)); gap: 20px; margin - bottom: 40px; }
                     .metric - card { background: #f8f9fa; padding: 20px; border - radius: 6px; border - left: 4px solid #007bff; }
                     .metric - title { font - size: 14px; color: #666; margin - bottom: 8px; }
                     .metric - value { font - size: 24px; font - weight: bold; color: #333; }
@@ -149,20 +161,20 @@ async def dashboard_home(request: Request):
                         <a href="/avatar">Avatar Services</a>
                     </div>
 
-                    <div class="paste - section" style="margin - top: 40px; border - top: 1px solid #eee; padding - top: 30px;">
+                    <div class="paste - section" style="margin - top: 40px; border - top: 1px solid #eee; padding - top: 30px;">"
                         <h3>📋 Paste Information</h3>
-                        <p style="color: #666; margin - bottom: 20px;">Paste information here to share with the AI assistant:</p>
+                        <p style="color: #666; margin - bottom: 20px;">Paste information here to share with the AI assistant:</p>"
                         <form id="pasteForm" style="margin - bottom: 20px;">
                             <textarea id="pasteContent" placeholder="Paste your content here..."
-                                style="width: 100%; height: 200px; padding: 15px; border: 1px solid #ddd; border - radius: 6px; font - family: monospace; font - size: 14px; resize: vertical;"></textarea>
+                                style="width: 100%; height: 200px; padding: 15px; border: 1px solid #ddd; border - radius: 6px; font - family: monospace; font - size: 14px; resize: vertical;"></textarea>"
                             <div style="margin - top: 15px; display: flex; gap: 10px; align - items: center;">
-                                <button type="submit" style="background: #007bff; color: white; border: none; padding: 10px 20px; border - radius: 4px; cursor: pointer;">Submit Paste</button>
-                                <button type="button" onclick="clearPaste()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border - radius: 4px; cursor: pointer;">Clear</button>
+                                <button type="submit" style="background: #007bff; color: white; border: none; padding: 10px 20px; border - radius: 4px; cursor: pointer;">Submit Paste</button>"
+                                <button type="button" onclick="clearPaste()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border - radius: 4px; cursor: pointer;">Clear</button>"
                                 <span id="pasteStatus" style="margin - left: 10px; font - size: 14px;"></span>
                             </div>
                         </form>
-                        <div id="pasteHistory" style="max - height: 300px; overflow - y: auto; border: 1px solid #eee; border - radius: 6px; padding: 15px; background: #f8f9fa;">
-                            <h4 style="margin - top: 0; color: #666;">Recent Pastes:</h4>
+                        <div id="pasteHistory" style="max - height: 300px; overflow - y: auto; border: 1px solid #eee; border - radius: 6px; padding: 15px; background: #f8f9fa;">"
+                            <h4 style="margin - top: 0; color: #666;">Recent Pastes:</h4>"
                             <div id="pasteList">No pastes yet.</div>
                         </div>
                     </div>
@@ -175,22 +187,26 @@ async def dashboard_home(request: Request):
                             if (pasteHistory.length === 0) {
                                 pasteList.innerHTML = 'No pastes yet.';
                                 return;
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                             pasteList.innerHTML = pasteHistory.slice(-5).reverse().map((paste,
-    index) => `
-                                <div style="margin - bottom: 15px; padding: 10px; background: white; border - radius: 4px; border - left: 3px solid #007bff;">
-                                    <div style="font - size: 12px; color: #666; margin - bottom: 5px;">${paste.timestamp}</div>
+# BRACKET_SURGEON: disabled
+#     index) => `
+                                <div style="margin - bottom: 15px; padding: 10px; background: white; border - radius: 4px; border - left: 3px solid #007bff;">"
+                                    <div style="font - size: 12px; color: #666; margin - bottom: 5px;">${paste.timestamp}</div>"
                                     <div style="font - family: monospace; font - size: 13px; max - height: 100px; overflow - y: auto; white - space: pre - wrap;">${paste.content.substring(0,
     200)}${paste.content.length > 200 ? '...' : ''}</div>
                                 </div>
                             `).join('');
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                         function clearPaste() {
                             document.getElementById('pasteContent').value = '';
                             document.getElementById('pasteStatus').textContent = '';
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                         document.getElementById('pasteForm').addEventListener('submit',
     async function(e) {
@@ -200,21 +216,24 @@ async def dashboard_home(request: Request):
 
                             if (!content) {
                                 statusEl.textContent = 'Please enter some content to paste.';
-                                statusEl.style.color = '#dc3545';
+                                statusEl.style.color = '#dc3545';'
                                 return;
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                             try {
                                 statusEl.textContent = 'Submitting...';
-                                statusEl.style.color = '#007bff';
+                                statusEl.style.color = '#007bff';'
 
                                 const response = await fetch('/dashboard / api / paste', {
                                     method: 'POST',
                                         headers: {
                                         'Content - Type': 'application / json',
-                                            },
+# BRACKET_SURGEON: disabled
+#                                             },
                                         body: JSON.stringify({ content: content })
-                                });
+# BRACKET_SURGEON: disabled
+#                                 });
 
                                 const result = await response.json();
 
@@ -224,33 +243,39 @@ async def dashboard_home(request: Request):
                                         content: content,
                                             timestamp: new Date().toLocaleString(),
                                             id: result.id || Date.now()
-                                    });
+# BRACKET_SURGEON: disabled
+#                                     });
 
                                     // Keep only last 10 pastes
                                     if (pasteHistory.length > 10) {
                                         pasteHistory = pasteHistory.slice(-10);
-                                    }
+# BRACKET_SURGEON: disabled
+#                                     }
 
                                     localStorage.setItem('pasteHistory',
     JSON.stringify(pasteHistory));
                                     updatePasteDisplay();
 
                                     statusEl.textContent = 'Paste submitted successfully!';
-                                    statusEl.style.color = '#28a745';
+                                    statusEl.style.color = '#28a745';'
 
                                     // Clear form after successful submission
                                     setTimeout(() => {
                                         clearPaste();
-                                    }, 2000);
+# BRACKET_SURGEON: disabled
+#                                     }, 2000);
                                 } else {
                                     statusEl.textContent = result.message || 'Failed to submit paste.';
-                                    statusEl.style.color = '#dc3545';
-                                }
+                                    statusEl.style.color = '#dc3545';'
+# BRACKET_SURGEON: disabled
+#                                 }
                             } catch (error) {
                                 statusEl.textContent = 'Error submitting paste: ' + error.message;
-                                statusEl.style.color = '#dc3545';
-                            }
-                        });
+                                statusEl.style.color = '#dc3545';'
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         });
 
                         // Initialize display
                         updatePasteDisplay();
@@ -258,9 +283,11 @@ async def dashboard_home(request: Request):
                 </div>
             </body>
             </html>
-            """,
+            ""","""
                 status_code = 200,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 @router.get("/api / status")
 
@@ -272,8 +299,11 @@ async def get_dashboard_status():
             "status": "success",
                 "data": dashboard_data,
                 "timestamp": datetime.now().isoformat(),
-                }
-    )
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 @router.get("/api / metrics")
 
@@ -285,8 +315,11 @@ async def get_metrics():
             "status": "success",
                 "metrics": dashboard_data["metrics"],
                 "timestamp": datetime.now().isoformat(),
-                }
-    )
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 @router.get("/api / services")
 
@@ -298,8 +331,11 @@ async def get_services_status():
             "status": "success",
                 "services": dashboard_data["services"],
                 "timestamp": datetime.now().isoformat(),
-                }
-    )
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 @router.post("/api / metrics / update")
 
@@ -315,8 +351,11 @@ async def update_metrics(metrics: Dict[str, Any]):
                 "status": "success",
                     "message": "Metrics updated successfully",
                     "timestamp": datetime.now().isoformat(),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     except Exception as e:
         logger.error(f"Error updating metrics: {e}")
         raise HTTPException(status_code = 500, detail="Failed to update metrics")
@@ -343,22 +382,28 @@ async def get_system_info():
                 "total": psutil.virtual_memory().total,
                     "available": psutil.virtual_memory().available,
                     "percent": psutil.virtual_memory().percent,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "disk": {
                 "total": psutil.disk_usage("/").total,
                     "used": psutil.disk_usage("/").used,
                     "free": psutil.disk_usage("/").free,
                     "percent": psutil.disk_usage("/").percent,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         return JSONResponse(
             content={
                 "status": "success",
                     "system_info": system_info,
                     "timestamp": datetime.now().isoformat(),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     except ImportError:
         # Fallback if psutil is not available
         return JSONResponse(
@@ -367,14 +412,20 @@ async def get_system_info():
                     "system_info": {
                     "platform": "Unknown",
                         "message": "System monitoring not available (psutil not installed)",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "timestamp": datetime.now().isoformat(),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     except Exception as e:
         logger.error(f"Error getting system info: {e}")
         raise HTTPException(status_code = 500,
-    detail="Failed to get system information")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail="Failed to get system information")
 
 @router.post("/api / paste")
 
@@ -389,15 +440,18 @@ async def submit_paste(request: Request):
             raise HTTPException(status_code = 400, detail="Content cannot be empty")
 
         # Store paste data (in production, use a proper database)
-        paste_id = f"paste_{
+        paste_id = f"paste_{"
             datetime.now().strftime('%Y % m%d_ % H%M % S')}_{
                 hash(content) %
-            10000}"
+# BRACKET_SURGEON: disabled
+#             10000}""
 
         # Log the paste for the AI assistant to access
         logger.info(
             f"Paste received [{paste_id}]: {content[:100]}{'...' if len(content) > 100 else ''}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Store in dashboard data for retrieval
         if "pastes" not in dashboard_data:
@@ -409,8 +463,11 @@ async def submit_paste(request: Request):
                     "content": content,
                     "timestamp": datetime.now().isoformat(),
                     "length": len(content),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Keep only last 50 pastes
         if len(dashboard_data["pastes"]) > 50:
@@ -422,8 +479,11 @@ async def submit_paste(request: Request):
                     "message": "Paste submitted successfully",
                     "id": paste_id,
                     "timestamp": datetime.now().isoformat(),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except Exception as e:
         logger.error(f"Error handling paste submission: {e}")
@@ -444,8 +504,11 @@ async def get_pastes(limit: int = 10):
                     "pastes": recent_pastes,
                     "total": len(pastes),
                     "timestamp": datetime.now().isoformat(),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except Exception as e:
         logger.error(f"Error retrieving pastes: {e}")
@@ -463,8 +526,11 @@ async def dashboard_health_check():
                 "service": "dashboard",
                 "timestamp": datetime.now().isoformat(),
                 "uptime": "operational",
-                }
-    )
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 # Analytics Endpoints
 
@@ -552,7 +618,8 @@ async def get_analytics_report(days: int = Query(7, ge = 1, le = 365)):
 async def export_analytics_data(
     format: str = Query("json", regex="^(json|csv)$"),
         days: int = Query(30, ge = 1, le = 365),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Export analytics data in specified format"""
     try:
         track_api_call("/api / analytics / export", "GET", 200, 300)
@@ -563,8 +630,11 @@ async def export_analytics_data(
                 content = json.loads(data),
                     headers={
                     "Content - Disposition": f"attachment; filename = analytics_{days}days.json"
-                },
-                    )
+# BRACKET_SURGEON: disabled
+#                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:  # CSV
 
             from fastapi.responses import Response
@@ -574,8 +644,11 @@ async def export_analytics_data(
                     media_type="text / csv",
                     headers={
                     "Content - Disposition": f"attachment; filename = analytics_{days}days.csv"
-                },
-                    )
+# BRACKET_SURGEON: disabled
+#                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
     except Exception as e:
         track_api_call("/api / analytics / export", "GET", 500, 300)
         raise HTTPException(status_code = 500, detail = str(e))
@@ -588,7 +661,8 @@ async def track_custom_event(
         properties: str = Form(None),
         user_id: str = Form(None),
         session_id: str = Form(None),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Track a custom analytics event"""
     try:
         props = json.loads(properties) if properties else {}
@@ -601,7 +675,9 @@ async def track_custom_event(
                 user_id = user_id,
                 session_id = session_id,
                 properties = props,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         analytics_engine.track_event(event)
         track_api_call("/api / analytics / track", "POST", 200, 50)
@@ -662,7 +738,9 @@ async def login(request: LoginRequest):
             raise HTTPException(
                 status_code = status.HTTP_401_UNAUTHORIZED,
                     detail="Incorrect username or password",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         access_token = auth_manager.create_access_token(user)
         refresh_token = auth_manager.create_refresh_token(user)
@@ -675,7 +753,8 @@ async def login(request: LoginRequest):
                 "refresh_token": refresh_token,
                 "token_type": "bearer",
                 "user": user.to_dict(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except HTTPException:
         raise
     except Exception as e:
@@ -693,7 +772,9 @@ async def refresh_token(refresh_token: str = Form(...)):
             track_api_call("/api / auth / refresh", "POST", 401, 50)
             raise HTTPException(
                 status_code = status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         track_api_call("/api / auth / refresh", "POST", 200, 50)
         return {"access_token": new_access_token, "token_type": "bearer"}
@@ -709,7 +790,8 @@ async def refresh_token(refresh_token: str = Form(...)):
 async def register(
     request: RegisterRequest,
         current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Register new user (admin only)"""
     try:
         # Validate password strength
@@ -721,8 +803,11 @@ async def register(
                     detail={
                     "message": "Password does not meet requirements",
                         "validation": password_validation,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         user = auth_manager.create_user(
             username = request.username,
@@ -730,12 +815,16 @@ async def register(
                 full_name = request.full_name,
                 password = request.password,
                 role = request.role,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         track_api_call("/api / auth / register", "POST", 201, 150)
         track_user_action(
             "user_created", current_user.id, properties={"new_user_id": user.id}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return {"message": "User created successfully", "user": user.to_dict()}
     except ValueError as e:
@@ -758,7 +847,8 @@ async def get_current_user_info(current_user: User = Depends(get_current_user)):
 
 async def update_current_user(
     request: UpdateUserRequest, current_user: User = Depends(get_current_user)
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Update current user information"""
     try:
         # Users can only update their own basic info (not role)
@@ -792,16 +882,20 @@ async def update_current_user(
 
 async def change_password(
     request: PasswordChangeRequest, current_user: User = Depends(get_current_user)
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Change user password"""
     try:
         # Verify current password
         if not auth_manager.verify_password(
             request.current_password, current_user.password_hash
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             track_api_call("/api / auth / change - password", "POST", 400, 100)
             raise HTTPException(status_code = 400,
-    detail="Current password is incorrect")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail="Current password is incorrect")
 
         # Validate new password strength
         password_validation = validate_password_strength(request.new_password)
@@ -812,8 +906,11 @@ async def change_password(
                     detail={
                     "message": "New password does not meet requirements",
                         "validation": password_validation,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # Update password
         auth_manager.update_user(current_user.id, password = request.new_password)
@@ -835,7 +932,8 @@ async def change_password(
 
 async def list_users(
     current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """List all users (admin only)"""
     try:
         users = auth_manager.list_users()
@@ -854,7 +952,8 @@ async def list_users(
 async def create_user(
     request: CreateUserRequest,
         current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Create new user (admin only)"""
     try:
         # Validate password strength
@@ -866,8 +965,11 @@ async def create_user(
                     detail={
                     "message": "Password does not meet requirements",
                         "validation": password_validation,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         # Check if username already exists
         existing_user = auth_manager.get_user_by_username(request.username)
@@ -883,7 +985,9 @@ async def create_user(
                 full_name = request.full_name,
                 role = request.role,
                 is_active = request.is_active,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if not new_user:
             track_api_call("/api / users", "POST", 500, 100)
@@ -892,7 +996,9 @@ async def create_user(
         track_api_call("/api / users", "POST", 201, 100)
         track_user_action(
             "user_created", current_user.id, properties={"created_user_id": new_user.id}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return {"message": "User created successfully", "user": new_user.to_dict()}
     except HTTPException:
@@ -907,7 +1013,8 @@ async def create_user(
 async def get_user(
     user_id: str,
         current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get specific user (admin only)"""
     try:
         user = auth_manager.get_user_by_id(user_id)
@@ -930,7 +1037,8 @@ async def update_user(
     user_id: str,
         request: UpdateUserRequest,
         current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Update user (admin only)"""
     try:
         updates = {}
@@ -952,8 +1060,11 @@ async def update_user(
                         detail={
                         "message": "Password does not meet requirements",
                             "validation": password_validation,
-                            },
-                        )
+# BRACKET_SURGEON: disabled
+#                             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             updates["password"] = request.password
 
         updated_user = auth_manager.update_user(user_id, **updates)
@@ -964,7 +1075,9 @@ async def update_user(
         track_api_call(f"/api / users/{user_id}", "PUT", 200, 100)
         track_user_action(
             "user_updated", current_user.id, properties={"updated_user_id": user_id}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return {"message": "User updated successfully", "user": updated_user.to_dict()}
     except HTTPException:
@@ -979,7 +1092,8 @@ async def update_user(
 async def delete_user(
     user_id: str,
         current_user: User = Depends(require_permission(Permission.MANAGE_USERS)),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Delete user (admin only)"""
     try:
         # Prevent self - deletion
@@ -987,7 +1101,9 @@ async def delete_user(
             track_api_call(f"/api / users/{user_id}", "DELETE", 400, 50)
             raise HTTPException(
                 status_code = 400, detail="Cannot delete your own account"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         success = auth_manager.delete_user(user_id)
         if not success:
@@ -997,7 +1113,9 @@ async def delete_user(
         track_api_call(f"/api / users/{user_id}", "DELETE", 200, 50)
         track_user_action(
             "user_deleted", current_user.id, properties={"deleted_user_id": user_id}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return {"message": "User deleted successfully"}
     except HTTPException:
@@ -1030,19 +1148,23 @@ async def get_analytics():
             "api_usage": {
                 "labels": ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"],
                     "data": [120, 190, 300, 500, 200, 300],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "performance": {
                 "labels": ["CPU", "Memory", "Disk", "Network"],
                     "data": [65, 45, 30, 25],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "user_activity": {
                 "total_users": 1247,
                     "active_sessions": 89,
                     "new_users_today": 23,
                     "bounce_rate": 34.5,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "revenue": {"today": 2847.50, "this_month": 45230.75, "growth": 12.3},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return {"analytics": analytics_data}
     except Exception as e:
         raise HTTPException(status_code = 500, detail = str(e))
@@ -1075,27 +1197,37 @@ async def get_logs(level: str = "all", limit: int = 100):
                         "API request processed",
                         "Cache updated",
                         "Backup completed",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "warning": [
                     "High memory usage detected",
                         "Slow query detected",
                         "Rate limit approaching",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "error": [
                     "Database connection failed",
                         "API timeout",
                         "Authentication failed",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "debug": ["Processing request", "Cache miss", "Query executed"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             logs.append(
                 {
                     "timestamp": timestamp.isoformat(),
                         "level": log_level,
                         "message": random.choice(messages[log_level]),
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Sort by timestamp (newest first)
         logs.sort(key = lambda x: x["timestamp"], reverse = True)
@@ -1116,7 +1248,9 @@ async def restart_service(service_name: str):
                 "content_pipeline",
                 "marketing_agent",
                 "financial_tracking",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         if service_name not in valid_services:
             raise HTTPException(status_code = 404, detail="Service not found")
@@ -1131,7 +1265,8 @@ async def restart_service(service_name: str):
             "status": "success",
                 "message": f"Service {service_name} restarted successfully",
                 "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except HTTPException:
         raise
     except Exception as e:
@@ -1158,23 +1293,32 @@ async def get_service_logs(service_name: str, limit: int = 50):
                     "Video processed",
                         "Upload completed",
                         "Thumbnail generated",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "content_pipeline": [
                     "Content analyzed",
                         "Pipeline executed",
                         "Output generated",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "marketing_agent": [
                     "Campaign created",
                         "Audience targeted",
                         "Metrics updated",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "financial_tracking": [
                     "Transaction recorded",
                         "Report generated",
                         "Budget updated",
-                        ],
-                    }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     }
 
             default_messages = ["Service running", "Task completed", "Status updated"]
             messages = service_messages.get(service_name, default_messages)
@@ -1185,8 +1329,11 @@ async def get_service_logs(service_name: str, limit: int = 50):
                         "level": level,
                         "service": service_name,
                         "message": random.choice(messages),
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         logs.sort(key = lambda x: x["timestamp"], reverse = True)
 
@@ -1208,28 +1355,34 @@ async def get_performance_metrics():
                 "current": random.uniform(20, 80),
                     "average": random.uniform(30, 60),
                     "peak": random.uniform(60, 95),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "memory": {
                 "used": random.uniform(2, 8),
                     "total": 16,
                     "percentage": random.uniform(20, 70),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "disk": {
                 "used": random.uniform(50, 200),
                     "total": 500,
                     "percentage": random.uniform(10, 40),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "network": {
                 "bytes_sent": random.randint(1000000, 10000000),
                     "bytes_received": random.randint(5000000, 50000000),
                     "connections": random.randint(10, 100),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "response_times": {
                 "api_avg": random.uniform(50, 200),
                     "db_avg": random.uniform(10, 50),
                     "cache_avg": random.uniform(1, 10),
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         return {"performance": performance_data}
     except Exception as e:
@@ -1258,7 +1411,8 @@ async def get_alerts():
                     "warning": "High CPU usage detected on server",
                     "error": "Failed to connect to external API",
                     "success": "All services are running normally",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             alerts.append(
                 {
@@ -1267,8 +1421,11 @@ async def get_alerts():
                         "message": alert_messages[alert_type],
                         "timestamp": timestamp.isoformat(),
                         "read": random.choice([True, False]),
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         alerts.sort(key = lambda x: x["timestamp"], reverse = True)
 
@@ -1287,6 +1444,7 @@ async def mark_alert_read(alert_id: str):
             "status": "success",
                 "message": f"Alert {alert_id} marked as read",
                 "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except Exception as e:
         raise HTTPException(status_code = 500, detail = str(e))

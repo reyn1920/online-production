@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Autonomous Diagnosis and Repair (ADR) Protocol
 Self - Healing System Optimization and Recovery
 
@@ -8,7 +8,7 @@ System Constitution Adherence:
 - Zero - Cost Stack: Uses only free, open - source monitoring and repair tools
 - Additive Evolution: Builds upon existing systems without breaking changes
 - Secure Design: Implements robust security and error handling
-"""
+""""""
 
 import json
 import logging
@@ -34,7 +34,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("logs/adr_protocol.log"), logging.StreamHandler()],
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -160,26 +161,32 @@ class AutonomousDiagnosisRepair:
                 "disk_critical": 95.0,
                 "response_time_warning": 2000,  # ms
                 "response_time_critical": 5000,  # ms
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "repair_strategies": {
                 "high_cpu": [
                     "restart_heavy_processes",
                     "optimize_processes",
                     "scale_resources",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "high_memory": [
                     "clear_cache",
                     "restart_memory_leaks",
                     "garbage_collect",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "disk_full": ["cleanup_logs", "cleanup_temp", "compress_files"],
                 "service_down": [
                     "restart_service",
                     "check_dependencies",
                     "restore_backup",
-                ],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _init_database(self):
         """Initialize SQLite database for persistent storage"""
@@ -187,7 +194,7 @@ class AutonomousDiagnosisRepair:
 
         with sqlite3.connect(self.db_path) as conn:
             conn.executescript(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS diagnostics (
                     id TEXT PRIMARY KEY,
                         component TEXT NOT NULL,
@@ -199,7 +206,8 @@ class AutonomousDiagnosisRepair:
                         resolved BOOLEAN DEFAULT FALSE,
                         repair_suggestions TEXT,
                         auto_repairable BOOLEAN DEFAULT FALSE
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS repair_actions (
                     id TEXT PRIMARY KEY,
@@ -214,7 +222,8 @@ class AutonomousDiagnosisRepair:
                         requires_restart BOOLEAN DEFAULT FALSE,
                         backup_required BOOLEAN DEFAULT FALSE,
                         FOREIGN KEY (diagnostic_id) REFERENCES diagnostics (id)
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS repair_results (
                     id TEXT PRIMARY KEY,
@@ -227,14 +236,16 @@ class AutonomousDiagnosisRepair:
                         success BOOLEAN DEFAULT FALSE,
                         rollback_available BOOLEAN DEFAULT FALSE,
                         FOREIGN KEY (action_id) REFERENCES repair_actions (id)
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS system_baseline (
                     component TEXT PRIMARY KEY,
                         baseline_metrics TEXT NOT NULL,
                         established_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS system_health (
                     timestamp TIMESTAMP PRIMARY KEY,
@@ -245,9 +256,11 @@ class AutonomousDiagnosisRepair:
                         active_connections INTEGER,
                         response_times TEXT,
                         error_rates TEXT
-                );
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 );
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
     def _establish_baseline(self):
         """Establish system performance baseline"""
@@ -257,22 +270,27 @@ class AutonomousDiagnosisRepair:
                     "average_usage": psutil.cpu_percent(interval=1),
                     "core_count": psutil.cpu_count(),
                     "frequency": (psutil.cpu_freq()._asdict() if psutil.cpu_freq() else None),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "memory": {
                     "total": psutil.virtual_memory().total,
                     "available": psutil.virtual_memory().available,
                     "baseline_usage": psutil.virtual_memory().percent,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "disk": {
                     "total": psutil.disk_usage("/").total,
                     "free": psutil.disk_usage("/").free,
                     "baseline_usage": psutil.disk_usage("/").percent,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "network": {
                     "interfaces": list(psutil.net_if_addrs().keys()),
                     "baseline_io": psutil.net_io_counters()._asdict(),
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             self.system_baseline = baseline
 
@@ -282,7 +300,8 @@ class AutonomousDiagnosisRepair:
                     conn.execute(
                         "INSERT OR REPLACE INTO system_baseline (component, baseline_metrics, last_updated) VALUES (?, ?, ?)",
                         (component, json.dumps(metrics), datetime.now()),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             logger.info("System baseline established successfully")
 
@@ -323,9 +342,11 @@ class AutonomousDiagnosisRepair:
                         {
                             "cpu_percent": cpu_percent,
                             "processes": self._get_top_cpu_processes(),
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         auto_repairable=True,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif cpu_percent > self.config["thresholds"]["cpu_warning"]:
                     self._create_diagnostic(
                         SystemComponent.CPU,
@@ -335,9 +356,11 @@ class AutonomousDiagnosisRepair:
                         {
                             "cpu_percent": cpu_percent,
                             "processes": self._get_top_cpu_processes(),
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         auto_repairable=True,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Memory monitoring
                 memory = psutil.virtual_memory()
@@ -351,9 +374,11 @@ class AutonomousDiagnosisRepair:
                             "memory_percent": memory.percent,
                             "available_gb": memory.available / (1024**3),
                             "processes": self._get_top_memory_processes(),
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         auto_repairable=True,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif memory.percent > self.config["thresholds"]["memory_warning"]:
                     self._create_diagnostic(
                         SystemComponent.MEMORY,
@@ -364,9 +389,11 @@ class AutonomousDiagnosisRepair:
                             "memory_percent": memory.percent,
                             "available_gb": memory.available / (1024**3),
                             "processes": self._get_top_memory_processes(),
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         auto_repairable=True,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Disk monitoring
                 disk = psutil.disk_usage("/")
@@ -381,9 +408,11 @@ class AutonomousDiagnosisRepair:
                             "disk_percent": disk_percent,
                             "free_gb": disk.free / (1024**3),
                             "large_files": self._get_large_files(),
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         auto_repairable=True,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif disk_percent > self.config["thresholds"]["disk_warning"]:
                     self._create_diagnostic(
                         SystemComponent.DISK,
@@ -394,9 +423,11 @@ class AutonomousDiagnosisRepair:
                             "disk_percent": disk_percent,
                             "free_gb": disk.free / (1024**3),
                             "large_files": self._get_large_files(),
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         auto_repairable=True,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 time.sleep(self.config["monitoring_interval"])
 
@@ -410,7 +441,8 @@ class AutonomousDiagnosisRepair:
             "python",  # Main application
             "nginx",  # Web server (if used)
             "redis",  # Cache (if used)
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         while self.is_running:
             try:
@@ -423,7 +455,8 @@ class AutonomousDiagnosisRepair:
                             f"Critical service {service_name} is not running",
                             {"service": service_name, "status": "down"},
                             auto_repairable=True,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 time.sleep(60)  # Check services every minute
 
@@ -445,9 +478,11 @@ class AutonomousDiagnosisRepair:
                         {
                             "connectivity": False,
                             "timestamp": datetime.now().isoformat(),
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                         auto_repairable=True,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Check API endpoint health
                 api_health = self._check_api_endpoints()
@@ -458,7 +493,8 @@ class AutonomousDiagnosisRepair:
                             if health["response_time"]
                             > self.config["thresholds"]["response_time_critical"]
                             else DiagnosisLevel.WARNING
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         self._create_diagnostic(
                             SystemComponent.API_ENDPOINTS,
                             level,
@@ -468,9 +504,11 @@ class AutonomousDiagnosisRepair:
                                 "endpoint": endpoint,
                                 "response_time": health["response_time"],
                                 "error": health.get("error"),
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                             auto_repairable=True,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 time.sleep(120)  # Check network every 2 minutes
 
@@ -488,7 +526,8 @@ class AutonomousDiagnosisRepair:
                     if (
                         not self.repair_queue
                         or active_repairs >= self.config["max_concurrent_repairs"]
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         time.sleep(5)
                         continue
 
@@ -526,8 +565,10 @@ class AutonomousDiagnosisRepair:
                             (disk.used / disk.total) * 100,
                             json.dumps(network_io._asdict()),
                             len(psutil.net_connections()),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                 time.sleep(300)  # Record every 5 minutes
 
@@ -543,7 +584,8 @@ class AutonomousDiagnosisRepair:
         description: str,
         metrics: Dict[str, Any],
         auto_repairable: bool = False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Create a new diagnostic result"""
         try:
             # Check if similar diagnostic already exists and is unresolved
@@ -552,9 +594,11 @@ class AutonomousDiagnosisRepair:
                     d
                     for d in self.diagnostics
                     if d.component == component and d.title == title and not d.resolved
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 None,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if existing:
                 # Update existing diagnostic
                 existing.metrics.update(metrics)
@@ -571,7 +615,8 @@ class AutonomousDiagnosisRepair:
                 timestamp=datetime.now(),
                 auto_repairable=auto_repairable,
                 repair_suggestions=self._generate_repair_suggestions(component, level, metrics),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             with self.lock:
                 self.diagnostics.append(diagnostic)
@@ -590,8 +635,10 @@ class AutonomousDiagnosisRepair:
                         diagnostic.timestamp,
                         auto_repairable,
                         json.dumps(diagnostic.repair_suggestions),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
             logger.warning(f"Diagnostic created: {level.value.upper()} - {title}")
 
@@ -616,8 +663,10 @@ class AutonomousDiagnosisRepair:
                         "Optimize process priorities",
                         "Scale resources if possible",
                         "Check for CPU - intensive background tasks",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
         elif component == SystemComponent.MEMORY:
             if metrics.get("memory_percent", 0) > 90:
@@ -627,8 +676,10 @@ class AutonomousDiagnosisRepair:
                         "Restart memory - leaking processes",
                         "Force garbage collection",
                         "Increase swap space",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
         elif component == SystemComponent.DISK:
             if metrics.get("disk_percent", 0) > 90:
@@ -638,8 +689,10 @@ class AutonomousDiagnosisRepair:
                         "Remove temporary files",
                         "Compress old files",
                         "Move files to external storage",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
         elif component == SystemComponent.SERVICES:
             suggestions.extend(
@@ -648,8 +701,10 @@ class AutonomousDiagnosisRepair:
                     "Check service dependencies",
                     "Restore from backup",
                     "Check service configuration",
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
         elif component == SystemComponent.NETWORK:
             suggestions.extend(
@@ -658,8 +713,10 @@ class AutonomousDiagnosisRepair:
                     "Check DNS configuration",
                     "Test alternative routes",
                     "Contact network administrator",
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
         return suggestions
 
@@ -690,12 +747,15 @@ class AutonomousDiagnosisRepair:
                             action.estimated_duration,
                             action.requires_restart,
                             action.backup_required,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
             logger.info(
                 f"Scheduled {len(repair_actions)} repair actions for diagnostic {diagnostic.id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Error scheduling auto repair: {e}")
@@ -715,8 +775,10 @@ class AutonomousDiagnosisRepair:
                         script="self._restart_heavy_cpu_processes()",
                         priority=1,
                         estimated_duration=30,
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         elif diagnostic.component == SystemComponent.MEMORY:
             if diagnostic.metrics.get("memory_percent", 0) > 95:
@@ -725,13 +787,15 @@ class AutonomousDiagnosisRepair:
                         id=str(uuid.uuid4()),
                         diagnostic_id=diagnostic.id,
                         action_type="clear_cache",
-                        description="Clear system cache \
-    and restart memory - heavy processes",
+                        description="Clear system cache \"
+#     and restart memory - heavy processes",
                         script="self._clear_memory_cache()",
                         priority=1,
                         estimated_duration=45,
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         elif diagnostic.component == SystemComponent.DISK:
             if diagnostic.metrics.get("disk_percent", 0) > 95:
@@ -740,14 +804,16 @@ class AutonomousDiagnosisRepair:
                         id=str(uuid.uuid4()),
                         diagnostic_id=diagnostic.id,
                         action_type="cleanup_disk",
-                        description="Clean up disk space by removing temporary files \
-    and logs",
+                        description="Clean up disk space by removing temporary files \"
+#     and logs",
                         script="self._cleanup_disk_space()",
                         priority=1,
                         estimated_duration=120,
                         backup_required=True,
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         elif diagnostic.component == SystemComponent.SERVICES:
             service_name = diagnostic.metrics.get("service")
@@ -761,8 +827,10 @@ class AutonomousDiagnosisRepair:
                         script=f"self._restart_service('{service_name}')",
                         priority=1,
                         estimated_duration=60,
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         elif diagnostic.component == SystemComponent.NETWORK:
             actions.append(
@@ -774,8 +842,10 @@ class AutonomousDiagnosisRepair:
                     script="self._recover_network_connectivity()",
                     priority=1,
                     estimated_duration=90,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         return actions
 
@@ -785,7 +855,8 @@ class AutonomousDiagnosisRepair:
             action_id=action.id,
             status=RepairStatus.IN_PROGRESS,
             started_at=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         try:
             logger.info(f"Starting repair action: {action.description}")
@@ -807,7 +878,8 @@ class AutonomousDiagnosisRepair:
             elif action.script:
                 success, output, error = self._execute_script(
                     action.script, action.parameters or {}
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 success, output, error = False, None, "No command or script specified"
 
@@ -844,7 +916,8 @@ class AutonomousDiagnosisRepair:
                 capture_output=True,
                 text=True,
                 timeout=300,  # 5 minute timeout
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result.returncode == 0, result.stdout, result.stderr
         except subprocess.TimeoutExpired:
             return False, None, "Command timed out"
@@ -908,8 +981,10 @@ class AutonomousDiagnosisRepair:
                         result.error,
                         result.success,
                         result.rollback_available,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
         except Exception as e:
             logger.error(f"Error storing repair result: {e}")
 
@@ -926,7 +1001,8 @@ class AutonomousDiagnosisRepair:
                 conn.execute(
                     "UPDATE diagnostics SET resolved = TRUE WHERE id = ?",
                     (diagnostic_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             logger.info(f"Diagnostic {diagnostic_id} marked as resolved")
 
@@ -1001,7 +1077,8 @@ class AutonomousDiagnosisRepair:
         endpoints = {
             "localhost": "http://localhost:8000/health",
             # Add more endpoints as needed
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         results = {}
         for name, url in endpoints.items():
@@ -1014,7 +1091,8 @@ class AutonomousDiagnosisRepair:
                     "healthy": response.status_code == 200,
                     "response_time": response_time,
                     "status_code": response.status_code,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as e:
                 results[name] = {"healthy": False, "response_time": 0, "error": str(e)}
 
@@ -1039,7 +1117,8 @@ class AutonomousDiagnosisRepair:
                         psutil.NoSuchProcess,
                         psutil.AccessDenied,
                         psutil.TimeoutExpired,
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         pass
 
             return f"Restarted processes: {', '.join(restarted)}"
@@ -1077,7 +1156,8 @@ class AutonomousDiagnosisRepair:
                             if (
                                 file.endswith(".log")
                                 and os.path.getsize(os.path.join(root, file)) > 10 * 1024 * 1024
-                            ):
+# BRACKET_SURGEON: disabled
+#                             ):
                                 try:
                                     file_path = os.path.join(root, file)
                                     size = os.path.getsize(file_path)
@@ -1119,7 +1199,8 @@ class AutonomousDiagnosisRepair:
                         psutil.NoSuchProcess,
                         psutil.AccessDenied,
                         psutil.TimeoutExpired,
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         pass
 
             # Wait a moment
@@ -1160,7 +1241,8 @@ class AutonomousDiagnosisRepair:
                     r
                     for r in self.repair_history
                     if r.started_at > datetime.now() - timedelta(hours=24)
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
             # Get current system metrics
             cpu_percent = psutil.cpu_percent()
@@ -1171,21 +1253,25 @@ class AutonomousDiagnosisRepair:
                 "timestamp": datetime.now().isoformat(),
                 "system_status": (
                     "healthy" if len(unresolved_diagnostics) == 0 else "issues_detected"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "current_metrics": {
                     "cpu_percent": cpu_percent,
                     "memory_percent": memory.percent,
                     "disk_percent": (disk.used / disk.total) * 100,
                     "uptime": time.time() - psutil.boot_time(),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "diagnostics": {
                     "total": len(self.diagnostics),
                     "unresolved": len(unresolved_diagnostics),
                     "by_level": {
                         level.value: len([d for d in unresolved_diagnostics if d.level == level])
                         for level in DiagnosisLevel
-                    },
-                },
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 },
                 "repairs": {
                     "total_executed": len(self.repair_history),
                     "recent_24h": len(recent_repairs),
@@ -1193,10 +1279,13 @@ class AutonomousDiagnosisRepair:
                         (len([r for r in recent_repairs if r.success]) / len(recent_repairs) * 100)
                         if recent_repairs
                         else 100
-                    ),
-                },
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 },
                 "auto_repair_enabled": self.config["auto_repair_enabled"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             logger.error(f"Error generating health report: {e}")
             return {"error": str(e)}

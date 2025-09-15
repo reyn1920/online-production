@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 FastAPI Performance Baseline for MacBook Air M1 (16GB)
 Comprehensive performance testing and optimization toolkit
-"""
+""""""
 
 import asyncio
 import json
@@ -42,9 +42,11 @@ class MacBookAirM1Benchmark:
             "memory_total_gb": round(psutil.virtual_memory().total / (1024**3), 2),
             "memory_available_gb": round(
                 psutil.virtual_memory().available / (1024**3), 2
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "platform": "MacBook Air M1",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def check_hey_installation(self) -> bool:
         """Check if hey is installed, install if needed"""
@@ -60,7 +62,9 @@ class MacBookAirM1Benchmark:
             except subprocess.CalledProcessError:
                 print(
                     "❌ Failed to install hey. Please install manually: brew install hey"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return False
 
     def run_hey_benchmark(
@@ -94,7 +98,8 @@ class MacBookAirM1Benchmark:
                     "success_rate": (1 - data.get("summary", {}).get("errorRate", 0))
                     * 100,
                     "status_codes": data.get("statusCodeDist", {}),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"error": f"hey failed: {result.stderr}"}
         except (subprocess.TimeoutExpired, json.JSONDecodeError, Exception) as e:
@@ -112,7 +117,8 @@ class MacBookAirM1Benchmark:
 
         async with httpx.AsyncClient(
             limits=limits, timeout=timeout, verify=False
-        ) as client:
+# BRACKET_SURGEON: disabled
+#         ) as client:
             start_time = time.perf_counter()
             end_time = start_time + duration_seconds
 
@@ -156,7 +162,8 @@ class MacBookAirM1Benchmark:
                 "duration": end_time - start_time,
                 "success": response.status_code == 200,
                 "size": len(response.content),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             end_time = time.perf_counter()
             return {
@@ -165,7 +172,8 @@ class MacBookAirM1Benchmark:
                 "success": False,
                 "error": str(e),
                 "size": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def analyze_async_results(
         self, results: List[Dict], duration: float, endpoint: str
@@ -181,7 +189,8 @@ class MacBookAirM1Benchmark:
                 "error": "No successful requests",
                 "total_requests": len(results),
                 "failed_requests": len(failed),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         durations = [r["duration"] for r in successful]
 
@@ -200,15 +209,18 @@ class MacBookAirM1Benchmark:
                 round(statistics.quantiles(durations, n=20)[18] * 1000, 2)
                 if len(durations) > 20
                 else 0
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "p99_latency_ms": (
                 round(statistics.quantiles(durations, n=100)[98] * 1000, 2)
                 if len(durations) > 100
                 else 0
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "fastest_ms": round(min(durations) * 1000, 2),
             "slowest_ms": round(max(durations) * 1000, 2),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def check_nginx_config(self) -> Dict[str, Any]:
         """Check Nginx configuration for M1 optimization"""
@@ -228,13 +240,15 @@ class MacBookAirM1Benchmark:
                 "gzip_enabled": "gzip on" in config,
                 "http2_enabled": "http2" in config,
                 "keepalive_timeout": "keepalive_timeout" in config,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return {
                 "nginx_config_found": True,
                 "optimizations": checks,
                 "score": sum(checks.values()) / len(checks) * 100,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {"error": f"Failed to read nginx config: {str(e)}"}
 
@@ -246,7 +260,8 @@ class MacBookAirM1Benchmark:
             "frontend_assets_ms": {"max": 10, "target": 5},
             "concurrent_clients": {"max": 200, "recommended": 100},
             "memory_usage_gb": {"max": 2, "recommended": 1},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def print_results(self, results: Dict[str, Any]):
         """Pretty print benchmark results"""
@@ -268,10 +283,13 @@ class MacBookAirM1Benchmark:
 
         print(f"Total requests:     {results.get('total_requests', 0):,}")
         print(
-            f"Successful:         {results.get('successful_requests',
+            f"Successful:         {results.get('successful_requests',"
     results.get('total_requests',
-    0)):,}"
-        )
+# BRACKET_SURGEON: disabled
+#     0)):,}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(f"Failed:             {results.get('failed_requests', 0):,}")
         print(f"Success rate:       {results.get('success_rate', 0):.1f}%")
         print(f"Requests/sec:       {results.get('requests_per_sec', 0):,.1f}")
@@ -297,7 +315,9 @@ class MacBookAirM1Benchmark:
         print("=" * 40)
         print(
             f"CPU Cores:          {self.system_info['cpu_count']} physical, {self.system_info['cpu_count_logical']} logical"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(f"Total Memory:       {self.system_info['memory_total_gb']} GB")
         print(f"Available Memory:   {self.system_info['memory_available_gb']} GB")
         print(f"Platform:           {self.system_info['platform']}")
@@ -356,11 +376,15 @@ class MacBookAirM1Benchmark:
             if rps >= rps_target["target"]:
                 print(
                     f"  ✅ RPS: {rps:,.0f} (Excellent - above {rps_target['target']:,} target)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             elif rps >= rps_target["min"]:
                 print(
                     f"  ⚠️  RPS: {rps:,.0f} (Good - above {rps_target['min']:,} minimum)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 print(f"  ❌ RPS: {rps:,.0f} (Below {rps_target['min']:,} minimum)")
 
@@ -369,15 +393,21 @@ class MacBookAirM1Benchmark:
             if p95 <= latency_target["target"]:
                 print(
                     f"  ✅ Latency: {p95:.1f}ms (Excellent - under {latency_target['target']}ms target)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             elif p95 <= latency_target["max"]:
                 print(
                     f"  ⚠️  Latency: {p95:.1f}ms (Acceptable - under {latency_target['max']}ms max)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 print(
                     f"  ❌ Latency: {p95:.1f}ms (Above {latency_target['max']}ms maximum)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         print("\\n📋 MacBook Air M1 Optimization Summary:")
         print("  • Target: 2k - 5k req/sec for simple endpoints")
@@ -407,7 +437,9 @@ async def main():
         ("/api/status", "async", {"concurrent_users": 50, "duration_seconds": 20}),
         ("/places/health", "hey", {"duration": "20s", "concurrency": 25}),
         ("/", "async", {"concurrent_users": 30, "duration_seconds": 15}),
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
 
     all_results = []
 

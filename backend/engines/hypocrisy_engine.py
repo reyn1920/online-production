@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Hypocrisy Engine - Research Validation System
-
+""""""
 This module provides a comprehensive engine for detecting, analyzing, and validating
 hypocrisy in public statements and research claims. It integrates with the evidence
 database to provide research validation capabilities.
+"""
+
+Hypocrisy Engine - Research Validation System
+
+
+
+""""""
+
 
 Features:
+
+
+
 - Statement contradiction detection
 - Evidence validation and cross - referencing
 - Research claim verification
@@ -16,6 +27,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import logging
@@ -59,16 +71,24 @@ class ValidationResult:
 
 @dataclass
 class ResearchClaim:
-    """Research claim to be validated"""
+    """
+Research claim to be validated
+
 
     claim_text: str
     source: str
     author: Optional[str] = None
     date_published: Optional[datetime] = None
     topic_tags: Optional[List[str]] = None
+   
+""""""
+
     context: Optional[str] = None
+   
 
-
+    
+   
+"""
 class HypocrisyEngine:
     """Main engine for hypocrisy detection and research validation"""
 
@@ -90,8 +110,13 @@ class HypocrisyEngine:
         self._initialize_nlp()
 
     def _initialize_nlp(self) -> None:
-        """Initialize NLP components for text analysis"""
+        """
+Initialize NLP components for text analysis
+
+        
+"""
         try:
+        """"""
             if nltk:
                 # Download required NLTK data
                 nltk.download("punkt", quiet=True)
@@ -100,9 +125,18 @@ class HypocrisyEngine:
                 self.logger.info("NLP components initialized successfully")
         except Exception as e:
             self.logger.warning(f"Failed to initialize NLP components: {e}")
+        """
+
+        try:
+        
+
+       
+""""""
 
     async def validate_research_claim(self, claim: ResearchClaim) -> ValidationResult:
-        """Validate a research claim against existing evidence database"""
+        
+Validate a research claim against existing evidence database
+"""
         try:
             self.logger.info(f"Validating research claim: {claim.claim_text[:100]}...")
 
@@ -115,17 +149,17 @@ class HypocrisyEngine:
             # Calculate confidence score
             confidence_score = self._calculate_validation_confidence(
                 claim, contradictions, evidence_sources
-            )
+             )
 
             # Determine validation status
             is_valid = (
                 len(contradictions) == 0 and confidence_score >= self.min_confidence_threshold
-            )
+             )
 
             # Generate validation notes
             validation_notes = self._generate_validation_notes(
                 claim, contradictions, evidence_sources, confidence_score
-            )
+             )
 
             result = ValidationResult(
                 is_valid=is_valid,
@@ -134,11 +168,11 @@ class HypocrisyEngine:
                 evidence_sources=evidence_sources,
                 validation_notes=validation_notes,
                 fact_check_status="validated" if is_valid else "disputed",
-            )
+             )
 
             self.logger.info(
                 f"Validation completed. Valid: {is_valid}, Confidence: {confidence_score:.2f}"
-            )
+             )
             return result
 
         except Exception as e:
@@ -150,12 +184,30 @@ class HypocrisyEngine:
                 evidence_sources=[],
                 validation_notes=f"Validation failed: {str(e)}",
                 fact_check_status="error",
-            )
+             )
 
     async def _find_contradictions(self, claim: ResearchClaim) -> List[Dict[str, Any]]:
-        """Find contradictory statements in the database"""
-        contradictions = []
+        """
+Find contradictory statements in the database
 
+       
+""""""
+
+        contradictions = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        contradictions = []
+       
+""""""
         if not self.db_manager:
             self.logger.warning("Database manager not available for contradiction search")
             return contradictions
@@ -168,13 +220,13 @@ class HypocrisyEngine:
                 # Search existing findings
                 findings = self.db_manager.search_findings(
                     subject_name=claim.author, min_confidence=0.5, limit=20
-                )
+                 )
 
                 for finding in findings:
                     # Check for semantic similarity
                     similarity_score = self._calculate_semantic_similarity(
                         claim.claim_text, finding["statement_1"]
-                    )
+                     )
 
                     if similarity_score > self.similarity_threshold:
                         contradiction = {
@@ -186,7 +238,7 @@ class HypocrisyEngine:
                             "date": finding["date_2"],
                             "contradiction_type": finding["contradiction_type"],
                             "severity_score": finding["severity_score"],
-                        }
+                         }
                         contradictions.append(contradiction)
 
             self.logger.info(f"Found {len(contradictions)} potential contradictions")
@@ -197,11 +249,28 @@ class HypocrisyEngine:
             return []
 
     async def _gather_evidence_sources(self, claim: ResearchClaim) -> List[str]:
-        """Gather supporting or contradicting evidence sources"""
-        evidence_sources = []
+        """
+Gather supporting or contradicting evidence sources
 
+       
+""""""
+
+        evidence_sources = []
+       
+
+        
+       
+"""
         try:
             # Add the original source
+       """
+
+        
+       
+
+        evidence_sources = []
+       
+""""""
             if claim.source:
                 evidence_sources.append(claim.source)
 
@@ -209,7 +278,7 @@ class HypocrisyEngine:
             if self.db_manager:
                 findings = self.db_manager.search_findings(
                     subject_name=claim.author, verification_status="verified", limit=10
-                )
+                 )
 
                 for finding in findings:
                     if finding.get("evidence_links"):
@@ -232,11 +301,18 @@ class HypocrisyEngine:
         claim: ResearchClaim,
         contradictions: List[Dict],
         evidence_sources: List[str],
-    ) -> float:
-        """Calculate confidence score for validation"""
-        try:
-            base_confidence = 0.5
+#     ) -> float:
+        """
+Calculate confidence score for validation
 
+        
+"""
+        try:
+        """"""
+            base_confidence = 0.5
+           """"""
+        try:
+        """"""
             # Reduce confidence for contradictions
             contradiction_penalty = len(contradictions) * 0.2
 
@@ -261,7 +337,7 @@ class HypocrisyEngine:
                 + author_bonus
                 + recency_bonus
                 - contradiction_penalty
-            )
+             )
 
             # Clamp to valid range
             return max(0.0, min(1.0, confidence))
@@ -276,18 +352,34 @@ class HypocrisyEngine:
         contradictions: List[Dict],
         evidence_sources: List[str],
         confidence_score: float,
-    ) -> str:
-        """Generate human - readable validation notes"""
+#     ) -> str:
+        """
+Generate human - readable validation notes
+
+       
+""""""
+
         notes = []
+       
 
+        
+       
+"""
         notes.append(f"Claim validation completed with {confidence_score:.2f} confidence.")
+       """
 
+        
+       
+
+        notes = []
+       
+""""""
         if contradictions:
             notes.append(f"Found {len(contradictions)} potential contradictions:")
             for i, contradiction in enumerate(contradictions[:3], 1):
                 notes.append(
                     f"  {i}. Contradictory statement from {contradiction.get('source', 'unknown source')}"
-                )
+                 )
                 notes.append(f"     Similarity: {contradiction.get('similarity_score', 0):.2f}")
         else:
             notes.append("No direct contradictions found in database.")
@@ -303,10 +395,18 @@ class HypocrisyEngine:
         return " ".join(notes)
 
     def _extract_keywords(self, text: str) -> List[str]:
-        """Extract keywords from text for search"""
+        """
+Extract keywords from text for search
+
+        
+"""
         try:
+        """"""
             if not TextBlob:
                 # Fallback to simple word extraction
+        """
+        try:
+        """
                 words = re.findall(r"\\b\\w{4,}\\b", text.lower())
                 return list(set(words))[:10]
 
@@ -332,13 +432,39 @@ class HypocrisyEngine:
             return []
 
     def _calculate_semantic_similarity(self, text1: str, text2: str) -> float:
-        """Calculate semantic similarity between two texts"""
+        """
+Calculate semantic similarity between two texts
+
+        
+"""
         try:
+        """"""
             if not TextBlob:
                 # Fallback to simple word overlap
-                words1 = set(text1.lower().split())
-                words2 = set(text2.lower().split())
+        """
 
+        try:
+        
+
+                words1 = set(text1.lower().split())
+               
+""""""
+
+                words2 = set(text2.lower().split())
+               
+
+                
+               
+""""""
+
+
+                
+
+               
+
+                words2 = set(text2.lower().split())
+               
+""""""
                 if not words1 or not words2:
                     return 0.0
 
@@ -368,9 +494,9 @@ class HypocrisyEngine:
                         "VBN",
                         "VBP",
                         "VBZ",
-                    ]
-                ]
-            )
+                     ]
+                 ]
+             )
             terms2 = set(
                 [
                     word.lower()
@@ -387,9 +513,9 @@ class HypocrisyEngine:
                         "VBN",
                         "VBP",
                         "VBZ",
-                    ]
-                ]
-            )
+                     ]
+                 ]
+             )
 
             if not terms1 or not terms2:
                 return 0.0
@@ -411,10 +537,22 @@ class HypocrisyEngine:
         source: str,
         context: Optional[str] = None,
     ) -> Optional[HypocrisyFinding]:
-        """Detect potential hypocrisy by comparing new statement with existing ones"""
+        """
+Detect potential hypocrisy by comparing new statement with existing ones
+
+        
+"""
         try:
+        """"""
             if not self.db_manager:
                 self.logger.warning("Database manager not available for hypocrisy detection")
+        """
+
+        try:
+        
+
+       
+""""""
                 return None
 
             # Search for existing statements by the same subject
@@ -424,13 +562,13 @@ class HypocrisyEngine:
             for finding in existing_findings:
                 similarity_score = self._calculate_semantic_similarity(
                     new_statement, finding["statement_1"]
-                )
+                 )
 
                 # If statements are similar but context suggests contradiction
                 if similarity_score > 0.3:  # Some similarity but potentially contradictory
                     contradiction_score = self._analyze_contradiction(
                         new_statement, finding["statement_1"]
-                    )
+                     )
 
                     if contradiction_score > 0.6:  # Significant contradiction
                         # Create new hypocrisy finding
@@ -445,7 +583,7 @@ class HypocrisyEngine:
                                 datetime.fromisoformat(finding["date_1"])
                                 if finding.get("date_1")
                                 else None
-                            ),
+                             ),
                             date_2=datetime.now(),
                             source_1=finding.get("source_1"),
                             source_2=source,
@@ -458,7 +596,7 @@ class HypocrisyEngine:
                             analysis_notes=f"Auto - detected contradiction with similarity {similarity_score:.2f}",
                             public_impact_score=5,  # Default medium impact
                             created_by="hypocrisy_engine",
-                        )
+                         )
 
                         # Store the finding
                         finding_id = self.db_manager.store_finding(hypocrisy_finding)
@@ -473,10 +611,18 @@ class HypocrisyEngine:
             return None
 
     def _analyze_contradiction(self, statement1: str, statement2: str) -> float:
-        """Analyze the level of contradiction between two statements"""
+        """
+Analyze the level of contradiction between two statements
+
+        
+"""
         try:
+        """"""
             if not TextBlob:
                 # Simple contradiction detection based on negation words
+        """
+        try:
+        """
                 negation_words = [
                     "not",
                     "no",
@@ -485,7 +631,7 @@ class HypocrisyEngine:
                     "nothing",
                     "neither",
                     "nor",
-                ]
+                 ]
 
                 words1 = statement1.lower().split()
                 words2 = statement2.lower().split()
@@ -518,14 +664,14 @@ class HypocrisyEngine:
                 ("approve", "disapprove"),
                 ("favor", "against"),
                 ("for", "against"),
-            ]
+             ]
 
             contradiction_score = polarity_diff * 0.5
 
             for term1, term2 in contradiction_indicators:
                 if (term1 in statement1.lower() and term2 in statement2.lower()) or (
                     term2 in statement1.lower() and term1 in statement2.lower()
-                ):
+#                 ):
                     contradiction_score += 0.3
 
             return min(1.0, contradiction_score)
@@ -537,15 +683,27 @@ class HypocrisyEngine:
     def get_content_opportunities(
         self, limit: int = 10, min_confidence: float = 0.7
     ) -> List[Dict[str, Any]]:
-        """Get hypocrisy findings suitable for content creation"""
+        """
+Get hypocrisy findings suitable for content creation
+
+        
+"""
         try:
+        """"""
             if not self.db_manager:
                 self.logger.warning("Database manager not available")
+        """
+
+        try:
+        
+
+       
+""""""
                 return []
 
             opportunities = self.db_manager.get_content_opportunities(
                 limit=limit, min_confidence=min_confidence
-            )
+             )
 
             # Enhance opportunities with additional analysis
             enhanced_opportunities = []
@@ -570,10 +728,21 @@ class HypocrisyEngine:
             return []
 
     def _calculate_content_potential(self, opportunity: Dict[str, Any]) -> float:
-        """Calculate content creation potential for a hypocrisy finding"""
-        try:
-            base_score = opportunity.get("confidence_score", 0.5)
+        """
+Calculate content creation potential for a hypocrisy finding
 
+        
+"""
+        try:
+        """
+            base_score = opportunity.get("confidence_score", 0.5)
+        """
+
+        try:
+        
+
+       
+""""""
             # Boost for high - profile subjects
             subject_boost = 0.1 if opportunity.get("subject_type") == "politician" else 0.0
 
@@ -605,29 +774,46 @@ class HypocrisyEngine:
             return 0.0
 
     def _suggest_content_angles(self, opportunity: Dict[str, Any]) -> List[str]:
-        """Suggest content creation angles for a hypocrisy finding"""
-        angles = []
+        """
+Suggest content creation angles for a hypocrisy finding
 
+       
+""""""
+
+        angles = []
+       
+
+        
+       
+"""
         try:
+       """
+
+        
+       
+
+        angles = []
+       
+""""""
             contradiction_type = opportunity.get("contradiction_type", "direct")
             subject_name = opportunity.get("subject_name", "Unknown")
 
             if contradiction_type == "temporal":
-                angles.append(f"How {subject_name}'s Position Changed Over Time")
-                angles.append(f"The Evolution of {subject_name}'s Stance")
+                angles.append(f"How {subject_name}'s Position Changed Over Time")'
+                angles.append(f"The Evolution of {subject_name}'s Stance")'
             elif contradiction_type == "contextual":
                 angles.append(f"{subject_name} Says Different Things to Different Audiences")
-                angles.append(f"Context Matters: {subject_name}'s Contradictory Messages")
+                angles.append(f"Context Matters: {subject_name}'s Contradictory Messages")'
             elif contradiction_type == "policy_shift":
-                angles.append(f"{subject_name}'s Policy Flip - Flop Exposed")
-                angles.append(f"Before and After: {subject_name}'s Policy Reversal")
+                angles.append(f"{subject_name}'s Policy Flip - Flop Exposed")'
+                angles.append(f"Before and After: {subject_name}'s Policy Reversal")'
             else:
-                angles.append(f"{subject_name}'s Contradictory Statements Revealed")
-                angles.append(f"Fact - Check: {subject_name}'s Inconsistent Claims")
+                angles.append(f"{subject_name}'s Contradictory Statements Revealed")'
+                angles.append(f"Fact - Check: {subject_name}'s Inconsistent Claims")'
 
             # Add general angles
-            angles.append(f"Breaking Down {subject_name}'s Contradictions")
-            angles.append(f"What {subject_name} Doesn't Want You to Remember")
+            angles.append(f"Breaking Down {subject_name}'s Contradictions")'
+            angles.append(f"What {subject_name} Doesn't Want You to Remember")'
 
             return angles[:5]  # Return top 5 angles
 
@@ -636,9 +822,21 @@ class HypocrisyEngine:
             return ["Analysis of Contradictory Statements"]
 
     def get_engine_statistics(self) -> Dict[str, Any]:
-        """Get comprehensive statistics about the hypocrisy engine"""
+        """
+Get comprehensive statistics about the hypocrisy engine
+
+        
+"""
         try:
+        """"""
             if not self.db_manager:
+        """
+
+        try:
+        
+
+       
+""""""
                 return {"error": "Database manager not available"}
 
             # Get database statistics
@@ -652,24 +850,41 @@ class HypocrisyEngine:
                 "time_gap_threshold_days": self.time_gap_threshold_days,
                 "nlp_available": TextBlob is not None,
                 "database_available": self.db_manager is not None,
-            }
+             }
 
             return {
                 "database_stats": db_stats,
                 "engine_config": engine_stats,
                 "last_updated": datetime.now().isoformat(),
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Error getting engine statistics: {e}")
             return {"error": str(e)}
 
     async def batch_validate_claims(self, claims: List[ResearchClaim]) -> List[ValidationResult]:
-        """Validate multiple research claims in batch"""
-        results = []
+        """
+Validate multiple research claims in batch
 
+       
+""""""
+
+        results = []
+       
+
+        
+       
+"""
         for claim in claims:
             try:
+       """
+
+        
+       
+
+        results = []
+       
+""""""
                 result = await self.validate_research_claim(claim)
                 results.append(result)
             except Exception as e:
@@ -682,7 +897,7 @@ class HypocrisyEngine:
                         evidence_sources=[],
                         validation_notes=f"Validation error: {str(e)}",
                         fact_check_status="error",
-                    )
-                )
+                     )
+                 )
 
         return results

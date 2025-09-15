@@ -25,7 +25,9 @@ class XTTS:
         # ModelManager().download_model(model_name)
         model_path = os.path.join(
             get_user_data_dir("tts"), model_name.replace("/", "--")
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         # print("XTTS downloaded")
 
         config = XttsConfig()
@@ -38,7 +40,9 @@ class XTTS:
                 vocab_path = os.path.join(model_path, "vocab.json"),
                 eval = True,
                 use_deepspeed = True,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.model.cuda()
 
         self.supported_languages = config.languages
@@ -50,23 +54,30 @@ class XTTS:
             language,
             audio_file_pth,
             voice_cleanup,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         # 模型不支持语言
         if language not in self.supported_languages:
             gr.Warning(
                 f"Language you put {language} in is not in is not in our Supported Languages, please choose from dropdown"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return (
                 None,
                     None,
                     None,
                     None,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         language_predicted = langid.classify(prompt)[
             0
-        ].strip()  # strip need as there is space at end!
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ].strip()  # strip need as there is space at end!
 
         # tts expects chinese as zh - cn
         if language_predicted == "zh":
@@ -99,19 +110,24 @@ class XTTS:
             try:
                 out_filename = (
                     speaker_wav + str(uuid.uuid4()) + ".wav"
-                )  # ffmpeg to know output format
+# BRACKET_SURGEON: disabled
+#                 )  # ffmpeg to know output format
 
                 # we will use newer ffmpeg as that has afftn denoise filter
                 shell_command = f"ffmpeg -y -i {speaker_wav} -af {lowpass_highpass}{trim_silence} {out_filename}".split(
                     " "
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 command_result = subprocess.run(
                     [item for item in shell_command],
                         capture_output = False,
                         text = True,
                         check = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 speaker_wav = out_filename
                 print("Filtered microphone input")
             except subprocess.CalledProcessError:
@@ -127,7 +143,9 @@ class XTTS:
                     None,
                     None,
                     None,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         metrics_text = ""
         t_latent = time.time()
@@ -143,17 +161,23 @@ class XTTS:
                     gpt_cond_len = 30,
                     gpt_cond_chunk_len = 4,
                     max_ref_length = 60,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             print("Speaker encoding error", str(e))
             gr.Warning(
                 "It appears something wrong with reference, did you unmute your microphone?"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return (
                 None,
                     None,
                     None,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         latent_calculation_time = time.time() - t_latent
         # metrics_text = f"Embedding calculation time: {latent_calculation_time:.2f} seconds\\n"
@@ -173,12 +197,16 @@ class XTTS:
                 speaker_embedding,
                 repetition_penalty = 5.0,
                 temperature = 0.75,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         inference_time = time.time() - t0
         print(f"I: Time to generate audio: {round(inference_time * 1000)} milliseconds")
         metrics_text += (
             f"Time to generate audio: {round(inference_time * 1000)} milliseconds\\n"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         real_time_factor = (time.time() - t0)/out["wav"].shape[-1] * 24000
         print(f"Real - time factor (RTF): {real_time_factor}")
         metrics_text += f"Real - time factor (RTF): {real_time_factor:.2f}\\n"
@@ -187,7 +215,9 @@ class XTTS:
             "output.wav",
                 metrics_text,
                 speaker_wav,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 title = "语音克隆 Coqui🐸 XTTS"
 
@@ -201,7 +231,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Lorsque j'avais six ans j'ai vu, une fois, une magnifique image",
             "fr",
@@ -211,7 +243,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Als ich sechs war, sah ich einmal ein wunderbares Bild",
             "de",
@@ -221,7 +255,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Cuando tenía seis años, vi una vez una imagen magnífica",
             "es",
@@ -231,7 +267,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Quando eu tinha seis anos eu vi, uma vez, uma imagem magnífica",
             "pt",
@@ -241,7 +279,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Kiedy miałem sześć lat, zobaczyłem pewnego razu wspaniały obrazek",
             "pl",
@@ -251,7 +291,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Un tempo lontano, quando avevo sei anni, vidi un magnifico disegno",
             "it",
@@ -261,7 +303,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Bir zamanlar, altı yaşındayken, muhteşem bir resim gördüm",
             "tr",
@@ -271,7 +315,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Когда мне было шесть лет, я увидел однажды удивительную картинку",
             "ru",
@@ -281,7 +327,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Toen ik een jaar of zes was, zag ik op een keer een prachtige plaat",
             "nl",
@@ -291,7 +339,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Když mi bylo šest let, viděl jsem jednou nádherný obrázek",
             "cs",
@@ -301,7 +351,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "当我还只有六岁的时候， 看到了一副精彩的插画",
             "zh - cn",
@@ -311,7 +363,9 @@ examples = [
             False,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "かつて 六歳のとき、素晴らしい絵を見ました",
             "ja",
@@ -321,7 +375,9 @@ examples = [
             True,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "한번은 내가 여섯 살이었을 때 멋진 그림을 보았습니다.",
             "ko",
@@ -331,7 +387,9 @@ examples = [
             True,
             False,
             True,
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "Egyszer hat éves koromban láttam egy csodálatos képet",
             "hu",
@@ -341,8 +399,12 @@ examples = [
             True,
             False,
             True,
-            ],
-]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# ]
 
 
 def main():
@@ -350,10 +412,12 @@ def main():
         with gr.Row():
             with gr.Column():
                 gr.Markdown(
-                    """
+                    """"""
                     ## 语音克隆 (Coqui TTS)
-                    """
-                )
+                    """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             with gr.Column():
                 # 用于对齐图像的占位符
                 pass
@@ -370,7 +434,9 @@ def main():
                     label="文本提示",
                         info="一次一两个句子最好。最多200个文本字符。",
                         value="嗨，我是你的新语音克隆。请尽量上传高质量的音频。",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 language_gr = gr.Dropdown(
                     label="语言",
                         info="选择用于合成语音的输出语言",
@@ -392,21 +458,29 @@ def main():
                             "ko",
                             "hu",
                             "hi",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         max_choices = 1,
                         value="en",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 ref_gr = gr.Audio(
                     label="参考音频",
                         type="filepath",
                         value="examples/female.wav",
                         sources=["microphone", "upload"],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 clean_ref_gr = gr.Checkbox(
                     label="清理参考语音",
                         value = False,
                         info="如果您的麦克风或参考语音有噪音，此选项可以改善输出。",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 tts_button = gr.Button("发送", elem_id="send - btn", visible = True)
 
             with gr.Column():
@@ -421,12 +495,16 @@ def main():
                     outputs=[audio_gr, out_text_gr, ref_audio_gr],
                     fn = XTTS().predict,
                     cache_examples = False,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         tts_button.click(
             XTTS().predict,
                 [input_text_gr, language_gr, ref_gr, clean_ref_gr],
                 outputs=[audio_gr, out_text_gr, ref_audio_gr],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
     return demo
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Application Startup and Management System
 
 This script handles:
@@ -14,7 +14,7 @@ Usage:
     python3 startup_system.py --mode production
     python3 startup_system.py --mode development
     python3 startup_system.py --monitor - only
-"""
+""""""
 
 import argparse
 import asyncio
@@ -46,7 +46,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("startup_system.log"), logging.StreamHandler()],
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -70,7 +71,8 @@ class SystemManager:
             "node": "16+",
             "memory_gb": 4,
             "disk_space_gb": 2,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Applications to close for optimization
         self.apps_to_close = [
@@ -97,7 +99,8 @@ class SystemManager:
             "QuickTime Player",
             "iTunes",
             "Music",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Essential apps to keep running
         self.essential_apps = [
@@ -113,7 +116,8 @@ class SystemManager:
             "uvicorn",
             "Ollama",
             "Chrome",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def _init_monitoring_components(self):
         """Initialize monitoring components if available"""
@@ -191,7 +195,8 @@ class SystemManager:
                     capture_output=True,
                     text=True,
                     timeout=300,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if result.returncode == 0:
                     logger.info(f"✅ Dependencies installed successfully from {req_file}")
@@ -199,13 +204,15 @@ class SystemManager:
                 else:
                     logger.warning(
                         f"⚠️ Failed to install from {req_file}: {result.stderr[:200]}..."
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     continue
             else:
                 # If all requirements files fail, continue anyway
                 logger.warning(
                     "⚠️ Could not install dependencies, continuing with existing packages..."
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Install Node dependencies
             if (self.project_root / "package.json").exists():
@@ -243,7 +250,8 @@ class SystemManager:
                         is_essential = any(
                             essential.lower() in proc_name.lower()
                             for essential in self.essential_apps
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         if not is_essential:
                             try:
@@ -295,7 +303,8 @@ class SystemManager:
                         ["ollama", "serve"],
                         stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     time.sleep(5)
                     logger.info("Ollama service started successfully")
                 except FileNotFoundError:
@@ -306,7 +315,8 @@ class SystemManager:
                             ["ollama", "serve"],
                             stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         time.sleep(5)
                         logger.info("Ollama installed and started successfully")
                     except Exception as install_error:
@@ -345,7 +355,8 @@ class SystemManager:
                 "https://stackoverflow.com",
                 "https://docs.python.org",
                 "https://fastapi.tiangolo.com",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             chrome_running = False
             for proc in psutil.process_iter(["name"]):
@@ -406,14 +417,16 @@ class SystemManager:
                 text=True,
                 bufsize=1,
                 universal_newlines=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.processes["main_app"] = {
                 "process": process,
                 "cmd": cmd,
                 "start_time": datetime.now(),
                 "restart_count": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Give it a moment to start
             time.sleep(3)
@@ -468,7 +481,8 @@ class SystemManager:
                                 text=True,
                                 bufsize=1,
                                 universal_newlines=True,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                             proc_info["process"] = new_process
                             proc_info["restart_count"] += 1
@@ -476,7 +490,8 @@ class SystemManager:
 
                             logger.info(
                                 f"✅ {name} restarted (attempt {proc_info['restart_count']})"
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                         else:
                             logger.error(f"❌ {name} failed too many times, giving up")
                             del self.processes[name]
@@ -498,7 +513,8 @@ class SystemManager:
             if self.self_healing_monitor:
                 monitor_thread = threading.Thread(
                     target=self._run_self_healing_monitor, daemon=True
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 monitor_thread.start()
                 logger.info("🔧 Self - healing monitor started")
 
@@ -533,7 +549,8 @@ class SystemManager:
             "services": {},
             "system": {},
             "issues": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Check system resources
@@ -546,7 +563,8 @@ class SystemManager:
                 "memory_usage": memory.percent,
                 "memory_available_gb": memory.available / (1024**3),
                 "disk_free_gb": disk.free / (1024**3),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Check if main application is responding
             try:
@@ -574,7 +592,8 @@ class SystemManager:
             if health_status["issues"]:
                 health_status["overall_status"] = (
                     "degraded" if len(health_status["issues"]) < 3 else "unhealthy"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             health_status["overall_status"] = "error"
@@ -679,10 +698,12 @@ def main():
         choices=["development", "production"],
         default="production",
         help="Run mode",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument(
         "--monitor - only", action="store_true", help="Only monitor existing processes"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     args = parser.parse_args()
 

@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 AI Browser Automation Service
 Automated interaction with web-based AI platforms using Puppeteer MCP
-"""
+
+""""""
+
 
 import asyncio
 import logging
@@ -18,7 +23,9 @@ logger = logging.getLogger(__name__)
 
 
 class BrowserAIService(Enum):
-    """Browser-based AI services"""
+    
+Browser-based AI services
+"""
 
     CHATGPT_WEB = "chatgpt_web"
     GEMINI_WEB = "gemini_web"
@@ -27,7 +34,9 @@ class BrowserAIService(Enum):
 
 @dataclass
 class BrowserAIRequest:
-    """Browser AI request structure"""
+    """
+Browser AI request structure
+
 
     service: BrowserAIService
     prompt: str
@@ -35,12 +44,20 @@ class BrowserAIRequest:
     screenshot: bool = False
     wait_for_completion: bool = True
     timeout: int = 60
+   
+""""""
+
     retry_count: int = 3
+   
 
-
+    
+   
+"""
 @dataclass
 class BrowserAIResponse:
-    """Browser AI response structure"""
+    """
+Browser AI response structure
+
 
     success: bool
     response_text: str
@@ -48,9 +65,15 @@ class BrowserAIResponse:
     screenshot_data: Optional[str] = None
     response_time: float = 0.0
     error_message: Optional[str] = None
+   
+""""""
+
     tokens_estimated: int = 0
+   
 
-
+    
+   
+"""
 class AIBrowserAutomation:
     """Browser automation for AI platforms"""
 
@@ -69,7 +92,7 @@ class AIBrowserAutomation:
                 "loading_selector": ".result-streaming",
                 "new_chat_selector": 'a[href="/"]',
                 "conversation_selector": ".conversation-turn",
-            },
+             },
             BrowserAIService.GEMINI_WEB: {
                 "url": "https://gemini.google.com/app",
                 "input_selector": '.ql-editor[contenteditable="true"]',
@@ -78,7 +101,7 @@ class AIBrowserAutomation:
                 "loading_selector": ".loading-indicator",
                 "new_chat_selector": 'button[aria-label="New chat"]',
                 "conversation_selector": ".conversation-turn",
-            },
+             },
             BrowserAIService.ABACUS_WEB: {
                 "url": "https://apps.abacus.ai/chatllm/?appId=1024a18ebe",
                 "input_selector": 'textarea[placeholder*="message"]',
@@ -87,12 +110,17 @@ class AIBrowserAutomation:
                 "loading_selector": ".typing-indicator",
                 "new_chat_selector": 'button[aria-label="New conversation"]',
                 "conversation_selector": ".message",
-            },
-        }
+             },
+         }
 
     async def initialize_browser(self, headless: bool = True) -> bool:
-        """Initialize browser with security settings"""
+        """
+Initialize browser with security settings
+
+        
+"""
         try:
+        """
             launch_options = {
                 "headless": headless,
                 "args": [
@@ -103,9 +131,15 @@ class AIBrowserAutomation:
                     "--no-first-run",
                     "--no-zygote",
                     "--disable-gpu",
-                ],
-            }
+                 ],
+             }
+        """
 
+        try:
+        
+
+       
+""""""
             # Navigate to a blank page to initialize
             result = await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
@@ -114,8 +148,8 @@ class AIBrowserAutomation:
                     "url": "about:blank",
                     "launchOptions": launch_options,
                     "allowDangerous": True,
-                },
-            )
+                 },
+             )
 
             if result.get("success", False):
                 self.browser_launched = True
@@ -124,7 +158,7 @@ class AIBrowserAutomation:
             else:
                 logger.error(
                     f"Failed to initialize browser: {result.get('error', 'Unknown error')}"
-                )
+                 )
                 return False
 
         except Exception as e:
@@ -132,19 +166,26 @@ class AIBrowserAutomation:
             return False
 
     async def navigate_to_service(self, service: BrowserAIService) -> bool:
-        """Navigate to AI service platform"""
+        """
+Navigate to AI service platform
+
         if not self.browser_launched:
             if not await self.initialize_browser():
+                
+"""
                 return False
-
+                """"""
         try:
+                """
+                return False
+                """
             config = self.platform_config[service]
 
             result = await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_navigate",
                 {"url": config["url"]},
-            )
+             )
 
             if result.get("success", False):
                 # Wait for page to load
@@ -154,7 +195,7 @@ class AIBrowserAutomation:
             else:
                 logger.error(
                     f"Failed to navigate to {service.value}: {result.get('error', 'Unknown error')}"
-                )
+                 )
                 return False
 
         except Exception as e:
@@ -163,21 +204,38 @@ class AIBrowserAutomation:
 
     async def send_message_to_chatgpt(
         self, prompt: str, screenshot: bool = False
-    ) -> BrowserAIResponse:
-        """Send message to ChatGPT web interface"""
+#     ) -> BrowserAIResponse:
+        """
+Send message to ChatGPT web interface
+
         start_time = time.time()
         service = BrowserAIService.CHATGPT_WEB
-        config = self.platform_config[service]
+       
+""""""
 
+        config = self.platform_config[service]
+       
+
+        
+       
+"""
         try:
             # Navigate to ChatGPT if not already there
+       """
+
+        
+       
+
+        config = self.platform_config[service]
+       
+""""""
             if not await self.navigate_to_service(service):
                 return BrowserAIResponse(
                     success=False,
                     response_text="",
                     error_message="Failed to navigate to ChatGPT",
                     response_time=time.time() - start_time,
-                )
+                 )
 
             # Wait for input field to be available
             await asyncio.sleep(2)
@@ -187,28 +245,28 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["input_selector"]},
-            )
+             )
 
             # Clear existing content
             await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_evaluate",
                 {"script": f'document.querySelector("{config["input_selector"]}").value = "";'},
-            )
+             )
 
             # Fill the prompt
             await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_fill",
                 {"selector": config["input_selector"], "value": prompt},
-            )
+             )
 
             # Click send button
             await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["send_button_selector"]},
-            )
+             )
 
             # Wait for response
             response_text = await self._wait_for_response(service, timeout=60)
@@ -220,7 +278,7 @@ class AIBrowserAutomation:
                     "mcp.config.usrlocalmcp.Puppeteer",
                     "puppeteer_screenshot",
                     {"name": f"chatgpt_response_{int(time.time())}", "encoded": True},
-                )
+                 )
                 screenshot_data = screenshot_result.get("data")
 
             return BrowserAIResponse(
@@ -229,7 +287,7 @@ class AIBrowserAutomation:
                 screenshot_data=screenshot_data,
                 response_time=time.time() - start_time,
                 tokens_estimated=len(response_text.split()) * 1.3,  # Rough estimation
-            )
+             )
 
         except Exception as e:
             logger.error(f"ChatGPT automation error: {str(e)}")
@@ -238,25 +296,42 @@ class AIBrowserAutomation:
                 response_text="",
                 error_message=str(e),
                 response_time=time.time() - start_time,
-            )
+             )
 
     async def send_message_to_gemini(
         self, prompt: str, screenshot: bool = False
-    ) -> BrowserAIResponse:
-        """Send message to Gemini web interface"""
+#     ) -> BrowserAIResponse:
+        """
+Send message to Gemini web interface
+
         start_time = time.time()
         service = BrowserAIService.GEMINI_WEB
-        config = self.platform_config[service]
+       
+""""""
 
+        config = self.platform_config[service]
+       
+
+        
+       
+"""
         try:
             # Navigate to Gemini if not already there
+       """
+
+        
+       
+
+        config = self.platform_config[service]
+       
+""""""
             if not await self.navigate_to_service(service):
                 return BrowserAIResponse(
                     success=False,
                     response_text="",
                     error_message="Failed to navigate to Gemini",
                     response_time=time.time() - start_time,
-                )
+                 )
 
             # Wait for input field to be available
             await asyncio.sleep(3)
@@ -266,7 +341,7 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["input_selector"]},
-            )
+             )
 
             # Clear existing content and enter prompt
             await self.mcp_client.call_tool(
@@ -274,15 +349,15 @@ class AIBrowserAutomation:
                 "puppeteer_evaluate",
                 {
                     "script": f'document.querySelector("{config["input_selector"]}").innerHTML = "{prompt}";'
-                },
-            )
+                 },
+             )
 
             # Click send button
             await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["send_button_selector"]},
-            )
+             )
 
             # Wait for response
             response_text = await self._wait_for_response(service, timeout=60)
@@ -294,7 +369,7 @@ class AIBrowserAutomation:
                     "mcp.config.usrlocalmcp.Puppeteer",
                     "puppeteer_screenshot",
                     {"name": f"gemini_response_{int(time.time())}", "encoded": True},
-                )
+                 )
                 screenshot_data = screenshot_result.get("data")
 
             return BrowserAIResponse(
@@ -303,7 +378,7 @@ class AIBrowserAutomation:
                 screenshot_data=screenshot_data,
                 response_time=time.time() - start_time,
                 tokens_estimated=len(response_text.split()) * 1.3,
-            )
+             )
 
         except Exception as e:
             logger.error(f"Gemini automation error: {str(e)}")
@@ -312,25 +387,42 @@ class AIBrowserAutomation:
                 response_text="",
                 error_message=str(e),
                 response_time=time.time() - start_time,
-            )
+             )
 
     async def send_message_to_abacus(
         self, prompt: str, screenshot: bool = False
-    ) -> BrowserAIResponse:
-        """Send message to Abacus.AI web interface"""
+#     ) -> BrowserAIResponse:
+        """
+Send message to Abacus.AI web interface
+
         start_time = time.time()
         service = BrowserAIService.ABACUS_WEB
-        config = self.platform_config[service]
+       
+""""""
 
+        config = self.platform_config[service]
+       
+
+        
+       
+"""
         try:
             # Navigate to Abacus.AI if not already there
+       """
+
+        
+       
+
+        config = self.platform_config[service]
+       
+""""""
             if not await self.navigate_to_service(service):
                 return BrowserAIResponse(
                     success=False,
                     response_text="",
                     error_message="Failed to navigate to Abacus.AI",
                     response_time=time.time() - start_time,
-                )
+                 )
 
             # Wait for input field to be available
             await asyncio.sleep(3)
@@ -340,14 +432,14 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_fill",
                 {"selector": config["input_selector"], "value": prompt},
-            )
+             )
 
             # Click send button
             await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["send_button_selector"]},
-            )
+             )
 
             # Wait for response
             response_text = await self._wait_for_response(service, timeout=60)
@@ -359,7 +451,7 @@ class AIBrowserAutomation:
                     "mcp.config.usrlocalmcp.Puppeteer",
                     "puppeteer_screenshot",
                     {"name": f"abacus_response_{int(time.time())}", "encoded": True},
-                )
+                 )
                 screenshot_data = screenshot_result.get("data")
 
             return BrowserAIResponse(
@@ -368,7 +460,7 @@ class AIBrowserAutomation:
                 screenshot_data=screenshot_data,
                 response_time=time.time() - start_time,
                 tokens_estimated=len(response_text.split()) * 1.3,
-            )
+             )
 
         except Exception as e:
             logger.error(f"Abacus.AI automation error: {str(e)}")
@@ -377,16 +469,32 @@ class AIBrowserAutomation:
                 response_text="",
                 error_message=str(e),
                 response_time=time.time() - start_time,
-            )
+             )
 
     async def _wait_for_response(self, service: BrowserAIService, timeout: int = 60) -> str:
-        """Wait for AI service to complete response"""
-        config = self.platform_config[service]
-        start_time = time.time()
+        """
+Wait for AI service to complete response
 
+        config = self.platform_config[service]
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         # Wait for loading to start (if applicable)
         await asyncio.sleep(2)
+       """
 
+        
+       
+
+        start_time = time.time()
+       
+""""""
         # Wait for loading to complete
         while time.time() - start_time < timeout:
             try:
@@ -395,7 +503,7 @@ class AIBrowserAutomation:
                     "mcp.config.usrlocalmcp.Puppeteer",
                     "puppeteer_evaluate",
                     {"script": f'document.querySelector("{config["loading_selector"]}") !== null'},
-                )
+                 )
 
                 if not loading_check.get("result", False):
                     # Loading complete, get response
@@ -403,17 +511,25 @@ class AIBrowserAutomation:
                         "mcp.config.usrlocalmcp.Puppeteer",
                         "puppeteer_evaluate",
                         {
-                            "script": f"""
+                           """"""
+                            "script": f
+                           """"""
                             const elements = document.querySelectorAll("{config["response_selector"]}");
                             if (elements.length > 0) {{
                                 const lastElement = elements[elements.length - 1];
                                 return lastElement.innerText || lastElement.textContent || "";
-                            }}
+#                             }}
                             return "";
-                        """
-                        },
-                    )
+                        """"""
 
+                         },
+                    
+
+                     
+                    
+"""
+                     )
+                    """"""
                     response_text = response_result.get("result", "").strip()
                     if response_text:
                         return response_text
@@ -430,25 +546,53 @@ class AIBrowserAutomation:
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_evaluate",
                 {
-                    "script": f"""
+                   """"""
+                    "script": f
+                   """"""
                     const elements = document.querySelectorAll("{config["response_selector"]}");
                     if (elements.length > 0) {{
                         const lastElement = elements[elements.length - 1];
                         return lastElement.innerText || lastElement.textContent || "Timeout: Partial response";
-                    }}
+#                     }}
                     return "Timeout: No response found";
-                """
-                },
-            )
-            return response_result.get("result", "Timeout: No response available")
+                """"""
 
+                 },
+            
+
+             
+            
+"""
+             )
+            """"""
+            return response_result.get("result", "Timeout: No response available")
+            """
+
+             
+            
+
+             )
+            
+""""""
         except Exception:
             return "Timeout: Failed to retrieve response"
 
     async def process_browser_request(self, request: BrowserAIRequest) -> BrowserAIResponse:
-        """Process browser AI request"""
+        """
+Process browser AI request
+
+        
+"""
         try:
+        """"""
             if request.service == BrowserAIService.CHATGPT_WEB:
+        """
+
+        try:
+        
+
+       
+""""""
                 return await self.send_message_to_chatgpt(request.prompt, request.screenshot)
             elif request.service == BrowserAIService.GEMINI_WEB:
                 return await self.send_message_to_gemini(request.prompt, request.screenshot)
@@ -459,23 +603,30 @@ class AIBrowserAutomation:
                     success=False,
                     response_text="",
                     error_message=f"Unsupported service: {request.service.value}",
-                )
+                 )
 
         except Exception as e:
             logger.error(f"Browser request processing error: {str(e)}")
             return BrowserAIResponse(success=False, response_text="", error_message=str(e))
 
     async def start_new_conversation(self, service: BrowserAIService) -> bool:
-        """Start a new conversation in the AI service"""
-        try:
-            config = self.platform_config[service]
+        """
+Start a new conversation in the AI service
 
+        
+"""
+        try:
+        """"""
+            config = self.platform_config[service]
+           """"""
+        try:
+        """"""
             # Click new chat button if available
-            result = await self.mcp_client.call_tool(
+            await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_click",
                 {"selector": config["new_chat_selector"]},
-            )
+             )
 
             await asyncio.sleep(2)
             logger.info(f"Started new conversation for {service.value}")
@@ -486,15 +637,24 @@ class AIBrowserAutomation:
             return False
 
     async def get_conversation_history(self, service: BrowserAIService) -> List[Dict[str, str]]:
-        """Get conversation history from the AI service"""
-        try:
-            config = self.platform_config[service]
+        """
+Get conversation history from the AI service
 
+        
+"""
+        try:
+        """"""
+            config = self.platform_config[service]
+           """"""
+        try:
+        """"""
             history_result = await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_evaluate",
                 {
-                    "script": f"""
+                   """"""
+                    "script": f
+                   """"""
                     const conversations = document.querySelectorAll("{config["conversation_selector"]}");
                     const history = [];
                     conversations.forEach((conv, index) => {{
@@ -504,14 +664,20 @@ class AIBrowserAutomation:
                                 index: index,
                                 text: text.trim(),
                                 timestamp: new Date().toISOString()
-                            }});
-                        }}
-                    }});
+#                             }});
+#                         }}
+#                     }});
                     return history;
-                """
-                },
-            )
+                """"""
 
+                 },
+            
+
+             
+            
+"""
+             )
+            """"""
             return history_result.get("result", [])
 
         except Exception as e:
@@ -521,15 +687,26 @@ class AIBrowserAutomation:
     async def take_service_screenshot(
         self, service: BrowserAIService, name: Optional[str] = None
     ) -> Optional[str]:
-        """Take screenshot of AI service interface"""
-        try:
-            screenshot_name = name or f"{service.value}_screenshot_{int(time.time())}"
+        """
+Take screenshot of AI service interface
 
+        
+"""
+        try:
+        """
+            screenshot_name = name or f"{service.value}_screenshot_{int(time.time())}"
+        """
+
+        try:
+        
+
+       
+""""""
             result = await self.mcp_client.call_tool(
                 "mcp.config.usrlocalmcp.Puppeteer",
                 "puppeteer_screenshot",
                 {"name": screenshot_name, "encoded": True},
-            )
+             )
 
             return result.get("data")
 
@@ -549,7 +726,9 @@ class AIBrowserAutomation:
 
 
 class BrowserAIServiceManager:
-    """Manager for browser-based AI services"""
+    """
+Manager for browser-based AI services
+
 
     def __init__(self, mcp_client):
         self.automation = AIBrowserAutomation(mcp_client)
@@ -561,8 +740,10 @@ class BrowserAIServiceManager:
         prompt: str,
         preferred_service: Optional[BrowserAIService] = None,
         screenshot: bool = False,
-    ) -> BrowserAIResponse:
-        """Send prompt to the best available browser service"""
+#     ) -> BrowserAIResponse:
+        
+"""Send prompt to the best available browser service"""
+
         services_to_try = (
             [preferred_service]
             if preferred_service
@@ -570,10 +751,28 @@ class BrowserAIServiceManager:
                 BrowserAIService.CHATGPT_WEB,
                 BrowserAIService.GEMINI_WEB,
                 BrowserAIService.ABACUS_WEB,
-            ]
-        )
+             ]
+        
+
+         
+        
+"""
+         )
+        """
+
+         
+        
 
         for service in services_to_try:
+        
+""""""
+
+         )
+        
+
+         
+        
+"""
             if service is None:
                 continue
 
@@ -589,8 +788,8 @@ class BrowserAIServiceManager:
                     "prompt": prompt[:100] + "..." if len(prompt) > 100 else prompt,
                     "success": response.success,
                     "response_time": response.response_time,
-                }
-            )
+                 }
+             )
 
             if response.success:
                 return response
@@ -600,7 +799,7 @@ class BrowserAIServiceManager:
         # All services failed
         return BrowserAIResponse(
             success=False, response_text="", error_message="All browser services failed"
-        )
+         )
 
     async def get_service_status(self) -> Dict[str, Any]:
         """Get status of all browser services"""
@@ -609,7 +808,7 @@ class BrowserAIServiceManager:
             "active_sessions": len(self.active_sessions),
             "total_requests": len(self.request_history),
             "recent_requests": (self.request_history[-10:] if self.request_history else []),
-        }
+         }
 
         return status
 

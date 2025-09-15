@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 Database Schema Fix Script
 Adds missing columns to resolve dashboard errors:
 - 'category' column to affiliate_programs table
 - 'name' column to api_registry table (as alias for api_name)
-"""
+""""""
 
 import os
 import sqlite3
@@ -31,7 +31,8 @@ def fix_database_schema():
             # Check if affiliate_programs table exists and add category column
             cursor.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='affiliate_programs'"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if cursor.fetchone():
                 # Check if category column already exists
                 cursor.execute("PRAGMA table_info(affiliate_programs)")
@@ -40,10 +41,12 @@ def fix_database_schema():
                 if "category" not in columns:
                     print(
                         "  ➕ Adding 'category' column to affiliate_programs table..."
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     cursor.execute(
                         "ALTER TABLE affiliate_programs ADD COLUMN category TEXT DEFAULT 'General'"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     print("  ✅ Category column added successfully")
                 else:
                     print("  ℹ️  Category column already exists in affiliate_programs")
@@ -51,7 +54,8 @@ def fix_database_schema():
             # Check if api_registry table exists and add name column as alias
             cursor.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='api_registry'"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if cursor.fetchone():
                 # Check if name column already exists
                 cursor.execute("PRAGMA table_info(api_registry)")
@@ -63,7 +67,8 @@ def fix_database_schema():
                     cursor.execute("ALTER TABLE api_registry ADD COLUMN name TEXT")
                     cursor.execute(
                         "UPDATE api_registry SET name = api_name WHERE name IS NULL"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     print("  ✅ Name column added and populated successfully")
                 else:
                     print("  ℹ️  Name column already exists in api_registry")
@@ -88,7 +93,8 @@ def fix_database_schema():
             # Check if affiliate_programs table exists and add category column
             cursor.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='affiliate_programs'"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if cursor.fetchone():
                 # Check if category column already exists
                 cursor.execute("PRAGMA table_info(affiliate_programs)")
@@ -97,10 +103,12 @@ def fix_database_schema():
                 if "category" not in columns:
                     print(
                         "  ➕ Adding 'category' column to affiliate_programs table..."
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     cursor.execute(
                         "ALTER TABLE affiliate_programs ADD COLUMN category TEXT DEFAULT 'General'"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     print("  ✅ Category column added successfully")
                 else:
                     print("  ℹ️  Category column already exists in affiliate_programs")
@@ -108,7 +116,8 @@ def fix_database_schema():
             # Check if api_registry table exists and add name column
             cursor.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='api_registry'"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if cursor.fetchone():
                 # Check if name column already exists
                 cursor.execute("PRAGMA table_info(api_registry)")
@@ -117,18 +126,20 @@ def fix_database_schema():
                 if "name" not in columns:
                     print("  ➕ Adding 'name' column to api_registry table...")
                     # Add name column \
-    and populate it with service_name or api_name values
+#     and populate it with service_name or api_name values
                     cursor.execute("ALTER TABLE api_registry ADD COLUMN name TEXT")
 
                     # Try to populate from service_name first, then api_name
                     if "service_name" in columns:
                         cursor.execute(
                             "UPDATE api_registry SET name = service_name WHERE name IS NULL"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                     elif "api_name" in columns:
                         cursor.execute(
                             "UPDATE api_registry SET name = api_name WHERE name IS NULL"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                     print("  ✅ Name column added and populated successfully")
                 else:

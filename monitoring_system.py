@@ -234,7 +234,7 @@ class SelfHealingSystem:
     async def perform_healing_check(self) -> Dict[str, Any]:
         """Perform comprehensive healing check"""
         current_time = time.time()
-        healing_report = {
+        healing_report: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "actions_taken": [],
             "issues_detected": [],
@@ -303,13 +303,12 @@ class MonitoringSystem:
                 # Log significant events
                 if report["issues_detected"] or report["actions_taken"]:
                     logger.info(
-                        f"📊 Monitoring Report: {json.dumps(report,
-    indent = 2)}"
+                        f"📊 Monitoring Report: {json.dumps(report, indent=2)}"
                     )
 
                 # Save report to file
                 with open("monitoring_reports.jsonl", "a") as f:
-                    f.write(json.dumps(report) + "\\n")
+                    f.write(json.dumps(report) + "\n")
 
                 await asyncio.sleep(self.check_interval)
 

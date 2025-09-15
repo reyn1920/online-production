@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Distributed Processing System
-
+""""""
 This module implements a distributed processing system using Celery task queue
 to coordinate work across multiple machines (MacBook M1 and Windows PCs).
 It provides task distribution, load balancing, and cross - platform compatibility.
+"""
+
+Distributed Processing System
+
+
+
+""""""
+
 
 Features:
+
+
+
 - Celery - based task queue with Redis/RabbitMQ broker
 - Cross - platform worker management
 - Dynamic task routing based on machine capabilities
@@ -16,6 +27,7 @@ Features:
 
 Author: AI Assistant
 Date: 2024
+
 """
 
 import json
@@ -41,7 +53,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class WorkerCapabilities:
-    """Worker machine capabilities and specifications."""
+    """
+Worker machine capabilities and specifications.
+
 
     worker_id: str
     platform: str  # 'darwin', 'win32', 'linux'
@@ -53,9 +67,15 @@ class WorkerCapabilities:
     specialized_software: List[str]  # ['davinci_resolve', 'blender', 'audacity']
     max_concurrent_tasks: int
     current_load: float = 0.0
+   
+""""""
+
     last_heartbeat: Optional[datetime] = None
+   
 
-
+    
+   
+"""
 @dataclass
 class ProcessingTask:
     """Distributed processing task definition."""
@@ -78,24 +98,53 @@ class ProcessingTask:
 
 
 class DistributedProcessingSystem:
-    """Main distributed processing coordinator."""
+    """
+Main distributed processing coordinator.
+
 
     def __init__(self, broker_url: str = None, result_backend: str = None):
-        """
+       
+""""""
+
+       
+
+        
+       
+"""
         Initialize the distributed processing system.
+       """
+
+        
+       
 
         Args:
             broker_url: Celery broker URL (Redis/RabbitMQ)
             result_backend: Result backend URL
-        """
-        # Load configuration
-        self.config = self._load_config()
+       
+""""""
 
+        # Load configuration
+       
+
+        
+       
+"""
+        self.config = self._load_config()
+       """"""
+        
+       """
+
+        Initialize the distributed processing system.
+       
+
+        
+       
+"""
         # Set up Celery app
         self.broker_url = broker_url or self.config.get("broker_url", "redis://localhost:6379/0")
         self.result_backend = result_backend or self.config.get(
             "result_backend", "redis://localhost:6379/0"
-        )
+         )
 
         self.app = Celery("distributed_processing")
         self.app.conf.update(
@@ -110,7 +159,7 @@ class DistributedProcessingSystem:
             worker_prefetch_multiplier=1,
             task_acks_late=True,
             worker_disable_rate_limits=True,
-        )
+         )
 
         # Worker registry
         self.workers: Dict[str, WorkerCapabilities] = {}
@@ -124,7 +173,7 @@ class DistributedProcessingSystem:
             "failed_tasks": 0,
             "average_completion_time": 0.0,
             "total_processing_time": 0.0,
-        }
+         }
 
         # Register Celery tasks
         self._register_tasks()
@@ -139,7 +188,7 @@ class DistributedProcessingSystem:
             "max_workers_per_machine": int(os.getenv("MAX_WORKERS_PER_MACHINE", "4")),
             "task_timeout": int(os.getenv("TASK_TIMEOUT", "3600")),  # 1 hour
             "heartbeat_interval": int(os.getenv("HEARTBEAT_INTERVAL", "30")),  # 30 seconds
-        }
+         }
 
         # Try to load from config file
         config_file = Path("config/distributed_processing.json")
@@ -161,53 +210,140 @@ class DistributedProcessingSystem:
             "distributed_processing.image_edit_task": {"queue": "image_processing"},
             "distributed_processing.ai_inference_task": {"queue": "ai_processing"},
             "distributed_processing.general_task": {"queue": "general"},
-        }
+         }
 
     def _register_tasks(self):
         """Register Celery tasks."""
 
         @self.app.task(bind=True, name="distributed_processing.video_render_task")
         def video_render_task(self, task_data: Dict[str, Any]):
-            """Process video rendering task."""
+            """
+Process video rendering task.
+
+            
+"""
+            return self._execute_video_render(self, task_data)
+            """"""
+            """
+
+
             return self._execute_video_render(self, task_data)
 
+            
+
+           
+""""""
         @self.app.task(bind=True, name="distributed_processing.audio_process_task")
         def audio_process_task(self, task_data: Dict[str, Any]):
-            """Process audio editing task."""
+            """
+Process audio editing task.
+
+            
+"""
+            return self._execute_audio_process(self, task_data)
+            """"""
+            """
+
+
             return self._execute_audio_process(self, task_data)
 
+            
+
+           
+""""""
         @self.app.task(bind=True, name="distributed_processing.image_edit_task")
         def image_edit_task(self, task_data: Dict[str, Any]):
-            """Process image editing task."""
+            """
+Process image editing task.
+
+            
+"""
+            return self._execute_image_edit(self, task_data)
+            """"""
+            """
+
+
             return self._execute_image_edit(self, task_data)
 
+            
+
+           
+""""""
         @self.app.task(bind=True, name="distributed_processing.ai_inference_task")
         def ai_inference_task(self, task_data: Dict[str, Any]):
-            """Process AI inference task."""
+            """
+Process AI inference task.
+
+            
+"""
+            return self._execute_ai_inference(self, task_data)
+            """"""
+            """
+
+
             return self._execute_ai_inference(self, task_data)
 
+            
+
+           
+""""""
         @self.app.task(bind=True, name="distributed_processing.general_task")
         def general_task(self, task_data: Dict[str, Any]):
-            """Process general computation task."""
+            """
+Process general computation task.
+
+            
+"""
+            return self._execute_general_task(self, task_data)
+            """"""
+            """
+
+
             return self._execute_general_task(self, task_data)
 
+            
+
+           
+""""""
+
     def register_worker(self, capabilities: WorkerCapabilities) -> bool:
-        """Register a new worker with the system.
+        
+Register a new worker with the system.
+"""
 
         Args:
             capabilities: Worker capabilities and specifications
 
         Returns:
             True if registration successful
-        """
+       """
+
+        
+       
+
         try:
             capabilities.last_heartbeat = datetime.now()
-            self.workers[capabilities.worker_id] = capabilities
+           
+""""""
 
+            self.workers[capabilities.worker_id] = capabilities
+           
+
+            
+           
+"""
             logger.info(
                 f"Registered worker {capabilities.worker_id} "
                 f"({capabilities.platform}/{capabilities.architecture})"
-            )
+             )
+           """
+
+            
+           
+
+            self.workers[capabilities.worker_id] = capabilities
+           
+""""""
             return True
 
         except Exception as e:
@@ -215,13 +351,36 @@ class DistributedProcessingSystem:
             return False
 
     def get_worker_capabilities(self) -> WorkerCapabilities:
-        """Get current machine's capabilities.
+        """
+Get current machine's capabilities.
+
 
         Returns:
             WorkerCapabilities object for this machine
-        """
+       
+""""""
+
+       
+
+        
+       
+"""
         # Detect platform and architecture
+       """
+
+        
+       
+
         system_platform = platform.system().lower()
+       
+""""""
+
+        # Detect platform and architecture
+       
+
+        
+       
+"""
         if system_platform == "darwin":
             platform_name = "darwin"
         elif system_platform == "windows":
@@ -274,20 +433,44 @@ class DistributedProcessingSystem:
             gpu_memory_gb=gpu_memory_gb,
             specialized_software=specialized_software,
             max_concurrent_tasks=max_concurrent,
-        )
+         )
 
     def submit_task(self, task: ProcessingTask) -> str:
-        """Submit a task for distributed processing.
+        """
+Submit a task for distributed processing.
+
 
         Args:
             task: Processing task to submit
 
         Returns:
             Task ID for tracking
-        """
-        # Find best worker for this task
-        best_worker = self._find_best_worker(task)
+       
+""""""
 
+       
+
+        
+       
+"""
+        # Find best worker for this task
+       """"""
+        
+       """
+
+        best_worker = self._find_best_worker(task)
+       
+
+        
+       
+""""""
+
+        
+       
+
+        # Find best worker for this task
+       
+""""""
         if not best_worker:
             logger.warning(f"No suitable worker found for task {task.task_id}")
             task.status = "failed"
@@ -305,12 +488,12 @@ class DistributedProcessingSystem:
             # Route to appropriate queue
             queue_name = self._get_queue_for_task_type(task.task_type)
 
-            result = self.app.send_task(
+            self.app.send_task(
                 celery_task_name,
                 args=[asdict(task)],
                 queue=queue_name,
                 routing_key=queue_name,
-            )
+             )
 
             # Store task
             self.active_tasks[task.task_id] = task
@@ -325,18 +508,40 @@ class DistributedProcessingSystem:
             return task.task_id
 
     def _find_best_worker(self, task: ProcessingTask) -> Optional[WorkerCapabilities]:
-        """Find the best worker for a given task.
+        """
+Find the best worker for a given task.
+
 
         Args:
             task: Task to find worker for
 
         Returns:
             Best worker or None if no suitable worker found
-        """
+       
+""""""
+
+       
+
+        
+       
+"""
         suitable_workers = []
+       """
+
+        
+       
 
         for worker in self.workers.values():
             # Check if worker has required capabilities
+       
+""""""
+
+        suitable_workers = []
+       
+
+        
+       
+"""
             if not all(cap in worker.specialized_software for cap in task.required_capabilities):
                 continue
 
@@ -361,32 +566,38 @@ class DistributedProcessingSystem:
         return suitable_workers[0]
 
     def _get_queue_for_task_type(self, task_type: str) -> str:
-        """Get appropriate queue for task type.
+        """
+Get appropriate queue for task type.
+
 
         Args:
             task_type: Type of task
 
         Returns:
             Queue name
-        """
+       
+""""""
         queue_mapping = {
             "video_render": "video_processing",
             "audio_process": "audio_processing",
             "image_edit": "image_processing",
             "ai_inference": "ai_processing",
-        }
+         }
 
         return queue_mapping.get(task_type, "general")
 
     def get_task_status(self, task_id: str) -> Dict[str, Any]:
-        """Get status of a specific task.
+        """
+Get status of a specific task.
+
 
         Args:
             task_id: ID of task to check
 
         Returns:
             Task status information
-        """
+       
+""""""
         if task_id in self.active_tasks:
             task = self.active_tasks[task_id]
             return {
@@ -396,7 +607,7 @@ class DistributedProcessingSystem:
                 "progress": self._get_task_progress(task_id),
                 "started_at": task.started_at.isoformat() if task.started_at else None,
                 "estimated_completion": self._estimate_completion_time(task),
-            }
+             }
 
         # Check history
         for task in self.task_history:
@@ -406,24 +617,59 @@ class DistributedProcessingSystem:
                     "status": task.status,
                     "completed_at": (task.completed_at.isoformat() if task.completed_at else None),
                     "error_message": task.error_message,
-                }
+                 }
 
         return {"error": "Task not found"}
 
     def _get_task_progress(self, task_id: str) -> float:
-        """Get progress of a running task.
+        """
+Get progress of a running task.
+
 
         Args:
             task_id: ID of task
 
         Returns:
             Progress percentage (0 - 100)
-        """
+       
+""""""
+
         # This would integrate with actual task progress reporting
+       
+
+        
+       
+"""
         # For now, return estimated progress based on time
+       """
+
+        
+       
+
         if task_id not in self.active_tasks:
+       
+""""""
+
+        # For now, return estimated progress based on time
+       
+
+        
+       
+""""""
+
+            return 0.0
+            
+
+           
+""""""
+
+            
+
+
             return 0.0
 
+            
+"""
         task = self.active_tasks[task_id]
         if not task.started_at:
             return 0.0
@@ -434,16 +680,34 @@ class DistributedProcessingSystem:
         return estimated_progress
 
     def _estimate_completion_time(self, task: ProcessingTask) -> Optional[str]:
-        """Estimate task completion time.
+        """
+Estimate task completion time.
+
 
         Args:
             task: Task to estimate
 
         Returns:
             Estimated completion time as ISO string
-        """
+       
+""""""
+
         if not task.started_at:
+            
+
             return None
+            
+""""""
+
+            
+           
+
+            
+"""
+
+            return None
+
+            """
 
         elapsed = (datetime.now() - task.started_at).total_seconds()
         remaining = max(0, task.estimated_duration - elapsed)
@@ -452,19 +716,41 @@ class DistributedProcessingSystem:
         return completion_time.isoformat()
 
     def get_system_status(self) -> Dict[str, Any]:
-        """Get overall system status.
+        """
+        Get overall system status.
+        """
 
         Returns:
             System status information
-        """
+       """
+
+        
+       
+
         active_workers = len(
             [
                 w
                 for w in self.workers.values()
                 if w.last_heartbeat and datetime.now() - w.last_heartbeat < timedelta(minutes=2)
-            ]
-        )
+             ]
+        
+""""""
 
+         )
+        
+
+         
+        
+""""""
+
+
+         
+
+        
+
+         )
+        
+""""""
         return {
             "active_workers": active_workers,
             "total_workers": len(self.workers),
@@ -479,10 +765,10 @@ class DistributedProcessingSystem:
                     "current_load": w.current_load,
                     "max_concurrent": w.max_concurrent_tasks,
                     "last_heartbeat": (w.last_heartbeat.isoformat() if w.last_heartbeat else None),
-                }
+                 }
                 for w in self.workers.values()
-            ],
-        }
+             ],
+         }
 
     # Task execution methods (would be implemented based on specific requirements)
 
@@ -536,10 +822,10 @@ if __name__ == "__main__":
             "project_path": "/path/to/project.drp",
             "timeline_name": "Main Timeline",
             "output_format": "mp4",
-        },
+         },
         output_path="/path/to/output.mp4",
         created_at=datetime.now(),
-    )
+     )
 
     task_id = dps.submit_task(video_task)
     print(f"Submitted task: {task_id}")

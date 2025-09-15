@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI YouTube Engagement Automation System
 
 Comprehensive engagement automation that provides:
@@ -23,7 +23,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -231,10 +231,10 @@ class EngagementInsight:
 
 
 class YouTubeEngagementAutomation:
-    """
+    """"""
     Advanced YouTube engagement automation system with AI - powered responses,
         community management, and intelligent interaction optimization.
-    """
+    """"""
 
 
     def __init__(self, config_path: str = "config/engagement_config.json"):
@@ -245,7 +245,9 @@ class YouTubeEngagementAutomation:
         # Initialize database
         self.db_path = self.config.get(
             "database_path", "data/youtube_engagement.sqlite"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self._init_database()
 
         # Initialize integrations
@@ -290,7 +292,8 @@ class YouTubeEngagementAutomation:
                     "languages": ["en", "es", "fr", "de", "it", "pt"],
                     "auto_reply_enabled": True,
                     "moderation_enabled": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "response_generation": {
                 "ai_model": "gpt - 3.5 - turbo",
                     "max_response_length": 280,
@@ -298,27 +301,31 @@ class YouTubeEngagementAutomation:
                     "tone_adaptation": True,
                     "emoji_usage": True,
                     "cta_inclusion_rate": 0.3,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "sentiment_analysis": {
                 "enabled": True,
                     "toxicity_threshold": 0.7,
                     "spam_threshold": 0.8,
                     "sentiment_model": "cardiffnlp/twitter - roberta - base - sentiment - latest",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "community_posts": {
                 "enabled": True,
                     "posting_frequency": "daily",
                     "optimal_times": ["09:00", "15:00", "20:00"],
                     "content_types": ["announcement", "behind_scenes", "poll", "question"],
                     "auto_generate": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "engagement_campaigns": {
                 "enabled": True,
                     "max_active_campaigns": 5,
                     "subscriber_outreach": True,
                     "collaboration_requests": True,
                     "milestone_celebrations": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "moderation": {
                 "auto_moderate": True,
                     "spam_action": "hide",  # hide, delete, report
@@ -326,14 +333,17 @@ class YouTubeEngagementAutomation:
                     "manual_review_threshold": 0.5,
                     "whitelist_channels": [],
                     "blacklist_keywords": [],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "analytics": {
                 "track_engagement_metrics": True,
                     "generate_insights": True,
                     "performance_reporting": True,
                     "optimization_suggestions": True,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _init_database(self):
@@ -343,7 +353,7 @@ class YouTubeEngagementAutomation:
         with sqlite3.connect(self.db_path) as conn:
             # Comments table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS comments (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         comment_id TEXT UNIQUE,
@@ -366,13 +376,17 @@ class YouTubeEngagementAutomation:
                         mentions TEXT,
                         questions TEXT,
                         processed_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Responses table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS responses (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         response_id TEXT UNIQUE,
@@ -392,13 +406,17 @@ class YouTubeEngagementAutomation:
                         posted BOOLEAN,
                         posted_at TIMESTAMP,
                         performance_metrics TEXT
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Community posts table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS community_posts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         post_id TEXT UNIQUE,
@@ -416,13 +434,17 @@ class YouTubeEngagementAutomation:
                         mentions TEXT,
                         performance_score REAL,
                         created_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Engagement campaigns table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS engagement_campaigns (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         campaign_id TEXT UNIQUE,
@@ -439,13 +461,17 @@ class YouTubeEngagementAutomation:
                         created_at TIMESTAMP,
                         started_at TIMESTAMP,
                         completed_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Engagement insights table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS engagement_insights (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         insight_id TEXT UNIQUE,
@@ -461,9 +487,13 @@ class YouTubeEngagementAutomation:
                         priority TEXT,
                         created_at TIMESTAMP,
                         expires_at TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.commit()
 
@@ -475,12 +505,16 @@ class YouTubeEngagementAutomation:
             model_name = self.config["sentiment_analysis"]["sentiment_model"]
             self.sentiment_analyzer = pipeline(
                 "sentiment - analysis", model = model_name, tokenizer = model_name
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Toxicity detection model
             self.toxicity_analyzer = pipeline(
                 "text - classification", model="unitary/toxic - bert"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Language detection
             self.language_detector = detect
@@ -494,7 +528,9 @@ class YouTubeEngagementAutomation:
             except OSError:
                 self.logger.warning(
                     "spaCy English model not found. Some features may be limited."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.nlp = None
 
             self.logger.info("AI models initialized successfully")
@@ -510,38 +546,53 @@ class YouTubeEngagementAutomation:
                 "Thanks for watching! {emoji}",
                     "Great to see you here! {emoji}",
                     "Welcome to the channel! {emoji}",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "question_response": [
                 "Great question! {answer} {emoji}",
                     "Thanks for asking! {answer}",
-                    "That's a really good point. {answer} {emoji}",
-                    ],
+                    "That's a really good point. {answer} {emoji}",'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "positive_feedback": [
                 "Thank you so much! That means a lot {emoji}",
-                    "I'm so glad you enjoyed it! {emoji}",
+                    "I'm so glad you enjoyed it! {emoji}",'
                     "Your support is amazing! {emoji}",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "constructive_criticism": [
-                "Thanks for the feedback! I'll definitely consider that for future videos {emoji}",
+                "Thanks for the feedback! I'll definitely consider that for future videos {emoji}",'
                     "I appreciate your honest input! Always looking to improve {emoji}",
-                    "Great point! I'll keep that in mind {emoji}",
-                    ],
+                    "Great point! I'll keep that in mind {emoji}",'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "collaboration_interest": [
                 "That sounds interesting! Feel free to reach out via email {emoji}",
-                    "I'd love to hear more about your idea! {emoji}",
-                    "Thanks for reaching out! Let's connect {emoji}",
-                    ],
+                    "I'd love to hear more about your idea! {emoji}",'
+                    "Thanks for reaching out! Let's connect {emoji}",'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "technical_help": [
-                "I'll try to help! {answer} {emoji}",
+                "I'll try to help! {answer} {emoji}",'
                     "Good question! {answer}",
-                    "Here's what I know: {answer} {emoji}",
-                    ],
+                    "Here's what I know: {answer} {emoji}",'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "milestone_celebration": [
                 "We did it! Thanks to amazing viewers like you! {emoji}",
-                    "Couldn't have done it without you all! {emoji}",
+                    "Couldn't have done it without you all! {emoji}",'
                     "This community is incredible! {emoji}",
-                    ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     async def monitor_comments(self, video_ids: List[str]) -> List[CommentData]:
@@ -558,8 +609,12 @@ class YouTubeEngagementAutomation:
                         video_id,
                             max_results = self.config["comment_monitoring"][
                             "max_comments_per_check"
-                        ],
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     for comment_data in comments_data:
                         # Process comment
@@ -575,14 +630,18 @@ class YouTubeEngagementAutomation:
                             if self._should_respond_to_comment(processed_comment):
                                 response = await self._generate_response(
                                     processed_comment
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                                 if response:
                                     await self._store_response(response)
 
                 except Exception as e:
                     self.logger.error(
                         f"Error processing comments for video {video_id}: {e}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     continue
 
             self.last_comment_check = datetime.now()
@@ -617,7 +676,8 @@ class YouTubeEngagementAutomation:
             if (
                 language not in supported_languages
                 and "unknown" not in supported_languages
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 return None
 
             # Analyze sentiment
@@ -635,7 +695,9 @@ class YouTubeEngagementAutomation:
             # Calculate engagement score
             engagement_score = self._calculate_engagement_score(
                 comment_data, sentiment, toxicity_score, spam_score
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             comment = CommentData(
                 comment_id = comment_data.get("id", ""),
@@ -648,10 +710,12 @@ class YouTubeEngagementAutomation:
                     reply_count = comment_data.get("reply_count", 0),
                     published_at = datetime.fromisoformat(
                     comment_data.get("published_at", datetime.now().isoformat())
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     updated_at = datetime.fromisoformat(
                     comment_data.get("updated_at", datetime.now().isoformat())
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     parent_id = comment_data.get("parent_id"),
                     sentiment = sentiment,
                     language = language,
@@ -662,7 +726,9 @@ class YouTubeEngagementAutomation:
                     mentions = mentions,
                     questions = questions,
                     processed_at = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return comment
 
@@ -684,13 +750,17 @@ class YouTubeEngagementAutomation:
                     SentimentType.POSITIVE
                     if confidence > 0.7
                     else SentimentType.NEUTRAL
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             elif "negative" in label or "neg" in label:
                 return (
                     SentimentType.NEGATIVE
                     if confidence > 0.7
                     else SentimentType.NEUTRAL
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 return SentimentType.NEUTRAL
 
@@ -721,8 +791,10 @@ class YouTubeEngagementAutomation:
                 r"\\b(?:free|win|prize|giveaway|contest)\\b",  # Spam keywords
                 r"[A - Z]{5,}",  # Excessive caps
                 r"(.)\\1{4,}",  # Repeated characters
-                r"[!@#$%^&*()]{3,}",  # Excessive punctuation
-            ]
+                r"[!@#$%^&*()]{3,}",  # Excessive punctuation"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             spam_score = 0.0
             for pattern in spam_indicators:
@@ -795,10 +867,13 @@ class YouTubeEngagementAutomation:
                         "her",
                         "us",
                         "them",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 keywords = [
                     word for word in words if word not in stop_words and len(word) > 2
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
                 return keywords[:10]  # Limit to top 10
 
             doc = self.nlp(text)
@@ -816,7 +891,8 @@ class YouTubeEngagementAutomation:
                     and not token.is_stop
                     and not token.is_punct
                     and len(token.text) > 2
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     keywords.append(token.lemma_.lower())
 
             return list(set(keywords))[:10]  # Remove duplicates and limit
@@ -865,9 +941,14 @@ class YouTubeEngagementAutomation:
                                 "do",
                                 "does",
                                 "did",
-                                )
-                    )
-                ):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ):
                     questions.append(sentence)
 
             return questions
@@ -883,7 +964,8 @@ class YouTubeEngagementAutomation:
             sentiment: SentimentType,
             toxicity_score: float,
             spam_score: float,
-            ) -> float:
+# BRACKET_SURGEON: disabled
+#             ) -> float:
         """Calculate engagement score for comment prioritization."""
         try:
             score = 0.0
@@ -936,7 +1018,8 @@ class YouTubeEngagementAutomation:
                 comment.spam_score > self.config["sentiment_analysis"]["spam_threshold"]
                 or comment.toxicity_score
                 > self.config["sentiment_analysis"]["toxicity_threshold"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 return False
 
             # Don't respond if auto - reply is disabled
@@ -955,7 +1038,8 @@ class YouTubeEngagementAutomation:
             if (
                 comment.sentiment == SentimentType.NEGATIVE
                 and comment.engagement_score > 20
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 return True
 
             # Respond to mentions
@@ -990,20 +1074,30 @@ class YouTubeEngagementAutomation:
                 re.search(
                     r"[\\U0001F600-\\U0001F64F\\U0001F300-\\U0001F5FF\\U0001F680-\\U0001F6FF\\U0001F1E0-\\U0001F1FF]",
                         response_text,
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             word_count = len(response_text.split())
 
             # Calculate confidence and personalization scores
             confidence_score = self._calculate_response_confidence(
                 comment, response_text
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             personalization_level = self._calculate_personalization_level(
                 comment, response_text
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             estimated_engagement = self._estimate_response_engagement(
                 comment, response_text
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             response = EngagementResponse(
                 response_id = f"resp_{comment.comment_id}_{int(time.time())}",
@@ -1024,7 +1118,9 @@ class YouTubeEngagementAutomation:
                 posted = False,
                     posted_at = None,
                     performance_metrics={},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return response
 
@@ -1062,7 +1158,7 @@ class YouTubeEngagementAutomation:
         """Generate AI response using OpenAI."""
         try:
             # Prepare context for AI
-            context = f"""
+            context = f""""""
             You are a friendly YouTube content creator responding to a comment on your video.
 
             Comment: "{comment.text}"
@@ -1079,7 +1175,7 @@ class YouTubeEngagementAutomation:
             - Encourages further engagement
 
             Response:
-            """
+            """"""
 
             response = await openai.ChatCompletion.acreate(
                 model = self.config["response_generation"]["ai_model"],
@@ -1087,12 +1183,17 @@ class YouTubeEngagementAutomation:
                     {
                         "role": "system",
                             "content": "You are a helpful YouTube content creator assistant.",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         {"role": "user", "content": context},
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     max_tokens = 100,
                     temperature = 0.7,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             generated_text = response.choices[0].message.content.strip()
 
@@ -1110,7 +1211,7 @@ class YouTubeEngagementAutomation:
         """Clean and format response text."""
         try:
             # Remove quotes if present
-            text = text.strip("\\"'")
+            text = text.strip("\\"'")'
 
             # Ensure proper capitalization
             if text and text[0].islower():
@@ -1120,18 +1221,21 @@ class YouTubeEngagementAutomation:
             if self.config["response_generation"]["emoji_usage"] and not re.search(
                 r"[\\U0001F600-\\U0001F64F\\U0001F300-\\U0001F5FF\\U0001F680-\\U0001F6FF\\U0001F1E0-\\U0001F1FF]",
                     text,
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
 
                 # Add appropriate emoji based on content
                 if any(
                     word in text.lower()
                     for word in ["thanks", "thank you", "appreciate"]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     text += " 😊"
                 elif any(
                     word in text.lower()
                     for word in ["great", "awesome", "amazing", "love"]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     text += " 🎉"
                 elif "?" in text:
                     text += " 🤔"
@@ -1151,7 +1255,9 @@ class YouTubeEngagementAutomation:
             r"\\b(?:subscribe|like|share|comment|check out|visit|follow)\\b",
                 r"\\b(?:let me know|tell me|what do you think)\\b",
                 r"\\b(?:try|watch|see|read)\\b.*\\b(?:video|channel|content)\\b",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for pattern in cta_patterns:
             if re.search(pattern, text, re.IGNORECASE):
@@ -1162,7 +1268,8 @@ class YouTubeEngagementAutomation:
 
     def _calculate_response_confidence(
         self, comment: CommentData, response: str
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate confidence score for generated response."""
         try:
             score = 0.5  # Base score
@@ -1172,7 +1279,8 @@ class YouTubeEngagementAutomation:
                 10
                 <= len(response)
                 <= self.config["response_generation"]["max_response_length"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 score += 0.2
 
             # Relevance (simple keyword matching)
@@ -1188,13 +1296,15 @@ class YouTubeEngagementAutomation:
             elif comment.questions and any(
                 word in response.lower()
                 for word in ["answer", "think", "believe", "know"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 score += 0.1
 
             # Sentiment appropriateness
             if comment.sentiment == SentimentType.NEGATIVE and any(
                 word in response.lower() for word in ["sorry", "understand", "help"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 score += 0.1
 
             return max(0.0, min(1.0, score))
@@ -1206,7 +1316,8 @@ class YouTubeEngagementAutomation:
 
     def _calculate_personalization_level(
         self, comment: CommentData, response: str
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate personalization level of response."""
         try:
             score = 0.0
@@ -1225,13 +1336,15 @@ class YouTubeEngagementAutomation:
             # Addresses specific questions or points
             if comment.questions and any(
                 q_word in response.lower() for q_word in ["question", "ask", "answer"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 score += 0.2
 
             # Uses personal pronouns appropriately
             if any(
                 pronoun in response.lower() for pronoun in ["you", "your", "i", "my"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 score += 0.1
 
             return max(0.0, min(1.0, score))
@@ -1243,7 +1356,8 @@ class YouTubeEngagementAutomation:
 
     def _estimate_response_engagement(
         self, comment: CommentData, response: str
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Estimate potential engagement for response."""
         try:
             base_score = comment.engagement_score/100.0  # Normalize to 0 - 1
@@ -1262,7 +1376,8 @@ class YouTubeEngagementAutomation:
             if re.search(
                 r"[\\U0001F600-\\U0001F64F\\U0001F300-\\U0001F5FF\\U0001F680-\\U0001F6FF\\U0001F1E0-\\U0001F1FF]",
                     response,
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                 base_score += 0.05
 
             return max(0.0, min(1.0, base_score))
@@ -1285,7 +1400,9 @@ class YouTubeEngagementAutomation:
                     # Post response to YouTube
                     success = await self.youtube_integration.reply_to_comment(
                         response.original_comment_id, response.response_text
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     if success:
                         # Update response status
@@ -1296,12 +1413,16 @@ class YouTubeEngagementAutomation:
 
                         self.logger.info(
                             f"Posted response to comment {response.original_comment_id}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 except Exception as e:
                     self.logger.error(
                         f"Error posting response {response.response_id}: {e}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     continue
 
             return posted_count
@@ -1318,7 +1439,7 @@ class YouTubeEngagementAutomation:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO comments
                     (comment_id,
     video_id,
@@ -1328,9 +1449,11 @@ class YouTubeEngagementAutomation:
     text,
                         like_count, reply_count, published_at, updated_at, parent_id, sentiment,
                          language, toxicity_score, spam_score, engagement_score, keywords,
-                         mentions, questions, processed_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          mentions, questions, processed_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         comment.comment_id,
                             comment.video_id,
@@ -1352,8 +1475,11 @@ class YouTubeEngagementAutomation:
                             json.dumps(comment.mentions),
                             json.dumps(comment.questions),
                             comment.processed_at.isoformat(),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing comment: {e}")
@@ -1364,15 +1490,17 @@ class YouTubeEngagementAutomation:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO responses
                     (response_id, original_comment_id, response_text, response_tone,
                         confidence_score, personalization_level, estimated_engagement,
                          language, contains_cta, contains_question, contains_emoji,
                          word_count, generated_at, approved, posted, posted_at,
-                         performance_metrics)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          performance_metrics)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         response.response_id,
                             response.original_comment_id,
@@ -1391,15 +1519,18 @@ class YouTubeEngagementAutomation:
                             response.posted,
                             response.posted_at.isoformat() if response.posted_at else None,
                             json.dumps(response.performance_metrics),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing response: {e}")
 
 
     async def _get_approved_responses(self) -> List[EngagementResponse]:
-        """Get approved responses that haven't been posted yet."""
+        """Get approved responses that haven't been posted yet."""'
         # Implementation would query database for approved, unposted responses
         return []
 
@@ -1420,7 +1551,9 @@ class YouTubeEngagementAutomation:
 
                 cursor = conn.execute(
                     "SELECT COUNT(*) FROM responses WHERE approved = 1"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 approved_responses = cursor.fetchone()[0]
 
                 cursor = conn.execute("SELECT COUNT(*) FROM responses WHERE posted = 1")
@@ -1435,14 +1568,16 @@ class YouTubeEngagementAutomation:
                         self.last_comment_check.isoformat()
                         if self.last_comment_check
                         else None
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "total_comments_processed": total_comments,
                         "approved_responses": approved_responses,
                         "posted_responses": posted_responses,
                         "community_posts": community_posts,
                         "engagement_stats": dict(self.engagement_stats),
                         "config": self.config,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
         except Exception as e:
             self.logger.error(f"Error getting engagement status: {e}")
             return {"error": str(e)}
@@ -1463,7 +1598,9 @@ if __name__ == "__main__":
     parser.add_argument("--monitor", type = str, help="Monitor comments for video ID")
     parser.add_argument(
         "--post - responses", action="store_true", help="Post approved responses"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--status", action="store_true", help="Get system status")
 
     args = parser.parse_args()

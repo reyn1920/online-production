@@ -28,10 +28,12 @@ if config.dataset == "emore":
     config.decay_epoch = [
         8,
         14,
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     config.val_targets = [
         "lfw",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
 elif config.dataset == "ms1m - retinaface - t1":
     config.rec = "/train_tmp / ms1m - retinaface - t1"

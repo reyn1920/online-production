@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 RouteLL Usage Dashboard
 Web - based dashboard for monitoring RouteLL API usage, credits, and performance
-"""
+""""""
 
 import json
 import os
@@ -47,9 +47,12 @@ def api_status():
                     "usage_summary": usage_summary,
                     "recent_alerts": recent_alerts,
                     "timestamp": datetime.now().isoformat(),
-                },
-            }
-        )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
@@ -108,11 +111,15 @@ def test_request():
                 "data": {
                     "response": (
                         response.__dict__ if hasattr(response, "__dict__") else str(response)
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "timestamp": datetime.now().isoformat(),
-                },
-            }
-        )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
@@ -135,9 +142,12 @@ def available_models():
                     "unlimited_models": unlimited_models,
                     "premium_models": premium_models,
                     "default_model": config["api_settings"]["default_model"],
-                },
-            }
-        )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
@@ -148,7 +158,7 @@ if __name__ == "__main__":
     os.makedirs(templates_dir, exist_ok=True)
 
     # Create the dashboard HTML template
-    dashboard_html = """
+    dashboard_html = """"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -161,43 +171,50 @@ if __name__ == "__main__":
             margin: 0;
             padding: 0;
             box - sizing: border - box;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         body {
             font - family: -apple - system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans - serif;
             background: linear - gradient(135deg, #667eea 0%, #764ba2 100%);
             min - height: 100vh;
             color: #333;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .container {
             max - width: 1200px;
             margin: 0 auto;
             padding: 20px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .header {
             text - align: center;
             color: white;
             margin - bottom: 30px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .header h1 {
             font - size: 2.5rem;
             margin - bottom: 10px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .header p {
             font - size: 1.1rem;
             opacity: 0.9;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .dashboard - grid {
             display: grid;
             grid - template - columns: repeat(auto - fit, minmax(300px, 1fr));
             gap: 20px;
             margin - bottom: 30px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .card {
             background: white;
@@ -205,17 +222,20 @@ if __name__ == "__main__":
             padding: 25px;
             box - shadow: 0 10px 30px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .card:hover {
             transform: translateY(-5px);
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .card h3 {
             color: #4a5568;
             margin - bottom: 15px;
             font - size: 1.2rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric {
             display: flex;
@@ -224,21 +244,25 @@ if __name__ == "__main__":
             margin - bottom: 10px;
             padding: 10px 0;
             border - bottom: 1px solid #e2e8f0;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric:last - child {
             border - bottom: none;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric - label {
             color: #718096;
             font - size: 0.9rem;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .metric - value {
             font - weight: bold;
             color: #2d3748;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .status - indicator {
             display: inline - block;
@@ -246,7 +270,8 @@ if __name__ == "__main__":
             height: 12px;
             border - radius: 50%;
             margin - right: 8px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .status - active { background - color: #48bb78; }
         .status - warning { background - color: #ed8936; }
@@ -259,46 +284,54 @@ if __name__ == "__main__":
             border - radius: 4px;
             overflow: hidden;
             margin - top: 5px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .progress - fill {
             height: 100%;
             background: linear - gradient(90deg, #48bb78 0%, #ed8936 70%, #f56565 90%);
             transition: width 0.3s ease;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .chart - container {
             position: relative;
             height: 300px;
             margin - top: 20px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .alerts - container {
             max - height: 300px;
             overflow - y: auto;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .alert - item {
             padding: 10px;
             margin - bottom: 10px;
             border - radius: 8px;
             border - left: 4px solid;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .alert - info {
             background - color: #ebf8ff;
             border - left - color: #3182ce;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .alert - warning {
             background - color: #fffbeb;
             border - left - color: #ed8936;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .alert - critical {
             background - color: #fed7d7;
             border - left - color: #f56565;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn {
             background: linear - gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -309,12 +342,14 @@ if __name__ == "__main__":
             cursor: pointer;
             font - size: 1rem;
             transition: all 0.3s ease;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .btn:hover {
             transform: translateY(-2px);
             box - shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .test - section {
             background: white;
@@ -322,18 +357,21 @@ if __name__ == "__main__":
             padding: 25px;
             margin - top: 20px;
             box - shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .form - group {
             margin - bottom: 15px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .form - group label {
             display: block;
             margin - bottom: 5px;
             color: #4a5568;
             font - weight: 500;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .form - group input, .form - group textarea, .form - group select {
             width: 100%;
@@ -342,12 +380,14 @@ if __name__ == "__main__":
             border - radius: 8px;
             font - size: 1rem;
             transition: border - color 0.3s ease;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .form - group input:focus, .form - group textarea:focus, .form - group select:focus {
             outline: none;
             border - color: #667eea;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .response - container {
             background - color: #f7fafc;
@@ -360,7 +400,8 @@ if __name__ == "__main__":
             white - space: pre - wrap;
             max - height: 300px;
             overflow - y: auto;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .loading {
             display: inline - block;
@@ -370,12 +411,14 @@ if __name__ == "__main__":
             border - top: 3px solid #667eea;
             border - radius: 50%;
             animation: spin 1s linear infinite;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .refresh - btn {
             position: fixed;
@@ -391,11 +434,13 @@ if __name__ == "__main__":
             cursor: pointer;
             box - shadow: 0 5px 20px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         .refresh - btn:hover {
             transform: scale(1.1);
-        }
+# BRACKET_SURGEON: disabled
+#         }
     </style>
 </head>
 <body>
@@ -465,13 +510,16 @@ if __name__ == "__main__":
                 const data = await response.json();
                 if (!data.success) {
                     throw new Error(data.error);
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 return data.data;
             } catch (error) {
                 console.error('Fetch error:', error);
                 return null;
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function updateStatus() {
             const data = await fetchData('/api/status');
@@ -480,7 +528,8 @@ if __name__ == "__main__":
             if (!data) {
                 container.innerHTML = '<div style="color: #f56565;">❌ Failed to load status</div>';
                 return;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             const status = data.client_status.status;
             const statusColor = status === 'active' ? 'status - active' :
@@ -506,7 +555,8 @@ if __name__ == "__main__":
                     <span class="metric - value">${new Date(data.timestamp).toLocaleTimeString()}</span>
                 </div>
             `;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function updateCredits() {
             const data = await fetchData('/api/status');
@@ -515,7 +565,8 @@ if __name__ == "__main__":
             if (!data) {
                 container.innerHTML = '<div style="color: #f56565;">❌ Failed to load credits</div>';
                 return;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             const usage = data.client_status.credit_usage;
             const usagePercent = (usage.used_credits/usage.total_credits) * 100;
@@ -543,20 +594,23 @@ if __name__ == "__main__":
                     </span>
                 </div>
             `;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function updateChart() {
             const data = await fetchData('/api/usage/7');
 
             if (!data || !data.daily_breakdown) {
                 return;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             const ctx = document.getElementById('usageChart').getContext('2d');
 
             if (usageChart) {
                 usageChart.destroy();
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             const labels = data.daily_breakdown.map(d => new Date(d.date).toLocaleDateString());
             const credits = data.daily_breakdown.map(d => d.credits);
@@ -569,19 +623,21 @@ if __name__ == "__main__":
                         datasets: [{
                         label: 'Credits Used',
                             data: credits,
-                            borderColor: '#667eea',
+                            borderColor: '#667eea','
                             backgroundColor: 'rgba(102, 126, 234, 0.1)',
                             tension: 0.4,
                             yAxisID: 'y'
                     }, {
                         label: 'Requests',
                             data: requests,
-                            borderColor: '#ed8936',
+                            borderColor: '#ed8936','
                             backgroundColor: 'rgba(237, 137, 54, 0.1)',
                             tension: 0.4,
                             yAxisID: 'y1'
-                    }]
-                },
+# BRACKET_SURGEON: disabled
+#                     }]
+# BRACKET_SURGEON: disabled
+#                 },
                     options: {
                     responsive: true,
                         maintainAspectRatio: false,
@@ -593,8 +649,10 @@ if __name__ == "__main__":
                                 title: {
                                 display: true,
                                     text: 'Credits'
-                            }
-                        },
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         },
                             y1: {
                             type: 'linear',
                                 display: true,
@@ -602,20 +660,29 @@ if __name__ == "__main__":
                                 title: {
                                 display: true,
                                     text: 'Requests'
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                                 grid: {
                                 drawOnChartArea: false,
-                                    },
-                                }
-                    },
+# BRACKET_SURGEON: disabled
+#                                     },
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                     },
                         plugins: {
                         legend: {
                             display: true
-                        }
-                    }
-                }
-            });
-        }
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             });
+# BRACKET_SURGEON: disabled
+#         }
 
         async function updateAlerts() {
             const data = await fetchData('/api/alerts/24');
@@ -624,12 +691,14 @@ if __name__ == "__main__":
             if (!data) {
                 container.innerHTML = '<div style="color: #f56565;">❌ Failed to load alerts</div>';
                 return;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             if (data.length === 0) {
                 container.innerHTML = '<div style="color: #48bb78;">✅ No recent alerts</div>';
                 return;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             container.innerHTML = data.map(alert => `
                 <div class="alert - item alert-${alert.level}">
@@ -638,7 +707,8 @@ if __name__ == "__main__":
                     ${alert.message}
                 </div>
             `).join('');
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function loadModels() {
             const data = await fetchData('/api/models');
@@ -655,7 +725,8 @@ if __name__ == "__main__":
                     `<option value="${model}">${model} (Premium)</option>`
                 ).join('')}
             `;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function testAPI() {
             const message = document.getElementById('test - message').value;
@@ -670,9 +741,11 @@ if __name__ == "__main__":
                     method: 'POST',
                         headers: {
                         'Content - Type': 'application/json'
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                         body: JSON.stringify({ message, model })
-                });
+# BRACKET_SURGEON: disabled
+#                 });
 
                 const data = await response.json();
 
@@ -687,14 +760,17 @@ if __name__ == "__main__":
                         <strong>❌ Error:</strong><br>
                         ${data.error}
                     `;
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             } catch (error) {
                 responseContainer.innerHTML = `
                     <strong>❌ Request Failed:</strong><br>
                     ${error.message}
                 `;
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         async function refreshDashboard() {
             await Promise.all([
@@ -702,17 +778,20 @@ if __name__ == "__main__":
                     updateCredits(),
                     updateChart(),
                     updateAlerts()
-            ]);
-        }//Initialize dashboard
+# BRACKET_SURGEON: disabled
+#             ]);
+# BRACKET_SURGEON: disabled
+#         }//Initialize dashboard
         document.addEventListener('DOMContentLoaded', async function() {
             await loadModels();
             await refreshDashboard();//Auto - refresh every 30 seconds
             setInterval(refreshDashboard, 30000);
-        });
+# BRACKET_SURGEON: disabled
+#         });
     </script>
 </body>
 </html>
-    """
+    """"""
 
     with open(os.path.join(templates_dir, "dashboard.html"), "w") as f:
         f.write(dashboard_html)

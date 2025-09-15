@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 MAXED OUT Python Linting Auto - Fixer
 Fixes ALL common PEP8 / flake8 violations automatically.
 Run this script to clean up your entire codebase.
-"""
+""""""
 
 import os
 import re
@@ -19,7 +19,9 @@ def run_command(cmd, cwd = None):
     shell = True,
     cwd = cwd,
     capture_output = True,
-    text = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     text = True)
         return result.returncode == 0, result.stdout, result.stderr
     except Exception as e:
         print(f"Error running command '{cmd}': {e}")
@@ -99,7 +101,9 @@ def fix_operator_spacing():
         (r'(\\w)(>)(\\w)', r'\\1 \\2 \\3'),   # x > y -> x > y
         (r'(\\w)(<=)(\\w)', r'\\1 \\2 \\3'),  # x <= y -> x <= y
         (r'(\\w)(>=)(\\w)', r'\\1 \\2 \\3'),  # x >= y -> x >= y
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
 
     for file_path in python_files:
         try:
@@ -151,9 +155,11 @@ def fix_escape_sequences():
 
             # Fix common invalid escape sequences
             # \\; -> \\\\\\; or use raw string
-            content = re.sub(r'(["\\'])([^"\\']*)\\\\;([^"\\']*)\\1',
+            content = re.sub(r'(["\\'])([^"\\']*)\\\\;([^"\\']*)\\1',"
     r'\\1\\2\\\\\\\\\\;\\3\\1',
-    content)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     content)
 
             with open(file_path, 'w', encoding='utf - 8') as f:
                 f.write(content)
@@ -178,7 +184,9 @@ def fix_boolean_comparisons():
             content = re.sub(r'(\\w+)\\s*!=\\s * True\\b', r'\\1 is not True', content)
             content = re.sub(r'(\\w+)\\s*!=\\s * False\\b',
     r'\\1 is not False',
-    content)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     content)
 
             with open(file_path, 'w', encoding='utf - 8') as f:
                 f.write(content)
@@ -228,8 +236,8 @@ def fix_blank_lines():
                         next_line = lines[i + 1]
                         # If next line is not blank and not indented, add blank line
                         if next_line.strip() \
-    and not next_line.startswith(' ') \
-    and not next_line.startswith('\\t'):
+#     and not next_line.startswith(' ') \
+#     and not next_line.startswith('\\t'):
                             new_lines.append('\\n')
                 else:
                     new_lines.append(line)
@@ -289,11 +297,11 @@ def fix_continuation_lines():
             for i, line in enumerate(lines):
                 # Look for lines that might be continuation lines
                 if i > 0 \
-    and line.startswith(' ') \
-    and not lines[i - 1].strip().endswith(':'):
+#     and line.startswith(' ') \
+#     and not lines[i - 1].strip().endswith(':'):
                     # Check if previous line ends with operators that suggest continuation
                     prev_line = lines[i - 1].rstrip()
-                    if prev_line.endswith(('(', '[', '{', ',', '+', '-', '*', '/', '=', '\\\\', 'and', 'or')):
+                    if prev_line.endswith(('(', '[', '{', ',', '+', '-', '*', '/', '=', '\\\\', 'and', 'or')):'
                         # Ensure proper indentation (multiple of 4 spaces)
                         stripped = line.lstrip()
                         if stripped:

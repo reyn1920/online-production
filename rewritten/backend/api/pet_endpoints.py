@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Pet Care API Endpoints
 
 Secure FastAPI endpoints for pet care services.
@@ -8,7 +8,7 @@ Follows go - live security practices:
 - Rate limiting
 - Error handling
 - Secure response formatting
-"""
+""""""
 
 import logging
 from datetime import datetime
@@ -23,14 +23,16 @@ try:
         APIResponse,
         PetCareAPIManager,
         VetServicesManager,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     # Fallback for development
 
     from services.pet_care_apis import (
         PetCareAPIManager,
         VetServicesManager,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +74,8 @@ class PetSearchRequest(BaseModel):
             "pig",
             "reptile",
             "small - furry",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         if v.lower() not in allowed_types:
             raise ValueError(f'Animal type must be one of: {", ".join(allowed_types)}')
         return v.lower()
@@ -113,7 +116,8 @@ def check_rate_limit(request: Request, max_requests: int = 100, window_minutes: 
     cutoff_time = current_time.timestamp() - (window_minutes * 60)
     rate_limit_store[client_ip] = [
         req_time for req_time in rate_limit_store[client_ip] if req_time > cutoff_time
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     # Check if limit exceeded
     if len(rate_limit_store[client_ip]) >= max_requests:
@@ -147,13 +151,15 @@ async def get_api_status():
             timestamp=datetime.now(),
             services={"pet_care_apis": pet_status, "veterinary_services": vet_status},
             message="API status retrieved successfully",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         logger.error(f"Error getting API status: {str(e)}")
         raise HTTPException(
             status_code=500, detail="Internal server error while retrieving API status"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @router.get("/birds/observations", response_model=SecureAPIResponse)
@@ -162,7 +168,8 @@ async def get_bird_observations(
     region_code: str = Query("US", min_length=2, max_length=10),
     days_back: int = Query(7, ge=1, le=30),
     _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get recent bird observations from eBird API"""
     try:
         # Validate input
@@ -171,13 +178,15 @@ async def get_bird_observations(
         async with PetCareAPIManager() as pet_manager:
             response = await pet_manager.get_bird_observations(
                 region_code=bird_request.region_code, days_back=bird_request.days_back
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         if not response.success:
             raise HTTPException(
                 status_code=400 if "not configured" in response.error else 503,
                 detail=response.error,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return SecureAPIResponse(
             success=True,
@@ -185,15 +194,18 @@ async def get_bird_observations(
                 "observations": response.data,
                 "region": bird_request.region_code,
                 "days_back": bird_request.days_back,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             message="Bird observations retrieved successfully",
             timestamp=datetime.now(),
             rate_limit_info=(
                 {"remaining": response.rate_limit_remaining}
                 if response.rate_limit_remaining is not None
                 else None
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
     except HTTPException:
         raise
@@ -202,7 +214,8 @@ async def get_bird_observations(
         raise HTTPException(
             status_code=500,
             detail="Internal server error while retrieving bird observations",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @router.get("/breeds/dogs", response_model=SecureAPIResponse)
@@ -210,7 +223,8 @@ async def get_dog_breeds(
     request: Request,
     limit: int = Query(20, ge=1, le=100),
     _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get dog breed information"""
     try:
         async with PetCareAPIManager() as pet_manager:
@@ -220,7 +234,8 @@ async def get_dog_breeds(
             raise HTTPException(
                 status_code=400 if "not configured" in response.error else 503,
                 detail=response.error,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return SecureAPIResponse(
             success=True,
@@ -231,8 +246,10 @@ async def get_dog_breeds(
                 {"remaining": response.rate_limit_remaining}
                 if response.rate_limit_remaining is not None
                 else None
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
     except HTTPException:
         raise
@@ -240,7 +257,8 @@ async def get_dog_breeds(
         logger.error(f"Error getting dog breeds: {str(e)}")
         raise HTTPException(
             status_code=500, detail="Internal server error while retrieving dog breeds"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @router.get("/breeds/cats", response_model=SecureAPIResponse)
@@ -248,7 +266,8 @@ async def get_cat_breeds(
     request: Request,
     limit: int = Query(20, ge=1, le=100),
     _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get cat breed information"""
     try:
         async with PetCareAPIManager() as pet_manager:
@@ -258,7 +277,8 @@ async def get_cat_breeds(
             raise HTTPException(
                 status_code=400 if "not configured" in response.error else 503,
                 detail=response.error,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return SecureAPIResponse(
             success=True,
@@ -269,8 +289,10 @@ async def get_cat_breeds(
                 {"remaining": response.rate_limit_remaining}
                 if response.rate_limit_remaining is not None
                 else None
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
     except HTTPException:
         raise
@@ -278,7 +300,8 @@ async def get_cat_breeds(
         logger.error(f"Error getting cat breeds: {str(e)}")
         raise HTTPException(
             status_code=500, detail="Internal server error while retrieving cat breeds"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @router.get("/adoptable", response_model=SecureAPIResponse)
@@ -288,7 +311,8 @@ async def search_adoptable_pets(
     location: str = Query("10001", min_length=5, max_length=20),
     limit: int = Query(20, ge=1, le=100),
     _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Search for adoptable pets"""
     try:
         # Validate input
@@ -299,13 +323,15 @@ async def search_adoptable_pets(
                 animal_type=search_request.animal_type,
                 location=search_request.location,
                 limit=search_request.limit,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         if not response.success:
             raise HTTPException(
                 status_code=400 if "not configured" in response.error else 503,
                 detail=response.error,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return SecureAPIResponse(
             success=True,
@@ -315,16 +341,20 @@ async def search_adoptable_pets(
                     "animal_type": search_request.animal_type,
                     "location": search_request.location,
                     "limit": search_request.limit,
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             message="Adoptable pets retrieved successfully",
             timestamp=datetime.now(),
             rate_limit_info=(
                 {"remaining": response.rate_limit_remaining}
                 if response.rate_limit_remaining is not None
                 else None
-            ),
-        )
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         )
 
     except HTTPException:
         raise
@@ -333,13 +363,15 @@ async def search_adoptable_pets(
         raise HTTPException(
             status_code=500,
             detail="Internal server error while searching adoptable pets",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @router.get("/vet/availability/{service}", response_model=SecureAPIResponse)
 async def check_vet_availability(
     request: Request, service: str, _: bool = Depends(rate_limit_dependency)
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Check availability for veterinary services"""
     try:
         # Validate service name
@@ -348,7 +380,8 @@ async def check_vet_availability(
             raise HTTPException(
                 status_code=400,
                 detail=f"Invalid service. Allowed services: {', '.join(allowed_services)}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         vet_manager = VetServicesManager()
         response = await vet_manager.check_availability(service.lower())
@@ -357,14 +390,16 @@ async def check_vet_availability(
             raise HTTPException(
                 status_code=400 if "not configured" in response.error else 503,
                 detail=response.error,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return SecureAPIResponse(
             success=True,
             data=response.data,
             message=f"Availability for {service} checked successfully",
             timestamp=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except HTTPException:
         raise
@@ -373,7 +408,8 @@ async def check_vet_availability(
         raise HTTPException(
             status_code=500,
             detail="Internal server error while checking vet availability",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 # Health check endpoint
@@ -384,7 +420,8 @@ async def health_check():
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
         "service": "pet - care - api",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Export router

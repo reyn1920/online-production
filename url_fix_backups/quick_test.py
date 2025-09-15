@@ -1,7 +1,7 @@
 #!/usr / bin / env python3
-"""
+""""""
 Quick TRAE.AI Component Test
-"""
+""""""
 
 import sys
 from pathlib import Path

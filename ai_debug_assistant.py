@@ -26,8 +26,8 @@ def ai_debug_sqlite_error(error_msg, num_results = 3):
     context = f"Error:\\n{error_msg}\\n\\nWeb Results:\\n" + "\\n".join(results)
 
     # Enhanced prompt for better AI analysis
-    prompt = f"""You are a SQLite database expert. Analyze this error \
-    and provide a specific, actionable fix.
+    prompt = f"""You are a SQLite database expert. Analyze this error \"""
+#     and provide a specific, actionable fix.
 
 {context}
 
@@ -49,7 +49,7 @@ def auto_debug_with_ai():
     Demonstration of the AI debugging workflow.
     """
     # Example SQLite error
-        error_msg = "sqlite3.OperationalError: no such column: search_keywords"
+    error_msg = "sqlite3.OperationalError: no such column: search_keywords"
 
     try:
         # Get AI - powered fix

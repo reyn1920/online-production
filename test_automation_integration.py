@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Integration Test Suite for Content Automation Pipeline
 
 This comprehensive test suite validates:
@@ -12,7 +12,7 @@ This comprehensive test suite validates:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import os
@@ -39,7 +39,8 @@ from content_automation_pipeline import (
     ContentFormat,
     ContentOpportunity,
     ContentPriority,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from tools.basic_video_generator import create_basic_video
 
@@ -80,7 +81,8 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
             "trend_analysis",
             "hypocrisy_tracker",
             "intelligence_briefings",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for table in required_tables:
             self.assertIn(table, tables, f"Required table {table} not found")
@@ -102,7 +104,8 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
             sentiment_score=0.5,
             readability_score=50.0,
             hash_id="test_hash_123",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Store article
         success = self.rss_engine._store_article(test_article)
@@ -117,7 +120,8 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
         cursor = conn.cursor()
         cursor.execute(
             "SELECT * FROM news_articles WHERE hash_id = ?", ("test_hash_123",)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         result = cursor.fetchone()
 
         self.assertIsNotNone(result, "Article not found in database")
@@ -143,7 +147,8 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
                 sentiment_score=0.3,
                 readability_score=45.0,
                 hash_id="climate_1",
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             NewsArticle(
                 title="Climate Summit Announces New Policies",
                 url="https://example.com/climate2",
@@ -156,8 +161,10 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
                 sentiment_score=0.7,
                 readability_score=55.0,
                 hash_id="climate_2",
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Store test articles
         for article in test_articles:
@@ -179,8 +186,8 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
         article1 = NewsArticle(
             title="Politician A Supports Environmental Protection",
             url="https://example.com/env1",
-            content="Politician A strongly advocates for environmental protection \
-    and green policies.",
+            content="Politician A strongly advocates for environmental protection \"
+#     and green policies.",
             published=datetime.now() - timedelta(days=30),
             source="News Source 1",
             category="Politics",
@@ -189,7 +196,8 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
             sentiment_score=0.8,
             readability_score=60.0,
             hash_id="env_support",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         article2 = NewsArticle(
             title="Politician A Approves Oil Drilling Project",
@@ -203,7 +211,8 @@ class TestRSSIntelligenceEngine(unittest.TestCase):
             sentiment_score=0.2,
             readability_score=52.0,
             hash_id="oil_approval",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Store articles
         self.rss_engine._store_article(article1)
@@ -237,7 +246,8 @@ class TestContentAutomationPipeline(unittest.TestCase):
             "content_formats": ["video", "article"],
             "auto_publish": False,
             "quality_threshold": 0.5,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         with open(self.test_config, "w") as f:
             json.dump(test_config, f)
@@ -269,7 +279,8 @@ class TestContentAutomationPipeline(unittest.TestCase):
             deadline=datetime.now() + timedelta(hours=24),
             created_at=datetime.now(),
             metadata={"test": True},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Store opportunity
         self.pipeline._store_content_opportunity(opportunity)
@@ -279,7 +290,8 @@ class TestContentAutomationPipeline(unittest.TestCase):
         cursor = conn.cursor()
         cursor.execute(
             "SELECT * FROM content_opportunities WHERE id = ?", ("test_opp_123",)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         result = cursor.fetchone()
 
         self.assertIsNotNone(result, "Opportunity not stored")
@@ -303,7 +315,8 @@ class TestContentAutomationPipeline(unittest.TestCase):
             deadline=datetime.now() + timedelta(hours=12),
             created_at=datetime.now(),
             metadata={},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Generate projects
         projects = self.pipeline.generate_content_from_opportunity(opportunity)
@@ -330,7 +343,8 @@ class TestContentAutomationPipeline(unittest.TestCase):
             "pending_opportunities",
             status,
             "Status should include pending opportunities",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.assertIn("project_stats", status, "Status should include project stats")
 
 
@@ -378,7 +392,8 @@ class TestVideoGeneration(unittest.TestCase):
             background_image_path=background_path,
             audio_path=audio_path,
             output_path=output_path,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.assertTrue(success, "Video generation failed")
         self.assertTrue(os.path.exists(output_path), "Video file not created")
@@ -415,7 +430,8 @@ class TestVideoGeneration(unittest.TestCase):
             background_image_path=background_path,
             audio_path=audio_path,
             output_path=output_path,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.assertTrue(success, "Video generation with background failed")
         self.assertTrue(os.path.exists(output_path), "Video file not created")
@@ -439,7 +455,8 @@ class TestAutomationController(unittest.TestCase):
             "max_daily_content": 5,
             "error_threshold": 5,
             "performance_retention_days": 7,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         with open(self.test_config, "w") as f:
             json.dump(test_config, f)
@@ -448,7 +465,8 @@ class TestAutomationController(unittest.TestCase):
         self.controller = AutomationController(self.test_config)
         self.controller.performance_db = os.path.join(
             self.temp_dir, "test_performance.db"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.controller._init_performance_tracking()
 
     def tearDown(self):
@@ -464,11 +482,13 @@ class TestAutomationController(unittest.TestCase):
         """Test controller initialization."""
         self.assertIsNotNone(
             self.controller.content_pipeline, "Content pipeline not initialized"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.assertIsNotNone(self.controller.rss_engine, "RSS engine not initialized")
         self.assertFalse(
             self.controller.running, "Controller should not be running initially"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def test_automation_status(self):
         """Test automation status reporting."""
@@ -477,7 +497,8 @@ class TestAutomationController(unittest.TestCase):
         self.assertIsNotNone(status, "Status should not be None")
         self.assertFalse(
             status.content_pipeline_running, "Pipeline should not be running"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.assertEqual(status.error_count, 0, "Error count should be 0 initially")
         self.assertIsInstance(status.uptime_hours, float, "Uptime should be a float")
 
@@ -531,7 +552,8 @@ class TestEndToEndIntegration(unittest.TestCase):
         self.pipeline = ContentAutomationPipeline()
         self.pipeline.db_path = os.path.join(
             self.temp_dir, "test_integration_content.db"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.pipeline._init_automation_tables()
 
         # Override RSS engine in pipeline
@@ -560,12 +582,13 @@ class TestEndToEndIntegration(unittest.TestCase):
                 sentiment_score=0.2,
                 readability_score=48.0,
                 hash_id="scandal_123",
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             NewsArticle(
                 title="Political Figure Denies All Allegations",
                 url="https://example.com/denial1",
-                content="The political figure strongly denies all corruption allegations \
-    and claims innocence.",
+                content="The political figure strongly denies all corruption allegations \"
+#     and claims innocence.",
                 published=datetime.now(),
                 source="Test News",
                 category="Politics",
@@ -574,8 +597,10 @@ class TestEndToEndIntegration(unittest.TestCase):
                 sentiment_score=0.6,
                 readability_score=53.0,
                 hash_id="denial_123",
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Store articles in RSS engine
         for article in test_articles:
@@ -595,7 +620,8 @@ class TestEndToEndIntegration(unittest.TestCase):
 
             self.assertGreater(
                 len(projects), 0, "No projects generated from opportunity"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Step 4: Test video production for video projects
             video_projects = [p for p in projects if p.format == ContentFormat.VIDEO]
@@ -608,7 +634,8 @@ class TestEndToEndIntegration(unittest.TestCase):
 
                 self.assertEqual(
                     video_project.status, "completed", "Video project not completed"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 logger.info(f"Video project completed: {video_project.title}")
 
         # Step 5: Verify database integrity
@@ -632,16 +659,18 @@ class TestEndToEndIntegration(unittest.TestCase):
 
         # Check for foreign key integrity
         cursor.execute(
-            """
+            """"""
             SELECT COUNT(*) FROM content_projects cp
             LEFT JOIN content_opportunities co ON cp.opportunity_id = co.id
             WHERE co.id IS NULL AND cp.opportunity_id IS NOT NULL
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
         orphaned_projects = cursor.fetchone()[0]
         self.assertEqual(
             orphaned_projects, 0, "Found orphaned projects without opportunities"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.close()
 
@@ -662,7 +691,8 @@ def run_integration_tests():
         TestVideoGeneration,
         TestAutomationController,
         TestEndToEndIntegration,
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for test_class in test_classes:
         tests = unittest.TestLoader().loadTestsFromTestCase(test_class)
@@ -671,7 +701,8 @@ def run_integration_tests():
     # Run tests with detailed output
     runner = unittest.TextTestRunner(
         verbosity=2, stream=sys.stdout, descriptions=True, failfast=False
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     print(f"\\nRunning {test_suite.countTestCases()} integration tests...\\n")
 
@@ -688,20 +719,22 @@ def run_integration_tests():
     print(f"Errors: {len(result.errors)}")
     print(
         f"Success rate: {((result.testsRun - len(result.failures) - len(result.errors))/result.testsRun * 100):.1f}%"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(f"Execution time: {end_time - start_time:.2f} seconds")
 
     if result.failures:
         print("\\nFAILURES:")
         for test, traceback in result.failures:
             print(
-                f"- {test}: {traceback.split('AssertionError: ')[-1].split('\\n')[0]}"
-            )
+                f"- {test}: {traceback.split('AssertionError: ')[-1].splitlines()[0]}"
+# BRACKET_SURGEON: disabled
+#             )
 
     if result.errors:
         print("\\nERRORS:")
         for test, traceback in result.errors:
-            print(f"- {test}: {traceback.split('\\n')[-2]}")
+            print(f"- {test}: {traceback.splitlines()[-2]}")
 
     print("\\n" + "=" * 80)
 
@@ -732,8 +765,8 @@ def run_performance_benchmark():
             article = NewsArticle(
                 title=f"Test Article {i}",
                 url=f"https://example.com/article{i}",
-                content=f"This is test content for article {i} with various keywords \
-    and entities.",
+                content=f"This is test content for article {i} with various keywords \"
+#     and entities.",
                 published=datetime.now(),
                 source="Benchmark Source",
                 category="General",
@@ -742,7 +775,8 @@ def run_performance_benchmark():
                 sentiment_score=0.5,
                 readability_score=50.0,
                 hash_id=f"hash_{i}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
             test_articles.append(article)
 
         # Benchmark article storage
@@ -775,7 +809,8 @@ def run_performance_benchmark():
 
         print(
             f"   - Identified {len(opportunities)} opportunities in {opportunity_time:.3f} seconds"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if opportunities:
             start_time = time.time()
@@ -784,7 +819,8 @@ def run_performance_benchmark():
 
             print(
                 f"   - Generated {len(projects)} projects in {generation_time:.3f} seconds"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Benchmark video generation
         print("\\n3. Video Generation Benchmark")
@@ -814,7 +850,8 @@ def run_performance_benchmark():
             background_image_path=background_path,
             audio_path=audio_path,
             output_path=video_output,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         video_time = time.time() - start_time
 
         if success:
@@ -841,10 +878,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="TRAE.AI Content Automation Integration Tests"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument(
         "--benchmark", action="store_true", help="Run performance benchmarks"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 
     args = parser.parse_args()

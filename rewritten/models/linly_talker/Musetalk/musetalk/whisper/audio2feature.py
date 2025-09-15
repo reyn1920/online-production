@@ -13,13 +13,13 @@ class Audio2Feature:
         self.model = load_model(model_path)  #
 
     def get_sliced_feature(self, feature_array, vid_idx, audio_feat_length=[2, 2], fps=25):
-        """
+        """"""
         Get sliced features based on a given index
         :param feature_array:
         :param start_idx: the start index of the feature
         :param audio_feat_length:
         :return:
-        """
+        """"""
         length = len(feature_array)
         selected_feature = []
         selected_idx = []
@@ -40,13 +40,13 @@ class Audio2Feature:
         return selected_feature, selected_idx
 
     def get_sliced_feature_sparse(self, feature_array, vid_idx, audio_feat_length=[2, 2], fps=25):
-        """
+        """"""
         Get sliced features based on a given index
         :param feature_array:
         :param start_idx: the start index of the feature
         :param audio_feat_length:
         :return:
-        """
+        """"""
         length = len(feature_array)
         selected_feature = []
         selected_idx = []
@@ -84,7 +84,8 @@ class Audio2Feature:
                 vid_idx=i,
                 audio_feat_length=audio_feat_length,
                 fps=fps,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             # print(f"i:{i},selected_idx {selected_idx}")
             whisper_chunks.append(selected_feature)
             i += 1
@@ -123,7 +124,8 @@ if __name__ == "__main__":
         start_idx = int(i * whisper_idx_multiplier)
         selected_feature, selected_idx = audio_processor.get_sliced_feature(
             feature_array=array, vid_idx=i, audio_feat_length=[2, 2], fps=fps
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"video idx {i},\\t audio idx {selected_idx},\\t shape {selected_feature.shape}")
         i += 1
         if start_idx > len(array):

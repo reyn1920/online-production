@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Content generation and management router
 Provides endpoints for content creation, video generation, and content management.
-"""
+""""""
 
 import logging
 import uuid
@@ -22,7 +22,8 @@ try:
         ContentConfig,
         ContentRequest,
         ContentResponse,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     try:
         from backend.agents.content_agent import ContentAgent
@@ -33,7 +34,8 @@ except ImportError:
 try:
     from backend.agents.specialized_agents import (
         ContentAgent as SpecializedContentAgent,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     SpecializedContentAgent = None
     logging.warning("Specialized content agent not available")
@@ -113,11 +115,13 @@ def get_content_agent():
                     # Final fallback to specialized agent
                     from backend.agents.specialized_agents import (
                         ContentAgent as SpecializedContentAgent,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     content_agent_instance = SpecializedContentAgent(
                         agent_id="content_agent_001", name="ContentAgent"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     logger.info("✅ Specialized ContentAgent initialized")
             else:
                 logger.info("✅ ContentAgent retrieved from production manager")
@@ -145,9 +149,12 @@ async def content_interface(request: Request):
                 "video_script",
                 "product_description",
                 "newsletter",
-            ],
-        },
-    )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/health")
@@ -163,8 +170,10 @@ async def health_check():
             "video_creation": agent is not None,
             "tts_engine": agent is not None,
             "avatar_generation": agent is not None,
-        },
-    }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/trending")
@@ -185,20 +194,24 @@ async def get_trending_topics():
                             "artificial intelligence",
                             "machine learning",
                             "automation",
-                        ],
-                    },
+# BRACKET_SURGEON: disabled
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "title": "Sustainable Living",
                         "category": "Lifestyle",
                         "trend_score": 88,
                         "keywords": ["sustainability", "eco-friendly", "green living"],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "title": "Remote Work Productivity",
                         "category": "Business",
                         "trend_score": 82,
                         "keywords": ["remote work", "productivity", "work from home"],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "title": "Digital Marketing Trends",
                         "category": "Marketing",
@@ -207,19 +220,25 @@ async def get_trending_topics():
                             "digital marketing",
                             "social media",
                             "content strategy",
-                        ],
-                    },
+# BRACKET_SURGEON: disabled
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "title": "Health and Wellness",
                         "category": "Health",
                         "trend_score": 76,
                         "keywords": ["wellness", "mental health", "fitness"],
-                    },
-                ],
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ],
                 "updated_at": datetime.now().isoformat(),
                 "source": "fallback_data",
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     try:
         trending_data = await agent.news_watcher.get_trending_topics()
@@ -244,14 +263,16 @@ async def generate_content(request: ContentGenerationRequest, background_tasks: 
         "updated_at": datetime.now(),
         "type": "text",
         "request": request.dict(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Start background task
     background_tasks.add_task(_generate_text_content, job_id, request, agent)
 
     return JSONResponse(
         {"job_id": job_id, "status": "pending", "message": "Content generation started"}
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.post("/generate-video")
@@ -269,14 +290,16 @@ async def generate_video_content(request: VideoContentRequest, background_tasks:
         "updated_at": datetime.now(),
         "type": "video",
         "request": request.dict(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Start background task
     background_tasks.add_task(_generate_video_content, job_id, request, agent)
 
     return JSONResponse(
         {"job_id": job_id, "status": "pending", "message": "Video generation started"}
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/status/{job_id}")
@@ -295,8 +318,10 @@ async def get_content_status(job_id: str):
             "error": job.get("error"),
             "created_at": job["created_at"].isoformat(),
             "updated_at": job["updated_at"].isoformat(),
-        }
-    )
+# BRACKET_SURGEON: disabled
+#         }
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/download/{job_id}")
@@ -321,7 +346,8 @@ async def download_content(job_id: str):
         path=str(file_path),
         filename=file_path.name,
         media_type="application/octet-stream",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/templates")
@@ -336,38 +362,46 @@ async def get_content_templates():
                     "fields": ["title", "introduction", "body", "conclusion"],
                     "min_length": 500,
                     "max_length": 3000,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "blog_post": {
                     "name": "Blog Post",
                     "description": "Engaging blog content",
                     "fields": ["title", "hook", "content", "call_to_action"],
                     "min_length": 300,
                     "max_length": 2000,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "social_media": {
                     "name": "Social Media Post",
                     "description": "Short, engaging social content",
                     "fields": ["text", "hashtags", "call_to_action"],
                     "min_length": 50,
                     "max_length": 280,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "email": {
                     "name": "Email",
                     "description": "Professional email content",
                     "fields": ["subject", "greeting", "body", "closing"],
                     "min_length": 100,
                     "max_length": 1000,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "video_script": {
                     "name": "Video Script",
                     "description": "Script for video content",
                     "fields": ["hook", "introduction", "main_content", "conclusion"],
                     "min_length": 200,
                     "max_length": 1500,
-                },
-            }
-        }
-    )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.delete("/jobs/{job_id}")
@@ -404,8 +438,10 @@ async def list_content_jobs():
                 "progress": job_data.get("progress", 0.0),
                 "created_at": job_data["created_at"].isoformat(),
                 "updated_at": job_data["updated_at"].isoformat(),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     return JSONResponse({"jobs": jobs_list})
 
@@ -428,7 +464,8 @@ async def _generate_text_content(job_id: str, request: ContentGenerationRequest,
             "audience": request.audience,
             "keywords": request.keywords,
             "include_images": request.include_images,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Update progress
         content_jobs[job_id]["progress"] = 0.3
@@ -446,8 +483,10 @@ async def _generate_text_content(job_id: str, request: ContentGenerationRequest,
                     "word_count": request.target_length,
                     "tone": request.tone,
                     "audience": request.audience,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         # Update progress
         content_jobs[job_id]["progress"] = 0.8
@@ -493,7 +532,8 @@ async def _generate_video_content(job_id: str, request: VideoContentRequest, age
             "voice": request.voice,
             "resolution": request.resolution,
             "include_avatar": request.include_avatar,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Update progress
         content_jobs[job_id]["progress"] = 0.3
@@ -512,8 +552,10 @@ async def _generate_video_content(job_id: str, request: VideoContentRequest, age
                     "resolution": request.resolution,
                     "style": request.style,
                     "voice": request.voice,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         # Update progress
         content_jobs[job_id]["progress"] = 0.9

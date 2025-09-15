@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Secure Secret Store for TRAE.AI System
 
 This module provides a production - ready secret storage system using AES encryption
@@ -15,7 +15,7 @@ Security Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import base64
 import hashlib
@@ -38,7 +38,7 @@ class SecretStoreError(Exception):
 
 
 class SecretStore:
-    """
+    """"""
     Production - ready secure secret storage system.
 
     This class provides encrypted storage of sensitive data using industry - standard
@@ -46,17 +46,18 @@ class SecretStore:
     only when retrieved.
 
     Attributes:
-        db_path (Path): Path to the SQLite database file
+        db_path (Path): Path to the SQLite database file:
         master_key (bytes): Master encryption key derived from password
         fernet (Fernet): Encryption / decryption handler
-    """
+    """"""
 
     def __init__(
         self,
         db_path: str = "data / secrets.sqlite",
         master_password: Optional[str] = None,
-    ):
-        """
+# BRACKET_SURGEON: disabled
+#     ):
+        """"""
         Initialize the SecretStore.
 
         Args:
@@ -67,7 +68,7 @@ class SecretStore:
         Note:
             If no master password is provided, the SecretStore will operate in disabled mode
             where all operations return None / False gracefully instead of raising errors.
-        """
+        """"""
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -83,7 +84,8 @@ class SecretStore:
             self.logger.warning(
                 "No master password provided. SecretStore operating in disabled mode. "
                 "Set TRAE_MASTER_KEY environment variable to enable secret storage."
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self._disabled = True
             self.fernet = None
             return
@@ -96,12 +98,12 @@ class SecretStore:
         self._init_database()
 
     def _setup_encryption(self, master_password: str) -> None:
-        """
+        """"""
         Setup encryption using PBKDF2 key derivation and Fernet encryption.
 
         Args:
             master_password (str): Master password for key derivation
-        """
+        """"""
         # Get or create salt
         salt = self._get_or_create_salt()
 
@@ -111,18 +113,19 @@ class SecretStore:
             length=32,
             salt=salt,
             iterations=100000,  # OWASP recommended minimum
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         key = base64.urlsafe_b64encode(kdf.derive(master_password.encode()))
         self.fernet = Fernet(key)
 
     def _get_or_create_salt(self) -> bytes:
-        """
+        """"""
         Get existing salt from database or create a new one.
 
         Returns:
             bytes: Cryptographic salt for key derivation
-        """
+        """"""
         salt_file = self.db_path.parent / ".salt"
 
         if salt_file.exists():
@@ -138,33 +141,36 @@ class SecretStore:
             return salt
 
     def _init_database(self) -> None:
-        """
+        """"""
         Initialize the SQLite database with the secrets table.
-        """
+        """"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS secrets (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         key_name TEXT UNIQUE NOT NULL,
                         encrypted_value BLOB NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create index for faster lookups
             conn.execute(
-                """
+                """"""
                 CREATE INDEX IF NOT EXISTS idx_key_name ON secrets(key_name)
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
     def store_secret(self, key_name: str, secret_value: str) -> bool:
-        """
+        """"""
         Store a secret with encryption.
 
         Args:
@@ -176,7 +182,7 @@ class SecretStore:
 
         Raises:
             SecretStoreError: If storage operation fails (only when not disabled)
-        """
+        """"""
         # Return False gracefully if in disabled mode
         if getattr(self, "_disabled", False):
             self.logger.debug(f"SecretStore disabled - cannot store secret: {key_name}")
@@ -195,14 +201,16 @@ class SecretStore:
 
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO secrets (key_name,
     encrypted_value,
-    updated_at)
+# BRACKET_SURGEON: disabled
+#     updated_at)
                     VALUES (?, ?, CURRENT_TIMESTAMP)
-                """,
+                ""","""
                     (key_name, encrypted_value),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
             self.logger.info(f"Secret stored successfully: {key_name}")
@@ -213,7 +221,7 @@ class SecretStore:
             raise SecretStoreError(f"Failed to store secret: {str(e)}")
 
     def get_secret(self, key_name: str) -> Optional[str]:
-        """
+        """"""
         Retrieve and decrypt a secret.
 
         Args:
@@ -224,7 +232,7 @@ class SecretStore:
 
         Raises:
             SecretStoreError: If retrieval or decryption fails (only when not disabled)
-        """
+        """"""
         # Return None gracefully if in disabled mode
         if getattr(self, "_disabled", False):
             self.logger.debug(f"SecretStore disabled - returning None for key: {key_name}")
@@ -238,7 +246,8 @@ class SecretStore:
                 cursor = conn.execute(
                     "SELECT encrypted_value FROM secrets WHERE key_name = ?",
                     (key_name,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 row = cursor.fetchone()
 
             if row is None:
@@ -256,7 +265,7 @@ class SecretStore:
             raise SecretStoreError(f"Failed to retrieve secret: {str(e)}")
 
     def delete_secret(self, key_name: str) -> bool:
-        """
+        """"""
         Delete a secret from the store.
 
         Args:
@@ -267,7 +276,7 @@ class SecretStore:
 
         Raises:
             SecretStoreError: If deletion fails (only when not disabled)
-        """
+        """"""
         # Return False gracefully if in disabled mode
         if getattr(self, "_disabled", False):
             self.logger.debug(f"SecretStore disabled - cannot delete secret: {key_name}")
@@ -295,15 +304,16 @@ class SecretStore:
             raise SecretStoreError(f"Failed to delete secret: {str(e)}")
 
     def list_secrets(self) -> List[Dict[str, str]]:
-        """
+        """"""
             List all stored secrets (metadata only, not values).
 
             Returns:
                 List[Dict]: List of secret metadata (key_name,
         created_at,
-        updated_at),
+# BRACKET_SURGEON: disabled
+#         updated_at),
         empty list if disabled
-        """
+        """"""
         # Return empty list gracefully if in disabled mode
         if getattr(self, "_disabled", False):
             self.logger.debug("SecretStore disabled - returning empty secrets list")
@@ -313,12 +323,13 @@ class SecretStore:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT key_name, created_at, updated_at
                     FROM secrets
                     ORDER BY key_name
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 secrets = [dict(row) for row in cursor.fetchall()]
 
@@ -330,7 +341,7 @@ class SecretStore:
             raise SecretStoreError(f"Failed to list secrets: {str(e)}")
 
     def secret_exists(self, key_name: str) -> bool:
-        """
+        """"""
         Check if a secret exists in the store.
 
         Args:
@@ -338,19 +349,21 @@ class SecretStore:
 
         Returns:
             bool: True if secret exists, False otherwise or if disabled
-        """
+        """"""
         # Return False gracefully if in disabled mode
         if getattr(self, "_disabled", False):
             self.logger.debug(
                 f"SecretStore disabled - returning False for secret existence: {key_name}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
                     "SELECT 1 FROM secrets WHERE key_name = ? LIMIT 1", (key_name,)
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return cursor.fetchone() is not None
 
         except Exception as e:
@@ -358,7 +371,7 @@ class SecretStore:
             return False
 
     def backup_secrets(self, backup_path: str) -> bool:
-        """
+        """"""
         Create a backup of the secrets database.
 
         Args:
@@ -366,7 +379,7 @@ class SecretStore:
 
         Returns:
             bool: True if backup successful, False otherwise
-        """
+        """"""
         try:
             import shutil
 

@@ -11,7 +11,8 @@ nvcc_flags = [
     "-U__CUDA_NO_HALF_CONVERSIONS__",
     "-U__CUDA_NO_HALF2_OPERATORS__",
     "-use_fast_math",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 if os.name == "posix":
     c_flags = ["-O3", "-std = c++14"]
@@ -28,9 +29,11 @@ elif os.name == "nt":
                 glob.glob(
                     r"C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\*\\\\%s\\\\VC\\\\Tools\\\\MSVC\\\\*\\\\bin\\\\Hostx64\\\\x64"
                     % edition
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 reverse=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if paths:
                 return paths[0]
 
@@ -50,8 +53,11 @@ _backend = load(
         for f in [
             "freqencoder.cu",
             "bindings.cpp",
-        ]
-    ],
-)
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     ],
+# BRACKET_SURGEON: disabled
+# )
 
 __all__ = ["_backend"]

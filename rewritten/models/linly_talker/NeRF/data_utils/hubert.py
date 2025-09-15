@@ -24,7 +24,9 @@ def get_hubert_from_16k_speech(speech, device="cuda:0"):
         speech = speech[:, 0]  # [T, 2] ==> [T,]
     input_values_all = wav2vec2_processor(
         speech, return_tensors="pt", sampling_rate = 16000
-    ).input_values  # [1, T]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ).input_values  # [1, T]
     input_values_all = input_values_all.to(device)
     # For long audio sequence, due to the memory limitation, we cannot process them in one run
     # HuBERT process the wav with a CNN of stride [5,2,2,2,2,2], making a stride of 320
@@ -51,7 +53,9 @@ def get_hubert_from_16k_speech(speech, device="cuda:0"):
         input_values = input_values_all[:, start_idx:end_idx]
         hidden_states = hubert_model.forward(
             input_values
-        ).last_hidden_state  # [B = 1, T = pts//320, hid = 1024]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).last_hidden_state  # [B = 1, T = pts//320, hid = 1024]
         res_lst.append(hidden_states[0])
     if num_iter > 0:
         input_values = input_values_all[:, clip_length * num_iter :]
@@ -60,10 +64,13 @@ def get_hubert_from_16k_speech(speech, device="cuda:0"):
     # if input_values.shape[1] != 0:
     if (
         input_values.shape[1] >= kernel
-    ):  # if the last batch is shorter than kernel_size, skip it
+# BRACKET_SURGEON: disabled
+#     ):  # if the last batch is shorter than kernel_size, skip it
         hidden_states = hubert_model(
             input_values
-        ).last_hidden_state  # [B = 1, T = pts//320, hid = 1024]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).last_hidden_state  # [B = 1, T = pts//320, hid = 1024]
         res_lst.append(hidden_states[0])
     ret = torch.cat(res_lst, dim = 0).cpu()  # [T, 1024]
     # assert ret.shape[0] == expected_T

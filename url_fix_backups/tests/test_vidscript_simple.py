@@ -1,7 +1,7 @@
 #!/usr / bin / env python3
-"""
+""""""
 Simple VidScriptPro Test
-"""
+""""""
 
 import logging
 import sys

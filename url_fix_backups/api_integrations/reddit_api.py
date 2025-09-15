@@ -21,7 +21,8 @@ class RedditAPI(BaseAPI):
             requests_per_hour=1000,
             requests_per_day=10000,
             burst_limit=5,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         super().__init__(rate_config)
 
         # Use read - only mode if no credentials provided (zero - cost approach)
@@ -44,8 +45,10 @@ class RedditAPI(BaseAPI):
                             client_id=self.client_id,
                             client_secret=self.client_secret,
                             user_agent=self.user_agent,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     # Read - only mode (zero - cost)
                     self.reddit = await loop.run_in_executor(
@@ -55,8 +58,10 @@ class RedditAPI(BaseAPI):
                             client_secret="dummy",
                             user_agent=self.user_agent,
                             check_for_async=False,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
             except Exception as e:
                 raise APIError(f"Failed to initialize Reddit client: {e}")
@@ -85,7 +90,8 @@ class RedditAPI(BaseAPI):
             "hourly_used": self.rate_limiter.hourly_count,
             "tokens_available": int(self.rate_limiter.tokens),
             "authenticated": bool(self.client_id and self.client_secret),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def search_subreddits(self, query: str, limit: int = 25) -> List[Dict[str, Any]]:
         """Search for subreddits related to query"""
@@ -96,7 +102,8 @@ class RedditAPI(BaseAPI):
             loop = asyncio.get_event_loop()
             subreddits = await loop.run_in_executor(
                 None, lambda: list(self.reddit.subreddits.search(query, limit=limit))
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             results = []
             for subreddit in subreddits:
@@ -109,8 +116,10 @@ class RedditAPI(BaseAPI):
                         "created_utc": datetime.fromtimestamp(subreddit.created_utc).isoformat(),
                         "over18": subreddit.over18,
                         "url": f"https://reddit.com / r/{subreddit.display_name}",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return results
 
@@ -132,7 +141,8 @@ class RedditAPI(BaseAPI):
             loop = asyncio.get_event_loop()
             subreddit = await loop.run_in_executor(
                 None, lambda: self.reddit.subreddit(subreddit_name)
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Get posts based on sort type
             if sort == "hot":
@@ -141,7 +151,8 @@ class RedditAPI(BaseAPI):
                 posts = await loop.run_in_executor(
                     None,
                     lambda: list(subreddit.top(time_filter=time_filter, limit=limit)),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             elif sort == "new":
                 posts = await loop.run_in_executor(None, lambda: list(subreddit.new(limit=limit)))
             else:
@@ -158,7 +169,8 @@ class RedditAPI(BaseAPI):
                         "title": post.title,
                         "selftext": (
                             post.selftext[:500] if post.selftext else ""
-                        ),  # Truncate long text
+# BRACKET_SURGEON: disabled
+#                         ),  # Truncate long text
                         "score": post.score,
                         "upvote_ratio": post.upvote_ratio,
                         "num_comments": post.num_comments,
@@ -171,8 +183,10 @@ class RedditAPI(BaseAPI):
                         "is_self": post.is_self,
                         "engagement_rate": round(engagement_rate, 2),
                         "flair_text": post.link_flair_text,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return results
 
@@ -190,7 +204,8 @@ class RedditAPI(BaseAPI):
             loop = asyncio.get_event_loop()
             submission = await loop.run_in_executor(
                 None, lambda: self.reddit.submission(id=post_id)
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Set comment sort and limit
             submission.comment_sort = sort
@@ -218,8 +233,10 @@ class RedditAPI(BaseAPI):
                             "is_submitter": comment.is_submitter,
                             "sentiment": sentiment,
                             "depth": comment.depth if hasattr(comment, "depth") else 0,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
             return results
 
@@ -241,7 +258,8 @@ class RedditAPI(BaseAPI):
                     "sentiment_label": "neutral",
                     "post_count": 0,
                     "error": "No posts found",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Analyze sentiment of titles and text
             sentiments = []
@@ -273,8 +291,10 @@ class RedditAPI(BaseAPI):
                     "positive": len([s for s in sentiments if s["polarity"] > 0.1]),
                     "neutral": len([s for s in sentiments if -0.1 <= s["polarity"] <= 0.1]),
                     "negative": len([s for s in sentiments if s["polarity"] < -0.1]),
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to analyze subreddit sentiment: {e}")
@@ -297,7 +317,8 @@ class RedditAPI(BaseAPI):
                         sort="top",
                         time_filter=time_filter,
                         limit=limit_per_subreddit,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     all_posts.extend(posts)
                 except Exception as e:
                     logger.warning(f"Failed to get posts from r/{subreddit_name}: {e}")
@@ -309,7 +330,8 @@ class RedditAPI(BaseAPI):
                     "subreddits_analyzed": subreddit_names,
                     "total_posts": 0,
                     "error": "No posts found",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Extract and rank topics by engagement
             topic_metrics = {}
@@ -326,7 +348,8 @@ class RedditAPI(BaseAPI):
                                 "total_score": 0,
                                 "total_comments": 0,
                                 "posts": [],
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                         topic_metrics[word]["mentions"] += 1
                         topic_metrics[word]["total_score"] += post["score"]
@@ -336,8 +359,10 @@ class RedditAPI(BaseAPI):
                                 "title": post["title"],
                                 "score": post["score"],
                                 "subreddit": post["subreddit"],
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
 
             # Rank topics by combined metrics
             ranked_topics = []
@@ -349,7 +374,8 @@ class RedditAPI(BaseAPI):
                     # Calculate trending score
                     trending_score = (
                         metrics["mentions"] * 0.3 + avg_score * 0.4 + avg_comments * 0.3
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     ranked_topics.append(
                         {
@@ -359,8 +385,10 @@ class RedditAPI(BaseAPI):
                             "avg_comments": round(avg_comments, 2),
                             "trending_score": round(trending_score, 2),
                             "sample_posts": metrics["posts"][:3],  # Top 3 posts
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Sort by trending score
             ranked_topics.sort(key=lambda x: x["trending_score"], reverse=True)
@@ -370,7 +398,8 @@ class RedditAPI(BaseAPI):
                 "subreddits_analyzed": subreddit_names,
                 "total_posts": len(all_posts),
                 "analysis_timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to find trending topics: {e}")
@@ -382,6 +411,7 @@ class RedditAPI(BaseAPI):
             return {
                 "polarity": blob.sentiment.polarity,  # -1 to 1
                 "subjectivity": blob.sentiment.subjectivity,  # 0 to 1
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception:
             return {"polarity": 0.0, "subjectivity": 0.0}

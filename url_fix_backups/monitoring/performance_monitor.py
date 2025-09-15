@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE AI Performance Monitor
 Tracks system performance, resource usage, and application health metrics.
-"""
+""""""
 
 import json
 import logging
@@ -20,7 +20,8 @@ import psutil
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s | %(levelname)s | %(name)s | %(message)s"
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger("trae_ai.performance")
 
 
@@ -79,7 +80,7 @@ class PerformanceMonitor:
 
                 # System metrics table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS system_metrics (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             timestamp TEXT NOT NULL,
@@ -95,13 +96,15 @@ class PerformanceMonitor:
                             load_average TEXT,
                             uptime_seconds REAL,
                             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Application metrics table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS application_metrics (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             timestamp TEXT NOT NULL,
@@ -114,13 +117,15 @@ class PerformanceMonitor:
                             memory_usage_mb REAL,
                             cpu_usage_percent REAL,
                             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Performance alerts table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS performance_alerts (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             timestamp TEXT NOT NULL,
@@ -132,9 +137,11 @@ class PerformanceMonitor:
                             threshold REAL,
                             resolved BOOLEAN DEFAULT FALSE,
                             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 logger.info("Performance monitoring database initialized")
@@ -181,7 +188,8 @@ class PerformanceMonitor:
                 process_count=process_count,
                 load_average=load_avg,
                 uptime_seconds=uptime,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Failed to collect system metrics: {e}")
@@ -225,7 +233,8 @@ class PerformanceMonitor:
                 warning_count=warning_count,
                 memory_usage_mb=current_process.memory_info().rss / (1024 * 1024),
                 cpu_usage_percent=current_process.cpu_percent(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Failed to collect application metrics: {e}")
@@ -239,14 +248,14 @@ class PerformanceMonitor:
 
                 # Store system metrics
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO system_metrics (
                         timestamp, cpu_percent, memory_percent, memory_used_mb,
                             memory_available_mb, disk_usage_percent, disk_free_gb,
                             network_bytes_sent, network_bytes_recv, process_count,
                             load_average, uptime_seconds
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         system_metrics.timestamp,
                         system_metrics.cpu_percent,
@@ -260,18 +269,20 @@ class PerformanceMonitor:
                         system_metrics.process_count,
                         json.dumps(system_metrics.load_average),
                         system_metrics.uptime_seconds,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Store application metrics
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO application_metrics (
                         timestamp, active_agents, dashboard_status, database_connections,
                             response_time_ms, error_count, warning_count,
                             memory_usage_mb, cpu_usage_percent
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         app_metrics.timestamp,
                         app_metrics.active_agents,
@@ -282,8 +293,10 @@ class PerformanceMonitor:
                         app_metrics.warning_count,
                         app_metrics.memory_usage_mb,
                         app_metrics.cpu_usage_percent,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 logger.debug("Metrics stored successfully")
@@ -306,8 +319,10 @@ class PerformanceMonitor:
                     "metric_name": "cpu_percent",
                     "metric_value": system_metrics.cpu_percent,
                     "threshold": 80,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Memory threshold
         if system_metrics.memory_percent > 85:
@@ -319,8 +334,10 @@ class PerformanceMonitor:
                     "metric_name": "memory_percent",
                     "metric_value": system_metrics.memory_percent,
                     "threshold": 85,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Disk threshold
         if system_metrics.disk_usage_percent > 90:
@@ -332,8 +349,10 @@ class PerformanceMonitor:
                     "metric_name": "disk_usage_percent",
                     "metric_value": system_metrics.disk_usage_percent,
                     "threshold": 90,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Dashboard status
         if app_metrics.dashboard_status != "healthy":
@@ -345,8 +364,10 @@ class PerformanceMonitor:
                     "metric_name": "dashboard_status",
                     "metric_value": 0,
                     "threshold": 1,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Store alerts
         if alerts:
@@ -362,12 +383,12 @@ class PerformanceMonitor:
 
                 for alert in alerts:
                     cursor.execute(
-                        """
+                        """"""
                         INSERT INTO performance_alerts (
                             timestamp, alert_type, severity, message,
                                 metric_name, metric_value, threshold
                         ) VALUES (?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             datetime.now(timezone.utc).isoformat(),
                             alert["type"],
@@ -376,8 +397,10 @@ class PerformanceMonitor:
                             alert["metric_name"],
                             alert["metric_value"],
                             alert["threshold"],
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                 conn.commit()
                 logger.warning(f"Stored {len(alerts)} performance alerts")
@@ -410,7 +433,8 @@ class PerformanceMonitor:
                 "application_metrics": asdict(app_metrics),
                 "alerts": alerts,
                 "uptime_seconds": system_metrics.uptime_seconds,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to get health status: {e}")
@@ -418,7 +442,8 @@ class PerformanceMonitor:
                 "status": "error",
                 "timestamp": datetime.now(timezone.utc).isoformat(),
                 "error": str(e),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def run_monitoring_cycle(self):
         """Run a single monitoring cycle."""
@@ -442,7 +467,8 @@ class PerformanceMonitor:
                 f"Memory: {system_metrics.memory_percent:.1f}%, "
                 f"Disk: {system_metrics.disk_usage_percent:.1f}%, "
                 f"Alerts: {len(alerts)}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return True
 

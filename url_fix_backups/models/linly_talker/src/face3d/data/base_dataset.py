@@ -1,10 +1,11 @@
-"""This module implements an abstract base class (ABC) 'BaseDataset' for datasets.
+"""This module implements an abstract base class (ABC) 'BaseDataset' for datasets."""
 
 It also includes common transformation functions (e.g.,
     get_transform,
-    __scale_width),
+# BRACKET_SURGEON: disabled
+#     __scale_width),
     which can be later used in subclasses.
-"""
+""""""
 
 import random
 from abc import ABC, abstractmethod
@@ -16,42 +17,43 @@ from PIL import Image
 
 
 class BaseDataset(data.Dataset, ABC):
-    """This class is an abstract base class (ABC) for datasets.
+    """This class is an abstract base class (ABC) for datasets."""
 
     To create a subclass, you need to implement the following four functions:
     -- <__init__>:                      initialize the class,
     first call BaseDataset.__init__(self,
-    opt).
+# BRACKET_SURGEON: disabled
+#     opt).
     -- <__len__>:                       return the size of dataset.
     -- <__getitem__>:                   get a data point.
     -- <modify_commandline_options>:    (optionally) add dataset - specific options \
-    and set default options.
-    """
+#     and set default options.
+    """"""
 
     def __init__(self, opt):
-        """Initialize the class; save the options in the class
+        """Initialize the class; save the options in the class"""
 
         Parameters:
             opt (Option class)-- stores all the experiment flags; needs to be a subclass of BaseOptions
-        """
+        """"""
         self.opt = opt
         # self.root = opt.dataroot
         self.current_epoch = 0
 
     @staticmethod
     def modify_commandline_options(parser, is_train):
-        """Add new dataset - specific options, \
-    and rewrite default values for existing options.
+        """Add new dataset - specific options, \"""
+#     and rewrite default values for existing options.
 
         Parameters:
             parser          -- original option parser
             is_train (bool) -- whether training phase \
-    or test phase. You can use this flag to add training - specific \
-    or test - specific options.
+#     or test phase. You can use this flag to add training - specific \
+#     or test - specific options.
 
         Returns:
             the modified parser.
-        """
+        """"""
         return parser
 
     @abstractmethod
@@ -61,15 +63,15 @@ class BaseDataset(data.Dataset, ABC):
 
     @abstractmethod
     def __getitem__(self, index):
-        """Return a data point and its metadata information.
+        """Return a data point and its metadata information."""
 
         Parameters:
             index - - a random integer for data indexing
 
         Returns:
             a dictionary of data with their names. It ususally contains the data itself \
-    and its metadata information.
-        """
+#     and its metadata information.
+        """"""
         pass
 
 
@@ -111,7 +113,8 @@ def get_affine_mat(opt, size):
             0,
             0,
             1,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
     ).reshape([3, 3])
     scale_mat = np.array([scale, 0, 0, 0, scale, 0, 0, 0, 1]).reshape([3, 3])
     shift_to_center = np.array([1, 0, w // 2, 0, 1, h // 2, 0, 0, 1]).reshape([3, 3])
@@ -124,7 +127,8 @@ def get_affine_mat(opt, size):
 def apply_img_affine(img, affine_inv, method=Image.BICUBIC):
     return img.transform(
         img.size, Image.AFFINE, data=affine_inv.flatten()[:6], resample=Image.BICUBIC
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def apply_lm_affine(landmark, affine, flip, size):

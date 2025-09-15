@@ -1,7 +1,7 @@
-"""
+""""""
 https://github.com / openai / whisper
 pip install -U openai - whisper
-"""
+""""""
 
 import sys
 
@@ -114,7 +114,8 @@ class WhisperASR:
             "ba": "bashkir",
             "jw": "javanese",
             "su": "sundanese",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.model = whisper.load_model(model_path)
 
     @calculate_time

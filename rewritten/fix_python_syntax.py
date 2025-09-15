@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Python Syntax Fixer with Go-Live Commander
 
 A comprehensive tool for fixing Python syntax errors and preparing applications for production deployment.
@@ -9,7 +9,7 @@ Usage:
     python fix_python_syntax.py [file_or_directory]
     python fix_python_syntax.py --all  # Fix all Python files
     python fix_python_syntax.py --go-live  # Full production preparation
-"""
+""""""
 
 import ast
 import argparse
@@ -27,7 +27,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("go_live.log"), logging.StreamHandler()],
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -55,7 +56,7 @@ class PythonSyntaxFixer:
 
             if open_count > close_count:
                 # Line likely continues
-                fixed_lines.append(line.rstrip() + " \\")
+                fixed_lines.append(line.rstrip() + " \\")"
             else:
                 fixed_lines.append(line)
 
@@ -81,7 +82,7 @@ class PythonSyntaxFixer:
         content = re.sub(r"f\s*\{([^}]+)\}", r'f"{\1}"', content)
 
         # Fix f-strings with improper escaping
-        content = re.sub(r'f"([^"]*\{[^}]*\}[^"]*)', r'f"\1"', content)
+        content = re.sub(r'f"([^"]*\{[^}]*\}[^"]*)', r'f"\1"', content)"
 
         return content
 
@@ -205,7 +206,8 @@ class PythonSyntaxFixer:
             ".backup",
             "test_",
             "_test.py",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         file_str = str(file_path)
         return any(pattern in file_str for pattern in skip_patterns)
@@ -271,7 +273,8 @@ class GoLiveCommander:
             ("Installing dependencies", self.install_dependencies),
             ("Running compile check", self.compile_check),
             ("Running smoke tests", self.smoke_test),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         if launch:
             steps.append(("Launching application", self.launch_app))
@@ -338,8 +341,9 @@ class GoLiveCommander:
                 "venv", "url_fix_backups", "copy_of_code",
                 "models/linly_talker",  # third-party / experimental
                 "__pycache__", ".git"
-            }
-            
+# BRACKET_SURGEON: disabled
+#             }
+
             python_files = []
             for root, dirs, files in os.walk(self.target_dir):
                 # prune in-place so os.walk won't descend
@@ -352,7 +356,8 @@ class GoLiveCommander:
             for py_file in python_files:
                 subprocess.run(
                     [sys.executable, "-m", "py_compile", str(py_file)], check=True
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             return True
         except Exception as e:
@@ -374,7 +379,8 @@ class GoLiveCommander:
                         cwd=self.target_dir,
                         check=True,
                         timeout=10,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     break
 
             return True
@@ -401,8 +407,10 @@ class GoLiveCommander:
                     "app:app",
                     "-b",
                     f"0.0.0.0:{self.port}",
-                ],
-            ]
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             ]
 
             for cmd in launch_commands:
                 try:

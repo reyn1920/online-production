@@ -9,8 +9,10 @@ version_str = "".join(
         f"py3{sys.version_info.minor}_cu",
         torch.version.cuda.replace(".", ""),
         f"_pyt{pyt_version_str}",
-    ]
-)
+# BRACKET_SURGEON: disabled
+#     ]
+# BRACKET_SURGEON: disabled
+# )
 subprocess.run(["pip", "install", "fvcore", "iopath"])
 subprocess.run(
     [
@@ -21,5 +23,7 @@ subprocess.run(
         f"pytorch3d",
         f"-f",
         f"https://dl.fbaipublicfiles.com / pytorch3d / packaging / wheels/{version_str}/download.html",
-    ]
-)
+# BRACKET_SURGEON: disabled
+#     ]
+# BRACKET_SURGEON: disabled
+# )

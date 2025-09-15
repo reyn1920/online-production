@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Supabase Integration
 
 Provides comprehensive Supabase database integration for cloud - based
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import base64
@@ -185,10 +185,10 @@ class ExecutionRecord:
 
 
 class SupabaseIntegration:
-    """
+    """"""
     Comprehensive Supabase integration for TRAE.AI with secure
     credential management, real - time sync, and cloud persistence.
-    """
+    """"""
 
 
     def __init__(self, secrets_db_path: str = "data / secrets.sqlite"):
@@ -199,7 +199,9 @@ class SupabaseIntegration:
         if not SUPABASE_AVAILABLE:
             self.logger.warning(
                 "Supabase not installed. Install with: pip install supabase"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.client = None
             return
 
@@ -237,7 +239,9 @@ class SupabaseIntegration:
                     or os.getenv("SUPABASE_DB_PASSWORD"),
                         storage_bucket = store.get_secret("SUPABASE_STORAGE_BUCKET")
                     or "trae - ai - storage",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 if not config.url or not config.key:
                     self.logger.error("Missing required Supabase configuration")
@@ -336,7 +340,8 @@ class SupabaseIntegration:
                 "status": "unavailable",
                     "error": "Supabase client not initialized",
                     "timestamp": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         try:
             start_time = time.time()
@@ -352,14 +357,16 @@ class SupabaseIntegration:
                     "response_time": response_time,
                     "timestamp": datetime.now().isoformat(),
                     "tables_accessible": True,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             return {
                 "status": "error",
                     "error": str(e),
                     "timestamp": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def create_user_profile(
@@ -380,11 +387,14 @@ class SupabaseIntegration:
                     "created_at": datetime.now().isoformat(),
                     "updated_at": datetime.now().isoformat(),
                     "metadata": user_data.get("metadata", {}),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             response = (
                 self.client.table(TableName.USERS.value).insert(profile_data).execute()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.data:
                 profile = UserProfile(**response.data[0])
@@ -415,7 +425,9 @@ class SupabaseIntegration:
                 .select("*")
                 .eq("id", user_id)
                 .execute()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.data:
                 profile = UserProfile(**response.data[0])
@@ -455,13 +467,16 @@ class SupabaseIntegration:
                     "expires_at": expires_at.isoformat() if expires_at else None,
                     "created_at": datetime.now().isoformat(),
                     "updated_at": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             response = (
                 self.client.table(TableName.CREDENTIALS.value)
                 .insert(credential_data)
                 .execute()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.data:
                 credential = SecureCredential(**response.data[0])
@@ -493,7 +508,9 @@ class SupabaseIntegration:
                 .eq("id", credential_id)
                 .eq("user_id", user_id)
                 .execute()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.data:
                 credential_data = response.data[0]
@@ -507,7 +524,9 @@ class SupabaseIntegration:
 
                 decrypted_value = self._decrypt_credential(
                     credential_data["encrypted_value"]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return decrypted_value
 
             return None
@@ -527,16 +546,22 @@ class SupabaseIntegration:
                 self.client.table(TableName.CREDENTIALS.value)
                 .select(
                     "id, user_id, name, credential_type, description, expires_at, created_at, updated_at"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 .eq("user_id", user_id)
                 .execute()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             credentials = []
             for cred_data in response.data:
                 credential = SecureCredential(
                     **cred_data, encrypted_value="[ENCRYPTED]"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 credentials.append(credential)
 
             return credentials
@@ -563,16 +588,20 @@ class SupabaseIntegration:
                     workflow_state.created_at.isoformat()
                     if workflow_state.created_at
                     else datetime.now().isoformat()
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "updated_at": datetime.now().isoformat(),
                     "version": workflow_state.version,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             response = (
                 self.client.table(TableName.WORKFLOWS.value)
                 .upsert(state_data)
                 .execute()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.data:
                 self.cache["workflows"][workflow_state.id] = workflow_state
@@ -604,7 +633,9 @@ class SupabaseIntegration:
                 .eq("id", workflow_id)
                 .eq("user_id", user_id)
                 .execute()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.data:
                 workflow_data = response.data[0]
@@ -618,7 +649,9 @@ class SupabaseIntegration:
                         created_at = datetime.fromisoformat(workflow_data["created_at"]),
                         updated_at = datetime.fromisoformat(workflow_data["updated_at"]),
                         version = workflow_data["version"],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 self.cache["workflows"][workflow_id] = workflow_state
                 return workflow_state
@@ -644,17 +677,21 @@ class SupabaseIntegration:
                     "started_at": execution.started_at.isoformat(),
                     "finished_at": (
                     execution.finished_at.isoformat() if execution.finished_at else None
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "results": execution.results,
                     "error_message": execution.error_message,
                     "metrics": execution.metrics,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             response = (
                 self.client.table(TableName.EXECUTIONS.value)
                 .upsert(execution_data)
                 .execute()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.data:
                 self.cache["executions"][execution.id] = execution
@@ -686,7 +723,9 @@ class SupabaseIntegration:
                 .eq("id", execution_id)
                 .eq("user_id", user_id)
                 .execute()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.data:
                 exec_data = response.data[0]
@@ -700,11 +739,14 @@ class SupabaseIntegration:
                         datetime.fromisoformat(exec_data["finished_at"])
                         if exec_data["finished_at"]
                         else None
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         results = exec_data["results"],
                         error_message = exec_data["error_message"],
                         metrics = exec_data["metrics"],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 self.cache["executions"][execution_id] = execution
                 return execution
@@ -736,13 +778,17 @@ class SupabaseIntegration:
                 path = storage_path,
                     file = file_data,
                     file_options={"content - type": content_type},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if response:
                 # Get public URL
                 public_url = self.client.storage.from_(
                     self.config.storage_bucket
-                ).get_public_url(storage_path)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).get_public_url(storage_path)
 
                 self.logger.info(f"Uploaded file: {storage_path}")
                 return public_url
@@ -764,7 +810,9 @@ class SupabaseIntegration:
 
             response = self.client.storage.from_(self.config.storage_bucket).remove(
                 [storage_path]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response:
                 self.logger.info(f"Deleted file: {storage_path}")
@@ -779,7 +827,8 @@ class SupabaseIntegration:
 
     async def subscribe_to_changes(
         self, table: str, callback: callable, filter_conditions: Optional[Dict] = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Subscribe to real - time changes in a table."""
         if not self.client:
             return None
@@ -843,7 +892,8 @@ if __name__ == "__main__":
                 "email": "test@example.com",
                     "full_name": "Test User",
                     "subscription_tier": "pro",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             profile = await supabase.create_user_profile(user_data)
             if profile:
@@ -856,7 +906,9 @@ if __name__ == "__main__":
                         value="sk - test - key - 12345",
                         credential_type = CredentialType.API_KEY,
                         description="OpenAI API key for GPT - 4",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 if credential:
                     print(f"Stored credential: {credential.name}")
@@ -864,7 +916,9 @@ if __name__ == "__main__":
                     # Test credential retrieval
                     decrypted_value = await supabase.get_credential(
                         profile.id, credential.id
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     print(f"Retrieved credential value: {decrypted_value}")
 
     # Run test

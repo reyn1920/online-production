@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Research Validation Service
 
 This module provides a service layer that integrates the HypocrisyEngine with
@@ -15,7 +15,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -29,14 +29,18 @@ try:
 
     from backend.engines.hypocrisy_engine import (HypocrisyEngine, ResearchClaim,
 
-        ValidationResult)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ValidationResult)
 except ImportError:
     HypocrisyEngine = None
     ValidationResult = None
     ResearchClaim = None
     logging.warning(
         "HypocrisyEngine not available. Research validation will be limited."
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 try:
 
@@ -101,10 +105,14 @@ class ResearchValidationService:
         # Configuration
         self.max_concurrent_validations = self.config.get(
             "max_concurrent_validations", 5
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.validation_timeout_seconds = self.config.get(
             "validation_timeout_seconds", 30
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.cache_results = self.config.get("cache_results", True)
 
         # Internal state
@@ -114,7 +122,8 @@ class ResearchValidationService:
 
     async def validate_research(
         self, request: ResearchValidationRequest
-    ) -> ResearchValidationResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> ResearchValidationResponse:
         """Validate a research claim or statement"""
         start_time = datetime.now()
         request_id = f"val_{int(start_time.timestamp() * 1000)}"
@@ -122,7 +131,9 @@ class ResearchValidationService:
         try:
             self.logger.info(
                 f"Starting research validation {request_id} for: {request.content[:100]}..."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Check cache first
             if self.cache_results:
@@ -130,7 +141,9 @@ class ResearchValidationService:
                 if cached_result:
                     self.logger.info(
                         f"Returning cached result for validation {request_id}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return cached_result
 
             # Validate using hypocrisy engine
@@ -142,7 +155,9 @@ class ResearchValidationService:
             # Find content opportunities
             content_opportunities = await self._find_content_opportunities(
                 request, validation_result
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Calculate processing time
             processing_time = int((datetime.now() - start_time).total_seconds() * 1000)
@@ -153,28 +168,35 @@ class ResearchValidationService:
                     is_valid = validation_result.is_valid if validation_result else False,
                     confidence_score=(
                     validation_result.confidence_score if validation_result else 0.0
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     validation_status=(
                     validation_result.fact_check_status
                     if validation_result
                     else "error"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     contradictions_found=(
                     validation_result.contradictions_found if validation_result else []
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     evidence_sources=(
                     validation_result.evidence_sources if validation_result else []
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     validation_notes=(
                     validation_result.validation_notes
                     if validation_result
                     else "Validation failed"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     recommendations = recommendations,
                     content_opportunities = content_opportunities,
                     processing_time_ms = processing_time,
                     timestamp = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Cache the result
             if self.cache_results:
@@ -182,7 +204,9 @@ class ResearchValidationService:
 
             self.logger.info(
                 f"Completed validation {request_id} in {processing_time}ms"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return response
 
         except Exception as e:
@@ -201,7 +225,9 @@ class ResearchValidationService:
                     content_opportunities=[],
                     processing_time_ms = processing_time,
                     timestamp = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     async def _perform_validation(
@@ -221,7 +247,9 @@ class ResearchValidationService:
                     date_published = datetime.now(),
                     topic_tags=[request.topic] if request.topic else [],
                     context = request.context,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Validate the claim
             result = await self.hypocrisy_engine.validate_research_claim(claim)
@@ -233,12 +261,16 @@ class ResearchValidationService:
                         new_statement = request.content,
                         source = request.source_url or "validation_service",
                         context = request.context,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 if hypocrisy_finding:
                     self.logger.info(
                         f"Detected potential hypocrisy for {request.author}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     # Add hypocrisy information to validation result
                     result.contradictions_found.append(
                         {
@@ -247,8 +279,11 @@ class ResearchValidationService:
                                 "current_statement": hypocrisy_finding.statement_2,
                                 "confidence": hypocrisy_finding.confidence_score,
                                 "severity": hypocrisy_finding.severity_score,
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return result
 
@@ -269,31 +304,43 @@ class ResearchValidationService:
             if not validation_result:
                 recommendations.append(
                     "Manual fact - checking required - automated validation unavailable"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 recommendations.append(
                     "Verify claims through multiple independent sources"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return recommendations
 
             if validation_result.is_valid:
                 recommendations.append(
                     "Claim appears to be valid based on available evidence"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if validation_result.confidence_score < 0.8:
                     recommendations.append(
                         "Consider gathering additional supporting evidence"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 recommendations.append("Monitor for any new contradictory information")
             else:
                 recommendations.append("Claim disputed - contradictory evidence found")
                 recommendations.append(
                     "Review contradictory sources before publication"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if validation_result.contradictions_found:
                     recommendations.append(
                         f"Investigate {len(validation_result.contradictions_found)} contradictions identified"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 recommendations.append("Consider fact - checking with primary sources")
 
@@ -302,13 +349,17 @@ class ResearchValidationService:
                 recommendations.append("High priority: Expedite manual review process")
                 recommendations.append(
                     "Consider real - time fact - checking before publication"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Content - type specific recommendations
             if request.validation_type == "statement" and request.author:
                 recommendations.append(
-                    f"Cross - reference with {request.author}'s historical statements"
-                )
+                    f"Cross - reference with {request.author}'s historical statements"'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 recommendations.append("Check for context - dependent interpretations")
 
             return recommendations
@@ -335,23 +386,28 @@ class ResearchValidationService:
                 for contradiction in validation_result.contradictions_found:
                     opportunity = {
                         "type": "contradiction_analysis",
-                            "title": f"Analyzing Contradictory Claims: {request.author \
-    or 'Unknown Source'}",
+                            "title": f"Analyzing Contradictory Claims: {request.author \"
+#     or 'Unknown Source'}",
                             "description": f"Investigation into contradictory statements found during validation",
                             "confidence": contradiction.get("similarity_score", 0.5),
                             "potential_impact": "medium",
                             "content_angle": "fact_check",
                             "sources": [contradiction.get("source",
-    request.source_url)],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     request.source_url)],
                             "tags": ["fact - check", "contradiction", "research"],
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     opportunities.append(opportunity)
 
             # Get general content opportunities from hypocrisy engine
             if request.author:
                 engine_opportunities = self.hypocrisy_engine.get_content_opportunities(
                     limit = 5, min_confidence = 0.6
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 for opp in engine_opportunities:
                     if opp.get("subject_name") == request.author:
@@ -360,17 +416,20 @@ class ResearchValidationService:
                                 "title": f"Exposing Inconsistencies: {request.author}",
                                 "description": opp.get(
                                 "analysis_notes", "Hypocrisy analysis"
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                                 "confidence": opp.get("confidence_score", 0.5),
                                 "potential_impact": (
                                 "high"
                                 if opp.get("public_impact_score", 5) > 7
                                 else "medium"
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                                 "content_angle": "investigative",
                                 "sources": opp.get("evidence_links", []),
                                 "tags": ["hypocrisy", "investigation", "politics"],
-                                }
+# BRACKET_SURGEON: disabled
+#                                 }
                         opportunities.append(content_opp)
 
             return opportunities[:3]  # Return top 3 opportunities
@@ -406,7 +465,8 @@ class ResearchValidationService:
 
     def _cache_result(
         self, request: ResearchValidationRequest, response: ResearchValidationResponse
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Cache validation result"""
         try:
             cache_key = self._generate_cache_key(request)
@@ -414,14 +474,17 @@ class ResearchValidationService:
             self._validation_cache[cache_key] = {
                 "result": response,
                     "timestamp": datetime.now(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Clean up old cache entries (keep max 100 entries)
             if len(self._validation_cache) > 100:
                 # Remove oldest entries
                 sorted_entries = sorted(
                     self._validation_cache.items(), key = lambda x: x[1]["timestamp"]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 for key, _ in sorted_entries[:20]:  # Remove oldest 20
                     del self._validation_cache[key]
@@ -439,7 +502,9 @@ class ResearchValidationService:
                 request.author or "unknown",
                     request.validation_type,
                     request.source_url or "no_source",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             return "|".join(key_components).replace(" ", "_").lower()
 
@@ -484,7 +549,9 @@ class ResearchValidationService:
                             content_opportunities=[],
                             processing_time_ms = 0,
                             timestamp = datetime.now(),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     processed_results.append(error_response)
                 else:
                     processed_results.append(result)
@@ -508,7 +575,8 @@ class ResearchValidationService:
                     "max_concurrent_validations": self.max_concurrent_validations,
                     "validation_timeout_seconds": self.validation_timeout_seconds,
                     "cache_enabled": self.cache_results,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Add hypocrisy engine stats if available
             if self.hypocrisy_engine:
@@ -537,12 +605,15 @@ class ResearchValidationService:
 
 async def validate_claim(
     content: str, author: Optional[str] = None, source: Optional[str] = None
-) -> ResearchValidationResponse:
+# BRACKET_SURGEON: disabled
+# ) -> ResearchValidationResponse:
     """Quick validation of a research claim"""
     service = ResearchValidationService()
     request = ResearchValidationRequest(
         content = content, author = author, source_url = source, validation_type="claim"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return await service.validate_research(request)
 
 
@@ -551,7 +622,8 @@ async def validate_statement(
         author: str,
         source: Optional[str] = None,
         context: Optional[str] = None,
-) -> ResearchValidationResponse:
+# BRACKET_SURGEON: disabled
+# ) -> ResearchValidationResponse:
     """Quick validation of a statement for hypocrisy detection"""
     service = ResearchValidationService()
     request = ResearchValidationRequest(
@@ -560,5 +632,7 @@ async def validate_statement(
             source_url = source,
             validation_type="statement",
             context = context,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     return await service.validate_research(request)

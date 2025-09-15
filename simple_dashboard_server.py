@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 Simple standalone server for comprehensive dashboard
-"""
+""""""
 
 import os
 import sys
@@ -35,7 +35,7 @@ except ImportError as e:
     @app.get("/comprehensive - dashboard")
     async def fallback_dashboard():
         return HTMLResponse(
-            """
+            """"""
         <html>
             <head><title > Dashboard Loading...</title></head>
             <body>
@@ -44,8 +44,9 @@ except ImportError as e:
                 <p > Error: Router import failed</p>
             </body>
         </html>
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @app.get("/")

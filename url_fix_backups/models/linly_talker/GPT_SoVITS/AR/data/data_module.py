@@ -14,7 +14,8 @@ class Text2SemanticDataModule(LightningDataModule):
         train_phoneme_path,
         dev_semantic_path=None,
         dev_phoneme_path=None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.config = config
         self.train_semantic_path = train_semantic_path
@@ -32,7 +33,8 @@ class Text2SemanticDataModule(LightningDataModule):
             semantic_path=self.train_semantic_path,
             max_sec=self.config["data"]["max_sec"],
             pad_val=self.config["data"]["pad_val"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self._dev_dataset = self._train_dataset
         # self._dev_dataset = Text2SemanticDataset(
         #     phoneme_path = self.dev_phoneme_path,
@@ -44,7 +46,8 @@ class Text2SemanticDataModule(LightningDataModule):
     def train_dataloader(self):
         batch_size = max(
             min(self.config["train"]["batch_size"], len(self._train_dataset) // 4), 1
-        )  # 防止不保存
+# BRACKET_SURGEON: disabled
+#         )  # 防止不保存
         sampler = DistributedBucketSampler(self._train_dataset, batch_size=batch_size)
         return DataLoader(
             self._train_dataset,
@@ -54,7 +57,8 @@ class Text2SemanticDataModule(LightningDataModule):
             num_workers=self.num_workers,
             persistent_workers=True,
             prefetch_factor=16,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def val_dataloader(self):
         return DataLoader(
@@ -65,7 +69,8 @@ class Text2SemanticDataModule(LightningDataModule):
             num_workers=max(self.num_workers, 12),
             persistent_workers=True,
             prefetch_factor=16,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     # 这个会使用到嘛？
 
@@ -75,4 +80,5 @@ class Text2SemanticDataModule(LightningDataModule):
             batch_size=1,
             shuffle=False,
             collate_fn=self._train_dataset.collate,
-        )
+# BRACKET_SURGEON: disabled
+#         )

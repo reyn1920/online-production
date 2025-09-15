@@ -23,7 +23,9 @@ def set_requires_grad(tensor_list):
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "--path", type = str, default="obama / ori_imgs", help="idname of target person"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 parser.add_argument("--img_h", type = int, default = 512, help="image height")
 parser.add_argument("--img_w", type = int, default = 512, help="image width")
 parser.add_argument("--frame_num", type = int, default = 11000, help="image number")
@@ -39,7 +41,9 @@ cxy = torch.tensor((w / 2.0, h / 2.0), dtype = torch.float).cuda()
 id_dim, exp_dim, tex_dim, point_num = 100, 79, 100, 34650
 model_3dmm = Face_3DMM(
     os.path.join(dir_path, "3DMM"), id_dim, exp_dim, tex_dim, point_num
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 # only use one image per 40 to do fit the focal length
 sel_ids = np.arange(0, num_frames, 40)
@@ -67,7 +71,9 @@ for focal in range(600, 1500, 100):
         id_para_batch = id_para.expand(sel_num, -1)
         geometry = model_3dmm.get_3dlandmarks(
             id_para_batch, exp_para, euler_angle, trans, focal_length, cxy
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         proj_geo = forward_transform(geometry, euler_angle, trans, focal_length, cxy)
         loss_lan = cal_lan_loss(proj_geo[:, :, :2], lms[sel_ids].detach())
         loss = loss_lan
@@ -81,7 +87,9 @@ for focal in range(600, 1500, 100):
         id_para_batch = id_para.expand(sel_num, -1)
         geometry = model_3dmm.get_3dlandmarks(
             id_para_batch, exp_para, euler_angle, trans, focal_length, cxy
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         proj_geo = forward_transform(geometry, euler_angle, trans, focal_length, cxy)
         loss_lan = cal_lan_loss(proj_geo[:, :, :2], lms[sel_ids].detach())
         loss_regid = torch.mean(id_para * id_para)
@@ -97,7 +105,9 @@ for focal in range(600, 1500, 100):
     iter,
     loss_lan.item(),
     loss_regid.item(),
-    loss_regexp.item())
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     loss_regexp.item())
 
         if iter % 1500 == 0 and iter >= 1500:
             for param_group in optimizer_idexp.param_groups:
@@ -120,7 +130,8 @@ id_para = lms.new_zeros((1, id_dim), requires_grad = True)
 exp_para = lms.new_zeros((num_frames, exp_dim), requires_grad = True)
 tex_para = lms.new_zeros(
     (1, tex_dim), requires_grad = True
-)  # not optimized in this block ???
+# BRACKET_SURGEON: disabled
+# )  # not optimized in this block ???
 euler_angle = lms.new_zeros((num_frames, 3), requires_grad = True)
 trans = lms.new_zeros((num_frames, 3), requires_grad = True)
 light_para = lms.new_zeros((num_frames, 27), requires_grad = True)
@@ -137,7 +148,9 @@ for iter in range(1500):
     id_para_batch = id_para.expand(num_frames, -1)
     geometry = model_3dmm.get_3dlandmarks(
         id_para_batch, exp_para, euler_angle, trans, focal_length, cxy
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     proj_geo = forward_transform(geometry, euler_angle, trans, focal_length, cxy)
     loss_lan = cal_lan_loss(proj_geo[:, :, :2], lms.detach())
     loss = loss_lan
@@ -157,7 +170,9 @@ for iter in range(2000):
     id_para_batch = id_para.expand(num_frames, -1)
     geometry = model_3dmm.get_3dlandmarks(
         id_para_batch, exp_para, euler_angle, trans, focal_length, cxy
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     proj_geo = forward_transform(geometry, euler_angle, trans, focal_length, cxy)
     loss_lan = cal_lan_loss(proj_geo[:, :, :2], lms.detach())
     loss_regid = torch.mean(id_para * id_para)
@@ -173,7 +188,9 @@ for iter in range(2000):
     iter,
     loss_lan.item(),
     loss_regid.item(),
-    loss_regexp.item())
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     loss_regexp.item())
     if iter % 1000 == 0 and iter >= 1000:
         for param_group in optimizer_idexp.param_groups:
             param_group["lr"] *= 0.2
@@ -204,19 +221,27 @@ optimizer_tl = torch.optim.Adam([tex_para, sel_light], lr = 0.1)
 optimizer_id_frame = torch.optim.Adam([euler_angle,
     trans,
     exp_para,
-    id_para],
-    lr = 0.01)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     id_para],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     lr = 0.01)
 
 for iter in range(71):
     sel_exp_para, sel_euler, sel_trans = (
         exp_para[sel_ids],
             euler_angle[sel_ids],
             trans[sel_ids],
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     sel_id_para = id_para.expand(batch_size, -1)
     geometry = model_3dmm.get_3dlandmarks(
         sel_id_para, sel_exp_para, sel_euler, sel_trans, focal_length, cxy
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     proj_geo = forward_transform(geometry, sel_euler, sel_trans, focal_length, cxy)
 
     loss_lan = cal_lan_loss(proj_geo[:, :, :2], sel_lms.detach())
@@ -231,7 +256,9 @@ for iter in range(71):
         rott_geo.to(device_render),
             sel_texture.to(device_render),
             sel_light.to(device_render),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     render_imgs = render_imgs.to(device_default)
 
     mask = (render_imgs[:, :, :, 3]).detach() > 0.0
@@ -260,7 +287,9 @@ for iter in range(71):
     loss_col.item(),
     loss_lan.item(),
     loss_regid.item(),
-    loss_regexp.item())
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     loss_regexp.item())
 
 light_mean = torch.mean(sel_light, 0).unsqueeze(0).repeat(num_frames, 1)
 light_para.data = light_mean
@@ -301,7 +330,9 @@ for i in range(int((num_frames - 1) / batch_size + 1)):
 
     optimizer_cur_batch = torch.optim.Adam(
         [sel_exp_para, sel_euler, sel_trans, sel_light], lr = 0.005
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     sel_id_para = id_para.expand(batch_size, -1).detach()
     sel_tex_para = tex_para.expand(batch_size, -1).detach()
@@ -315,7 +346,9 @@ for i in range(int((num_frames - 1) / batch_size + 1)):
 
         geometry = model_3dmm.get_3dlandmarks(
             sel_id_para, sel_exp_para, sel_euler, sel_trans, focal_length, cxy
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         proj_geo = forward_transform(geometry, sel_euler, sel_trans, focal_length, cxy)
         loss_lan = cal_lan_loss(proj_geo[:, :, :2], sel_lms.detach())
         loss_regexp = torch.mean(sel_exp_para * sel_exp_para)
@@ -328,7 +361,9 @@ for i in range(int((num_frames - 1) / batch_size + 1)):
             rott_geo.to(device_render),
                 sel_texture.to(device_render),
                 sel_light.to(device_render),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         render_imgs = render_imgs.to(device_default)
 
         mask = (render_imgs[:, :, :, 3]).detach() > 0.0
@@ -340,30 +375,42 @@ for i in range(int((num_frames - 1) / batch_size + 1)):
                 id_para.expand(batch_size + pre_num, -1).detach(),
                     torch.cat((exp_para[pre_ids].detach(), sel_exp_para)),
                     model_3dmm.rigid_ids,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             rott_geo_lap = forward_rott(
                 geometry_lap,
                     torch.cat((euler_angle[pre_ids].detach(), sel_euler)),
                     torch.cat((trans[pre_ids].detach(), sel_trans)),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             loss_lap = cal_lap_loss(
                 [rott_geo_lap.reshape(rott_geo_lap.shape[0], -1).permute(1, 0)], [1.0]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             geometry_lap = model_3dmm.forward_geo_sub(
                 id_para.expand(batch_size, -1).detach(),
                     sel_exp_para,
                     model_3dmm.rigid_ids,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             rott_geo_lap = forward_rott(geometry_lap, sel_euler, sel_trans)
             loss_lap = cal_lap_loss(
                 [rott_geo_lap.reshape(rott_geo_lap.shape[0], -1).permute(1, 0)], [1.0]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if iter > 30:
             loss = (
                 loss_col * 0.5 + loss_lan * 1.5 + loss_lap * 100000 + loss_regexp * 1.0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             loss = loss_col * 0.5 + loss_lan * 8 + loss_lap * 100000 + loss_regexp * 1.0
 
@@ -379,6 +426,8 @@ for i in range(int((num_frames - 1) / batch_size + 1)):
             #         loss_lan.item(),
             #         loss_lap.item(),
             #         loss_regexp.item(),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
             #     )
 
     print(str(i) + " of " + str(int((num_frames - 1) / batch_size + 1)) + " done")
@@ -398,8 +447,11 @@ torch.save(
             "euler": euler_angle.detach().cpu(),
             "trans": trans.detach().cpu(),
             "focal": focal_length.detach().cpu(),
-            },
+# BRACKET_SURGEON: disabled
+#             },
         os.path.join(os.path.dirname(args.path), "track_params.pt"),
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 print("params saved")

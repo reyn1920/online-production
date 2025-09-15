@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""
+""""""
 Reference Quality Validator
 
-Implements the user rule: "Treat https://chatgpt.com/, https://gemini.google.com/app,
+Implements the user rule: "Treat https://chatgpt.com/, https://gemini.google.com/app,"
 and https://apps.abacus.ai/chatllm/?appId = 1024a18ebe as reference - quality benchmarks
-for correctness, clarity, and professionalism."
+for correctness, clarity, and professionalism.""
 
 This system validates code, content, \
-    and responses against reference - quality benchmarks.
-"""
+#     and responses against reference - quality benchmarks.
+""""""
 
 import logging
 from dataclasses import dataclass, asdict
@@ -75,7 +75,8 @@ class ReferenceQualityValidator:
             BenchmarkPlatform.CHATGPT: "https://chatgpt.com/",
             BenchmarkPlatform.GEMINI: "https://gemini.google.com/app",
             BenchmarkPlatform.ABACUS: "https://apps.abacus.ai/chatllm/?appId = 1024a18ebe",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.quality_threshold = 0.75  # Minimum score to meet benchmark
         self.validation_cache = {}  # Cache for recent validations
         self.cache_duration = timedelta(hours=1)
@@ -90,8 +91,10 @@ class ReferenceQualityValidator:
                     "Logical consistency",
                     "Factual accuracy",
                     "Error - free execution",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             QualityMetric.CLARITY: {
                 "description": "Clear communication and understandability",
                 "weight": 0.20,
@@ -100,8 +103,10 @@ class ReferenceQualityValidator:
                     "Proper structure",
                     "Readable formatting",
                     "Logical flow",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             QualityMetric.PROFESSIONALISM: {
                 "description": "Professional standards and best practices",
                 "weight": 0.20,
@@ -110,8 +115,10 @@ class ReferenceQualityValidator:
                     "Best practices adherence",
                     "Professional tone",
                     "Appropriate terminology",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             QualityMetric.COMPLETENESS: {
                 "description": "Comprehensive coverage of requirements",
                 "weight": 0.15,
@@ -120,8 +127,10 @@ class ReferenceQualityValidator:
                     "No missing components",
                     "Thorough implementation",
                     "Edge cases considered",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             QualityMetric.ACCURACY: {
                 "description": "Precision and reliability of information",
                 "weight": 0.10,
@@ -130,8 +139,10 @@ class ReferenceQualityValidator:
                     "Calculation correctness",
                     "Reference validity",
                     "Source reliability",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             QualityMetric.STYLE: {
                 "description": "Consistent style and formatting",
                 "weight": 0.10,
@@ -140,9 +151,12 @@ class ReferenceQualityValidator:
                     "Proper naming conventions",
                     "Code style compliance",
                     "Documentation standards",
-                ],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         self._setup_routes()
         logger.info("Reference Quality Validator initialized")
@@ -189,8 +203,10 @@ class ReferenceQualityValidator:
                 {
                     metric.value: {**criteria, "metric": metric.value}
                     for metric, criteria in self.quality_criteria.items()
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api/quality/benchmarks", methods=["GET"])
         def get_benchmark_platforms():
@@ -202,12 +218,16 @@ class ReferenceQualityValidator:
                             "name": platform.value,
                             "url": url,
                             "description": f"Reference quality benchmark for {platform.value.title()}",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         for platform, url in self.benchmark_urls.items()
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "quality_threshold": self.quality_threshold,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api/quality/health", methods=["GET"])
         def health_check():
@@ -219,15 +239,18 @@ class ReferenceQualityValidator:
                     "timestamp": datetime.now().isoformat(),
                     "platforms_available": len(self.benchmark_urls),
                     "quality_metrics": len(self.quality_criteria),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
     def validate_against_benchmarks(
         self,
         content: str,
         content_type: str = "general",
         platforms: List[BenchmarkPlatform] = None,
-    ) -> ValidationResult:
+# BRACKET_SURGEON: disabled
+#     ) -> ValidationResult:
         """Validate content against reference quality benchmarks"""
 
         if platforms is None:
@@ -272,7 +295,8 @@ class ReferenceQualityValidator:
             recommendations=recommendations,
             validation_time=datetime.now(),
             platforms_used=platforms,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Cache the result
         self._cache_result(content_id, result)
@@ -280,7 +304,8 @@ class ReferenceQualityValidator:
         logger.info(
             f"Validation complete: {overall_score:.2f} "
             f"({'PASS' if meets_benchmark else 'FAIL'})"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return result
 
@@ -290,7 +315,8 @@ class ReferenceQualityValidator:
         metric: QualityMetric,
         platform: BenchmarkPlatform,
         content_type: str,
-    ) -> QualityScore:
+# BRACKET_SURGEON: disabled
+#     ) -> QualityScore:
         """Evaluate a specific quality metric for content"""
 
         # This is where we would integrate with the actual benchmark platforms
@@ -318,7 +344,8 @@ class ReferenceQualityValidator:
             feedback=feedback,
             platform=platform,
             timestamp=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _evaluate_correctness(self, content: str, content_type: str) -> Tuple[float, str]:
         """Evaluate correctness of content"""
@@ -358,7 +385,7 @@ class ReferenceQualityValidator:
             feedback_points.append("Lines may be too long")
 
         # Check for explanatory comments or documentation
-        if '"""' in content or "#" in content or "//" in content:
+        if '"""' in content or "#" in content or "//" in content:"""
             score += 0.2
             feedback_points.append("Contains documentation/comments")
 
@@ -434,7 +461,8 @@ class ReferenceQualityValidator:
             # Simple indentation consistency check
             indented_lines = [
                 line for line in lines if line.startswith(" ") or line.startswith("\\t")
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             if indented_lines:
                 score += 0.1
                 feedback_points.append("Consistent indentation")
@@ -478,7 +506,8 @@ class ReferenceQualityValidator:
         if score < 0.5:
             recommendations.append(
                 f"Critical improvement needed in {metric.value}: {criteria['description']}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif score < self.quality_threshold:
             recommendations.append(f"Consider improving {metric.value}: {criteria['description']}")
 
@@ -489,24 +518,30 @@ class ReferenceQualityValidator:
                     "Review code for syntax errors",
                     "Verify logical consistency",
                     "Test functionality thoroughly",
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
         elif metric == QualityMetric.CLARITY and score < 0.7:
             recommendations.extend(
                 [
                     "Add more explanatory comments",
                     "Improve code structure and formatting",
                     "Use more descriptive variable names",
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
         elif metric == QualityMetric.PROFESSIONALISM and score < 0.7:
             recommendations.extend(
                 [
                     "Follow industry best practices",
                     "Use professional terminology",
                     "Implement proper error handling",
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
         return recommendations
 
@@ -533,14 +568,16 @@ class ReferenceQualityValidator:
         self.validation_cache[content_id] = {
             "result": result,
             "timestamp": datetime.now(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Clean up old cache entries (keep only last 100)
         if len(self.validation_cache) > 100:
             oldest_key = min(
                 self.validation_cache.keys(),
                 key=lambda k: self.validation_cache[k]["timestamp"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
             del self.validation_cache[oldest_key]
 
     def run(self, host="0.0.0.0", port=5001, debug=False):

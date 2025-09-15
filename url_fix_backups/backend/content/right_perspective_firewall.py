@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Right Perspective Content Firewall
 
 Implements strict content separation rules to ensure "The Right Perspective" channel
@@ -8,7 +8,7 @@ operates in complete isolation from all other channels, preventing:
 - Content repurposing
 - Asset sharing
 - Data leakage
-"""
+""""""
 
 import hashlib
 import json
@@ -24,7 +24,8 @@ try:
         ChannelType,
         ContentFirewallLevel,
         get_protocol,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     # Fallback for development
 
@@ -37,7 +38,8 @@ except ImportError:
         ChannelType,
         ContentFirewallLevel,
         get_protocol,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 class FirewallViolationType(Enum):
@@ -91,9 +93,9 @@ class FirewallViolation:
 
 
 class RightPerspectiveFirewall:
-    """
+    """"""
     Enforces strict content separation for The Right Perspective channel
-    """
+    """"""
 
     # The protected channel ID - this should never change
     RIGHT_PERSPECTIVE_CHANNEL_ID = "right_perspective"
@@ -122,7 +124,7 @@ class RightPerspectiveFirewall:
 
             # Firewall rules table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS firewall_rules (
                     rule_id TEXT PRIMARY KEY,
                         rule_name TEXT NOT NULL,
@@ -135,13 +137,15 @@ class RightPerspectiveFirewall:
                         is_active BOOLEAN DEFAULT 1,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Firewall violations table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS firewall_violations (
                     violation_id TEXT PRIMARY KEY,
                         rule_id TEXT NOT NULL,
@@ -156,13 +160,15 @@ class RightPerspectiveFirewall:
                         resolved_at TIMESTAMP,
                         resolution_notes TEXT,
                         FOREIGN KEY (rule_id) REFERENCES firewall_rules (rule_id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Content quarantine table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS content_quarantine (
                     quarantine_id TEXT PRIMARY KEY,
                         content_id TEXT NOT NULL,
@@ -174,13 +180,15 @@ class RightPerspectiveFirewall:
                         quarantined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         released_at TIMESTAMP,
                         status TEXT DEFAULT 'quarantined'
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Asset tracking table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS asset_tracking (
                     asset_id TEXT PRIMARY KEY,
                         asset_type TEXT NOT NULL,
@@ -191,13 +199,15 @@ class RightPerspectiveFirewall:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         last_accessed TIMESTAMP,
                         access_count INTEGER DEFAULT 0
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Cross - reference monitoring
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS cross_reference_monitor (
                     reference_id TEXT PRIMARY KEY,
                         source_content_id TEXT NOT NULL,
@@ -208,9 +218,11 @@ class RightPerspectiveFirewall:
                         detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         is_violation BOOLEAN DEFAULT 0,
                         action_taken TEXT
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -224,9 +236,10 @@ class RightPerspectiveFirewall:
                 "target_channel": self.RIGHT_PERSPECTIVE_CHANNEL_ID,
                 "action": FirewallAction.BLOCK,
                 "severity": "CRITICAL",
-                "description": "Prevents any channel from creating content that mentions \
-    or links to Right Perspective",
-            },
+                "description": "Prevents any channel from creating content that mentions \"
+#     or links to Right Perspective",
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "rule_name": "Block All Cross - Promotion from Right Perspective",
                 "violation_type": FirewallViolationType.CROSS_PROMOTION,
@@ -235,7 +248,8 @@ class RightPerspectiveFirewall:
                 "action": FirewallAction.BLOCK,
                 "severity": "CRITICAL",
                 "description": "Prevents Right Perspective from promoting other channels (maintains one - way rule)",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "rule_name": "Block Content Repurposing from Right Perspective",
                 "violation_type": FirewallViolationType.CONTENT_REPURPOSING,
@@ -244,7 +258,8 @@ class RightPerspectiveFirewall:
                 "action": FirewallAction.BLOCK,
                 "severity": "CRITICAL",
                 "description": "Prevents repurposing of Right Perspective content for other channels",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "rule_name": "Block Asset Sharing from Right Perspective",
                 "violation_type": FirewallViolationType.ASSET_SHARING,
@@ -252,9 +267,10 @@ class RightPerspectiveFirewall:
                 "target_channel": "*",
                 "action": FirewallAction.BLOCK,
                 "severity": "CRITICAL",
-                "description": "Prevents sharing of Right Perspective scripts, audio, \
-    or video assets",
-            },
+                "description": "Prevents sharing of Right Perspective scripts, audio, \"
+#     or video assets",
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "rule_name": "Block Knowledge Base Mixing",
                 "violation_type": FirewallViolationType.KNOWLEDGE_BASE_MIXING,
@@ -263,7 +279,8 @@ class RightPerspectiveFirewall:
                 "action": FirewallAction.BLOCK,
                 "severity": "HIGH",
                 "description": "Prevents Right Perspective knowledge base data from being used by other channels",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "rule_name": "Block Persona Contamination",
                 "violation_type": FirewallViolationType.PERSONA_CONTAMINATION,
@@ -272,8 +289,10 @@ class RightPerspectiveFirewall:
                 "action": FirewallAction.BLOCK,
                 "severity": "HIGH",
                 "description": "Prevents Right Perspective persona characteristics from influencing other channels",
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         for rule_data in default_rules:
             self._create_firewall_rule(**rule_data)
@@ -287,7 +306,8 @@ class RightPerspectiveFirewall:
         action: FirewallAction,
         severity: str,
         description: str,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Create a new firewall rule"""
         rule_id = f"rule_{hashlib.md5(f'{rule_name}_{source_channel}_{target_channel}'.encode()).hexdigest()[:8]}"
 
@@ -295,12 +315,13 @@ class RightPerspectiveFirewall:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO firewall_rules
                 (rule_id, rule_name, violation_type, source_channel, target_channel,
-                    action, severity, description, is_active, created_at, updated_at)
+# BRACKET_SURGEON: disabled
+#                     action, severity, description, is_active, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
-            """,
+            ""","""
                 (
                     rule_id,
                     rule_name,
@@ -312,8 +333,10 @@ class RightPerspectiveFirewall:
                     description,
                     datetime.now().isoformat(),
                     datetime.now().isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -326,7 +349,8 @@ class RightPerspectiveFirewall:
             "action": action,
             "severity": severity,
             "description": description,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return rule_id
 
@@ -340,10 +364,12 @@ class RightPerspectiveFirewall:
         if (
             source_channel != self.RIGHT_PERSPECTIVE_CHANNEL_ID
             and self._contains_right_perspective_reference(content)
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             violations.append(
                 f"Content from {source_channel} contains reference to Right Perspective"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check if Right Perspective is trying to promote other channels
         if source_channel == self.RIGHT_PERSPECTIVE_CHANNEL_ID:
@@ -351,7 +377,8 @@ class RightPerspectiveFirewall:
             if other_channel_refs:
                 violations.append(
                     f"Right Perspective content contains references to other channels: {other_channel_refs}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Check target channels if specified
         if target_channels:
@@ -359,10 +386,12 @@ class RightPerspectiveFirewall:
                 if (
                     source_channel != self.RIGHT_PERSPECTIVE_CHANNEL_ID
                     and target == self.RIGHT_PERSPECTIVE_CHANNEL_ID
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     violations.append(
                         f"Attempted cross - promotion from {source_channel} to Right Perspective"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         return len(violations) > 0, violations
 
@@ -379,14 +408,16 @@ class RightPerspectiveFirewall:
             return (
                 True,
                 f"Content repurposing from Right Perspective to {target_channel} is strictly prohibited",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Block any repurposing to Right Perspective
         if target_channel == self.RIGHT_PERSPECTIVE_CHANNEL_ID:
             return (
                 True,
                 f"Content repurposing from {source_channel} to Right Perspective is strictly prohibited",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check for content hash matches if provided
         if content_hash and source_channel == self.RIGHT_PERSPECTIVE_CHANNEL_ID:
@@ -394,7 +425,8 @@ class RightPerspectiveFirewall:
                 return (
                     True,
                     "Attempted repurposing of Right Perspective content detected via content hash",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return False, ""
 
@@ -407,21 +439,24 @@ class RightPerspectiveFirewall:
             return (
                 True,
                 f"Asset sharing from Right Perspective ({asset_type}: {asset_path}) is strictly prohibited",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Block any asset sharing to Right Perspective
         if target_channel == self.RIGHT_PERSPECTIVE_CHANNEL_ID:
             return (
                 True,
                 f"Asset sharing to Right Perspective from {source_channel} is strictly prohibited",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check if asset belongs to Right Perspective
         if self._is_right_perspective_asset(asset_path):
             return (
                 True,
                 f"Attempted sharing of Right Perspective asset ({asset_path}) detected",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return False, ""
 
@@ -433,21 +468,25 @@ class RightPerspectiveFirewall:
         if (
             requesting_channel != self.RIGHT_PERSPECTIVE_CHANNEL_ID
             and self._is_right_perspective_knowledge(knowledge_source)
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return (
                 True,
                 f"Access to Right Perspective knowledge base denied for {requesting_channel}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Block Right Perspective from accessing other knowledge bases (maintain isolation)
         if (
             requesting_channel == self.RIGHT_PERSPECTIVE_CHANNEL_ID
             and not self._is_right_perspective_knowledge(knowledge_source)
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return (
                 True,
                 f"Right Perspective access to external knowledge base ({knowledge_source}) blocked to maintain isolation",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return False, ""
 
@@ -461,13 +500,15 @@ class RightPerspectiveFirewall:
         if source_channel == self.RIGHT_PERSPECTIVE_CHANNEL_ID:
             violations.append(
                 f"Right Perspective persona elements cannot be used by {target_channel}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Block other personas from influencing Right Perspective
         if target_channel == self.RIGHT_PERSPECTIVE_CHANNEL_ID:
             violations.append(
                 f"External persona elements from {source_channel} cannot influence Right Perspective"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check for specific Right Perspective characteristics
         rp_characteristics = self._get_right_perspective_characteristics()
@@ -475,7 +516,8 @@ class RightPerspectiveFirewall:
             if self._contains_rp_characteristics(element_value, rp_characteristics):
                 violations.append(
                     f"Persona element '{element_key}' contains Right Perspective characteristics"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return len(violations) > 0, violations
 
@@ -486,7 +528,8 @@ class RightPerspectiveFirewall:
         target_channel: str,
         content_id: str = None,
         violation_details: Dict[str, Any] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Log a firewall violation"""
         violation_id = f"violation_{datetime.now().strftime('%Y % m%d_ % H%M % S')}_{hashlib.md5(f'{source_channel}_{target_channel}'.encode()).hexdigest()[:8]}"
 
@@ -497,12 +540,13 @@ class RightPerspectiveFirewall:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO firewall_violations
                 (violation_id, rule_id, violation_type, source_channel, target_channel,
-                    content_id, violation_details, action_taken, severity, detected_at)
+# BRACKET_SURGEON: disabled
+#                     content_id, violation_details, action_taken, severity, detected_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     violation_id,
                     rule_id,
@@ -514,8 +558,10 @@ class RightPerspectiveFirewall:
                     FirewallAction.BLOCK.value,
                     "CRITICAL",
                     datetime.now().isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -523,7 +569,8 @@ class RightPerspectiveFirewall:
         self.logger.critical(
             f"FIREWALL VIOLATION: {violation_type.value} - {source_channel} -> {target_channel} "
             f"(Content: {content_id}, Violation ID: {violation_id})"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return violation_id
 
@@ -534,7 +581,8 @@ class RightPerspectiveFirewall:
         source_channel: str,
         target_channel: str,
         reason: str,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Quarantine content that violates firewall rules"""
         quarantine_id = f"quarantine_{datetime.now().strftime('%Y % m%d_ % H%M % S')}_{hashlib.md5(content_id.encode()).hexdigest()[:8]}"
 
@@ -542,16 +590,17 @@ class RightPerspectiveFirewall:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO content_quarantine
                 (quarantine_id,
     content_id,
     content_type,
     source_channel,
     target_channel,
-                    quarantine_reason, quarantined_at, status)
+# BRACKET_SURGEON: disabled
+#                     quarantine_reason, quarantined_at, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, 'quarantined')
-            """,
+            ""","""
                 (
                     quarantine_id,
                     content_id,
@@ -560,8 +609,10 @@ class RightPerspectiveFirewall:
                     target_channel,
                     reason,
                     datetime.now().isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -574,7 +625,8 @@ class RightPerspectiveFirewall:
         asset_type: str,
         owner_channel: str,
         asset_hash: str = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Track asset ownership for firewall enforcement"""
         asset_id = f"asset_{hashlib.md5(f'{asset_path}_{owner_channel}'.encode()).hexdigest()[:12]}"
 
@@ -582,12 +634,13 @@ class RightPerspectiveFirewall:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO asset_tracking
                 (asset_id, asset_type, asset_path, asset_hash, owner_channel,
-                    access_permissions, created_at, access_count)
+# BRACKET_SURGEON: disabled
+#                     access_permissions, created_at, access_count)
                 VALUES (?, ?, ?, ?, ?, ?, ?, 0)
-            """,
+            ""","""
                 (
                     asset_id,
                     asset_type,
@@ -596,8 +649,10 @@ class RightPerspectiveFirewall:
                     owner_channel,
                     json.dumps({"owner_only": True}),
                     datetime.now().isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -614,10 +669,12 @@ class RightPerspectiveFirewall:
             str(content_data.get("script", ""))
             + str(content_data.get("title", ""))
             + str(content_data.get("description", ""))
-        )
+# BRACKET_SURGEON: disabled
+#         )
         is_violation, cross_promo_violations = self.check_cross_promotion_violation(
             channel_id, content_text
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if is_violation:
             violations.extend(cross_promo_violations)
 
@@ -631,7 +688,8 @@ class RightPerspectiveFirewall:
                 asset.get("source_channel", channel_id),
                 channel_id,
                 asset_type,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if is_violation:
                 violations.append(violation_msg)
 
@@ -640,7 +698,8 @@ class RightPerspectiveFirewall:
         for source in knowledge_sources:
             is_violation, violation_msg = self.check_knowledge_base_access(
                 channel_id, source.get("source_id", ""), source.get("data_type", "")
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if is_violation:
                 violations.append(violation_msg)
 
@@ -655,7 +714,8 @@ class RightPerspectiveFirewall:
             "right - perspective",
             "right_perspective",
             "@rightperspective",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         content_lower = content.lower()
         return any(keyword in content_lower for keyword in rp_keywords)
@@ -672,7 +732,8 @@ class RightPerspectiveFirewall:
             r"channel[:\\s]+(\\w+)",  # "channel: name" or "channel name"
             r"subscribe to (\\w+)",  # "subscribe to channel"
             r"check out (\\w+)",  # "check out channel"
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         references = []
         for pattern in patterns:
@@ -686,12 +747,13 @@ class RightPerspectiveFirewall:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM asset_tracking
                 WHERE asset_hash = ? AND owner_channel = ?
-            """,
+            ""","""
                 (content_hash, self.RIGHT_PERSPECTIVE_CHANNEL_ID),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return cursor.fetchone()[0] > 0
 
@@ -701,12 +763,13 @@ class RightPerspectiveFirewall:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM asset_tracking
                 WHERE asset_path = ? AND owner_channel = ?
-            """,
+            ""","""
                 (asset_path, self.RIGHT_PERSPECTIVE_CHANNEL_ID),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if cursor.fetchone()[0] > 0:
                 return True
@@ -717,7 +780,8 @@ class RightPerspectiveFirewall:
             "/rightperspective/",
             "right - perspective",
             "right_perspective",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         return any(pattern in asset_path.lower() for pattern in rp_path_patterns)
 
@@ -727,7 +791,8 @@ class RightPerspectiveFirewall:
             f"{self.RIGHT_PERSPECTIVE_CHANNEL_ID}_",
             "right_perspective_",
             "rightperspective_",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         return any(pattern in knowledge_source.lower() for pattern in rp_knowledge_patterns)
 
@@ -743,7 +808,8 @@ class RightPerspectiveFirewall:
             "liberty",
             "freedom",
             "american values",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def _contains_rp_characteristics(self, text: str, characteristics: List[str]) -> bool:
         """Check if text contains Right Perspective characteristics"""
@@ -755,19 +821,21 @@ class RightPerspectiveFirewall:
         violation_type: FirewallViolationType,
         source_channel: str,
         target_channel: str,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Find matching firewall rule for violation"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # Try exact match first
             cursor.execute(
-                """
+                """"""
                 SELECT rule_id FROM firewall_rules
                 WHERE violation_type = ? AND source_channel = ? AND target_channel = ? AND is_active = 1
-            """,
+            ""","""
                 (violation_type.value, source_channel, target_channel),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             result = cursor.fetchone()
             if result:
@@ -775,15 +843,16 @@ class RightPerspectiveFirewall:
 
             # Try wildcard matches
             cursor.execute(
-                """
+                """"""
                 SELECT rule_id FROM firewall_rules
                 WHERE violation_type = ? AND (source_channel = '*' OR target_channel = '*') AND is_active = 1
                 ORDER BY (CASE WHEN source_channel = ? THEN 1 ELSE 0 END) +
                     (CASE WHEN target_channel = ? THEN 1 ELSE 0 END) DESC
                 LIMIT 1
-            """,
+            ""","""
                 (violation_type.value, source_channel, target_channel),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             result = cursor.fetchone()
             return result[0] if result else "default_rule"
@@ -799,11 +868,12 @@ class RightPerspectiveFirewall:
 
             # Violations in last 24 hours
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM firewall_violations
                 WHERE detected_at > datetime('now', '-1 day')
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             recent_violations = cursor.fetchone()[0]
 
             # Quarantined content
@@ -812,12 +882,13 @@ class RightPerspectiveFirewall:
 
             # Right Perspective protection status
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM firewall_rules
                 WHERE (source_channel = ? OR target_channel = ?) AND is_active = 1
-            """,
+            ""","""
                 (self.RIGHT_PERSPECTIVE_CHANNEL_ID, self.RIGHT_PERSPECTIVE_CHANNEL_ID),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             rp_protection_rules = cursor.fetchone()[0]
 
             return {
@@ -829,10 +900,12 @@ class RightPerspectiveFirewall:
                     "active_rules": rp_protection_rules,
                     "isolation_level": "MAXIMUM",
                     "last_violation_check": datetime.now().isoformat(),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "security_level": "CRITICAL",
                 "last_updated": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def get_violation_report(self, days: int = 7) -> Dict[str, Any]:
         """Get violation report for specified period"""
@@ -841,14 +914,16 @@ class RightPerspectiveFirewall:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 SELECT * FROM firewall_violations
                 WHERE detected_at > datetime('now', '-{} days')
                 ORDER BY detected_at DESC
-            """.format(
+            """.format("""
                     days
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             violations = [dict(row) for row in cursor.fetchall()]
 
@@ -874,8 +949,10 @@ class RightPerspectiveFirewall:
                     for v in violations
                     if v["source_channel"] == self.RIGHT_PERSPECTIVE_CHANNEL_ID
                     or v["target_channel"] == self.RIGHT_PERSPECTIVE_CHANNEL_ID
-                ],
-            }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             }
 
 
 # Global firewall instance
@@ -905,7 +982,8 @@ def log_firewall_violation(
     target_channel: str,
     content_id: str = None,
     details: Dict[str, Any] = None,
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     """Convenience function to log firewall violations"""
     vtype = FirewallViolationType(violation_type)
     return firewall.log_violation(vtype, source_channel, target_channel, content_id, details)

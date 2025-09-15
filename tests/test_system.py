@@ -1,4 +1,3 @@
-import os
 import sys
 from pathlib import Path
 
@@ -21,7 +20,8 @@ class TestSystemIntegrity:
                 "app/static/index.html",
                 "backend/__init__.py",
                 "utils/__init__.py",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
         for file_path in required_files:
             full_path = project_root/file_path
@@ -82,12 +82,14 @@ class TestEnvironmentConfiguration:
                 "password",
                 "token",
                 "auth_token",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
         main_files = [
             project_root/"launch_live.py",
                 project_root/"app"/"static"/"index.html",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
         for file_path in main_files:
             if file_path.exists():
@@ -100,16 +102,19 @@ class TestEnvironmentConfiguration:
                             if (
                                 pattern in line
                                 and "=" in line
-                                and not line.strip().startswith("#")
-                            ):
+                                and not line.strip().startswith("#")"
+# BRACKET_SURGEON: disabled
+#                             ):
                                 # Check if it looks like a real secret (not a placeholder)
                                 if any(
                                     char in line
                                     for char in ["sk_", "pk_", "Bearer", "Basic"]
-                                ):
+# BRACKET_SURGEON: disabled
+#                                 ):
                                     pytest.fail(
                                         f"Potential hardcoded secret found in {file_path}: {line.strip()}"
-                                    )
+# BRACKET_SURGEON: disabled
+#                                     )
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

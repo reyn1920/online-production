@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Unified Production Backend
 Integrates all existing functionality with new security framework and scalable channel system
 Preserves 100% of existing capabilities while adding enterprise-grade features
-"""
+""""""
 
 import asyncio
 import logging
@@ -33,13 +33,15 @@ from backend.security.auth_framework import (
     auth_manager,
     auth_middleware,
     Permission,
-)
+# BRACKET_SURGEON: disabled
+# )
 from backend.core.channel_manager import (
     ChannelCreate,
     ChannelUpdate,
     ContentCreate,
     channel_manager,
-)
+# BRACKET_SURGEON: disabled
+# )
 from backend.services.unified_ai_service import UnifiedAIService
 from backend.services.free_api_catalog import FreeAPICatalog
 from backend.services.api_aggregation_engine import APIAggregationEngine
@@ -117,7 +119,8 @@ app = FastAPI(
     description="Unified backend with 100+ free APIs, enterprise security, and scalable channel management",
     version="2.0.0",
     lifespan=lifespan,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Security middleware
 app.add_middleware(
@@ -126,11 +129,13 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+# BRACKET_SURGEON: disabled
+# )
 
 app.add_middleware(
     TrustedHostMiddleware, allowed_hosts=["*"]  # Configure appropriately for production
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Add authentication middleware
 app.middleware("http")(auth_middleware)
@@ -198,10 +203,12 @@ async def background_health_check():
                 "ai_service": (ai_service.get_health_status() if ai_service else "not_initialized"),
                 "api_catalog": (
                     api_catalog.get_health_status() if api_catalog else "not_initialized"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "channel_manager": "healthy",  # Add actual health check
                 "auth_manager": "healthy",  # Add actual health check
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             logger.debug(f"System health: {health_status}")
 
@@ -226,7 +233,8 @@ async def login(request: LoginRequest):
             user["user_id"],
             user["username"],
             [f"channel_{i:03d}" for i in range(1, 5)],  # Access to first 4 channels by default
-        )
+# BRACKET_SURGEON: disabled
+#         )
         refresh_token = auth_manager.jwt_manager.create_refresh_token(user["user_id"])
 
         return LoginResponse(
@@ -236,9 +244,11 @@ async def login(request: LoginRequest):
                 "user_id": user["user_id"],
                 "username": user["username"],
                 "roles": [role.value for role in user.get("roles", [])],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             expires_in=auth_manager.config.access_token_expire_minutes * 60,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except HTTPException:
         raise
@@ -250,7 +260,8 @@ async def login(request: LoginRequest):
 @app.post("/auth/refresh")
 async def refresh_token(
     refresh_token: str, current_user: dict = Depends(auth_manager.get_current_user)
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Refresh access token"""
     try:
         # Verify refresh token
@@ -262,12 +273,14 @@ async def refresh_token(
         user_id = payload["user_id"]
         access_token = auth_manager.jwt_manager.create_access_token(
             user_id, current_user["username"], current_user.get("channel_access", [])
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return {
             "access_token": access_token,
             "expires_in": auth_manager.config.access_token_expire_minutes * 60,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         logger.error(f"Token refresh failed: {e}")
@@ -298,7 +311,8 @@ async def list_channels(
     status: Optional[str] = None,
     limit: int = 100,
     current_user: dict = Depends(auth_manager.get_current_user),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """List all channels"""
     try:
         channels = await channel_manager.list_channels(
@@ -306,7 +320,8 @@ async def list_channels(
             channel_type=channel_type,
             status=status,
             limit=limit,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return channels
 
     except Exception as e:
@@ -320,7 +335,8 @@ async def create_channel(
     channel_data: ChannelCreate,
     request: Request,
     current_user: dict = Depends(auth_manager.get_current_user),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Create a new channel"""
     try:
         channel = await channel_manager.create_channel(channel_data, current_user["user_id"])
@@ -357,12 +373,14 @@ async def update_channel(
     update_data: ChannelUpdate,
     request: Request,
     current_user: dict = Depends(auth_manager.get_current_user),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Update channel"""
     try:
         channel = await channel_manager.update_channel(
             channel_id, update_data, current_user["user_id"]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return ChannelResponse(success=True, data=channel, message="Channel updated successfully")
 
     except HTTPException:
@@ -378,7 +396,8 @@ async def delete_channel(
     channel_id: str,
     request: Request,
     current_user: dict = Depends(auth_manager.get_current_user),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Delete channel"""
     try:
         success = await channel_manager.delete_channel(channel_id, current_user["user_id"])
@@ -399,12 +418,14 @@ async def create_content(
     content_data: ContentCreate,
     request: Request,
     current_user: dict = Depends(auth_manager.get_current_user),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Create content in channel"""
     try:
         content = await channel_manager.create_content(
             channel_id, content_data, current_user["user_id"]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return ContentResponse(success=True, data=content, message="Content created successfully")
 
     except HTTPException:
@@ -419,7 +440,8 @@ async def get_channel_content(
     channel_id: str,
     limit: int = 50,
     current_user: dict = Depends(auth_manager.get_current_user),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get content from channel"""
     try:
         content = await channel_manager.get_channel_content(channel_id, limit)
@@ -436,7 +458,8 @@ async def get_channel_analytics(
     channel_id: str,
     request: Request,
     current_user: dict = Depends(auth_manager.get_current_user),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get channel analytics"""
     try:
         analytics = await channel_manager.get_channel_analytics(channel_id)
@@ -456,7 +479,8 @@ async def generate_content(
     request_data: AIGenerationRequest,
     background_tasks: BackgroundTasks,
     current_user: dict = Depends(auth_manager.get_current_user),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Generate content using AI services"""
     try:
         if not ai_service:
@@ -469,8 +493,10 @@ async def generate_content(
                 "prompt": request_data.prompt,
                 "parameters": request_data.parameters,
                 "user_id": current_user["user_id"],
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         # If channel_id provided, save to channel
         if request_data.channel_id and result.get("success"):
@@ -479,7 +505,8 @@ async def generate_content(
                 request_data.channel_id,
                 result["data"],
                 current_user["user_id"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return result
 
@@ -501,8 +528,10 @@ async def save_generated_content(channel_id: str, content_data: dict, user_id: s
                 "ai_generated": True,
                 "generation_timestamp": datetime.utcnow().isoformat(),
                 **content_data.get("metadata", {}),
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         await channel_manager.create_content(channel_id, content_create, user_id)
         logger.info(f"AI generated content saved to channel {channel_id}")
@@ -534,7 +563,8 @@ async def orchestrate_apis(
     parameters: Dict[str, Any],
     request: Request,
     current_user: dict = Depends(auth_manager.get_current_user),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Execute orchestrated API plan"""
     try:
         if not orchestrator:
@@ -568,8 +598,10 @@ async def health_check():
                 "api_catalog": "healthy" if api_catalog else "unavailable",
                 "channel_manager": "healthy",
                 "auth_manager": "healthy",
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         logger.error(f"Health check failed: {e}")
@@ -580,7 +612,8 @@ async def health_check():
             channels_count=0,
             active_users=0,
             system_health={"error": str(e)},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @app.get("/")
@@ -596,7 +629,8 @@ async def root():
             "AI Content Generation",
             "Advanced Analytics",
             "Hollywood-Grade Production",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "endpoints": {
             "auth": "/auth/*",
             "channels": "/channels/*",
@@ -604,8 +638,10 @@ async def root():
             "api": "/api/*",
             "health": "/health",
             "docs": "/docs",
-        },
-    }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Error handlers
@@ -619,8 +655,10 @@ async def http_exception_handler(request: Request, exc: HTTPException):
             "error": exc.detail,
             "status_code": exc.status_code,
             "timestamp": datetime.utcnow().isoformat(),
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @app.exception_handler(Exception)
@@ -634,8 +672,10 @@ async def general_exception_handler(request: Request, exc: Exception):
             "error": "Internal server error",
             "status_code": 500,
             "timestamp": datetime.utcnow().isoformat(),
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 # Development server

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Webhook Security System for ChatGPT Integration
 Implements Rule 5: Webhook Security Requirements
-"""
+""""""
 
 import asyncio
 import base64
@@ -133,7 +133,8 @@ class WebhookSecurityManager:
             "webhook_config_file": "/etc/trae/webhooks.json",
             "blocked_ip_threshold": 10,  # failed attempts before blocking
             "block_duration": 3600,  # 1 hour
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_or_create_encryption_key(self) -> bytes:
         """Get or create encryption key for webhook payloads"""
@@ -149,7 +150,8 @@ class WebhookSecurityManager:
             length=32,
             salt=salt,
             iterations=100000,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         key = base64.urlsafe_b64encode(kdf.derive(password))
 
         # In production, this should be stored securely
@@ -173,7 +175,8 @@ class WebhookSecurityManager:
             encryption_enabled=self.config["encryption_enabled"],
             rate_limit_per_minute=self.config["default_rate_limit"],
             active=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.webhooks[default_webhook.webhook_id] = default_webhook
 
@@ -197,8 +200,10 @@ class WebhookSecurityManager:
                     "webhook_id": webhook_config.webhook_id,
                     "url": webhook_config.url,
                     "security_level": webhook_config.security_level.value,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             return True
 
@@ -300,7 +305,8 @@ class WebhookSecurityManager:
         # Remove old timestamps
         self.rate_limit_tracker[key] = [
             timestamp for timestamp in self.rate_limit_tracker[key] if timestamp > window_start
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Check limit
         webhook_config = self.webhooks.get(webhook_id)
@@ -352,8 +358,10 @@ class WebhookSecurityManager:
                 "ip_allowed": False,
                 "rate_limit_ok": False,
                 "payload_size_ok": False,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Get webhook configuration
@@ -374,7 +382,8 @@ class WebhookSecurityManager:
                     severity=AuditLevel.WARNING,
                     ip_address=source_ip,
                     additional_data={"webhook_id": webhook_id},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return validation_result
 
             # Check payload size
@@ -391,7 +400,8 @@ class WebhookSecurityManager:
                     severity=AuditLevel.WARNING,
                     ip_address=source_ip,
                     additional_data={"webhook_id": webhook_id},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 validation_result["security_checks"]["rate_limit_ok"] = True
 
@@ -399,7 +409,8 @@ class WebhookSecurityManager:
             if webhook_config.security_level in [
                 WebhookSecurityLevel.ENHANCED,
                 WebhookSecurityLevel.MAXIMUM,
-            ]:
+# BRACKET_SURGEON: disabled
+#             ]:
                 if not self.validate_ip_address(source_ip, webhook_config.allowed_ips):
                     validation_result["errors"].append("IP address not allowed")
                     audit_logger.log_security_event(
@@ -407,7 +418,8 @@ class WebhookSecurityManager:
                         severity=AuditLevel.WARNING,
                         ip_address=source_ip,
                         additional_data={"webhook_id": webhook_id},
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     validation_result["security_checks"]["ip_allowed"] = True
             else:
@@ -418,7 +430,8 @@ class WebhookSecurityManager:
                 WebhookSecurityLevel.STANDARD,
                 WebhookSecurityLevel.ENHANCED,
                 WebhookSecurityLevel.MAXIMUM,
-            ]:
+# BRACKET_SURGEON: disabled
+#             ]:
                 if not signature:
                     validation_result["errors"].append("Missing signature")
                 elif not self.verify_signature(payload, signature, webhook_config.secret_key):
@@ -430,8 +443,10 @@ class WebhookSecurityManager:
                         additional_data={
                             "webhook_id": webhook_id,
                             "signature": signature,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     validation_result["security_checks"]["signature_valid"] = True
             else:
@@ -450,8 +465,10 @@ class WebhookSecurityManager:
                     "valid": validation_result["valid"],
                     "errors": validation_result["errors"],
                     "user_agent": user_agent,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             validation_result["errors"].append(f"Validation error: {str(e)}")
@@ -465,7 +482,8 @@ class WebhookSecurityManager:
         event_type: WebhookEventType,
         payload: Dict[str, Any],
         custom_headers: Optional[Dict[str, str]] = None,
-    ) -> WebhookDeliveryResult:
+# BRACKET_SURGEON: disabled
+#     ) -> WebhookDeliveryResult:
         """Send webhook with security measures"""
 
         webhook_config = self.webhooks.get(webhook_id)
@@ -485,7 +503,8 @@ class WebhookSecurityManager:
             source_ip=None,
             user_agent="Trae - Webhook - Client/1.0",
             webhook_id=webhook_id,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Encrypt payload if required
         if webhook_config.encryption_enabled:
@@ -499,7 +518,8 @@ class WebhookSecurityManager:
         # Generate signature
         signature = self.generate_signature(
             payload_json, webhook_config.secret_key, webhook_config.signature_algorithm
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Prepare headers
         headers = {
@@ -509,7 +529,8 @@ class WebhookSecurityManager:
             "X - Webhook - Event - ID": event_id,
             "X - Webhook - Timestamp": webhook_event.timestamp,
             "User - Agent": webhook_event.user_agent,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if custom_headers:
             headers.update(custom_headers)
@@ -522,11 +543,13 @@ class WebhookSecurityManager:
                 async with timeout_manager.timeout_context(
                     operation_type=TimeoutType.WEBHOOK,
                     custom_timeout=webhook_config.timeout_seconds,
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     async with aiohttp.ClientSession() as session:
                         async with session.post(
                             url=webhook_config.url, data=payload_json, headers=headers
-                        ) as response:
+# BRACKET_SURGEON: disabled
+#                         ) as response:
                             end_time = time.time()
                             response_time_ms = (end_time - start_time) * 1000
 
@@ -541,7 +564,8 @@ class WebhookSecurityManager:
                                 attempt_number=attempt + 1,
                                 error_message=(None if success else f"HTTP {response.status}"),
                                 timestamp=datetime.utcnow().isoformat(),
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                             # Log delivery result
                             audit_logger.log_api_request(
@@ -554,8 +578,10 @@ class WebhookSecurityManager:
                                     "event_type": event_type.value,
                                     "attempt": attempt + 1,
                                     "success": success,
-                                },
-                            )
+# BRACKET_SURGEON: disabled
+#                                 },
+# BRACKET_SURGEON: disabled
+#                             )
 
                             self.delivery_history.append(result)
 
@@ -583,7 +609,8 @@ class WebhookSecurityManager:
             attempt_number=webhook_config.retry_attempts + 1,
             error_message=str(last_exception),
             timestamp=datetime.utcnow().isoformat(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.delivery_history.append(result)
 
@@ -595,8 +622,10 @@ class WebhookSecurityManager:
                 "event_type": event_type.value,
                 "error": str(last_exception),
                 "attempts": webhook_config.retry_attempts + 1,
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         return result
 
@@ -607,19 +636,22 @@ class WebhookSecurityManager:
         active_webhooks = sum(1 for wh in self.webhooks.values() if wh.active)
         https_compliant = sum(
             1 for wh in self.webhooks.values() if urlparse(wh.url).scheme == "https"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         recent_deliveries = [
             delivery
             for delivery in self.delivery_history
             if datetime.fromisoformat(delivery.timestamp) > datetime.utcnow() - timedelta(hours=24)
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         success_rate = (
             sum(1 for d in recent_deliveries if d.success) / len(recent_deliveries)
             if recent_deliveries
             else 0
-        ) * 100
+# BRACKET_SURGEON: disabled
+#         ) * 100
 
         report = {
             "report_id": f"webhook_security_{datetime.now().strftime('%Y % m%d_ % H%M % S')}",
@@ -630,16 +662,19 @@ class WebhookSecurityManager:
                 "https_compliance": f"{https_compliant}/{total_webhooks}",
                 "success_rate_24h": f"{success_rate:.1f}%",
                 "blocked_ips": len(self.blocked_ips),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "security_compliance": {
                 "rule_5_https_required": https_compliant == total_webhooks,
                 "signature_verification_enabled": all(
                     wh.security_level != WebhookSecurityLevel.BASIC for wh in self.webhooks.values()
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "rate_limiting_active": True,
                 "ip_allowlisting_available": True,
                 "encryption_available": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "webhook_details": {
                 wh_id: {
                     "url": wh.url,
@@ -647,15 +682,19 @@ class WebhookSecurityManager:
                     "https_enabled": urlparse(wh.url).scheme == "https",
                     "active": wh.active,
                     "rate_limit": wh.rate_limit_per_minute,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for wh_id, wh in self.webhooks.items()
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "recent_activity": {
                 "deliveries_24h": len(recent_deliveries),
                 "success_count": sum(1 for d in recent_deliveries if d.success),
                 "failure_count": sum(1 for d in recent_deliveries if not d.success),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         return report
 
@@ -670,7 +709,8 @@ async def send_chatgpt_webhook(event_type: WebhookEventType, payload: Dict[str, 
     """Send ChatGPT integration webhook"""
     return await webhook_security.send_webhook(
         webhook_id="chatgpt_integration", event_type=event_type, payload=payload
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 async def validate_chatgpt_webhook(payload: str, signature: str, source_ip: str):
@@ -680,4 +720,5 @@ async def validate_chatgpt_webhook(payload: str, signature: str, source_ip: str)
         payload=payload,
         signature=signature,
         source_ip=source_ip,
-    )
+# BRACKET_SURGEON: disabled
+#     )

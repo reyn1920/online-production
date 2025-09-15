@@ -7,7 +7,7 @@ from integrations_hub import get_secret, http_with_fallback
 
 
 async def get_images_for_query(query: str):
-    """Fetch stock images for a given query using multiple providers with fallback.
+    """Fetch stock images for a given query using multiple providers with fallback."""
 
     This function demonstrates the power of the http_with_fallback system:
     - Automatically tries providers in preferred order
@@ -20,7 +20,7 @@ async def get_images_for_query(query: str):
 
     Returns:
         JSON response from the first successful provider
-    """
+    """"""
 
     async def do_request(client, prov):
         """Handle requests for different image providers."""
@@ -32,7 +32,8 @@ async def get_images_for_query(query: str):
                 "https://api.unsplash.com / search / photos",
                 headers={"Authorization": f"Client - ID {key}"},
                 params={"query": query, "per_page": 6},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             r.raise_for_status()
             return r.json()
 
@@ -44,7 +45,8 @@ async def get_images_for_query(query: str):
                 "https://api.pexels.com / v1 / search",
                 headers={"Authorization": key},
                 params={"query": query, "per_page": 6},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             r.raise_for_status()
             return r.json()
 
@@ -55,7 +57,8 @@ async def get_images_for_query(query: str):
             r = await client.get(
                 "https://pixabay.com / api/",
                 params={"key": key, "q": query, "per_page": 6},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             r.raise_for_status()
             return r.json()
 

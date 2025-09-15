@@ -59,7 +59,7 @@ def transferBFM09(bfm_folder="BFM"):
 
     # our face model is cropped along face landmarks and contains only 35709 vertex.
     # original BFM09 contains 53490 vertex, \
-    and expression basis provided by Guo et al. contains 53215 vertex.
+#     and expression basis provided by Guo et al. contains 53215 vertex.
     # thus we select corresponding vertex to get our face model.
 
     index_exp = loadmat(osp.join(bfm_folder, "BFM_front_idx.mat"))
@@ -116,8 +116,10 @@ def transferBFM09(bfm_folder="BFM"):
                 "keypoints": keypoints,
                 "frontmask2_idx": frontmask2_idx,
                 "skinmask": skinmask,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
 # load landmarks for standard face, which is used for image preprocessing
 
@@ -136,9 +138,11 @@ def load_lm3d(bfm_folder):
                 np.mean(Lm3D[lm_idx[[3, 4]], :], 0),
                 Lm3D[lm_idx[5], :],
                 Lm3D[lm_idx[6], :],
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
             axis = 0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
     Lm3D = Lm3D[[1, 2, 0, 3, 4], :]
 
     return Lm3D

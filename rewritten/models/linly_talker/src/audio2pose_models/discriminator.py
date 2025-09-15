@@ -17,7 +17,8 @@ class ConvNormRelu(nn.Module):
             padding = None,
             norm="BN",
             leaky = False,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__()
         if kernel_size is None:
             if downsample:
@@ -33,7 +34,9 @@ class ConvNormRelu(nn.Module):
                     stride,
                     padding,
                     bias = False,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             if norm == "BN":
                 self.norm = nn.BatchNorm2d(out_channels)
             elif norm == "IN":
@@ -41,6 +44,7 @@ class ConvNormRelu(nn.Module):
             else:
                 raise NotImplementedError
                     elif conv_type == "1d":
+                        pass
             self.conv = nn.Conv1d(
                 in_channels,
                     out_channels,
@@ -48,7 +52,9 @@ class ConvNormRelu(nn.Module):
                     stride,
                     padding,
                     bias = False,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             if norm == "BN":
                 self.norm = nn.BatchNorm1d(out_channels)
             elif norm == "IN":
@@ -61,7 +67,9 @@ class ConvNormRelu(nn.Module):
             nn.LeakyReLU(negative_slope = 0.2, inplace = False)
             if leaky
             else nn.ReLU(inplace = True)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def forward(self, x):
@@ -89,21 +97,27 @@ class PoseSequenceDiscriminator(nn.Module):
                     256,
                     downsample = True,
                     leaky = leaky,
-                    ),  # B, 256, 64
+# BRACKET_SURGEON: disabled
+#                     ),  # B, 256, 64
             ConvNormRelu("1d",
     256,
     512,
     downsample = True,
-    leaky = leaky),  # B,
+# BRACKET_SURGEON: disabled
+#     leaky = leaky),  # B,
     512,
     32
             ConvNormRelu(
                 "1d", 512, 1024, kernel_size = 3, stride = 1, padding = 1, leaky = leaky
-            ),  # B, 1024, 16
+# BRACKET_SURGEON: disabled
+#             ),  # B, 1024, 16
             nn.Conv1d(
                 1024, 1, kernel_size = 3, stride = 1, padding = 1, bias = True
-            ),  # B, 1, 16
-        )
+# BRACKET_SURGEON: disabled
+#             ),  # B, 1, 16
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def forward(self, x):

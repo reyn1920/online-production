@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Autonomous System Launcher
 
 The main entry point for the fully autonomous TRAE.AI system.
@@ -13,7 +13,7 @@ Key Features:
 - Provides graceful shutdown handling
 - Integrates with the Total Access dashboard
 - Implements the closed - loop feedback system
-"""
+""""""
 
 import json
 import logging
@@ -81,8 +81,10 @@ class AutonomousSystemLauncher:
             handlers=[
                 logging.FileHandler(logs_dir / "autonomous_system.log"),
                 logging.StreamHandler(sys.stdout),
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
         # Set specific log levels for components
         logging.getLogger("TaskQueue").setLevel(logging.INFO)
@@ -168,7 +170,8 @@ class AutonomousSystemLauncher:
                 agent_instance=self.agents["system"],
                 capabilities=["system_health", "diagnostics", "repair", "monitoring"],
                 max_concurrent_tasks=8,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.agent_workers["system"] = worker_id
 
             # Register Planner Agent - MAXED OUT
@@ -180,9 +183,11 @@ class AutonomousSystemLauncher:
                     "planning",
                     "optimization",
                     "feedback_processing",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 max_concurrent_tasks=4,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.agent_workers["planner"] = worker_id
 
             # Register Research Agent - MAXED OUT
@@ -194,9 +199,11 @@ class AutonomousSystemLauncher:
                     "api_discovery",
                     "hypocrisy_detection",
                     "market_intelligence",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 max_concurrent_tasks=12,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.agent_workers["research"] = worker_id
 
             # Register Marketing Agent - MAXED OUT
@@ -208,9 +215,11 @@ class AutonomousSystemLauncher:
                     "seo_optimization",
                     "affiliate_monitoring",
                     "content_promotion",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 max_concurrent_tasks=8,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.agent_workers["marketing"] = worker_id
 
             # Register Content Agent - MAXED OUT
@@ -222,9 +231,11 @@ class AutonomousSystemLauncher:
                     "voice_synthesis",
                     "avatar_generation",
                     "graphics_creation",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 max_concurrent_tasks=4,  # Resource - intensive tasks but maxed out
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.agent_workers["content"] = worker_id
 
             self.logger.info(f"Registered {len(self.agent_workers)} agent workers with task queue")
@@ -243,7 +254,8 @@ class AutonomousSystemLauncher:
                 payload={"check_type": "full_system_scan"},
                 priority=TaskPriority.HIGH,
                 metadata={"recurring": True, "interval": 300},  # Every 5 minutes
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Initial strategy planning task
             self.task_queue.submit_task(
@@ -252,7 +264,8 @@ class AutonomousSystemLauncher:
                 payload={"strategy_type": "bootstrap_autonomous_operation"},
                 priority=TaskPriority.URGENT,
                 metadata={"bootstrap": True},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Market research initialization
             self.task_queue.submit_task(
@@ -261,7 +274,8 @@ class AutonomousSystemLauncher:
                 payload={"research_scope": "ai_automation_trends"},
                 priority=TaskPriority.HIGH,
                 metadata={"initialization": True},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Marketing system initialization
             self.task_queue.submit_task(
@@ -270,7 +284,8 @@ class AutonomousSystemLauncher:
                 payload={"setup_type": "autonomous_marketing_layer"},
                 priority=TaskPriority.HIGH,
                 metadata={"initialization": True},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Content pipeline initialization
             self.task_queue.submit_task(
@@ -279,7 +294,8 @@ class AutonomousSystemLauncher:
                 payload={"pipeline_type": "api_first_automation"},
                 priority=TaskPriority.MEDIUM,
                 metadata={"initialization": True},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.logger.info("Initial autonomous tasks scheduled")
 
@@ -324,7 +340,8 @@ class AutonomousSystemLauncher:
                 project_root / "data",
                 project_root / "backend",
                 project_root / "logs",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             for path in critical_paths:
                 if not path.exists():
@@ -338,7 +355,8 @@ class AutonomousSystemLauncher:
                 if (
                     metrics.total_tasks == 0
                     and (datetime.now() - self.last_health_check).seconds > 3600
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     self.logger.warning("No tasks processed in over an hour")
 
             # Log health status
@@ -361,8 +379,9 @@ class AutonomousSystemLauncher:
 
                 if time_since_heartbeat > 300:  # 5 minutes
                     self.logger.warning(
-                        f"Agent {worker_id} hasn't sent heartbeat in {time_since_heartbeat}s"
-                    )
+                        f"Agent {worker_id} hasn't sent heartbeat in {time_since_heartbeat}s"'
+# BRACKET_SURGEON: disabled
+#                     )
 
                 if status["status"] == "offline":
                     self.logger.error(f"Agent {worker_id} is offline")
@@ -382,7 +401,8 @@ class AutonomousSystemLauncher:
             if metrics.total_tasks > 0:
                 failure_rate = (
                     metrics.failed_tasks + metrics.dead_letter_tasks
-                ) / metrics.total_tasks
+# BRACKET_SURGEON: disabled
+#                 ) / metrics.total_tasks
                 if failure_rate > 0.1:  # More than 10% failure rate
                     self.logger.warning(f"High task failure rate: {failure_rate:.2%}")
 
@@ -394,7 +414,8 @@ class AutonomousSystemLauncher:
             self.logger.debug(
                 f"Queue metrics: {metrics.pending_tasks} pending, "
                 f"{metrics.running_tasks} running, {metrics.completed_tasks} completed"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Task queue health check failed: {e}")
@@ -453,7 +474,8 @@ class AutonomousSystemLauncher:
                     payload={"review_type": "hourly_optimization"},
                     priority=TaskPriority.MEDIUM,
                     metadata={"recurring": True, "interval": 3600},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Schedule daily market research
             if current_time.hour == 6 and current_time.minute == 0:  # 6 AM daily
@@ -463,7 +485,8 @@ class AutonomousSystemLauncher:
                     payload={"research_type": "comprehensive_market_scan"},
                     priority=TaskPriority.HIGH,
                     metadata={"recurring": True, "interval": 86400},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Schedule marketing optimization
             if current_time.hour == 9 and current_time.minute == 0:  # 9 AM daily
@@ -473,7 +496,8 @@ class AutonomousSystemLauncher:
                     payload={"optimization_type": "daily_campaign_review"},
                     priority=TaskPriority.MEDIUM,
                     metadata={"recurring": True, "interval": 86400},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             self.logger.error(f"Failed to schedule recurring tasks: {e}")
@@ -489,7 +513,8 @@ class AutonomousSystemLauncher:
                 if metrics.total_tasks > 100 and metrics.success_rate < 90:
                     self.logger.warning(
                         f"System performance degraded: {metrics.success_rate:.1f}% success rate"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Submit diagnostic task
                     self.task_queue.submit_task(
@@ -497,7 +522,8 @@ class AutonomousSystemLauncher:
                         agent_type="SystemAgent",
                         payload={"diagnostic_type": "performance_degradation"},
                         priority=TaskPriority.URGENT,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         except Exception as e:
             self.logger.error(f"Failed to process system events: {e}")
@@ -512,7 +538,8 @@ class AutonomousSystemLauncher:
                 "system_mode": "autonomous",
                 "python_version": sys.version,
                 "working_directory": str(project_root),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.logger.info(f"System startup metrics: {json.dumps(startup_info, indent = 2)}")
 

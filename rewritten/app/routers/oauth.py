@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 OAuth Router - Handles OAuth authentication flows for social media platforms
 Supports TikTok and Instagram OAuth integrations
-"""
+""""""
 
 import logging
 import os
@@ -34,7 +34,8 @@ def _cleanup_expired_states():
     current_time = time.time()
     expired_keys = [
         k for k, v in OAUTH_STATES.items() if current_time - v.get("created_at", 0) > 600
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     for key in expired_keys:
         del OAUTH_STATES[key]
 
@@ -56,7 +57,8 @@ async def tiktok_oauth_start(request: Request, redirect_uri: Optional[str] = Non
         "provider": "tiktok",
         "created_at": time.time(),
         "redirect_uri": redirect_uri or f"{_get_base_url(request)}/oauth/success",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Build TikTok OAuth URL
     base_url = _get_base_url(request)
@@ -68,7 +70,8 @@ async def tiktok_oauth_start(request: Request, redirect_uri: Optional[str] = Non
         "response_type": "code",
         "redirect_uri": callback_url,
         "state": state,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     auth_url = "https://www.tiktok.com/auth/authorize/?" + urllib.parse.urlencode(params)
 
@@ -83,7 +86,8 @@ async def tiktok_oauth_callback(
     state: Optional[str] = Query(None),
     error: Optional[str] = Query(None),
     error_description: Optional[str] = Query(None),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Handle TikTok OAuth callback."""
     if error:
         logger.error(f"TikTok OAuth error: {error} - {error_description}")
@@ -114,14 +118,16 @@ async def tiktok_oauth_callback(
         "code": code,
         "grant_type": "authorization_code",
         "redirect_uri": callback_url,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     try:
         token_response = requests.post(
             "https://open-api.tiktok.com/oauth/access_token/",
             json=token_data,
             timeout=30,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if token_response.status_code == 200:
             token_info = token_response.json()
@@ -144,7 +150,8 @@ async def tiktok_oauth_callback(
                         "user_id": token_info["data"].get("open_id"),
                         "provider": "tiktok",
                         "created_at": time.time(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Replace with actual secure storage implementation
                     try:
@@ -160,7 +167,8 @@ async def tiktok_oauth_callback(
                                     external_id=user_id,
                                     provider="tiktok",
                                     created_at=datetime.utcnow(),
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
                                 session.add(user)
                                 session.flush()
 
@@ -170,16 +178,19 @@ async def tiktok_oauth_callback(
                                 .filter(
                                     OAuthToken.user_id == user.id,
                                     OAuthToken.provider == "tiktok",
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
                                 .first()
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                             if existing_token:
                                 existing_token.access_token = access_token
                                 existing_token.refresh_token = refresh_token
                                 existing_token.expires_at = datetime.utcnow() + timedelta(
                                     seconds=expires_in
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
                                 existing_token.updated_at = datetime.utcnow()
                             else:
                                 oauth_token = OAuthToken(
@@ -189,7 +200,8 @@ async def tiktok_oauth_callback(
                                     refresh_token=refresh_token,
                                     expires_at=datetime.utcnow() + timedelta(seconds=expires_in),
                                     created_at=datetime.utcnow(),
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
                                 session.add(oauth_token)
 
                             session.commit()
@@ -204,14 +216,17 @@ async def tiktok_oauth_callback(
                             "user_id": token_info["data"].get("open_id"),
                             "provider": "tiktok",
                             "created_at": time.time(),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         logger.warning(
                             "Using temporary token storage - implement secure storage for production"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                     logger.info(
                         f"TikTok OAuth successful for user: {token_info['data'].get('open_id')}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Redirect to success page
                     redirect_uri = state_data.get("redirect_uri", "/oauth/success")
@@ -226,7 +241,8 @@ async def tiktok_oauth_callback(
         else:
             logger.error(
                 f"TikTok token request failed: {token_response.status_code} - {token_response.text}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             raise HTTPException(status_code=400, detail="Failed to exchange code for access token")
 
     except requests.RequestException as e:
@@ -251,7 +267,8 @@ async def instagram_oauth_start(request: Request, redirect_uri: Optional[str] = 
         "provider": "instagram",
         "created_at": time.time(),
         "redirect_uri": redirect_uri or f"{_get_base_url(request)}/oauth/success",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Build Instagram OAuth URL
     base_url = _get_base_url(request)
@@ -263,7 +280,8 @@ async def instagram_oauth_start(request: Request, redirect_uri: Optional[str] = 
         "scope": "user_profile,user_media",
         "response_type": "code",
         "state": state,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     auth_url = "https://api.instagram.com/oauth/authorize?" + urllib.parse.urlencode(params)
 
@@ -278,7 +296,8 @@ async def instagram_oauth_callback(
     state: Optional[str] = Query(None),
     error: Optional[str] = Query(None),
     error_description: Optional[str] = Query(None),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Handle Instagram OAuth callback."""
     if error:
         logger.error(f"Instagram OAuth error: {error} - {error_description}")
@@ -309,14 +328,16 @@ async def instagram_oauth_callback(
         "grant_type": "authorization_code",
         "redirect_uri": callback_url,
         "code": code,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     try:
         token_response = requests.post(
             "https://api.instagram.com/oauth/access_token",
             data=token_data,
             timeout=30,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if token_response.status_code == 200:
             token_info = token_response.json()
@@ -337,7 +358,8 @@ async def instagram_oauth_callback(
                                 external_id=str(user_id),
                                 provider="instagram",
                                 created_at=datetime.utcnow(),
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             session.add(user)
                             session.flush()
 
@@ -347,9 +369,11 @@ async def instagram_oauth_callback(
                             .filter(
                                 OAuthToken.user_id == user.id,
                                 OAuthToken.provider == "instagram",
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             .first()
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         if existing_token:
                             existing_token.access_token = access_token
@@ -360,7 +384,8 @@ async def instagram_oauth_callback(
                                 provider="instagram",
                                 access_token=access_token,
                                 created_at=datetime.utcnow(),
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             session.add(oauth_token)
 
                         session.commit()
@@ -370,7 +395,8 @@ async def instagram_oauth_callback(
                     logger.error(f"Failed to store Instagram tokens in database: {storage_error}")
                     logger.warning(
                         "Using temporary token storage - implement secure storage for production"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 logger.info(f"Instagram OAuth successful for user: {user_id}")
 
@@ -383,7 +409,8 @@ async def instagram_oauth_callback(
         else:
             logger.error(
                 f"Instagram token request failed: {token_response.status_code} - {token_response.text}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             raise HTTPException(status_code=400, detail="Failed to exchange code for access token")
 
     except requests.RequestException as e:
@@ -399,7 +426,8 @@ async def oauth_success(provider: Optional[str] = Query(None), status: Optional[
         "provider": provider,
         "status": status,
         "timestamp": datetime.utcnow().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/status")
@@ -413,17 +441,23 @@ async def oauth_status():
                 "enabled": bool(os.getenv("TIKTOK_CLIENT_ID")),
                 "configured": bool(
                     os.getenv("TIKTOK_CLIENT_ID") and os.getenv("TIKTOK_CLIENT_SECRET")
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "instagram": {
                 "enabled": bool(os.getenv("INSTAGRAM_CLIENT_ID")),
                 "configured": bool(
                     os.getenv("INSTAGRAM_CLIENT_ID") and os.getenv("INSTAGRAM_CLIENT_SECRET")
-                ),
-            },
-        },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         },
         "active_states": len(OAUTH_STATES),
         "timestamp": datetime.utcnow().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     return status

@@ -135,11 +135,13 @@ def predict_edge_tts(request: TTSRequest):
             request.pitch,
             request.save_path,
             "answer.vtt",
-        )
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         os.system(
             f'edge - tts --text "{request.text}" --voice {request.voice} --write - media {request.save_path} --write - subtitles answer.vtt'
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     return request.save_path
 
@@ -157,7 +159,8 @@ def predict_paddle_tts(request: TTSRequest):
             lang=request.lang,
             male=request.male,
             save_path=request.save_path,
-        )
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"PaddleTTS 预测失败: {e}")
 
@@ -178,7 +181,8 @@ def predict_gpt_sovits(request: TTSRequest):
             text_language=request.ref_language,
             how_to_cut=request.cut_method,
             save_path=request.save_path,
-        )
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"GPT - SoVITS 预测失败: {e}")
 
@@ -204,7 +208,8 @@ def predict_cosyvoice(request: TTSRequest):
                 request.sft_dropdown,
                 speed_factor=request.speed_factor,
                 save_path=request.save_path,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif request.cosyvoice_mode == "3s极速复刻":
             output = cosyvoice.predict_zero_shot(
                 request.text,
@@ -212,14 +217,16 @@ def predict_cosyvoice(request: TTSRequest):
                 prompt_wav,
                 speed_factor=request.speed_factor,
                 save_path=request.save_path,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif request.cosyvoice_mode == "跨语种复刻":
             output = cosyvoice.predict_cross_lingual(
                 request.text,
                 prompt_wav,
                 speed_factor=request.speed_factor,
                 save_path=request.save_path,
-            )
+# BRACKET_SURGEON: disabled
+#             )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"CosyVoice 预测失败: {e}")
 
@@ -249,7 +256,8 @@ async def tts_response(
     tts_method: str = Form("EdgeTTS"),
     save_path: str = Form("answer.wav"),
     ref_audio: Optional[UploadFile] = File(None),
-):
+# BRACKET_SURGEON: disabled
+# ):
     ref_audio_path = None
     if ref_audio:
         # 保存上传的音频文件
@@ -277,7 +285,8 @@ async def tts_response(
         seed=seed,
         tts_method=tts_method,
         save_path=save_path,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     # print(request)
 
     if not request.text:

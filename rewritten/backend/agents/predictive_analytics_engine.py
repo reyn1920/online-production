@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Predictive Analytics Engine - Layer 3 of Maxed - Out Automation
 Upgrades Research Agent to predict viral content success and optimize content strategy.
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -120,7 +120,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
             SuccessMetric.VIEWS: None,
             SuccessMetric.ENGAGEMENT: None,
             SuccessMetric.VIRAL_SCORE: None,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Performance tracking
         self.prediction_accuracy = defaultdict(list)
@@ -132,7 +133,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
         """Initialize predictive analytics database tables."""
         with sqlite3.connect(self.db_path) as conn:
             conn.executescript(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS content_performance (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         content_id TEXT UNIQUE NOT NULL,
@@ -157,7 +158,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                         success_factors TEXT,
                         performance_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS prediction_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -175,7 +177,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                         actual_performance TEXT,
                         prediction_accuracy REAL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS trending_patterns (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -186,7 +189,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                         detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         expires_at TIMESTAMP,
                         active BOOLEAN DEFAULT TRUE
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS success_factors (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -196,9 +200,11 @@ class PredictiveAnalyticsEngine(BaseAgent):
                         frequency INTEGER DEFAULT 1,
                         last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         UNIQUE(factor_name, factor_type)
-                );
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 );
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
     def _load_or_train_models(self):
         """Load existing models or train new ones."""
@@ -250,11 +256,13 @@ class PredictiveAnalyticsEngine(BaseAgent):
             # Train models
             self.models[SuccessMetric.VIEWS] = RandomForestRegressor(
                 n_estimators=100, random_state=42
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.models[SuccessMetric.ENGAGEMENT] = GradientBoostingRegressor(random_state=42)
             self.models[SuccessMetric.VIRAL_SCORE] = RandomForestRegressor(
                 n_estimators=100, random_state=42
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Fit models
             self.models[SuccessMetric.VIEWS].fit(X, y_views)
@@ -286,24 +294,29 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 "base_views": 5000,
                 "engagement_mult": 1.2,
                 "viral_chance": 0.15,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "entertainment": {
                 "base_views": 15000,
                 "engagement_mult": 1.8,
                 "viral_chance": 0.25,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "education": {
                 "base_views": 3000,
                 "engagement_mult": 1.0,
                 "viral_chance": 0.08,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "news": {"base_views": 8000, "engagement_mult": 0.9, "viral_chance": 0.12},
             "lifestyle": {
                 "base_views": 7000,
                 "engagement_mult": 1.4,
                 "viral_chance": 0.18,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         trending_keywords = [
             "AI",
@@ -320,7 +333,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
             "boost",
             "transform",
             "master",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for i in range(num_samples):
             # Random content features
@@ -333,7 +347,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 f"10 {category.replace('_', ' ').title()} Secrets",
                 f"How to Master {category.replace('_', ' ').title()}",
                 f"Transform Your {category.replace('_', ' ').title()}",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             title = np.random.choice(title_templates)
             if np.random.random() < 0.3:  # 30% chance of trending keyword
@@ -347,12 +362,13 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 content_type=ContentType.VIDEO,
                 duration_minutes=np.random.uniform(5, 30),
                 word_count=np.random.randint(500, 3000),
-                thumbnail_colors=["#FF6B6B", "#4ECDC4", "#45B7D1"],
+                thumbnail_colors=["#FF6B6B", "#4ECDC4", "#45B7D1"],"
                 topic_category=category,
                 sentiment_score=np.random.uniform(0.3, 0.9),
                 readability_score=np.random.uniform(60, 90),
                 trending_keywords_count=len([k for k in trending_keywords if k in title.lower()]),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Performance calculation with realistic patterns
             base_views = cat_data["base_views"]
@@ -382,10 +398,12 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 * duration_score
                 * sentiment_score
                 * np.random.uniform(0.5, 2.0)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             engagement_rate = (
                 cat_data["engagement_mult"] * sentiment_score * np.random.uniform(0.02, 0.12)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             shares = int(views * engagement_rate * np.random.uniform(0.1, 0.3))
             comments = int(views * engagement_rate * np.random.uniform(0.05, 0.15))
 
@@ -395,7 +413,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 (engagement_rate - 0.05) * 10,
                 title_score - 1.0,
                 (sentiment_score - 0.5) * 2,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             viral_score = min(1.0, max(0.0, sum(viral_factors)))
 
             performance = ContentPerformance(
@@ -409,9 +428,11 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 viral_score=viral_score,
                 success_factors=(
                     ["title_optimization", "trending_keywords"] if viral_score > 0.6 else []
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 performance_date=datetime.now() - timedelta(days=np.random.randint(1, 365)),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             training_data.append(performance)
 
@@ -452,7 +473,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
             np.array(views_list),
             np.array(engagement_list),
             np.array(viral_list),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _extract_feature_vector(self, features: ContentFeatures) -> Optional[np.ndarray]:
         """Extract numerical feature vector from content features."""
@@ -473,8 +495,10 @@ class PredictiveAnalyticsEngine(BaseAgent):
                     int(title_has_numbers),
                     int(title_has_question),
                     int(title_has_exclamation),
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
             # Content features
             vector.extend(
@@ -484,14 +508,17 @@ class PredictiveAnalyticsEngine(BaseAgent):
                     features.sentiment_score or 0.5,
                     features.readability_score or 70.0,
                     features.trending_keywords_count or 0,
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
             # Keyword features
             keyword_count = len(features.keywords) if features.keywords else 0
             avg_keyword_length = (
                 np.mean([len(k) for k in features.keywords]) if features.keywords else 5.0
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             vector.extend([keyword_count, avg_keyword_length])
 
@@ -532,17 +559,21 @@ class PredictiveAnalyticsEngine(BaseAgent):
                     # Make predictions
                     predicted_views = max(
                         0, int(self.models[SuccessMetric.VIEWS].predict(X_scaled)[0])
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     predicted_engagement = max(
                         0.0, self.models[SuccessMetric.ENGAGEMENT].predict(X_scaled)[0]
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     viral_score = max(
                         0.0,
                         min(
                             1.0,
                             self.models[SuccessMetric.VIRAL_SCORE].predict(X_scaled)[0],
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                 except Exception as e:
                     self.logger.error(f"ML prediction error: {e}")
@@ -553,12 +584,14 @@ class PredictiveAnalyticsEngine(BaseAgent):
             # Calculate success score
             success_score = self._calculate_success_score(
                 predicted_views, predicted_engagement, viral_score
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Generate optimization suggestions
             optimization_suggestions = await self._generate_optimization_suggestions(
                 features, success_score
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Identify risk factors
             risk_factors = self._identify_risk_factors(features)
@@ -580,7 +613,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 optimization_suggestions=optimization_suggestions,
                 risk_factors=risk_factors,
                 best_publish_time=best_publish_time,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Store prediction for tracking
             await self._store_prediction(result)
@@ -618,7 +652,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
         success_score = min(
             1.0,
             base_score + title_score + trending_bonus + sentiment_bonus + duration_score,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Estimate views and engagement based on success score
         predicted_views = int(success_score * 10000)
@@ -635,10 +670,12 @@ class PredictiveAnalyticsEngine(BaseAgent):
             optimization_suggestions=[
                 "Add trending keywords",
                 "Optimize title for engagement",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             risk_factors=["Limited historical data"] if success_score < 0.4 else [],
             best_publish_time=datetime.now().replace(hour=14, minute=0, second=0, microsecond=0),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _calculate_success_score(self, views: int, engagement: float, viral_score: float) -> float:
         """Calculate overall success score from predictions."""
@@ -671,31 +708,36 @@ class PredictiveAnalyticsEngine(BaseAgent):
             # Trending keywords
             if (features.trending_keywords_count or 0) == 0:
                 suggestions.append(
-                    "Include trending keywords like 'AI', '2024', \
-    or 'ultimate' in title"
-                )
+                    "Include trending keywords like 'AI', '2024', \"
+#     or 'ultimate' in title"
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Duration optimization
             if features.content_type == ContentType.VIDEO:
                 if not features.duration_minutes:
                     suggestions.append(
                         "Aim for 8 - 15 minute video duration for optimal engagement"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif features.duration_minutes < 5:
                     suggestions.append(
                         "Consider extending video to 8+ minutes for better algorithm performance"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif features.duration_minutes > 20:
                     suggestions.append(
-                        "Consider breaking into shorter segments \
-    or series for better retention"
-                    )
+                        "Consider breaking into shorter segments \"
+#     or series for better retention"
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Sentiment optimization
             if (features.sentiment_score or 0.5) < 0.6:
                 suggestions.append(
                     "Use more positive, engaging language to improve sentiment score"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Success score specific suggestions
             if success_score < 0.3:
@@ -704,16 +746,20 @@ class PredictiveAnalyticsEngine(BaseAgent):
                         "Consider researching trending topics in your niche",
                         "Analyze top - performing content for title patterns",
                         "Add emotional hooks or curiosity gaps to title",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
             elif success_score < 0.6:
                 suggestions.extend(
                     [
                         "Optimize thumbnail with bright, contrasting colors",
                         "Add specific numbers or timeframes to title",
                         "Consider collaboration opportunities",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
             # AI - generated suggestions using Ollama
             ai_suggestions = await self._get_ai_optimization_insights(features, success_score)
@@ -729,7 +775,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
     ) -> List[str]:
         """Get AI - powered optimization insights using Ollama."""
         try:
-            prompt = f"""
+            prompt = f""""""
             Analyze this content and provide 3 specific optimization suggestions:
 
             Title: {features.title}
@@ -741,7 +787,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
             Provide actionable suggestions to improve viral potential and engagement.
             Format as a simple list of suggestions.
-            """
+            """"""
 
             import requests
 
@@ -749,7 +795,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 "http://localhost:11434/api/generate",
                 json={"model": "llama3.2", "prompt": prompt, "stream": False},
                 timeout=15,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 result = response.json()
@@ -817,7 +864,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                 ContentType.SOCIAL_POST: 12,  # 12 PM
                 ContentType.PODCAST: 7,  # 7 AM
                 ContentType.INFOGRAPHIC: 15,  # 3 PM
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             optimal_hour = optimal_hours or default_hours.get(features.content_type, 14)
 
@@ -833,7 +881,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
             if (
                 features.topic_category in ["tech_tutorials", "education"]
                 and next_publish.weekday() >= 5
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 days_to_monday = 7 - next_publish.weekday()
                 next_publish += timedelta(days=days_to_monday)
 
@@ -848,18 +897,20 @@ class PredictiveAnalyticsEngine(BaseAgent):
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT strftime('%H',
-    publish_time) as hour,
+# BRACKET_SURGEON: disabled
+#     publish_time) as hour,
     AVG(viral_score) as avg_score
                     FROM content_performance
                     WHERE content_type = ? AND publish_time IS NOT NULL
                     GROUP BY hour
                     ORDER BY avg_score DESC
                     LIMIT 1
-                    """,
+                    ""","""
                     (content_type.value,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 result = cursor.fetchone()
                 if result and result[0]:
@@ -879,16 +930,17 @@ class PredictiveAnalyticsEngine(BaseAgent):
 
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO prediction_results
                     (prediction_id,
     content_features,
     predicted_views,
     predicted_engagement,
                         viral_probability, success_score, confidence_lower, confidence_upper,
-                         optimization_suggestions, risk_factors, best_publish_time)
+# BRACKET_SURGEON: disabled
+#                          optimization_suggestions, risk_factors, best_publish_time)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                     (
                         prediction_id,
                         json.dumps(
@@ -897,8 +949,10 @@ class PredictiveAnalyticsEngine(BaseAgent):
                                 "content_type": result.content_features.content_type.value,
                                 "keywords": result.content_features.keywords,
                                 "duration_minutes": result.content_features.duration_minutes,
-                            }
-                        ),
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         ),
                         result.predicted_views,
                         result.predicted_engagement,
                         result.viral_probability,
@@ -908,8 +962,10 @@ class PredictiveAnalyticsEngine(BaseAgent):
                         json.dumps(result.optimization_suggestions),
                         json.dumps(result.risk_factors),
                         result.best_publish_time,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             self.logger.error(f"Prediction storage error: {e}")
@@ -920,7 +976,7 @@ class PredictiveAnalyticsEngine(BaseAgent):
             # Store performance data
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO content_performance
                     (content_id,
     title,
@@ -930,9 +986,10 @@ class PredictiveAnalyticsEngine(BaseAgent):
     duration_minutes,
                         word_count, topic_category, sentiment_score, readability_score,
                          trending_keywords_count, views_30d, engagement_rate, shares, comments,
-                         conversion_rate, viral_score, success_factors, performance_date)
+# BRACKET_SURGEON: disabled
+#                          conversion_rate, viral_score, success_factors, performance_date)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                     (
                         performance.content_id,
                         performance.features.title,
@@ -953,8 +1010,10 @@ class PredictiveAnalyticsEngine(BaseAgent):
                         performance.viral_score,
                         json.dumps(performance.success_factors),
                         performance.performance_date,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Retrain models periodically
             await self._check_retrain_models()
@@ -968,7 +1027,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
                     "SELECT COUNT(*) FROM content_performance WHERE created_at > datetime('now', '-7 days')"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 new_data_count = cursor.fetchone()[0]
 
                 # Retrain if we have 50+ new data points
@@ -1028,15 +1088,16 @@ class PredictiveAnalyticsEngine(BaseAgent):
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT content_id, title, description, keywords, content_type, duration_minutes,
                         word_count, topic_category, sentiment_score, readability_score,
                                trending_keywords_count, views_30d, engagement_rate, shares, comments,
                                conversion_rate, viral_score, success_factors, performance_date
                     FROM content_performance
                     ORDER BY performance_date DESC
-                    """
-                )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 for row in cursor.fetchall():
                     try:
@@ -1054,7 +1115,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                             sentiment_score=row[8],
                             readability_score=row[9],
                             trending_keywords_count=row[10],
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         performance = ContentPerformance(
                             content_id=row[0],
@@ -1067,7 +1129,8 @@ class PredictiveAnalyticsEngine(BaseAgent):
                             viral_score=row[16],
                             success_factors=success_factors,
                             performance_date=datetime.fromisoformat(row[18]),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         performance_data.append(performance)
 
@@ -1086,65 +1149,75 @@ class PredictiveAnalyticsEngine(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 # Prediction accuracy
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT AVG(prediction_accuracy) as avg_accuracy,
                         COUNT(*) as total_predictions
                     FROM prediction_results
                     WHERE prediction_accuracy IS NOT NULL
-                    """
-                )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 accuracy_data = cursor.fetchone()
 
                 # Recent predictions
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT success_score, viral_probability, created_at
                     FROM prediction_results
                     ORDER BY created_at DESC
                     LIMIT 10
-                    """
-                )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 recent_predictions = cursor.fetchall()
 
                 # Top success factors
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT factor_name, impact_score, frequency
                     FROM success_factors
                     ORDER BY impact_score DESC
                     LIMIT 5
-                    """
-                )
+                    """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 success_factors = cursor.fetchall()
 
                 return {
                     "prediction_accuracy": {
                         "average": accuracy_data[0] if accuracy_data[0] else 0.0,
                         "total_predictions": (accuracy_data[1] if accuracy_data[1] else 0),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "recent_predictions": [
                         {
                             "success_score": pred[0],
                             "viral_probability": pred[1],
                             "created_at": pred[2],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         for pred in recent_predictions
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "top_success_factors": [
                         {
                             "factor": factor[0],
                             "impact": factor[1],
                             "frequency": factor[2],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         for factor in success_factors
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "model_status": {
                         "views_model": self.models[SuccessMetric.VIEWS] is not None,
                         "engagement_model": self.models[SuccessMetric.ENGAGEMENT] is not None,
                         "viral_model": self.models[SuccessMetric.VIRAL_SCORE] is not None,
                         "ml_available": ML_AVAILABLE,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             self.logger.error(f"Analytics dashboard error: {e}")
@@ -1157,8 +1230,10 @@ class PredictiveAnalyticsEngine(BaseAgent):
                     "engagement_model": False,
                     "viral_model": False,
                     "ml_available": ML_AVAILABLE,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
 
 # Example usage and testing
@@ -1180,7 +1255,8 @@ if __name__ == "__main__":
             sentiment_score=0.8,
             readability_score=75.0,
             trending_keywords_count=3,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Get prediction
         prediction = await engine.predict_content_success(test_features)

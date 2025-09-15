@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Unified Media Hub - Comprehensive Media Processing System
 
 This module provides a centralized hub for all media processing operations,
@@ -18,7 +18,7 @@ Features:
 
 Author: TRAE.AI Media System
 Version: 2.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -46,18 +46,21 @@ try:
     from ..pipelines.blender_handoff import (
         create_blender_project,
         validate_blender_installation,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     from ..pipelines.davinci_resolve_integration import (
         ResolveProjectConfig,
         davinci_integration,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     from ..pipelines.enhanced_blender_pipeline import (
         AvatarConfig,
         BlenderRenderConfig,
         blender_pipeline,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError as e:
     logging.warning(f"Some media modules not available: {e}")
 
@@ -116,7 +119,7 @@ class MediaJob:
     config: Dict[str, Any]
     status: ProcessingStatus = ProcessingStatus.PENDING
     progress: float = 0.0
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=datetime.now):
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     output_files: List[str] = field(default_factory=list)
@@ -140,8 +143,8 @@ class WorkflowTemplate:
 
 
 class UnifiedMediaHub:
-    """Central hub for all media processing operations with DaVinci Resolve \
-    and Blender integration."""
+    """Central hub for all media processing operations with DaVinci Resolve \"""
+#     and Blender integration.""""""
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or self._load_default_config()
@@ -174,13 +177,16 @@ class UnifiedMediaHub:
                 "standard": {"resolution": "1080p", "bitrate": "5M", "fps": 30},
                 "high": {"resolution": "1080p", "bitrate": "8M", "fps": 60},
                 "ultra": {"resolution": "4K", "bitrate": "20M", "fps": 60},
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "avatar_config": {
                 "voice_styles": ["natural", "professional", "casual", "dramatic"],
                 "emotions": ["neutral", "happy", "serious", "excited", "calm"],
                 "languages": ["en", "es", "fr", "de", "zh"],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _initialize_processors(self):
         """Initialize all media processing engines."""
@@ -223,21 +229,25 @@ class UnifiedMediaHub:
                     {"step": "voice_synthesis", "processor": "audio_processor"},
                     {"step": "avatar_animation", "processor": "avatar_processor"},
                     {"step": "video_composition", "processor": "video_processor"},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 default_config={
                     "duration": 60,
                     "aspect_ratio": "9:16",
                     "quality": "standard",
                     "voice_style": "casual",
                     "emotion": "excited",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 estimated_time=180,
                 quality_presets={
                     "draft": {"resolution": "720p", "processing_time": 120},
                     "standard": {"resolution": "1080p", "processing_time": 180},
                     "high": {"resolution": "1080p", "processing_time": 300},
-                },
-            ),
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ),
             WorkflowTemplate(
                 template_id="presentation_avatar",
                 name="Presentation Avatar",
@@ -249,21 +259,25 @@ class UnifiedMediaHub:
                     {"step": "professional_voice", "processor": "audio_processor"},
                     {"step": "3d_avatar_creation", "processor": "blender_processor"},
                     {"step": "scene_composition", "processor": "video_processor"},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 default_config={
                     "duration": 300,
                     "aspect_ratio": "16:9",
                     "quality": "high",
                     "voice_style": "professional",
                     "emotion": "serious",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 estimated_time=600,
                 quality_presets={
                     "standard": {"resolution": "1080p", "processing_time": 600},
                     "high": {"resolution": "1080p", "processing_time": 900},
                     "ultra": {"resolution": "4K", "processing_time": 1800},
-                },
-            ),
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ),
             WorkflowTemplate(
                 template_id="png_to_blender",
                 name="PNG to Blender Code",
@@ -275,26 +289,31 @@ class UnifiedMediaHub:
                     {"step": "heightmap_generation", "processor": "blender_processor"},
                     {"step": "mesh_creation", "processor": "blender_processor"},
                     {"step": "code_generation", "processor": "code_generator"},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 default_config={
                     "mesh_type": "heightmap",
                     "subdivision_level": 3,
                     "displacement_strength": 1.0,
                     "output_format": "python_script",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 estimated_time=120,
                 quality_presets={
                     "basic": {"subdivision": 2, "processing_time": 60},
                     "detailed": {"subdivision": 3, "processing_time": 120},
                     "ultra_detailed": {"subdivision": 5, "processing_time": 300},
-                },
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
         for template in templates:
             self.workflow_templates[template.template_id] = template
 
-        logger.info(f"Loaded {len(templates)} workflow templates")
+        logger.info(f"Loaded {len(templates)} workflow templates"):
 
     async def create_media_job(
         self,
@@ -302,7 +321,8 @@ class UnifiedMediaHub:
         workflow_type: WorkflowType,
         input_data: Dict[str, Any],
         config: Optional[Dict[str, Any]] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Create a new media processing job."""
         job_id = str(uuid.uuid4())
 
@@ -325,7 +345,8 @@ class UnifiedMediaHub:
             workflow_type=workflow_type,
             input_data=input_data,
             config=final_config,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.active_jobs[job_id] = job
         logger.info(f"Created media job {job_id} for {media_type.value}")
@@ -375,7 +396,8 @@ class UnifiedMediaHub:
                 "output_files": job.output_files,
                 "metadata": job.metadata,
                 "processing_time": (job.completed_at - job.started_at).total_seconds(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             job.status = ProcessingStatus.ERROR
@@ -415,8 +437,10 @@ class UnifiedMediaHub:
                     "duration": config.get("duration", 60),
                     "resolution": config.get("quality", "standard"),
                     "audio_file": audio_file,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         else:
             raise ValueError(f"Unsupported video workflow: {job.workflow_type}")
@@ -456,8 +480,10 @@ class UnifiedMediaHub:
                 "metadata": {
                     "processing_type": "podcast_production",
                     "input_files": len(audio_files),
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         else:
             raise ValueError(f"Unsupported audio workflow: {job.workflow_type}")
@@ -484,7 +510,8 @@ class UnifiedMediaHub:
         job.progress = 70.0
         avatar_video = await self._create_2d_avatar_animation(
             avatar_image, audio_file, emotions, config
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Step 4: Post - processing
         job.progress = 90.0
@@ -496,8 +523,10 @@ class UnifiedMediaHub:
                 "emotions_detected": emotions,
                 "voice_style": config.get("voice_style", "natural"),
                 "audio_file": audio_file,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _process_3d_avatar_job(self, job: MediaJob) -> Dict[str, Any]:
         """Process 3D avatar creation jobs using enhanced Blender pipeline."""
@@ -515,7 +544,8 @@ class UnifiedMediaHub:
             emotion=config.get("emotion", "neutral"),
             quality_preset=config.get("quality", "standard"),
             duration=config.get("duration", 300),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Step 1: Create 3D character using enhanced pipeline
         job.progress = 25.0
@@ -523,7 +553,8 @@ class UnifiedMediaHub:
             script=input_data.get("script", ""),
             avatar_config=avatar_config,
             reference_image=input_data.get("reference_image"),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Step 2: Generate animation with cloud software integration
         job.progress = 50.0
@@ -531,7 +562,8 @@ class UnifiedMediaHub:
             character_file=character_result["character_file"],
             audio_file=character_result["audio_file"],
             config=avatar_config,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Step 3: Render video with enhanced settings
         job.progress = 75.0
@@ -540,12 +572,14 @@ class UnifiedMediaHub:
             samples=config.get("samples", 128),
             resolution=config.get("resolution", [1920, 1080]),
             frame_range=[1, avatar_config.duration * 24],  # 24 fps
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         rendered_video = await blender_pipeline.render_animation(
             animation_file=animation_result["animation_file"],
             render_config=render_config,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return {
             "output_files": [rendered_video["output_path"]],
@@ -556,8 +590,10 @@ class UnifiedMediaHub:
                 "render_time": rendered_video.get("render_time", 0),
                 "frames_rendered": rendered_video.get("frames_rendered", 0),
                 "cloud_integrations_used": rendered_video.get("cloud_integrations", []),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _process_png_to_blender_job(self, job: MediaJob) -> Dict[str, Any]:
         """Process PNG to Blender code conversion jobs."""
@@ -601,8 +637,10 @@ class UnifiedMediaHub:
                 "image_dimensions": image_data.get("dimensions"),
                 "mesh_type": config.get("mesh_type", "heightmap"),
                 "subdivision_level": config.get("subdivision_level", 3),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _process_mixed_media_job(self, job: MediaJob) -> Dict[str, Any]:
         """Process mixed media workflow jobs."""
@@ -623,7 +661,8 @@ class UnifiedMediaHub:
 
     async def _animate_avatar(
         self, image_path: str, audio_path: str, config: Dict[str, Any]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Create avatar animation."""
         # Implementation would use Linly - Talker or similar
         return f"avatar_{int(time.time())}.mp4"
@@ -650,7 +689,8 @@ class UnifiedMediaHub:
                 "has_alpha": img.mode in ("RGBA", "LA"),
                 "pixel_range": (int(img_array.min()), int(img_array.max())),
                 "mean_brightness": float(img_array.mean()),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _create_heightmap_from_png(
         self, png_file: str, config: Dict[str, Any]
@@ -678,24 +718,26 @@ class UnifiedMediaHub:
                 "heightmap": heightmap.tolist(),
                 "displacement_strength": displacement_strength,
                 "subdivision_level": config.get("subdivision_level", 3),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _generate_blender_mesh_code(
         self, heightmap_data: Dict[str, Any], config: Dict[str, Any]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate Blender Python code for mesh creation."""
         width = heightmap_data["width"]
         height = heightmap_data["height"]
         subdivision = heightmap_data["subdivision_level"]
 
-        code = f'''
+        code = f''''''
 #!/usr/bin/env python3
-"""
+""""""
 Blender Mesh Generator from PNG Heightmap
 Generated by TRAE.AI Unified Media Hub
 
-This script creates a 3D mesh from PNG heightmap data using Blender's Python API.
-"""
+This script creates a 3D mesh from PNG heightmap data using Blender's Python API.'
+""""""
 
 import bpy
 import bmesh
@@ -754,9 +796,9 @@ def create_mesh_from_heightmap():
 
             # Create quad face
             if v1 < len(vertices) \
-    and v2 < len(vertices) \
-    and v3 < len(vertices) \
-    and v4 < len(vertices):
+#     and v2 < len(vertices) \
+#     and v3 < len(vertices) \
+#     and v4 < len(vertices):
                 try:
                     bm.faces.new([vertices[v1],
     vertices[v2],
@@ -812,7 +854,7 @@ if __name__ == "__main__":
     # Run the mesh creation
     mesh_object = create_mesh_from_heightmap()
     print("Heightmap mesh generation complete!")
-'''
+''''''
 
         return code
 
@@ -834,7 +876,8 @@ if __name__ == "__main__":
             "output_files": job.output_files,
             "error_message": job.error_message,
             "metadata": job.metadata,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_workflow_templates(self) -> Dict[str, Dict[str, Any]]:
         """Get all available workflow templates."""
@@ -846,9 +889,11 @@ if __name__ == "__main__":
                 "media_types": [mt.value for mt in template.media_types],
                 "estimated_time": template.estimated_time,
                 "quality_presets": template.quality_presets,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             for template_id, template in self.workflow_templates.items()
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_system_status(self) -> Dict[str, Any]:
         """Get overall system status."""
@@ -859,10 +904,12 @@ if __name__ == "__main__":
                 "audio": self.audio_processor is not None,
                 "video": self.video_processor is not None,
                 "video_engine": self.video_engine is not None,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "workflow_templates": len(self.workflow_templates),
             "max_workers": self.config.get("max_workers", 4),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def batch_process_media(
         self, jobs: List[Dict[str, Any]], batch_config: Optional[Dict[str, Any]] = None
@@ -878,7 +925,8 @@ if __name__ == "__main__":
                 WorkflowType(job_data["workflow_type"]),
                 job_data["input_data"],
                 job_data.get("config"),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             job_ids.append(job_id)
 
         # Process jobs concurrently
@@ -895,7 +943,8 @@ if __name__ == "__main__":
             "results": results,
             "success_count": sum(1 for r in results if r["success"]),
             "error_count": sum(1 for r in results if not r["success"]),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def cleanup_old_jobs(self, max_age_hours: int = 24):
         """Clean up old completed jobs."""
@@ -905,7 +954,8 @@ if __name__ == "__main__":
             job_id
             for job_id, job in self.completed_jobs.items()
             if job.completed_at and job.completed_at < cutoff_time
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for job_id in jobs_to_remove:
             del self.completed_jobs[job_id]
@@ -919,23 +969,28 @@ if __name__ == "__main__":
                 "enabled": self.config.get("adobe_cc_enabled", False),
                 "api_key": self.config.get("adobe_api_key"),
                 "services": ["photoshop", "after_effects", "premiere_pro"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "google_workspace": {
                 "enabled": self.config.get("google_workspace_enabled", False),
                 "credentials": self.config.get("google_credentials_path"),
                 "services": ["drive", "docs", "sheets"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "microsoft_365": {
                 "enabled": self.config.get("microsoft_365_enabled", False),
                 "tenant_id": self.config.get("microsoft_tenant_id"),
                 "services": ["onedrive", "teams", "powerpoint"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "aws_media_services": {
                 "enabled": self.config.get("aws_enabled", False),
                 "access_key": self.config.get("aws_access_key"),
                 "services": ["elemental", "s3", "transcribe"],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
         logger.info("Cloud software integrations initialized")
 
     def _init_davinci_blender_pipeline(self):
@@ -947,15 +1002,18 @@ if __name__ == "__main__":
                 "youtube": {"format": "mp4", "codec": "h264", "quality": "high"},
                 "instagram": {"format": "mp4", "codec": "h264", "aspect_ratio": "9:16"},
                 "broadcast": {"format": "mov", "codec": "prores", "quality": "ultra"},
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         self.blender_config = {
             "blender_path": self.config.get("blender_path", "/usr/bin/blender"),
             "render_engines": ["cycles", "eevee", "workbench"],
             "addon_paths": self.config.get("blender_addons", []),
             "python_scripts": self.config.get("blender_scripts", {}),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info("DaVinci Resolve and Blender pipeline initialized")
 
@@ -976,15 +1034,18 @@ if __name__ == "__main__":
                         "animation",
                         "cloud_software_integration",
                         "davinci_resolve_export",
-                    ],
-                }
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 logger.warning(f"Blender initialization failed: {validation['error']}")
                 return {
                     "status": "warning",
                     "error": validation["error"],
                     "fallback": "Limited 3D capabilities available",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception as e:
             logger.error(f"Blender pipeline initialization error: {e}")
             return {"status": "error", "error": str(e)}
@@ -1007,8 +1068,10 @@ if __name__ == "__main__":
                         "cloud_software_integration",
                         "blender_import",
                         "automated_workflows",
-                    ],
-                }
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 logger.warning(f"DaVinci Resolve initialization failed: {validation['error']}")
                 return {
@@ -1016,7 +1079,8 @@ if __name__ == "__main__":
                     "error": validation["error"],
                     "suggestion": validation.get("suggestion"),
                     "fallback": "Basic video processing available",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception as e:
             logger.error(f"DaVinci Resolve initialization error: {e}")
             return {"status": "error", "error": str(e)}
@@ -1033,7 +1097,8 @@ if __name__ == "__main__":
             "performance_metrics": await self._get_performance_metrics(),
             "recent_outputs": self._get_recent_outputs(),
             "resource_usage": self._get_resource_usage(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return dashboard_data
 
@@ -1046,7 +1111,8 @@ if __name__ == "__main__":
                 "connected": self._test_cloud_connection(service),
                 "services": config["services"],
                 "last_sync": self._get_last_sync_time(service),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         return status
 
     def _get_davinci_status(self) -> Dict[str, Any]:
@@ -1057,7 +1123,8 @@ if __name__ == "__main__":
             "active_projects": self._get_active_davinci_projects(),
             "export_presets": list(self.davinci_config["export_presets"].keys()),
             "render_queue": self._get_davinci_render_queue(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_blender_status(self) -> Dict[str, Any]:
         """Get Blender pipeline status."""
@@ -1067,7 +1134,8 @@ if __name__ == "__main__":
             "render_engines": self.blender_config["render_engines"],
             "active_renders": self._get_active_blender_renders(),
             "available_addons": self._get_blender_addons(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _get_performance_metrics(self) -> Dict[str, Any]:
         """Get system performance metrics."""
@@ -1085,9 +1153,12 @@ if __name__ == "__main__":
                     p
                     for p in psutil.process_iter()
                     if "blender" in p.name().lower() or "resolve" in p.name().lower()
-                ]
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_recent_outputs(self) -> List[Dict[str, Any]]:
         """Get recent media outputs."""
@@ -1105,9 +1176,11 @@ if __name__ == "__main__":
                 "output_files": job.output_files,
                 "completed_at": (job.completed_at.isoformat() if job.completed_at else None),
                 "file_sizes": [self._get_file_size(f) for f in job.output_files],
-            }
+# BRACKET_SURGEON: disabled
+#             }
             for job in recent_jobs
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def _get_resource_usage(self) -> Dict[str, Any]:
         """Get detailed resource usage information."""
@@ -1116,15 +1189,19 @@ if __name__ == "__main__":
                 "temp_directory": self._get_directory_size(self.config["temp_directory"]),
                 "output_directory": self._get_directory_size(self.config["output_directory"]),
                 "cache_size": self._get_cache_size(),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "processing": {
                 "active_workers": self.active_workers,
                 "max_workers": self.max_workers,
                 "queue_size": (
                     self.processing_queue.qsize() if hasattr(self, "processing_queue") else 0
-                ),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     # Helper methods for dashboard functionality
 
@@ -1145,7 +1222,8 @@ if __name__ == "__main__":
 
         return shutil.which("resolve") is not None or os.path.exists(
             self.davinci_config["resolve_path"]
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _get_davinci_version(self) -> Optional[str]:
         """Get DaVinci Resolve version."""
@@ -1157,7 +1235,8 @@ if __name__ == "__main__":
         # Implementation would query actual projects
         return (
             ["Social Media Campaign", "Product Demo"] if self._check_davinci_installation() else []
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _get_davinci_render_queue(self) -> List[Dict[str, Any]]:
         """Get DaVinci Resolve render queue status."""
@@ -1170,10 +1249,13 @@ if __name__ == "__main__":
                     "project": "Social Media Campaign",
                     "status": "rendering",
                     "progress": 75,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {"project": "Product Demo", "status": "queued", "progress": 0},
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
     def _check_blender_installation(self) -> bool:
         """Check if Blender is installed."""
@@ -1182,7 +1264,8 @@ if __name__ == "__main__":
 
         return shutil.which("blender") is not None or os.path.exists(
             self.blender_config["blender_path"]
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _get_blender_version(self) -> Optional[str]:
         """Get Blender version."""
@@ -1201,9 +1284,12 @@ if __name__ == "__main__":
                     "frame": 120,
                     "total_frames": 300,
                     "engine": "cycles",
-                }
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
 
     def _get_blender_addons(self) -> List[str]:
         """Get available Blender addons."""
@@ -1212,7 +1298,8 @@ if __name__ == "__main__":
             ["rigify", "extra_objects", "animation_nodes"]
             if self._check_blender_installation()
             else []
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _get_gpu_usage(self) -> float:
         """Get GPU usage percentage."""
@@ -1269,19 +1356,22 @@ if __name__ == "__main__":
             preset=preset,
             resolution=job.config.get("resolution", "1080p"),
             frame_rate=job.config.get("fps", 30),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Use enhanced DaVinci integration
         result = await davinci_integration.create_project_from_media(
             media_files=job.output_files, config=project_config, metadata=job.metadata
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Apply cloud software integrations if available
         if result["success"]:
             cloud_result = await cloud_software_manager.sync_with_davinci(
                 project_id=result["project_id"],
                 cloud_services=["adobe_creative_cloud", "google_workspace"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
             result["cloud_sync"] = cloud_result
 
         logger.info(f"Exported job {job_id} to DaVinci Resolve with enhanced integration")
@@ -1299,21 +1389,24 @@ if __name__ == "__main__":
             frame_range=config.get("frame_range", [1, 250]),
             output_format=config.get("output_format", "mp4"),
             quality_preset=config.get("quality", "standard"),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Use enhanced Blender pipeline
         result = await blender_pipeline.execute_script_render(
             script_path=script_path,
             render_config=render_config,
             cloud_integrations=config.get("cloud_integrations", []),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Integrate with cloud software if requested
         if result["success"] and config.get("cloud_sync", False):
             cloud_result = await cloud_software_manager.sync_blender_output(
                 output_path=result["output_path"],
                 services=config.get("cloud_services", ["adobe_creative_cloud"]),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             result["cloud_sync"] = cloud_result
 
         logger.info(f"Enhanced Blender render completed: {result['output_path']}")
@@ -1350,9 +1443,11 @@ if __name__ == "__main__":
             {
                 "script": "Welcome to our amazing product demo!",
                 "avatar_image": "path/to/avatar.jpg",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {"quality": "standard", "voice_style": "excited", "duration": 30},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         print(f"Created job: {job_id}")
 
@@ -1369,8 +1464,10 @@ if __name__ == "__main__":
                 "mesh_type": "heightmap",
                 "subdivision_level": 3,
                 "displacement_strength": 2.0,
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         png_result = await hub.process_media_job(png_job_id)
         print(f"PNG to Blender result: {png_result}")

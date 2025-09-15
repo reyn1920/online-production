@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAEAI Live System Launcher
 
 This script launches the complete TRAEAI autonomous system including:
@@ -12,7 +12,7 @@ Usage:
 
 Author: TRAEAI Development Team
 Version: 2.0.0 (Live Production)
-"""
+""""""
 
 import asyncio
 import os
@@ -58,7 +58,8 @@ class LiveSystemLauncher:
             try:
                 self.dashboard_app = SimpleDashboard(
                     host="0.0.0.0", port=8082  # Use different port to avoid conflicts
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 logger.info("Starting TRAEAI Dashboard on http://0.0.0.0:8082")
                 self.dashboard_app.run()

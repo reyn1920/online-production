@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI Unified API Layer
-
+""""""
 Provides a unified API layer that bridges n8n workflows with the existing
 agent system, CrewAI framework, Supabase database, and MCP protocol.
 Enables seamless integration and orchestration across all system components.
+"""
+
+TRAE.AI Unified API Layer
+
+
+
+""""""
+
 
 Features:
+
+
+
 - Unified REST API for all system components
 - n8n workflow integration and management
 - CrewAI agent coordination
@@ -20,6 +31,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import asyncio
@@ -47,7 +59,7 @@ try:
         Response,
         WebSocket,
         WebSocketDisconnect,
-    )
+     )
 
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -143,7 +155,7 @@ except ImportError as e:
             return {
                 "status": "unavailable",
                 "message": "CrewAI integration not installed",
-            }
+             }
 
     class SupabaseIntegration:
         """Fallback Supabase integration for when the module is not available."""
@@ -157,7 +169,7 @@ except ImportError as e:
             return {
                 "status": "unavailable",
                 "message": "Supabase integration not installed",
-            }
+             }
 
     class MCPServer:
         """Fallback MCP Server for when the module is not available."""
@@ -292,7 +304,9 @@ else:
     # Fallback classes when FastAPI is not available
 
     class HealthResponse:
-        """Fallback HealthResponse for when FastAPI is not available."""
+        """
+Fallback HealthResponse for when FastAPI is not available.
+
 
         def __init__(self, status: str, timestamp: str, version: str, components: dict):
             self.status = status
@@ -301,16 +315,18 @@ else:
             self.components = components
 
     class WorkflowRequest:
-        """Fallback WorkflowRequest for when FastAPI is not available."""
-
-        def __init__(
+    """
+    Fallback WorkflowRequest for when FastAPI is not available.
+    """
+    
+    def __init__(
             self,
             name: str,
             description: str = None,
             workflow_data: dict = None,
             trigger_type: str = "manual",
             active: bool = True,
-        ):
+#         ):
             self.name = name
             self.description = description
             self.workflow_data = workflow_data or {}
@@ -318,7 +334,9 @@ else:
             self.active = active
 
     class WorkflowResponse:
-        """Fallback WorkflowResponse for when FastAPI is not available."""
+        """
+Fallback WorkflowResponse for when FastAPI is not available.
+
 
         def __init__(self, id: str, name: str, status: str, created_at: str, updated_at: str):
             self.id = id
@@ -328,9 +346,11 @@ else:
             self.updated_at = updated_at
 
     class AgentRequest:
-        """Fallback AgentRequest for when FastAPI is not available."""
-
-        def __init__(
+    """
+    Fallback AgentRequest for when FastAPI is not available.
+    """
+    
+    def __init__(
             self,
             name: str,
             role: str,
@@ -339,7 +359,7 @@ else:
             tools: list = None,
             max_iter: int = 5,
             memory: bool = True,
-        ):
+#         ):
             self.name = name
             self.role = role
             self.goal = goal
@@ -349,7 +369,9 @@ else:
             self.memory = memory
 
     class AgentResponse:
-        """Fallback AgentResponse for when FastAPI is not available."""
+        
+Fallback AgentResponse for when FastAPI is not available.
+"""
 
         def __init__(self, id: str, name: str, role: str, status: str, created_at: str):
             self.id = id
@@ -359,7 +381,9 @@ else:
             self.created_at = created_at
 
     class TaskRequest:
-        """Fallback TaskRequest for when FastAPI is not available."""
+        """
+Fallback TaskRequest for when FastAPI is not available.
+
 
         def __init__(
             self,
@@ -368,7 +392,7 @@ else:
             expected_output: str,
             context: dict = None,
             tools: list = None,
-        ):
+#         ):
             self.description = description
             self.agent_id = agent_id
             self.expected_output = expected_output
@@ -376,16 +400,18 @@ else:
             self.tools = tools or []
 
     class TaskResponse:
-        """Fallback TaskResponse for when FastAPI is not available."""
-
-        def __init__(
+    """
+    Fallback TaskResponse for when FastAPI is not available.
+    """
+    
+    def __init__(
             self,
             id: str,
             description: str,
             status: str,
             result: str = None,
             created_at: str = None,
-        ):
+#         ):
             self.id = id
             self.description = description
             self.status = status
@@ -393,7 +419,9 @@ else:
             self.created_at = created_at
 
     class DatabaseQuery:
-        """Fallback DatabaseQuery for when FastAPI is not available."""
+        
+Fallback DatabaseQuery for when FastAPI is not available.
+"""
 
         def __init__(
             self,
@@ -402,7 +430,7 @@ else:
             data: dict = None,
             filters: dict = None,
             limit: int = None,
-        ):
+#         ):
             self.table = table
             self.operation = operation
             self.data = data
@@ -410,7 +438,9 @@ else:
             self.limit = limit
 
     class MCPRequest:
-        """Fallback MCPRequest for when FastAPI is not available."""
+        """
+Fallback MCPRequest for when FastAPI is not available.
+
 
         def __init__(self, method: str, params: dict = None, server_name: str = None):
             self.method = method
@@ -418,9 +448,11 @@ else:
             self.server_name = server_name
 
     class WebhookPayload:
-        """Fallback WebhookPayload for when FastAPI is not available."""
-
-        def __init__(self, event: str, data: dict, timestamp: str, signature: str = None):
+    """
+    Fallback WebhookPayload for when FastAPI is not available.
+    """
+    
+    def __init__(self, event: str, data: dict, timestamp: str, signature: str = None):
             self.event = event
             self.data = data
             self.timestamp = timestamp
@@ -429,7 +461,9 @@ else:
 
 @dataclass
 class APIConfig:
-    """Unified API configuration."""
+    
+Unified API configuration.
+"""
 
     host: str = "0.0.0.0"
     port: int = 8000
@@ -487,11 +521,24 @@ class ConnectionManager:
 
 
 class UnifiedAPILayer:
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
     Unified API Layer that bridges all TRAE.AI system components.
     Provides a single REST API interface for n8n, CrewAI, Supabase, and MCP.
-    """
+   
 
+    
+   
+""""""
+    
+   """
     def __init__(self, config: APIConfig = None, secrets_db_path: str = "data/secrets.sqlite"):
         self.logger = setup_logger("unified_api")
         self.config = config or APIConfig()
@@ -509,7 +556,7 @@ class UnifiedAPILayer:
             description="Unified API layer for TRAE.AI system components",
             version="1.0.0",
             debug=self.config.debug,
-        )
+         )
 
         # Add middleware
         self._setup_middleware()
@@ -536,29 +583,47 @@ class UnifiedAPILayer:
         self.logger.info("Unified API Layer initialized")
 
     def _setup_middleware(self):
-        """Setup FastAPI middleware."""
-        if not self.app:
-            return
+        """
+Setup FastAPI middleware.
 
+        if not self.app:
+            
+"""
+            return
+            """"""
         # CORS middleware
         self.app.add_middleware(
             CORSMiddleware,
+            """
+            return
+            """
             allow_origins=self.config.cors_origins or ["*"],
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
-        )
+         )
 
         # Trusted host middleware
         if self.config.trusted_hosts:
             self.app.add_middleware(TrustedHostMiddleware, allowed_hosts=self.config.trusted_hosts)
 
     def _setup_routes(self):
-        """Setup API routes."""
-        if not self.app:
-            return
+        """
+Setup API routes.
 
+        if not self.app:
+            
+"""
+            return
+            """"""
         # Health check
+            """
+
+            return
+            
+
+           
+""""""
         @self.app.get("/health", response_model=HealthResponse)
         async def health_check():
             return await self._health_check()
@@ -572,7 +637,7 @@ class UnifiedAPILayer:
         @self.app.get("/workflows")
         async def list_workflows(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._list_workflows()
 
@@ -580,7 +645,7 @@ class UnifiedAPILayer:
         async def create_workflow(
             workflow: WorkflowRequest,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._create_workflow(workflow)
 
@@ -588,7 +653,7 @@ class UnifiedAPILayer:
         async def get_workflow(
             workflow_id: str,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._get_workflow(workflow_id)
 
@@ -597,7 +662,7 @@ class UnifiedAPILayer:
             workflow_id: str,
             data: dict = None,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._execute_workflow(workflow_id, data)
 
@@ -605,7 +670,7 @@ class UnifiedAPILayer:
         @self.app.get("/agents")
         async def list_agents(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._list_agents()
 
@@ -613,7 +678,7 @@ class UnifiedAPILayer:
         async def create_agent(
             agent: AgentRequest,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._create_agent(agent)
 
@@ -622,14 +687,14 @@ class UnifiedAPILayer:
             agent_id: str,
             task: TaskRequest,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._create_task(agent_id, task)
 
         @self.app.get("/tasks/{task_id}")
         async def get_task(
             task_id: str, auth: HTTPAuthorizationCredentials = Depends(self.security)
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._get_task(task_id)
 
@@ -638,14 +703,14 @@ class UnifiedAPILayer:
         async def database_query(
             query: DatabaseQuery,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._database_query(query)
 
         @self.app.get("/database/tables")
         async def list_tables(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._list_tables()
 
@@ -654,7 +719,7 @@ class UnifiedAPILayer:
         async def mcp_request(
             request: MCPRequest,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._mcp_request(request)
 
@@ -662,7 +727,7 @@ class UnifiedAPILayer:
         async def list_mcp_tools(
             server_name: str = None,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._list_mcp_tools(server_name)
 
@@ -671,7 +736,7 @@ class UnifiedAPILayer:
         async def upload_file(
             request: Request,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._upload_file(request)
 
@@ -679,7 +744,7 @@ class UnifiedAPILayer:
         @self.app.get("/analytics/metrics")
         async def get_metrics(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+#         ):
             await self._verify_auth(auth)
             return await self._get_metrics()
 
@@ -694,11 +759,29 @@ class UnifiedAPILayer:
             await self._handle_websocket(websocket, client_id)
 
     async def initialize_integrations(self):
-        """Initialize all system integrations."""
+        """
+Initialize all system integrations.
+
         try:
             # Initialize n8n integration
+           
+""""""
+
             self.n8n = N8nIntegration()
+           
+
+            
+           
+"""
             if hasattr(self.n8n, "health_check"):
+           """
+
+            
+           
+
+            self.n8n = N8nIntegration()
+           
+""""""
                 n8n_health = await self.n8n.health_check()
                 self.logger.info(f"n8n integration: {n8n_health.get('status', 'unknown')}")
 
@@ -714,7 +797,7 @@ class UnifiedAPILayer:
                 supabase_health = await self.supabase.health_check()
                 self.logger.info(
                     f"Supabase integration: {supabase_health.get('status', 'unknown')}"
-                )
+                 )
 
             # Initialize MCP server
             self.mcp_server = MCPServer("TRAE - AI - Unified")
@@ -749,10 +832,27 @@ class UnifiedAPILayer:
             raise HTTPException(status_code=401, detail="Authentication failed")
 
     async def _health_check(self) -> Dict[str, Any]:
-        """Comprehensive health check."""
-        components = {}
+        """
+Comprehensive health check.
 
+       
+""""""
+
+        components = {}
+       
+
+        
+       
+"""
         # Check n8n
+       """
+
+        
+       
+
+        components = {}
+       
+""""""
         if self.n8n and hasattr(self.n8n, "health_check"):
             try:
                 components["n8n"] = await self.n8n.health_check()
@@ -781,12 +881,30 @@ class UnifiedAPILayer:
             "timestamp": datetime.now().isoformat(),
             "version": "1.0.0",
             "components": components,
-        }
+         }
 
     async def _authenticate(self, credentials: dict) -> Dict[str, Any]:
-        """Authenticate user and return token."""
+        """
+Authenticate user and return token.
+
+       
+""""""
+
         # Implement proper authentication logic
+       
+
+        
+       
+"""
         username = credentials.get("username")
+       """
+
+        
+       
+
+        # Implement proper authentication logic
+       
+""""""
         password = credentials.get("password")
 
         if not username or not password:
@@ -801,13 +919,30 @@ class UnifiedAPILayer:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     def _generate_token(self, username: str) -> str:
-        """Generate authentication token."""
+        """
+Generate authentication token.
+
+       
+""""""
+
         # Simple token generation (implement proper JWT in production)
+       
+
+        
+       
+"""
         payload = {
             "username": username,
             "exp": (datetime.now() + timedelta(hours=1)).timestamp(),
-        }
+         }
+       """
 
+        
+       
+
+        # Simple token generation (implement proper JWT in production)
+       
+""""""
         token_data = json.dumps(payload)
         return f"trae.{hashlib.sha256(token_data.encode()).hexdigest()}"
 
@@ -833,7 +968,7 @@ class UnifiedAPILayer:
                 name=workflow.name,
                 workflow_data=workflow.workflow_data,
                 active=workflow.active,
-            )
+             )
             return result
         except Exception as e:
             self.logger.error(f"Error creating workflow: {e}")
@@ -893,7 +1028,7 @@ class UnifiedAPILayer:
                 tools=agent.tools,
                 max_iter=agent.max_iter,
                 memory=agent.memory,
-            )
+             )
             return result
         except Exception as e:
             self.logger.error(f"Error creating agent: {e}")
@@ -911,7 +1046,7 @@ class UnifiedAPILayer:
                 expected_output=task.expected_output,
                 context=task.context,
                 tools=task.tools,
-            )
+             )
             return result
         except Exception as e:
             self.logger.error(f"Error creating task: {e}")
@@ -934,8 +1069,11 @@ class UnifiedAPILayer:
             raise HTTPException(status_code=500, detail="Failed to get task")
 
     async def _database_query(self, query: DatabaseQuery) -> Dict[str, Any]:
-        """Execute AI - enhanced database query with intelligent optimization \
-    and analysis."""
+        """
+Execute AI - enhanced database query with intelligent optimization \
+
+#     and analysis.
+"""
         if not self.supabase:
             raise HTTPException(status_code=503, detail="Supabase integration not available")
 
@@ -958,29 +1096,42 @@ class UnifiedAPILayer:
                 "optimization_suggestions": ai_analysis.get("suggestions", []),
                 "execution_time": insights.get("execution_time"),
                 "timestamp": datetime.now().isoformat(),
-            }
+             }
         except Exception as e:
             self.logger.error(f"Error executing AI - enhanced database query: {e}")
             raise HTTPException(status_code=500, detail="Failed to execute query")
 
     async def _analyze_database_query(self, query: DatabaseQuery) -> Dict[str, Any]:
-        """AI - powered database query analysis and optimization."""
+        """
+AI - powered database query analysis and optimization.
+
         try:
+           
+""""""
+
             # Use AI to analyze and optimize the query
-            analysis_prompt = f"""
-            Analyze this database query for optimization opportunities:
-            Operation: {query.operation}
-            Table: {query.table}
-            Filters: {query.filters}
-            Data: {query.data}
-            Limit: {query.limit}
+           
 
-            Provide optimization suggestions, potential performance issues, \
-    and security recommendations.
-            """
-
+            
+           
+"""
             # This would integrate with your AI service
+           """
+
+            
+           
+
             # For now, return structured analysis
+           
+""""""
+
+           
+
+            
+           
+"""
+            # Use AI to analyze and optimize the query
+           """"""
             return {
                 "query_complexity": "medium",
                 "estimated_performance": "good",
@@ -989,41 +1140,88 @@ class UnifiedAPILayer:
                     "Consider adding appropriate indexes",
                     "Use parameterized queries for security",
                     "Implement query result caching",
-                ],
+                 ],
                 "optimization_score": 85,
                 "ai_recommendations": "Query structure is well - formed with room for index optimization",
-            }
+             }
         except Exception as e:
             self.logger.error(f"Error in AI query analysis: {e}")
             return {"error": "AI analysis unavailable", "fallback": True}
 
     async def _execute_optimized_query(
         self, query: DatabaseQuery, ai_analysis: Dict[str, Any]
-    ) -> Any:
-        """Execute database query with AI - driven optimizations."""
+#     ) -> Any:
+        """
+Execute database query with AI - driven optimizations.
+
         try:
             # Apply AI - suggested optimizations before execution
-            optimized_query = self._apply_ai_optimizations(query, ai_analysis)
+           
+""""""
 
+            self._apply_ai_optimizations(query, ai_analysis)
+           
+
+            
+           
+"""
             # Execute the optimized query
+           """
+
+            
+           
+
             # This would integrate with your actual database
+           
+""""""
+
+           
+
+            
+           
+"""
+            self._apply_ai_optimizations(query, ai_analysis)
+           """"""
             return {
                 "rows_affected": (1 if query.operation in ["insert", "update", "delete"] else 0),
                 "data": [] if query.operation == "select" else None,
                 "success": True,
                 "optimizations_applied": ai_analysis.get("suggestions", []),
-            }
+             }
         except Exception as e:
             self.logger.error(f"Error executing optimized query: {e}")
             raise
 
     def _apply_ai_optimizations(
         self, query: DatabaseQuery, ai_analysis: Dict[str, Any]
-    ) -> DatabaseQuery:
-        """Apply AI - suggested optimizations to the query."""
-        # Apply optimizations based on AI analysis
-        optimized_query = query
+#     ) -> DatabaseQuery:
+        """
+Apply AI - suggested optimizations to the query.
 
+       
+""""""
+
+        # Apply optimizations based on AI analysis
+       
+
+        
+       
+""""""
+
+        
+       
+
+        optimized_query = query
+       
+""""""
+
+       
+
+        
+       
+"""
+        # Apply optimizations based on AI analysis
+       """"""
         # Add intelligent defaults and optimizations
         if not query.limit and query.operation == "select":
             optimized_query.limit = 1000  # AI - suggested default limit
@@ -1031,8 +1229,13 @@ class UnifiedAPILayer:
         return optimized_query
 
     async def _analyze_query_results(self, result: Any, query: DatabaseQuery) -> Dict[str, Any]:
-        """AI - powered analysis of query results and performance."""
+        """
+AI - powered analysis of query results and performance.
+
+        
+"""
         try:
+        """"""
             return {
                 "execution_time": "0.05s",
                 "performance_rating": "excellent",
@@ -1041,11 +1244,18 @@ class UnifiedAPILayer:
                     "pattern_detected": "normal_usage",
                     "anomalies": [],
                     "recommendations": ["Consider implementing caching for frequent queries"],
-                },
+                 },
                 "ai_summary": f"Query executed successfully on {query.table} table with {query.operation} operation",
-            }
+             }
         except Exception as e:
             self.logger.error(f"Error in AI result analysis: {e}")
+        """
+
+        try:
+        
+
+       
+""""""
             return {"error": "AI analysis unavailable"}
 
     async def _list_tables(self) -> List[str]:
@@ -1063,7 +1273,7 @@ class UnifiedAPILayer:
                 "executions",
                 "ai_analytics",
                 "performance_metrics",
-            ]
+             ]
 
             # AI - powered table analysis
             table_analysis = await self._analyze_database_schema(tables)
@@ -1073,14 +1283,19 @@ class UnifiedAPILayer:
                 "ai_analysis": table_analysis,
                 "recommendations": table_analysis.get("optimization_suggestions", []),
                 "schema_health": table_analysis.get("health_score", 85),
-            }
+             }
         except Exception as e:
             self.logger.error(f"Error listing tables with AI analysis: {e}")
             raise HTTPException(status_code=500, detail="Failed to list tables")
 
     async def _analyze_database_schema(self, tables: List[str]) -> Dict[str, Any]:
-        """AI - powered database schema analysis."""
+        """
+AI - powered database schema analysis.
+
+        
+"""
         try:
+        """"""
             return {
                 "total_tables": len(tables),
                 "health_score": 92,
@@ -1088,23 +1303,48 @@ class UnifiedAPILayer:
                     "Consider partitioning large tables",
                     "Add composite indexes for complex queries",
                     "Implement automated backup strategies",
-                ],
+                 ],
                 "performance_insights": {
                     "query_patterns": "optimized",
                     "index_coverage": "good",
                     "normalization_level": "3NF",
-                },
+                 },
                 "ai_recommendations": "Database schema is well - structured with opportunities for performance optimization",
-            }
+             }
         except Exception as e:
             self.logger.error(f"Error in AI schema analysis: {e}")
+        """
+
+        try:
+        
+
+       
+""""""
             return {"error": "AI analysis unavailable"}
 
     async def _mcp_request(self, request: MCPRequest) -> Dict[str, Any]:
-        """Handle MCP protocol request."""
+        """
+Handle MCP protocol request.
+
         try:
+           
+""""""
+
             # Route to appropriate MCP server or client
+           
+
+            
+           
+"""
             if request.server_name and request.server_name in self.mcp_clients:
+           """
+
+            
+           
+
+            # Route to appropriate MCP server or client
+           
+""""""
                 client = self.mcp_clients[request.server_name]
                 result = await client.send_request(request.method, request.params)
                 return result or {}
@@ -1118,9 +1358,17 @@ class UnifiedAPILayer:
             raise HTTPException(status_code=500, detail="Failed to process MCP request")
 
     async def _list_mcp_tools(self, server_name: str = None) -> List[Dict]:
-        """List MCP tools."""
+        """
+List MCP tools.
+
+        
+"""
         try:
+        """"""
             if server_name and server_name in self.mcp_clients:
+        """
+        try:
+        """
                 client = self.mcp_clients[server_name]
                 tools = await client.list_tools()
                 return tools
@@ -1132,8 +1380,8 @@ class UnifiedAPILayer:
                             "name": tool.name,
                             "description": tool.description,
                             "inputSchema": tool.inputSchema,
-                        }
-                    )
+                         }
+                     )
                 return tools
             else:
                 return []
@@ -1142,12 +1390,36 @@ class UnifiedAPILayer:
             raise HTTPException(status_code=500, detail="Failed to list MCP tools")
 
     async def _upload_file(self, request: Request) -> Dict[str, Any]:
-        """Handle file upload."""
+        """
+Handle file upload.
+
+        
+"""
         try:
+        """
+
             form = await request.form()
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             uploaded_files = []
+           
+""""""
 
             # Create uploads directory if it doesn't exist
+           
+
+            
+           
+"""
+            uploaded_files = []
+           """"""
             upload_dir = Path("uploads")
             upload_dir.mkdir(exist_ok=True)
 
@@ -1179,10 +1451,10 @@ class UnifiedAPILayer:
                             "size": len(content),
                             "content_type": getattr(
                                 file, "content_type", "application/octet-stream"
-                            ),
+                             ),
                             "upload_time": datetime.now().isoformat(),
-                        }
-                    )
+                         }
+                     )
 
                     self.logger.info(f"File uploaded: {file.filename} -> {safe_filename}")
 
@@ -1193,7 +1465,7 @@ class UnifiedAPILayer:
                 "message": f"Successfully uploaded {len(uploaded_files)} file(s)",
                 "files": uploaded_files,
                 "status": "success",
-            }
+             }
 
         except HTTPException:
             raise
@@ -1202,8 +1474,13 @@ class UnifiedAPILayer:
             raise HTTPException(status_code=500, detail="Failed to upload file")
 
     async def _get_metrics(self) -> Dict[str, Any]:
-        """Get system metrics."""
+        """
+Get system metrics.
+
+        
+"""
         try:
+        """"""
             return {
                 "timestamp": datetime.now().isoformat(),
                 "uptime": time.time(),
@@ -1213,19 +1490,40 @@ class UnifiedAPILayer:
                     "crewai": bool(self.crewai),
                     "supabase": bool(self.supabase),
                     "mcp": bool(self.mcp_server),
-                },
-            }
+                 },
+             }
         except Exception as e:
             self.logger.error(f"Error getting metrics: {e}")
+        """
+        try:
+        """
             raise HTTPException(status_code=500, detail="Failed to get metrics")
 
     async def _handle_webhook(
         self, webhook_id: str, payload: WebhookPayload, request: Request
     ) -> Dict[str, Any]:
-        """Handle incoming webhook."""
+        """
+Handle incoming webhook.
+
         try:
+           
+""""""
+
             # Verify webhook signature if configured
+           
+
+            
+           
+"""
             if self.config.webhook_secret:
+           """
+
+            
+           
+
+            # Verify webhook signature if configured
+           
+""""""
                 signature = request.headers.get("X - Signature - 256")
                 if not self._verify_webhook_signature(payload.dict(), signature):
                     raise HTTPException(status_code=401, detail="Invalid webhook signature")
@@ -1242,9 +1540,9 @@ class UnifiedAPILayer:
                         "event": payload.event,
                         "data": payload.data,
                         "timestamp": payload.timestamp,
-                    }
-                )
-            )
+                     }
+                 )
+             )
 
             return {"status": "received", "webhook_id": webhook_id}
 
@@ -1253,11 +1551,18 @@ class UnifiedAPILayer:
             raise HTTPException(status_code=500, detail="Failed to process webhook")
 
     def _verify_webhook_signature(self, payload: dict, signature: str) -> bool:
-        """Verify webhook signature."""
-        if not signature or not self.config.webhook_secret:
-            return False
+        """
+Verify webhook signature.
 
+        if not signature or not self.config.webhook_secret:
+            
+"""
+            return False
+            """"""
         try:
+            """
+            return False
+            """
             payload_bytes = json.dumps(payload, sort_keys=True).encode("utf - 8")
             expected_signature = hmac.new(
                 self.config.webhook_secret.encode("utf - 8"),
@@ -1270,20 +1575,56 @@ class UnifiedAPILayer:
             return False
 
     async def _handle_websocket(self, websocket: WebSocket, client_id: str):
-        """Handle WebSocket connection."""
-        await self.connection_manager.connect(websocket, client_id)
+        """
+Handle WebSocket connection.
 
+       
+""""""
+
+        await self.connection_manager.connect(websocket, client_id)
+       
+
+        
+       
+"""
         try:
+            """
+
             while True:
+            
+
+       
+""""""
+
+        await self.connection_manager.connect(websocket, client_id)
+       
+
+        
+       
+"""
                 data = await websocket.receive_text()
+               """
+
+                
+               
+
                 message = json.loads(data)
+               
+""""""
 
                 # Echo message back (implement proper message handling)
+               
+
+                
+               
+"""
+                message = json.loads(data)
+               """"""
                 response = {
                     "type": "echo",
                     "original": message,
                     "timestamp": datetime.now().isoformat(),
-                }
+                 }
 
                 await self.connection_manager.send_personal_message(json.dumps(response), client_id)
 
@@ -1308,7 +1649,7 @@ class UnifiedAPILayer:
             ssl_config = {
                 "ssl_certfile": self.config.ssl_cert,
                 "ssl_keyfile": self.config.ssl_key,
-            }
+             }
 
         # Start server
         config = uvicorn.Config(
@@ -1317,7 +1658,7 @@ class UnifiedAPILayer:
             port=self.config.port,
             log_level="info" if self.config.debug else "warning",
             **(ssl_config or {}),
-        )
+         )
 
         server = uvicorn.Server(config)
 
@@ -1336,7 +1677,7 @@ if __name__ == "__main__":
             cors_origins=["http://localhost:3000"],
             auth_secret="test - secret",
             webhook_secret="webhook - secret",
-        )
+         )
 
         api = UnifiedAPILayer(config)
 

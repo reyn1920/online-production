@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 Financial Agent Router
 
 Integrates the financial agent service with the main FastAPI application.
 Provides endpoints for financial analysis, resource allocation, and ROI optimization.
-"""
+""""""
 
 import asyncio
 import logging
@@ -95,8 +95,10 @@ if FinancialAgent:
                 "min_roi_threshold": 0.1,
                 "risk_tolerance": 0.3,
                 "strategy": "profit_maximization",
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
         logger.info("Financial agent initialized successfully")
     except Exception as e:
         logger.error(f"Failed to initialize financial agent: {e}")
@@ -115,8 +117,10 @@ async def financial_interface():
             "ROI Optimization",
             "Financial Forecasting",
             "Performance Monitoring",
-        ],
-    }
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/health")
@@ -126,13 +130,15 @@ async def health_check():
         "status": "healthy" if financial_agent else "unavailable",
         "agent_available": financial_agent is not None,
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.post("/analyze", response_model=FinancialResponse)
 async def analyze_profitability(
     request: FinancialAnalysisRequest, background_tasks: BackgroundTasks
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Analyze channel profitability"""
     if not financial_agent:
         raise HTTPException(status_code=503, detail="Financial agent not available")
@@ -147,14 +153,16 @@ async def analyze_profitability(
             "created_at": datetime.now(),
             "updated_at": datetime.now(),
             "type": "profitability_analysis",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Start analysis in background
         background_tasks.add_task(run_profitability_analysis, job_id, request.dict())
 
         return FinancialResponse(
             success=True, job_id=job_id, message="Profitability analysis started"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         logger.error(f"Error starting profitability analysis: {e}")
@@ -164,7 +172,8 @@ async def analyze_profitability(
 @router.post("/allocate", response_model=FinancialResponse)
 async def optimize_resource_allocation(
     request: ResourceAllocationRequest, background_tasks: BackgroundTasks
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Optimize resource allocation across channels"""
     if not financial_agent:
         raise HTTPException(status_code=503, detail="Financial agent not available")
@@ -179,7 +188,8 @@ async def optimize_resource_allocation(
             "created_at": datetime.now(),
             "updated_at": datetime.now(),
             "type": "resource_allocation",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Start allocation in background
         background_tasks.add_task(run_resource_allocation, job_id, request.dict())
@@ -188,7 +198,8 @@ async def optimize_resource_allocation(
             success=True,
             job_id=job_id,
             message="Resource allocation optimization started",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         logger.error(f"Error starting resource allocation: {e}")
@@ -211,7 +222,8 @@ async def optimize_roi(request: ROIOptimizationRequest, background_tasks: Backgr
             "created_at": datetime.now(),
             "updated_at": datetime.now(),
             "type": "roi_optimization",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Start optimization in background
         background_tasks.add_task(run_roi_optimization, job_id, request.dict())
@@ -226,7 +238,8 @@ async def optimize_roi(request: ROIOptimizationRequest, background_tasks: Backgr
 @router.post("/report", response_model=FinancialResponse)
 async def generate_financial_report(
     request: FinancialReportRequest, background_tasks: BackgroundTasks
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Generate comprehensive financial report"""
     if not financial_agent:
         raise HTTPException(status_code=503, detail="Financial agent not available")
@@ -241,14 +254,16 @@ async def generate_financial_report(
             "created_at": datetime.now(),
             "updated_at": datetime.now(),
             "type": "financial_report",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Start report generation in background
         background_tasks.add_task(run_financial_report, job_id, request.dict())
 
         return FinancialResponse(
             success=True, job_id=job_id, message="Financial report generation started"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         logger.error(f"Error starting financial report: {e}")
@@ -270,7 +285,8 @@ async def get_job_status(job_id: str):
         error=job.get("error"),
         created_at=job["created_at"],
         updated_at=job["updated_at"],
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/metrics")
@@ -288,7 +304,8 @@ async def get_financial_metrics():
             "roi": 0.0,
             "active_channels": 0,
             "last_updated": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if hasattr(financial_agent, "financial_metrics"):
             agent_metrics = financial_agent.financial_metrics
@@ -319,10 +336,13 @@ async def list_financial_jobs():
                 "type": job_info["type"],
                 "created_at": job_info["created_at"].isoformat(),
                 "progress": job_info.get("progress", 0.0),
-            }
+# BRACKET_SURGEON: disabled
+#             }
             for job_id, job_info in financial_jobs.items()
-        ]
-    }
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Background task functions
@@ -342,7 +362,8 @@ async def run_profitability_analysis(job_id: str, request_data: Dict[str, Any]):
                     financial_agent.analyze_financial_performance,
                     request_data.get("channel_id"),
                     request_data.get("time_period", "monthly"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 financial_jobs[job_id]["progress"] = 75.0
                 financial_jobs[job_id]["updated_at"] = datetime.now()
@@ -361,15 +382,19 @@ async def run_profitability_analysis(job_id: str, request_data: Dict[str, Any]):
                             "Monitor cost efficiency",
                             "Optimize resource allocation",
                             "Consider scaling successful strategies",
-                        ],
-                    ),
+# BRACKET_SURGEON: disabled
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     ),
                     "performance_metrics": analysis_result.get("performance_metrics", {}),
                     "trend_analysis": analysis_result.get("trend_analysis", {}),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as agent_error:
                 logger.warning(
                     f"Financial agent analysis failed: {agent_error}, falling back to basic calculation"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 # Fallback to basic calculation
                 revenue = request_data.get("revenue", 0)
                 costs = request_data.get("costs", 0)
@@ -387,8 +412,10 @@ async def run_profitability_analysis(job_id: str, request_data: Dict[str, Any]):
                         "Monitor cost efficiency",
                         "Optimize resource allocation",
                         "Consider scaling successful strategies",
-                    ],
-                }
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
         else:
             # Fallback when agent is not available
             revenue = request_data.get("revenue", 0)
@@ -407,8 +434,10 @@ async def run_profitability_analysis(job_id: str, request_data: Dict[str, Any]):
                     "Monitor cost efficiency",
                     "Optimize resource allocation",
                     "Consider scaling successful strategies",
-                ],
-            }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             }
 
         financial_jobs[job_id].update(
             {
@@ -416,13 +445,16 @@ async def run_profitability_analysis(job_id: str, request_data: Dict[str, Any]):
                 "progress": 100.0,
                 "result": result,
                 "updated_at": datetime.now(),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         financial_jobs[job_id].update(
             {"status": "failed", "error": str(e), "updated_at": datetime.now()}
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 async def run_resource_allocation(job_id: str, request_data: Dict[str, Any]):
@@ -445,7 +477,8 @@ async def run_resource_allocation(job_id: str, request_data: Dict[str, Any]):
                     total_budget,
                     channels,
                     strategy,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 financial_jobs[job_id]["progress"] = 80.0
                 financial_jobs[job_id]["updated_at"] = datetime.now()
@@ -459,11 +492,13 @@ async def run_resource_allocation(job_id: str, request_data: Dict[str, Any]):
                     "optimization_confidence": allocation_result.get("confidence", 0),
                     "allocation_rationale": allocation_result.get("rationale", []),
                     "performance_projections": allocation_result.get("projections", {}),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as agent_error:
                 logger.warning(
                     f"Financial agent allocation failed: {agent_error}, falling back to equal allocation"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 # Fallback to equal allocation
                 allocation_per_channel = total_budget / len(channels) if channels else 0
 
@@ -473,7 +508,8 @@ async def run_resource_allocation(job_id: str, request_data: Dict[str, Any]):
                     "strategy": strategy,
                     "expected_roi": 15.5,  # Fallback value
                     "risk_score": risk_tolerance * 100,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         else:
             # Fallback when agent is not available - equal allocation
             allocation_per_channel = total_budget / len(channels) if channels else 0
@@ -484,7 +520,8 @@ async def run_resource_allocation(job_id: str, request_data: Dict[str, Any]):
                 "strategy": strategy,
                 "expected_roi": 15.5,  # Fallback value
                 "risk_score": risk_tolerance * 100,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         financial_jobs[job_id].update(
             {
@@ -492,13 +529,16 @@ async def run_resource_allocation(job_id: str, request_data: Dict[str, Any]):
                 "progress": 100.0,
                 "result": result,
                 "updated_at": datetime.now(),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         financial_jobs[job_id].update(
             {"status": "failed", "error": str(e), "updated_at": datetime.now()}
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 async def run_roi_optimization(job_id: str, request_data: Dict[str, Any]):
@@ -520,7 +560,8 @@ async def run_roi_optimization(job_id: str, request_data: Dict[str, Any]):
                     current_allocations,
                     performance_data,
                     optimization_target,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 financial_jobs[job_id]["progress"] = 70.0
                 financial_jobs[job_id]["updated_at"] = datetime.now()
@@ -529,18 +570,21 @@ async def run_roi_optimization(job_id: str, request_data: Dict[str, Any]):
                     "current_allocations": current_allocations,
                     "optimized_allocations": optimization_result.get(
                         "optimized_allocations", current_allocations
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "expected_roi_improvement": optimization_result.get("roi_improvement", 0),
                     "optimization_confidence": optimization_result.get("confidence", 0.5),
                     "recommendations": optimization_result.get("recommendations", []),
                     "risk_assessment": optimization_result.get("risk_assessment", {}),
                     "implementation_timeline": optimization_result.get("timeline", {}),
                     "expected_milestones": optimization_result.get("milestones", []),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as agent_error:
                 logger.warning(
                     f"Financial agent ROI optimization failed: {agent_error}, using fallback calculation"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 # Fallback calculation
                 optimized_allocations = {}
                 for channel, allocation in current_allocations.items():
@@ -556,8 +600,10 @@ async def run_roi_optimization(job_id: str, request_data: Dict[str, Any]):
                         "Increase investment in high - performing channels",
                         "Reduce allocation to underperforming areas",
                         "Monitor performance closely after changes",
-                    ],
-                }
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
         else:
             # Fallback when agent is not available
             optimized_allocations = {}
@@ -574,8 +620,10 @@ async def run_roi_optimization(job_id: str, request_data: Dict[str, Any]):
                     "Increase investment in high - performing channels",
                     "Reduce allocation to underperforming areas",
                     "Monitor performance closely after changes",
-                ],
-            }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             }
 
         financial_jobs[job_id].update(
             {
@@ -583,13 +631,16 @@ async def run_roi_optimization(job_id: str, request_data: Dict[str, Any]):
                 "progress": 100.0,
                 "result": result,
                 "updated_at": datetime.now(),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         financial_jobs[job_id].update(
             {"status": "failed", "error": str(e), "updated_at": datetime.now()}
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 async def run_financial_report(job_id: str, request_data: Dict[str, Any]):
@@ -613,7 +664,8 @@ async def run_financial_report(job_id: str, request_data: Dict[str, Any]):
                     end_date,
                     channels,
                     report_type,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 financial_jobs[job_id]["progress"] = 75.0
                 financial_jobs[job_id]["updated_at"] = datetime.now()
@@ -624,7 +676,8 @@ async def run_financial_report(job_id: str, request_data: Dict[str, Any]):
                     "period": {
                         "start_date": start_date.isoformat() if start_date else None,
                         "end_date": end_date.isoformat() if end_date else None,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "channels_analyzed": channels
                     or report_result.get("channels_analyzed", ["all"]),
                     "summary": report_result.get("summary", {}),
@@ -634,11 +687,13 @@ async def run_financial_report(job_id: str, request_data: Dict[str, Any]):
                     "risk_assessment": report_result.get("risk_assessment", {}),
                     "forecast_data": report_result.get("forecast_data", {}),
                     "generated_at": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as agent_error:
                 logger.warning(
                     f"Financial agent report generation failed: {agent_error}, using fallback data"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 # Fallback report data
                 result = {
                     "report_id": str(uuid.uuid4()),
@@ -646,7 +701,8 @@ async def run_financial_report(job_id: str, request_data: Dict[str, Any]):
                     "period": {
                         "start_date": start_date.isoformat() if start_date else None,
                         "end_date": end_date.isoformat() if end_date else None,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "channels_analyzed": channels or ["all"],
                     "summary": {
                         "total_revenue": 125000.0,
@@ -654,20 +710,24 @@ async def run_financial_report(job_id: str, request_data: Dict[str, Any]):
                         "net_profit": 37500.0,
                         "roi_percentage": 42.86,
                         "profit_margin": 30.0,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "channel_breakdown": {
                         "youtube": {"revenue": 45000, "costs": 25000, "roi": 80.0},
                         "instagram": {"revenue": 35000, "costs": 22000, "roi": 59.1},
                         "tiktok": {"revenue": 25000, "costs": 18000, "roi": 38.9},
                         "twitter": {"revenue": 20000, "costs": 22500, "roi": -11.1},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "recommendations": [
                         "Increase investment in YouTube channel (highest ROI)",
                         "Review Twitter strategy (negative ROI)",
                         "Optimize Instagram content for better conversion",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "generated_at": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         else:
             # Fallback when agent is not available
             result = {
@@ -676,7 +736,8 @@ async def run_financial_report(job_id: str, request_data: Dict[str, Any]):
                 "period": {
                     "start_date": start_date.isoformat() if start_date else None,
                     "end_date": end_date.isoformat() if end_date else None,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "channels_analyzed": channels or ["all"],
                 "summary": {
                     "total_revenue": 125000.0,
@@ -684,20 +745,24 @@ async def run_financial_report(job_id: str, request_data: Dict[str, Any]):
                     "net_profit": 37500.0,
                     "roi_percentage": 42.86,
                     "profit_margin": 30.0,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "channel_breakdown": {
                     "youtube": {"revenue": 45000, "costs": 25000, "roi": 80.0},
                     "instagram": {"revenue": 35000, "costs": 22000, "roi": 59.1},
                     "tiktok": {"revenue": 25000, "costs": 18000, "roi": 38.9},
                     "twitter": {"revenue": 20000, "costs": 22500, "roi": -11.1},
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "recommendations": [
                     "Increase investment in YouTube channel (highest ROI)",
                     "Review Twitter strategy (negative ROI)",
                     "Optimize Instagram content for better conversion",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "generated_at": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         financial_jobs[job_id].update(
             {
@@ -705,13 +770,16 @@ async def run_financial_report(job_id: str, request_data: Dict[str, Any]):
                 "progress": 100.0,
                 "result": result,
                 "updated_at": datetime.now(),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         financial_jobs[job_id].update(
             {"status": "failed", "error": str(e), "updated_at": datetime.now()}
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 __all__ = ["router"]

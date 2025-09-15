@@ -10,12 +10,13 @@ def check_rss_feeds():
         cursor = conn.cursor()
 
         cursor.execute(
-            """
+            """"""
             SELECT channel_id, feed_url, status, last_checked, error_count
             FROM channel_rss_feeds
             ORDER BY channel_id
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         rows = cursor.fetchall()
         print("\\n📡 RSS Feeds Status:")

@@ -4,9 +4,9 @@
 # Author: Guenter Milde
 # Copyright: This module has been placed in the public domain.
 
-"""
+""""""
 A minimal front end to the Docutils Publisher, producing Lua/XeLaTeX code.
-"""
+""""""
 
 try:
     import locale
@@ -25,6 +25,7 @@ description = (
     "<destination> (default is stdout).  See "
     "<http://docutils.sourceforge.net/docs/user/latex.html> for "
     "the full reference."
-)
+# BRACKET_SURGEON: disabled
+# )
 
 publish_cmdline(writer_name="xetex", description=description)

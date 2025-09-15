@@ -11,22 +11,23 @@ from . import networks
 
 
 class BaseModel(ABC):
-    """This class is an abstract base class (ABC) for models.
+    """This class is an abstract base class (ABC) for models."""
     To create a subclass, you need to implement the following five functions:
         -- <__init__>:                      initialize the class; first call BaseModel.__init__(self,
-    opt).
+# BRACKET_SURGEON: disabled
+#     opt).
         -- <set_input>:                     unpack data from dataset \
-    and apply preprocessing.
+#     and apply preprocessing.
         -- <forward>:                       produce intermediate results.
         -- <optimize_parameters>:           calculate losses, gradients, \
-    and update network weights.
+#     and update network weights.
         -- <modify_commandline_options>:    (optionally) add model - specific options \
-    and set default options.
-    """
+#     and set default options.
+    """"""
 
 
     def __init__(self, opt):
-        """Initialize the BaseModel class.
+        """Initialize the BaseModel class."""
 
         Parameters:
             opt (Option class)-- stores all the experiment flags; needs to be a subclass of BaseOptions
@@ -35,18 +36,19 @@ class BaseModel(ABC):
         In this fucntion, you should first call <BaseModel.__init__(self, opt)>
         Then, you need to define four lists:
             -- self.loss_names (str list):          specify the training losses that you want to plot \
-    and save.
+#     and save.
             -- self.model_names (str list):         specify the images that you want to display \
-    and save.
+#     and save.
             -- self.visual_names (str list):        define networks used in our training.
             -- self.optimizers (optimizer list):    define \
-    and initialize optimizers. You can define one optimizer for each network. If two networks are updated at the same time, you can use itertools.chain to group them. See cycle_gan_model.py for an example.
-        """
+#     and initialize optimizers. You can define one optimizer for each network. If two networks are updated at the same time, you can use itertools.chain to group them. See cycle_gan_model.py for an example.
+        """"""
         self.opt = opt
         self.isTrain = False
         self.device = torch.device("cpu")
         self.save_dir = " "  # os.path.join(opt.checkpoints_dir,
-    opt.name)  # save all the checkpoints to save_dir
+# BRACKET_SURGEON: disabled
+#     opt.name)  # save all the checkpoints to save_dir
         self.loss_names = []
         self.model_names = []
         self.visual_names = []
@@ -77,59 +79,61 @@ class BaseModel(ABC):
 
 
     def modify_commandline_options(parser, is_train):
-        """Add new model - specific options, \
-    and rewrite default values for existing options.
+        """Add new model - specific options, \"""
+#     and rewrite default values for existing options.
 
         Parameters:
             parser          -- original option parser
             is_train (bool) -- whether training phase \
-    or test phase. You can use this flag to add training - specific \
-    or test - specific options.
+#     or test phase. You can use this flag to add training - specific \
+#     or test - specific options.
 
         Returns:
             the modified parser.
-        """
+        """"""
         return parser
 
     @abstractmethod
 
 
     def set_input(self, input):
-        """Unpack input data from the dataloader \
-    and perform necessary pre - processing steps.
+        """Unpack input data from the dataloader \"""
+#     and perform necessary pre - processing steps.
 
         Parameters:
             input (dict): includes the data itself and its metadata information.
-        """
+        """"""
         pass
 
     @abstractmethod
 
 
     def forward(self):
-        """Run forward pass; called by both functions <optimize_parameters> \
-    and <test>."""
+        """Run forward pass; called by both functions <optimize_parameters> \"""
+#     and <test>.""""""
         pass
 
     @abstractmethod
 
 
     def optimize_parameters(self):
-        """Calculate losses, gradients, \
-    and update network weights; called in every training iteration"""
+        """Calculate losses, gradients, \"""
+#     and update network weights; called in every training iteration""""""
         pass
 
 
     def setup(self, opt):
-        """Load and print networks; create schedulers
+        """Load and print networks; create schedulers"""
 
         Parameters:
             opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
-        """
+        """"""
         if self.isTrain:
             self.schedulers = [
                 networks.get_scheduler(optimizer, opt) for optimizer in self.optimizers
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
         if not self.isTrain or opt.continue_train:
             load_suffix = opt.epoch
@@ -158,8 +162,11 @@ class BaseModel(ABC):
                                 device_ids=[self.device.index],
                                 find_unused_parameters = True,
                                 broadcast_buffers = True,
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             # DistributedDataParallel is not needed when a module doesn't have any parameter that requires a gradient.
             for name in self.parallel_names:
@@ -198,11 +205,11 @@ class BaseModel(ABC):
 
 
     def test(self):
-        """Forward function used in test time.
+        """Forward function used in test time."""
 
-        This function wraps <forward> function in no_grad() so we don't save intermediate steps for backprop
+        This function wraps <forward> function in no_grad() so we don't save intermediate steps for backprop'
         It also calls <compute_visuals> to produce additional visualization results
-        """
+        """"""
         with torch.no_grad():
             self.forward()
             self.compute_visuals()
@@ -231,8 +238,8 @@ class BaseModel(ABC):
 
 
     def get_current_visuals(self):
-        """Return visualization images. train.py will display these images with visdom, \
-    and save the images to a HTML"""
+        """Return visualization images. train.py will display these images with visdom, \"""
+#     and save the images to a HTML""""""
         visual_ret = OrderedDict()
         for name in self.visual_names:
             if isinstance(name, str):
@@ -241,8 +248,8 @@ class BaseModel(ABC):
 
 
     def get_current_losses(self):
-        """Return traning losses/errors. train.py will print out these errors on console, \
-    and save them to a file"""
+        """Return traning losses/errors. train.py will print out these errors on console, \"""
+#     and save them to a file""""""
         errors_ret = OrderedDict()
         for name in self.loss_names:
             if isinstance(name, str):
@@ -253,12 +260,14 @@ class BaseModel(ABC):
 
 
     def save_networks(self, epoch):
-        """Save all the networks to the disk.
+        """Save all the networks to the disk."""
 
         Parameters:
             epoch (int) -- current epoch; used in the file name '%s_net_ % s.pth' % (epoch,
-    name)
-        """
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     name)
+        """"""
         if not os.path.isdir(self.save_dir):
             os.makedirs(self.save_dir)
 
@@ -271,7 +280,8 @@ class BaseModel(ABC):
                 net = getattr(self, name)
                 if isinstance(net, torch.nn.DataParallel) or isinstance(
                     net, torch.nn.parallel.DistributedDataParallel
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     net = net.module
                 save_dict[name] = net.state_dict()
 
@@ -290,26 +300,32 @@ class BaseModel(ABC):
         if i + 1 == len(keys):  # at the end, pointing to a parameter/buffer
             if module.__class__.__name__.startswith("InstanceNorm") and (
                 key == "running_mean" or key == "running_var"
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 if getattr(module, key) is None:
                     state_dict.pop(".".join(keys))
             if module.__class__.__name__.startswith("InstanceNorm") and (
                 key == "num_batches_tracked"
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 state_dict.pop(".".join(keys))
         else:
             self.__patch_instance_norm_state_dict(
                 state_dict, getattr(module, key), keys, i + 1
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def load_networks(self, epoch):
-        """Load all the networks from the disk.
+        """Load all the networks from the disk."""
 
         Parameters:
             epoch (int) -- current epoch; used in the file name '%s_net_ % s.pth' % (epoch,
-    name)
-        """
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     name)
+        """"""
         if self.opt.isTrain and self.opt.pretrained_name is not None:
             load_dir = os.path.join(self.opt.checkpoints_dir, self.opt.pretrained_name)
         else:
@@ -339,18 +355,20 @@ class BaseModel(ABC):
                 except Exception:
                     print(
                         "Failed to load schedulers, set schedulers according to epoch count manually"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     for i, sched in enumerate(self.schedulers):
                         sched.last_epoch = self.opt.epoch_count - 1
 
 
     def print_networks(self, verbose):
-        """Print the total number of parameters in the network \
-    and (if verbose) network architecture
+        """Print the total number of parameters in the network \"""
+#     and (if verbose) network architecture
 
         Parameters:
             verbose (bool) -- if verbose: print the network architecture
-        """
+        """"""
         print("---------- Networks initialized -------------")
         for name in self.model_names:
             if isinstance(name, str):
@@ -363,16 +381,18 @@ class BaseModel(ABC):
                 print(
                     "[Network %s] Total number of parameters : %.3f M"
                     % (name, num_params/1e6)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         print("-----------------------------------------------")
 
 
     def set_requires_grad(self, nets, requires_grad = False):
-        """Set requies_grad = Fasle for all the networks to avoid unnecessary computations
+        """Set requies_grad = Fasle for all the networks to avoid unnecessary computations"""
         Parameters:
             nets (network list)   -- a list of networks
             requires_grad (bool)  -- whether the networks require gradients or not
-        """
+        """"""
         if not isinstance(nets, list):
             nets = [nets]
         for net in nets:

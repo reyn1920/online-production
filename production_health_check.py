@@ -41,10 +41,10 @@ def check_environment_config():
     """Check environment configuration"""
     print("\n🔧 Environment Configuration:")
     print("-" * 40)
-    
+
     # Check for .env.example file
     env_example_ok = check_file_exists(".env.example", "Environment Template")
-    
+
     # Check .gitignore for .env protection
     gitignore_ok = False
     try:
@@ -57,7 +57,7 @@ def check_environment_config():
                 print("❌ Secrets Protection: .env files not in .gitignore")
     except Exception:
         print("❌ Secrets Protection: .gitignore not found")
-    
+
     return env_example_ok and gitignore_ok
 
 
@@ -65,14 +65,14 @@ def check_ci_cd_pipeline():
     """Check CI/CD pipeline configuration"""
     print("\n🚀 CI/CD Pipeline:")
     print("-" * 40)
-    
+
     workflows_dir = Path(".github/workflows")
     if not workflows_dir.exists():
         print("❌ GitHub Actions: Workflows directory missing")
         return False
-    
+
     required_workflows = ["ci-cd.yml", "security.yml", "prod-health-watch.yml"]
-    
+
     all_workflows_ok = True
     for workflow in required_workflows:
         workflow_path = workflows_dir / workflow
@@ -81,7 +81,7 @@ def check_ci_cd_pipeline():
         else:
             print(f"❌ Workflow: {workflow} missing")
             all_workflows_ok = False
-    
+
     return all_workflows_ok
 
 
@@ -89,11 +89,11 @@ def check_security_setup():
     """Check security configuration"""
     print("\n🔒 Security Setup:")
     print("-" * 40)
-    
+
     # Check for security tools in requirements
     security_tools = ["bandit", "safety"]
     requirements_ok = True
-    
+
     try:
         with open("requirements.txt", "r") as f:
             requirements = f.read()
@@ -106,7 +106,7 @@ def check_security_setup():
     except Exception:
         print("❌ Requirements: requirements.txt not found")
         requirements_ok = False
-    
+
     return requirements_ok
 
 
@@ -116,26 +116,26 @@ def main():
     print("=" * 50)
     print(f"Timestamp: {datetime.now().isoformat()}")
     print(f"Directory: {os.getcwd()}")
-    
+
     # Check service health
     print("\n🌐 Service Health:")
     print("-" * 40)
     main_api_ok = check_api_health("http://localhost:8000/health", "Main API Server")
     paste_app_ok = check_api_health("http://localhost:8081", "Paste Application")
-    
+
     # Check environment configuration
     config_ok = check_environment_config()
-    
+
     # Check CI/CD pipeline
     cicd_ok = check_ci_cd_pipeline()
-    
+
     # Check security setup
     security_ok = check_security_setup()
-    
+
     # Summary
     print("\n🎯 PRODUCTION READINESS SUMMARY:")
     print("=" * 50)
-    
+
     all_checks = [
         ("Main API Server", main_api_ok),
         ("Paste Application", paste_app_ok),
@@ -143,16 +143,16 @@ def main():
         ("CI/CD Pipeline", cicd_ok),
         ("Security Setup", security_ok),
     ]
-    
+
     passed_checks = sum(1 for _, status in all_checks if status)
     total_checks = len(all_checks)
-    
+
     for check_name, status in all_checks:
         status_icon = "✅" if status else "❌"
         print(f"{status_icon} {check_name}")
-    
+
     print(f"\n📊 Score: {passed_checks}/{total_checks} checks passed")
-    
+
     if passed_checks == total_checks:
         print("\n🎉 SYSTEM IS 100% READY FOR AUTOMATED GO-LIVE!")
         print("\n🚀 Ready for production deployment via:")

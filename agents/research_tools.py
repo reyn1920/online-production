@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Research Agent Tools Module
 
 Implements comprehensive research capabilities including:
@@ -7,7 +7,7 @@ Implements comprehensive research capabilities including:
 - Competitor analysis (TubeBuddy/VidIQ emulation)
 - Market validation for digital products
 - YouTube channel analysis and niche opportunity detection
-"""
+""""""
 
 import asyncio
 import json
@@ -89,7 +89,7 @@ class NewsItem:
     source: str
     category: NewsCategory = NewsCategory.GENERAL
     sentiment_score: float = 0.0
-    keywords: List[str] = field(default_factory = list)
+    keywords: List[str] = field(default_factory = list):
     trend_strength: TrendStrength = TrendStrength.WEAK
     relevance_score: float = 0.0
 
@@ -107,7 +107,7 @@ class CompetitorChannel:
     upload_frequency: float  # videos per week
     average_views: float
     engagement_rate: float
-    niche_keywords: List[str] = field(default_factory = list)
+    niche_keywords: List[str] = field(default_factory = list):
     content_themes: List[str] = field(default_factory = list)
     opportunity_score: float = 0.0
     last_analyzed: datetime = field(default_factory = datetime.now)
@@ -125,7 +125,7 @@ class MarketOpportunity:
     trend_direction: str  # rising, stable, declining
     monetization_potential: float  # 0 - 1 score
     target_audience: str
-    content_gaps: List[str] = field(default_factory = list)
+    content_gaps: List[str] = field(default_factory = list):
     recommended_products: List[str] = field(default_factory = list)
     confidence_score: float = 0.0
 
@@ -153,8 +153,12 @@ class BreakingNewsWatcher:
                     "online business",
                     "SaaS",
                     "startup",
-                    ],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.logger = logging.getLogger(__name__)
 
 
@@ -164,32 +168,41 @@ class BreakingNewsWatcher:
             {
                 "url": "https://feeds.feedburner.com/TechCrunch",
                     "category": NewsCategory.TECHNOLOGY,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://rss.cnn.com/rss/edition.rss",
                     "category": NewsCategory.GENERAL,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.reuters.com/reuters/businessNews",
                     "category": NewsCategory.BUSINESS,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com/venturebeat/SZYF",
                     "category": NewsCategory.TECHNOLOGY,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com/Mashable",
                     "category": NewsCategory.TECHNOLOGY,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com/socialmediaexaminer",
                     "category": NewsCategory.SOCIAL_MEDIA,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com/MarketingLand",
                     "category": NewsCategory.MARKETING,
-                    },
-                ]
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     async def monitor_feeds(self, duration_hours: int = 24) -> List[NewsItem]:
@@ -197,7 +210,9 @@ class BreakingNewsWatcher:
         if not feedparser:
             self.logger.error(
                 "feedparser not available. Install with: pip install feedparser"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return []
 
         end_time = datetime.now() + timedelta(hours = duration_hours)
@@ -261,7 +276,9 @@ class BreakingNewsWatcher:
                         published = pub_date,
                         source = feed.feed.get("title", feed_config["url"]),
                         category = feed_config.get("category", NewsCategory.GENERAL),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 news_items.append(news_item)
 
@@ -294,7 +311,9 @@ class BreakingNewsWatcher:
                 # Extract keywords
                 item.keywords = self._extract_keywords(
                     item.title + " " + item.description
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Calculate sentiment
                 if TextBlob:
@@ -342,7 +361,8 @@ class BreakingNewsWatcher:
                 NewsCategory.SOCIAL_MEDIA: 0.9,
                 NewsCategory.AI_ML: 1.0,
                 NewsCategory.GENERAL: 0.3,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         score += category_scores.get(item.category, 0.3)
 
@@ -380,7 +400,9 @@ class BreakingNewsWatcher:
         cutoff_time = datetime.now() - timedelta(hours = hours)
         recent_items = [
             item for item in self.news_cache.values() if item.published > cutoff_time
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         # Count keyword occurrences
         keyword_counts = {}
@@ -391,7 +413,9 @@ class BreakingNewsWatcher:
         # Sort by frequency
         return dict(sorted(keyword_counts.items(),
     key = lambda x: x[1],
-    reverse = True))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     reverse = True))
 
 
 class CompetitorAnalyzer:
@@ -417,7 +441,9 @@ class CompetitorAnalyzer:
             # Search for channels in the niche
             channel_ids = await self._search_channels_by_keywords(
                 niche_keywords, max_channels
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Analyze each channel
             analyzed_channels = []
@@ -431,7 +457,9 @@ class CompetitorAnalyzer:
 
             return sorted(
                 analyzed_channels, key = lambda x: x.opportunity_score, reverse = True
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             self.logger.error(f"Error analyzing niche: {e}")
@@ -449,7 +477,8 @@ class CompetitorAnalyzer:
             # Get YouTube API key from secure storage
             with SecretStore(
                 self.config.get("secrets_db", "data/secrets.sqlite")
-            ) as store:
+# BRACKET_SURGEON: disabled
+#             ) as store:
                 api_key = store.get_secret("YOUTUBE_API_KEY")
                 if not api_key:
                     self.logger.error("YouTube API key not configured in secret store")
@@ -465,7 +494,9 @@ class CompetitorAnalyzer:
             # Search for channels using each keyword
             for keyword in keywords[
                 :3
-            ]:  # Limit to first 3 keywords to avoid quota exhaustion
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]:  # Limit to first 3 keywords to avoid quota exhaustion
                 try:
                     # Search for channels
                     search_response = requests.get(
@@ -477,9 +508,12 @@ class CompetitorAnalyzer:
                                 "maxResults": min(20, max_results),
                                 "order": "relevance",
                                 "key": api_key,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             timeout = 10,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if search_response.status_code == 200:
                         search_data = search_response.json()
@@ -496,7 +530,9 @@ class CompetitorAnalyzer:
                     else:
                         self.logger.warning(
                             f"YouTube search API error for keyword '{keyword}': {search_response.status_code}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 except Exception as e:
                     self.logger.warning(f"Error searching for keyword '{keyword}': {e}")
@@ -510,7 +546,9 @@ class CompetitorAnalyzer:
             if not channel_ids:
                 self.logger.warning(
                     "No channels found through search, using fallback popular channels"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 fallback_channels = [
                     "UCBJycsmduvYEL83R_U4JriQ",  # Marques Brownlee (Tech)
                     "UCJ0 - OtVpF0wOKEqT2Z1HEtA",  # ElectroBOOM (Engineering)
@@ -522,7 +560,9 @@ class CompetitorAnalyzer:
                     "UCHnyfMqiRRG1u - 2MsSQLbXA",  # Veritasium (Science)
                     "UCsXVk37bltHxD1rDPwtNM8Q",  # Kurzgesagt (Science)
                     "UCR1IuLEqb6UEA_zQ81kwXfg",  # Real Engineering (Engineering)
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
                 return fallback_channels[: min(max_results, len(fallback_channels))]
 
             return list(channel_ids)[:max_results]
@@ -557,7 +597,9 @@ class CompetitorAnalyzer:
                         engagement_rate = channel_data["engagement_rate"],
                         niche_keywords = channel_data["keywords"],
                         content_themes = channel_data["themes"],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Cache the result
                 self.channels_cache[channel_id] = competitor_channel
@@ -578,7 +620,8 @@ class CompetitorAnalyzer:
             # Get YouTube API key from secure storage
             with SecretStore(
                 self.config.get("secrets_db", "data/secrets.sqlite")
-            ) as store:
+# BRACKET_SURGEON: disabled
+#             ) as store:
                 api_key = store.get_secret("YOUTUBE_API_KEY")
                 if not api_key:
                     self.logger.error("YouTube API key not configured in secret store")
@@ -598,14 +641,19 @@ class CompetitorAnalyzer:
                     "part": "snippet,statistics,brandingSettings",
                         "id": channel_id,
                         "key": api_key,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     timeout = 10,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if channel_response.status_code != 200:
                 self.logger.error(
                     f"YouTube API error for channel {channel_id}: {channel_response.status_code}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return None
 
             channel_data = channel_response.json()
@@ -627,9 +675,12 @@ class CompetitorAnalyzer:
                         "order": "date",
                         "maxResults": 50,
                         "key": api_key,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     timeout = 10,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             upload_frequency = 0.0
             average_views = 0
@@ -652,9 +703,12 @@ class CompetitorAnalyzer:
                             "part": "statistics,snippet",
                                 "id": ",".join(video_ids),
                                 "key": api_key,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             timeout = 10,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if video_stats_response.status_code == 200:
                         video_stats = video_stats_response.json()
@@ -680,7 +734,9 @@ class CompetitorAnalyzer:
                                 title = video_snippet.get("title", "").lower()
                                 description = video_snippet.get(
                                     "description", ""
-                                ).lower()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ).lower()
 
                                 # Simple keyword extraction
                                 for word in title.split():
@@ -691,12 +747,16 @@ class CompetitorAnalyzer:
                                 total_views//len(video_details)
                                 if video_details
                                 else 0
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             engagement_rate = (
                                 total_engagement/len(video_details)
                                 if video_details
                                 else 0.0
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Calculate upload frequency based on recent videos
                     if len(video_items) >= 2:
@@ -707,22 +767,33 @@ class CompetitorAnalyzer:
                             latest_date = datetime.fromisoformat(
                                 video_items[0]["snippet"]["publishedAt"].replace(
                                     "Z", "+00:00"
-                                )
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             oldest_date = datetime.fromisoformat(
                                 video_items[-1]["snippet"]["publishedAt"].replace(
                                     "Z", "+00:00"
-                                )
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             days_diff = (latest_date - oldest_date).days
                             if days_diff > 0:
                                 upload_frequency = (
                                     len(video_items) * 7
-                                )/days_diff  # videos per week
+# BRACKET_SURGEON: disabled
+#                                 )/days_diff  # videos per week
                         except Exception as e:
                             self.logger.warning(
                                 f"Error calculating upload frequency: {e}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             upload_frequency = 1.0
 
                     # Extract themes from channel description and video categories
@@ -730,14 +801,16 @@ class CompetitorAnalyzer:
                     if (
                         "tech" in channel_description
                         or "technology" in channel_description
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         themes.append("Technology")
                     if "review" in channel_description:
                         themes.append("Reviews")
                     if (
                         "education" in channel_description
                         or "tutorial" in channel_description
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         themes.append("Education")
                     if "gaming" in channel_description or "game" in channel_description:
                         themes.append("Gaming")
@@ -759,17 +832,21 @@ class CompetitorAnalyzer:
                     "video_count": int(statistics.get("videoCount", 0)),
                     "upload_frequency": max(
                     upload_frequency, 0.1
-                ),  # Minimum 0.1 videos per week
+# BRACKET_SURGEON: disabled
+#                 ),  # Minimum 0.1 videos per week
                 "average_views": average_views,
                     "engagement_rate": min(engagement_rate, 1.0),  # Cap at 100%
                 "keywords": keywords,
                     "themes": themes,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(
                 f"Error fetching YouTube data for channel {channel_id}: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return None
 
 
@@ -800,7 +877,9 @@ class CompetitorAnalyzer:
             # Combine scores
             channel.opportunity_score = (
                 sub_score * 0.4 + engagement_score * 0.4 + frequency_score * 0.2
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def find_content_gaps(self, channels: List[CompetitorChannel]) -> List[str]:
@@ -823,7 +902,9 @@ class CompetitorAnalyzer:
                 "Educational Series",
                 "Case Studies",
                 "Interviews",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Find gaps
         content_gaps = [theme for theme in potential_themes if theme not in all_themes]
@@ -841,7 +922,8 @@ class MarketValidator:
 
     async def validate_product_idea(
         self, product_concept: str, target_keywords: List[str]
-    ) -> MarketOpportunity:
+# BRACKET_SURGEON: disabled
+#     ) -> MarketOpportunity:
         """Validate a digital product idea"""
         try:
             # Analyze search volume and competition
@@ -850,17 +932,23 @@ class MarketValidator:
             # Assess market trends
             trend_data = await self._analyze_market_trends(
                 product_concept, target_keywords
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Evaluate monetization potential
             monetization_score = self._assess_monetization_potential(
                 product_concept, search_data
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Identify target audience
             target_audience = self._identify_target_audience(
                 product_concept, target_keywords
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Find content gaps
             content_gaps = await self._identify_content_gaps(target_keywords)
@@ -868,12 +956,16 @@ class MarketValidator:
             # Generate product recommendations
             recommended_products = self._generate_product_recommendations(
                 product_concept, search_data
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Calculate confidence score
             confidence_score = self._calculate_confidence_score(
                 search_data, trend_data, monetization_score
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             opportunity = MarketOpportunity(
                 niche = product_concept,
@@ -886,7 +978,9 @@ class MarketValidator:
                     content_gaps = content_gaps,
                     recommended_products = recommended_products,
                     confidence_score = confidence_score,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return opportunity
 
@@ -902,7 +996,9 @@ class MarketValidator:
                     monetization_potential = 0.0,
                     target_audience="unknown",
                     confidence_score = 0.0,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     async def _analyze_search_metrics(self, keywords: List[str]) -> Dict[str, Any]:
@@ -914,7 +1010,8 @@ class MarketValidator:
             # Get Google Ads API credentials from secure storage
             with SecretStore(
                 self.config.get("secrets_db", "data/secrets.sqlite")
-            ) as store:
+# BRACKET_SURGEON: disabled
+#             ) as store:
                 api_key = store.get_secret("GOOGLE_ADS_API_KEY")
                 customer_id = store.get_secret("GOOGLE_ADS_CUSTOMER_ID")
                 developer_token = store.get_secret("GOOGLE_ADS_DEVELOPER_TOKEN")
@@ -922,7 +1019,9 @@ class MarketValidator:
                 if not all([api_key, customer_id, developer_token]):
                     self.logger.error(
                         "Google Ads API credentials not configured in secret store"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     raise ValueError("Missing Google Ads API credentials")
 
             if not requests:
@@ -934,7 +1033,8 @@ class MarketValidator:
                 "Authorization": f"Bearer {api_key}",
                     "developer - token": developer_token,
                     "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Prepare keyword ideas request
             keyword_ideas_request = {
@@ -944,16 +1044,24 @@ class MarketValidator:
                         "keywordSeed": {
                             "keywords": keywords[
                                 :10
-                            ]  # Limit to 10 keywords per request
-                        },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]  # Limit to 10 keywords per request
+# BRACKET_SURGEON: disabled
+#                         },
                             "geoTargetConstants": [
                             "geoTargetConstants/2840"
-                        ],  # United States
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],  # United States
                         "language": "languageConstants/1000",  # English
                         "keywordPlanNetwork": "GOOGLE_SEARCH",
-                            }
-                },
-                    }
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Make API request to Google Ads
             response = requests.post(
@@ -961,15 +1069,21 @@ class MarketValidator:
                     headers = headers,
                     json = keyword_ideas_request,
                     timeout = 30,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if response.status_code != 200:
                 self.logger.error(
                     f"Google Ads API error: {response.status_code} - {response.text}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 raise ValueError(
                     f"API request failed with status {response.status_code}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             data = response.json()
             results = data.get("results", [])
@@ -1000,7 +1114,9 @@ class MarketValidator:
                 sum(competition_scores)/len(competition_scores)
                 if competition_scores
                 else 0.5
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if avg_competition < 0.3:
                 competition_level = "low"
@@ -1011,14 +1127,17 @@ class MarketValidator:
 
             self.logger.info(
                 f"Retrieved search metrics for {len(keywords)} keywords: {total_volume} total volume"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return {
                 "total_volume": total_volume,
                     "competition_level": competition_level,
                     "avg_competition_score": avg_competition,
                     "keyword_count": len(results),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Error analyzing search metrics: {e}")
@@ -1042,10 +1161,14 @@ class MarketValidator:
             except ImportError:
                 self.logger.error(
                     "pytrends library not available. Install with: pip install pytrends"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 raise ImportError(
                     "pytrends library required for Google Trends analysis"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Initialize pytrends
             pytrends = TrendReq(hl="en - US", tz = 360)
@@ -1060,7 +1183,9 @@ class MarketValidator:
             # Build payload for Google Trends
             pytrends.build_payload(
                 trend_keywords, cat = 0, timeframe="today 12 - m", geo="US", gprop=""
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Get interest over time data
             interest_over_time = pytrends.interest_over_time()
@@ -1068,7 +1193,9 @@ class MarketValidator:
             if interest_over_time.empty:
                 self.logger.warning(
                     f"No trend data available for keywords: {trend_keywords}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return {"direction": "stable", "confidence": "low"}
 
             # Calculate trend direction based on recent vs older data
@@ -1083,7 +1210,8 @@ class MarketValidator:
 
             recent_avg = (
                 recent_period.mean().mean()
-            )  # Average across all keywords and time
+# BRACKET_SURGEON: disabled
+#             )  # Average across all keywords and time
             older_avg = older_period.mean().mean()
 
             # Determine trend direction
@@ -1109,7 +1237,9 @@ class MarketValidator:
                 related_count = sum(
                     len(queries.get("top", [])) if queries.get("top") is not None else 0
                     for queries in related_queries.values()
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Adjust confidence based on related query volume
                 if related_count > 50:
@@ -1124,7 +1254,9 @@ class MarketValidator:
 
             self.logger.info(
                 f"Trend analysis complete: {direction} trend with {confidence} confidence"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return {
                 "direction": direction,
@@ -1132,7 +1264,8 @@ class MarketValidator:
                     "recent_avg": round(recent_avg, 2),
                     "older_avg": round(older_avg, 2),
                     "keywords_analyzed": len(trend_keywords),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Error analyzing market trends: {e}")
@@ -1146,23 +1279,29 @@ class MarketValidator:
                     "remote",
                     "machine learning",
                     "blockchain",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             has_trending = any(
                 term in product_concept.lower()
                 or any(term in keyword.lower() for keyword in keywords)
                 for term in trending_terms
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return {
                 "direction": "rising" if has_trending else "stable",
                     "confidence": "low",
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def _assess_monetization_potential(
         self, product_concept: str, search_data: Dict
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Assess the monetization potential of the product"""
         score = 0.0
 
@@ -1188,7 +1327,9 @@ class MarketValidator:
                 "platform",
                 "service",
                 "consulting",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         if any(term in product_concept.lower() for term in high_value_terms):
             score += 0.4
 
@@ -1197,7 +1338,8 @@ class MarketValidator:
 
     def _identify_target_audience(
         self, product_concept: str, keywords: List[str]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Identify the target audience for the product"""
         # Simple audience identification based on keywords
         all_text = (product_concept + " " + " ".join(keywords)).lower()
@@ -1208,11 +1350,13 @@ class MarketValidator:
             return "Digital Marketers & Content Creators"
         elif any(
             term in all_text for term in ["developer", "programming", "code", "tech"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return "Developers & Tech Professionals"
         elif any(
             term in all_text for term in ["student", "learn", "education", "course"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return "Students & Learners"
         else:
             return "General Consumers"
@@ -1224,7 +1368,9 @@ class MarketValidator:
             if not requests or not BeautifulSoup:
                 self.logger.error(
                     "Required libraries not available for content gap analysis"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return ["Content analysis tools not available"]
 
             content_gaps = []
@@ -1239,16 +1385,18 @@ class MarketValidator:
 
                     # Use a more realistic user agent
                     headers = {
-                        "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
-    like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-                    }
+                        "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,"
+# BRACKET_SURGEON: disabled
+#     like Gecko) Chrome/91.0.4472.124 Safari/537.36""
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Note: In production, consider using Google Custom Search API instead
                     # This is a basic implementation for content gap identification
 
                     # Analyze common content types that might be missing
                     common_content_types = [
-                        f"Beginner's guide to {keyword}",
+                        f"Beginner's guide to {keyword}",'
                             f"Advanced {keyword} techniques",
                             f"{keyword} case studies",
                             f"{keyword} vs alternatives comparison",
@@ -1258,7 +1406,9 @@ class MarketValidator:
                             f"{keyword} ROI analysis",
                             f"{keyword} implementation checklist",
                             f"{keyword} common mistakes",
-                            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
 
                     # Simulate content gap detection based on keyword analysis
                     # In a full production system, this would:
@@ -1275,7 +1425,8 @@ class MarketValidator:
                     if (
                         "advanced" not in keyword_lower
                         and "expert" not in keyword_lower
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         content_gaps.append(f"Advanced {keyword} strategies")
 
                     if "case" not in keyword_lower and "example" not in keyword_lower:
@@ -1290,7 +1441,9 @@ class MarketValidator:
                 except Exception as e:
                     self.logger.warning(
                         f"Error analyzing content gaps for keyword '{keyword}': {e}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     continue
 
             # Remove duplicates and limit results
@@ -1303,7 +1456,9 @@ class MarketValidator:
                         "Advanced implementation guides",
                         "Industry - specific case studies",
                         "Tool comparison and reviews",
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
 
             # Limit to top 6 most relevant gaps
             return unique_gaps[:6]
@@ -1316,7 +1471,9 @@ class MarketValidator:
                     "Advanced technique guides",
                     "Practical implementation examples",
                     "Comparative analysis content",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
 
     def _generate_product_recommendations(
@@ -1329,10 +1486,14 @@ class MarketValidator:
         if search_data["total_volume"] > 5000 and search_data["competition_level"] in [
             "low",
                 "medium",
-                ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]:
             recommendations.extend(
                 ["Online Course", "Digital Guide/Ebook", "Video Tutorial Series"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if search_data["competition_level"] == "low":
             recommendations.extend(["SaaS Tool", "Mobile App", "Consulting Service"])
@@ -1351,7 +1512,8 @@ class MarketValidator:
 
     def _calculate_confidence_score(
         self, search_data: Dict, trend_data: Dict, monetization_score: float
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate overall confidence score for the opportunity"""
         score = 0.0
 
@@ -1394,7 +1556,8 @@ if __name__ == "__main__":
         try:
             news_items = await news_watcher.monitor_feeds(
                 duration_hours = 0.1
-            )  # 6 minutes
+# BRACKET_SURGEON: disabled
+#             )  # 6 minutes
             print(f"Found {len(news_items)} news items")
 
             if news_items:
@@ -1440,7 +1603,9 @@ if __name__ == "__main__":
 
             opportunity = await validator.validate_product_idea(
                 product_concept, keywords
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(f"Market opportunity for: {opportunity.niche}")
             print(f"Search volume: {opportunity.search_volume:,}")
             print(f"Competition: {opportunity.competition_level}")

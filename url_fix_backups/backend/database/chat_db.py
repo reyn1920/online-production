@@ -24,7 +24,7 @@ class ChatDatabase:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS conversations (
                         id TEXT PRIMARY KEY,
                             user_id TEXT,
@@ -32,12 +32,14 @@ class ChatDatabase:
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             metadata TEXT
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS messages (
                         id TEXT PRIMARY KEY,
                             conversation_id TEXT,
@@ -47,23 +49,27 @@ class ChatDatabase:
                             metadata TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (conversation_id) REFERENCES conversations (id)
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.execute(
-                    """
+                    """"""
                     CREATE INDEX IF NOT EXISTS idx_messages_conversation
                     ON messages(conversation_id, created_at)
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.execute(
-                    """
+                    """"""
                     CREATE INDEX IF NOT EXISTS idx_conversations_user
                     ON conversations(user_id, updated_at DESC)
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 logger.info("Chat database initialized successfully")
@@ -84,7 +90,8 @@ class ChatDatabase:
                 conn.execute(
                     "INSERT INTO conversations (id, user_id, title) VALUES (?, ?, ?)",
                     (conversation_id, user_id, title),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
             logger.info(f"Created conversation {conversation_id} for user {user_id}")
@@ -101,7 +108,8 @@ class ChatDatabase:
         content: str,
         message_type: str = "text",
         metadata: Dict = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Add a message to a conversation"""
         message_id = str(uuid.uuid4())
         metadata_json = json.dumps(metadata) if metadata else None
@@ -109,9 +117,9 @@ class ChatDatabase:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """INSERT INTO messages
+                    """INSERT INTO messages"""
                        (id, conversation_id, role, content, message_type, metadata)
-                       VALUES (?, ?, ?, ?, ?, ?)""",
+                       VALUES (?, ?, ?, ?, ?, ?)""","""
                     (
                         message_id,
                         conversation_id,
@@ -119,14 +127,17 @@ class ChatDatabase:
                         content,
                         message_type,
                         metadata_json,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Update conversation timestamp
                 conn.execute(
                     "UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = ?",
                     (conversation_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
 
@@ -143,13 +154,14 @@ class ChatDatabase:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.execute(
-                    """SELECT id, role, content, message_type, metadata, created_at
+                    """SELECT id, role, content, message_type, metadata, created_at"""
                        FROM messages
                        WHERE conversation_id = ?
                        ORDER BY created_at ASC
-                       LIMIT ?""",
+                       LIMIT ?""","""
                     (conversation_id, limit),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 messages = []
                 for row in cursor.fetchall():
@@ -170,13 +182,14 @@ class ChatDatabase:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
                 cursor = conn.execute(
-                    """SELECT id, title, created_at, updated_at, metadata
+                    """SELECT id, title, created_at, updated_at, metadata"""
                        FROM conversations
                        WHERE user_id = ?
                        ORDER BY updated_at DESC
-                       LIMIT ?""",
+                       LIMIT ?""","""
                     (user_id, limit),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conversations = []
                 for row in cursor.fetchall():
@@ -198,7 +211,8 @@ class ChatDatabase:
                 cursor = conn.execute(
                     "UPDATE conversations SET title = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
                     (title, conversation_id),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
                 return cursor.rowcount > 0
@@ -233,26 +247,28 @@ class ChatDatabase:
 
                 if user_id:
                     cursor = conn.execute(
-                        """SELECT m.id, m.conversation_id, m.role, m.content,
+                        """SELECT m.id, m.conversation_id, m.role, m.content,"""
                             m.message_type, m.metadata, m.created_at, c.title
                            FROM messages m
                            JOIN conversations c ON m.conversation_id = c.id
                            WHERE m.content LIKE ? AND c.user_id = ?
                            ORDER BY m.created_at DESC
-                           LIMIT ?""",
+                           LIMIT ?""","""
                         (f"%{query}%", user_id, limit),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     cursor = conn.execute(
-                        """SELECT m.id, m.conversation_id, m.role, m.content,
+                        """SELECT m.id, m.conversation_id, m.role, m.content,"""
                             m.message_type, m.metadata, m.created_at, c.title
                            FROM messages m
                            JOIN conversations c ON m.conversation_id = c.id
                            WHERE m.content LIKE ?
                            ORDER BY m.created_at DESC
-                           LIMIT ?""",
+                           LIMIT ?""","""
                         (f"%{query}%", limit),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 results = []
                 for row in cursor.fetchall():
@@ -285,7 +301,8 @@ class ChatDatabase:
                     "total_messages": total_messages,
                     "unique_users": unique_users,
                     "database_size": (self.db_path.stat().st_size if self.db_path.exists() else 0),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             logger.error(f"Failed to get database stats: {e}")
@@ -309,7 +326,8 @@ def add_message(
     content: str,
     message_type: str = "text",
     metadata: Dict = None,
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     """Add a message to conversation"""
     return chat_db.add_message(conversation_id, role, content, message_type, metadata)
 

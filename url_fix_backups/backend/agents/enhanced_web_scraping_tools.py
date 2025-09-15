@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Enhanced Web Scraping Tools Module
 
 Implements comprehensive web scraping capabilities with:
@@ -9,7 +9,7 @@ Implements comprehensive web scraping capabilities with:
 - Multiple parsing strategies (BeautifulSoup, Selenium, requests - html)
 - Data extraction pipelines with validation
 - Caching and performance optimization
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -37,7 +37,9 @@ try:
 except ImportError as e:
     logging.warning(
         f"Required dependency missing: {e}. Basic scraping features will be limited."
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     requests = None
     BeautifulSoup = None
     lxml = None
@@ -57,7 +59,9 @@ try:
 except ImportError as e:
     logging.warning(
         f"Selenium not available: {e}. Advanced browser automation will be limited."
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     webdriver = None
     By = None
     Keys = None
@@ -76,7 +80,9 @@ try:
 except ImportError:
     logging.warning(
         "requests - html not available. JavaScript rendering will be limited."
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     requests_html = None
 
 
@@ -140,7 +146,7 @@ class ScrapingConfig:
     cache_duration: int = 3600  # Seconds
     javascript_enabled: bool = False
     headless: bool = True
-    custom_headers: Dict[str, str] = field(default_factory = dict)
+    custom_headers: Dict[str, str] = field(default_factory = dict):
     cookies: Dict[str, str] = field(default_factory = dict)
 
 @dataclass
@@ -171,7 +177,7 @@ class ScrapingResult:
     raw_html: Optional[str] = None
     error_message: Optional[str] = None
     response_time: float = 0.0
-    timestamp: datetime = field(default_factory = datetime.now)
+    timestamp: datetime = field(default_factory = datetime.now):
     method_used: Optional[ScrapingMethod] = None
     proxy_used: Optional[str] = None
 
@@ -212,7 +218,9 @@ class EnhancedWebScraper:
                 backoff_factor = self.config.retry_delay,
                 status_forcelist=[429, 500, 502, 503, 504],
                 method_whitelist=["HEAD", "GET", "OPTIONS"],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         adapter = HTTPAdapter(max_retries = retry_strategy)
         self.session.mount("http://", adapter)
@@ -226,8 +234,11 @@ class EnhancedWebScraper:
                     "Accept - Encoding": "gzip, deflate",
                     "Connection": "keep - alive",
                     "Upgrade - Insecure - Requests": "1",
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Add custom headers
         if self.config.custom_headers:
@@ -241,17 +252,23 @@ class EnhancedWebScraper:
     def _load_user_agents(self) -> List[str]:
         """Load realistic user agents"""
         return [
-            "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,
-    like Gecko) Chrome / 91.0.4472.124 Safari / 537.36",
-                "Mozilla / 5.0 (Windows NT 10.0; Win64; x64) AppleWebKit / 537.36 (KHTML,
-    like Gecko) Chrome / 91.0.4472.124 Safari / 537.36",
-                "Mozilla / 5.0 (X11; Linux x86_64) AppleWebKit / 537.36 (KHTML,
-    like Gecko) Chrome / 91.0.4472.124 Safari / 537.36",
-                "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 605.1.15 (KHTML,
-    like Gecko) Version / 14.1.1 Safari / 605.1.15",
+            "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,"
+# BRACKET_SURGEON: disabled
+#     like Gecko) Chrome / 91.0.4472.124 Safari / 537.36","
+                "Mozilla / 5.0 (Windows NT 10.0; Win64; x64) AppleWebKit / 537.36 (KHTML,"
+# BRACKET_SURGEON: disabled
+#     like Gecko) Chrome / 91.0.4472.124 Safari / 537.36","
+                "Mozilla / 5.0 (X11; Linux x86_64) AppleWebKit / 537.36 (KHTML,"
+# BRACKET_SURGEON: disabled
+#     like Gecko) Chrome / 91.0.4472.124 Safari / 537.36","
+                "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 605.1.15 (KHTML,"
+# BRACKET_SURGEON: disabled
+#     like Gecko) Version / 14.1.1 Safari / 605.1.15","
                 "Mozilla / 5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko / 20100101 Firefox / 89.0",
                 "Mozilla / 5.0 (X11; Linux x86_64; rv:89.0) Gecko / 20100101 Firefox / 89.0",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     def _load_proxies(self) -> None:
@@ -300,7 +317,8 @@ class EnhancedWebScraper:
             # Check if cache is expired
             if datetime.now() - cached_data["timestamp"] > timedelta(
                 seconds = self.config.cache_duration
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 cache_file.unlink()  # Remove expired cache
                 return None
 
@@ -369,7 +387,9 @@ class EnhancedWebScraper:
                     success = False,
                     data={},
                     error_message="requests library not available",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         start_time = time.time()
         proxy_used = None
@@ -404,7 +424,9 @@ class EnhancedWebScraper:
                     response_time = response_time,
                     method_used = ScrapingMethod.REQUESTS,
                     proxy_used = proxy_used,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except requests.RequestException as e:
             response_time = time.time() - start_time
@@ -414,14 +436,17 @@ class EnhancedWebScraper:
                     getattr(e.response, "status_code", 0)
                     if hasattr(e, "response")
                     else 0
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     success = False,
                     data={},
                     error_message = str(e),
                     response_time = response_time,
                     method_used = ScrapingMethod.REQUESTS,
                     proxy_used = proxy_used,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     async def _scrape_with_selenium(self, url: str) -> ScrapingResult:
@@ -433,7 +458,9 @@ class EnhancedWebScraper:
                     success = False,
                     data={},
                     error_message="Selenium not available",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         start_time = time.time()
         driver = None
@@ -475,7 +502,9 @@ class EnhancedWebScraper:
                 WebDriverWait(driver, 10).until(
                     lambda d: d.execute_script("return document.readyState")
                     == "complete"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             html = driver.page_source
             response_time = time.time() - start_time
@@ -489,7 +518,9 @@ class EnhancedWebScraper:
                     response_time = response_time,
                     method_used = ScrapingMethod.SELENIUM,
                     proxy_used = proxy_used,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             response_time = time.time() - start_time
@@ -501,7 +532,9 @@ class EnhancedWebScraper:
                     error_message = str(e),
                     response_time = response_time,
                     method_used = ScrapingMethod.SELENIUM,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         finally:
             if driver:
                 driver.quit()
@@ -516,7 +549,9 @@ class EnhancedWebScraper:
                     success = False,
                     data={},
                     error_message="requests - html not available",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         start_time = time.time()
 
@@ -546,7 +581,9 @@ class EnhancedWebScraper:
                     raw_html = html,
                     response_time = response_time,
                     method_used = ScrapingMethod.REQUESTS_HTML,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             response_time = time.time() - start_time
@@ -558,12 +595,15 @@ class EnhancedWebScraper:
                     error_message = str(e),
                     response_time = response_time,
                     method_used = ScrapingMethod.REQUESTS_HTML,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     async def scrape_url(
         self, url: str, extraction_rules: Optional[List[ExtractionRule]] = None
-    ) -> ScrapingResult:
+# BRACKET_SURGEON: disabled
+#     ) -> ScrapingResult:
         """Scrape a single URL with the configured method"""
         # Check cache first
         cache_key = self._get_cache_key(url, self.config.method)
@@ -607,7 +647,8 @@ class EnhancedWebScraper:
                     "timestamp": result.timestamp,
                     "method_used": result.method_used,
                     "proxy_used": result.proxy_used,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             self._cache_response(cache_key, cache_data)
 
         return result
@@ -671,7 +712,9 @@ class EnhancedWebScraper:
             except Exception as e:
                 self.logger.warning(
                     f"Post - processing failed for rule '{rule.name}': {e}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return value
 
@@ -704,8 +747,12 @@ class EnhancedWebScraper:
                             success = False,
                             data={},
                             error_message = str(result),
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 final_results.append(result)
 
@@ -714,7 +761,8 @@ class EnhancedWebScraper:
 
     def export_results(
         self, results: List[ScrapingResult], format_type: DataFormat, output_file: str
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Export scraping results to file"""
         try:
             if format_type == DataFormat.JSON:
@@ -729,9 +777,12 @@ class EnhancedWebScraper:
                             "timestamp": r.timestamp.isoformat(),
                             "method_used": r.method_used.value if r.method_used else None,
                             "proxy_used": r.proxy_used,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     for r in results
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
                 with open(output_file, "w", encoding="utf - 8") as f:
                     json.dump(data, f, indent = 2, ensure_ascii = False)
@@ -756,7 +807,9 @@ class EnhancedWebScraper:
                                 "timestamp",
                                 "method_used",
                                 "proxy_used",
-                                ] + list(all_keys)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ] + list(all_keys)
 
                         writer = csv.DictWriter(f, fieldnames = fieldnames)
                         writer.writeheader()
@@ -773,9 +826,11 @@ class EnhancedWebScraper:
                                     result.method_used.value
                                     if result.method_used
                                     else None
-                                ),
+# BRACKET_SURGEON: disabled
+#                                 ),
                                     "proxy_used": result.proxy_used,
-                                    }
+# BRACKET_SURGEON: disabled
+#                                     }
                             row.update(result.data)
                             writer.writerow(row)
 
@@ -805,7 +860,8 @@ class EnhancedWebScraper:
                 "methods_used": {},
                 "status_codes": {},
                 "error_types": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Method statistics
         for result in results:
@@ -824,7 +880,9 @@ class EnhancedWebScraper:
                 error_type = type(result.error_message).__name__
                 stats["error_types"][error_type] = (
                     stats["error_types"].get(error_type, 0) + 1
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return stats
 
@@ -852,7 +910,9 @@ if __name__ == "__main__":
                 rate_limit = 1.0,
                 cache_responses = True,
                 rotate_user_agents = True,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         scraper = EnhancedWebScraper(config)
 
@@ -865,18 +925,24 @@ if __name__ == "__main__":
                     attribute="content",
                     required = False,
                     default_value="No description",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 ExtractionRule(
                 name="headings", selector="h1, h2, h3", is_list = True, required = False
-            ),
-                ]
+# BRACKET_SURGEON: disabled
+#             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Test URLs
         test_urls = [
             "https://httpbin.org / html",
                 "https://httpbin.org / json",
                 "https://example.com",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         try:
             # Scrape multiple URLs

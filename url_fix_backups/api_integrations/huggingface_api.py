@@ -14,12 +14,12 @@ class HuggingFaceAPI(BaseAPI):
     """Hugging Face API integration for free AI models"""
 
     def __init__(self, api_key: Optional[str] = None):
-        """
+        """"""
         Initialize Hugging Face API client
 
         Args:
             api_key: Hugging Face API token. If not provided, will try to get from environment
-        """
+        """"""
         super().__init__()
         self.api_key = api_key or os.getenv("HUGGINGFACE_API_KEY")
         self.base_url = "https://api - inference.huggingface.co"
@@ -29,7 +29,8 @@ class HuggingFaceAPI(BaseAPI):
         if not self.api_key:
             logger.warning(
                 "Hugging Face API key not provided. Rate limits will be more restrictive."
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def get_headers(self) -> Dict[str, str]:
         """Get headers for API requests"""
@@ -41,7 +42,7 @@ class HuggingFaceAPI(BaseAPI):
     def text_generation(
         self, text: str, model: str = "microsoft / DialoGPT - medium", **kwargs
     ) -> Dict[str, Any]:
-        """
+        """"""
         Generate text using Hugging Face models
 
         Args:
@@ -51,7 +52,7 @@ class HuggingFaceAPI(BaseAPI):
 
         Returns:
             Dict containing the generated text
-        """
+        """"""
         url = f"{self.base_url}/models/{model}"
 
         payload = {"inputs": text, "parameters": kwargs}
@@ -76,7 +77,7 @@ class HuggingFaceAPI(BaseAPI):
         text: str,
         model: str = "cardiffnlp / twitter - roberta - base - sentiment - latest",
     ) -> Dict[str, Any]:
-        """
+        """"""
         Classify text using Hugging Face models
 
         Args:
@@ -85,7 +86,7 @@ class HuggingFaceAPI(BaseAPI):
 
         Returns:
             Dict containing classification results
-        """
+        """"""
         url = f"{self.base_url}/models/{model}"
 
         payload = {"inputs": text}
@@ -108,7 +109,7 @@ class HuggingFaceAPI(BaseAPI):
     def summarization(
         self, text: str, model: str = "facebook / bart - large - cnn", **kwargs
     ) -> Dict[str, Any]:
-        """
+        """"""
         Summarize text using Hugging Face models
 
         Args:
@@ -118,7 +119,7 @@ class HuggingFaceAPI(BaseAPI):
 
         Returns:
             Dict containing summarization results
-        """
+        """"""
         url = f"{self.base_url}/models/{model}"
 
         payload = {"inputs": text, "parameters": kwargs}
@@ -143,7 +144,7 @@ class HuggingFaceAPI(BaseAPI):
         image_data: Union[str, bytes],
         model: str = "google / vit - base - patch16 - 224",
     ) -> Dict[str, Any]:
-        """
+        """"""
         Classify images using Hugging Face models
 
         Args:
@@ -152,7 +153,7 @@ class HuggingFaceAPI(BaseAPI):
 
         Returns:
             Dict containing classification results
-        """
+        """"""
         url = f"{self.base_url}/models/{model}"
 
         # Handle different image data formats
@@ -181,12 +182,12 @@ class HuggingFaceAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_status(self) -> Dict[str, Any]:
-        """
+        """"""
         Get API status and configuration
 
         Returns:
             Dict containing status information
-        """
+        """"""
         return {
             "name": self.name,
             "category": self.category,
@@ -199,18 +200,20 @@ class HuggingFaceAPI(BaseAPI):
                 "image - classification",
                 "question - answering",
                 "translation",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "rate_limits": "Free tier: 1000 requests / month, Paid: Higher limits",
             "last_checked": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def test_connection(self) -> Dict[str, Any]:
-        """
+        """"""
         Test the API connection
 
         Returns:
             Dict containing test results
-        """
+        """"""
         try:
             # Test with a simple sentiment analysis
             result = self.text_classification("This is a test message")
@@ -220,11 +223,13 @@ class HuggingFaceAPI(BaseAPI):
                 "message": "Connection successful",
                 "test_result": result,
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {
                 "success": False,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }

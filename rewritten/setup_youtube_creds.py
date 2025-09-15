@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 YouTube Credentials Setup Script
 
 Sets up YouTube API credentials for the content pipeline.
-"""
+""""""
 
 import getpass
 import sys
@@ -34,7 +34,8 @@ def setup_youtube_credentials():
         "YOUTUBE_CLIENT_ID",
         "YOUTUBE_CLIENT_SECRET",
         "YOUTUBE_CHANNEL_ID",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     print("Current YouTube credentials status:")
     missing_creds = []

@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 Avatar Engine Registration Script
 Registers Linly - Talker \
-    and Talking Heads as avatar generation engines in the API registry.
-"""
+#     and Talking Heads as avatar generation engines in the API registry.
+""""""
 
 import json
 import os
@@ -43,10 +43,13 @@ def register_avatar_engines():
                     "supported_formats": ["mp4", "avi"],
                         "default_voice": "default",
                         "enhancement_level": "maximum",
-                        }
-            ),
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#             ),
                 "created_by": "system",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "api_name": "talking - heads - fallback",
                 "base_url": "http://localhost:8000",  # Alternative port
@@ -68,11 +71,16 @@ def register_avatar_engines():
                     "supported_formats": ["mp4"],
                         "fallback_mode": True,
                         "reliability": "high",
-                        }
-            ),
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#             ),
                 "created_by": "system",
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
     try:
         conn = sqlite3.connect(db_path)
@@ -82,13 +90,15 @@ def register_avatar_engines():
         for engine in engines:
             cursor.execute(
                 "SELECT id FROM api_registry WHERE api_name = ?", (engine["api_name"],)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             existing = cursor.fetchone()
 
             if existing:
                 # Update existing engine
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE api_registry SET
                         base_url = ?,
                             api_version = ?,
@@ -103,7 +113,7 @@ def register_avatar_engines():
                             configuration = ?,
                             updated_at = CURRENT_TIMESTAMP
                     WHERE api_name = ?
-                """,
+                ""","""
                     (
                         engine["base_url"],
                             engine["api_version"],
@@ -117,20 +127,25 @@ def register_avatar_engines():
                             engine["priority"],
                             engine["configuration"],
                             engine["api_name"],
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 print(f"✅ Updated existing avatar engine: {engine['api_name']}")
             else:
                 # Insert new engine
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO api_registry (
                         api_name, base_url, api_version, capability,
                             authentication_type, status, health_check_url,
                             health_status, allow_automatic_failover,
                             failover_priority, priority, configuration, created_by
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ""","""
                     (
                         engine["api_name"],
                             engine["base_url"],
@@ -145,21 +160,26 @@ def register_avatar_engines():
                             engine["priority"],
                             engine["configuration"],
                             engine["created_by"],
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 print(f"✅ Registered new avatar engine: {engine['api_name']}")
 
         conn.commit()
 
         # Verify registration
         cursor.execute(
-            """
+            """"""
             SELECT api_name, capability, priority, status
             FROM api_registry
             WHERE capability = 'avatar - generation'
             ORDER BY priority ASC
-        """
-        )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         registered_engines = cursor.fetchall()
         print("\\n🎯 Avatar Generation Engines Registered:")
@@ -170,18 +190,26 @@ def register_avatar_engines():
         print("\\n🚀 Avatar engine registration completed successfully!")
         print("\\n📋 Integration Summary:")
         print(
-            "  • Primary Engine: Linly - Talker (Priority 1) - High quality,
-    enhanced features"
-        )
+            "  • Primary Engine: Linly - Talker (Priority 1) - High quality,"
+    enhanced features""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(
             "  • Fallback Engine: Talking Heads (Priority 10) - Reliable backup option"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(
             "  • Capability: 'avatar - generation' - Used by API Orchestrator for intelligent selection"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(
             "  • Failover: Automatic - System will switch to fallback if primary fails"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except sqlite3.Error as e:
         print(f"❌ Database error: {e}")

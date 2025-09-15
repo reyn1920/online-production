@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Audio Post - Production - Automated Sound Design and Mastering with FFmpeg
 
 This module provides comprehensive audio post - production capabilities including:
@@ -15,7 +15,7 @@ This module provides comprehensive audio post - production capabilities includin
 
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -110,7 +110,7 @@ class AudioSettings:
 
     # Processing settings
     normalize: bool = True
-    target_lufs: float = -23.0  # Target loudness (LUFS)
+    target_lufs: float = -23.0: # Target loudness (LUFS)
     peak_limit: float = -1.0  # Peak limiter threshold (dB)
 
     # Advanced settings
@@ -124,7 +124,7 @@ class AudioSettings:
 class DuckingSettings:
     """Audio ducking configuration."""
 
-    threshold: float = -20.0  # Ducking threshold (dB)
+    threshold: float = -20.0: # Ducking threshold (dB)
     ratio: float = 4.0  # Ducking ratio
     attack: float = 0.1  # Attack time (seconds)
     release: float = 0.5  # Release time (seconds)
@@ -141,7 +141,7 @@ class MasteringSettings:
     """Audio mastering configuration."""
 
     # EQ settings
-    high_pass_freq: float = 20.0  # High - pass filter frequency (Hz)
+    high_pass_freq: float = 20.0: # High - pass filter frequency (Hz)
     low_pass_freq: float = 20000.0  # Low - pass filter frequency (Hz)
 
     # EQ bands (frequency, gain, Q)
@@ -150,8 +150,12 @@ class MasteringSettings:
             (100.0, 0.0, 1.0),  # Low
             (1000.0, 0.0, 1.0),  # Mid
             (10000.0, 0.0, 1.0),  # High
-        ]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # Compression
     compressor_threshold: float = -12.0  # Compressor threshold (dB)
@@ -181,7 +185,7 @@ class AudioTrack:
 
     # Timing
     start_time: float = 0.0  # Start time in seconds
-    duration: Optional[float] = None  # Duration in seconds (None = full length)
+    duration: Optional[float] = None: # Duration in seconds (None = full length)
 
     # Volume and panning
     volume: float = 1.0  # Volume multiplier (0.0 - 2.0)
@@ -192,7 +196,7 @@ class AudioTrack:
     solo: bool = False
 
     # Effects
-    effects: List[Dict[str, Any]] = field(default_factory = list)
+    effects: List[Dict[str, Any]] = field(default_factory = list):
 
     # Ducking (for background tracks)
     duck_to_speech: bool = False
@@ -213,7 +217,7 @@ class AudioProject:
     output_path: str
 
     # Global settings
-    audio_settings: AudioSettings = field(default_factory = AudioSettings)
+    audio_settings: AudioSettings = field(default_factory = AudioSettings):
     mastering_settings: MasteringSettings = field(default_factory = MasteringSettings)
 
     # Project timing
@@ -222,7 +226,9 @@ class AudioProject:
     # Processing options
     processing_types: List[ProcessingType] = field(
         default_factory = lambda: [ProcessingType.MIXING, ProcessingType.MASTERING]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # Advanced options
     temp_dir: Optional[str] = None
@@ -247,7 +253,7 @@ class ProcessingJob:
     current_track: Optional[str] = None
 
     # Timing
-    created_at: datetime = field(default_factory = datetime.now)
+    created_at: datetime = field(default_factory = datetime.now):
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     processing_time: float = 0.0
@@ -290,10 +296,13 @@ class FFmpegInterface:
             "/usr / bin / ffmpeg",  # Linux
             "C:\\\\ffmpeg\\\\bin\\\\ffmpeg.exe",  # Windows
             "ffmpeg",  # PATH
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for path in possible_paths:
             if os.path.exists(path) or shutil.which(path):
+                pass
         return path
 
         raise RuntimeError("FFmpeg executable not found")
@@ -307,7 +316,9 @@ class FFmpegInterface:
                     capture_output = True,
                     text = True,
                     timeout = 10,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             pass
         return result.returncode == 0 and "ffmpeg version" in result.stdout
@@ -325,7 +336,9 @@ class FFmpegInterface:
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    timeout = 30)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 30)
 
             # Parse FFmpeg output
             info = self._parse_ffmpeg_info(result.stderr)
@@ -351,7 +364,9 @@ class FFmpegInterface:
             # Extract duration
             duration_match = re.search(
                 r"Duration: (\\d+):(\\d+):(\\d+\\.\\d+)", ffmpeg_output
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if duration_match:
                 hours, minutes, seconds = duration_match.groups()
                 total_seconds = int(hours) * 3600 + int(minutes) * 60 + float(seconds)
@@ -361,7 +376,9 @@ class FFmpegInterface:
             audio_match = re.search(
                 r"Audio: ([^,]+), (\\d+) Hz, ([^,]+), ([^,]+), (\\d+) kb / s",
     ffmpeg_output
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if audio_match:
                 codec, sample_rate, channels, bit_depth, bitrate = audio_match.groups()
                 info.update(
@@ -373,8 +390,11 @@ class FFmpegInterface:
             "bitrate": f"{bitrate} kb / s",
         except Exception as e:
             pass
-        }
-                )
+# BRACKET_SURGEON: disabled
+#         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             logging.getLogger(__name__).error(f"Failed to parse FFmpeg info: {e}")
@@ -394,12 +414,16 @@ class FFmpegInterface:
                     "-f",
                     "null",
                     "-",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    timeout = 60)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 60)
 
             # Extract JSON from output
             output_lines = result.stderr.split("\\n")
@@ -425,7 +449,8 @@ class FFmpegInterface:
             "input_tp": float(loudness_data.get("input_tp", 0)),
             "input_lra": float(loudness_data.get("input_lra", 0)),
             "input_thresh": float(loudness_data.get("input_thresh", 0)),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         except Exception as e:
             logging.getLogger(__name__).error(f"Loudness analysis failed: {e}")
@@ -439,7 +464,8 @@ class FFmpegInterface:
             trigger_audio: str,
             output_path: str,
             settings: DuckingSettings,
-            ) -> bool:
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
         """Apply audio ducking to main audio based on trigger audio."""
         try:
             # Build ducking filter
@@ -453,7 +479,9 @@ class FFmpegInterface:
                 f"knee={settings.knee}:"
                 f"detection = peak:"
                 f"mix = 1"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             cmd = [
                 self.ffmpeg_executable,
@@ -467,12 +495,16 @@ class FFmpegInterface:
                     "pcm_s16le",
                     "-y",
                     output_path,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    timeout = 300)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 300)
 
             if result.returncode == 0:
                 logging.getLogger(__name__).info(f"Ducking applied successfully: {output_path}")
@@ -494,7 +526,8 @@ class FFmpegInterface:
             output_path: str,
             settings: MasteringSettings,
             audio_settings: AudioSettings,
-            ) -> bool:
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
         """Apply mastering chain to audio."""
         try:
             # Build mastering filter chain
@@ -521,7 +554,9 @@ class FFmpegInterface:
                 f"attack={settings.compressor_attack}:"
                 f"release={settings.compressor_release}:"
                 f"makeup = 2"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             filters.append(compressor)
 
             # Stereo width
@@ -535,7 +570,9 @@ class FFmpegInterface:
                     f"I={audio_settings.target_lufs}:"
                     f"TP={audio_settings.peak_limit}:"
                     f"LRA = 7"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 filters.append(loudnorm)
 
             # Limiter
@@ -558,7 +595,9 @@ class FFmpegInterface:
                     str(audio_settings.sample_rate),
                     "-ac",
                     str(audio_settings.channels),
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             # Add format - specific options
             if audio_settings.bitrate:
@@ -569,7 +608,9 @@ class FFmpegInterface:
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    timeout = 600)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 600)
 
             if result.returncode == 0:
                 logging.getLogger(__name__).info(f"Mastering applied successfully: {output_path}")
@@ -591,7 +632,8 @@ class FFmpegInterface:
             output_path: str,
             audio_settings: AudioSettings,
             total_duration: Optional[float] = None,
-            ) -> bool:
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
         """Mix multiple audio tracks into a single output."""
         try:
             # Build input arguments
@@ -633,7 +675,9 @@ class FFmpegInterface:
             mix_inputs = ";".join(filter_inputs)
             track_refs = "".join(
                 [f"[a{i}]" for i in range(len([t for t in tracks if not t.mute]))]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             mix_filter = f"{mix_inputs};{track_refs}amix = inputs={len([t for t in tracks if not t.mute])}:duration = longest[out]"
 
             # Build command
@@ -651,8 +695,12 @@ class FFmpegInterface:
                         str(audio_settings.sample_rate),
                         "-ac",
                         str(audio_settings.channels),
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if audio_settings.bitrate:
                 cmd.extend(["-b:a", audio_settings.bitrate])
@@ -665,7 +713,9 @@ class FFmpegInterface:
             result = subprocess.run(cmd,
     capture_output = True,
     text = True,
-    timeout = 600)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timeout = 600)
 
             if result.returncode == 0:
                 logging.getLogger(__name__).info(f"Tracks mixed successfully: {output_path}")
@@ -691,7 +741,8 @@ class FFmpegInterface:
                 AudioFormat.OGG: "libvorbis",
                 AudioFormat.M4A: "aac",
                 AudioFormat.OPUS: "libopus",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return codec_map.get(format, "pcm_s16le")
 
 
@@ -715,7 +766,8 @@ class AudioPostProduction:
 
     def __init__(:
         self, ffmpeg_executable: Optional[str] = None, temp_dir: Optional[str] = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         self.ffmpeg_interface = FFmpegInterface(ffmpeg_executable)
 
         # Setup directories
@@ -723,7 +775,9 @@ class AudioPostProduction:
             Path(temp_dir)
             if temp_dir
             else Path(tempfile.gettempdir())/"audio_post_production"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.temp_dir.mkdir(parents = True, exist_ok = True)
 
         # Job tracking
@@ -741,7 +795,8 @@ class AudioPostProduction:
             project_id: Optional[str] = None,
             audio_settings: Optional[AudioSettings] = None,
             mastering_settings: Optional[MasteringSettings] = None,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Create a new audio post - production project."""
 
         if not project_id:
@@ -758,8 +813,11 @@ class AudioPostProduction:
             "created_at": datetime.now().isoformat(),
             "track_count": len(tracks),
             "total_duration": None,  # Will be calculated
-            },
-                )
+# BRACKET_SURGEON: disabled
+#             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         logging.getLogger(__name__).info(f"Created audio project: {project_id} with {len(tracks)} tracks")
         return project_id
@@ -778,8 +836,11 @@ class AudioPostProduction:
             "project_name": project.name,
             "track_count": len(project.tracks),
             "processing_types": [pt.value for pt in project.processing_types],
-        },
-                )
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         with self._job_lock:
             self.active_jobs[job_id] = job
@@ -787,7 +848,9 @@ class AudioPostProduction:
         # Start processing in background thread
         threading.Thread(
             target = self._process_job_async, args=(job,), daemon = True
-        ).start()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).start()
 
         logging.getLogger(__name__).info(f"Started audio processing job: {job_id}")
         return job_id
@@ -860,7 +923,9 @@ class AudioPostProduction:
 
             logging.getLogger(__name__).info(
                 f"Audio processing completed: {job.job_id} ({job.processing_time:.2f}s)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             job.status = ProcessingStatus.ERROR
@@ -877,13 +942,18 @@ class AudioPostProduction:
                 if os.path.exists(track.source_path):
                     track_analysis = self.ffmpeg_interface.analyze_audio(
                         track.source_path
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     analysis_results[track.name] = track_analysis
 
                     logging.getLogger(__name__).info(
-                        f"Analyzed track '{track.name}': {track_analysis.get('duration',
-    0):.2f}s"
-                    )
+                        f"Analyzed track '{track.name}': {track_analysis.get('duration',"
+# BRACKET_SURGEON: disabled
+#     0):.2f}s""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             job.audio_analysis = analysis_results
 
@@ -919,7 +989,9 @@ class AudioPostProduction:
 
                 processed_path = str(
                     self.temp_dir / f"processed_{track.name}_{job.job_id}.wav"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Apply ducking if needed
                 if track.duck_to_speech and speech_tracks:
@@ -934,14 +1006,18 @@ class AudioPostProduction:
                             trigger_audio = trigger_track.source_path,
                             output_path = processed_path,
                             settings = ducking_settings,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if success:
                         processed_tracks.append(processed_path)
                     else:
                         logging.getLogger(__name__).warning(
                             f"Ducking failed for track: {track.name}, using original"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         processed_tracks.append(track.source_path)
                 else:
                     # No ducking needed, use original
@@ -975,7 +1051,9 @@ class AudioPostProduction:
                             duration = track.duration,
                             volume = track.volume,
                             pan = track.pan,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     temp_tracks.append(temp_track)
 
             success = self.ffmpeg_interface.mix_tracks(
@@ -983,13 +1061,17 @@ class AudioPostProduction:
                     output_path = mixed_path,
                     audio_settings = job.project.audio_settings,
                     total_duration = job.project.total_duration,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if success:
+                pass
         except Exception as e:
             pass
         return mixed_path
             else:
+                pass
         return None
 
         except Exception as e:
@@ -1002,20 +1084,26 @@ class AudioPostProduction:
         try:
             mastered_path = str(
                 self.temp_dir / f"mastered_{job.job_id}.{job.project.audio_settings.format.value}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             success = self.ffmpeg_interface.apply_mastering(
                 input_path = mixed_path,
                     output_path = mastered_path,
                     settings = job.project.mastering_settings,
                     audio_settings = job.project.audio_settings,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if success:
+                pass
         except Exception as e:
             pass
         return mastered_path
             else:
+                pass
         return None
 
         except Exception as e:
@@ -1026,6 +1114,7 @@ class AudioPostProduction:
     def get_job_status(self, job_id: str) -> Optional[ProcessingJob]:
         """Get current status of a processing job."""
         with self._job_lock:
+            pass
         return self.active_jobs.get(job_id)
 
 
@@ -1038,7 +1127,9 @@ class AudioPostProduction:
                 if job.status not in [
                     ProcessingStatus.COMPLETED,
                         ProcessingStatus.ERROR,
-                        ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]:
                     # Terminate FFmpeg processes
                     self.ffmpeg_interface.terminate_processes(job.ffmpeg_processes)
 
@@ -1080,7 +1171,8 @@ class AudioPostProduction:
             background_music: str,
             output_path: str,
             project_name: str = "Podcast",
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Create a podcast - style project with speech and background music."""
 
         # Create tracks
@@ -1090,7 +1182,9 @@ class AudioPostProduction:
                 track_type="speech",
                 volume = 1.0,
                 pan = 0.0,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         music_track = AudioTrack(
             name="background_music",
@@ -1101,8 +1195,11 @@ class AudioPostProduction:
                 duck_to_speech = True,  # Enable ducking
             ducking_settings = DuckingSettings(
                 threshold=-25.0, ratio = 4.0, attack = 0.1, release = 0.5, reduction=-8.0
-            ),
-                )
+# BRACKET_SURGEON: disabled
+#             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Create project
         return self.create_project(
@@ -1115,8 +1212,11 @@ class AudioPostProduction:
                     bitrate="128k",
                     sample_rate = 22050,
                     channels = 1,  # Mono for podcast
-            ),
-                )
+# BRACKET_SURGEON: disabled
+#             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def get_system_info(self) -> Dict[str, Any]:
@@ -1130,7 +1230,8 @@ class AudioPostProduction:
             "processing_types": [pt.value for pt in ProcessingType],
             "ducking_enabled": True,
             "mastering_enabled": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 # Example usage and testing
 if __name__ == "__main__":
@@ -1159,7 +1260,9 @@ if __name__ == "__main__":
                         background_music = music_file,
                         output_path = output_file,
                         project_name="Sample Podcast",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 print(f"Project created: {project_id}")
 
@@ -1171,10 +1274,15 @@ if __name__ == "__main__":
                         AudioTrack("speech", speech_file, "speech"),
                             AudioTrack("music",
     music_file, "music",
-    duck_to_speech = True),
-                            ],
+# BRACKET_SURGEON: disabled
+#     duck_to_speech = True),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         output_path = output_file,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Process project
                 print("Processing audio...")
@@ -1186,12 +1294,16 @@ if __name__ == "__main__":
                     if job:
                         print(
                             f"Progress: {job.progress_percentage:.1f}% - {job.current_step}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                         if job.status in [
                             ProcessingStatus.COMPLETED,
                                 ProcessingStatus.ERROR,
-                                ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ]:
                             break
 
                     time.sleep(2)
@@ -1213,7 +1325,9 @@ if __name__ == "__main__":
                 print(f"   Background music: {music_file}")
                 print(
                     f"\\n💡 You can test with your own files by updating the paths above."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             print(f"❌ Error in example usage: {e}")

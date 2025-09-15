@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Compliance Validator - Ensures TRAE.AI system meets security and operational standards
 Validates configuration, dependencies, and deployment readiness
-"""
+""""""
 
 import hashlib
 import json
@@ -72,7 +72,9 @@ class ComplianceValidator:
                     "app/dashboard.py",
                     "backend/core/secret_store_bridge.py",
                     "scripts/phoenix_protocol.sh",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "directories": [
                 "app",
                     "backend/core",
@@ -84,12 +86,15 @@ class ComplianceValidator:
                     "assets/temp",
                     "assets/archive",
                     "tests",
-                    ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def validate_project_structure(self, project_path: str) -> Dict[str, Any]:
-        """
+        """"""
         Validate overall project structure and organization
 
         Args:
@@ -97,7 +102,7 @@ class ComplianceValidator:
 
         Returns:
             Dict with validation results
-        """
+        """"""
         checks = []
 
         # Check for essential directories
@@ -109,8 +114,11 @@ class ComplianceValidator:
                     "check": f"Directory {dir_name} exists",
                         "status": "pass" if dir_path.exists() else "fail",
                         "path": str(dir_path),
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Check for configuration files
         config_files = ["requirements.txt", "package.json", ".env.example"]
@@ -121,8 +129,11 @@ class ComplianceValidator:
                     "check": f"Config file {file_name}",
                         "status": "pass" if file_path.exists() else "info",
                         "path": str(file_path),
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         passed = sum(1 for check in checks if check["status"] == "pass")
         total = len([c for c in checks if c["status"] in ["pass", "fail"]])
@@ -131,15 +142,18 @@ class ComplianceValidator:
             "status": "ok",
                 "checks": checks,
                 "summary": f"{passed}/{total} essential checks passed",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Security configuration requirements
         self.security_requirements = {
             "env_files": [".env.example", ".env.local"],
                 "secret_patterns": [
-                r'(?i)(password|secret|key|token)\\s*=\\s*["\\'][^"\\'>\\s]+["\\']',
-                    r'(?i)api[_-]?key\\s*=\\s*["\\'][^"\\'>\\s]+["\\']',
-                    ],
+                r'(?i)(password|secret|key|token)\\s*=\\s*["\\'][^"\\'>\\s]+["\\']',"
+                    r'(?i)api[_-]?key\\s*=\\s*["\\'][^"\\'>\\s]+["\\']',"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 "required_gitignore_entries": [
                 ".env",
                     ".env.local",
@@ -147,8 +161,11 @@ class ComplianceValidator:
                     "node_modules",
                     "*.log",
                     ".DS_Store",
-                    ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Dependency security requirements
         self.dependency_requirements = {
@@ -159,17 +176,24 @@ class ComplianceValidator:
                         "flask < 2.0",
                         "requests < 2.20",
                         "urllib3 < 1.24",
-                        ],
-                    },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     },
                 "javascript": {
                 "file": "package.json",
                     "vulnerable_packages": [
                     "lodash < 4.17.21",
                         "axios < 0.21.1",
                         "express < 4.17.1",
-                        ],
-                    },
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         logger.info(f"Compliance validator initialized for {self.base_dir}")
 
@@ -209,11 +233,15 @@ class ComplianceValidator:
                 compliance_score = compliance_score,
                 duration_seconds = duration,
                 metadata={"total_checks": len(checks), "validator_version": "1.0.0"},
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         logger.info(
             f"Compliance validation completed: {overall_status} ({compliance_score:.1f}%)"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return report
 
@@ -236,8 +264,12 @@ class ComplianceValidator:
                             status="passed",
                             severity="medium",
                             evidence=[str(file_path)],
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 checks.append(
                     ComplianceCheck(
@@ -248,8 +280,12 @@ class ComplianceValidator:
                             status="failed",
                             severity="high",
                             remediation = f"Create the required file: {required_file}",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Check required directories
         for required_dir in self.required_structure["directories"]:
@@ -265,8 +301,12 @@ class ComplianceValidator:
                             status="passed",
                             severity="medium",
                             evidence=[str(dir_path)],
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 checks.append(
                     ComplianceCheck(
@@ -277,8 +317,12 @@ class ComplianceValidator:
                             status="failed",
                             severity="high",
                             remediation = f"Create the required directory: mkdir -p {required_dir}",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return checks
 
@@ -299,8 +343,12 @@ class ComplianceValidator:
                         status="passed",
                         severity="medium",
                         evidence=[str(env_example)],
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             checks.append(
                 ComplianceCheck(
@@ -311,8 +359,12 @@ class ComplianceValidator:
                         status="failed",
                         severity="medium",
                         remediation="Create .env.example with required environment variables",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Check .gitignore for sensitive files
         gitignore_path = self.base_dir/".gitignore"
@@ -324,7 +376,9 @@ class ComplianceValidator:
                 missing_entries = []
                 for required_entry in self.security_requirements[
                     "required_gitignore_entries"
-                ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]:
                     if required_entry not in gitignore_content:
                         missing_entries.append(required_entry)
 
@@ -338,8 +392,12 @@ class ComplianceValidator:
                                 status="passed",
                                 severity="high",
                                 evidence=[str(gitignore_path)],
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     checks.append(
                         ComplianceCheck(
@@ -350,8 +408,12 @@ class ComplianceValidator:
                                 status="failed",
                                 severity="high",
                                 remediation = f"Add missing entries to .gitignore: {', '.join(missing_entries)}",
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             except Exception as e:
                 checks.append(
@@ -362,8 +424,12 @@ class ComplianceValidator:
                             description = f"Failed to read .gitignore: {e}",
                             status="failed",
                             severity="medium",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Check for hardcoded secrets in main files
         secret_violations = []
@@ -381,7 +447,9 @@ class ComplianceValidator:
                         if matches:
                             secret_violations.append(
                                 f"{file_path}: {len(matches)} potential secrets"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 except Exception as e:
                     logger.warning(f"Failed to scan {file_path}: {e}")
@@ -395,8 +463,12 @@ class ComplianceValidator:
                         description="Main application files do not contain hardcoded secrets",
                         status="passed",
                         severity="critical",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             checks.append(
                 ComplianceCheck(
@@ -406,10 +478,14 @@ class ComplianceValidator:
                         description = f"Found potential secrets: {'; '.join(secret_violations)}",
                         status="failed",
                         severity="critical",
-                        remediation="Remove hardcoded secrets \
-    and use environment variables or secret store",
-                        )
-            )
+                        remediation="Remove hardcoded secrets \"
+#     and use environment variables or secret store",
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return checks
 
@@ -428,7 +504,9 @@ class ComplianceValidator:
                 vulnerable_found = []
                 for vulnerable_pkg in self.dependency_requirements["python"][
                     "vulnerable_packages"
-                ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]:
                     if vulnerable_pkg.split("<")[0] in requirements_content:
                         # Simple check - in production, use proper version parsing
                         vulnerable_found.append(vulnerable_pkg)
@@ -443,8 +521,12 @@ class ComplianceValidator:
                                 status="passed",
                                 severity="high",
                                 evidence=[str(requirements_file)],
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     checks.append(
                         ComplianceCheck(
@@ -455,8 +537,12 @@ class ComplianceValidator:
                                 status="failed",
                                 severity="high",
                                 remediation="Update vulnerable packages to secure versions",
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             except Exception as e:
                 checks.append(
@@ -467,8 +553,12 @@ class ComplianceValidator:
                             description = f"Error reading requirements.txt: {e}",
                             status="failed",
                             severity="medium",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Check for package - lock.json or yarn.lock for JavaScript projects
         package_json = self.base_dir/"package.json"
@@ -476,7 +566,9 @@ class ComplianceValidator:
             lock_files = [
                 self.base_dir/"package - lock.json",
                     self.base_dir/"yarn.lock",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             has_lock_file = any(lock_file.exists() for lock_file in lock_files)
 
@@ -489,8 +581,12 @@ class ComplianceValidator:
                             description="Lock file ensures reproducible builds",
                             status="passed",
                             severity="medium",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 checks.append(
                     ComplianceCheck(
@@ -500,10 +596,14 @@ class ComplianceValidator:
                             description="No package - lock.json or yarn.lock found",
                             status="warning",
                             severity="medium",
-                            remediation="Run 'npm install' \
-    or 'yarn install' to generate lock file",
-                            )
-                )
+                            remediation="Run 'npm install' \"
+#     or 'yarn install' to generate lock file",
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return checks
 
@@ -534,8 +634,12 @@ class ComplianceValidator:
                             description = f"All {len(script_files)} script files have execute permissions",
                             status="passed",
                             severity="medium",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 checks.append(
                     ComplianceCheck(
@@ -546,8 +650,12 @@ class ComplianceValidator:
                             status="failed",
                             severity="medium",
                             remediation="Make scripts executable: chmod +x scripts/*.sh",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Check for world - writable files
         world_writable_files = []
@@ -559,7 +667,9 @@ class ComplianceValidator:
                     if stat_info.st_mode & 0o002:  # World writable
                         world_writable_files.append(
                             str(file_path.relative_to(self.base_dir))
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 except Exception:
                     continue
 
@@ -572,8 +682,12 @@ class ComplianceValidator:
                         description="No files are writable by all users",
                         status="passed",
                         severity="high",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             checks.append(
                 ComplianceCheck(
@@ -584,8 +698,12 @@ class ComplianceValidator:
                         status="failed",
                         severity="high",
                         remediation="Remove world - write permissions: chmod o - w <files>",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return checks
 
@@ -605,8 +723,12 @@ class ComplianceValidator:
                         description="Project is under version control",
                         status="passed",
                         severity="medium",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Check for .gitignore
             gitignore = self.base_dir/".gitignore"
@@ -619,8 +741,12 @@ class ComplianceValidator:
                             description="Repository has .gitignore file",
                             status="passed",
                             severity="medium",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 checks.append(
                     ComplianceCheck(
@@ -631,8 +757,12 @@ class ComplianceValidator:
                             status="failed",
                             severity="medium",
                             remediation="Create .gitignore file to exclude sensitive files",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         else:
             checks.append(
                 ComplianceCheck(
@@ -643,8 +773,12 @@ class ComplianceValidator:
                         status="warning",
                         severity="low",
                         remediation="Initialize Git repository: git init",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return checks
 
@@ -659,7 +793,9 @@ class ComplianceValidator:
                 "Dockerfile",
                 "docker - compose.yml",
                 ".github/workflows/deploy.yml",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         deployment_methods = 0
         for deploy_file in deployment_files:
@@ -675,8 +811,12 @@ class ComplianceValidator:
                         description = f"Found {deployment_methods} deployment configuration(s)",
                         status="passed",
                         severity="medium",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             checks.append(
                 ComplianceCheck(
@@ -687,14 +827,20 @@ class ComplianceValidator:
                         status="warning",
                         severity="medium",
                         remediation="Create deployment scripts or Docker configuration",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Check for environment configuration
         env_files = [".env.example", ".env.template"]
         has_env_template = any(
             (self.base_dir/env_file).exists() for env_file in env_files
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if has_env_template:
             checks.append(
@@ -705,8 +851,12 @@ class ComplianceValidator:
                         description="Environment variable template exists for deployment",
                         status="passed",
                         severity="medium",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             checks.append(
                 ComplianceCheck(
@@ -717,8 +867,12 @@ class ComplianceValidator:
                         status="failed",
                         severity="medium",
                         remediation="Create .env.example with required environment variables",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return checks
 
@@ -750,8 +904,12 @@ class ComplianceValidator:
                                 description="README contains all required sections",
                                 status="passed",
                                 severity="low",
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     checks.append(
                         ComplianceCheck(
@@ -762,8 +920,12 @@ class ComplianceValidator:
                                 status="warning",
                                 severity="low",
                                 remediation = f"Add missing sections to README: {', '.join(missing_sections)}",
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             except Exception as e:
                 checks.append(
@@ -774,8 +936,12 @@ class ComplianceValidator:
                             description = f"Failed to read README: {e}",
                             status="failed",
                             severity="low",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         else:
             checks.append(
                 ComplianceCheck(
@@ -786,8 +952,12 @@ class ComplianceValidator:
                         status="failed",
                         severity="medium",
                         remediation="Create README.md with project documentation",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return checks
 
@@ -800,7 +970,9 @@ class ComplianceValidator:
         test_dirs = ["tests", "test"]
         has_test_dir = any(
             (self.base_dir/test_dir).exists() for test_dir in test_dirs
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if has_test_dir:
             checks.append(
@@ -811,8 +983,12 @@ class ComplianceValidator:
                         description="Project has dedicated test directory",
                         status="passed",
                         severity="medium",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Check for test files
             test_files = []
@@ -831,8 +1007,12 @@ class ComplianceValidator:
                             description = f"Found {len(test_files)} test files",
                             status="passed",
                             severity="medium",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 checks.append(
                     ComplianceCheck(
@@ -843,8 +1023,12 @@ class ComplianceValidator:
                             status="warning",
                             severity="medium",
                             remediation="Create test files in the test directory",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         else:
             checks.append(
                 ComplianceCheck(
@@ -855,8 +1039,12 @@ class ComplianceValidator:
                         status="failed",
                         severity="medium",
                         remediation="Create tests directory and add test files",
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return checks
 
@@ -873,7 +1061,8 @@ class ComplianceValidator:
                 "high": 0,
                 "medium": 0,
                 "low": 0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         for check in checks:
             summary[check.status] += 1
@@ -914,12 +1103,16 @@ class ComplianceValidator:
             1
             for check in checks
             if check.status == "failed" and check.severity == "critical"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         high_failures = sum(
             1
             for check in checks
             if check.status == "failed" and check.severity == "high"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if critical_failures > 0:
             status = "non_compliant"
@@ -946,7 +1139,8 @@ class ComplianceValidator:
                     "duration_seconds": report.duration_seconds,
                     "metadata": report.metadata,
                     "checks": [asdict(check) for check in report.checks],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             output_file = Path(output_path)
             with open(output_file, "w", encoding="utf - 8") as f:
@@ -967,19 +1161,25 @@ def main():
 
     parser = argparse.ArgumentParser(
         description="Compliance Validator - TRAE.AI system compliance validation"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--base - dir",
     default=".",
     help="Base directory to validate (default: current)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--output", help="Output file for report (JSON format)")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     parser.add_argument(
         "--fail - on - non - compliant",
             action="store_true",
             help="Exit with error code if not compliant",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     args = parser.parse_args()
 

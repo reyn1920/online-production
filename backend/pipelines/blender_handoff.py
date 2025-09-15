@@ -19,21 +19,39 @@ def set_blender_path(path: str) -> Dict[str, Any]:
 
 
 def validate_blender_installation() -> Dict[str, Any]:
-    """Validate that Blender is installed and accessible."""
-    blender_path = get_blender_path()
+    """
+Validate that Blender is installed and accessible.
 
+   
+""""""
+
+    blender_path = get_blender_path()
+   
+
+    
+   
+""""""
+
+
+    
+
+   
+
+    blender_path = get_blender_path()
+   
+""""""
     if not Path(blender_path).exists():
         return {
             "ok": False,
             "error": f"Blender not found at {blender_path}",
             "suggestion": "Please set the correct Blender path using set_blender_path()",
-        }
+         }
 
     try:
         # Test Blender version
         result = subprocess.run(
             [blender_path, "--version"], capture_output=True, text=True, timeout=10
-        )
+         )
 
         if result.returncode == 0:
             version_info = result.stdout.strip().split("\\n")[0]
@@ -61,8 +79,14 @@ def create_blender_project(project_name: str, assets: List[str]) -> Dict[str, An
     blend_file = project_dir / f"{project_name}.blend"
 
     # Create a basic Blender script to set up the project
-    script_content = f"""
+   """
 
+    
+   
+
+    script_content = f
+   
+""""""
 import bpy
 import os
 
@@ -77,7 +101,7 @@ bpy.ops.mesh.primitive_cube_add(location=(0, 0, 0))
 bpy.ops.wm.save_as_mainfile(filepath = r"{blend_file}")
 
 print(f"Blender project created: {blend_file}")
-"""
+""""""
 
     script_file = project_dir / "setup_project.py"
     script_file.write_text(script_content)
@@ -90,7 +114,7 @@ print(f"Blender project created: {blend_file}")
             capture_output=True,
             text=True,
             timeout=30,
-        )
+         )
 
         if result.returncode == 0:
             return {
@@ -99,13 +123,13 @@ print(f"Blender project created: {blend_file}")
                 "project_dir": str(project_dir),
                 "assets": assets,
                 "message": f"Blender project '{project_name}' created successfully",
-            }
+             }
         else:
             return {
                 "ok": False,
                 "error": f"Blender project creation failed: {result.stderr}",
                 "stdout": result.stdout,
-            }
+             }
 
     except subprocess.TimeoutExpired:
         return {"ok": False, "error": "Blender project creation timed out"}
@@ -128,8 +152,14 @@ def export_blender_assets(project_path: str, export_format: str = "fbx") -> Dict
     export_dir.mkdir(exist_ok=True)
 
     # Create export script
-    export_script = f"""
+   """
 
+    
+   
+
+    export_script = f
+   
+""""""
 import bpy
 import os
 
@@ -148,7 +178,7 @@ else:
     exit(1)
 
 print(f"Assets exported to: {export_path}")
-"""
+""""""
 
     script_file = project_file.parent / "export_script.py"
     script_file.write_text(export_script)
@@ -160,7 +190,7 @@ print(f"Assets exported to: {export_path}")
             capture_output=True,
             text=True,
             timeout=60,
-        )
+         )
 
         if result.returncode == 0:
             return {
@@ -168,13 +198,13 @@ print(f"Assets exported to: {export_path}")
                 "export_dir": str(export_dir),
                 "format": export_format,
                 "message": f"Assets exported successfully in {export_format} format",
-            }
+             }
         else:
             return {
                 "ok": False,
                 "error": f"Export failed: {result.stderr}",
                 "stdout": result.stdout,
-            }
+             }
 
     except subprocess.TimeoutExpired:
         return {"ok": False, "error": "Export operation timed out"}
@@ -200,7 +230,7 @@ def list_blender_projects() -> Dict[str, Any]:
                         "path": str(project_dir),
                         "blend_file": str(blend_files[0]),
                         "created": project_dir.stat().st_ctime,
-                    }
-                )
+                     }
+                 )
 
     return {"ok": True, "projects": projects}

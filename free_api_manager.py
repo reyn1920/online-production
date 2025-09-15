@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Free API Manager
 Comprehensive manager for all free API integrations in the TRAE.AI system
-"""
+""""""
 
 import os
 import logging
@@ -24,50 +24,59 @@ class FreeAPIManager:
                 "env_var": "GROQ_API_KEY",
                 "test_url": "https://api.groq.com/openai/v1/models",
                 "category": "AI/ML",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "huggingface": {
                 "name": "Hugging Face",
                 "env_var": "HUGGINGFACE_API_KEY",
                 "test_url": "https://api - inference.huggingface.co/models/gpt2",
                 "category": "AI/ML",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "pexels": {
                 "name": "Pexels",
                 "env_var": "PEXELS_API_KEY",
                 "test_url": "https://api.pexels.com/v1/search?query = nature&per_page = 1",
                 "category": "Media",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "guardian": {
                 "name": "Guardian",
                 "env_var": "GUARDIAN_API_KEY",
                 "test_url": "https://content.guardianapis.com/search?q = test&page - size = 1",
                 "category": "News",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "nytimes": {
                 "name": "NY Times",
                 "env_var": "NYTIMES_API_KEY",
                 "test_url": "https://api.nytimes.com/svc/topstories/v2/home.json",
                 "category": "News",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "reddit": {
                 "name": "Reddit",
                 "env_var": "REDDIT_CLIENT_ID",
                 "test_url": "https://www.reddit.com/r/python/hot.json?limit = 1",
                 "category": "Social",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "youtube": {
                 "name": "YouTube Data API",
                 "env_var": "YOUTUBE_API_KEY",
                 "test_url": "https://www.googleapis.com/youtube/v3/search?part = snippet&q = test&maxResults = 1",
                 "category": "Social",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "github": {
                 "name": "GitHub",
                 "env_var": "GITHUB_TOKEN",
                 "test_url": "https://api.github.com/user",
                 "category": "Development",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info(f"Initialized {len(self.api_configs)} API configurations")
 
@@ -109,10 +118,12 @@ class FreeAPIManager:
             "env_var": env_var,
             "api_key_configured": bool(
                 api_key and api_key.strip() and not api_key.startswith("your_")
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "api_key_present": bool(api_key),
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def check_api_keys_configured(self) -> Dict[str, Any]:
         """Check which API keys are properly configured in environment"""
@@ -128,9 +139,11 @@ class FreeAPIManager:
                 "present": bool(api_key),
                 "value_preview": (
                     api_key[:10] + "..." if api_key and len(api_key) > 10 else "Not set"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return results
 
@@ -165,8 +178,8 @@ class FreeAPIManager:
     def generate_env_template(self) -> str:
         """Generate .env template with all required API keys"""
         template = []
-        template.append("# Free API Keys Configuration")
-        template.append("# Get your free API keys from the respective services")
+        template.append("# Free API Keys Configuration")"
+        template.append("# Get your free API keys from the respective services")"
         template.append("")
 
         # Group APIs by category
@@ -178,7 +191,7 @@ class FreeAPIManager:
             categories[category].append(api_name)
 
         for category, api_names in categories.items():
-            template.append(f"# {category} APIs")
+            template.append(f"# {category} APIs")"
             for api_name in api_names:
                 config = self.api_configs[api_name]
                 env_var = config["env_var"]
@@ -194,53 +207,64 @@ class FreeAPIManager:
                 "url": "https://console.groq.com/",
                 "description": "Fast AI inference with generous free tier",
                 "free_tier": "Generous free usage limits",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "huggingface": {
                 "url": "https://huggingface.co/settings/tokens",
                 "description": "Access to thousands of AI models",
                 "free_tier": "1000 requests/month free",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "pexels": {
                 "url": "https://www.pexels.com/api/",
                 "description": "Free stock photos and videos",
                 "free_tier": "200 requests/hour",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "guardian": {
                 "url": "https://open - platform.theguardian.com/",
                 "description": "Guardian newspaper content",
                 "free_tier": "5,000 calls/day",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "nytimes": {
                 "url": "https://developer.nytimes.com/",
                 "description": "NY Times articles and reviews",
                 "free_tier": "4,000 requests/day",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "reddit": {
                 "url": "https://www.reddit.com/prefs/apps",
                 "description": "Reddit posts and comments",
                 "free_tier": "60 requests/minute",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "youtube": {
                 "url": "https://console.developers.google.com/",
                 "description": "YouTube video data",
                 "free_tier": "10,000 units/day",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "arxiv": {
                 "url": "https://arxiv.org/help/api",
                 "description": "Academic papers (no key required)",
                 "free_tier": "Unlimited with rate limits",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "github": {
                 "url": "https://github.com/settings/tokens",
                 "description": "GitHub repositories and data",
                 "free_tier": "5,000 requests/hour",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "google_trends": {
                 "url": "https://trends.google.com/",
                 "description": "Google search trends (no key required)",
                 "free_tier": "Unlimited with rate limits",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         return instructions
 
@@ -254,21 +278,24 @@ class FreeAPIManager:
             "api_status": self.get_api_status(),
             "key_configuration_check": self.check_api_keys_configured(),
             "setup_instructions": self.get_setup_instructions(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add summary statistics
         report["summary"] = {
             "configured_count": len(report["configured_apis"]),
             "unconfigured_count": len(report["unconfigured_apis"]),
             "success_rate": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Calculate configuration rate from key checks
         configured_keys = sum(
             1
             for check in report["key_configuration_check"].values()
             if check.get("configured", False)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if report["total_apis"] > 0:
             report["summary"]["success_rate"] = (configured_keys / report["total_apis"]) * 100
 

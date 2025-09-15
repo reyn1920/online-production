@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Prometheus Integration Module
 
 Integrates Prometheus metrics collection with the existing performance monitoring system
@@ -13,7 +13,7 @@ Features:
 - Auto - scaling metrics support
 - Health check metrics
 - Resource utilization metrics
-"""
+""""""
 
 import asyncio
 import logging
@@ -30,7 +30,9 @@ from flask import Flask, Response
 from prometheus_client import (CONTENT_TYPE_LATEST, CollectorRegistry, Counter, Gauge,
 
     Histogram, Info, Summary, generate_latest, multiprocess,
-                                   values)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                    values)
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
@@ -79,20 +81,26 @@ class PrometheusMetrics:
         # System metrics
         self.cpu_usage = Gauge(
             "system_cpu_usage_percent", "CPU usage percentage", registry = self.registry
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.memory_usage = Gauge(
             "system_memory_usage_percent",
                 "Memory usage percentage",
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.disk_usage = Gauge(
             "system_disk_usage_percent",
                 "Disk usage percentage",
                 ["mount_point"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Application metrics
         self.http_requests_total = Counter(
@@ -100,20 +108,26 @@ class PrometheusMetrics:
                 "Total HTTP requests",
                 ["method", "endpoint", "status"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.http_request_duration = Histogram(
             "http_request_duration_seconds",
                 "HTTP request duration in seconds",
                 ["method", "endpoint"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.active_connections = Gauge(
             "active_connections_total",
                 "Number of active connections",
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Model generation metrics
         self.model_generation_requests = Counter(
@@ -121,34 +135,44 @@ class PrometheusMetrics:
                 "Total model generation requests",
                 ["status", "model_type"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.model_generation_duration = Histogram(
             "model_generation_duration_seconds",
                 "Model generation duration in seconds",
                 ["model_type"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.model_generation_queue_size = Gauge(
             "model_generation_queue_size",
                 "Number of pending model generation requests",
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Database metrics
         self.database_connections = Gauge(
             "database_connections_active",
                 "Number of active database connections",
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.database_query_duration = Histogram(
             "database_query_duration_seconds",
                 "Database query duration in seconds",
                 ["query_type"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Cache metrics
         self.cache_hits = Counter(
@@ -156,14 +180,18 @@ class PrometheusMetrics:
                 "Total cache hits",
                 ["cache_type"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.cache_misses = Counter(
             "cache_misses_total",
                 "Total cache misses",
                 ["cache_type"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Service health metrics
         self.service_health = Gauge(
@@ -171,7 +199,9 @@ class PrometheusMetrics:
                 "Service health status (1 = healthy, 0 = unhealthy)",
                 ["service_name"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Auto - scaling metrics
         self.scaling_events = Counter(
@@ -179,19 +209,25 @@ class PrometheusMetrics:
                 "Total scaling events",
                 ["action", "resource_type"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.resource_utilization = Gauge(
             "resource_utilization_percent",
                 "Resource utilization percentage for scaling decisions",
                 ["resource_type", "service"],
                 registry = self.registry,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Application info
         self.app_info = Info(
             "application_info", "Application information", registry = self.registry
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Set application info
         self.app_info.info(
@@ -199,8 +235,11 @@ class PrometheusMetrics:
                 "version": "1.0.0",
                     "environment": "production",
                     "build_time": datetime.now().isoformat(),
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
 class PrometheusIntegration:
@@ -240,7 +279,9 @@ class PrometheusIntegration:
 
         logger.info(
             f"Prometheus integration started on port {self.config.metrics_port}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def stop(self):
@@ -257,7 +298,9 @@ class PrometheusIntegration:
         """Start metrics collection thread"""
         self.collection_thread = threading.Thread(
             target = self._metrics_collection_loop, daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.collection_thread.start()
 
 
@@ -272,7 +315,9 @@ class PrometheusIntegration:
             """Metrics endpoint"""
             return Response(
                 generate_latest(self.registry), mimetype = CONTENT_TYPE_LATEST
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         @self.flask_app.route("/health")
 
@@ -285,9 +330,12 @@ class PrometheusIntegration:
         server_thread = threading.Thread(
             target = lambda: self.flask_app.run(
                 host="0.0.0.0", port = self.config.metrics_port, debug = False
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 daemon = True,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         server_thread.start()
 
 
@@ -321,18 +369,24 @@ class PrometheusIntegration:
                     usage = psutil.disk_usage(partition.mountpoint)
                     self.metrics.disk_usage.labels(
                         mount_point = partition.mountpoint
-                    ).set(usage.percent)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ).set(usage.percent)
                 except (PermissionError, FileNotFoundError):
                     continue
 
             # Update resource utilization for scaling
             self.metrics.resource_utilization.labels(
                 resource_type="cpu", service="system"
-            ).set(cpu_percent)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).set(cpu_percent)
 
             self.metrics.resource_utilization.labels(
                 resource_type="memory", service="system"
-            ).set(memory.percent)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).set(memory.percent)
 
         except Exception as e:
             logger.error(f"Error collecting system metrics: {e}")
@@ -351,17 +405,23 @@ class PrometheusIntegration:
                         # Convert to seconds for Prometheus
                         self.metrics.model_generation_duration.labels(
                             model_type="default"
-                        ).observe(metric.value / 1000.0)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ).observe(metric.value / 1000.0)
 
                     elif metric.name == "system.cpu.usage_percent":
                         self.metrics.resource_utilization.labels(
                             resource_type="cpu", service="application"
-                        ).set(metric.value)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ).set(metric.value)
 
                     elif metric.name == "system.memory.usage_percent":
                         self.metrics.resource_utilization.labels(
                             resource_type="memory", service="application"
-                        ).set(metric.value)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ).set(metric.value)
 
             # Integrate with TRAE performance monitor
             if self.trae_monitor:
@@ -371,18 +431,23 @@ class PrometheusIntegration:
                     # Update database connections
                     self.metrics.database_connections.set(
                         app_metrics.database_connections
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Update resource utilization
                     self.metrics.resource_utilization.labels(
                         resource_type="cpu", service="trae_app"
-                    ).set(app_metrics.cpu_usage_percent)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ).set(app_metrics.cpu_usage_percent)
 
                     self.metrics.resource_utilization.labels(
                         resource_type="memory", service="trae_app"
                     ).set(
                         app_metrics.memory_usage_mb / 1024
-                    )  # Convert to percentage
+# BRACKET_SURGEON: disabled
+#                     )  # Convert to percentage
 
                 except Exception as e:
                     logger.debug(f"Could not collect TRAE metrics: {e}")
@@ -401,7 +466,8 @@ class PrometheusIntegration:
         "marketing_agent": "http://localhost:8002 / health",
         "monetization_bundle": "http://localhost:8003 / health",
         "analytics_dashboard": "http://localhost:8004 / health",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             import requests
 
@@ -414,7 +480,9 @@ class PrometheusIntegration:
 
                 self.metrics.service_health.labels(service_name = service_name).set(
                     health_status
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             logger.error(f"Error collecting service health metrics: {e}")
@@ -422,34 +490,45 @@ class PrometheusIntegration:
 
     def record_http_request(
         self, method: str, endpoint: str, status_code: int, duration: float
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Record HTTP request metrics"""
         self.metrics.http_requests_total.labels(
             method = method, endpoint = endpoint, status = str(status_code)
-        ).inc()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).inc()
 
         self.metrics.http_request_duration.labels(
             method = method, endpoint = endpoint
-        ).observe(duration)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).observe(duration)
 
 
     def record_model_generation(self, model_type: str, status: str, duration: float):
         """Record model generation metrics"""
         self.metrics.model_generation_requests.labels(
             status = status, model_type = model_type
-        ).inc()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).inc()
 
         if status == "success":
             self.metrics.model_generation_duration.labels(
                 model_type = model_type
-            ).observe(duration)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).observe(duration)
 
 
     def record_scaling_event(self, action: str, resource_type: str):
         """Record scaling event"""
         self.metrics.scaling_events.labels(
             action = action, resource_type = resource_type
-        ).inc()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).inc()
 
 
     def update_queue_size(self, queue_size: int):
@@ -471,7 +550,9 @@ class PrometheusIntegration:
         """Record database query metrics"""
         self.metrics.database_query_duration.labels(query_type = query_type).observe(
             duration
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 # Global Prometheus integration instance
 prometheus_integration = None
@@ -479,7 +560,8 @@ prometheus_integration = None
 
 def initialize_prometheus_integration(
     config: PrometheusConfig = None,
-) -> PrometheusIntegration:
+# BRACKET_SURGEON: disabled
+# ) -> PrometheusIntegration:
     """Initialize Prometheus integration"""
     global prometheus_integration
 
@@ -510,7 +592,9 @@ def record_http_request(method: str, endpoint: str, status_code: int, duration: 
     if prometheus_integration:
         prometheus_integration.record_http_request(
             method, endpoint, status_code, duration
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
 def record_model_generation(model_type: str, status: str, duration: float):

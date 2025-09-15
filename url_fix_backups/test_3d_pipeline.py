@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 3D Visual Effects Pipeline Test
 Tests the complete TRAE.AI 3D content creation workflow
-"""
+""""""
 
 import os
 import subprocess
@@ -18,11 +18,13 @@ def test_blender_api():
             "/Applications / Blender.app / Contents / MacOS / Blender",
                 "--background",
                 "--python - expr",
-                "import bpy; print('Blender API Version:',
-    bpy.app.version); bpy.ops.mesh.primitive_cube_add(); print('Cube created successfully')",
+                "import bpy; print('Blender API Version:',"
+    bpy.app.version); bpy.ops.mesh.primitive_cube_add(); print('Cube created successfully')","
                 "--python - exit - code",
                 "1",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         result = subprocess.run(cmd, capture_output = True, text = True, timeout = 30)
         if result.returncode == 0:
             print("✅ Blender Python API: WORKING")
@@ -43,7 +45,9 @@ def test_gimp_availability():
         "/Applications / GIMP.app / Contents / MacOS / gimp",
             "/usr / local / bin / gimp",
             "/opt / homebrew / bin / gimp",
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
     for path in gimp_paths:
         if os.path.exists(path):
@@ -61,7 +65,9 @@ def test_inkscape_availability():
         "/Applications / Inkscape.app / Contents / MacOS / inkscape",
             "/usr / local / bin / inkscape",
             "/opt / homebrew / bin / inkscape",
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
     for path in inkscape_paths:
         if os.path.exists(path):
@@ -77,7 +83,9 @@ def test_davinci_resolve():
     print("Testing DaVinci Resolve availability...")
     resolve_path = (
         "/Applications / DaVinci Resolve / DaVinci Resolve.app / Contents / MacOS / Resolve"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     if os.path.exists(resolve_path):
         print(f"✅ DaVinci Resolve found at: {resolve_path}")
@@ -107,7 +115,7 @@ def create_sample_3d_scene():
     """Create a sample 3D scene using Blender API"""
     print("Creating sample 3D scene...")
 
-    blender_script = """
+    blender_script = """"""
 
 import bpy
 import bmesh
@@ -148,7 +156,7 @@ print(f"Objects in scene: {len(bpy.context.scene.objects)}")
 # Save the scene
 bpy.ops.wm.save_as_mainfile(filepath="/tmp / trae_test_scene.blend")
 print("Scene saved to /tmp / trae_test_scene.blend")
-"""
+""""""
 
     try:
         # Write the script to a temporary file
@@ -162,7 +170,9 @@ print("Scene saved to /tmp / trae_test_scene.blend")
                 "--background",
                 "--python",
                 script_path,
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         result = subprocess.run(cmd, capture_output = True, text = True, timeout = 60)
 
@@ -191,7 +201,9 @@ def main():
             ("DaVinci Resolve", test_davinci_resolve),
             ("Mixamo Integration", test_mixamo_integration),
             ("3D Scene Creation", create_sample_3d_scene),
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
     results = []
 

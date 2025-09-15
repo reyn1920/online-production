@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
-"""
+""""""
 Autonomous Content Format Evolution Agent
+"""""""""
 
 Monitors emerging media trends and automatically adapts content formats
 to stay ahead of platform algorithm changes and audience preferences.
 
+
+
+
+"""
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -84,7 +89,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
     """Autonomous content format evolution and adaptation agent."""
 
     def __init__(self, config: Dict[str, Any]):
-        super().__init__()
+        super().__init__(agent_id="content_evolution_agent")
         self.config = config
         self.db_path = config.get("db_path", "right_perspective.db")
         self.ollama_client = OllamaIntegration(
@@ -107,15 +112,23 @@ class ContentFormatEvolutionAgent(BaseAgent):
         self._init_database()
 
     def _init_database(self):
-        """Initialize content evolution tracking tables."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Initialize content evolution tracking tables.
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 # Format trends table
                 cursor.execute(
                     """
-                    CREATE TABLE IF NOT EXISTS format_trends (
+CREATE TABLE IF NOT EXISTS format_trends (
+
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             format_type TEXT NOT NULL,
                             platform TEXT NOT NULL,
@@ -129,14 +142,39 @@ class ContentFormatEvolutionAgent(BaseAgent):
                             confidence_score REAL,
                             detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             status TEXT DEFAULT 'active'
+                   
+""""""
+
                     )
-                """
+                   
+
+                    
+                   
+""""""
+
+                
+               
+
                 )
+               
+""""""
+
+                   
+
+                    
+                   
+"""
+                    )
+                   """
+
+                    
+                   
 
                 # Content adaptations table
                 cursor.execute(
-                    """
-                    CREATE TABLE IF NOT EXISTS content_adaptations (
+                    
+"""CREATE TABLE IF NOT EXISTS content_adaptations ("""
+
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             original_format TEXT NOT NULL,
                             target_format TEXT NOT NULL,
@@ -150,14 +188,35 @@ class ContentFormatEvolutionAgent(BaseAgent):
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             implemented_at TIMESTAMP,
                             evaluated_at TIMESTAMP
+                   
+
+                    
+                   
+"""
                     )
-                """
+                   """"""
+                
+               """
+
                 )
+               
+
+                
+               
+""""""
+
+                    
+                   
+
+                    )
+                   
+""""""
 
                 # Format performance table
                 cursor.execute(
-                    """
-                    CREATE TABLE IF NOT EXISTS format_performance (
+                    
+CREATE TABLE IF NOT EXISTS format_performance (
+"""
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             format_type TEXT NOT NULL,
                             platform TEXT NOT NULL,
@@ -169,14 +228,36 @@ class ContentFormatEvolutionAgent(BaseAgent):
                             production_cost REAL DEFAULT 0,
                             roi REAL DEFAULT 0,
                             recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+                   """
 
+                    
+                   
+
+                    )
+                   
+""""""
+
+               
+
+                
+               
+"""
+                )
+               """"""
+                    
+                   """
+
+                    )
+                   
+
+                    
+                   
+"""
                 # Evolution experiments table
                 cursor.execute(
                     """
-                    CREATE TABLE IF NOT EXISTS evolution_experiments (
+CREATE TABLE IF NOT EXISTS evolution_experiments (
+
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             experiment_name TEXT NOT NULL,
                             hypothesis TEXT,
@@ -190,10 +271,30 @@ class ContentFormatEvolutionAgent(BaseAgent):
                             status TEXT DEFAULT 'running',
                             started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             completed_at TIMESTAMP
-                    )
-                """
-                )
+                   
+""""""
 
+                    )
+                   
+
+                    
+                   
+""""""
+
+                
+               
+
+                )
+               
+""""""
+
+                   
+
+                    
+                   
+"""
+                    )
+                   """"""
                 # Create indexes
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_trends_platform_format ON format_trends(platform, format_type)"
@@ -205,13 +306,32 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     "CREATE INDEX IF NOT EXISTS idx_experiments_status ON evolution_experiments(status)"
                 )
 
+               """
+
+
+                
+
+               
+
                 conn.commit()
+               
+""""""
         except Exception as e:
             self.logger.error(f"Database initialization failed: {e}")
             raise
+               """
+
+                
+               
+
+                conn.commit()
+               
+""""""
 
     def monitor_format_trends(self) -> List[FormatTrend]:
-        """Monitor and detect emerging content format trends."""
+        """
+        Monitor and detect emerging content format trends.
+        """
         self.logger.info("Starting format trend monitoring")
 
         detected_trends = []
@@ -240,21 +360,38 @@ class ContentFormatEvolutionAgent(BaseAgent):
         return validated_trends
 
     def _detect_platform_trends(self, platform: str) -> List[FormatTrend]:
-        """Detect format trends for a specific platform."""
-        trends = []
+        """
+Detect format trends for a specific platform.
 
+       
+""""""
+
+        trends = []
+       
+
+        
+       
+"""
         try:
             # Get platform - specific data
+       """
+
+        
+       
+
+        trends = []
+       
+""""""
             platform_data = self._fetch_platform_data(platform)
 
             # Analyze format performance changes
             format_analysis = self._analyze_format_performance(platform, platform_data)
 
             # Detect algorithm changes
-            algorithm_signals = self._detect_algorithm_changes(platform, platform_data)
+            self._detect_algorithm_changes(platform, platform_data)
 
             # Identify emerging formats
-            emerging_formats = self._identify_emerging_formats(platform, platform_data)
+            self._identify_emerging_formats(platform, platform_data)
 
             # Convert analysis to trend objects
             for format_type, analysis in format_analysis.items():
@@ -269,7 +406,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
                         technical_requirements=analysis["technical_requirements"],
                         content_adaptations=analysis["content_adaptations"],
                         predicted_lifespan=analysis["predicted_lifespan"],
-                        confidence_score=analysis["confidence_score"],
+                        confidence_score=analysis["confidence_score"]
                     )
                     trends.append(trend)
 
@@ -279,9 +416,21 @@ class ContentFormatEvolutionAgent(BaseAgent):
         return trends
 
     def _fetch_platform_data(self, platform: str) -> Dict[str, Any]:
-        """Fetch real - time platform performance data."""
+        """
+Fetch real - time platform performance data.
+
+        
+"""
         try:
+        """"""
             if platform == "youtube":
+        """
+
+        try:
+        
+
+       
+""""""
                 return self._fetch_youtube_data()
             elif platform == "tiktok":
                 return self._fetch_tiktok_data()
@@ -355,7 +504,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
                 headers = {
                     "Authorization": f"Bearer {access_token}",
-                    "Content - Type": "application/json",
+                    "Content-Type": "application/json",
                 }
 
                 # Get trending hashtags and analyze performance
@@ -414,10 +563,22 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return self._get_fallback_data("instagram")
 
     def _fetch_twitter_data(self) -> Dict[str, Any]:
-        """Fetch Twitter Analytics data."""
-        try:
-            from backend.integrations.twitter_integration import TwitterIntegration
+        """
+Fetch Twitter Analytics data.
 
+        
+"""
+        try:
+        """"""
+            """
+
+            from backend.integrations.twitter_integration import TwitterIntegration
+            
+
+        
+"""
+        try:
+        """"""
             twitter = TwitterIntegration()
 
             # Search for trending topics and analyze engagement
@@ -467,10 +628,21 @@ class ContentFormatEvolutionAgent(BaseAgent):
         return fallback_data.get(platform, {})
 
     def _analyze_youtube_trends(self, trending_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze YouTube trending data to extract performance insights."""
-        try:
-            videos = trending_data.get("items", [])
+        """
+Analyze YouTube trending data to extract performance insights.
 
+        
+"""
+        try:
+        """
+            videos = trending_data.get("items", [])
+        """
+
+        try:
+        
+
+       
+""""""
             shorts_metrics = []
             long_form_metrics = []
 
@@ -513,10 +685,21 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return self._get_fallback_data("youtube")
 
     def _analyze_tiktok_trends(self, trending_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze TikTok trending data to extract performance insights."""
-        try:
-            hashtags = trending_data.get("data", {}).get("hashtags", [])
+        """
+Analyze TikTok trending data to extract performance insights.
 
+        
+"""
+        try:
+        """
+            hashtags = trending_data.get("data", {}).get("hashtags", [])
+        """
+
+        try:
+        
+
+       
+""""""
             performance_scores = []
             trending_formats = []
 
@@ -543,10 +726,21 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return self._get_fallback_data("tiktok")
 
     def _analyze_instagram_trends(self, insights_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze Instagram insights data to extract performance insights."""
-        try:
-            data_points = insights_data.get("data", [])
+        """
+Analyze Instagram insights data to extract performance insights.
 
+        
+"""
+        try:
+        """
+            data_points = insights_data.get("data", [])
+        """
+
+        try:
+        
+
+       
+""""""
             reach_values = []
             impression_values = []
 
@@ -586,10 +780,21 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return self._get_fallback_data("instagram")
 
     def _analyze_twitter_trends(self, trending_results: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze Twitter trending data to extract performance insights."""
-        try:
-            tweets = trending_results.get("data", [])
+        """
+Analyze Twitter trending data to extract performance insights.
 
+        
+"""
+        try:
+        """
+            tweets = trending_results.get("data", [])
+        """
+
+        try:
+        
+
+       
+""""""
             engagement_scores = []
             trending_formats = []
 
@@ -630,10 +835,19 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return self._get_fallback_data("twitter")
 
     def _is_youtube_short(self, duration: str) -> bool:
-        """Determine if a YouTube video is a Short based on duration."""
-        try:
-            # Parse ISO 8601 duration (PT1M30S)
+        """
+Determine if a YouTube video is a Short based on duration.
 
+        try:
+           
+""""""
+
+            # Parse ISO 8601 duration (PT1M30S)
+           
+
+            
+           
+"""
             import re
 
             match = re.match(r"PT(?:(\\d+)M)?(?:(\\d+)S)?", duration)
@@ -647,9 +861,17 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return False
 
     def _calculate_engagement_rate(self, stats: Dict[str, Any]) -> float:
-        """Calculate engagement rate from video statistics."""
+        """
+Calculate engagement rate from video statistics.
+
+        
+"""
         try:
+        """
             views = int(stats.get("viewCount", 0))
+        """
+        try:
+        """
             likes = int(stats.get("likeCount", 0))
             comments = int(stats.get("commentCount", 0))
 
@@ -685,10 +907,27 @@ class ContentFormatEvolutionAgent(BaseAgent):
         return [fmt for fmt, _ in Counter(formats).most_common(3)]
 
     def _analyze_format_performance(self, platform: str, data: Dict[str, Any]) -> Dict[str, Dict]:
-        """Analyze performance changes for different content formats."""
-        analysis = {}
+        """
+Analyze performance changes for different content formats.
 
+       
+""""""
+
+        analysis = {}
+       
+
+        
+       
+"""
         # Map platform data to content formats
+       """
+
+        
+       
+
+        analysis = {}
+       
+""""""
         format_mapping = {
             "youtube": {
                 "shorts_performance": ContentFormat.SHORT_VIDEO,
@@ -726,9 +965,27 @@ class ContentFormatEvolutionAgent(BaseAgent):
         return analysis
 
     def _detect_algorithm_changes(self, platform: str, data: Dict[str, Any]) -> List[Dict]:
-        """Detect platform algorithm changes that affect content formats."""
-        algorithm_signals = []
+        """
+Detect platform algorithm changes that affect content formats.
 
+       
+""""""
+
+        algorithm_signals = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        algorithm_signals = []
+       
+""""""
         updates = data.get("algorithm_updates", [])
         for update in updates:
             signal = {
@@ -747,11 +1004,28 @@ class ContentFormatEvolutionAgent(BaseAgent):
         return data.get("trending_formats", [])
 
     def _analyze_cross_platform_trends(self, platform: str) -> List[FormatTrend]:
-        """Analyze trends that span multiple platforms."""
-        cross_trends = []
+        """
+Analyze trends that span multiple platforms.
 
+       
+""""""
+
+        cross_trends = []
+       
+
+        
+       
+"""
         try:
             # Use AI to identify cross - platform patterns
+       """
+
+        
+       
+
+        cross_trends = []
+       
+""""""
             prompt = self._generate_cross_platform_analysis_prompt(platform)
             ai_response = self.ollama_client.generate_completion(prompt)
 
@@ -779,11 +1053,29 @@ class ContentFormatEvolutionAgent(BaseAgent):
         return cross_trends
 
     def _validate_trends(self, trends: List[FormatTrend]) -> List[FormatTrend]:
-        """Validate and filter detected trends."""
-        validated = []
+        """
+Validate and filter detected trends.
 
+       
+""""""
+
+        validated = []
+       
+
+        
+       
+"""
         for trend in trends:
             # Check trend strength threshold
+       """
+
+        
+       
+
+        validated = []
+       
+""""""
+
             if trend.trend_strength < self.trend_threshold:
                 continue
 
@@ -798,17 +1090,48 @@ class ContentFormatEvolutionAgent(BaseAgent):
         return validated
 
     def _is_duplicate_trend(self, trend: FormatTrend, existing: List[FormatTrend]) -> bool:
-        """Check if trend is duplicate of existing trends."""
+        
+Check if trend is duplicate of existing trends.
+""""""
+
         for existing_trend in existing:
+        
+
+       
+""""""
+
             if (
                 trend.format_type == existing_trend.format_type
                 and trend.platform == existing_trend.platform
             ):
+        
+
+        for existing_trend in existing:
+        
+""""""
+
+        
+       
+
                 return True
+        
+"""
+        return False
+        """"""
+        """
+
+
         return False
 
+        
+
+       
+""""""
+
     def adapt_content_formats(self, trends: List[FormatTrend]) -> List[ContentAdaptation]:
-        """Generate content format adaptations based on detected trends."""
+        
+Generate content format adaptations based on detected trends.
+"""
         self.logger.info(f"Generating adaptations for {len(trends)} trends")
 
         adaptations = []
@@ -838,19 +1161,41 @@ class ContentFormatEvolutionAgent(BaseAgent):
         return adaptations
 
     def _get_current_content_formats(self, platform: str) -> List[ContentFormat]:
-        """Get currently used content formats for a platform."""
+        """
+Get currently used content formats for a platform.
+
         try:
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
-                    SELECT DISTINCT format_type
+                    
+SELECT DISTINCT format_type
+"""
                     FROM format_performance
                     WHERE platform = ? AND recorded_at > datetime('now', '-30 days')
-                """,
-                    (platform,),
-                )
+                    """
+,
 
+                    (platform,)
+               
+""""""
+
+                )
+               
+
+                
+               
+""""""
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
                 formats = [ContentFormat(row[0]) for row in cursor.fetchall()]
                 return formats if formats else [ContentFormat.BLOG_POST]  # Default fallback
         except Exception as e:
@@ -860,12 +1205,47 @@ class ContentFormatEvolutionAgent(BaseAgent):
     def _create_format_adaptation(
         self, from_format: ContentFormat, to_format: ContentFormat, trend: FormatTrend
     ) -> Optional[ContentAdaptation]:
-        """Create a content format adaptation strategy."""
-        try:
-            # Generate adaptation rules using AI
-            adaptation_prompt = self._generate_adaptation_prompt(from_format, to_format, trend)
-            ai_response = self.ollama_client.generate_completion(adaptation_prompt)
+        """
+Create a content format adaptation strategy.
 
+        try:
+           
+""""""
+
+            # Generate adaptation rules using AI
+           
+
+            
+           
+"""
+            adaptation_prompt = self._generate_adaptation_prompt(from_format, to_format, trend)
+           """
+
+            
+           
+
+            # Generate adaptation rules using AI
+           
+""""""
+
+           
+
+            
+           
+"""
+            ai_response = self.ollama_client.generate_completion(adaptation_prompt)
+           """"""
+
+            
+
+           """
+
+            ai_response = self.ollama_client.generate_completion(adaptation_prompt)
+           
+
+            
+           
+"""
             if ai_response and ai_response.get("response"):
                 adaptation_data = self._parse_adaptation_response(ai_response["response"])
 
@@ -876,7 +1256,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     success_metrics=adaptation_data["metrics"],
                     implementation_difficulty=adaptation_data["difficulty"],
                     resource_requirements=adaptation_data["resources"],
-                    expected_performance_lift=adaptation_data["performance_lift"],
+                    expected_performance_lift=adaptation_data["performance_lift"]
                 )
 
                 return adaptation
@@ -894,7 +1274,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
             "successful": 0,
             "failed": 0,
             "experiments_started": 0,
-            "details": [],
+            "details": []
         }
 
         for adaptation in adaptations:
@@ -924,7 +1304,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     {
                         "adaptation": f"{adaptation.original_format.value} -> {adaptation.target_format.value}",
                         "strategy": strategy.value,
-                        "success": success,
+                        "success": success
                     }
                 )
 
@@ -937,19 +1317,49 @@ class ContentFormatEvolutionAgent(BaseAgent):
     def _determine_implementation_strategy(
         self, adaptation: ContentAdaptation
     ) -> AdaptationStrategy:
-        """Determine the best implementation strategy for an adaptation."""
+        """
+Determine the best implementation strategy for an adaptation.
+
+       
+""""""
+
         # High - impact, low - difficulty adaptations get immediate implementation
+       
+
+        
+       
+"""
         if (
             adaptation.expected_performance_lift > 0.8
             and adaptation.implementation_difficulty < 0.3
         ):
+       """
+
+        
+       
+
+        # High - impact, low - difficulty adaptations get immediate implementation
+       
+""""""
+
+            
+
             return AdaptationStrategy.IMMEDIATE
+            
+""""""
+
+            
+           
 
         # Medium - impact adaptations get gradual rollout
         elif (
             adaptation.expected_performance_lift > 0.5
             and adaptation.implementation_difficulty < 0.6
         ):
+            
+"""
+            return AdaptationStrategy.IMMEDIATE
+            """"""
             return AdaptationStrategy.GRADUAL
 
         # Uncertain or high - risk adaptations get experimental treatment
@@ -963,28 +1373,90 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return AdaptationStrategy.SEASONAL
 
     def _implement_immediate_adaptation(self, adaptation: ContentAdaptation) -> bool:
-        """Implement adaptation immediately across all content."""
+        """
+Implement adaptation immediately across all content.
+
         try:
             # Update content generation templates
-            self._update_content_templates(adaptation)
+           
+""""""
 
+            self._update_content_templates(adaptation)
+           
+
+            
+           
+"""
             # Modify existing content pipeline
             self._modify_content_pipeline(adaptation)
+           """
+
+            
+           
+
+            self._update_content_templates(adaptation)
+           
+""""""
+
+           
+
+
+            
+
+           
+"""
+            # Generate sample content in new format
+           """"""
+            
+           """
+
+            sample_success = self._generate_sample_content(adaptation)
+           
+
+            
+           
+""""""
+
+            
+           
 
             # Generate sample content in new format
-            sample_success = self._generate_sample_content(adaptation)
-
+           
+""""""
             return sample_success
         except Exception as e:
             self.logger.error(f"Immediate implementation failed: {e}")
             return False
 
     def _implement_gradual_adaptation(self, adaptation: ContentAdaptation) -> bool:
-        """Implement adaptation gradually over time."""
-        try:
-            # Create gradual rollout plan
-            rollout_plan = self._create_rollout_plan(adaptation)
+        """
+Implement adaptation gradually over time.
 
+        try:
+           
+""""""
+
+            # Create gradual rollout plan
+           
+
+            
+           
+""""""
+
+            
+           
+
+            rollout_plan = self._create_rollout_plan(adaptation)
+           
+""""""
+
+           
+
+            
+           
+"""
+            # Create gradual rollout plan
+           """"""
             # Start with small percentage of content
             initial_success = self._start_gradual_rollout(adaptation, rollout_plan)
 
@@ -994,10 +1466,28 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return False
 
     def _start_adaptation_experiment(self, adaptation: ContentAdaptation) -> bool:
-        """Start an A/B test experiment for the adaptation."""
+        """
+Start an A/B test experiment for the adaptation.
+
         try:
+           
+""""""
+
             # Check if we have capacity for more experiments
+           
+
+            
+           
+"""
             active_experiments = self._count_active_experiments()
+           """
+
+            
+           
+
+            # Check if we have capacity for more experiments
+           
+""""""
             if active_experiments >= self.max_concurrent_experiments:
                 self.logger.warning("Maximum concurrent experiments reached")
                 return False
@@ -1014,11 +1504,34 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return False
 
     def _schedule_seasonal_adaptation(self, adaptation: ContentAdaptation) -> bool:
-        """Schedule adaptation for optimal seasonal timing."""
-        try:
-            # Determine optimal timing
-            optimal_timing = self._calculate_optimal_timing(adaptation)
+        """
+Schedule adaptation for optimal seasonal timing.
 
+        try:
+           
+""""""
+
+            # Determine optimal timing
+           
+
+            
+           
+""""""
+
+            
+           
+
+            optimal_timing = self._calculate_optimal_timing(adaptation)
+           
+""""""
+
+           
+
+            
+           
+"""
+            # Determine optimal timing
+           """"""
             # Schedule the adaptation
             self._schedule_adaptation(adaptation, optimal_timing)
 
@@ -1028,19 +1541,40 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return False
 
     def evaluate_adaptation_performance(self) -> Dict[str, Any]:
-        """Evaluate the performance of implemented adaptations."""
+        """
+Evaluate the performance of implemented adaptations.
+
         try:
             with sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                cursor = conn.cursor()
+               
+""""""
 
+                conn.row_factory = sqlite3.Row
+               
+
+                
+               
+""""""
+
+                
+               
+
+                cursor = conn.cursor()
+               
+""""""
+
+               
+
+                
+               
+"""
+                conn.row_factory = sqlite3.Row
+               """"""
                 # Get implemented adaptations
                 cursor.execute(
-                    """
                     SELECT * FROM content_adaptations
                     WHERE status = 'implemented'
                     AND implemented_at > datetime('now', '-30 days')
-                """
                 )
 
                 adaptations = [dict(row) for row in cursor.fetchall()]
@@ -1063,11 +1597,10 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     if actual_lift is not None:
                         # Update database with actual performance
                         cursor.execute(
-                            """
                             UPDATE content_adaptations
                             SET actual_performance_lift = ?, evaluated_at = CURRENT_TIMESTAMP
                             WHERE id = ?
-                        """,
+                            ""","""
                             (actual_lift, adaptation["id"]),
                         )
 
@@ -1106,12 +1639,27 @@ class ContentFormatEvolutionAgent(BaseAgent):
             return {"error": str(e)}
 
     def _generate_cross_platform_analysis_prompt(self, platform: str) -> str:
-        """Generate prompt for cross - platform trend analysis."""
-        return f"""
+        """
+Generate prompt for cross - platform trend analysis.
+
+        
+"""
+        return f
+        """
+
+
+
 Analyze current content format trends across social media platforms, focusing on {platform}.
 
-Identify emerging content formats that are gaining traction \
-    and provide analysis including:
+""""""
+
+        return f
+        
+
+       
+""""""
+
+Identify emerging content formats that are gaining traction and provide analysis including:
 1. Format type (short_video,
     long_video,
     carousel_post,
@@ -1131,16 +1679,29 @@ Identify emerging content formats that are gaining traction \
 8. Predicted trend lifespan in days
 9. Confidence score (0.0 - 1.0)
 
-Focus on formats that show strong cross - platform adoption \
-    and have sustainable growth potential.
+Focus on formats that show strong cross - platform adoption and have sustainable growth potential.
 
 Format response as JSON array with these fields.
-"""
+
+
 
     def _parse_cross_platform_trends(self, ai_response: str) -> List[Dict]:
-        """Parse AI response for cross - platform trends."""
+        
+"""Parse AI response for cross - platform trends."""
+
+        
+
         try:
+        
+"""
             json_match = re.search(r"\\[.*\\]", ai_response, re.DOTALL)
+        """
+
+        try:
+        
+
+       
+""""""
             if json_match:
                 return json.loads(json_match.group())
         except Exception as e:
@@ -1150,9 +1711,25 @@ Format response as JSON array with these fields.
     def _generate_adaptation_prompt(
         self, from_format: ContentFormat, to_format: ContentFormat, trend: FormatTrend
     ) -> str:
-        """Generate prompt for content format adaptation."""
-        return f"""
+        """
+Generate prompt for content format adaptation.
+
+        
+"""
+        return f
+        """
+
+
+
 Create a content adaptation strategy to convert {from_format.value} content to {to_format.value} format for {trend.platform}.
+
+""""""
+
+        return f
+        
+
+       
+""""""
 
 The trend shows:
 - Strength: {trend.trend_strength}
@@ -1167,12 +1744,26 @@ Provide adaptation strategy including:
 5. Expected performance lift (0.0 - 1.0)
 
 Format as JSON with fields: rules, metrics, difficulty, resources, performance_lift
-"""
+
+
 
     def _parse_adaptation_response(self, ai_response: str) -> Dict:
-        """Parse AI response for adaptation strategy."""
+        
+"""Parse AI response for adaptation strategy."""
+
+        
+
         try:
+        
+"""
             json_match = re.search(r"\\{.*\\}", ai_response, re.DOTALL)
+        """
+
+        try:
+        
+
+       
+""""""
             if json_match:
                 return json.loads(json_match.group())
         except Exception as e:
@@ -1188,24 +1779,45 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
         }
 
     def _identify_audience_segments(self, platform: str, format_type: ContentFormat) -> List[str]:
-        """Identify target audience segments for format on platform using analytics data."""
+        """
+Identify target audience segments for format on platform using analytics data.
+
         try:
             # Query historical performance data to identify successful segments
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
                     SELECT audience_segments,
-    AVG(engagement_multiplier) as avg_engagement
+                           AVG(engagement_multiplier) as avg_engagement
                     FROM format_trends
                     WHERE platform = ? AND format_type = ?
                     GROUP BY audience_segments
                     ORDER BY avg_engagement DESC
                     LIMIT 5
-                """,
+                
+,
+"""
                     (platform, format_type.value),
-                )
+                """
 
+                 
+                
+
+                 )
+                
+""""""
+
+            
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+""""""
+            
+           """
                 results = cursor.fetchall()
                 if results:
                     # Parse and return top - performing segments
@@ -1229,10 +1841,10 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                     "visual_content_lovers",
                     "lifestyle_enthusiasts",
                     "brand_followers",
-                ],
+                 ],
                 "linkedin": ["professionals", "business_leaders", "industry_experts"],
                 "twitter": ["news_consumers", "opinion_leaders", "real_time_engagers"],
-            }
+             }
 
             return platform_defaults.get(platform.lower(), ["general_audience"])
 
@@ -1258,7 +1870,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "chapter_marker_support",
                 "thumbnail_creation_tools",
                 "4k_recording_capability",
-            ],
+             ],
             ContentFormat.CAROUSEL_POST: [
                 "graphic_design_software",
                 "template_library",
@@ -1266,7 +1878,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "multi_slide_creation",
                 "text_overlay_capability",
                 "export_optimization",
-            ],
+             ],
             ContentFormat.THREAD: [
                 "content_planning_tools",
                 "scheduling_automation",
@@ -1274,7 +1886,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "hashtag_research_tools",
                 "cross_platform_posting",
                 "analytics_integration",
-            ],
+             ],
             ContentFormat.LIVE_STREAM: [
                 "streaming_software",
                 "high_speed_internet",
@@ -1282,7 +1894,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "multi_camera_switching",
                 "audience_interaction_tools",
                 "stream_recording",
-            ],
+             ],
             ContentFormat.PODCAST: [
                 "audio_recording_software",
                 "noise_cancellation",
@@ -1330,7 +1942,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             "content_calendar_management",
             "performance_analytics",
             "brand_asset_library",
-        ]
+         ]
 
         format_requirements = base_requirements.get(format_type, ["basic_content_tools"])
         return format_requirements + universal_requirements
@@ -1347,7 +1959,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "call_to_action_in_description",
                 "hashtag_optimization",
                 "cross_platform_sizing",
-            ],
+             ],
             ContentFormat.LONG_VIDEO: [
                 "compelling_thumbnail_design",
                 "detailed_chapter_breakdown",
@@ -1357,7 +1969,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "end_screen_optimization",
                 "seo_optimized_title_and_description",
                 "audience_retention_techniques",
-            ],
+             ],
             ContentFormat.CAROUSEL_POST: [
                 "visual_storytelling_flow",
                 "swipe_worthy_design_elements",
@@ -1367,7 +1979,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "clear_conclusion_slide",
                 "text_readability_optimization",
                 "mobile_first_design",
-            ],
+             ],
             ContentFormat.THREAD: [
                 "numbered_tweet_structure",
                 "engaging_hook_tweet",
@@ -1377,7 +1989,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "retweet_worthy_insights",
                 "call_to_action_in_final_tweet",
                 "cross_promotion_opportunities",
-            ],
+             ],
             ContentFormat.LIVE_STREAM: [
                 "interactive_audience_engagement",
                 "real_time_q_and_a_sessions",
@@ -1387,7 +1999,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "chat_moderation_strategy",
                 "highlight_reel_creation",
                 "community_building_focus",
-            ],
+             ],
             ContentFormat.PODCAST: [
                 "compelling_episode_titles",
                 "consistent_release_schedule",
@@ -1397,7 +2009,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "cross_platform_promotion",
                 "listener_engagement_techniques",
                 "series_and_season_planning",
-            ],
+             ],
             ContentFormat.NEWSLETTER: [
                 "subject_line_optimization",
                 "personalized_content_curation",
@@ -1407,7 +2019,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "call_to_action_placement",
                 "social_sharing_integration",
                 "subscriber_retention_strategies",
-            ],
+             ],
             ContentFormat.INTERACTIVE: [
                 "gamification_elements",
                 "user_generated_content_encouragement",
@@ -1417,7 +2029,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "reward_system_integration",
                 "community_challenge_creation",
                 "data_driven_personalization",
-            ],
+             ],
             ContentFormat.STORY: [
                 "ephemeral_content_urgency",
                 "behind_the_scenes_authenticity",
@@ -1427,7 +2039,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "cross_story_narrative",
                 "user_generated_content_resharing",
                 "brand_personality_showcase",
-            ],
+             ],
             ContentFormat.BLOG_POST: [
                 "seo_keyword_optimization",
                 "scannable_content_structure",
@@ -1437,8 +2049,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "social_media_optimization",
                 "email_list_building_integration",
                 "evergreen_content_focus",
-            ],
-        }
+             ],
+         }
 
         return adaptations_map.get(
             format_type,
@@ -1446,8 +2058,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "audience_focused_content",
                 "platform_native_approach",
                 "engagement_optimization",
-            ],
-        )
+             ],
+         )
 
     def _predict_trend_lifespan(self, performance_data: Dict) -> int:
         """Predict how long a trend will last in days."""
@@ -1464,20 +2076,29 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             return 365  # Slow, steady trends can last a year or more
 
     def _store_trend(self, trend: FormatTrend):
-        """Store detected trend in database."""
+        """
+Store detected trend in database.
+
         try:
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT INTO format_trends (
                         format_type, platform, trend_strength, growth_velocity,
                             engagement_multiplier, audience_segments, technical_requirements,
                             content_adaptations, predicted_lifespan, confidence_score
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                    (
-                        trend.format_type.value,
+                    ""","""
+                    (trend.format_type.value,
                         trend.platform,
                         trend.trend_strength,
                         trend.growth_velocity,
@@ -1492,19 +2113,36 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to store trend: {e}")
+            """
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
 
     def _store_adaptation(self, adaptation: ContentAdaptation):
-        """Store content adaptation in database."""
+        
+Store content adaptation in database.
+"""
         try:
+            """
+
             with sqlite3.connect(self.db_path) as conn:
+            
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+""""""
+
                     INSERT INTO content_adaptations (
                         original_format, target_format, adaptation_rules, success_metrics,
                             implementation_difficulty, resource_requirements, expected_performance_lift
                     ) VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                    
+,
+"""
                     (
                         adaptation.original_format.value,
                         adaptation.target_format.value,
@@ -1518,22 +2156,86 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to store adaptation: {e}")
+            """
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
 
     def _update_content_templates(self, adaptation: ContentAdaptation) -> bool:
-        """Update content generation templates for new format."""
+        
+Update content generation templates for new format.
+""""""
+
+        
+       
+
         # Placeholder for template updates
+       
+""""""
+
+        
+
         return True
+        
+""""""
+
+        
+       
+
+        # Placeholder for template updates
+       
+""""""
 
     def _modify_content_pipeline(self, adaptation: ContentAdaptation) -> bool:
-        """Modify content generation pipeline for new format."""
+        
+Modify content generation pipeline for new format.
+""""""
+
+        
+       
+
         # Placeholder for pipeline modifications
+       
+""""""
+
+        
+
         return True
+        
+""""""
+
+        
+       
+
+        # Placeholder for pipeline modifications
+       
+""""""
 
     def _generate_sample_content(self, adaptation: ContentAdaptation) -> bool:
-        """Generate sample content in new format."""
+        
+Generate sample content in new format.
+"""
         try:
+           """
+
+            
+           
+
             # Use content generator to create sample
+           
+""""""
+
             sample_content = self.content_generator.generate_content(
+           
+
+            
+           
+"""
+            # Use content generator to create sample
+           """"""
                 topic=f"Sample {adaptation.target_format.value} content",
                 content_type=adaptation.target_format.value,
             )
@@ -1543,16 +2245,35 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             return False
 
     def _update_adaptation_status(self, adaptation: ContentAdaptation, status: str):
-        """Update adaptation status in database."""
+        """
+Update adaptation status in database.
+
         try:
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+""""""
+
+                    
+                   
+
                     UPDATE content_adaptations
+                   
+""""""
+
                     SET status = ?, implemented_at = CURRENT_TIMESTAMP
                     WHERE original_format = ? AND target_format = ?
-                """,
+                    
+,
+"""
                     (
                         status,
                         adaptation.original_format.value,
@@ -1562,44 +2283,102 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to update adaptation status: {e}")
+            """
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
 
     def _calculate_actual_performance_lift(self, adaptation: Dict) -> Optional[float]:
-        """Calculate actual performance lift for an adaptation."""
+        
+Calculate actual performance lift for an adaptation.
+"""
         try:
+            """
+
             with sqlite3.connect(self.db_path) as conn:
+            
+
+               
+""""""
+
                 cursor = conn.cursor()
+               
+
+                
+               
+""""""
+
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
 
                 # Get performance before and after adaptation
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT AVG(roi) as avg_roi
+                   """
+
+                    
+                   
+
                     FROM format_performance
+                   
+""""""
+
                     WHERE format_type = ?
                     AND recorded_at BETWEEN datetime(?, '-7 days') AND ?
-                """,
+                    
+,
+"""
                     (
                         adaptation["target_format"],
                         adaptation["implemented_at"],
                         adaptation["implemented_at"],
                     ),
                 )
+                   """
+
+                    
+                   
 
                 after_performance = cursor.fetchone()
 
                 cursor.execute(
-                    """
+                   
+""""""
+
                     SELECT AVG(roi) as avg_roi
+                   
+
+                    
+                   
+"""
                     FROM format_performance
+                   """
+
+                    
+                   
+
                     WHERE format_type = ?
                     AND recorded_at BETWEEN datetime(?, '-14 days') AND datetime(?, '-7 days')
-                """,
+                    
+""","""
                     (
                         adaptation["original_format"],
                         adaptation["implemented_at"],
                         adaptation["implemented_at"],
                     ),
                 )
-
+                   """"""
                 before_performance = cursor.fetchone()
 
                 if after_performance and before_performance and before_performance[0]:
@@ -1614,9 +2393,27 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
     def _generate_adaptation_recommendations(
         self, adaptations: List[Dict], performance_lifts: List[float]
     ) -> List[str]:
-        """Generate recommendations based on adaptation performance."""
-        recommendations = []
+        """
+Generate recommendations based on adaptation performance.
 
+       
+""""""
+
+        recommendations = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        recommendations = []
+       
+""""""
         if performance_lifts:
             avg_lift = statistics.mean(performance_lifts)
 
@@ -1646,40 +2443,114 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
         return recommendations
 
     def get_evolution_report(self) -> Dict[str, Any]:
-        """Generate comprehensive content evolution report."""
+        """
+Generate comprehensive content evolution report.
+
         try:
             with sqlite3.connect(self.db_path) as conn:
+               
+""""""
+
                 conn.row_factory = sqlite3.Row
+               
+
+                
+               
+""""""
+
+                
+               
+
                 cursor = conn.cursor()
+               
+""""""
+
+               
+
+                
+               
+"""
+                conn.row_factory = sqlite3.Row
+               """
+
+                
+               
 
                 # Get trend summary
                 cursor.execute(
-                    """
+                   
+""""""
+
                     SELECT format_type, platform, AVG(trend_strength) as avg_strength,
                         COUNT(*) as trend_count
                     FROM format_trends
                     WHERE detected_at > datetime('now', '-30 days')
                     GROUP BY format_type, platform
                     ORDER BY avg_strength DESC
-                """
+                   
+
+                    
+                   
+""""""
+
+                
+               
+
                 )
+               
+""""""
+
+                   
+
+                    
+                   
+""""""
+
+                
+               
+
                 trend_summary = [dict(row) for row in cursor.fetchall()]
+               
+""""""
 
                 # Get adaptation summary
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT status, COUNT(*) as count,
                         AVG(expected_performance_lift) as avg_expected_lift,
                                AVG(actual_performance_lift) as avg_actual_lift
                     FROM content_adaptations
                     GROUP BY status
-                """
+                   """"""
+                
+               """
+
                 )
+               
+
+                
+               
+""""""
+
+                
+               
+
+                trend_summary = [dict(row) for row in cursor.fetchall()]
+               
+""""""
                 adaptation_summary = {row["status"]: dict(row) for row in cursor.fetchall()}
 
                 # Get top performing formats
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     SELECT format_type, platform, AVG(roi) as avg_roi,
                         COUNT(*) as content_count
                     FROM format_performance
@@ -1687,10 +2558,31 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                     GROUP BY format_type, platform
                     ORDER BY avg_roi DESC
                     LIMIT 10
-                """
-                )
-                top_formats = [dict(row) for row in cursor.fetchall()]
+                   
+""""""
 
+               
+
+                
+               
+"""
+                )
+               """"""
+                    
+                   """"""
+                top_formats = [dict(row) for row in cursor.fetchall()]
+               """"""
+
+                
+
+               """
+
+                top_formats = [dict(row) for row in cursor.fetchall()]
+               
+
+                
+               
+"""
                 return {
                     "timestamp": datetime.now().isoformat(),
                     "trend_summary": trend_summary,
@@ -1704,17 +2596,31 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
 
     @property
     def capabilities(self) -> List["AgentCapability"]:
-        """Return the capabilities of this agent"""
+        """
+Return the capabilities of this agent
+
 
         from .base_agents import AgentCapability
 
         return [AgentCapability.CONTENT_CREATION, AgentCapability.ANALYSIS]
 
     async def _execute_with_monitoring(self, task: Dict[str, Any], context) -> Dict[str, Any]:
-        """Execute task with monitoring - required abstract method implementation"""
-        try:
-            task_type = task.get("type", "monitor_trends")
+        
+"""Execute task with monitoring - required abstract method implementation"""
 
+        
+
+        try:
+        
+"""
+            task_type = task.get("type", "monitor_trends")
+        """
+
+        try:
+        
+
+       
+""""""
             if task_type == "monitor_trends":
                 trends = self.monitor_format_trends()
                 return {
@@ -1739,15 +2645,33 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             self.logger.error(f"Error executing task with monitoring: {e}")
             return {"success": False, "error": str(e)}
 
-    async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
+    async def _rephrase_task(self, task: Dict[str, Any], context: Any) -> str:
         """Rephrase task - required abstract method implementation"""
         task_type = task.get("type", "unknown")
         task_description = task.get("description", f"Process {task_type} task")
         return f"Content Evolution: {task_description}"
 
     async def _validate_rephrase_accuracy(
-        self, original_task: Dict[str, Any], rephrased: str, context
+        self, original_task: Dict[str, Any], rephrased: str, context: Any
     ) -> bool:
-        """Validate rephrase accuracy - required abstract method implementation"""
+        """
+Validate rephrase accuracy - required abstract method implementation
+
+       
+""""""
+
         # For now, always return True as basic validation
+       
+
+        
+       
+"""
         return True
+       """
+
+        
+       
+
+        # For now, always return True as basic validation
+       
+""""""

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI YouTube Security Compliance Module
 
 Comprehensive security compliance system that provides:
@@ -24,7 +24,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import base64
 import ipaddress
@@ -172,10 +172,10 @@ class SecurityAudit:
 
 
 class YouTubeSecurityCompliance:
-    """
+    """"""
     Comprehensive security compliance system for YouTube automation
     with zero - trust architecture and automated security monitoring.
-    """
+    """"""
 
     def __init__(self, config_path: str = "config/security_config.json"):
         self.logger = setup_logger("youtube_security_compliance")
@@ -230,7 +230,8 @@ class YouTubeSecurityCompliance:
                 "algorithm": "AES - 256 - GCM",
                 "key_rotation_days": 30,
                 "backup_keys": 3,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "rate_limiting": {
                 "youtube_api": {
                     "requests_per_minute": 100,
@@ -238,15 +239,18 @@ class YouTubeSecurityCompliance:
                     "requests_per_day": 1000000,
                     "burst_limit": 10,
                     "penalty_duration": 300,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "content_upload": {
                     "requests_per_minute": 5,
                     "requests_per_hour": 50,
                     "requests_per_day": 200,
                     "burst_limit": 2,
                     "penalty_duration": 600,
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "security_monitoring": {
                 "enabled": True,
                 "log_all_requests": True,
@@ -255,7 +259,8 @@ class YouTubeSecurityCompliance:
                 "real_time_alerts": True,
                 "max_failed_attempts": 5,
                 "lockout_duration": 900,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "compliance": {
                 "gdpr_enabled": True,
                 "ccpa_enabled": True,
@@ -263,22 +268,26 @@ class YouTubeSecurityCompliance:
                 "audit_frequency_days": 30,
                 "data_retention_days": 365,
                 "encryption_required": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "access_control": {
                 "require_mfa": True,
                 "session_timeout": 3600,
                 "ip_whitelist_enabled": False,
                 "geo_blocking_enabled": False,
                 "allowed_countries": ["US", "CA", "GB", "AU"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "api_security": {
                 "require_https": True,
                 "verify_ssl": True,
                 "timeout_seconds": 30,
                 "max_retries": 3,
                 "backoff_factor": 1.0,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _init_database(self):
         """Initialize security compliance database."""
@@ -287,7 +296,7 @@ class YouTubeSecurityCompliance:
         with sqlite3.connect(self.db_path) as conn:
             # Security credentials table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS security_credentials (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         credential_id TEXT UNIQUE,
@@ -305,13 +314,15 @@ class YouTubeSecurityCompliance:
                         is_active BOOLEAN,
                         rotation_required BOOLEAN,
                         metadata TEXT
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Security events table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS security_events (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         event_id TEXT UNIQUE,
@@ -328,13 +339,15 @@ class YouTubeSecurityCompliance:
                         risk_score REAL,
                         action_taken TEXT,
                         metadata TEXT
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Rate limit rules table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS rate_limit_rules (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         rule_id TEXT UNIQUE,
@@ -348,13 +361,15 @@ class YouTubeSecurityCompliance:
                         penalty_duration INTEGER,
                         is_active BOOLEAN,
                         created_at TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Security audits table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS security_audits (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         audit_id TEXT UNIQUE,
@@ -368,9 +383,11 @@ class YouTubeSecurityCompliance:
                         risk_score REAL,
                         compliance_score REAL,
                         next_audit_due TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -392,7 +409,8 @@ class YouTubeSecurityCompliance:
                     length=32,
                     salt=salt,
                     iterations=100000,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.encryption_key = base64.urlsafe_b64encode(kdf.derive(password))
 
                 # Save key securely
@@ -416,14 +434,16 @@ class YouTubeSecurityCompliance:
         # Configure SSL/TLS
         self.session.verify = (
             certifi.where() if self.config["api_security"]["verify_ssl"] else False
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Configure retries
         retry_strategy = Retry(
             total=self.config["api_security"]["max_retries"],
             backoff_factor=self.config["api_security"]["backoff_factor"],
             status_forcelist=[429, 500, 502, 503, 504],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self.session.mount("http://", adapter)
@@ -441,63 +461,73 @@ class YouTubeSecurityCompliance:
                 "threshold": 5,
                 "window_minutes": 10,
                 "threat_level": ThreatLevel.HIGH,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "name": "suspicious_ip",
                 "pattern": r"known_malicious_ip",
                 "threshold": 1,
                 "window_minutes": 1,
                 "threat_level": ThreatLevel.CRITICAL,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "name": "rate_limit_abuse",
                 "pattern": r"excessive_requests",
                 "threshold": 100,
                 "window_minutes": 1,
                 "threat_level": ThreatLevel.MODERATE,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "name": "credential_stuffing",
                 "pattern": r"multiple_credential_attempts",
                 "threshold": 10,
                 "window_minutes": 5,
                 "threat_level": ThreatLevel.HIGH,
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
     def _load_compliance_rules(self) -> List[Dict[str, Any]]:
         """Load compliance rules."""
         return [
             {
                 "rule_id": "gdpr_data_encryption",
-                "description": "All personal data must be encrypted at rest \
-    and in transit",
+                "description": "All personal data must be encrypted at rest \"
+#     and in transit",
                 "compliance_type": "GDPR",
                 "severity": "critical",
                 "check_function": self._check_data_encryption,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "rule_id": "api_key_rotation",
                 "description": "API keys must be rotated every 30 days",
                 "compliance_type": "Security",
                 "severity": "high",
                 "check_function": self._check_api_key_rotation,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "rule_id": "access_logging",
                 "description": "All API access must be logged",
                 "compliance_type": "Audit",
                 "severity": "medium",
                 "check_function": self._check_access_logging,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "rule_id": "rate_limiting",
                 "description": "Rate limiting must be enforced on all endpoints",
                 "compliance_type": "Security",
                 "severity": "high",
                 "check_function": self._check_rate_limiting,
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
     def encrypt_credential(self, credential: str) -> str:
         """Encrypt a credential value."""
@@ -522,7 +552,8 @@ class YouTubeSecurityCompliance:
         credential_value: str,
         access_level: AccessLevel = AccessLevel.READ_WRITE,
         expires_at: Optional[datetime] = None,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Store a credential securely."""
         try:
             credential_id = f"{service_name}_{credential_type}_{int(time.time())}"
@@ -544,19 +575,20 @@ class YouTubeSecurityCompliance:
                 is_active=True,
                 rotation_required=False,
                 metadata={},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Store in database
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO security_credentials (
                         credential_id, service_name, credential_type, encrypted_value,
                             created_at, expires_at, last_used, usage_count, access_level,
                             allowed_ips, allowed_domains, rate_limit, is_active,
                             rotation_required, metadata
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         credential.credential_id,
                         credential.service_name,
@@ -573,8 +605,10 @@ class YouTubeSecurityCompliance:
                         credential.is_active,
                         credential.rotation_required,
                         json.dumps(credential.metadata),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
             self._log_security_event(
@@ -584,8 +618,10 @@ class YouTubeSecurityCompliance:
                 metadata={
                     "service_name": service_name,
                     "credential_type": credential_type,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             return credential_id
 
@@ -600,7 +636,8 @@ class YouTubeSecurityCompliance:
                 cursor = conn.execute(
                     "SELECT * FROM security_credentials WHERE credential_id = ? AND is_active = 1",
                     (credential_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 row = cursor.fetchone()
 
                 if not row:
@@ -609,7 +646,8 @@ class YouTubeSecurityCompliance:
                         threat_level=ThreatLevel.WARNING,
                         credential_id=credential_id,
                         source_ip=source_ip or "unknown",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return None
 
                 # Parse credential data
@@ -622,7 +660,8 @@ class YouTubeSecurityCompliance:
                     "expires_at": datetime.fromisoformat(row[6]) if row[6] else None,
                     "allowed_ips": json.loads(row[10]) if row[10] else [],
                     "is_active": row[13],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 # Check expiration
                 if credential_data["expires_at"] and credential_data["expires_at"] < datetime.now():
@@ -631,7 +670,8 @@ class YouTubeSecurityCompliance:
                         threat_level=ThreatLevel.WARNING,
                         credential_id=credential_id,
                         source_ip=source_ip or "unknown",
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return None
 
                 # Check IP restrictions
@@ -642,14 +682,16 @@ class YouTubeSecurityCompliance:
                             threat_level=ThreatLevel.HIGH,
                             credential_id=credential_id,
                             source_ip=source_ip,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         return None
 
                 # Update usage statistics
                 conn.execute(
                     "UPDATE security_credentials SET last_used = ?, usage_count = usage_count + 1 WHERE credential_id = ?",
                     (datetime.now(), credential_id),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
                 # Decrypt and return credential
@@ -660,7 +702,8 @@ class YouTubeSecurityCompliance:
                     threat_level=ThreatLevel.INFO,
                     credential_id=credential_id,
                     source_ip=source_ip or "unknown",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return decrypted_value
 
@@ -672,7 +715,8 @@ class YouTubeSecurityCompliance:
                 credential_id=credential_id,
                 source_ip=source_ip or "unknown",
                 error_message=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return None
 
     def check_rate_limit(
@@ -729,8 +773,10 @@ class YouTubeSecurityCompliance:
                             "minute_count": minute_count,
                             "hour_count": hour_count,
                             "day_count": day_count,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     )
 
                     return False, {
                         "rate_limited": True,
@@ -740,8 +786,10 @@ class YouTubeSecurityCompliance:
                             "minute": minute_count,
                             "hour": hour_count,
                             "day": day_count,
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
                 # Add current request
                 requests_queue.append(current_time)
@@ -752,13 +800,16 @@ class YouTubeSecurityCompliance:
                         "minute": minute_count + 1,
                         "hour": hour_count + 1,
                         "day": day_count + 1,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "limits": {
                         "minute": rules.get("requests_per_minute"),
                         "hour": rules.get("requests_per_hour"),
                         "day": rules.get("requests_per_day"),
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             self.logger.error(f"Error checking rate limit: {e}")
@@ -776,7 +827,8 @@ class YouTubeSecurityCompliance:
         response_code: int = 200,
         error_message: Optional[str] = None,
         metadata: Dict[str, Any] = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Log a security event."""
         try:
             event_id = f"event_{int(time.time() * 1000)}_{secrets.token_hex(8)}"
@@ -799,7 +851,8 @@ class YouTubeSecurityCompliance:
                 risk_score=risk_score,
                 action_taken="logged",
                 metadata=metadata or {},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Store in memory queue
             self.security_events.append(event)
@@ -807,13 +860,13 @@ class YouTubeSecurityCompliance:
             # Store in database
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO security_events (
                         event_id, event_type, threat_level, timestamp, source_ip,
                             user_agent, api_endpoint, credential_id, request_data,
                             response_code, error_message, risk_score, action_taken, metadata
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         event.event_id,
                         event.event_type,
@@ -829,8 +882,10 @@ class YouTubeSecurityCompliance:
                         event.risk_score,
                         event.action_taken,
                         json.dumps(event.metadata),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
             # Update metrics
@@ -845,7 +900,8 @@ class YouTubeSecurityCompliance:
 
     def _calculate_risk_score(
         self, event_type: str, threat_level: ThreatLevel, source_ip: str
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate risk score for security event."""
         base_scores = {
             ThreatLevel.INFO: 0.1,
@@ -853,7 +909,8 @@ class YouTubeSecurityCompliance:
             ThreatLevel.MODERATE: 0.5,
             ThreatLevel.HIGH: 0.8,
             ThreatLevel.CRITICAL: 1.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         score = base_scores.get(threat_level, 0.5)
 
@@ -864,7 +921,8 @@ class YouTubeSecurityCompliance:
             "rate_limit_exceeded": 1.1,
             "ip_access_denied": 1.5,
             "credential_expired": 0.9,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         score *= event_multipliers.get(event_type, 1.0)
 
@@ -909,7 +967,8 @@ class YouTubeSecurityCompliance:
                 if e.source_ip == event.source_ip
                 and e.timestamp > datetime.now() - timedelta(minutes=pattern["window_minutes"])
                 and "failed" in e.event_type.lower()
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             return len(recent_events) >= pattern["threshold"]
 
         elif pattern["name"] == "rate_limit_abuse":
@@ -920,7 +979,8 @@ class YouTubeSecurityCompliance:
                 if e.source_ip == event.source_ip
                 and e.timestamp > datetime.now() - timedelta(minutes=pattern["window_minutes"])
                 and e.event_type == "rate_limit_exceeded"
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             return len(recent_events) >= pattern["threshold"]
 
         return False
@@ -930,7 +990,8 @@ class YouTubeSecurityCompliance:
         try:
             self.logger.warning(
                 f"Threat pattern detected: {pattern['name']} from IP {event.source_ip}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Log high - priority security event
             self._log_security_event(
@@ -941,8 +1002,10 @@ class YouTubeSecurityCompliance:
                     "pattern_name": pattern["name"],
                     "original_event_id": event.event_id,
                     "threshold": pattern["threshold"],
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             # Take automated action based on threat level
             if pattern["threat_level"] == ThreatLevel.CRITICAL:
@@ -970,7 +1033,8 @@ class YouTubeSecurityCompliance:
         credential_id: str,
         source_ip: str = "unknown",
         **kwargs,
-    ) -> requests.Response:
+# BRACKET_SURGEON: disabled
+#     ) -> requests.Response:
         """Make a secure API call with full security compliance."""
         try:
             # Get credential
@@ -1010,8 +1074,10 @@ class YouTubeSecurityCompliance:
                     "service": service_name,
                     "request_time": request_time,
                     "rate_limit_info": rate_info,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             return response
 
@@ -1024,7 +1090,8 @@ class YouTubeSecurityCompliance:
                 api_endpoint=url,
                 credential_id=credential_id,
                 error_message=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             raise
 
     def _extract_service_name(self, url: str) -> str:
@@ -1053,7 +1120,8 @@ class YouTubeSecurityCompliance:
                 risk_score=0.0,
                 compliance_score=0.0,
                 next_audit_due=datetime.now() + timedelta(days=30),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Run compliance checks
             total_checks = len(self.compliance_rules)
@@ -1072,8 +1140,10 @@ class YouTubeSecurityCompliance:
                                 "severity": rule["severity"],
                                 "status": "non_compliant",
                                 "details": result.get("details", ""),
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
                         audit.recommendations.extend(result.get("recommendations", []))
                 except Exception as e:
                     audit.findings.append(
@@ -1083,8 +1153,10 @@ class YouTubeSecurityCompliance:
                             "severity": "error",
                             "status": "check_failed",
                             "details": str(e),
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Calculate scores
             audit.compliance_score = passed_checks / total_checks if total_checks > 0 else 0.0
@@ -1101,13 +1173,13 @@ class YouTubeSecurityCompliance:
             # Store audit results
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO security_audits (
                         audit_id, audit_type, target_system, started_at, completed_at,
                             status, findings, recommendations, risk_score, compliance_score,
                             next_audit_due
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         audit.audit_id,
                         audit.audit_type,
@@ -1120,8 +1192,10 @@ class YouTubeSecurityCompliance:
                         audit.risk_score,
                         audit.compliance_score,
                         audit.next_audit_due,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
             return audit
@@ -1142,10 +1216,12 @@ class YouTubeSecurityCompliance:
                     "compliant": False,
                     "details": "Encryption key file not found",
                     "recommendations": [
-                        "Generate \
-    and securely store encryption key"
-                    ],
-                }
+                        "Generate \"
+#     and securely store encryption key"
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Check file permissions
             stat_info = key_file.stat()
@@ -1154,7 +1230,8 @@ class YouTubeSecurityCompliance:
                     "compliant": False,
                     "details": "Encryption key file has insecure permissions",
                     "recommendations": ["Set encryption key file permissions to 600"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             return {"compliant": True}
 
@@ -1163,7 +1240,8 @@ class YouTubeSecurityCompliance:
                 "compliant": False,
                 "details": f"Error checking encryption: {e}",
                 "recommendations": ["Fix encryption configuration"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _check_api_key_rotation(self) -> Dict[str, Any]:
         """Check if API keys are rotated regularly."""
@@ -1171,7 +1249,8 @@ class YouTubeSecurityCompliance:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
                     "SELECT credential_id, created_at FROM security_credentials WHERE is_active = 1"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 credentials = cursor.fetchall()
 
                 old_credentials = []
@@ -1185,7 +1264,8 @@ class YouTubeSecurityCompliance:
                         "compliant": False,
                         "details": f"{len(old_credentials)} credentials older than 30 days",
                         "recommendations": [f'Rotate credentials: {", ".join(old_credentials)}'],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                 return {"compliant": True}
 
@@ -1194,7 +1274,8 @@ class YouTubeSecurityCompliance:
                 "compliant": False,
                 "details": f"Error checking API key rotation: {e}",
                 "recommendations": ["Fix credential rotation monitoring"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _check_access_logging(self) -> Dict[str, Any]:
         """Check if access logging is enabled and working."""
@@ -1204,14 +1285,16 @@ class YouTubeSecurityCompliance:
                 e
                 for e in self.security_events
                 if e.timestamp > datetime.now() - timedelta(hours=24)
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             if len(recent_events) == 0:
                 return {
                     "compliant": False,
                     "details": "No security events logged in the last 24 hours",
                     "recommendations": ["Verify security event logging is enabled"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             return {"compliant": True}
 
@@ -1220,7 +1303,8 @@ class YouTubeSecurityCompliance:
                 "compliant": False,
                 "details": f"Error checking access logging: {e}",
                 "recommendations": ["Fix access logging configuration"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _check_rate_limiting(self) -> Dict[str, Any]:
         """Check if rate limiting is properly configured."""
@@ -1231,12 +1315,14 @@ class YouTubeSecurityCompliance:
                     "compliant": False,
                     "details": "Rate limiting not configured",
                     "recommendations": ["Configure rate limiting rules"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Check if rate limiting is being enforced
             rate_limit_events = [
                 e for e in self.security_events if e.event_type == "rate_limit_exceeded"
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             # If there are no rate limit events, it might mean:
             # 1. No one is hitting limits (good)
@@ -1250,7 +1336,8 @@ class YouTubeSecurityCompliance:
                 "compliant": False,
                 "details": f"Error checking rate limiting: {e}",
                 "recommendations": ["Fix rate limiting configuration"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def get_security_dashboard(self) -> Dict[str, Any]:
         """Get security dashboard data."""
@@ -1260,7 +1347,8 @@ class YouTubeSecurityCompliance:
                 e
                 for e in self.security_events
                 if e.timestamp > datetime.now() - timedelta(hours=24)
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             # Threat level distribution
             threat_distribution = defaultdict(int)
@@ -1278,7 +1366,8 @@ class YouTubeSecurityCompliance:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
                     "SELECT COUNT(*) FROM security_credentials WHERE is_active = 1"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 active_credentials = cursor.fetchone()[0]
 
             return {
@@ -1291,7 +1380,8 @@ class YouTubeSecurityCompliance:
                 "rate_limit_status": len(self.rate_limits),
                 "last_audit": None,  # Would get from database
                 "compliance_score": 0.85,  # Would calculate from latest audit
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error getting security dashboard: {e}")
@@ -1335,7 +1425,8 @@ def secure_endpoint(service_name: str, required_access_level: AccessLevel = Acce
                 source_ip=source_ip,
                 api_endpoint=endpoint,
                 credential_id=credential_id,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Call original function
             return func(*args, **kwargs)
@@ -1365,7 +1456,8 @@ if __name__ == "__main__":
         nargs=3,
         metavar=("SERVICE", "TYPE", "VALUE"),
         help="Store secure credential",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     args = parser.parse_args()
 

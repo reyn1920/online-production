@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI YouTube Security Compliance Module
+"""""""""
 
 Comprehensive security compliance system that provides:
 - API key management and rotation
@@ -12,7 +13,15 @@ Comprehensive security compliance system that provides:
 - Security incident response
 - Vulnerability scanning
 
+
+
+
+"""
+
 Features:
+
+"""
+
 - Zero - trust security architecture
 - Automated security monitoring
 - Real - time threat detection
@@ -24,7 +33,8 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+
+
 
 import base64
 import ipaddress
@@ -60,7 +70,8 @@ from backend.secret_store import SecretStore
 
 
 class SecurityLevel(Enum):
-    """Security levels for different operations."""
+    
+"""Security levels for different operations."""
 
     LOW = "low"
     MEDIUM = "medium"
@@ -98,7 +109,9 @@ class ComplianceStatus(Enum):
 
 @dataclass
 class SecurityCredential:
-    """Secure credential with metadata."""
+    """
+Secure credential with metadata.
+
 
     credential_id: str
     service_name: str
@@ -114,12 +127,20 @@ class SecurityCredential:
     rate_limit: Dict[str, int]
     is_active: bool
     rotation_required: bool
+   
+""""""
+
     metadata: Dict[str, Any]
+   
 
-
+    
+   
+"""
 @dataclass
 class SecurityEvent:
-    """Security event for audit logging."""
+    """
+Security event for audit logging.
+
 
     event_id: str
     event_type: str
@@ -134,12 +155,20 @@ class SecurityEvent:
     error_message: Optional[str]
     risk_score: float
     action_taken: str
+   
+""""""
+
     metadata: Dict[str, Any]
+   
 
-
+    
+   
+"""
 @dataclass
 class RateLimitRule:
-    """Rate limiting rule configuration."""
+    """
+Rate limiting rule configuration.
+
 
     rule_id: str
     service_name: str
@@ -151,12 +180,20 @@ class RateLimitRule:
     window_size: int
     penalty_duration: int
     is_active: bool
+   
+""""""
+
     created_at: datetime
+   
 
-
+    
+   
+"""
 @dataclass
 class SecurityAudit:
-    """Security audit result."""
+    """
+Security audit result.
+
 
     audit_id: str
     audit_type: str
@@ -168,15 +205,31 @@ class SecurityAudit:
     recommendations: List[str]
     risk_score: float
     compliance_score: float
+   
+""""""
+
     next_audit_due: datetime
+   
 
-
+    
+   
+"""
 class YouTubeSecurityCompliance:
-    """
+   """
+
+    
+   
+
     Comprehensive security compliance system for YouTube automation
     with zero - trust architecture and automated security monitoring.
-    """
+   
+""""""
 
+   
+
+    
+   
+"""
     def __init__(self, config_path: str = "config/security_config.json"):
         self.logger = setup_logger("youtube_security_compliance")
         self.config_path = config_path
@@ -216,10 +269,22 @@ class YouTubeSecurityCompliance:
         self.logger.info("YouTube Security Compliance initialized")
 
     def _load_config(self) -> Dict[str, Any]:
-        """Load security configuration."""
+        """
+Load security configuration.
+
+        
+"""
         try:
+        """"""
             if os.path.exists(self.config_path):
                 with open(self.config_path, "r") as f:
+        """
+
+        try:
+        
+
+       
+""""""
                     return json.load(f)
         except Exception as e:
             self.logger.error(f"Error loading security config: {e}")
@@ -230,7 +295,7 @@ class YouTubeSecurityCompliance:
                 "algorithm": "AES - 256 - GCM",
                 "key_rotation_days": 30,
                 "backup_keys": 3,
-            },
+             },
             "rate_limiting": {
                 "youtube_api": {
                     "requests_per_minute": 100,
@@ -238,15 +303,15 @@ class YouTubeSecurityCompliance:
                     "requests_per_day": 1000000,
                     "burst_limit": 10,
                     "penalty_duration": 300,
-                },
+                 },
                 "content_upload": {
                     "requests_per_minute": 5,
                     "requests_per_hour": 50,
                     "requests_per_day": 200,
                     "burst_limit": 2,
                     "penalty_duration": 600,
-                },
-            },
+                 },
+             },
             "security_monitoring": {
                 "enabled": True,
                 "log_all_requests": True,
@@ -255,7 +320,7 @@ class YouTubeSecurityCompliance:
                 "real_time_alerts": True,
                 "max_failed_attempts": 5,
                 "lockout_duration": 900,
-            },
+             },
             "compliance": {
                 "gdpr_enabled": True,
                 "ccpa_enabled": True,
@@ -263,31 +328,44 @@ class YouTubeSecurityCompliance:
                 "audit_frequency_days": 30,
                 "data_retention_days": 365,
                 "encryption_required": True,
-            },
+             },
             "access_control": {
                 "require_mfa": True,
                 "session_timeout": 3600,
                 "ip_whitelist_enabled": False,
                 "geo_blocking_enabled": False,
                 "allowed_countries": ["US", "CA", "GB", "AU"],
-            },
+             },
             "api_security": {
                 "require_https": True,
                 "verify_ssl": True,
                 "timeout_seconds": 30,
                 "max_retries": 3,
                 "backoff_factor": 1.0,
-            },
-        }
+             },
+         }
 
     def _init_database(self):
-        """Initialize security compliance database."""
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        """
+Initialize security compliance database.
 
+       
+""""""
+
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+       
+
+        
+       
+"""
         with sqlite3.connect(self.db_path) as conn:
             # Security credentials table
             conn.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS security_credentials (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         credential_id TEXT UNIQUE,
@@ -305,13 +383,33 @@ class YouTubeSecurityCompliance:
                         is_active BOOLEAN,
                         rotation_required BOOLEAN,
                         metadata TEXT
-                )
-            """
-            )
+                 )
+            
+""""""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+        
+       """
+
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+       
+
+        
+       
+"""
             # Security events table
             conn.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS security_events (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         event_id TEXT UNIQUE,
@@ -328,13 +426,25 @@ class YouTubeSecurityCompliance:
                         risk_score REAL,
                         action_taken TEXT,
                         metadata TEXT
-                )
+                 )
+            
+""""""
+
+            
+
+             
+            
+"""
+             )
             """
-            )
+
+             
+            
 
             # Rate limit rules table
             conn.execute(
-                """
+               
+""""""
                 CREATE TABLE IF NOT EXISTS rate_limit_rules (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         rule_id TEXT UNIQUE,
@@ -348,13 +458,32 @@ class YouTubeSecurityCompliance:
                         penalty_duration INTEGER,
                         is_active BOOLEAN,
                         created_at TIMESTAMP
-                )
-            """
-            )
+                 )
+            """"""
 
+            
+
+             
+            
+"""
+             )
+            """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             # Security audits table
             conn.execute(
-                """
+               """
+
+                
+               
+
                 CREATE TABLE IF NOT EXISTS security_audits (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         audit_id TEXT UNIQUE,
@@ -368,18 +497,58 @@ class YouTubeSecurityCompliance:
                         risk_score REAL,
                         compliance_score REAL,
                         next_audit_due TIMESTAMP
-                )
-            """
-            )
+                 )
+            
+""""""
+
+            
+
+             
+            
+"""
+             )
+            """"""
+
+            
+
+           """
 
             conn.commit()
+           
+
+            
+           
+""""""
+
+             
+            
+
+             )
+            
+""""""
 
     def _init_encryption(self):
-        """Initialize encryption system."""
+        """
+        Initialize encryption system.
+        """
         try:
-            # Generate or load encryption key
-            key_file = Path("data/encryption.key")
+           """
 
+            
+           
+
+            # Generate or load encryption key
+           
+""""""
+            key_file = Path("data/encryption.key")
+           """
+
+            
+           
+
+            # Generate or load encryption key
+           
+""""""
             if key_file.exists():
                 with open(key_file, "rb") as f:
                     self.encryption_key = f.read()
@@ -392,7 +561,7 @@ class YouTubeSecurityCompliance:
                     length=32,
                     salt=salt,
                     iterations=100000,
-                )
+                 )
                 self.encryption_key = base64.urlsafe_b64encode(kdf.derive(password))
 
                 # Save key securely
@@ -410,20 +579,36 @@ class YouTubeSecurityCompliance:
             raise
 
     def _init_secure_session(self):
-        """Initialize secure HTTP session."""
-        self.session = requests.Session()
+        """
+Initialize secure HTTP session.
 
+       
+""""""
+
+        self.session = requests.Session()
+       
+
+        
+       
+"""
         # Configure SSL/TLS
         self.session.verify = (
             certifi.where() if self.config["api_security"]["verify_ssl"] else False
-        )
+         )
+       """
 
+        
+       
+
+        self.session = requests.Session()
+       
+""""""
         # Configure retries
         retry_strategy = Retry(
             total=self.config["api_security"]["max_retries"],
             backoff_factor=self.config["api_security"]["backoff_factor"],
             status_forcelist=[429, 500, 502, 503, 504],
-        )
+         )
 
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self.session.mount("http://", adapter)
@@ -441,79 +626,105 @@ class YouTubeSecurityCompliance:
                 "threshold": 5,
                 "window_minutes": 10,
                 "threat_level": ThreatLevel.HIGH,
-            },
+             },
             {
                 "name": "suspicious_ip",
                 "pattern": r"known_malicious_ip",
                 "threshold": 1,
                 "window_minutes": 1,
                 "threat_level": ThreatLevel.CRITICAL,
-            },
+             },
             {
                 "name": "rate_limit_abuse",
                 "pattern": r"excessive_requests",
                 "threshold": 100,
                 "window_minutes": 1,
                 "threat_level": ThreatLevel.MODERATE,
-            },
+             },
             {
                 "name": "credential_stuffing",
                 "pattern": r"multiple_credential_attempts",
                 "threshold": 10,
                 "window_minutes": 5,
                 "threat_level": ThreatLevel.HIGH,
-            },
-        ]
+             },
+         ]
 
     def _load_compliance_rules(self) -> List[Dict[str, Any]]:
         """Load compliance rules."""
         return [
             {
                 "rule_id": "gdpr_data_encryption",
-                "description": "All personal data must be encrypted at rest \
-    and in transit",
+                "description": "All personal data must be encrypted at rest \"
+#     and in transit",
                 "compliance_type": "GDPR",
                 "severity": "critical",
                 "check_function": self._check_data_encryption,
-            },
+             },
             {
                 "rule_id": "api_key_rotation",
                 "description": "API keys must be rotated every 30 days",
                 "compliance_type": "Security",
                 "severity": "high",
                 "check_function": self._check_api_key_rotation,
-            },
+             },
             {
                 "rule_id": "access_logging",
                 "description": "All API access must be logged",
                 "compliance_type": "Audit",
                 "severity": "medium",
                 "check_function": self._check_access_logging,
-            },
+             },
             {
                 "rule_id": "rate_limiting",
                 "description": "Rate limiting must be enforced on all endpoints",
                 "compliance_type": "Security",
                 "severity": "high",
                 "check_function": self._check_rate_limiting,
-            },
-        ]
+             },
+         ]
 
     def encrypt_credential(self, credential: str) -> str:
-        """Encrypt a credential value."""
+        """
+Encrypt a credential value.
+
+        
+"""
         try:
+        """"""
             return self.cipher_suite.encrypt(credential.encode()).decode()
         except Exception as e:
             self.logger.error(f"Error encrypting credential: {e}")
             raise
+        """
+
+        try:
+        
+
+       
+""""""
 
     def decrypt_credential(self, encrypted_credential: str) -> str:
-        """Decrypt a credential value."""
+        
+Decrypt a credential value.
+""""""
+
         try:
+        
+
+       
+""""""
             return self.cipher_suite.decrypt(encrypted_credential.encode()).decode()
         except Exception as e:
             self.logger.error(f"Error decrypting credential: {e}")
             raise
+        """
+
+        try:
+        
+
+       
+""""""
 
     def store_secure_credential(
         self,
@@ -522,10 +733,16 @@ class YouTubeSecurityCompliance:
         credential_value: str,
         access_level: AccessLevel = AccessLevel.READ_WRITE,
         expires_at: Optional[datetime] = None,
-    ) -> str:
-        """Store a credential securely."""
+#     ) -> str:
+        
+Store a credential securely.
+""""""
         try:
+        """
             credential_id = f"{service_name}_{credential_type}_{int(time.time())}"
+        """
+        try:
+        """
             encrypted_value = self.encrypt_credential(credential_value)
 
             credential = SecurityCredential(
@@ -544,19 +761,22 @@ class YouTubeSecurityCompliance:
                 is_active=True,
                 rotation_required=False,
                 metadata={},
-            )
+             )
 
             # Store in database
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
+
                     INSERT INTO security_credentials (
                         credential_id, service_name, credential_type, encrypted_value,
                             created_at, expires_at, last_used, usage_count, access_level,
                             allowed_ips, allowed_domains, rate_limit, is_active,
                             rotation_required, metadata
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+,
+"""
                     (
                         credential.credential_id,
                         credential.service_name,
@@ -573,19 +793,39 @@ class YouTubeSecurityCompliance:
                         credential.is_active,
                         credential.rotation_required,
                         json.dumps(credential.metadata),
-                    ),
-                )
+                     ),
+                 )
+               """
+
+                
+               
+
                 conn.commit()
+               
+""""""
+
+            
+
 
             self._log_security_event(
+
+            
+""""""
+
+                
+               
+
+                conn.commit()
+               
+""""""
                 event_type="credential_stored",
                 threat_level=ThreatLevel.INFO,
                 credential_id=credential_id,
                 metadata={
                     "service_name": service_name,
                     "credential_type": credential_type,
-                },
-            )
+                 },
+             )
 
             return credential_id
 
@@ -594,13 +834,21 @@ class YouTubeSecurityCompliance:
             raise
 
     def get_secure_credential(self, credential_id: str, source_ip: str = None) -> Optional[str]:
-        """Retrieve and decrypt a credential."""
+        """
+Retrieve and decrypt a credential.
+
         try:
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
                 cursor = conn.execute(
                     "SELECT * FROM security_credentials WHERE credential_id = ? AND is_active = 1",
                     (credential_id,),
-                )
+                 )
+            """
+            with sqlite3.connect(self.db_path) as conn:
+            """
                 row = cursor.fetchone()
 
                 if not row:
@@ -609,7 +857,7 @@ class YouTubeSecurityCompliance:
                         threat_level=ThreatLevel.WARNING,
                         credential_id=credential_id,
                         source_ip=source_ip or "unknown",
-                    )
+                     )
                     return None
 
                 # Parse credential data
@@ -622,7 +870,7 @@ class YouTubeSecurityCompliance:
                     "expires_at": datetime.fromisoformat(row[6]) if row[6] else None,
                     "allowed_ips": json.loads(row[10]) if row[10] else [],
                     "is_active": row[13],
-                }
+                 }
 
                 # Check expiration
                 if credential_data["expires_at"] and credential_data["expires_at"] < datetime.now():
@@ -631,7 +879,7 @@ class YouTubeSecurityCompliance:
                         threat_level=ThreatLevel.WARNING,
                         credential_id=credential_id,
                         source_ip=source_ip or "unknown",
-                    )
+                     )
                     return None
 
                 # Check IP restrictions
@@ -642,14 +890,14 @@ class YouTubeSecurityCompliance:
                             threat_level=ThreatLevel.HIGH,
                             credential_id=credential_id,
                             source_ip=source_ip,
-                        )
+                         )
                         return None
 
                 # Update usage statistics
                 conn.execute(
                     "UPDATE security_credentials SET last_used = ?, usage_count = usage_count + 1 WHERE credential_id = ?",
                     (datetime.now(), credential_id),
-                )
+                 )
                 conn.commit()
 
                 # Decrypt and return credential
@@ -660,7 +908,7 @@ class YouTubeSecurityCompliance:
                     threat_level=ThreatLevel.INFO,
                     credential_id=credential_id,
                     source_ip=source_ip or "unknown",
-                )
+                 )
 
                 return decrypted_value
 
@@ -672,16 +920,34 @@ class YouTubeSecurityCompliance:
                 credential_id=credential_id,
                 source_ip=source_ip or "unknown",
                 error_message=str(e),
-            )
+             )
             return None
 
     def check_rate_limit(
         self, service_name: str, endpoint: str, source_ip: str
     ) -> Tuple[bool, Dict[str, Any]]:
-        """Check if request is within rate limits."""
+        """
+Check if request is within rate limits.
+
         try:
+           
+""""""
+
             # Get rate limit rules
+           
+
+            
+           
+"""
             rules = self.config["rate_limiting"].get(service_name, {})
+           """
+
+            
+           
+
+            # Get rate limit rules
+           
+""""""
             if not rules:
                 return True, {}
 
@@ -729,8 +995,8 @@ class YouTubeSecurityCompliance:
                             "minute_count": minute_count,
                             "hour_count": hour_count,
                             "day_count": day_count,
-                        },
-                    )
+                         },
+                     )
 
                     return False, {
                         "rate_limited": True,
@@ -740,8 +1006,8 @@ class YouTubeSecurityCompliance:
                             "minute": minute_count,
                             "hour": hour_count,
                             "day": day_count,
-                        },
-                    }
+                         },
+                     }
 
                 # Add current request
                 requests_queue.append(current_time)
@@ -752,13 +1018,13 @@ class YouTubeSecurityCompliance:
                         "minute": minute_count + 1,
                         "hour": hour_count + 1,
                         "day": day_count + 1,
-                    },
+                     },
                     "limits": {
                         "minute": rules.get("requests_per_minute"),
                         "hour": rules.get("requests_per_hour"),
                         "day": rules.get("requests_per_day"),
-                    },
-                }
+                     },
+                 }
 
         except Exception as e:
             self.logger.error(f"Error checking rate limit: {e}")
@@ -776,11 +1042,22 @@ class YouTubeSecurityCompliance:
         response_code: int = 200,
         error_message: Optional[str] = None,
         metadata: Dict[str, Any] = None,
-    ):
-        """Log a security event."""
-        try:
-            event_id = f"event_{int(time.time() * 1000)}_{secrets.token_hex(8)}"
+#     ):
+        """
+Log a security event.
 
+        
+"""
+        try:
+        """
+            event_id = f"event_{int(time.time() * 1000)}_{secrets.token_hex(8)}"
+        """
+
+        try:
+        
+
+       
+""""""
             # Calculate risk score
             risk_score = self._calculate_risk_score(event_type, threat_level, source_ip)
 
@@ -799,7 +1076,7 @@ class YouTubeSecurityCompliance:
                 risk_score=risk_score,
                 action_taken="logged",
                 metadata=metadata or {},
-            )
+             )
 
             # Store in memory queue
             self.security_events.append(event)
@@ -807,13 +1084,16 @@ class YouTubeSecurityCompliance:
             # Store in database
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
+
                     INSERT INTO security_events (
                         event_id, event_type, threat_level, timestamp, source_ip,
                             user_agent, api_endpoint, credential_id, request_data,
                             response_code, error_message, risk_score, action_taken, metadata
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+,
+"""
                     (
                         event.event_id,
                         event.event_type,
@@ -829,14 +1109,27 @@ class YouTubeSecurityCompliance:
                         event.risk_score,
                         event.action_taken,
                         json.dumps(event.metadata),
-                    ),
-                )
-                conn.commit()
+                     ),
+                 )
+               """
 
+                
+               
+
+                conn.commit()
+               
+""""""
             # Update metrics
             self.security_metrics[f"events_{event_type}"] += 1
             self.security_metrics[f"threat_level_{threat_level.value}"] += 1
+               """
 
+                
+               
+
+                conn.commit()
+               
+""""""
             # Check for threat patterns
             self._check_threat_patterns(event)
 
@@ -845,16 +1138,34 @@ class YouTubeSecurityCompliance:
 
     def _calculate_risk_score(
         self, event_type: str, threat_level: ThreatLevel, source_ip: str
-    ) -> float:
-        """Calculate risk score for security event."""
+#     ) -> float:
+        """
+Calculate risk score for security event.
+
         base_scores = {
             ThreatLevel.INFO: 0.1,
             ThreatLevel.WARNING: 0.3,
             ThreatLevel.MODERATE: 0.5,
             ThreatLevel.HIGH: 0.8,
             ThreatLevel.CRITICAL: 1.0,
-        }
+        
+""""""
 
+         }
+        
+
+         
+        
+""""""
+
+
+         
+
+        
+
+         }
+        
+""""""
         score = base_scores.get(threat_level, 0.5)
 
         # Adjust based on event type
@@ -864,7 +1175,7 @@ class YouTubeSecurityCompliance:
             "rate_limit_exceeded": 1.1,
             "ip_access_denied": 1.5,
             "credential_expired": 0.9,
-        }
+         }
 
         score *= event_multipliers.get(event_type, 1.0)
 
@@ -875,41 +1186,99 @@ class YouTubeSecurityCompliance:
         return max(0.0, min(1.0, score))
 
     def _is_suspicious_ip(self, ip: str) -> bool:
-        """Check if IP is suspicious (simplified implementation)."""
+        """
+Check if IP is suspicious (simplified implementation).
+
         try:
+           
+""""""
+
             # Check if IP is in private ranges
+           
+
+            
+           
+"""
             ip_obj = ipaddress.ip_address(ip)
+           """
+
+            
+           
+
+            # Check if IP is in private ranges
+           
+""""""
+
             if ip_obj.is_private or ip_obj.is_loopback:
+                
+
                 return False
+                
+""""""
+
+                
+               
 
             # In a real implementation, this would check against
             # threat intelligence feeds, reputation databases, etc.
+                
+"""
+                return False
+                """"""
             return False
 
         except ValueError:
             return True  # Invalid IP format is suspicious
 
     def _check_threat_patterns(self, event: SecurityEvent):
-        """Check for threat patterns in security events."""
+        """
+Check for threat patterns in security events.
+
         try:
+            
+"""
             for pattern in self.threat_patterns:
+            """"""
                 if self._matches_threat_pattern(event, pattern):
                     self._handle_threat_detection(event, pattern)
         except Exception as e:
             self.logger.error(f"Error checking threat patterns: {e}")
+            """
+
+            for pattern in self.threat_patterns:
+            
+
+           
+""""""
 
     def _matches_threat_pattern(self, event: SecurityEvent, pattern: Dict[str, Any]) -> bool:
-        """Check if event matches a threat pattern."""
+        
+Check if event matches a threat pattern.
+""""""
+
+        
+       
+
         # Simplified pattern matching
+       
+""""""
         if pattern["name"] == "brute_force_attack":
             # Count failed auth attempts from same IP in time window
+       """
+
+        
+       
+
+        # Simplified pattern matching
+       
+""""""
             recent_events = [
                 e
                 for e in self.security_events
                 if e.source_ip == event.source_ip
                 and e.timestamp > datetime.now() - timedelta(minutes=pattern["window_minutes"])
                 and "failed" in e.event_type.lower()
-            ]
+             ]
             return len(recent_events) >= pattern["threshold"]
 
         elif pattern["name"] == "rate_limit_abuse":
@@ -920,7 +1289,7 @@ class YouTubeSecurityCompliance:
                 if e.source_ip == event.source_ip
                 and e.timestamp > datetime.now() - timedelta(minutes=pattern["window_minutes"])
                 and e.event_type == "rate_limit_exceeded"
-            ]
+             ]
             return len(recent_events) >= pattern["threshold"]
 
         return False
@@ -930,7 +1299,7 @@ class YouTubeSecurityCompliance:
         try:
             self.logger.warning(
                 f"Threat pattern detected: {pattern['name']} from IP {event.source_ip}"
-            )
+             )
 
             # Log high - priority security event
             self._log_security_event(
@@ -941,8 +1310,8 @@ class YouTubeSecurityCompliance:
                     "pattern_name": pattern["name"],
                     "original_event_id": event.event_id,
                     "threshold": pattern["threshold"],
-                },
-            )
+                 },
+             )
 
             # Take automated action based on threat level
             if pattern["threat_level"] == ThreatLevel.CRITICAL:
@@ -970,11 +1339,29 @@ class YouTubeSecurityCompliance:
         credential_id: str,
         source_ip: str = "unknown",
         **kwargs,
-    ) -> requests.Response:
-        """Make a secure API call with full security compliance."""
+#     ) -> requests.Response:
+        """
+Make a secure API call with full security compliance.
+
         try:
+           
+""""""
+
             # Get credential
+           
+
+            
+           
+"""
             credential = self.get_secure_credential(credential_id, source_ip)
+           """
+
+            
+           
+
+            # Get credential
+           
+""""""
             if not credential:
                 raise ValueError("Invalid or expired credential")
 
@@ -1010,8 +1397,8 @@ class YouTubeSecurityCompliance:
                     "service": service_name,
                     "request_time": request_time,
                     "rate_limit_info": rate_info,
-                },
-            )
+                 },
+             )
 
             return response
 
@@ -1024,7 +1411,7 @@ class YouTubeSecurityCompliance:
                 api_endpoint=url,
                 credential_id=credential_id,
                 error_message=str(e),
-            )
+             )
             raise
 
     def _extract_service_name(self, url: str) -> str:
@@ -1037,10 +1424,21 @@ class YouTubeSecurityCompliance:
             return "unknown"
 
     def run_security_audit(self, audit_type: str = "comprehensive") -> SecurityAudit:
-        """Run comprehensive security audit."""
-        try:
-            audit_id = f"audit_{int(time.time())}_{secrets.token_hex(8)}"
+        """
+Run comprehensive security audit.
 
+        
+"""
+        try:
+        """
+            audit_id = f"audit_{int(time.time())}_{secrets.token_hex(8)}"
+        """
+
+        try:
+        
+
+       
+""""""
             audit = SecurityAudit(
                 audit_id=audit_id,
                 audit_type=audit_type,
@@ -1053,7 +1451,7 @@ class YouTubeSecurityCompliance:
                 risk_score=0.0,
                 compliance_score=0.0,
                 next_audit_due=datetime.now() + timedelta(days=30),
-            )
+             )
 
             # Run compliance checks
             total_checks = len(self.compliance_rules)
@@ -1072,8 +1470,8 @@ class YouTubeSecurityCompliance:
                                 "severity": rule["severity"],
                                 "status": "non_compliant",
                                 "details": result.get("details", ""),
-                            }
-                        )
+                             }
+                         )
                         audit.recommendations.extend(result.get("recommendations", []))
                 except Exception as e:
                     audit.findings.append(
@@ -1083,8 +1481,8 @@ class YouTubeSecurityCompliance:
                             "severity": "error",
                             "status": "check_failed",
                             "details": str(e),
-                        }
-                    )
+                         }
+                     )
 
             # Calculate scores
             audit.compliance_score = passed_checks / total_checks if total_checks > 0 else 0.0
@@ -1101,13 +1499,16 @@ class YouTubeSecurityCompliance:
             # Store audit results
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
+
                     INSERT INTO security_audits (
                         audit_id, audit_type, target_system, started_at, completed_at,
                             status, findings, recommendations, risk_score, compliance_score,
                             next_audit_due
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+,
+"""
                     (
                         audit.audit_id,
                         audit.audit_type,
@@ -1120,10 +1521,16 @@ class YouTubeSecurityCompliance:
                         audit.risk_score,
                         audit.compliance_score,
                         audit.next_audit_due,
-                    ),
-                )
-                conn.commit()
+                     ),
+                 )
+               """
 
+                
+               
+
+                conn.commit()
+               
+""""""
             return audit
 
         except Exception as e:
@@ -1133,19 +1540,37 @@ class YouTubeSecurityCompliance:
     # Compliance check functions
 
     def _check_data_encryption(self) -> Dict[str, Any]:
-        """Check if data encryption is properly implemented."""
+        """
+Check if data encryption is properly implemented.
+
         try:
+           
+""""""
+
             # Check if encryption key exists and is secure
+           
+
+            
+           
+"""
             key_file = Path("data/encryption.key")
+           """
+
+            
+           
+
+            # Check if encryption key exists and is secure
+           
+""""""
             if not key_file.exists():
                 return {
                     "compliant": False,
                     "details": "Encryption key file not found",
                     "recommendations": [
-                        "Generate \
-    and securely store encryption key"
-                    ],
-                }
+                        "Generate \"
+#     and securely store encryption key"
+                     ],
+                 }
 
             # Check file permissions
             stat_info = key_file.stat()
@@ -1154,7 +1579,7 @@ class YouTubeSecurityCompliance:
                     "compliant": False,
                     "details": "Encryption key file has insecure permissions",
                     "recommendations": ["Set encryption key file permissions to 600"],
-                }
+                 }
 
             return {"compliant": True}
 
@@ -1163,15 +1588,23 @@ class YouTubeSecurityCompliance:
                 "compliant": False,
                 "details": f"Error checking encryption: {e}",
                 "recommendations": ["Fix encryption configuration"],
-            }
+             }
 
     def _check_api_key_rotation(self) -> Dict[str, Any]:
-        """Check if API keys are rotated regularly."""
+        """
+Check if API keys are rotated regularly.
+
         try:
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
                 cursor = conn.execute(
                     "SELECT credential_id, created_at FROM security_credentials WHERE is_active = 1"
-                )
+                 )
+            """
+            with sqlite3.connect(self.db_path) as conn:
+            """
                 credentials = cursor.fetchall()
 
                 old_credentials = []
@@ -1185,7 +1618,7 @@ class YouTubeSecurityCompliance:
                         "compliant": False,
                         "details": f"{len(old_credentials)} credentials older than 30 days",
                         "recommendations": [f'Rotate credentials: {", ".join(old_credentials)}'],
-                    }
+                     }
 
                 return {"compliant": True}
 
@@ -1194,24 +1627,59 @@ class YouTubeSecurityCompliance:
                 "compliant": False,
                 "details": f"Error checking API key rotation: {e}",
                 "recommendations": ["Fix credential rotation monitoring"],
-            }
+             }
 
     def _check_access_logging(self) -> Dict[str, Any]:
-        """Check if access logging is enabled and working."""
+        """
+Check if access logging is enabled and working.
+
         try:
+           
+""""""
+
             # Check if security events are being logged
+           
+
+            
+           
+"""
             recent_events = [
                 e
                 for e in self.security_events
-                if e.timestamp > datetime.now() - timedelta(hours=24)
-            ]
+           """
 
+            
+           
+
+            # Check if security events are being logged
+           
+""""""
+
+                if e.timestamp > datetime.now() - timedelta(hours=24)
+            
+
+             
+            
+"""
+             ]
+            """"""
+
+             
+
+            """
+
+             ]
+            
+
+             
+            
+"""
             if len(recent_events) == 0:
                 return {
                     "compliant": False,
                     "details": "No security events logged in the last 24 hours",
                     "recommendations": ["Verify security event logging is enabled"],
-                }
+                 }
 
             return {"compliant": True}
 
@@ -1220,23 +1688,41 @@ class YouTubeSecurityCompliance:
                 "compliant": False,
                 "details": f"Error checking access logging: {e}",
                 "recommendations": ["Fix access logging configuration"],
-            }
+             }
 
     def _check_rate_limiting(self) -> Dict[str, Any]:
-        """Check if rate limiting is properly configured."""
+        """
+Check if rate limiting is properly configured.
+
         try:
+           
+""""""
+
             # Check if rate limiting rules are configured
+           
+
+            
+           
+"""
             if not self.config.get("rate_limiting"):
+           """
+
+            
+           
+
+            # Check if rate limiting rules are configured
+           
+""""""
                 return {
                     "compliant": False,
                     "details": "Rate limiting not configured",
                     "recommendations": ["Configure rate limiting rules"],
-                }
+                 }
 
             # Check if rate limiting is being enforced
-            rate_limit_events = [
+            [
                 e for e in self.security_events if e.event_type == "rate_limit_exceeded"
-            ]
+             ]
 
             # If there are no rate limit events, it might mean:
             # 1. No one is hitting limits (good)
@@ -1250,19 +1736,56 @@ class YouTubeSecurityCompliance:
                 "compliant": False,
                 "details": f"Error checking rate limiting: {e}",
                 "recommendations": ["Fix rate limiting configuration"],
-            }
+             }
 
     def get_security_dashboard(self) -> Dict[str, Any]:
-        """Get security dashboard data."""
+        """
+Get security dashboard data.
+
         try:
+           
+""""""
+
             # Recent security events
+           
+
+            
+           
+"""
             recent_events = [
                 e
                 for e in self.security_events
+           """
+
+            
+           
+
+            # Recent security events
+           
+""""""
+
                 if e.timestamp > datetime.now() - timedelta(hours=24)
-            ]
+            
+
+             
+            
+"""
+             ]
+            """
+
+             
+            
 
             # Threat level distribution
+            
+""""""
+
+             ]
+            
+
+             
+            
+"""
             threat_distribution = defaultdict(int)
             for event in recent_events:
                 threat_distribution[event.threat_level.value] += 1
@@ -1278,7 +1801,7 @@ class YouTubeSecurityCompliance:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
                     "SELECT COUNT(*) FROM security_credentials WHERE is_active = 1"
-                )
+                 )
                 active_credentials = cursor.fetchone()[0]
 
             return {
@@ -1291,7 +1814,7 @@ class YouTubeSecurityCompliance:
                 "rate_limit_status": len(self.rate_limits),
                 "last_audit": None,  # Would get from database
                 "compliance_score": 0.85,  # Would calculate from latest audit
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Error getting security dashboard: {e}")
@@ -1335,7 +1858,7 @@ def secure_endpoint(service_name: str, required_access_level: AccessLevel = Acce
                 source_ip=source_ip,
                 api_endpoint=endpoint,
                 credential_id=credential_id,
-            )
+             )
 
             # Call original function
             return func(*args, **kwargs)
@@ -1349,10 +1872,22 @@ def secure_endpoint(service_name: str, required_access_level: AccessLevel = Acce
 
 
 def create_youtube_security_compliance() -> YouTubeSecurityCompliance:
-    """Create and return YouTube security compliance instance."""
+    """
+Create and return YouTube security compliance instance.
+
+    
+"""
+    return YouTubeSecurityCompliance()
+    """"""
+    """
+
+
     return YouTubeSecurityCompliance()
 
+    
 
+   
+""""""
 # CLI interface for testing
 if __name__ == "__main__":
     import argparse
@@ -1365,7 +1900,7 @@ if __name__ == "__main__":
         nargs=3,
         metavar=("SERVICE", "TYPE", "VALUE"),
         help="Store secure credential",
-    )
+     )
 
     args = parser.parse_args()
 

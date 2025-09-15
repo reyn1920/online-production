@@ -21,7 +21,8 @@ def convert_onnx(net, path_module, output, opset=11, simplify=False):
         keep_initializers_as_inputs=False,
         verbose=False,
         opset_version=opset,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     model = onnx.load(output)
     graph = model.graph
     graph.input[0].type.tensor_type.shape.dim[0].dim_param = "None"

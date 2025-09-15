@@ -16,7 +16,9 @@ def perspective_projection(focal, center):
         .reshape([3, 3])
         .astype(np.float32)
         .transpose()
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 class SH:
@@ -28,7 +30,9 @@ class SH:
             1 / np.sqrt(4 * np.pi),
                 np.sqrt(3.0)/np.sqrt(4 * np.pi),
                 3 * np.sqrt(5.0)/np.sqrt(12 * np.pi),
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
 class ParametricFaceModel:
@@ -44,7 +48,8 @@ class ParametricFaceModel:
             center = 112.0,
             is_train = True,
             default_name="BFM_model_front.mat",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
         if not os.path.isfile(os.path.join(bfm_folder, default_name)):
             transferBFM09(bfm_folder)
@@ -95,14 +100,14 @@ class ParametricFaceModel:
 
 
     def compute_shape(self, id_coeff, exp_coeff):
-        """
+        """"""
         Return:
             face_shape       -- torch.tensor, size (B, N, 3)
 
         Parameters:
             id_coeff         -- torch.tensor, size (B, 80), identity coeffs
             exp_coeff        -- torch.tensor, size (B, 64), expression coeffs
-        """
+        """"""
         batch_size = id_coeff.shape[0]
         id_part = torch.einsum("ij,aj->ai", self.id_base, id_coeff)
         exp_part = torch.einsum("ij,aj->ai", self.exp_base, exp_coeff)
@@ -111,36 +116,41 @@ class ParametricFaceModel:
 
 
     def compute_texture(self, tex_coeff, normalize = True):
-        """
+        """"""
         Return:
             face_texture     -- torch.tensor,
     size (B,
     N,
-    3),
+# BRACKET_SURGEON: disabled
+#     3),
     in RGB order,
     range (0,
-    1.)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     1.)
 
         Parameters:
             tex_coeff        -- torch.tensor, size (B, 80)
-        """
+        """"""
         batch_size = tex_coeff.shape[0]
         face_texture = (
             torch.einsum("ij,aj->ai", self.tex_base, tex_coeff) + self.mean_tex
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if normalize:
             face_texture = face_texture / 255.0
         return face_texture.reshape([batch_size, -1, 3])
 
 
     def compute_norm(self, face_shape):
-        """
+        """"""
         Return:
             vertex_norm      -- torch.tensor, size (B, N, 3)
 
         Parameters:
             face_shape       -- torch.tensor, size (B, N, 3)
-        """
+        """"""
 
         v1 = face_shape[:, self.face_buf[:, 0]]
         v2 = face_shape[:, self.face_buf[:, 1]]
@@ -151,7 +161,9 @@ class ParametricFaceModel:
         face_norm = F.normalize(face_norm, dim=-1, p = 2)
         face_norm = torch.cat(
             [face_norm, torch.zeros(face_norm.shape[0], 1, 3).to(self.device)], dim = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         vertex_norm = torch.sum(face_norm[:, self.point_buf], dim = 2)
         vertex_norm = F.normalize(vertex_norm, dim=-1, p = 2)
@@ -159,7 +171,7 @@ class ParametricFaceModel:
 
 
     def compute_color(self, face_texture, face_norm, gamma):
-        """
+        """"""
         Return:
             face_color       -- torch.tensor, size (B, N, 3), range (0, 1.)
 
@@ -167,13 +179,16 @@ class ParametricFaceModel:
             face_texture     -- torch.tensor,
     size (B,
     N,
-    3),
+# BRACKET_SURGEON: disabled
+#     3),
     from texture model,
     range (0,
-    1.)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     1.)
             face_norm        -- torch.tensor, size (B, N, 3), rotated face normal
             gamma            -- torch.tensor, size (B, 27), SH coeffs
-        """
+        """"""
         batch_size = gamma.shape[0]
         v_num = face_texture.shape[1]
         a, c = self.SH.a, self.SH.c
@@ -189,15 +204,21 @@ class ParametricFaceModel:
                     a[2] * c[2] * face_norm[..., :1] * face_norm[..., 1:2],
                     -a[2] * c[2] * face_norm[..., 1:2] * face_norm[..., 2:],
                     0.5 * a[2] * c[2] / np.sqrt(3.0) * (3 * face_norm[...,
-    2:] ** 2 - 1),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     2:] ** 2 - 1),
                     -a[2] * c[2] * face_norm[..., :1] * face_norm[..., 2:],
                     0.5
                 * a[2]
                 * c[2]
                 * (face_norm[..., :1] ** 2 - face_norm[..., 1:2] ** 2),
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 dim=-1,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         r = Y @ gamma[..., :1]
         g = Y @ gamma[..., 1:2]
         b = Y @ gamma[..., 2:]
@@ -206,13 +227,13 @@ class ParametricFaceModel:
 
 
     def compute_rotation(self, angles):
-        """
+        """"""
         Return:
             rot              -- torch.tensor, size (B, 3, 3) pts @ trans_mat
 
         Parameters:
             angles           -- torch.tensor, size (B, 3), radian
-        """
+        """"""
 
         batch_size = angles.shape[0]
         ones = torch.ones([batch_size, 1]).to(self.device)
@@ -221,7 +242,9 @@ class ParametricFaceModel:
             angles[:, :1],
                 angles[:, 1:2],
                 angles[:, 2:],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         rot_x = torch.cat(
             [
@@ -234,9 +257,13 @@ class ParametricFaceModel:
                     zeros,
                     torch.sin(x),
                     torch.cos(x),
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 dim = 1,
-                ).reshape([batch_size, 3, 3])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).reshape([batch_size, 3, 3])
 
         rot_y = torch.cat(
             [
@@ -249,9 +276,13 @@ class ParametricFaceModel:
                     -torch.sin(y),
                     zeros,
                     torch.cos(y),
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 dim = 1,
-                ).reshape([batch_size, 3, 3])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).reshape([batch_size, 3, 3])
 
         rot_z = torch.cat(
             [
@@ -264,9 +295,13 @@ class ParametricFaceModel:
                     zeros,
                     zeros,
                     ones,
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 dim = 1,
-                ).reshape([batch_size, 3, 3])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).reshape([batch_size, 3, 3])
 
         rot = rot_z @ rot_y @ rot_x
         return rot.permute(0, 2, 1)
@@ -278,17 +313,18 @@ class ParametricFaceModel:
 
 
     def to_image(self, face_shape):
-        """
+        """"""
         Return:
             face_proj        -- torch.tensor,
     size (B,
     N,
-    2),
+# BRACKET_SURGEON: disabled
+#     2),
     y direction is opposite to v direction
 
         Parameters:
             face_shape       -- torch.tensor, size (B, N, 3)
-        """
+        """"""
         # to image_plane
         face_proj = face_shape @ self.persc_proj
         face_proj = face_proj[..., :2] / face_proj[..., 2:]
@@ -297,7 +333,7 @@ class ParametricFaceModel:
 
 
     def transform(self, face_shape, rot, trans):
-        """
+        """"""
         Return:
             face_shape       -- torch.tensor, size (B, N, 3) pts @ rot + trans
 
@@ -305,29 +341,29 @@ class ParametricFaceModel:
             face_shape       -- torch.tensor, size (B, N, 3)
             rot              -- torch.tensor, size (B, 3, 3)
             trans            -- torch.tensor, size (B, 3)
-        """
+        """"""
         return face_shape @ rot + trans.unsqueeze(1)
 
 
     def get_landmarks(self, face_proj):
-        """
+        """"""
         Return:
             face_lms         -- torch.tensor, size (B, 68, 2)
 
         Parameters:
             face_proj       -- torch.tensor, size (B, N, 2)
-        """
+        """"""
         return face_proj[:, self.keypoints]
 
 
     def split_coeff(self, coeffs):
-        """
+        """"""
         Return:
             coeffs_dict     -- a dict of torch.tensors
 
         Parameters:
             coeffs          -- torch.tensor, size (B, 256)
-        """
+        """"""
         id_coeffs = coeffs[:, :80]
         exp_coeffs = coeffs[:, 80:144]
         tex_coeffs = coeffs[:, 144:224]
@@ -341,29 +377,33 @@ class ParametricFaceModel:
                 "angle": angles,
                 "gamma": gammas,
                 "trans": translations,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def compute_for_render(self, coeffs):
-        """
+        """"""
         Return:
             face_vertex     -- torch.tensor, size (B, N, 3), in camera coordinate
             face_color      -- torch.tensor, size (B, N, 3), in RGB order
             landmark        -- torch.tensor,
     size (B,
     68,
-    2),
+# BRACKET_SURGEON: disabled
+#     2),
     y direction is opposite to v direction
         Parameters:
             coeffs          -- torch.tensor, size (B, 257)
-        """
+        """"""
         coef_dict = self.split_coeff(coeffs)
         face_shape = self.compute_shape(coef_dict["id"], coef_dict["exp"])
         rotation = self.compute_rotation(coef_dict["angle"])
 
         face_shape_transformed = self.transform(
             face_shape, rotation, coef_dict["trans"]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         face_vertex = self.to_camera(face_shape_transformed)
 
         face_proj = self.to_image(face_vertex)
@@ -374,31 +414,36 @@ class ParametricFaceModel:
         face_norm_roted = face_norm @ rotation
         face_color = self.compute_color(
             face_texture, face_norm_roted, coef_dict["gamma"]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return face_vertex, face_texture, face_color, landmark
 
 
     def compute_for_render_woRotation(self, coeffs):
-        """
+        """"""
         Return:
             face_vertex     -- torch.tensor, size (B, N, 3), in camera coordinate
             face_color      -- torch.tensor, size (B, N, 3), in RGB order
             landmark        -- torch.tensor,
     size (B,
     68,
-    2),
+# BRACKET_SURGEON: disabled
+#     2),
     y direction is opposite to v direction
         Parameters:
             coeffs          -- torch.tensor, size (B, 257)
-        """
+        """"""
         coef_dict = self.split_coeff(coeffs)
         face_shape = self.compute_shape(coef_dict["id"], coef_dict["exp"])
         # rotation = self.compute_rotation(coef_dict['angle'])
 
         # face_shape_transformed = self.transform(face_shape,
     rotation,
-    coef_dict['trans'])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     coef_dict['trans'])
         face_vertex = self.to_camera(face_shape)
 
         face_proj = self.to_image(face_vertex)
@@ -409,7 +454,9 @@ class ParametricFaceModel:
         face_norm_roted = face_norm  # @ rotation
         face_color = self.compute_color(
             face_texture, face_norm_roted, coef_dict["gamma"]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return face_vertex, face_texture, face_color, landmark
 

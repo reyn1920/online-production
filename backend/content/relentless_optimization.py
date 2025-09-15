@@ -1,19 +1,29 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Relentless Optimization System for Right Perspective Content
-
+""""""
 This module implements autonomous A/B testing for thumbnails, titles, \
-    and audience retention analysis
+"""
+#     and audience retention analysis
+
+
 to continuously optimize Right Perspective video performance.
 
+Relentless Optimization System for Right Perspective Content
+""""""
+
 Features:
+
+"""
+
 - Autonomous thumbnail A/B testing
 - Title optimization with multiple variants
 - Audience retention analysis and optimization
 - Performance tracking and statistical significance testing
 - Integration with YouTube Analytics API
 - Automated winner selection and implementation
-"""
+
+
 
 import asyncio
 import json
@@ -52,7 +62,8 @@ except ImportError:
 
 
 class OptimizationMetric(Enum):
-    """Metrics for optimization testing"""
+    
+"""Metrics for optimization testing"""
 
     CLICK_THROUGH_RATE = "ctr"
     VIEW_DURATION = "view_duration"
@@ -77,7 +88,9 @@ class TestStatus(Enum):
 
 
 class OptimizationVariant:
-    """Represents a single test variant"""
+    """
+Represents a single test variant
+
 
     variant_id: str
     name: str
@@ -88,13 +101,22 @@ class OptimizationVariant:
     views: int = 0
     watch_time: float = 0.0
     engagement_score: float = 0.0
-    created_at: datetime = field(default_factory = datetime.now)
+   
+""""""
 
+    created_at: datetime = field(default_factory = datetime.now)
+   
+
+    
+   
+"""
 @dataclass
 
 
 class OptimizationTest:
-    """Represents an A/B test for content optimization"""
+    """
+Represents an A/B test for content optimization
+
 
     test_id: str
     video_id: str
@@ -110,24 +132,39 @@ class OptimizationTest:
     status: TestStatus = TestStatus.PENDING
     winner: Optional[str] = None
     results: Dict[str, Any] = field(default_factory = dict)
-    metadata: Dict[str, Any] = field(default_factory = dict)
+   
+""""""
 
+    metadata: Dict[str, Any] = field(default_factory = dict)
+   
+
+    
+   
+"""
 @dataclass
 
 
 class RetentionAnalysis:
-    """Audience retention analysis data"""
+    """
+Audience retention analysis data
+
 
     video_id: str
     retention_curve: List[float]  # Retention percentage at each time point
-    drop_off_points: List[Tuple[float, float]]  # (timestamp, drop_percentage)
+    drop_off_points: List[Tuple[float, float]]: # (timestamp, drop_percentage)
     average_view_duration: float
     audience_retention_rate: float
     engagement_peaks: List[Tuple[float, str]]  # (timestamp, reason)
     optimization_suggestions: List[str]
+   
+""""""
+
     analyzed_at: datetime = field(default_factory = datetime.now)
+   
 
-
+    
+   
+"""
 class RelentlessOptimizer:
     """Main optimization engine for Right Perspective content"""
 
@@ -147,14 +184,25 @@ class RelentlessOptimizer:
 
 
     def _init_database(self) -> None:
-        """Initialize optimization database tables"""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Initialize optimization database tables
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 # Optimization tests table
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     CREATE TABLE IF NOT EXISTS optimization_tests (
                         test_id TEXT PRIMARY KEY,
                             video_id TEXT NOT NULL,
@@ -171,13 +219,29 @@ class RelentlessOptimizer:
                             results TEXT,
                             metadata TEXT,
                             created_at TEXT DEFAULT CURRENT_TIMESTAMP
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+                
+""""""
+
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
                 """
-                )
+
+                 
+                
 
                 # Test variants table
                 cursor.execute(
-                    """
+                   
+""""""
                     CREATE TABLE IF NOT EXISTS test_variants (
                         variant_id TEXT PRIMARY KEY,
                             test_id TEXT,
@@ -191,13 +255,36 @@ class RelentlessOptimizer:
                             engagement_score REAL DEFAULT 0.0,
                             created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (test_id) REFERENCES optimization_tests (test_id)
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+                """"""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 # Retention analyses table
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     CREATE TABLE IF NOT EXISTS retention_analyses (
                         analysis_id TEXT PRIMARY KEY,
                             video_id TEXT NOT NULL,
@@ -208,13 +295,29 @@ class RelentlessOptimizer:
                             engagement_peaks TEXT,
                             optimization_suggestions TEXT,
                             analyzed_at TEXT DEFAULT CURRENT_TIMESTAMP
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+                
+""""""
+
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
                 """
-                )
+
+                 
+                
 
                 # Optimization history table
                 cursor.execute(
-                    """
+                   
+""""""
                     CREATE TABLE IF NOT EXISTS optimization_history (
                         history_id TEXT PRIMARY KEY,
                             video_id TEXT,
@@ -223,10 +326,29 @@ class RelentlessOptimizer:
                             after_metrics TEXT,
                             improvement_percentage REAL,
                             applied_at TEXT DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+                """"""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
+                 
+                """
+
+                 )
+                
+
+                 
+                
+"""
                 conn.commit()
                 self.logger.info("Optimization database initialized successfully")
 
@@ -235,24 +357,67 @@ class RelentlessOptimizer:
 
 
     def _load_active_tests(self) -> None:
-        """Load active tests from database"""
+        """
+Load active tests from database
+
         try:
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     SELECT * FROM optimization_tests
                     WHERE status IN ('pending', 'running')
+                """"""
+
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 """
-                )
+
 
                 for row in cursor.fetchall():
+
+                
+
                     test_data = dict(zip([col[0] for col in cursor.description], row))
+                
+"""
+                for row in cursor.fetchall():
+                """
+
                     test = self._deserialize_test(test_data)
+                   
+
+                    
+                   
+"""
                     self.active_tests[test.test_id] = test
-
+                   """"""
                 self.logger.info(f"Loaded {len(self.active_tests)} active tests")
+                   """
 
+                    
+                   
+
+                    self.active_tests[test.test_id] = test
+                   
+""""""
         except Exception as e:
             self.logger.error(f"Error loading active tests: {e}")
 
@@ -262,7 +427,7 @@ class RelentlessOptimizer:
             video_id: str,
             thumbnail_variants: List[str],
             hypothesis: str = "New thumbnail will improve CTR",
-            ) -> str:
+#             ) -> str:
         """Create A/B test for thumbnail optimization"""
         test_id = f"thumb_{video_id}_{int(time.time())}"
 
@@ -275,7 +440,9 @@ class RelentlessOptimizer:
                     name = f"Thumbnail Variant {i + 1}",
                     content={"thumbnail_url": thumbnail_url},
                     traffic_split = traffic_split,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
             variants.append(variant)
 
         test = OptimizationTest(
@@ -288,9 +455,13 @@ class RelentlessOptimizer:
                 secondary_metrics=[
                 OptimizationMetric.VIEW_DURATION,
                     OptimizationMetric.ENGAGEMENT_RATE,
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ],
                 min_sample_size = 2000,  # Higher sample size for thumbnail tests
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         await self._save_test(test)
         self.active_tests[test_id] = test
@@ -307,7 +478,7 @@ class RelentlessOptimizer:
             video_id: str,
             title_variants: List[str],
             hypothesis: str = "Optimized title will improve CTR",
-            ) -> str:
+#             ) -> str:
         """Create A/B test for title optimization"""
         test_id = f"title_{video_id}_{int(time.time())}"
 
@@ -320,7 +491,9 @@ class RelentlessOptimizer:
                     name = f"Title Variant {i + 1}",
                     content={"title": title},
                     traffic_split = traffic_split,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
             variants.append(variant)
 
         test = OptimizationTest(
@@ -333,8 +506,12 @@ class RelentlessOptimizer:
                 secondary_metrics=[
                 OptimizationMetric.VIEW_DURATION,
                     OptimizationMetric.ENGAGEMENT_RATE,
-                    ],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
         await self._save_test(test)
         self.active_tests[test_id] = test
@@ -348,14 +525,40 @@ class RelentlessOptimizer:
 
     async def analyze_audience_retention(
         self, video_id: str, retention_data: List[float]
-    ) -> RetentionAnalysis:
-        """Analyze audience retention and identify optimization opportunities"""
+#     ) -> RetentionAnalysis:
+        """
+Analyze audience retention and identify optimization opportunities
+
         try:
+           
+""""""
+
             # Calculate retention metrics
+           
+
+            
+           
+"""
             average_retention = (
                 statistics.mean(retention_data) if retention_data else 0.0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+            """
 
+             
+            
+
+             )
+            
+""""""
+
+           
+
+            
+           
+"""
+            # Calculate retention metrics
+           """"""
             # Identify drop - off points (>10% drop between consecutive points)
             drop_off_points = []
             for i in range(1, len(retention_data)):
@@ -363,7 +566,7 @@ class RelentlessOptimizer:
                 if drop > 10.0:  # 10% drop threshold
                     timestamp = (
                         i/len(retention_data)
-                    ) * 100  # Convert to percentage of video
+#                     ) * 100  # Convert to percentage of video
                     drop_off_points.append((timestamp, drop))
 
             # Identify engagement peaks (retention increases)
@@ -371,14 +574,16 @@ class RelentlessOptimizer:
             for i in range(1, len(retention_data)):
                 if (
                     retention_data[i] > retention_data[i - 1] + 5.0
-                ):  # 5% increase threshold
+#                 ):  # 5% increase threshold
                     timestamp = (i/len(retention_data)) * 100
                     engagement_peaks.append((timestamp, "Engagement spike detected"))
 
             # Generate optimization suggestions
             suggestions = self._generate_retention_suggestions(
                 retention_data, drop_off_points, engagement_peaks
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             analysis = RetentionAnalysis(
                 video_id = video_id,
@@ -388,7 +593,9 @@ class RelentlessOptimizer:
                     audience_retention_rate = retention_data[-1] if retention_data else 0.0,
                     engagement_peaks = engagement_peaks,
                     optimization_suggestions = suggestions,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
             # Save analysis
             await self._save_retention_analysis(analysis)
@@ -408,9 +615,27 @@ class RelentlessOptimizer:
             drop_off_points: List[Tuple[float, float]],
             engagement_peaks: List[Tuple[float, str]],
             ) -> List[str]:
-        """Generate optimization suggestions based on retention analysis"""
-        suggestions = []
+        """
+Generate optimization suggestions based on retention analysis
 
+       
+""""""
+
+        suggestions = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        suggestions = []
+       
+""""""
         if not retention_data:
             return ["No retention data available for analysis"]
 
@@ -419,69 +644,101 @@ class RelentlessOptimizer:
         if avg_retention < 30:
             suggestions.append(
                 "Overall retention is low - consider stronger hook in first 15 seconds"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
         elif avg_retention < 50:
             suggestions.append(
                 "Moderate retention - optimize pacing and content structure"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         # Drop - off point suggestions
         if drop_off_points:
             early_drops = [dp for dp in drop_off_points if dp[0] < 25]
             if early_drops:
                 suggestions.append(
-                    "Significant early drop - offs detected - strengthen opening hook \
-    and preview"
-                )
+                    "Significant early drop - offs detected - strengthen opening hook \"
+#     and preview"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
             mid_drops = [dp for dp in drop_off_points if 25 <= dp[0] <= 75]
             if mid_drops:
                 suggestions.append(
-                    "Mid - video drop - offs detected - improve pacing \
-    and add engagement elements"
-                )
+                    "Mid - video drop - offs detected - improve pacing \"
+#     and add engagement elements"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
         # Engagement peak suggestions
         if engagement_peaks:
             suggestions.append(
-                f"Found {len(engagement_peaks)} engagement peaks - analyze \
-    and replicate successful elements"
-            )
+                f"Found {len(engagement_peaks)} engagement peaks - analyze \"
+#     and replicate successful elements"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
         else:
             suggestions.append(
-                "No engagement peaks detected - add more interactive \
-    or surprising elements"
-            )
+                "No engagement peaks detected - add more interactive \"
+#     or surprising elements"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         # End retention suggestions
         if retention_data and retention_data[-1] > 70:
             suggestions.append(
-                "Strong end retention - consider longer content \
-    or stronger call - to - action"
-            )
+                "Strong end retention - consider longer content \"
+#     or stronger call - to - action"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
         elif retention_data and retention_data[-1] < 20:
             suggestions.append(
-                "Weak end retention - improve conclusion \
-    and call - to - action placement"
-            )
+                "Weak end retention - improve conclusion \"
+#     and call - to - action placement"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         return suggestions
 
 
     async def _start_test(self, test: OptimizationTest) -> None:
-        """Start an optimization test"""
+        """
+Start an optimization test
+
         try:
             test.status = TestStatus.RUNNING
-            test.start_date = datetime.now()
+           
+""""""
 
+            test.start_date = datetime.now()
+           
+
+            
+           
+"""
             # Initialize results tracking
             test.results = {
                 "variant_performance": {},
                     "statistical_significance": False,
                     "confidence_level": 0.0,
                     "test_duration_hours": 0,
-                    }
+                     }
+           """
 
+            
+           
+
+            test.start_date = datetime.now()
+           
+""""""
             # Update database
             await self._save_test(test)
 
@@ -495,18 +752,62 @@ class RelentlessOptimizer:
 
 
     async def _monitor_test(self, test: OptimizationTest) -> None:
-        """Monitor an active test for completion"""
+        """
+Monitor an active test for completion
+
         while test.status == TestStatus.RUNNING:
             try:
                 # Collect performance data
+               
+""""""
+
                 await self._collect_test_metrics(test)
+               
+
+                
+               
+""""""
+
+
+                
+
+               
 
                 # Check for statistical significance
+               
+""""""
+
+               
+
+                
+               
+"""
+                await self._collect_test_metrics(test)
+               """
+
+                
+               
+
                 if await self._check_statistical_significance(test):
                     await self._complete_test(test)
-                    break
+                   
+""""""
 
+                    break
+                   
+
+                    
+                   
+"""
                 # Check for minimum runtime and sample size
+                   """
+
+                    
+                   
+
+                    break
+                   
+""""""
                 runtime_hours = (
                     datetime.now() - test.start_date
                 ).total_seconds()/3600
@@ -531,16 +832,56 @@ class RelentlessOptimizer:
 
 
     async def _collect_test_metrics(self, test: OptimizationTest) -> None:
-        """Collect performance metrics for test variants"""
+        """
+Collect performance metrics for test variants
+
         try:
+            pass
             # Simulate metric collection (in real implementation,
-    this would call YouTube Analytics API)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     this would call YouTube Analytics API)
             for variant in test.variants:
+               
+""""""
+
                 # Simulate realistic performance data
+               
+
+                
+               
+"""
                 base_ctr = 0.05  # 5% base CTR
+               """
+
+                
+               
+
+                # Simulate realistic performance data
+               
+""""""
+
+               
+
+                
+               
+"""
                 variant_modifier = random.uniform(0.8, 1.2)  # ±20% variation
+               """
+
+                
+               
 
                 # Simulate impressions growth
+               
+""""""
+
+                variant_modifier = random.uniform(0.8, 1.2)  # ±20% variation
+               
+
+                
+               
+"""
                 new_impressions = random.randint(50, 200)
                 variant.impressions += new_impressions
 
@@ -562,7 +903,7 @@ class RelentlessOptimizer:
                 if variant.impressions > 0:
                     variant.engagement_score = (
                         variant.clicks/variant.impressions
-                    ) * 100
+#                     ) * 100
 
             # Update test results
             test.results["variant_performance"] = {
@@ -572,9 +913,9 @@ class RelentlessOptimizer:
                         "views": v.views,
                         "ctr": (v.clicks/v.impressions * 100) if v.impressions > 0 else 0,
                         "engagement_score": v.engagement_score,
-                        }
+                         }
                 for v in test.variants
-            }
+             }
 
             # Save updated metrics
             await self._save_test(test)
@@ -584,12 +925,36 @@ class RelentlessOptimizer:
 
 
     async def _check_statistical_significance(self, test: OptimizationTest) -> bool:
-        """Check if test results are statistically significant"""
+        """
+Check if test results are statistically significant
+
+        
+"""
         try:
+        """"""
             if len(test.variants) < 2:
+        """
+
+        try:
+        
+
+       
+""""""
+
+                
+
                 return False
+                
+""""""
+
+                
+               
 
             # Get performance data for primary metric
+                
+"""
+                return False
+                """
             variant_a = test.variants[0]
             variant_b = test.variants[1]
 
@@ -602,25 +967,33 @@ class RelentlessOptimizer:
                 variant_a.clicks/variant_a.impressions
                 if variant_a.impressions > 0
                 else 0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             ctr_b = (
                 variant_b.clicks/variant_b.impressions
                 if variant_b.impressions > 0
                 else 0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Simple significance test (in production, use proper statistical tests)
             difference = abs(ctr_a - ctr_b)
             relative_difference = (
                 difference/max(ctr_a, ctr_b) if max(ctr_a, ctr_b) > 0 else 0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Consider significant if >10% relative difference with sufficient sample size
             is_significant = (
                 relative_difference > 0.1
                 and variant_a.impressions + variant_b.impressions
                 >= test.min_sample_size
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             test.results["statistical_significance"] = is_significant
             test.results["confidence_level"] = 0.95 if is_significant else 0.0
@@ -630,27 +1003,75 @@ class RelentlessOptimizer:
         except Exception as e:
             self.logger.error(
                 f"Error checking significance for test {test.test_id}: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             return False
 
 
     async def _complete_test(self, test: OptimizationTest, force: bool = False) -> None:
-        """Complete a test and determine winner"""
+        """
+Complete a test and determine winner
+
         try:
             test.status = TestStatus.COMPLETED
+           
+""""""
+
             test.end_date = datetime.now()
+           
+
+            
+           
+""""""
+
+
+            
+
+           
 
             # Determine winner based on primary metric
-            best_variant = max(test.variants, key = lambda v: v.engagement_score)
-            test.winner = best_variant.variant_id
+           
+""""""
 
+           
+
+            
+           
+"""
+            test.end_date = datetime.now()
+           """
+
+            
+           
+
+            best_variant = max(test.variants, key = lambda v: v.engagement_score)
+           
+""""""
+
+            test.winner = best_variant.variant_id
+           
+
+            
+           
+"""
             # Calculate improvement
+           """
+
+            
+           
+
+            test.winner = best_variant.variant_id
+           
+""""""
             variant_scores = [v.engagement_score for v in test.variants]
             if len(variant_scores) >= 2:
                 improvement = (
                     (max(variant_scores) - min(variant_scores))/min(variant_scores)
                     * 100
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 test.results["improvement_percentage"] = improvement
 
             # Save completed test
@@ -666,7 +1087,9 @@ class RelentlessOptimizer:
             status = "force completed" if force else "completed"
             self.logger.info(
                 f"Test {test.test_id} {status}. Winner: {best_variant.name}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         except Exception as e:
             self.logger.error(f"Error completing test {test.test_id}: {e}")
@@ -674,10 +1097,20 @@ class RelentlessOptimizer:
 
     async def _apply_winning_variant(
         self, test: OptimizationTest, winner: OptimizationVariant
-    ) -> None:
-        """Apply the winning variant to the actual video"""
+#     ) -> None:
+        """
+Apply the winning variant to the actual video
+
         try:
+           
+""""""
+
             # Record optimization history
+           
+
+            
+           
+"""
             history_entry = {
                 "history_id": f"opt_{test.video_id}_{int(time.time())}",
                     "video_id": test.video_id,
@@ -687,12 +1120,20 @@ class RelentlessOptimizer:
                     {
                         "winner": winner.variant_id,
                             "improvement": test.results.get("improvement_percentage",
-    0),
-                            }
-                ),
+#     0),
+                             }
+                 ),
                     "improvement_percentage": test.results.get("improvement_percentage",
-    0),
-                    }
+#     0),
+                     }
+           """
+
+            
+           
+
+            # Record optimization history
+           
+""""""
 
             self.optimization_history.append(history_entry)
 
@@ -700,12 +1141,18 @@ class RelentlessOptimizer:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT INTO optimization_history
                     (history_id, video_id, optimization_type, before_metrics,
-                        after_metrics, improvement_percentage)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         after_metrics, improvement_percentage)
                     VALUES (?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         history_entry["history_id"],
                             history_entry["video_id"],
@@ -713,33 +1160,52 @@ class RelentlessOptimizer:
                             history_entry["before_metrics"],
                             history_entry["after_metrics"],
                             history_entry["improvement_percentage"],
-                            ),
-                        )
+                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
                 conn.commit()
 
             self.logger.info(
                 f"Applied winning variant for video {test.video_id}: {winner.name}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         except Exception as e:
             self.logger.error(f"Error applying winning variant: {e}")
 
 
     async def _save_test(self, test: OptimizationTest) -> None:
-        """Save test to database"""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
+        """
+Save test to database
 
+        try:
+            
+"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
+                cursor = conn.cursor()
+               """"""
+            with sqlite3.connect(self.db_path) as conn:
+            """"""
                 # Save test
                 cursor.execute(
-                    """
+                   """
+
+                    
+                   
+
                     INSERT OR REPLACE INTO optimization_tests
                     (test_id, video_id, test_type, hypothesis, primary_metric,
                         secondary_metrics, start_date, end_date, min_sample_size,
-                         confidence_level, status, winner, results, metadata)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          confidence_level, status, winner, results, metadata)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+""","""
+
                     (
                         test.test_id,
                             test.video_id,
@@ -755,18 +1221,35 @@ class RelentlessOptimizer:
                             test.winner,
                             json.dumps(test.results),
                             json.dumps(test.metadata),
-                            ),
-                        )
+                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                        
+
+                         
+                        
+"""
+                         )
+                        """
+
+                         
+                        
 
                 # Save variants
                 for variant in test.variants:
                     cursor.execute(
-                        """
+                       
+""""""
+
                         INSERT OR REPLACE INTO test_variants
                         (variant_id, test_id, name, content, traffic_split,
-                            impressions, clicks, views, watch_time, engagement_score)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             impressions, clicks, views, watch_time, engagement_score)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    
+,
+"""
                         (
                             variant.variant_id,
                                 test.test_id,
@@ -778,9 +1261,25 @@ class RelentlessOptimizer:
                                 variant.views,
                                 variant.watch_time,
                                 variant.engagement_score,
-                                ),
-                            )
+                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                            """
 
+                             
+                            
+
+                             )
+                            
+""""""
+
+                        
+
+                         
+                        
+"""
+                         )
+                        """"""
                 conn.commit()
 
         except Exception as e:
@@ -788,18 +1287,30 @@ class RelentlessOptimizer:
 
 
     async def _save_retention_analysis(self, analysis: RetentionAnalysis) -> None:
-        """Save retention analysis to database"""
+        """
+Save retention analysis to database
+
         try:
+            
+"""
             with sqlite3.connect(self.db_path) as conn:
+            """
+
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT INTO retention_analyses
                     (analysis_id, video_id, retention_curve, drop_off_points,
                         average_view_duration, audience_retention_rate, engagement_peaks,
-                         optimization_suggestions)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          optimization_suggestions)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         f"ret_{analysis.video_id}_{int(time.time())}",
                             analysis.video_id,
@@ -809,18 +1320,44 @@ class RelentlessOptimizer:
                             analysis.audience_retention_rate,
                             json.dumps(analysis.engagement_peaks),
                             json.dumps(analysis.optimization_suggestions),
-                            ),
-                        )
+                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
                 conn.commit()
+            """
 
+            with sqlite3.connect(self.db_path) as conn:
+            
+
+           
+""""""
         except Exception as e:
             self.logger.error(f"Error saving retention analysis: {e}")
 
 
     def _deserialize_test(self, test_data: Dict[str, Any]) -> OptimizationTest:
-        """Deserialize test data from database"""
+        """
+Deserialize test data from database
+
+       
+""""""
+
         # This is a simplified deserialization - in production, implement full reconstruction
+       
+
+        
+       
+"""
         return OptimizationTest(
+       """
+
+        
+       
+
+        # This is a simplified deserialization - in production, implement full reconstruction
+       
+""""""
             test_id = test_data["test_id"],
                 video_id = test_data["video_id"],
                 test_type = test_data["test_type"],
@@ -828,14 +1365,21 @@ class RelentlessOptimizer:
                 variants=[],  # Would load from test_variants table
             primary_metric = OptimizationMetric(test_data["primary_metric"]),
                 status = TestStatus(test_data["status"]),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
 
     async def get_optimization_report(
         self, video_id: Optional[str] = None
     ) -> Dict[str, Any]:
-        """Generate comprehensive optimization report"""
+        """
+Generate comprehensive optimization report
+
+        
+"""
         try:
+        """
             report = {
                 "generated_at": datetime.now().isoformat(),
                     "active_tests": len(self.active_tests),
@@ -844,8 +1388,14 @@ class RelentlessOptimizer:
                     "average_improvement": 0.0,
                     "retention_analyses": len(self.retention_analyses),
                     "optimization_history": [],
-                    }
+                     }
+        """
 
+        try:
+        
+
+       
+""""""
             # Get completed tests from database
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -873,13 +1423,17 @@ class RelentlessOptimizer:
                 report["optimization_history"] = [
                     dict(zip([col[0] for col in cursor.description], row))
                     for row in history_rows
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ]
 
                 # Calculate average improvement
                 if history_rows:
                     improvements = [
                         row[5] for row in history_rows if row[5] is not None
-                    ]  # improvement_percentage column
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]  # improvement_percentage column
                     if improvements:
                         report["average_improvement"] = statistics.mean(improvements)
                         report["total_improvements"] = len(improvements)
@@ -901,14 +1455,18 @@ class RelentlessOptimizer:
                 f"https://example.com/thumbnails/{video_id}_variant_1.jpg",
                     f"https://example.com/thumbnails/{video_id}_variant_2.jpg",
                     f"https://example.com/thumbnails/{video_id}_variant_3.jpg",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
 
             # Generate title variants (in production, use AI text generation)
             title_variants = [
-                "SHOCKING Truth About [Topic] That They Don't Want You to Know!",
+                "SHOCKING Truth About [Topic] That They Don't Want You to Know!",'
                     "Why [Topic] is DESTROYING America (The Evidence is Clear)",
                     "EXPOSED: The Real Story Behind [Topic] Will Make You ANGRY",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
 
             # Start thumbnail test
             await self.create_thumbnail_test(video_id, thumbnail_variants)
@@ -932,7 +1490,9 @@ class RelentlessOptimizer:
         self.logger = logging.getLogger(__name__)
         self.logger.warning(
             "Using fallback RelentlessOptimizer - some features may be limited"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
 
     async def start_autonomous_optimization(self, video_id: str) -> None:
@@ -948,7 +1508,7 @@ class RelentlessOptimizer:
         return {
             "status": "fallback_mode",
                 "message": "Full optimization features require additional dependencies",
-                }
+                 }
 
 # Example usage and testing
 if __name__ == "__main__":
@@ -975,10 +1535,14 @@ if __name__ == "__main__":
             retention_data = [100, 85, 70, 60, 55, 50, 45, 40, 35, 30]
             analysis = await optimizer.analyze_audience_retention(
                 "test_video_123", retention_data
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             print(
                 f"Retention analysis completed. Average retention: {analysis.average_view_duration:.1f}%"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             print(f"Optimization suggestions: {len(analysis.optimization_suggestions)}")
         except Exception as e:
             print(f"Retention analysis test failed: {e}")
@@ -988,9 +1552,11 @@ if __name__ == "__main__":
         try:
             report = await optimizer.get_optimization_report()
             print(
-                f"Generated optimization report with {report.get('active_tests',
-    0)} active tests"
-            )
+                f"Generated optimization report with {report.get('active_tests',"
+#     0)} active tests""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
         except Exception as e:
             print(f"Optimization report test failed: {e}")
 

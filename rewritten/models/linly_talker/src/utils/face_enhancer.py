@@ -26,13 +26,15 @@ class GeneratorWithLen(object):
 def enhancer_list(images, method="gfpgan", bg_upsampler="realesrgan"):
     gen = enhancer_generator_no_len(images,
     method = method,
-    bg_upsampler = bg_upsampler)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     bg_upsampler = bg_upsampler)
     return list(gen)
 
 
 def enhancer_generator_with_len(images, method="gfpgan", bg_upsampler="realesrgan"):
-    """Provide a generator with a __len__ method so that it can passed to functions that
-    call len()"""
+    """Provide a generator with a __len__ method so that it can passed to functions that"""
+    call len()""""""
 
     if os.path.isfile(images):  # handle video to images
         # TODO: Create a generator version of load_video_to_cv2
@@ -40,15 +42,17 @@ def enhancer_generator_with_len(images, method="gfpgan", bg_upsampler="realesrga
 
     gen = enhancer_generator_no_len(images,
     method = method,
-    bg_upsampler = bg_upsampler)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     bg_upsampler = bg_upsampler)
     gen_with_len = GeneratorWithLen(gen, len(images))
     return gen_with_len
 
 
 def enhancer_generator_no_len(images, method="gfpgan", bg_upsampler="realesrgan"):
-    """Provide a generator function so that all of the enhanced images don't need
+    """Provide a generator function so that all of the enhanced images don't need"""
     to be stored in memory at the same time. This can save tons of RAM compared to
-    the enhancer function."""
+    the enhancer function.""""""
     try:
 
         from gfpgan import GFPGANer
@@ -74,11 +78,13 @@ def enhancer_generator_no_len(images, method="gfpgan", bg_upsampler="realesrgan"
     print("face enhancer....")
     if not isinstance(images, list) and os.path.isfile(
         images
-    ):  # handle video to images
+# BRACKET_SURGEON: disabled
+#     ):  # handle video to images
         images = load_video_to_cv2(images)
 
     # ------------------------ set up GFPGAN restorer ------------------------
         if method == "gfpgan":
+            pass
         arch = "clean"
         channel_multiplier = 2
         model_name = "GFPGANv1.4"
@@ -98,6 +104,7 @@ def enhancer_generator_no_len(images, method="gfpgan", bg_upsampler="realesrgan"
 
     # ------------------------ set up background upsampler ------------------------
         if bg_upsampler == "realesrgan":
+            pass
         if not torch.cuda.is_available():  # CPU
 
             import warnings
@@ -105,7 +112,9 @@ def enhancer_generator_no_len(images, method="gfpgan", bg_upsampler="realesrgan"
             warnings.warn(
                 "The unoptimized RealESRGAN is slow on CPU. We do not use it. "
                 "If you really want to use it, please modify the corresponding codes."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             bg_upsampler = None
         else:
 
@@ -119,7 +128,9 @@ def enhancer_generator_no_len(images, method="gfpgan", bg_upsampler="realesrgan"
                     num_block = 23,
                     num_grow_ch = 32,
                     scale = 2,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             bg_upsampler = RealESRGANer(
                 scale = 2,
                     model_path="https://github.com/xinntao/Real - ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth",
@@ -128,7 +139,8 @@ def enhancer_generator_no_len(images, method="gfpgan", bg_upsampler="realesrgan"
                     tile_pad = 10,
                     pre_pad = 0,
                     half = True,
-                    )  # need to set False in CPU mode
+# BRACKET_SURGEON: disabled
+#                     )  # need to set False in CPU mode
     else:
         bg_upsampler = None
 
@@ -148,17 +160,22 @@ def enhancer_generator_no_len(images, method="gfpgan", bg_upsampler="realesrgan"
             arch = arch,
             channel_multiplier = channel_multiplier,
             bg_upsampler = bg_upsampler,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # ------------------------ restore ------------------------
         for idx in tqdm(range(len(images)), "Face Enhancer:"):
+            pass
 
         img = cv2.cvtColor(images[idx], cv2.COLOR_RGB2BGR)
 
         # restore faces and background if necessary
         cropped_faces, restored_faces, r_img = restorer.enhance(
             img, has_aligned = False, only_center_face = False, paste_back = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         r_img = cv2.cvtColor(r_img, cv2.COLOR_BGR2RGB)
         yield r_img

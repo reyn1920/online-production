@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Monetization Router - Integrates monetization bundle services with main FastAPI app
 Handles ebook generation, newsletter automation, merch design, and revenue tracking
-"""
+""""""
 
 import asyncio
 import logging
@@ -23,7 +23,8 @@ try:
         MonetizationBundle,
         MonetizationConfig,
         NewsletterRequest,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     MONETIZATION_AVAILABLE = True
 except ImportError as e:
@@ -110,8 +111,10 @@ async def health_check():
             "newsletter_bot": MONETIZATION_AVAILABLE,
             "merch_bot": MONETIZATION_AVAILABLE,
             "seo_publisher": MONETIZATION_AVAILABLE,
-        },
-    }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.post("/ebook/generate", response_model=MonetizationJobResponse)
@@ -130,7 +133,8 @@ async def generate_ebook(request: EbookGenerationRequest, background_tasks: Back
         "progress": 0,
         "result": None,
         "error": None,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Start background task
     background_tasks.add_task(process_ebook_generation, job_id, request)
@@ -140,7 +144,8 @@ async def generate_ebook(request: EbookGenerationRequest, background_tasks: Back
         status="pending",
         message="Ebook generation started",
         estimated_completion=datetime.now() + timedelta(minutes=5),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.post("/newsletter/create", response_model=MonetizationJobResponse)
@@ -159,7 +164,8 @@ async def create_newsletter(request: NewsletterCreationRequest, background_tasks
         "progress": 0,
         "result": None,
         "error": None,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Start background task
     background_tasks.add_task(process_newsletter_creation, job_id, request)
@@ -169,7 +175,8 @@ async def create_newsletter(request: NewsletterCreationRequest, background_tasks
         status="pending",
         message="Newsletter creation started",
         estimated_completion=datetime.now() + timedelta(minutes=3),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.post("/merch/design", response_model=MonetizationJobResponse)
@@ -188,7 +195,8 @@ async def create_merch_design(request: MerchDesignRequest, background_tasks: Bac
         "progress": 0,
         "result": None,
         "error": None,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Start background task
     background_tasks.add_task(process_merch_design, job_id, request)
@@ -198,7 +206,8 @@ async def create_merch_design(request: MerchDesignRequest, background_tasks: Bac
         status="pending",
         message="Merch design started",
         estimated_completion=datetime.now() + timedelta(minutes=10),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.post("/blog/publish", response_model=MonetizationJobResponse)
@@ -217,7 +226,8 @@ async def publish_blog_post(request: BlogPostCreationRequest, background_tasks: 
         "progress": 0,
         "result": None,
         "error": None,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Start background task
     background_tasks.add_task(process_blog_publishing, job_id, request)
@@ -227,7 +237,8 @@ async def publish_blog_post(request: BlogPostCreationRequest, background_tasks: 
         status="pending",
         message="Blog publishing started",
         estimated_completion=datetime.now() + timedelta(minutes=2),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/job/{job_id}")
@@ -245,7 +256,8 @@ async def get_job_status(job_id: str):
         "created_at": job["created_at"],
         "result": job["result"],
         "error": job["error"],
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/revenue/stats", response_model=RevenueStatsResponse)
@@ -261,7 +273,8 @@ async def get_revenue_stats():
         products_sold=45,
         active_campaigns=8,
         last_updated=datetime.now(),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/products")
@@ -276,7 +289,8 @@ async def list_products():
                 "price": 9.99,
                 "sales": 15,
                 "revenue": 149.85,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "merch_001",
                 "type": "merchandise",
@@ -284,9 +298,12 @@ async def list_products():
                 "price": 19.99,
                 "sales": 8,
                 "revenue": 159.92,
-            },
-        ]
-    }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/campaigns")
@@ -301,7 +318,8 @@ async def list_campaigns():
                 "subscribers": 1250,
                 "open_rate": 0.35,
                 "click_rate": 0.08,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "id": "affiliate_001",
                 "type": "affiliate",
@@ -309,9 +327,12 @@ async def list_campaigns():
                 "clicks": 450,
                 "conversions": 12,
                 "commission": 280.00,
-            },
-        ]
-    }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Background task functions
@@ -332,7 +353,8 @@ async def process_ebook_generation(job_id: str, request: EbookGenerationRequest)
                 author=request.author,
                 price=request.price,
                 format=request.format,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             result = await monetization_bundle.generate_ebook(ebook_request)
             jobs[job_id]["result"] = result
         else:
@@ -343,7 +365,8 @@ async def process_ebook_generation(job_id: str, request: EbookGenerationRequest)
                 "format": request.format,
                 "file_size": "2.5MB",
                 "pages": 45,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         jobs[job_id]["progress"] = 100
         jobs[job_id]["status"] = "completed"
@@ -370,7 +393,8 @@ async def process_newsletter_creation(job_id: str, request: NewsletterCreationRe
                 content=request.content,
                 subscriber_list=request.subscriber_list,
                 include_affiliate_links=request.include_affiliate_links,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             result = await monetization_bundle.create_newsletter(newsletter_request)
             jobs[job_id]["result"] = result
         else:
@@ -380,7 +404,8 @@ async def process_newsletter_creation(job_id: str, request: NewsletterCreationRe
                 "sent_count": len(request.subscriber_list),
                 "delivery_rate": 0.98,
                 "scheduled_time": request.send_time or datetime.now(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         jobs[job_id]["progress"] = 100
         jobs[job_id]["status"] = "completed"
@@ -408,7 +433,8 @@ async def process_merch_design(job_id: str, request: MerchDesignRequest):
                 design_prompt=request.design_prompt,
                 price=request.price,
                 platform=request.platform,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             result = await monetization_bundle.create_merch(merch_request)
             jobs[job_id]["result"] = result
         else:
@@ -418,7 +444,8 @@ async def process_merch_design(job_id: str, request: MerchDesignRequest):
                 "design_url": f"/designs/{job_id}.png",
                 "product_url": f"https://printful.com/product/{job_id}",
                 "estimated_profit": request.price * 0.3,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         jobs[job_id]["progress"] = 100
         jobs[job_id]["status"] = "completed"
@@ -446,7 +473,8 @@ async def process_blog_publishing(job_id: str, request: BlogPostCreationRequest)
                 platform=request.platform,
                 seo_keywords=request.seo_keywords,
                 include_affiliate_links=request.include_affiliate_links,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             result = await monetization_bundle.publish_blog(blog_request)
             jobs[job_id]["result"] = result
         else:
@@ -456,7 +484,8 @@ async def process_blog_publishing(job_id: str, request: BlogPostCreationRequest)
                 "post_url": f"https://blog.example.com/posts/{job_id}",
                 "seo_score": 85,
                 "estimated_views": 1200,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         jobs[job_id]["progress"] = 100
         jobs[job_id]["status"] = "completed"

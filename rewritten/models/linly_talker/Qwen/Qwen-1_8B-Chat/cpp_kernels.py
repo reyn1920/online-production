@@ -7,7 +7,9 @@ from torch.utils import cpp_extension
 
 def _get_cuda_bare_metal_version(cuda_dir):
     raw_output = subprocess.check_output([cuda_dir + "/bin/nvcc", "-V"],
-        universal_newlines = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         universal_newlines = True)
     output = raw_output.split()
     release_idx = output.index("release") + 1
     release = output[release_idx].split(".")
@@ -50,14 +52,22 @@ def _cpp_extention_load_helper(name, sources, extra_cuda_flags):
             extra_cflags=['-O3', ],
             extra_cuda_cflags=['-O3',
             '-gencode', 'arch = compute_70,code = sm_70',
-                               '--use_fast_math'] + extra_cuda_flags + cc_flag,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                '--use_fast_math'] + extra_cuda_flags + cc_flag,
                                verbose = 1
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 extra_flags = []
 
 cache_autogptq_cuda_256_sources = ["./cache_autogptq_cuda_256.cpp",
-    "./cache_autogptq_cuda_kernel_256.cu"]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     "./cache_autogptq_cuda_kernel_256.cu"]
 cache_autogptq_cuda_256 = _cpp_extention_load_helper("cache_autogptq_cuda_256",
     cache_autogptq_cuda_256_sources,
-    extra_flags)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     extra_flags)

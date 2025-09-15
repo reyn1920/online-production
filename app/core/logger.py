@@ -14,7 +14,8 @@ def setup_logging(log_level: str = "INFO") -> None:
     formatter = logging.Formatter(
         fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Setup root logger
     root_logger = logging.getLogger()

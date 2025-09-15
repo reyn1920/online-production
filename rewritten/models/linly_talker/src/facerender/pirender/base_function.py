@@ -22,7 +22,8 @@ class LayerNorm2d(nn.Module):
                 normalized_shape,
                 self.weight.expand(normalized_shape),
                 self.bias.expand(normalized_shape),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         else:
             return F.layer_norm(x, normalized_shape)
@@ -39,11 +40,13 @@ class ADAINHourglass(nn.Module):
         decoder_layers,
         nonlinearity,
         use_spect,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(ADAINHourglass, self).__init__()
         self.encoder = ADAINEncoder(
             image_nc, pose_nc, ngf, img_f, encoder_layers, nonlinearity, use_spect
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.decoder = ADAINDecoder(
             pose_nc,
             ngf,
@@ -53,7 +56,8 @@ class ADAINHourglass(nn.Module):
             True,
             nonlinearity,
             use_spect,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.output_nc = self.decoder.output_nc
 
     def forward(self, x, z):
@@ -70,7 +74,8 @@ class ADAINEncoder(nn.Module):
         layers,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(ADAINEncoder, self).__init__()
         self.layers = layers
         self.input_layer = nn.Conv2d(image_nc, ngf, kernel_size=7, stride=1, padding=3)
@@ -104,7 +109,8 @@ class ADAINDecoder(nn.Module):
         skip_connect=True,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(ADAINDecoder, self).__init__()
         self.encoder_layers = encoder_layers
         self.decoder_layers = decoder_layers
@@ -115,7 +121,8 @@ class ADAINDecoder(nn.Module):
             in_channels = min(ngf * (2 ** (i + 1)), img_f)
             in_channels = (
                 in_channels * 2 if i != (encoder_layers - 1) and self.skip_connect else in_channels
-            )
+# BRACKET_SURGEON: disabled
+#             )
             out_channels = min(ngf * (2**i), img_f)
             model = ADAINDecoderBlock(
                 in_channels,
@@ -125,7 +132,8 @@ class ADAINDecoder(nn.Module):
                 use_transpose,
                 nonlinearity,
                 use_spect,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             setattr(self, "decoder" + str(i), model)
 
         self.output_nc = out_channels * 2 if self.skip_connect else out_channels
@@ -147,7 +155,8 @@ class ADAINEncoderBlock(nn.Module):
         feature_nc,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(ADAINEncoderBlock, self).__init__()
         kwargs_down = {"kernel_size": 4, "stride": 2, "padding": 1}
         kwargs_fine = {"kernel_size": 3, "stride": 1, "padding": 1}
@@ -175,7 +184,8 @@ class ADAINDecoderBlock(nn.Module):
         use_transpose=True,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(ADAINDecoderBlock, self).__init__()
         # Attributes
         self.actvn = nonlinearity
@@ -188,7 +198,8 @@ class ADAINDecoderBlock(nn.Module):
                 "stride": 2,
                 "padding": 1,
                 "output_padding": 1,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         else:
             kwargs_up = {"kernel_size": 3, "stride": 1, "padding": 1}
 
@@ -197,19 +208,23 @@ class ADAINDecoderBlock(nn.Module):
         if use_transpose:
             self.conv_1 = spectral_norm(
                 nn.ConvTranspose2d(hidden_nc, output_nc, **kwargs_up), use_spect
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.conv_s = spectral_norm(
                 nn.ConvTranspose2d(input_nc, output_nc, **kwargs_up), use_spect
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             self.conv_1 = nn.Sequential(
                 spectral_norm(nn.Conv2d(hidden_nc, output_nc, **kwargs_up), use_spect),
                 nn.Upsample(scale_factor=2),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.conv_s = nn.Sequential(
                 spectral_norm(nn.Conv2d(input_nc, output_nc, **kwargs_up), use_spect),
                 nn.Upsample(scale_factor=2),
-            )
+# BRACKET_SURGEON: disabled
+#             )
         # define normalization layers
         self.norm_0 = ADAIN(input_nc, feature_nc)
         self.norm_1 = ADAIN(hidden_nc, feature_nc)
@@ -277,7 +292,8 @@ class FineEncoder(nn.Module):
         norm_layer=nn.BatchNorm2d,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(FineEncoder, self).__init__()
         self.layers = layers
         self.first = FirstBlock2d(image_nc, ngf, norm_layer, nonlinearity, use_spect)
@@ -312,7 +328,8 @@ class FineDecoder(nn.Module):
         norm_layer=nn.BatchNorm2d,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(FineDecoder, self).__init__()
         self.layers = layers
         for i in range(layers)[::-1]:
@@ -321,7 +338,8 @@ class FineDecoder(nn.Module):
             up = UpBlock2d(in_channels, out_channels, norm_layer, nonlinearity, use_spect)
             res = FineADAINResBlocks(
                 num_block, in_channels, feature_nc, norm_layer, nonlinearity, use_spect
-            )
+# BRACKET_SURGEON: disabled
+#             )
             jump = Jump(out_channels, norm_layer, nonlinearity, use_spect)
 
             setattr(self, "up" + str(i), up)
@@ -346,9 +364,9 @@ class FineDecoder(nn.Module):
 
 
 class FirstBlock2d(nn.Module):
-    """
+    """"""
     Downsampling block for use in encoder.
-    """
+    """"""
 
     def __init__(
         self,
@@ -357,7 +375,8 @@ class FirstBlock2d(nn.Module):
         norm_layer=nn.BatchNorm2d,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(FirstBlock2d, self).__init__()
         kwargs = {"kernel_size": 7, "stride": 1, "padding": 3}
         conv = spectral_norm(nn.Conv2d(input_nc, output_nc, **kwargs), use_spect)
@@ -380,7 +399,8 @@ class DownBlock2d(nn.Module):
         norm_layer=nn.BatchNorm2d,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(DownBlock2d, self).__init__()
 
         kwargs = {"kernel_size": 3, "stride": 1, "padding": 1}
@@ -405,7 +425,8 @@ class UpBlock2d(nn.Module):
         norm_layer=nn.BatchNorm2d,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(UpBlock2d, self).__init__()
         kwargs = {"kernel_size": 3, "stride": 1, "padding": 1}
         conv = spectral_norm(nn.Conv2d(input_nc, output_nc, **kwargs), use_spect)
@@ -428,7 +449,8 @@ class FineADAINResBlocks(nn.Module):
         norm_layer=nn.BatchNorm2d,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(FineADAINResBlocks, self).__init__()
         self.num_block = num_block
         for i in range(num_block):
@@ -449,7 +471,8 @@ class Jump(nn.Module):
         norm_layer=nn.BatchNorm2d,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(Jump, self).__init__()
         kwargs = {"kernel_size": 3, "stride": 1, "padding": 1}
         conv = spectral_norm(nn.Conv2d(input_nc, input_nc, **kwargs), use_spect)
@@ -465,9 +488,9 @@ class Jump(nn.Module):
 
 
 class FineADAINResBlock2d(nn.Module):
-    """
+    """"""
     Define an Residual block for different types
-    """
+    """"""
 
     def __init__(
         self,
@@ -476,7 +499,8 @@ class FineADAINResBlock2d(nn.Module):
         norm_layer=nn.BatchNorm2d,
         nonlinearity=nn.LeakyReLU(),
         use_spect=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(FineADAINResBlock2d, self).__init__()
 
         kwargs = {"kernel_size": 3, "stride": 1, "padding": 1}
@@ -496,9 +520,9 @@ class FineADAINResBlock2d(nn.Module):
 
 
 class FinalBlock2d(nn.Module):
-    """
+    """"""
     Define the output layer
-    """
+    """"""
 
     def __init__(self, input_nc, output_nc, use_spect=False, tanh_or_sigmoid="tanh"):
         super(FinalBlock2d, self).__init__()

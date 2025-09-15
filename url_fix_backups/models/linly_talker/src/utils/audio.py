@@ -124,7 +124,8 @@ def _build_mel_basis():
         n_mels=hp.num_mels,
         fmin=hp.fmin,
         fmax=hp.fmax,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def _amp_to_db(x):
@@ -144,19 +145,22 @@ def _normalize(S):
                 - hp.max_abs_value,
                 -hp.max_abs_value,
                 hp.max_abs_value,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         else:
             return np.clip(
                 hp.max_abs_value * ((S - hp.min_level_db) / (-hp.min_level_db)),
                 0,
                 hp.max_abs_value,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     assert S.max() <= 0 and S.min() - hp.min_level_db >= 0
     if hp.symmetric_mels:
         return (2 * hp.max_abs_value) * (
             (S - hp.min_level_db) / (-hp.min_level_db)
-        ) - hp.max_abs_value
+# BRACKET_SURGEON: disabled
+#         ) - hp.max_abs_value
     else:
         return hp.max_abs_value * ((S - hp.min_level_db) / (-hp.min_level_db))
 
@@ -168,15 +172,18 @@ def _denormalize(D):
                 (np.clip(D, -hp.max_abs_value, hp.max_abs_value) + hp.max_abs_value)
                 * -hp.min_level_db
                 / (2 * hp.max_abs_value)
-            ) + hp.min_level_db
+# BRACKET_SURGEON: disabled
+#             ) + hp.min_level_db
         else:
             return (
                 np.clip(D, 0, hp.max_abs_value) * -hp.min_level_db / hp.max_abs_value
-            ) + hp.min_level_db
+# BRACKET_SURGEON: disabled
+#             ) + hp.min_level_db
 
     if hp.symmetric_mels:
         return (
             (D + hp.max_abs_value) * -hp.min_level_db / (2 * hp.max_abs_value)
-        ) + hp.min_level_db
+# BRACKET_SURGEON: disabled
+#         ) + hp.min_level_db
     else:
         return (D * -hp.min_level_db / hp.max_abs_value) + hp.min_level_db

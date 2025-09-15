@@ -1,11 +1,11 @@
 #!/usr / bin / env python3
-"""
+""""""
 Distributed Processing System Startup Script
 
 Orchestrates the startup of the distributed processing system across
 multiple platforms (macOS, Windows, Linux) with automatic worker discovery
 and configuration.
-"""
+""""""
 
 import argparse
 import json
@@ -30,7 +30,9 @@ sys.path.append(str(Path(__file__).parent.parent / "backend"))
 logging.basicConfig(
     level = getattr(logging, config.monitoring.log_level),
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -75,7 +77,9 @@ class DistributedSystemOrchestrator:
             # Check if Redis is already running
             result = subprocess.run(
                 ["redis - cli", "ping"], capture_output = True, text = True, timeout = 5
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if result.returncode == 0 and "PONG" in result.stdout:
                 logger.info("Redis is already running")
@@ -95,14 +99,18 @@ class DistributedSystemOrchestrator:
             try:
                 process = subprocess.Popen(
                     redis_cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.running_processes.append(process)
                 time.sleep(2)  # Give Redis time to start
 
                 # Verify it started
                 result = subprocess.run(
                     ["redis - cli", "ping"], capture_output = True, text = True, timeout = 5
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if result.returncode == 0:
                     logger.info("Redis started successfully")
@@ -115,12 +123,15 @@ class DistributedSystemOrchestrator:
             # Windows - assume Redis is installed or use Docker
             logger.info(
                 "On Windows, please ensure Redis is running manually or use Docker"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return False
 
         elif system == "linux":
             # Linux - try systemctl or direct command
                 try:
+                    pass
                 subprocess.run(["sudo", "systemctl", "start", "redis"], check = True)
                 logger.info("Redis started via systemctl")
                 return True
@@ -152,11 +163,15 @@ class DistributedSystemOrchestrator:
                     config.broker.get_url(),
                     "--port",
                     "5555",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             process = subprocess.Popen(
                 flower_cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.running_processes.append(process)
             logger.info("Flower monitoring started on port 5555")
 
@@ -176,7 +191,9 @@ class DistributedSystemOrchestrator:
                 count = worker_count,
                     queues = config.worker.queues,
                     capabilities = config.worker.capabilities,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if success:
                 logger.info(f"Started {worker_count} workers successfully")
@@ -208,7 +225,9 @@ class DistributedSystemOrchestrator:
             if config.broker.type == "redis":
                 result = subprocess.run(
                     ["redis - cli", "ping"], capture_output = True, text = True, timeout = 5
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 health["broker"] = result.returncode == 0
         except BaseException:
             pass
@@ -253,7 +272,9 @@ class DistributedSystemOrchestrator:
         print(f"  System Dashboard: http://localhost:8080")
         print(
             f"  Prometheus Metrics: http://localhost:{config.monitoring.prometheus_port}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         print("=" * 60)
 
@@ -326,46 +347,62 @@ class DistributedSystemOrchestrator:
 def main():
     parser = argparse.ArgumentParser(
         description="Distributed Processing System Startup Script"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     parser.add_argument(
         "--workers",
             "-w",
             type = int,
             help="Number of workers to start (default: auto - detect)",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     parser.add_argument(
         "--start - broker",
             "-b",
             action="store_true",
             help="Start message broker if not running",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     parser.add_argument(
         "--monitoring", "-m", action="store_true", help="Start monitoring services"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     parser.add_argument(
         "--web - interface", "-ui", action="store_true", help="Start web interface"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     parser.add_argument(
         "--daemon", "-d", action="store_true", help="Run in daemon mode"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     parser.add_argument(
         "--force",
             "-f",
             action="store_true",
             help="Continue even if some components fail to start",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     parser.add_argument("--config", "-c", help="Path to configuration file")
 
     parser.add_argument(
         "--status", "-s", action="store_true", help="Show system status and exit"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     args = parser.parse_args()
 

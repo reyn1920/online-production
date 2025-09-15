@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Production Secrets Setup Script
 
 This script helps configure all production API keys and secrets needed
@@ -10,7 +10,7 @@ Usage:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import getpass
 import os
@@ -40,7 +40,8 @@ def setup_twitter_credentials(store: SecretStore):
         store.secret_exists("TWITTER_API_SECRET"),
         store.secret_exists("TWITTER_ACCESS_TOKEN"),
         store.secret_exists("TWITTER_ACCESS_TOKEN_SECRET"),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     if all(existing_creds):
         print("✓ Twitter credentials already configured")
@@ -87,7 +88,8 @@ def setup_youtube_credentials(store: SecretStore):
         store.secret_exists("YOUTUBE_API_KEY"),
         store.secret_exists("YOUTUBE_CLIENT_ID"),
         store.secret_exists("YOUTUBE_CLIENT_SECRET"),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     if all(existing_creds):
         print("✓ YouTube credentials already configured")
@@ -112,7 +114,7 @@ def setup_youtube_credentials(store: SecretStore):
         if channel_id:
             store.store_secret("YOUTUBE_CHANNEL_ID", channel_id)
         print("✓ YouTube credentials stored successfully")
-        print("\\n⚠️  Note: You'll need to complete OAuth flow to get access / refresh tokens")
+        print("\\n⚠️  Note: You'll need to complete OAuth flow to get access / refresh tokens")'
         print("   Run the YouTube integration setup after this to authorize the app")
         return True
     except Exception as e:
@@ -134,7 +136,8 @@ def setup_instagram_credentials(store: SecretStore):
         store.secret_exists("INSTAGRAM_APP_ID"),
         store.secret_exists("INSTAGRAM_APP_SECRET"),
         store.secret_exists("INSTAGRAM_ACCESS_TOKEN"),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     if all(existing_creds):
         print("✓ Instagram credentials already configured")
@@ -175,7 +178,8 @@ def setup_tiktok_credentials(store: SecretStore):
         store.secret_exists("TIKTOK_CLIENT_KEY"),
         store.secret_exists("TIKTOK_CLIENT_SECRET"),
         store.secret_exists("TIKTOK_ACCESS_TOKEN"),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     if all(existing_creds):
         print("✓ TikTok credentials already configured")
@@ -281,7 +285,8 @@ def main():
                 ("Instagram", setup_instagram_credentials),
                 ("TikTok", setup_tiktok_credentials),
                 ("Google Trends", setup_google_trends_credentials),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             for service_name, setup_func in services:
                 try:

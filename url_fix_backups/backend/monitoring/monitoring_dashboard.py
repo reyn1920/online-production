@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Monitoring Dashboard - Web Interface for System Monitoring
 Provides real - time monitoring, alerting, and system status visualization
-"""
+""""""
 
 import asyncio
 import json
@@ -37,7 +37,8 @@ class MonitoringDashboard:
         self.app = Flask(__name__, template_folder="templates", static_folder="static")
         self.app.config["SECRET_KEY"] = os.getenv(
             "DASHBOARD_SECRET_KEY", "monitoring - dashboard - secret"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Enable CORS
         CORS(self.app)
@@ -77,8 +78,10 @@ class MonitoringDashboard:
                     "status": "healthy",
                     "timestamp": datetime.now().isoformat(),
                     "version": "1.0.0",
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api / alerts")
         def api_alerts():
@@ -98,8 +101,10 @@ class MonitoringDashboard:
                     "alerts": [self._serialize_alert(alert) for alert in alerts],
                     "total": len(alerts),
                     "timestamp": datetime.now().isoformat(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api / alerts/<alert_id>/acknowledge", methods=["POST"])
         def api_acknowledge_alert(alert_id):
@@ -114,8 +119,10 @@ class MonitoringDashboard:
                     "success": success,
                     "message": "Alert acknowledged" if success else "Alert not found",
                     "timestamp": datetime.now().isoformat(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api / metrics")
         def api_metrics():
@@ -164,16 +171,20 @@ class MonitoringDashboard:
                         "duration_seconds": rule.duration_seconds,
                         "cooldown_seconds": rule.cooldown_seconds,
                         "tags": rule.tags,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return jsonify(
                 {
                     "rules": rules,
                     "total": len(rules),
                     "timestamp": datetime.now().isoformat(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api / create - test - alert", methods=["POST"])
         def api_create_test_alert():
@@ -186,10 +197,12 @@ class MonitoringDashboard:
                 title=data.get("title", "Test Alert"),
                 description=data.get(
                     "description", "This is a test alert created from the dashboard"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 severity=AlertSeverity(data.get("severity", "warning")),
                 category=AlertCategory(data.get("category", "application")),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return jsonify(
                 {
@@ -197,8 +210,10 @@ class MonitoringDashboard:
                     "alert_id": alert_id,
                     "message": "Test alert created successfully",
                     "timestamp": datetime.now().isoformat(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.app.route("/api / export - data")
         def api_export_data():
@@ -210,13 +225,16 @@ class MonitoringDashboard:
                 "system_status": self._get_system_status(),
                 "active_alerts": [
                     self._serialize_alert(alert) for alert in alert_manager.get_active_alerts()
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "alert_history": [
                     self._serialize_alert(alert) for alert in alert_manager.get_alert_history(1000)
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "compliance_report": compliance_monitor.get_compliance_report(),
                 "monitoring_report": alert_manager.get_monitoring_report(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             if export_type == "json":
                 response = Response(
@@ -224,8 +242,10 @@ class MonitoringDashboard:
                     mimetype="application / json",
                     headers={
                         "Content - Disposition": f'attachment; filename = monitoring_export_{datetime.now().strftime("%Y % m%d_ % H%M % S")}.json'
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 # Could add CSV export here
                 response = jsonify({"error": "Unsupported export type"})
@@ -248,10 +268,13 @@ class MonitoringDashboard:
                 {
                     "active_alerts": [
                         self._serialize_alert(alert) for alert in alert_manager.get_active_alerts()
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "timestamp": datetime.now().isoformat(),
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
         @self.socketio.on("disconnect")
         def handle_disconnect():
@@ -281,8 +304,10 @@ class MonitoringDashboard:
                         "alert_id": alert_id,
                         "success": success,
                         "timestamp": datetime.now().isoformat(),
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Broadcast update to all clients
                 self._broadcast_alerts_update()
@@ -297,7 +322,8 @@ class MonitoringDashboard:
                     if (
                         self.connected_clients
                         and time.time() - self.last_broadcast >= self.broadcast_interval
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         self._broadcast_system_updates()
                         self.last_broadcast = time.time()
 
@@ -337,10 +363,13 @@ class MonitoringDashboard:
                 {
                     "active_alerts": [
                         self._serialize_alert(alert) for alert in alert_manager.get_active_alerts()
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "timestamp": datetime.now().isoformat(),
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
         except Exception as e:
             self.logger.error(f"Error broadcasting alerts update: {str(e)}")
 
@@ -348,7 +377,7 @@ class MonitoringDashboard:
         """Render dashboard HTML template"""
         # For now, return a simple HTML template
         # In a real implementation, you'd use Flask's render_template with proper templates
-        return """
+        return """"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -364,7 +393,8 @@ class MonitoringDashboard:
         .container { max - width: 1200px; margin: 0 auto; padding: 2rem; }
         .grid { display: grid; grid - template - columns: repeat(auto - fit,
     minmax(300px,
-    1fr)); gap: 1.5rem; }
+# BRACKET_SURGEON: disabled
+#     1fr)); gap: 1.5rem; }
         .card { background: white; border - radius: 8px; padding: 1.5rem; box - shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .card h3 { margin - bottom: 1rem; color: #2c3e50; }
         .metric { display: flex; justify - content: space - between; margin - bottom: 0.5rem; }
@@ -480,27 +510,32 @@ class MonitoringDashboard:
         socket.on('connect', function() {
             document.getElementById('connection - status').textContent = 'Connected';
             document.getElementById('connection - status').className = 'connected';
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         socket.on('disconnect', function() {
             document.getElementById('connection - status').textContent = 'Disconnected';
             document.getElementById('connection - status').className = 'disconnected';
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         // System status updates
         socket.on('system_status', function(data) {
             updateSystemStatus(data);
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         // Alerts updates
         socket.on('alerts_update', function(data) {
             updateActiveAlerts(data.active_alerts);
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         // Metrics updates
         socket.on('metrics_update', function(data) {
             updatePerformanceChart(data);
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         function updateSystemStatus(data) {
             document.getElementById('health - score').textContent = data.health_score ? data.health_score.toFixed(1) + '%' : 'N / A';
@@ -511,7 +546,8 @@ class MonitoringDashboard:
 
             // Update compliance
             document.getElementById('compliance - score').textContent = data.compliance_score ? data.compliance_score.toFixed(1) + '%' : 'N / A';
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function updateActiveAlerts(alerts) {
             const container = document.getElementById('active - alerts');
@@ -519,7 +555,8 @@ class MonitoringDashboard:
             if (!alerts || alerts.length === 0) {
                 container.innerHTML = '<p style="color: #4caf50;">✅ No active alerts</p>';
                 return;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             let html = '';
             alerts.forEach(alert => {
@@ -535,17 +572,20 @@ class MonitoringDashboard:
                         ${alert.status === 'active' ? `<button class="btn" style="float: right; font - size: 12px; padding: 0.25rem 0.5rem;" onclick="acknowledgeAlert('${alert.alert_id}')">Acknowledge</button>` : ''}
                     </div>
                 `;
-            });
+# BRACKET_SURGEON: disabled
+#             });
 
             container.innerHTML = html;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function updatePerformanceChart(data) {
             const ctx = document.getElementById('performance - chart').getContext('2d');
 
             if (performanceChart) {
                 performanceChart.destroy();
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             performanceChart = new Chart(ctx, {
                 type: 'line',
@@ -558,12 +598,15 @@ class MonitoringDashboard:
                                 data.memory_percent || 0,
                                 data.disk_percent || 0,
                                 data.health_score || 0
-                        ],
-                            borderColor: '#3498db',
+# BRACKET_SURGEON: disabled
+#                         ],
+                            borderColor: '#3498db','
                             backgroundColor: 'rgba(52, 152, 219, 0.1)',
                             tension: 0.4
-                    }]
-                },
+# BRACKET_SURGEON: disabled
+#                     }]
+# BRACKET_SURGEON: disabled
+#                 },
                     options: {
                     responsive: true,
                         maintainAspectRatio: false,
@@ -571,65 +614,83 @@ class MonitoringDashboard:
                         y: {
                             beginAtZero: true,
                                 max: 100
-                        }
-                    }
-                }
-            });
-        }
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             });
+# BRACKET_SURGEON: disabled
+#         }
 
         function getStatusIndicator(severity) {
             const statusClass = severity === 'critical' || severity === 'emergency' ? 'status - critical' :
                               severity === 'warning' ? 'status - warning' : 'status - healthy';
             return `<span class="status - indicator ${statusClass}"></span>`;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function formatUptime(hours) {
             const days = Math.floor(hours / 24);
             const remainingHours = Math.floor(hours % 24);
             return `${days}d ${remainingHours}h`;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function acknowledgeAlert(alertId) {
             socket.emit('acknowledge_alert', {
                 alert_id: alertId,
                     acknowledged_by: 'dashboard_user'
-            });
-        }
+# BRACKET_SURGEON: disabled
+#             });
+# BRACKET_SURGEON: disabled
+#         }
 
         function createTestAlert() {
             fetch('/api / create - test - alert', {
                 method: 'POST',
                     headers: {
                     'Content - Type': 'application / json'
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                     body: JSON.stringify({
                     title: 'Dashboard Test Alert',
                         description: 'This is a test alert created from the dashboard',
                         severity: 'warning',
                         category: 'application'
-                })
-            })
+# BRACKET_SURGEON: disabled
+#                 })
+# BRACKET_SURGEON: disabled
+#             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     alert('Test alert created successfully!');
                 } else {
                     alert('Failed to create test alert');
-                }
-            })
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             })
             .catch(error => {
                 console.error('Error creating test alert:', error);
                 alert('Error creating test alert');
-            });
-        }
+# BRACKET_SURGEON: disabled
+#             });
+# BRACKET_SURGEON: disabled
+#         }
 
         function exportData() {
             window.open('/api / export - data?type = json', '_blank');
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function refreshData() {
             location.reload();
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         // Load initial compliance data
         fetch('/api / compliance')
@@ -638,8 +699,10 @@ class MonitoringDashboard:
                 if (data.compliance) {
                     document.getElementById('compliance - score').textContent = data.compliance.overall_compliance_score.toFixed(1) + '%';
                     document.getElementById('compliance - violations').textContent = data.compliance.violations.length;
-                }
-            })
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             })
             .catch(error => console.error('Error loading compliance data:', error));
 
         // Load recent activity
@@ -651,25 +714,29 @@ class MonitoringDashboard:
                     let html = '';
                     data.alerts.slice(-5).forEach(alert => {
                         html += `
-                            <div style="padding: 0.5rem 0; border - bottom: 1px solid #eee;">
+                            <div style="padding: 0.5rem 0; border - bottom: 1px solid #eee;">"
                                 <strong>${alert.title}</strong><br>
                                 <small>${alert.status} - ${new Date(alert.created_at).toLocaleString()}</small>
                             </div>
                         `;
-                    });
+# BRACKET_SURGEON: disabled
+#                     });
                     container.innerHTML = html;
                 } else {
                     container.innerHTML = '<p > No recent activity</p>';
-                }
-            })
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             })
             .catch(error => {
                 console.error('Error loading recent activity:', error);
                 document.getElementById('recent - activity').innerHTML = '<p > Error loading activity</p>';
-            });
+# BRACKET_SURGEON: disabled
+#             });
     </script>
 </body>
 </html>
-        """
+        """"""
 
     def _serialize_alert(self, alert) -> Dict[str, Any]:
         """Serialize alert object to dictionary"""
@@ -690,7 +757,8 @@ class MonitoringDashboard:
             "threshold": alert.threshold,
             "metadata": alert.metadata,
             "escalation_level": alert.escalation_level,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_system_status(self) -> Dict[str, Any]:
         """Get current system status"""
@@ -711,7 +779,8 @@ class MonitoringDashboard:
             "response_time_ms": getattr(health_status, "response_time_ms", 0),
             "compliance_score": alert_manager._get_latest_metric_value("compliance.score", 0),
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_all_current_metrics(self) -> Dict[str, Any]:
         """Get all current metrics"""
@@ -724,13 +793,15 @@ class MonitoringDashboard:
                     "value": latest_point.value,
                     "timestamp": latest_point.timestamp,
                     "labels": latest_point.labels,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Add calculated metrics
         metrics["cpu_percent"] = alert_manager._get_latest_metric_value("system.cpu_percent", 0)
         metrics["memory_percent"] = alert_manager._get_latest_metric_value(
             "system.memory_percent", 0
-        )
+# BRACKET_SURGEON: disabled
+#         )
         metrics["disk_percent"] = alert_manager._get_latest_metric_value("system.disk_percent", 0)
         metrics["health_score"] = alert_manager._get_latest_metric_value("health.overall_score", 0)
 
@@ -751,8 +822,10 @@ class MonitoringDashboard:
                         "timestamp": point.timestamp,
                         "value": point.value,
                         "labels": point.labels,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return history
 
@@ -765,7 +838,8 @@ class MonitoringDashboard:
             event_type="dashboard_started",
             severity="info",
             additional_data={"host": self.host, "port": self.port, "debug": self.debug},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         try:
             self.socketio.run(
@@ -774,7 +848,8 @@ class MonitoringDashboard:
                 port=self.port,
                 debug=self.debug,
                 allow_unsafe_werkzeug=True,  # For development only
-            )
+# BRACKET_SURGEON: disabled
+#             )
         except Exception as e:
             self.logger.error(f"Error running dashboard: {str(e)}")
             raise
@@ -786,7 +861,8 @@ class MonitoringDashboard:
         # Log audit event
         audit_logger.log_security_event(
             event_type="dashboard_stopped", severity="info", additional_data={}
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 # Global dashboard instance

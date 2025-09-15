@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Orchestrator - Main Coordination Service
 Handles agent coordination, task distribution, and system monitoring
-"""
+""""""
 
 import asyncio
 import logging
@@ -26,7 +26,9 @@ from prometheus_client import Counter, Gauge, Histogram, generate_latest
 from pydantic import BaseModel, Field
 from sqlalchemy import (JSON, Boolean, Column, DateTime, Float, Integer, String,
 
-    create_engine)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     create_engine)
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
@@ -38,20 +40,28 @@ class Config:
     # Database
     DATABASE_URL = os.getenv(
         "DATABASE_URL", "postgresql://postgres:password@postgres:5432 / trae_ai"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379")
 
     # Services
     CONTENT_AGENT_URL = os.getenv("CONTENT_AGENT_URL", "http://content_agent:8001")
     MARKETING_AGENT_URL = os.getenv(
         "MARKETING_AGENT_URL", "http://marketing_agent:8002"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     MONETIZATION_BUNDLE_URL = os.getenv(
         "MONETIZATION_BUNDLE_URL", "http://monetization_bundle:8003"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     REVENUE_TRACKER_URL = os.getenv(
         "REVENUE_TRACKER_URL", "http://revenue_tracker:8004"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # System
     USE_MOCK = os.getenv("USE_MOCK", "false").lower() == "true"
@@ -130,8 +140,10 @@ class TaskRequest(BaseModel):
     task_type: str = Field(..., description="Type of task to execute")
     agent: str = Field(..., description="Target agent for the task")
     priority: int = Field(5,
-    description="Task priority (1 - 10,
-    higher is more urgent)")
+    description="Task priority (1 - 10,"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     higher is more urgent)")
     payload: Dict[str, Any] = Field(..., description="Task payload")
     max_retries: int = Field(3, description="Maximum retry attempts")
     timeout: int = Field(300, description="Task timeout in seconds")
@@ -177,10 +189,14 @@ class MarketingCampaignRequest(BaseModel):
 # Metrics
 task_counter = Counter(
     "orchestrator_tasks_total", "Total tasks processed", ["agent", "status"]
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 task_duration = Histogram(
     "orchestrator_task_duration_seconds", "Task processing duration", ["agent"]
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 active_tasks_gauge = Gauge("orchestrator_active_tasks", "Currently active tasks")
 agent_health_gauge = Gauge("orchestrator_agent_health", "Agent health score", ["agent"])
 
@@ -206,7 +222,8 @@ class TraeAIOrchestrator:
                 "marketing_agent": config.MARKETING_AGENT_URL,
                 "monetization_bundle": config.MONETIZATION_BUNDLE_URL,
                 "revenue_tracker": config.REVENUE_TRACKER_URL,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.active_tasks = {}
         self.task_workers = []
         self.system_start_time = datetime.utcnow()
@@ -235,19 +252,25 @@ class TraeAIOrchestrator:
             self.health_check_agents,
                 CronTrigger(second="*/30"),  # Every 30 seconds
             id="health_check",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         scheduler.add_job(
             self.cleanup_old_tasks,
                 CronTrigger(hour = 2),  # Daily at 2 AM
             id="cleanup_tasks",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         scheduler.add_job(
             self.generate_system_report,
                 CronTrigger(hour="*/6"),  # Every 6 hours
             id="system_report",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         logger.info("TRAE.AI Orchestrator initialized successfully")
 
@@ -313,7 +336,9 @@ class TraeAIOrchestrator:
             # Update task with result
             await self.update_task_status(
                 task_id, "completed", result = result, completed_at = datetime.utcnow()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Update metrics
             task_counter.labels(agent = agent, status="completed").inc()
@@ -344,7 +369,9 @@ class TraeAIOrchestrator:
         async with http_client as client:
             response = await client.post(
                 endpoint, json = request_data, timeout = config.TASK_TIMEOUT
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             response.raise_for_status()
             return response.json()
 
@@ -382,18 +409,25 @@ class TraeAIOrchestrator:
                                 "agent": task.agent,
                                 "task_type": task.task_type,
                                 "payload": task.payload,
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     logger.info(
                         f"Task {task_id} queued for retry ({task.retry_count}/{task.max_retries})"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     # Mark as failed
                     task.status = "failed"
                     task.completed_at = datetime.utcnow()
                     logger.error(
                         f"Task {task_id} failed permanently after {task.retry_count} retries"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 db.commit()
         finally:
@@ -419,7 +453,9 @@ class TraeAIOrchestrator:
                     db.query(AgentStatus)
                     .filter(AgentStatus.agent_name == agent_name)
                     .first()
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if not agent_status:
                     agent_status = AgentStatus(
@@ -427,7 +463,9 @@ class TraeAIOrchestrator:
                             status = status,
                             health_score = health_score,
                             last_heartbeat = datetime.utcnow(),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     db.add(agent_status)
                 else:
                     agent_status.status = status
@@ -453,9 +491,13 @@ class TraeAIOrchestrator:
                 .filter(
                     Task.completed_at < cutoff_date,
                         Task.status.in_(["completed", "failed"]),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 .delete()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             db.commit()
             logger.info(f"Cleaned up {deleted_count} old tasks")
@@ -473,7 +515,9 @@ class TraeAIOrchestrator:
             failed_tasks = db.query(Task).filter(Task.status == "failed").count()
             active_tasks = (
                 db.query(Task).filter(Task.status.in_(["pending", "running"])).count()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Get agent health
             agents_health = db.query(AgentStatus).all()
@@ -487,7 +531,8 @@ class TraeAIOrchestrator:
                         "failed": failed_tasks,
                         "active": active_tasks,
                         "success_rate": (completed_tasks / max(total_tasks, 1)) * 100,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "agents": {
                     agent.agent_name: {
                         "status": agent.status,
@@ -495,10 +540,13 @@ class TraeAIOrchestrator:
                             "active_tasks": agent.active_tasks,
                             "total_completed": agent.total_tasks_completed,
                             "error_count": agent.error_count,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     for agent in agents_health
-                },
-                    }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Store report in Redis
             await redis_client.setex("system_report", 3600, str(report))  # 1 hour TTL
@@ -527,7 +575,9 @@ app = FastAPI(
         description="Central coordination service for TRAE.AI agents",
         version="1.0.0",
         lifespan = lifespan,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 # CORS middleware
 app.add_middleware(
@@ -536,7 +586,9 @@ app.add_middleware(
         allow_credentials = True,
         allow_methods=["*"],
         allow_headers=["*"],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 # Dependency to get database session
 
@@ -559,7 +611,8 @@ async def health_check():
             "timestamp": datetime.utcnow().isoformat(),
             "service": "orchestrator",
             "version": "1.0.0",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 @app.get("/metrics")
 
@@ -583,23 +636,31 @@ async def get_system_status(db: Session = Depends(get_db)):
                 "health_score": agent.health_score,
                 "last_heartbeat": (
                 agent.last_heartbeat.isoformat() if agent.last_heartbeat else None
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "active_tasks": agent.active_tasks,
                 "total_completed": agent.total_tasks_completed,
                 "error_count": agent.error_count,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
     # Get task counts
     active_tasks = (
         db.query(Task).filter(Task.status.in_(["pending", "running"])).count()
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     completed_today = (
         db.query(Task)
         .filter(
             Task.completed_at >= datetime.utcnow().date(), Task.status == "completed"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         .count()
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     return SystemStatus(
         status="healthy",
@@ -610,7 +671,9 @@ async def get_system_status(db: Session = Depends(get_db)):
             system_load = psutil.cpu_percent(interval = 1) / 100.0,
             memory_usage = psutil.virtual_memory().percent / 100.0,
             uptime = str(datetime.utcnow() - orchestrator.system_start_time),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 @app.post("/api / tasks", response_model = TaskResponse)
 
@@ -631,7 +694,9 @@ async def create_task(task_request: TaskRequest, db: Session = Depends(get_db)):
             payload = task_request.payload,
             max_retries = task_request.max_retries,
             status="pending",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     db.add(task)
     db.commit()
@@ -643,8 +708,11 @@ async def create_task(task_request: TaskRequest, db: Session = Depends(get_db)):
                 "agent": task_request.agent,
                 "task_type": task_request.task_type,
                 "payload": task_request.payload,
-                }
-    )
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # Update metrics
     active_tasks_gauge.inc()
@@ -655,7 +723,9 @@ async def create_task(task_request: TaskRequest, db: Session = Depends(get_db)):
             message="Task queued for execution",
             estimated_completion = datetime.utcnow()
         + timedelta(seconds = task_request.timeout),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 @app.get("/api / tasks/{task_id}")
 
@@ -678,21 +748,25 @@ async def get_task_status(task_id: str, db: Session = Depends(get_db)):
             "result": task.result,
             "error": task.error,
             "retry_count": task.retry_count,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 @app.post("/api / content / create")
 
 
 async def create_content(
     request: ContentCreationRequest, background_tasks: BackgroundTasks
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Create content using the content agent"""
     task_request = TaskRequest(
         task_type="create_content",
             agent="content_agent",
             priority = 7,
             payload = request.dict(),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Create task
     db = SessionLocal()
@@ -712,7 +786,9 @@ async def create_marketing_campaign(request: MarketingCampaignRequest):
             agent="marketing_agent",
             priority = 6,
             payload = request.dict(),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Create task
     db = SessionLocal()
@@ -732,7 +808,9 @@ async def create_ebook(topic: str, pages: int = 50):
             agent="monetization_bundle",
             priority = 5,
             payload={"topic": topic, "pages": pages},
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Create task
     db = SessionLocal()
@@ -754,7 +832,9 @@ async def get_revenue_analytics():
             return response.json()
     except Exception as e:
         raise HTTPException(status_code = 503,
-    detail = f"Revenue tracker unavailable: {e}")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail = f"Revenue tracker unavailable: {e}")
 
 @app.get("/api / system / report")
 
@@ -769,7 +849,9 @@ async def get_system_report():
             return {"message": "No recent report available"}
     except Exception as e:
         raise HTTPException(status_code = 503,
-    detail = f"Unable to retrieve report: {e}")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     detail = f"Unable to retrieve report: {e}")
 
 if __name__ == "__main__":
 
@@ -779,7 +861,9 @@ if __name__ == "__main__":
     logging.basicConfig(
         level = getattr(logging, config.LOG_LEVEL),
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     logger.info("Starting TRAE.AI Orchestrator")
     logger.info(f"Environment: {config.ENVIRONMENT}")

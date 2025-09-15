@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 COMPREHENSIVE URL SPACE FIXER
 Fixes all URLs and API endpoints with spaces around slashes across the entire codebase.
 Handles massive volumes efficiently with proper encoding and backup support.
-"""
+""""""
 
 import os
 import re
@@ -28,7 +28,8 @@ TARGET_EXTENSIONS = {
     ".conf",
     ".cfg",
     ".ini",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # Directories to skip
 SKIP_DIRS = {
@@ -51,7 +52,8 @@ SKIP_DIRS = {
     "eggs",
     "*.egg-info",
     "backups",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 class ComprehensiveURLFixer:
@@ -134,22 +136,23 @@ class ComprehensiveURLFixer:
             (r'(["\'])/\s+([a-zA-Z0-9_-]+)\s*/\s*([^"\'>]*)', r"\1/\2/\3"),
             (r'(["\'])/([a-zA-Z0-9_-]+)\s+/\s*([^"\'>]*)', r"\1/\2/\3"),
             # Route patterns
-            (r'@app\.route\(["\']\s*/\s*([^"\'>]*)', r'@app.route("/\1'),
+            (r'@app\.route\(["\']\s*/\s*([^"\'>]*)', r'@app.route("/\1'),"
             (r'@router\.\w+\(["\']\s*/\s*([^"\'>]*)', r"@router.\g<0>"),
             # Fetch/request URLs
-            (r'fetch\(["\']\s*/\s*([^"\'>]*)', r'fetch("/\1'),
+            (r'fetch\(["\']\s*/\s*([^"\'>]*)', r'fetch("/\1'),"
             (r'axios\.[a-z]+\(["\']\s*/\s*([^"\'>]*)', r"axios.\g<0>"),
             # Template/static file paths
-            (r'src=["\']\s*/\s*([^"\'>]*)', r'src="/\1'),
-            (r'href=["\']\s*/\s*([^"\'>]*)', r'href="/\1'),
+            (r'src=["\']\s*/\s*([^"\'>]*)', r'src="/\1'),"
+            (r'href=["\']\s*/\s*([^"\'>]*)', r'href="/\1'),"
             # Configuration URLs
-            (r'url\s*=\s*["\']\s*/\s*([^"\'>]*)', r'url="/\1'),
-            (r'endpoint\s*=\s*["\']\s*/\s*([^"\'>]*)', r'endpoint="/\1'),
+            (r'url\s*=\s*["\']\s*/\s*([^"\'>]*)', r'url="/\1'),"
+            (r'endpoint\s*=\s*["\']\s*/\s*([^"\'>]*)', r'endpoint="/\1'),"
             # Generic slash space fixes
             (r"/\s+/", r"//"),
             (r"\s+/", r"/"),
             (r"/\s+", r"/"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         original_content = content
 

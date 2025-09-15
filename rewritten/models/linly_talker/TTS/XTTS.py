@@ -20,10 +20,14 @@ class XTTSTalker:
         tempf = tempfile.NamedTemporaryFile(
             delete = False,
                 suffix=("." + "wav"),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         # wav = tts.tts(text="Hello world!",
     speaker_wav="my/cloning/audio.wav",
-    language="en")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     language="en")
         self.tts.tts_to_file(text, language = language, file_path="./speaker.wav")
 
         return tempf.name

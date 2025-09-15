@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Unified API Layer
 
 Provides a unified API layer that bridges n8n workflows with the existing
@@ -20,7 +20,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -47,7 +47,8 @@ try:
         Response,
         WebSocket,
         WebSocketDisconnect,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -143,7 +144,8 @@ except ImportError as e:
             return {
                 "status": "unavailable",
                 "message": "CrewAI integration not installed",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     class SupabaseIntegration:
         """Fallback Supabase integration for when the module is not available."""
@@ -157,7 +159,8 @@ except ImportError as e:
             return {
                 "status": "unavailable",
                 "message": "Supabase integration not installed",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     class MCPServer:
         """Fallback MCP Server for when the module is not available."""
@@ -310,7 +313,8 @@ else:
             workflow_data: dict = None,
             trigger_type: str = "manual",
             active: bool = True,
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.name = name
             self.description = description
             self.workflow_data = workflow_data or {}
@@ -339,7 +343,8 @@ else:
             tools: list = None,
             max_iter: int = 5,
             memory: bool = True,
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.name = name
             self.role = role
             self.goal = goal
@@ -368,7 +373,8 @@ else:
             expected_output: str,
             context: dict = None,
             tools: list = None,
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.description = description
             self.agent_id = agent_id
             self.expected_output = expected_output
@@ -385,7 +391,8 @@ else:
             status: str,
             result: str = None,
             created_at: str = None,
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.id = id
             self.description = description
             self.status = status
@@ -402,7 +409,8 @@ else:
             data: dict = None,
             filters: dict = None,
             limit: int = None,
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.table = table
             self.operation = operation
             self.data = data
@@ -487,10 +495,10 @@ class ConnectionManager:
 
 
 class UnifiedAPILayer:
-    """
+    """"""
     Unified API Layer that bridges all TRAE.AI system components.
     Provides a single REST API interface for n8n, CrewAI, Supabase, and MCP.
-    """
+    """"""
 
     def __init__(self, config: APIConfig = None, secrets_db_path: str = "data/secrets.sqlite"):
         self.logger = setup_logger("unified_api")
@@ -509,7 +517,8 @@ class UnifiedAPILayer:
             description="Unified API layer for TRAE.AI system components",
             version="1.0.0",
             debug=self.config.debug,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Add middleware
         self._setup_middleware()
@@ -547,7 +556,8 @@ class UnifiedAPILayer:
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Trusted host middleware
         if self.config.trusted_hosts:
@@ -572,7 +582,8 @@ class UnifiedAPILayer:
         @self.app.get("/workflows")
         async def list_workflows(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._list_workflows()
 
@@ -580,7 +591,8 @@ class UnifiedAPILayer:
         async def create_workflow(
             workflow: WorkflowRequest,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._create_workflow(workflow)
 
@@ -588,7 +600,8 @@ class UnifiedAPILayer:
         async def get_workflow(
             workflow_id: str,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._get_workflow(workflow_id)
 
@@ -597,7 +610,8 @@ class UnifiedAPILayer:
             workflow_id: str,
             data: dict = None,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._execute_workflow(workflow_id, data)
 
@@ -605,7 +619,8 @@ class UnifiedAPILayer:
         @self.app.get("/agents")
         async def list_agents(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._list_agents()
 
@@ -613,7 +628,8 @@ class UnifiedAPILayer:
         async def create_agent(
             agent: AgentRequest,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._create_agent(agent)
 
@@ -622,14 +638,16 @@ class UnifiedAPILayer:
             agent_id: str,
             task: TaskRequest,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._create_task(agent_id, task)
 
         @self.app.get("/tasks/{task_id}")
         async def get_task(
             task_id: str, auth: HTTPAuthorizationCredentials = Depends(self.security)
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._get_task(task_id)
 
@@ -638,14 +656,16 @@ class UnifiedAPILayer:
         async def database_query(
             query: DatabaseQuery,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._database_query(query)
 
         @self.app.get("/database/tables")
         async def list_tables(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._list_tables()
 
@@ -654,7 +674,8 @@ class UnifiedAPILayer:
         async def mcp_request(
             request: MCPRequest,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._mcp_request(request)
 
@@ -662,7 +683,8 @@ class UnifiedAPILayer:
         async def list_mcp_tools(
             server_name: str = None,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._list_mcp_tools(server_name)
 
@@ -671,7 +693,8 @@ class UnifiedAPILayer:
         async def upload_file(
             request: Request,
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._upload_file(request)
 
@@ -679,7 +702,8 @@ class UnifiedAPILayer:
         @self.app.get("/analytics/metrics")
         async def get_metrics(
             auth: HTTPAuthorizationCredentials = Depends(self.security),
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             await self._verify_auth(auth)
             return await self._get_metrics()
 
@@ -714,7 +738,8 @@ class UnifiedAPILayer:
                 supabase_health = await self.supabase.health_check()
                 self.logger.info(
                     f"Supabase integration: {supabase_health.get('status', 'unknown')}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Initialize MCP server
             self.mcp_server = MCPServer("TRAE - AI - Unified")
@@ -781,7 +806,8 @@ class UnifiedAPILayer:
             "timestamp": datetime.now().isoformat(),
             "version": "1.0.0",
             "components": components,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _authenticate(self, credentials: dict) -> Dict[str, Any]:
         """Authenticate user and return token."""
@@ -806,7 +832,8 @@ class UnifiedAPILayer:
         payload = {
             "username": username,
             "exp": (datetime.now() + timedelta(hours=1)).timestamp(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         token_data = json.dumps(payload)
         return f"trae.{hashlib.sha256(token_data.encode()).hexdigest()}"
@@ -833,7 +860,8 @@ class UnifiedAPILayer:
                 name=workflow.name,
                 workflow_data=workflow.workflow_data,
                 active=workflow.active,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
         except Exception as e:
             self.logger.error(f"Error creating workflow: {e}")
@@ -893,7 +921,8 @@ class UnifiedAPILayer:
                 tools=agent.tools,
                 max_iter=agent.max_iter,
                 memory=agent.memory,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
         except Exception as e:
             self.logger.error(f"Error creating agent: {e}")
@@ -911,7 +940,8 @@ class UnifiedAPILayer:
                 expected_output=task.expected_output,
                 context=task.context,
                 tools=task.tools,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
         except Exception as e:
             self.logger.error(f"Error creating task: {e}")
@@ -934,8 +964,8 @@ class UnifiedAPILayer:
             raise HTTPException(status_code=500, detail="Failed to get task")
 
     async def _database_query(self, query: DatabaseQuery) -> Dict[str, Any]:
-        """Execute AI - enhanced database query with intelligent optimization \
-    and analysis."""
+        """Execute AI - enhanced database query with intelligent optimization \"""
+#     and analysis.""""""
         if not self.supabase:
             raise HTTPException(status_code=503, detail="Supabase integration not available")
 
@@ -958,7 +988,8 @@ class UnifiedAPILayer:
                 "optimization_suggestions": ai_analysis.get("suggestions", []),
                 "execution_time": insights.get("execution_time"),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Error executing AI - enhanced database query: {e}")
             raise HTTPException(status_code=500, detail="Failed to execute query")
@@ -967,7 +998,7 @@ class UnifiedAPILayer:
         """AI - powered database query analysis and optimization."""
         try:
             # Use AI to analyze and optimize the query
-            analysis_prompt = f"""
+            analysis_prompt = f""""""
             Analyze this database query for optimization opportunities:
             Operation: {query.operation}
             Table: {query.table}
@@ -976,8 +1007,8 @@ class UnifiedAPILayer:
             Limit: {query.limit}
 
             Provide optimization suggestions, potential performance issues, \
-    and security recommendations.
-            """
+#     and security recommendations.
+            """"""
 
             # This would integrate with your AI service
             # For now, return structured analysis
@@ -989,17 +1020,20 @@ class UnifiedAPILayer:
                     "Consider adding appropriate indexes",
                     "Use parameterized queries for security",
                     "Implement query result caching",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "optimization_score": 85,
                 "ai_recommendations": "Query structure is well - formed with room for index optimization",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Error in AI query analysis: {e}")
             return {"error": "AI analysis unavailable", "fallback": True}
 
     async def _execute_optimized_query(
         self, query: DatabaseQuery, ai_analysis: Dict[str, Any]
-    ) -> Any:
+# BRACKET_SURGEON: disabled
+#     ) -> Any:
         """Execute database query with AI - driven optimizations."""
         try:
             # Apply AI - suggested optimizations before execution
@@ -1012,14 +1046,16 @@ class UnifiedAPILayer:
                 "data": [] if query.operation == "select" else None,
                 "success": True,
                 "optimizations_applied": ai_analysis.get("suggestions", []),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Error executing optimized query: {e}")
             raise
 
     def _apply_ai_optimizations(
         self, query: DatabaseQuery, ai_analysis: Dict[str, Any]
-    ) -> DatabaseQuery:
+# BRACKET_SURGEON: disabled
+#     ) -> DatabaseQuery:
         """Apply AI - suggested optimizations to the query."""
         # Apply optimizations based on AI analysis
         optimized_query = query
@@ -1041,9 +1077,11 @@ class UnifiedAPILayer:
                     "pattern_detected": "normal_usage",
                     "anomalies": [],
                     "recommendations": ["Consider implementing caching for frequent queries"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "ai_summary": f"Query executed successfully on {query.table} table with {query.operation} operation",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Error in AI result analysis: {e}")
             return {"error": "AI analysis unavailable"}
@@ -1063,7 +1101,8 @@ class UnifiedAPILayer:
                 "executions",
                 "ai_analytics",
                 "performance_metrics",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             # AI - powered table analysis
             table_analysis = await self._analyze_database_schema(tables)
@@ -1073,7 +1112,8 @@ class UnifiedAPILayer:
                 "ai_analysis": table_analysis,
                 "recommendations": table_analysis.get("optimization_suggestions", []),
                 "schema_health": table_analysis.get("health_score", 85),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Error listing tables with AI analysis: {e}")
             raise HTTPException(status_code=500, detail="Failed to list tables")
@@ -1088,14 +1128,17 @@ class UnifiedAPILayer:
                     "Consider partitioning large tables",
                     "Add composite indexes for complex queries",
                     "Implement automated backup strategies",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "performance_insights": {
                     "query_patterns": "optimized",
                     "index_coverage": "good",
                     "normalization_level": "3NF",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "ai_recommendations": "Database schema is well - structured with opportunities for performance optimization",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Error in AI schema analysis: {e}")
             return {"error": "AI analysis unavailable"}
@@ -1132,8 +1175,10 @@ class UnifiedAPILayer:
                             "name": tool.name,
                             "description": tool.description,
                             "inputSchema": tool.inputSchema,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
                 return tools
             else:
                 return []
@@ -1179,10 +1224,13 @@ class UnifiedAPILayer:
                             "size": len(content),
                             "content_type": getattr(
                                 file, "content_type", "application/octet-stream"
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             "upload_time": datetime.now().isoformat(),
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
                     self.logger.info(f"File uploaded: {file.filename} -> {safe_filename}")
 
@@ -1193,7 +1241,8 @@ class UnifiedAPILayer:
                 "message": f"Successfully uploaded {len(uploaded_files)} file(s)",
                 "files": uploaded_files,
                 "status": "success",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except HTTPException:
             raise
@@ -1213,8 +1262,10 @@ class UnifiedAPILayer:
                     "crewai": bool(self.crewai),
                     "supabase": bool(self.supabase),
                     "mcp": bool(self.mcp_server),
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Error getting metrics: {e}")
             raise HTTPException(status_code=500, detail="Failed to get metrics")
@@ -1242,9 +1293,12 @@ class UnifiedAPILayer:
                         "event": payload.event,
                         "data": payload.data,
                         "timestamp": payload.timestamp,
-                    }
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {"status": "received", "webhook_id": webhook_id}
 
@@ -1283,7 +1337,8 @@ class UnifiedAPILayer:
                     "type": "echo",
                     "original": message,
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 await self.connection_manager.send_personal_message(json.dumps(response), client_id)
 
@@ -1308,7 +1363,8 @@ class UnifiedAPILayer:
             ssl_config = {
                 "ssl_certfile": self.config.ssl_cert,
                 "ssl_keyfile": self.config.ssl_key,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Start server
         config = uvicorn.Config(
@@ -1317,7 +1373,8 @@ class UnifiedAPILayer:
             port=self.config.port,
             log_level="info" if self.config.debug else "warning",
             **(ssl_config or {}),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         server = uvicorn.Server(config)
 
@@ -1336,7 +1393,8 @@ if __name__ == "__main__":
             cors_origins=["http://localhost:3000"],
             auth_secret="test - secret",
             webhook_secret="webhook - secret",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         api = UnifiedAPILayer(config)
 

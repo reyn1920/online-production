@@ -37,26 +37,26 @@ if os.environ.get("VERIFY_BACKUPS", "0") == "1":
 
 def main() -> int:
     bad = []
-    
+
     # Inside your os.walk loop:
     for root, dirs, files in os.walk("."):
         # prune in-place so os.walk won't descend
         dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
-        
+
         for file in files:
             if not file.endswith(".py"):
                 continue
-            
+
             file_path = Path(root) / file
             # Additional check using original SKIP_DIRS logic for compatibility
             if any(part in SKIP_DIRS for part in file_path.parts):
                 continue
-                
+
             try:
                 ast.parse(file_path.read_text(encoding="utf-8"))
             except Exception as e:
                 bad.append((file_path, f"{e.__class__.__name__}: {e}"))
-    
+
     if bad:
         print("Syntax errors:")
         for p, msg in bad:

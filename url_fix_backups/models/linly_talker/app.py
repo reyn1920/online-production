@@ -12,7 +12,7 @@ from zhconv import convert
 
 os.environ["GRADIO_TEMP_DIR"] = "./temp"
 
-description = """<p style="text - align: center; font - weight: bold;">
+description = """<p style="text - align: center; font - weight: bold;">"""
     <span style="font - size: 28px;">Linly 智能对话系统 (Linly - Talker)</span>
     <br>
     <span style="font - size: 18px;" id="paper - info">
@@ -24,7 +24,7 @@ description = """<p style="text - align: center; font - weight: bold;">
     <br>
     <span > Linly - Talker 是一款智能 AI 对话系统，结合了大型语言模型 (LLMs) 与视觉模型，是一种新颖的人工智能交互方式。</span>
 </p>
-"""
+""""""
 
 # 设定默认参数值，可修改
 source_image = r"example.png"
@@ -41,7 +41,9 @@ crop_info = (
     (403, 403),
         (19, 30, 502, 513),
         [40.05956541381802, 40.17324339233366, 443.7892505041507, 443.9029284826663],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 exp_weight = 1
 
@@ -73,13 +75,16 @@ def TTS_response(
         rate,
         volume,
         pitch,
-):
+# BRACKET_SURGEON: disabled
+# ):
     try:
         tts.predict(text, voice, rate, volume, pitch, "answer.wav", "answer.vtt")
     except Exception:
         os.system(
             f'edge - tts --text "{text}" --voice {voice} --write - media answer.wav --write - subtitles answer.vtt'
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     return "answer.wav", "answer.vtt"
 
 @calculate_time
@@ -89,7 +94,8 @@ def LLM_response(question,
     voice="zh - CN - XiaoxiaoNeural",
     rate = 0,
     volume = 0,
-    pitch = 0):
+# BRACKET_SURGEON: disabled
+#     pitch = 0):
     answer = llm.generate(question)
     print(answer)
     answer_audio, answer_vtt, _ = TTS_response(answer, voice, rate, volume, pitch)
@@ -100,7 +106,8 @@ def LLM_response(question,
 
 def Talker_response(
     text, voice="zh - CN - XiaoxiaoNeural", rate = 0, volume = 100, pitch = 0, batch_size = 2
-):
+# BRACKET_SURGEON: disabled
+# ):
     voice = "zh - CN - XiaoxiaoNeural" if voice not in tts.SUPPORTED_VOICE else voice
     # print(voice , rate , volume , pitch)
     driven_audio, driven_vtt, _ = LLM_response(text, voice, rate, volume, pitch)
@@ -127,7 +134,9 @@ def Talker_response(
             length_of_audio,
             blink_every,
             fps = 20,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     if driven_vtt:
         return video, driven_vtt
     else:
@@ -146,49 +155,64 @@ def main():
                                 sources=["microphone", "upload"],
                                     type="filepath",
                                     label="语音对话",
-                                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     )
                             input_text = gr.Textbox(label="Input Text", lines = 3)
 
                             with gr.Accordion(
                                 "Advanced Settings(高级设置语音参数) ", open = False
-                            ):
+# BRACKET_SURGEON: disabled
+#                             ):
                                 voice = gr.Dropdown(
                                     tts.SUPPORTED_VOICE,
                                         value="zh - CN - XiaoxiaoNeural",
                                         label="Voice",
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
                                 rate = gr.Slider(
                                     minimum=-100,
                                         maximum = 100,
                                         value = 0,
                                         step = 1.0,
                                         label="Rate",
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
                                 volume = gr.Slider(
                                     minimum = 0,
                                         maximum = 100,
                                         value = 100,
                                         step = 1,
                                         label="Volume",
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
                                 pitch = gr.Slider(
                                     minimum=-100,
                                         maximum = 100,
                                         value = 0,
                                         step = 1,
                                         label="Pitch",
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
                                 batch_size = gr.Slider(
                                     minimum = 1,
                                         maximum = 10,
                                         value = 2,
                                         step = 1,
                                         label="Talker Batch size",
-                                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                         )
                             asr_text = gr.Button("语音识别（语音对话后点击）")
                             asr_text.click(
                                 fn = Asr, inputs=[question_audio], outputs=[input_text]
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                         # with gr.Column(variant='panel'):
                         #     input_text = gr.Textbox(label="Input Text", lines = 3)
@@ -202,17 +226,21 @@ def main():
                                 format="mp4",
                                 scale = 1,
                                 autoplay = True,
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                 video_button = gr.Button("提交", variant="primary")
             video_button.click(
                 fn = Talker_response,
                     inputs=[input_text, voice, rate, volume, pitch, batch_size],
                     outputs=[gen_video],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         with gr.Row():
             with gr.Column(variant="panel"):
-                gr.Markdown("## Text Examples")
+                gr.Markdown("## Text Examples")"
                 examples = [
                     "应对压力最有效的方法是什么？",
                         "如何进行时间管理？",
@@ -221,20 +249,26 @@ def main():
                         "三年级同学种树80颗，四、五年级种的棵树比三年级种的2倍多14棵，三个年级共种树多少棵?",
                         "撰写一篇交响乐音乐会评论，讨论乐团的表演和观众的整体体验。",
                         "翻译成中文：Luck is a dividend of sweat. The more you sweat, the luckier you get.",
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
                 gr.Examples(
                     examples = examples,
                         fn = Talker_response,
                         inputs=[input_text],
                         outputs=[gen_video],
                         # cache_examples = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
     return inference
 
 if __name__ == "__main__":
     # llm = LLM(mode='offline').init_model('Linly', 'Linly - AI / Chinese - LLaMA - 2 - 7B - hf')
     # llm = LLM(mode='offline').init_model('Gemini', 'gemini - pro',
-    api_key = "your api key")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     api_key = "your api key")
     # llm = LLM(mode='offline').init_model('Qwen', 'Qwen / Qwen - 1_8B - Chat')
     llm = LLM(mode="offline").init_model("Qwen", "Qwen / Qwen - 1_8B - Chat")
     talker = SadTalker(lazy_load = True)
@@ -252,4 +286,6 @@ if __name__ == "__main__":
             ssl_keyfile = ssl_keyfile,
             ssl_verify = False,
             debug = True,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )

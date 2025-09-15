@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Bridge to System - Dashboard Integration Layer
 
 This module serves as the bridge between the Flask dashboard and the TRAE.AI
@@ -15,7 +15,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import os
@@ -38,7 +38,9 @@ try:
         BaseAgent,
         ExecutorAgent,
         PlannerAgent,
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     from backend.agents.specialized_agents import (
         ContentAgent,
@@ -46,14 +48,18 @@ try:
         QAAgent,
         ResearchAgent,
         SystemAgent,
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     from backend.task_queue_manager import (
         TaskPriority,
         TaskQueueManager,
         TaskStatus,
         TaskType,
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 except ImportError as e:
     print(f"Warning: Could not import TRAE.AI components: {e}")
     print("Running in standalone mode...")
@@ -70,7 +76,9 @@ class DefaultContentAgent(ContentAgent):
         """Minimal pass - through implementation."""
         return (
             task.get("description", str(task)) if isinstance(task, dict) else str(task)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     async def _validate_rephrase_accuracy(self, original, rephrased, context=None):
         """Always return True for basic validation."""
@@ -172,7 +180,8 @@ class SystemBridge:
                 "content": DefaultContentAgent(agent_id="content - 001"),
                 "marketing": MarketingAgent(agent_id="marketing - 001"),
                 "qa": QAAgent(agent_id="qa - 001"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.logger.info(f"Initialized {len(self.agents)} agents")
         except Exception as e:
@@ -190,7 +199,8 @@ class SystemBridge:
                 MonetizationFeature.MERCHANDISE.value: False,
                 MonetizationFeature.PATREON.value: False,
                 MonetizationFeature.MEMBERSHIPS.value: False,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Load from database if available
             try:
@@ -200,17 +210,23 @@ class SystemBridge:
                 conn = sqlite3.connect(self.database_path)
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS monetization_settings (
                         feature_name TEXT PRIMARY KEY,
                             enabled BOOLEAN,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 cursor.execute(
                     "SELECT feature_name, enabled FROM monetization_settings"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 results = cursor.fetchall()
                 conn.close()
 
@@ -220,13 +236,17 @@ class SystemBridge:
                         default_settings[feature_name] = bool(enabled)
 
                 self.logger.info(
-                    f"Loaded {
-                        len(results)} monetization settings from database"
-                )
+                    f"Loaded {"
+                        len(results)} monetization settings from database""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as db_error:
                 self.logger.warning(
                     f"Could not load from database, using defaults: {db_error}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             self.monetization_settings = default_settings
             self.logger.info("Monetization settings loaded")
@@ -256,7 +276,8 @@ class SystemBridge:
                 "parameters": parameters or {},
                 "triggered_by": "dashboard",
                 "timestamp": datetime.now(timezone.utc).isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Determine appropriate agent
             agent_id = self._get_workflow_agent(workflow_enum)
@@ -267,11 +288,15 @@ class SystemBridge:
                 payload=payload,
                 priority=TaskPriority.HIGH,
                 agent_id=agent_id,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self.logger.info(
                 f"Triggered {workflow_type} workflow with task ID {task_id}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return {
                 "task_id": task_id,
@@ -279,7 +304,8 @@ class SystemBridge:
                 "status": "queued",
                 "agent_id": agent_id,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Failed to trigger workflow {workflow_type}: {e}")
@@ -294,7 +320,8 @@ class SystemBridge:
             WorkflowType.MARKETING: "marketing",
             WorkflowType.SYSTEM_MAINTENANCE: "system",
             WorkflowType.QUALITY_ASSURANCE: "qa",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return agent_mapping.get(workflow_type, "executor")
 
@@ -324,7 +351,8 @@ class SystemBridge:
                     "updated_at": task[7],
                     "retry_count": task[8],
                     "error_message": task[9],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 task_list.append(task_dict)
 
             return task_list
@@ -335,7 +363,8 @@ class SystemBridge:
 
     def update_task_status(
         self, task_id: str, status: str, error_message: Optional[str] = None
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Update task status."""
         try:
             if not self.task_manager:
@@ -343,7 +372,9 @@ class SystemBridge:
 
             return self.task_manager.update_task_status(
                 task_id=task_id, status=TaskStatus(status), error_message=error_message
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             self.logger.error(f"Failed to update task {task_id}: {e}")
@@ -362,12 +393,16 @@ class SystemBridge:
                 {
                     "active_agents": len(
                         [a for a in self.agents.values() if a.status.value == "active"]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "total_agents": len(self.agents),
                     "uptime": self._calculate_uptime(),
                     "system_health": self._get_system_health_score(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return stats
 
@@ -399,36 +434,49 @@ class SystemBridge:
                 conn = sqlite3.connect(self.database_path)
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS monetization_settings (
                         feature_name TEXT PRIMARY KEY,
                             enabled BOOLEAN,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO monetization_settings (feature_name,
     enabled,
-    updated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     updated_at)
                     VALUES (?, ?, ?)
-                """,
+                ""","""
                     (feature, enabled, datetime.now(timezone.utc).isoformat()),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 conn.commit()
                 conn.close()
                 self.logger.info(
                     f"Monetization feature {feature} persisted to database"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except Exception as db_error:
                 self.logger.error(f"Failed to persist monetization setting: {db_error}")
 
             # Log the change
             self.logger.info(
-                f"Monetization feature {feature} {
-                    'enabled' if enabled else 'disabled'}"
-            )
+                f"Monetization feature {feature} {"
+# BRACKET_SURGEON: disabled
+#                     'enabled' if enabled else 'disabled'}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Create audit task for significant changes
             if feature in ["adsense", "sponsored"] and enabled:
@@ -439,7 +487,8 @@ class SystemBridge:
                 "enabled": enabled,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
                 "status": "success",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Failed to toggle monetization feature {feature}: {e}")
@@ -453,7 +502,8 @@ class SystemBridge:
                 "revenue": self._get_revenue_data(),
                 "performance": self._get_monetization_performance(),
                 "timestamp": datetime.now(timezone.utc).isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Failed to get monetization status: {e}")
@@ -474,7 +524,7 @@ class SystemBridge:
                 conn = sqlite3.connect(self.database_path)
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS channels (
                         platform TEXT PRIMARY KEY,
                             status TEXT,
@@ -482,12 +532,18 @@ class SystemBridge:
                             content_count INTEGER,
                             engagement_rate REAL,
                             last_updated TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 cursor.execute(
                     "SELECT platform, status, followers, content_count, engagement_rate, last_updated FROM channels"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 results = cursor.fetchall()
                 conn.close()
 
@@ -502,13 +558,18 @@ class SystemBridge:
                             datetime.fromisoformat(row[5])
                             if row[5]
                             else datetime.now(timezone.utc)
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             except Exception as db_error:
                 self.logger.warning(
                     f"Could not fetch channel data from database: {db_error}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Fallback to mock data if database is empty or unavailable
             if not channels:
@@ -520,7 +581,8 @@ class SystemBridge:
                         content_count=45,
                         engagement_rate=4.2,
                         last_updated=datetime.now(timezone.utc),
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "tiktok": ChannelMetrics(
                         platform="TikTok",
                         status="active",
@@ -528,7 +590,8 @@ class SystemBridge:
                         content_count=78,
                         engagement_rate=6.8,
                         last_updated=datetime.now(timezone.utc),
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "instagram": ChannelMetrics(
                         platform="Instagram",
                         status="pending",
@@ -536,8 +599,10 @@ class SystemBridge:
                         content_count=23,
                         engagement_rate=3.1,
                         last_updated=datetime.now(timezone.utc) - timedelta(hours=2),
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
             return {k: asdict(v) for k, v in channels.items()}
 
@@ -555,7 +620,7 @@ class SystemBridge:
             conn = sqlite3.connect(self.database_path)
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS channels (
                     platform TEXT PRIMARY KEY,
                         status TEXT,
@@ -563,20 +628,26 @@ class SystemBridge:
                         content_count INTEGER,
                         engagement_rate REAL,
                         last_updated TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO channels
                 (platform,
     status,
     followers,
     content_count,
     engagement_rate,
-    last_updated)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     last_updated)
                 VALUES (?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     platform,
                     metrics.get("status", "active"),
@@ -584,8 +655,11 @@ class SystemBridge:
                     metrics.get("content_count", 0),
                     metrics.get("engagement_rate", 0.0),
                     datetime.now(timezone.utc).isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             conn.commit()
             conn.close()
 
@@ -606,7 +680,8 @@ class SystemBridge:
                 "database": self._check_database_health(),
                 "agents": len(self.agents) > 0,
                 "logger": True,  # If we're here, logger is working
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return SystemHealth(
                 status="healthy" if all(components.values()) else "degraded",
@@ -616,9 +691,12 @@ class SystemBridge:
                 memory_usage=self._get_memory_usage(),
                 active_agents=len(
                     [a for a in self.agents.values() if hasattr(a, "status")]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 queue_size=len(self.get_tasks()) if self.task_manager else 0,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             self.logger.error(f"Failed to get system health: {e}")
@@ -630,7 +708,9 @@ class SystemBridge:
                 memory_usage={},
                 active_agents=0,
                 queue_size=0,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     def _check_database_health(self) -> bool:
         """Check if database is accessible."""
@@ -669,12 +749,14 @@ class SystemBridge:
             memory_info = process.memory_info()
 
             return {
-                "used": f"{
-                    memory_info.rss/1024/1024:.1f} MB",
-                "available": f"{
-                    psutil.virtual_memory().available/1024/1024:.1f} MB",
+                "used": f"{"
+# BRACKET_SURGEON: disabled
+#                     memory_info.rss/1024/1024:.1f} MB","
+                "available": f"{"
+                    psutil.virtual_memory().available/1024/1024:.1f} MB","
                 "percentage": process.memory_percent(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except ImportError:
             return {"used": "45.2 MB", "available": "512 MB", "percentage": 8.8}
         except Exception:
@@ -688,7 +770,9 @@ class SystemBridge:
             # Calculate score based on component health
             component_score = (
                 sum(health.components.values()) / len(health.components) * 100
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Adjust based on queue size (too many pending tasks reduce score)
             queue_penalty = min(health.queue_size * 2, 20)  # Max 20 point penalty
@@ -708,10 +792,13 @@ class SystemBridge:
                     payload={
                         "description": description,
                         "timestamp": datetime.now(timezone.utc).isoformat(),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     priority=TaskPriority.MEDIUM,
                     agent_id="auditor",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except Exception as e:
             self.logger.error(f"Failed to create audit task: {e}")
 
@@ -726,15 +813,19 @@ class SystemBridge:
 
             # Create revenue table if it doesn't exist
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS revenue_data (
                     source TEXT PRIMARY KEY,
                         amount REAL,
                         currency TEXT DEFAULT 'USD',
                         last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Get revenue data from database
             cursor.execute("SELECT source, amount FROM revenue_data")
@@ -747,12 +838,17 @@ class SystemBridge:
                     {
                         "currency": "USD",
                         "last_updated": datetime.now(timezone.utc).isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.logger.info(
-                    f"Retrieved revenue data from database: {
-                        len(results)} sources"
-                )
+                    f"Retrieved revenue data from database: {"
+                        len(results)} sources""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return revenue_data
 
         except Exception as e:
@@ -766,7 +862,8 @@ class SystemBridge:
             "sponsored": 480.00,
             "currency": "USD",
             "last_updated": datetime.now(timezone.utc).isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_monetization_performance(self) -> Dict[str, Any]:
         """Get monetization performance metrics."""
@@ -779,15 +876,19 @@ class SystemBridge:
 
             # Create performance metrics table if it doesn't exist
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS monetization_performance (
                     metric_name TEXT PRIMARY KEY,
                         value REAL,
                         unit TEXT,
                         last_calculated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Get performance metrics from database
             cursor.execute("SELECT metric_name, value FROM monetization_performance")
@@ -798,23 +899,31 @@ class SystemBridge:
                 performance_data = {row[0]: row[1] for row in results}
                 performance_data["last_updated"] = datetime.now(
                     timezone.utc
-                ).isoformat()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).isoformat()
                 self.logger.info(
-                    f"Retrieved performance metrics from database: {
-                        len(results)} metrics"
-                )
+                    f"Retrieved performance metrics from database: {"
+                        len(results)} metrics""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return performance_data
 
         except Exception as e:
             self.logger.warning(
                 f"Could not fetch performance metrics from database: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Fallback to calculated/placeholder data
         revenue_data = self._get_revenue_data()
         total_revenue = sum(
             v for k, v in revenue_data.items() if isinstance(v, (int, float))
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return {
             "cpm": 2.45,
@@ -824,7 +933,8 @@ class SystemBridge:
             "total_revenue": total_revenue,
             "revenue_growth_rate": 12.5,
             "last_updated": datetime.now(timezone.utc).isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Global bridge instance

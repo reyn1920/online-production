@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 Metadata extraction utilities for TRAE.AI System
-"""
+
+""""""
 
 import json
 from datetime import datetime
@@ -10,24 +14,58 @@ from typing import Any, Dict, List
 
 
 def extract_bundle_metadata(bundle_path: str) -> Dict[str, Any]:
-    """
+    """"""
+
+   
+
+    
+   
+"""
     Extract metadata from a bundle directory
+   """
+
+    
+   
 
     Args:
         bundle_path: Path to bundle directory
+   
+""""""
 
+    Extract metadata from a bundle directory
+   
+
+    
+   
+"""
     Returns:
         Dict containing bundle metadata
-    """
-    bundle_dir = Path(bundle_path)
+   """"""
+    
+   """
 
+    bundle_dir = Path(bundle_path)
+   
+
+    
+   
+""""""
+
+
+    
+
+   
+
+    bundle_dir = Path(bundle_path)
+   
+""""""
     if not bundle_dir.exists():
         return {
             "name": bundle_dir.name,
             "path": str(bundle_path),
             "exists": False,
             "error": "Bundle directory not found",
-        }
+         }
 
     metadata = {
         "name": bundle_dir.name,
@@ -37,7 +75,7 @@ def extract_bundle_metadata(bundle_path: str) -> Dict[str, Any]:
         "files": [],
         "size_bytes": 0,
         "file_count": 0,
-    }
+     }
 
     # Scan files in bundle
     try:
@@ -48,7 +86,7 @@ def extract_bundle_metadata(bundle_path: str) -> Dict[str, Any]:
                     "relative_path": str(file_path.relative_to(bundle_dir)),
                     "size_bytes": file_path.stat().st_size,
                     "modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat(),
-                }
+                 }
                 metadata["files"].append(file_info)
                 metadata["size_bytes"] += file_info["size_bytes"]
 
@@ -71,22 +109,40 @@ def extract_bundle_metadata(bundle_path: str) -> Dict[str, Any]:
 
 
 def create_bundle_manifest(bundles: List[str], output_path: str) -> Dict[str, Any]:
-    """
+    """"""
+
+   
+
+    
+   
+"""
     Create a manifest file for multiple bundles
+   """
+
+    
+   
 
     Args:
         bundles: List of bundle paths
         output_path: Path to write manifest
+   
+""""""
 
+    Create a manifest file for multiple bundles
+   
+
+    
+   
+"""
     Returns:
         Dict containing manifest data
-    """
+   """"""
     manifest = {
         "created": datetime.now().isoformat(),
         "bundles": [],
         "total_size_bytes": 0,
         "total_files": 0,
-    }
+     }
 
     for bundle_path in bundles:
         bundle_metadata = extract_bundle_metadata(bundle_path)
@@ -108,17 +164,51 @@ def create_bundle_manifest(bundles: List[str], output_path: str) -> Dict[str, An
 
 
 def validate_bundle_integrity(bundle_path: str) -> Dict[str, Any]:
-    """
+    """"""
+
+   
+
+    
+   
+"""
     Validate bundle integrity and structure
+   """
+
+    
+   
 
     Args:
         bundle_path: Path to bundle directory
+   
+""""""
 
+    Validate bundle integrity and structure
+   
+
+    
+   
+"""
     Returns:
         Dict containing validation results
-    """
-    bundle_dir = Path(bundle_path)
+   """"""
+    
+   """
 
+    bundle_dir = Path(bundle_path)
+   
+
+    
+   
+""""""
+
+
+    
+
+   
+
+    bundle_dir = Path(bundle_path)
+   
+""""""
     validation = {"valid": True, "errors": [], "warnings": [], "checks": []}
 
     # Check if bundle exists

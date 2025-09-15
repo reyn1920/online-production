@@ -72,7 +72,8 @@ def _report_usage(
     error: Optional[str] = None,
     took_ms: Optional[int] = None,
     quota_remaining: Optional[int] = None,
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Report usage metrics to the integrations registry."""
     try:
         payload = {"key": provider_key, "success": success, "took_ms": took_ms}
@@ -93,14 +94,16 @@ def _fetch_pexels_images(query: str, limit: int, api_key: str) -> Dict[str, Any]
         "query": query,
         "per_page": min(limit, 80),  # Pexels max is 80
         "orientation": "all",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     resp = http_get_with_backoff(
         "https://api.pexels.com/v1/search",
         headers=headers,
         params=params,
         timeout=TIMEOUT_S,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -116,20 +119,24 @@ def _fetch_pexels_images(query: str, limit: int, api_key: str) -> Dict[str, Any]
                     "author": photo["photographer"],
                     "source": "pexels",
                     "source_url": photo["url"],
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "success": True,
             "images": images,
             "total": data.get("total_results", len(images)),
             "quota_remaining": None,  # Pexels doesn't provide quota info in response
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         return {
             "success": False,
             "error": f"Pexels API error: {resp.status_code} - {resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def _fetch_unsplash_images(query: str, limit: int, access_key: str) -> Dict[str, Any]:
@@ -139,14 +146,16 @@ def _fetch_unsplash_images(query: str, limit: int, access_key: str) -> Dict[str,
         "query": query,
         "per_page": min(limit, 30),  # Unsplash max is 30
         "orientation": "landscape",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     resp = http_get_with_backoff(
         "https://api.unsplash.com/search/photos",
         headers=headers,
         params=params,
         timeout=TIMEOUT_S,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -162,20 +171,24 @@ def _fetch_unsplash_images(query: str, limit: int, access_key: str) -> Dict[str,
                     "author": photo["user"]["name"],
                     "source": "unsplash",
                     "source_url": photo["links"]["html"],
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "success": True,
             "images": images,
             "total": data.get("total", len(images)),
             "quota_remaining": None,  # Check rate limit headers if needed
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         return {
             "success": False,
             "error": f"Unsplash API error: {resp.status_code} - {resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def _fetch_pixabay_images(query: str, limit: int, api_key: str) -> Dict[str, Any]:
@@ -186,7 +199,8 @@ def _fetch_pixabay_images(query: str, limit: int, api_key: str) -> Dict[str, Any
         "per_page": min(limit, 200),  # Pixabay max is 200
         "safesearch": "true",
         "image_type": "photo",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     resp = http_get_with_backoff("https://pixabay.com/api/", params=params, timeout=TIMEOUT_S)
 
@@ -204,20 +218,24 @@ def _fetch_pixabay_images(query: str, limit: int, api_key: str) -> Dict[str, Any
                     "author": hit["user"],
                     "source": "pixabay",
                     "source_url": hit["pageURL"],
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return {
             "success": True,
             "images": images,
             "total": data.get("totalHits", len(images)),
             "quota_remaining": None,  # Pixabay doesn't provide quota info
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         return {
             "success": False,
             "error": f"Pixabay API error: {resp.status_code} - {resp.text[:200]}",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str, Any]:
@@ -241,7 +259,8 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
                     False,
                     error_msg,
                     int((time.time() - start_time) * 1000),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return {"provider": provider_key, "ok": False, "error": error_msg}
 
             # Call appropriate provider
@@ -256,7 +275,8 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
                 result = {
                     "success": False,
                     "error": f"No adapter implementation for {provider_key}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             took_ms = int((time.time() - start_time) * 1000)
 
@@ -269,7 +289,8 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
                     "data": result["images"],
                     "total": result.get("total", len(result["images"])),
                     "took_ms": took_ms,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 # Failure - report and potentially rotate
                 error_msg = result.get("error", "Unknown error")
@@ -281,7 +302,8 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
                         logger.info(f"Rotating from failed provider {provider_key}")
                         rotate_resp = requests.post(
                             f"{BASE}/integrations/rotate?category = images", timeout=10
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         if rotate_resp.status_code == 200:
                             rotation_data = rotate_resp.json()
                             logger.info(f"Rotated to {rotation_data.get('rotated_to', 'unknown')}")
@@ -297,7 +319,8 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
                     "ok": False,
                     "error": error_msg,
                     "took_ms": took_ms,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             took_ms = int((time.time() - start_time) * 1000)
@@ -316,7 +339,8 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
                 "ok": False,
                 "error": error_msg,
                 "took_ms": took_ms,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     # Should not reach here
     return {
@@ -324,7 +348,8 @@ def fetch_images(query: str, limit: int = 10, max_retries: int = 1) -> Dict[str,
         "ok": False,
         "error": "Max retries exceeded",
         "took_ms": int((time.time() - start_time) * 1000),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 # Convenience function for backward compatibility

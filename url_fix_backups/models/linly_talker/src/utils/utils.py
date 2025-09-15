@@ -9,9 +9,13 @@ arcface_src = np.array(
             [56.0252, 71.7366],
             [41.5493, 92.3655],
             [70.7299, 92.2041],
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         dtype = np.float32,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 arcface_src = np.expand_dims(arcface_src, axis = 0)
 
 
@@ -63,8 +67,12 @@ def decompose_tfm(tfm):
         [
             [tfm[0][0] / s_x, tfm[0][1] / s_x, t_x / s_x],
                 [tfm[1][0] / s_y, tfm[1][1] / s_y, t_y / s_y],
-                ]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # 缩放矩阵s
     s = np.array([[s_x, 0, 0], [0, s_y, 0]])

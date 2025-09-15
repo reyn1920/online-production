@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 Community Engagement Agent - Layer 1 of Maxed - Out Automation
 Handles automated community building, comment analysis, and engagement responses.
-"""
+
+""""""
 
 import asyncio
 import json
@@ -19,7 +23,7 @@ except ImportError:
     praw = None
     logging.warning(
         "Optional dependency missing: No module named 'praw'. Reddit features will be limited."
-    )
+     )
 
 try:
     import requests
@@ -27,7 +31,7 @@ except ImportError:
     requests = None
     logging.warning(
         "Optional dependency missing: No module named 'requests'. HTTP features will be limited."
-    )
+     )
 
 try:
     from googleapiclient.discovery import build
@@ -37,7 +41,7 @@ except ImportError:
     HttpError = None
     logging.warning(
         "Optional dependency missing: No module named 'googleapiclient'. YouTube features will be limited."
-    )
+     )
 
 from backend.agents.base_agents import BaseAgent
 from backend.secret_store import SecretStore
@@ -89,10 +93,14 @@ class CommunityEngagementAgent(BaseAgent):
         self._init_api_clients()
 
     def _init_database(self):
-        """Initialize community engagement database tables."""
+        """
+Initialize community engagement database tables.
+
         with sqlite3.connect(self.db_path) as conn:
             conn.executescript(
-                """
+               
+""""""
+
                 CREATE TABLE IF NOT EXISTS community_engagement (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         platform TEXT NOT NULL,
@@ -106,7 +114,11 @@ class CommunityEngagementAgent(BaseAgent):
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         responded_at TIMESTAMP,
                         UNIQUE(platform, content_id)
-                );
+
+
+#                 );
+
+"""
 
                 CREATE TABLE IF NOT EXISTS engagement_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -118,7 +130,12 @@ class CommunityEngagementAgent(BaseAgent):
                         engagement_rate REAL DEFAULT 0.0,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         UNIQUE(date, platform)
-                );
+#                 );
+"""
+
+#                 );
+
+
 
                 CREATE TABLE IF NOT EXISTS community_keywords (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -127,11 +144,35 @@ class CommunityEngagementAgent(BaseAgent):
                         priority INTEGER DEFAULT 1,
                         active BOOLEAN DEFAULT TRUE,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
-            """
-            )
+#                 );
+           
+""""""
+
+            
+
+             
+            
+"""
+             )
+            """"""
+
+            
+
+           """
 
             # Insert default keywords for monitoring
+           
+
+            
+           
+""""""
+
+             
+            
+
+             )
+            
+""""""
             default_keywords = [
                 ("AI automation", "technology", 3),
                 ("content creation", "marketing", 3),
@@ -139,18 +180,36 @@ class CommunityEngagementAgent(BaseAgent):
                 ("social media marketing", "marketing", 2),
                 ("video editing", "content", 2),
                 ("SEO optimization", "marketing", 2),
-            ]
+             ]
 
             conn.executemany(
                 "INSERT OR IGNORE INTO community_keywords (keyword, category, priority) VALUES (?, ?, ?)",
                 default_keywords,
-            )
+             )
 
     def _init_api_clients(self):
-        """Initialize API clients for various platforms."""
+        """
+Initialize API clients for various platforms.
+
         try:
+           
+""""""
+
             # YouTube API
+           
+
+            
+           
+"""
             if build is not None:
+           """
+
+            
+           
+
+            # YouTube API
+           
+""""""
                 youtube_key = self.secret_store.get_secret("YOUTUBE_API_KEY")
                 if youtube_key:
                     self.youtube_client = build("youtube", "v3", developerKey=youtube_key)
@@ -163,7 +222,7 @@ class CommunityEngagementAgent(BaseAgent):
                     "client_id": self.secret_store.get_secret("REDDIT_CLIENT_ID"),
                     "client_secret": self.secret_store.get_secret("REDDIT_CLIENT_SECRET"),
                     "user_agent": "CommunityEngagementBot/1.0",
-                }
+                 }
 
                 if all(reddit_config.values()):
                     self.reddit_client = praw.Reddit(**reddit_config)
@@ -176,9 +235,27 @@ class CommunityEngagementAgent(BaseAgent):
             self.logger.warning(f"API client initialization failed: {e}")
 
     async def analyze_youtube_comments(self, video_id: str) -> List[EngagementOpportunity]:
-        """Analyze comments on a YouTube video for engagement opportunities."""
-        opportunities = []
+        """
+Analyze comments on a YouTube video for engagement opportunities.
 
+       
+""""""
+
+        opportunities = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        opportunities = []
+       
+""""""
         if not self.youtube_client:
             self.logger.warning("YouTube client not initialized")
             return opportunities
@@ -187,7 +264,7 @@ class CommunityEngagementAgent(BaseAgent):
             # Get video comments
             request = self.youtube_client.commentThreads().list(
                 part="snippet", videoId=video_id, maxResults=100, order="relevance"
-            )
+             )
 
             response = request.execute()
 
@@ -200,7 +277,7 @@ class CommunityEngagementAgent(BaseAgent):
                     content_id=item["id"],
                     author=comment["authorDisplayName"],
                     content=comment["textDisplay"],
-                )
+                 )
 
                 if opportunity:
                     opportunities.append(opportunity)
@@ -216,9 +293,27 @@ class CommunityEngagementAgent(BaseAgent):
     async def monitor_reddit_discussions(
         self, subreddits: List[str]
     ) -> List[EngagementOpportunity]:
-        """Monitor Reddit discussions for engagement opportunities."""
-        opportunities = []
+        """
+Monitor Reddit discussions for engagement opportunities.
 
+       
+""""""
+
+        opportunities = []
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        opportunities = []
+       
+""""""
         if not self.reddit_client:
             self.logger.warning("Reddit client not initialized")
             return opportunities
@@ -236,15 +331,15 @@ class CommunityEngagementAgent(BaseAgent):
                             # Check if this is a question or discussion we can help with
                             if self._is_relevant_discussion(
                                 submission.title + " " + submission.selftext, keywords
-                            ):
+#                             ):
                                 opportunity = await self._analyze_comment_sentiment(
                                     platform="reddit",
                                     content_id=submission.id,
                                     author=(
                                         submission.author.name if submission.author else "deleted"
-                                    ),
+                                     ),
                                     content=submission.title + "\\n" + submission.selftext,
-                                )
+                                 )
 
                                 if opportunity:
                                     opportunities.append(opportunity)
@@ -261,12 +356,43 @@ class CommunityEngagementAgent(BaseAgent):
     async def _analyze_comment_sentiment(
         self, platform: str, content_id: str, author: str, content: str
     ) -> Optional[EngagementOpportunity]:
-        """Analyze comment sentiment and determine engagement priority."""
-        try:
-            # Use Ollama for sentiment analysis
-            sentiment_prompt = f"""
-            Analyze this social media content and categorize it:
+        """
+Analyze comment sentiment and determine engagement priority.
 
+        try:
+           
+""""""
+
+            # Use Ollama for sentiment analysis
+           
+
+            
+           
+""""""
+
+            
+           
+
+            sentiment_prompt = f
+           
+""""""
+
+           
+
+            
+           
+"""
+            Analyze this social media content and categorize it:
+           """"""
+            
+           """
+
+            # Use Ollama for sentiment analysis
+           
+
+            
+           
+"""
             Content: "{content}"
 
             Categorize as one of: positive, question, feedback, criticism, spam
@@ -278,15 +404,32 @@ class CommunityEngagementAgent(BaseAgent):
                 "sentiment": "category",
                     "priority": score,
                     "reasoning": "brief explanation"
-            }}
-            """
+#             }}
+            """"""
 
+
+           
+
+
+            
+
+           
+"""
             # Make request to Ollama
+           """"""
             ollama_response = requests.post(
                 "http://localhost:11434/api/generate",
+           """
+
+            
+           
+
+            # Make request to Ollama
+           
+""""""
                 json={"model": "llama3.2", "prompt": sentiment_prompt, "stream": False},
                 timeout=30,
-            )
+             )
 
             if ollama_response.status_code == 200:
                 result = ollama_response.json()
@@ -305,7 +448,7 @@ class CommunityEngagementAgent(BaseAgent):
                         sentiment=sentiment,
                         priority_score=priority_score,
                         created_at=datetime.now(),
-                    )
+                     )
 
         except Exception as e:
             self.logger.error(f"Sentiment analysis error: {e}")
@@ -313,33 +456,82 @@ class CommunityEngagementAgent(BaseAgent):
         return None
 
     async def generate_authentic_response(self, opportunity: EngagementOpportunity) -> str:
-        """Generate an authentic, helpful response to an engagement opportunity."""
+        """
+Generate an authentic, helpful response to an engagement opportunity.
+
         try:
+           
+""""""
+
             # Get relevant content from our database
+           
+
+            
+           
+""""""
+
+            
+           
+
             relevant_content = self._find_relevant_content(opportunity.content)
+           
+""""""
 
-            response_prompt = f"""
+           
+
+            
+           
+"""
+            # Get relevant content from our database
+           """"""
+
+            
+
+           """
+
+            response_prompt = f
+           
+
+            
+           
+""""""
+
+            
+           
+
             Generate a helpful, authentic response to this {opportunity.platform} {opportunity.sentiment.value}:
-
+           
+""""""
             Original Content: "{opportunity.content}"
             Author: {opportunity.author}
+           """
+
+            
+           
+
+            Generate a helpful, authentic response to this {opportunity.platform} {opportunity.sentiment.value}:
+           
+""""""
 
             Guidelines:
             - Be genuinely helpful and authentic
             - Keep it conversational and friendly
             - If relevant, mention our content: {relevant_content}
-            - Don't be overly promotional
+            - Don't be overly promotional'
             - Match the tone of the platform
             - Keep response under 280 characters for Twitter, 500 for others
 
             Generate only the response text, no quotes or formatting.
-            """
+           
 
+            
+           
+"""
             ollama_response = requests.post(
                 "http://localhost:11434/api/generate",
                 json={"model": "llama3.2", "prompt": response_prompt, "stream": False},
                 timeout=30,
-            )
+             )
 
             if ollama_response.status_code == 200:
                 result = ollama_response.json()
@@ -351,31 +543,81 @@ class CommunityEngagementAgent(BaseAgent):
         return ""
 
     def _get_monitoring_keywords(self) -> List[str]:
-        """Get active keywords for community monitoring."""
+        """
+Get active keywords for community monitoring.
+
+        
+"""
         with sqlite3.connect(self.db_path) as conn:
+        """
             cursor = conn.execute(
                 "SELECT keyword FROM community_keywords WHERE active = TRUE ORDER BY priority DESC"
-            )
+             )
+        """
+
+        with sqlite3.connect(self.db_path) as conn:
+        
+
+       
+""""""
+
             return [row[0] for row in cursor.fetchall()]
 
     def _is_relevant_discussion(self, content: str, keywords: List[str]) -> bool:
-        """Check if content is relevant to our expertise areas."""
+        
+Check if content is relevant to our expertise areas.
+"""
         content_lower = content.lower()
+        """
+
+        return any(keyword.lower() in content_lower for keyword in keywords)
+        
+
+       
+""""""
+
+        
+
+
         return any(keyword.lower() in content_lower for keyword in keywords)
 
+        
+""""""
+
+        
+       
+
     def _find_relevant_content(self, query_content: str) -> str:
-        """Find relevant content from our database to reference in responses."""
+        
+"""Find relevant content from our database to reference in responses."""
+
         # This would search our content database for relevant videos/posts
+       
+
+        
+       
+"""
         # For now, return a generic helpful reference
+       """"""
         return "our latest video on this topic"
+       """
+
+        
+       
+
+        # For now, return a generic helpful reference
+       
+""""""
 
     async def process_engagement_opportunities(self) -> Dict[str, int]:
-        """Main method to process all engagement opportunities."""
+        """
+        Main method to process all engagement opportunities.
+        """
         stats = {
             "opportunities_found": 0,
             "responses_generated": 0,
             "responses_posted": 0,
-        }
+         }
 
         try:
             # Get recent YouTube videos to monitor
@@ -388,7 +630,7 @@ class CommunityEngagementAgent(BaseAgent):
                 "marketing",
                 "youtubers",
                 "contentcreation",
-            ]
+             ]
             reddit_opportunities = await self.monitor_reddit_discussions(reddit_subreddits)
 
             all_opportunities = youtube_opportunities + reddit_opportunities
@@ -421,24 +663,45 @@ class CommunityEngagementAgent(BaseAgent):
         return stats
 
     def _is_already_processed(self, opportunity: EngagementOpportunity) -> bool:
-        """Check if we've already processed this engagement opportunity."""
+        """
+Check if we've already processed this engagement opportunity.'
+
+        
+"""
         with sqlite3.connect(self.db_path) as conn:
+        """
             cursor = conn.execute(
                 "SELECT id FROM community_engagement WHERE platform = ? AND content_id = ?",
                 (opportunity.platform, opportunity.content_id),
-            )
+             )
+        """
+
+        with sqlite3.connect(self.db_path) as conn:
+        
+
+       
+""""""
+
             return cursor.fetchone() is not None
 
     def _store_engagement_opportunity(self, opportunity: EngagementOpportunity):
-        """Store engagement opportunity in database."""
+        
+Store engagement opportunity in database.
+"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+               """
+
+                
+               
+
                 INSERT OR REPLACE INTO community_engagement
                 (platform, content_id, author, original_content, sentiment,
-                    priority_score, response_content, created_at)
+#                     priority_score, response_content, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                
+""","""
+
                 (
                     opportunity.platform,
                     opportunity.content_id,
@@ -448,16 +711,57 @@ class CommunityEngagementAgent(BaseAgent):
                     opportunity.priority_score,
                     opportunity.response_generated,
                     opportunity.created_at,
-                ),
-            )
+                 ),
+            
+
+             
+            
+"""
+             )
+            """
+
+             
+            
 
     async def _post_response(self, opportunity: EngagementOpportunity) -> bool:
-        """Post response to the appropriate platform."""
+        
+"""Post response to the appropriate platform."""
+
         try:
+           
+
+            
+           
+"""
             # Implement rate limiting
+           """"""
+             
+            """
+
+             )
+            
+
+             
+            
+"""
             if not self._check_rate_limit(opportunity.platform):
+                """
+
+                return False
+                
+
+               
+""""""
+
+                
+
+
                 return False
 
+                
+""""""
+                
+               """
             if opportunity.platform == "youtube":
                 return await self._post_youtube_comment(opportunity)
             elif opportunity.platform == "reddit":
@@ -471,11 +775,32 @@ class CommunityEngagementAgent(BaseAgent):
         return False
 
     def _check_rate_limit(self, platform: str) -> bool:
-        """Check if we're within rate limits for posting."""
-        # Implement platform - specific rate limiting
-        # For now, allow 1 post per minute per platform
-        return True
+        """
+Check if we're within rate limits for posting.'
 
+        # Implement platform - specific rate limiting
+       
+""""""
+
+        # For now, allow 1 post per minute per platform
+       
+
+        
+       
+""""""
+
+        return True
+        
+
+       
+""""""
+
+        # For now, allow 1 post per minute per platform
+       
+
+        
+       
+"""
     async def _post_youtube_comment(self, opportunity: EngagementOpportunity) -> bool:
         """Post comment reply on YouTube."""
         # YouTube comment posting would require OAuth
@@ -484,11 +809,18 @@ class CommunityEngagementAgent(BaseAgent):
         return True
 
     async def _post_reddit_comment(self, opportunity: EngagementOpportunity) -> bool:
-        """Post comment reply on Reddit."""
-        if not self.reddit_client:
-            return False
+        """
+Post comment reply on Reddit.
 
+        if not self.reddit_client:
+            
+"""
+            return False
+            """"""
         try:
+            """
+            return False
+            """
             submission = self.reddit_client.submission(id=opportunity.content_id)
             submission.reply(opportunity.response_generated)
             return True
@@ -503,22 +835,42 @@ class CommunityEngagementAgent(BaseAgent):
         return True
 
     def _update_engagement_metrics(self, stats: Dict[str, int]):
-        """Update daily engagement metrics."""
-        today = datetime.now().date()
+        """
+Update daily engagement metrics.
 
+       
+""""""
+
+        today = datetime.now().date()
+       
+
+        
+       
+"""
         with sqlite3.connect(self.db_path) as conn:
             for platform in ["youtube", "reddit", "twitter"]:
+       """
+
+        
+       
+
+        today = datetime.now().date()
+       
+""""""
                 engagement_rate = (
                     stats["responses_posted"] / max(stats["opportunities_found"], 1)
-                ) * 100
+#                 ) * 100
 
                 conn.execute(
-                    """
+                    """"""
+
                     INSERT OR REPLACE INTO engagement_metrics
                     (date, platform, opportunities_found, responses_generated,
-                        responses_posted, engagement_rate)
+#                         responses_posted, engagement_rate)
                     VALUES (?, ?, ?, ?, ?, ?)
-                    """,
+                    
+,
+"""
                     (
                         today,
                         platform,
@@ -526,25 +878,55 @@ class CommunityEngagementAgent(BaseAgent):
                         stats["responses_generated"],
                         stats["responses_posted"],
                         engagement_rate,
-                    ),
-                )
+                     ),
+                 )
 
     def get_engagement_analytics(self, days: int = 30) -> Dict[str, Any]:
-        """Get engagement analytics for the dashboard."""
+        """
+Get engagement analytics for the dashboard.
+
         with sqlite3.connect(self.db_path) as conn:
+           
+""""""
+
             # Get recent metrics
+           
+
+            
+           
+"""
             cursor = conn.execute(
-                """
+               """
+
+                
+               
+
                 SELECT platform, SUM(opportunities_found), SUM(responses_generated),
                     SUM(responses_posted), AVG(engagement_rate)
                 FROM engagement_metrics
                 WHERE date >= date('now', '-{} days')
                 GROUP BY platform
-                """.format(
-                    days
-                )
-            )
+                
+""".format("""
 
+                    days
+                 )
+            
+
+             
+            
+"""
+             )
+            """"""
+            
+           """
+
+            # Get recent metrics
+           
+
+            
+           
+"""
             metrics = {}
             for row in cursor.fetchall():
                 platform, found, generated, posted, rate = row
@@ -553,7 +935,7 @@ class CommunityEngagementAgent(BaseAgent):
                     "responses_generated": generated or 0,
                     "responses_posted": posted or 0,
                     "engagement_rate": rate or 0.0,
-                }
+                 }
 
             return metrics
 

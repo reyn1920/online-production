@@ -42,7 +42,8 @@ if __name__ == "__main__":
     models = [
         "EdgeTTS",
         "PaddleTTS",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     # 循环更换模型并生成TTS
     for model_name in models:
@@ -55,7 +56,8 @@ if __name__ == "__main__":
             "text": text,
             "tts_method": model_name,
             "save_path": f"output_{model_name}.wav",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         output_wav_path = os.path.join(result_dir, f"output_{model_name}.wav")
         request_tts(payload, output_wav_path=output_wav_path)
         print("\\n" + "-" * 50 + "\\n")
@@ -74,7 +76,8 @@ if __name__ == "__main__":
         "prompt_language": "中文",
         "ref_language": "中文",
         "save_path": f"output_{model_name}.wav",
-    }
+# BRACKET_SURGEON: disabled
+#     }
     ref_audio_path = os.path.join(result_dir, "output_EdgeTTS.wav")
     output_wav_path = os.path.join(result_dir, "output_GPT_SoVITS.wav")
     request_tts(payload, ref_audio_path=ref_audio_path, output_wav_path=output_wav_path)
@@ -92,10 +95,12 @@ if __name__ == "__main__":
             "tts_method": cosy_model,
             "cosyvoice_mode": "预训练音色" if "SFT模式" in cosy_model else "3s极速复刻",
             "ref_text": "你好，我是Linly - Talker，很高兴认识大家",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         ref_audio_path = (
             os.path.join(result_dir, "output_EdgeTTS.wav") if "克隆翻译模式" in cosy_model else None
-        )
+# BRACKET_SURGEON: disabled
+#         )
         output_wav_path = os.path.join(result_dir, f"output_{cosy_model}.wav")
         request_tts(payload, ref_audio_path=ref_audio_path, output_wav_path=output_wav_path)
         print("\\n" + "-" * 50 + "\\n")

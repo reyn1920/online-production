@@ -1,14 +1,14 @@
 #!/usr / bin / env python3
-"""
+""""""
 Humor Style Database for The Right Perspective Channel
 
 This module provides humor \
-    and style generation specifically for "The Right Perspective" channel.
+#     and style generation specifically for "The Right Perspective" channel.
 It's part of the Protected Channel Protocol and should maintain the channel's unique
 witty / sarcastic tone for political commentary.
 
 PROTECTED CHANNEL COMPONENT - DO NOT MODIFY
-"""
+""""""
 
 import json
 import logging
@@ -35,12 +35,12 @@ class HumorStyle:
 
 
 class HumorStyleDatabase:
-    """
-    Database manager for The Right Perspective's humor and style generation.
+    """"""
+    Database manager for The Right Perspective's humor and style generation.'
 
     This class is part of the Protected Channel Protocol and provides the unique
-    witty / sarcastic "banter" that defines The Right Perspective's content style.
-    """
+    witty / sarcastic "banter" that defines The Right Perspective's content style.'
+    """"""
 
     def __init__(self, db_path: str = "./data / right_perspective.db"):
         self.db_path = Path(db_path)
@@ -61,75 +61,85 @@ class HumorStyleDatabase:
                 cursor = conn.cursor()
                 cursor.execute(
                     "SELECT COUNT(*) FROM channels WHERE channel_name = 'The Right Perspective'"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if cursor.fetchone()[0] == 0:
                     raise ValueError(
                         "PROTECTED CHANNEL ERROR: The Right Perspective channel not found in database"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
         except Exception as e:
             self.logger.error(f"Protected channel validation failed: {e}")
             raise
 
     def _load_humor_styles(self) -> Dict[str, HumorStyle]:
-        """Load The Right Perspective's signature humor styles."""
+        """Load The Right Perspective's signature humor styles."""'
         return {
             "political_hypocrisy": HumorStyle(
                 style_name="Political Hypocrisy Exposé",
                 tone_descriptors=["sarcastic", "incisive", "fact - based", "witty"],
                 opening_phrases=[
                     "Well, well, well... look what we have here.",
-                    "You know what's fascinating about politicians?",
+                    "You know what's fascinating about politicians?",'
                     "Let me get this straight...",
                     "Oh, this is rich.",
                     "I love it when politicians think we have amnesia.",
-                    "Here's a fun little contradiction for you.",
-                ],
+                    "Here's a fun little contradiction for you.",'
+# BRACKET_SURGEON: disabled
+#                 ],
                 transition_phrases=[
-                    "But wait, there's more!",
+                    "But wait, there's more!",'
                     "Plot twist:",
-                    "Here's where it gets interesting...",
-                    "Now, let's rewind to...",
+                    "Here's where it gets interesting...",'
+                    "Now, let's rewind to...",'
                     "Fast forward to today, and...",
-                    "The receipts don't lie, folks.",
-                ],
+                    "The receipts don't lie, folks.",'
+# BRACKET_SURGEON: disabled
+#                 ],
                 closing_phrases=[
                     "The hypocrisy is almost impressive.",
-                    "You can't make this stuff up.",
+                    "You can't make this stuff up.",'
                     "And that, folks, is how you spot a flip - flopper.",
                     "The receipts speak for themselves.",
                     "Remember this the next time they try to gaslight you.",
                     "Politics: where consistency goes to die.",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 sarcasm_level=0.8,
                 wit_intensity=0.9,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "breaking_news_analysis": HumorStyle(
                 style_name="Breaking News Reality Check",
                 tone_descriptors=["analytical", "skeptical", "humorous", "direct"],
                 opening_phrases=[
                     "Breaking news just broke, and so did my faith in journalism.",
-                    "Let's unpack this latest political theater, shall we?",
-                    "The news cycle is spinning faster than a politician's excuses.",
-                    "Time for a reality check on today's headlines.",
+                    "Let's unpack this latest political theater, shall we?",'
+                    "The news cycle is spinning faster than a politician's excuses.",'
+                    "Time for a reality check on today's headlines.",'
                     "Another day, another political plot twist.",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 transition_phrases=[
                     "Meanwhile, in reality...",
                     "The plot thickens...",
                     "But here's what they're not telling you:",
-                    "Let's connect the dots, shall we?",
+                    "Let's connect the dots, shall we?",'
                     "The timing is... interesting.",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 closing_phrases=[
                     "Stay skeptical, stay informed.",
                     "Question everything, especially the convenient narratives.",
                     "The truth is usually somewhere between the headlines.",
                     "Keep your critical thinking caps on, folks.",
                     "Remember: if it sounds too convenient, it probably is.",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 sarcasm_level=0.6,
                 wit_intensity=0.7,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "evidence_presentation": HumorStyle(
                 style_name="Evidence - Based Roasting",
                 tone_descriptors=[
@@ -137,32 +147,38 @@ class HumorStyleDatabase:
                     "devastating",
                     "fact - driven",
                     "entertaining",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 opening_phrases=[
                     "Time to present the evidence, your honor.",
-                    "Let's go to the receipts, shall we?",
+                    "Let's go to the receipts, shall we?",'
                     "The facts are about to get uncomfortable.",
                     "Evidence time! *cracks knuckles*",
-                    "Buckle up, we're going fact - checking.",
-                ],
+                    "Buckle up, we're going fact - checking.",'
+# BRACKET_SURGEON: disabled
+#                 ],
                 transition_phrases=[
                     "Exhibit A:",
-                    "But wait, there's documentation!",
+                    "But wait, there's documentation!",'
                     "The paper trail tells a different story...",
                     "According to their own words...",
                     "The evidence suggests otherwise...",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 closing_phrases=[
                     "Case closed.",
                     "The evidence has spoken.",
-                    "Facts don't care about your narrative.",
-                    "And that's how you fact - check with style.",
+                    "Facts don't care about your narrative.",'
+                    "And that's how you fact - check with style.",'
                     "Truth: 1, Spin: 0.",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 sarcasm_level=0.7,
                 wit_intensity=0.8,
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     def generate_humor_content(
         self,
@@ -170,7 +186,7 @@ class HumorStyleDatabase:
         evidence_data: Dict[str, Any],
         style_preference: str = "political_hypocrisy",
     ) -> Dict[str, Any]:
-        """
+        """"""
         Generate humorous content for The Right Perspective based on evidence data.
 
         Args:
@@ -180,7 +196,7 @@ class HumorStyleDatabase:
 
         Returns:
             Dictionary containing generated humor content
-        """
+        """"""
         try:
             if style_preference not in self.humor_styles:
                 style_preference = "political_hypocrisy"  # Default fallback
@@ -196,15 +212,18 @@ class HumorStyleDatabase:
                     "descriptors": style.tone_descriptors,
                     "sarcasm_level": style.sarcasm_level,
                     "wit_intensity": style.wit_intensity,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "content_hooks": self._generate_content_hooks(topic, evidence_data),
                 "fact_integration_phrases": self._get_fact_integration_phrases(),
                 "style_name": style.style_name,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.logger.info(
                 f"Generated humor content for topic: {topic} using style: {style_preference}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return content
 
         except Exception as e:
@@ -215,23 +234,26 @@ class HumorStyleDatabase:
         """Generate topic - specific content hooks based on evidence."""
         hooks = [
             f"Let's talk about {topic} \
-    and the fascinating world of political memory loss.",
+#     and the fascinating world of political memory loss.",
             f"Today's episode of 'Things Politicians Hope You'll Forget' features {topic}.",
             f"The {topic} situation is a masterclass in political gymnastics.",
             f"Breaking: Local politician discovers {topic}, immediately forgets previous position.",
-            f"In today's edition of 'Receipts vs. Reality,' we examine {topic}.",
-        ]
+            f"In today's edition of 'Receipts vs. Reality,' we examine {topic}.",'
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Add evidence - specific hooks if available
         if evidence_data.get("content_type") == "quote":
             hooks.append(
                 f"Someone said something about {topic}. Plot twist: they said the opposite before."
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif evidence_data.get("content_type") == "statistic":
             hooks.append(
-                f"The numbers on {topic} are in, \
-    and they're not what politicians claimed."
-            )
+                f"The numbers on {topic} are in, \"
+#     and they're not what politicians claimed."
+# BRACKET_SURGEON: disabled
+#             )
 
         return hooks
 
@@ -240,7 +262,7 @@ class HumorStyleDatabase:
         return [
             "According to the receipts...",
             "The documentation shows...",
-            "Here's what actually happened...",
+            "Here's what actually happened...",'
             "The timeline reveals...",
             "Public records indicate...",
             "Their own words prove...",
@@ -248,23 +270,26 @@ class HumorStyleDatabase:
             "Historical data confirms...",
             "The facts paint a different picture...",
             "Reality check: the data shows...",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def _get_fallback_content(self) -> Dict[str, Any]:
         """Provide fallback content if generation fails."""
         return {
             "opening": "Well, this is awkward...",
-            "transition": "But here's the thing...",
+            "transition": "But here's the thing...",'
             "closing": "The truth has a way of surfacing.",
             "tone_guidance": {
                 "descriptors": ["witty", "factual", "engaging"],
                 "sarcasm_level": 0.5,
                 "wit_intensity": 0.6,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "content_hooks": ["Let's dive into today's political reality check."],
             "fact_integration_phrases": ["The facts show..."],
             "style_name": "Default Fallback",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_available_styles(self) -> List[str]:
         """Get list of available humor styles."""
@@ -281,16 +306,17 @@ class HumorStyleDatabase:
                 "wit_intensity": style.wit_intensity,
                 "sample_opening": style.opening_phrases[0],
                 "sample_closing": style.closing_phrases[0],
-            }
+# BRACKET_SURGEON: disabled
+#             }
         return None
 
     def validate_protected_status(self) -> bool:
-        """
+        """"""
         Validate that The Right Perspective channel maintains its protected status.
 
         Returns:
             True if channel is properly protected, False otherwise
-        """
+        """"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -298,25 +324,29 @@ class HumorStyleDatabase:
                 # Check channel protection
                 cursor.execute(
                     "SELECT notes FROM channels WHERE channel_name = 'The Right Perspective'"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 result = cursor.fetchone()
 
                 if not result or "PROTECTED CHANNEL" not in result[0]:
                     self.logger.error(
                         "PROTECTION BREACH: The Right Perspective channel protection compromised"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return False
 
                 # Check persona protection
                 cursor.execute(
                     "SELECT writing_style_description FROM author_personas WHERE channel_name = 'The Right Perspective'"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 result = cursor.fetchone()
 
                 if not result or "PROTECTED READ - ONLY PERSONA" not in result[0]:
                     self.logger.error(
                         "PROTECTION BREACH: The Right Perspective persona protection compromised"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     return False
 
                 return True
@@ -332,17 +362,18 @@ class HumorStyleDatabase:
 def get_humor_style_for_right_perspective(
     topic: str, evidence_data: Dict[str, Any]
 ) -> Dict[str, Any]:
-    """
+    """"""
     Main entry point for The Right Perspective humor style generation.
     This function enforces the Protected Channel Protocol.
-    """
+    """"""
     humor_db = HumorStyleDatabase()
 
     # Validate protection before proceeding
     if not humor_db.validate_protected_status():
         raise RuntimeError(
             "PROTECTED CHANNEL VIOLATION: The Right Perspective protection compromised"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     return humor_db.generate_humor_content(topic, evidence_data)
 
@@ -356,7 +387,8 @@ if __name__ == "__main__":
         "topic": "Healthcare Policy",
         "content": "Politicians flip - flopping on healthcare",
         "content_type": "quote",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     result = humor_db.generate_humor_content("Healthcare Policy", test_evidence)
     print(json.dumps(result, indent=2))

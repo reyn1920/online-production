@@ -23,8 +23,10 @@ celery_app = Celery(
         "tasks.business_automation",
         "tasks.platform_integration",
         "tasks.document_processing",
-    ],
-)
+# BRACKET_SURGEON: disabled
+#     ],
+# BRACKET_SURGEON: disabled
+# )
 
 # Celery configuration
 celery_app.conf.update(
@@ -34,7 +36,8 @@ celery_app.conf.update(
         "tasks.business_automation.*": {"queue": "business"},
         "tasks.platform_integration.*": {"queue": "platform"},
         "tasks.document_processing.*": {"queue": "documents"},
-    },
+# BRACKET_SURGEON: disabled
+#     },
     # Queue definitions
     task_queues=(
         Queue("content", routing_key="content"),
@@ -42,7 +45,8 @@ celery_app.conf.update(
         Queue("platform", routing_key="platform"),
         Queue("documents", routing_key="documents"),
         Queue("default", routing_key="default"),
-    ),
+# BRACKET_SURGEON: disabled
+#     ),
     # Task serialization
     task_serializer="json",
     accept_content=["json"],
@@ -69,17 +73,22 @@ celery_app.conf.update(
         "analyze - market - trends": {
             "task": "tasks.business_automation.analyze_market_trends",
             "schedule": 3600.0,  # Every hour
-        },
+# BRACKET_SURGEON: disabled
+#         },
         "optimize - business - performance": {
             "task": "tasks.business_automation.optimize_business_performance",
             "schedule": 1800.0,  # Every 30 minutes
-        },
+# BRACKET_SURGEON: disabled
+#         },
         "sync - platform - data": {
             "task": "tasks.platform_integration.sync_all_platforms",
             "schedule": 900.0,  # Every 15 minutes
-        },
-    },
-)
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# )
 
 # Task annotations for resource allocation
 celery_app.conf.task_annotations = {
@@ -87,23 +96,28 @@ celery_app.conf.task_annotations = {
         "rate_limit": "10 / m",
         "time_limit": 300,  # 5 minutes
         "soft_time_limit": 240,  # 4 minutes
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "tasks.business_automation.launch_business": {
         "rate_limit": "5 / m",
         "time_limit": 600,  # 10 minutes
         "soft_time_limit": 540,  # 9 minutes
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "tasks.platform_integration.upload_to_platform": {
         "rate_limit": "20 / m",
         "time_limit": 180,  # 3 minutes
         "soft_time_limit": 150,  # 2.5 minutes
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "tasks.document_processing.convert_document": {
         "rate_limit": "30 / m",
         "time_limit": 120,  # 2 minutes
         "soft_time_limit": 90,  # 1.5 minutes
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 if __name__ == "__main__":
     celery_app.start()

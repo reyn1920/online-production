@@ -5,7 +5,8 @@ from .base_monetization import (
     MonetizationError,
     Product,
     ProductResponse,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from .etsy_api import EtsyAPI
 from .gumroad_api import GumroadAPI
@@ -13,7 +14,8 @@ from .monetization_manager import (
     MonetizationManager,
     MultiPlatformResult,
     PlatformConfig,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from .paddle_api import PaddleAPI
 from .sendowl_api import SendOwlAPI
@@ -30,4 +32,5 @@ __all__ = [
     "MonetizationManager",
     "PlatformConfig",
     "MultiPlatformResult",
-]
+# BRACKET_SURGEON: disabled
+# ]

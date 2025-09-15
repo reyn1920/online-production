@@ -15,7 +15,8 @@ CONFIG = ROOT / "config"
 CONFIG.mkdir(parents = True, exist_ok = True)
 TOKENS = (
     CONFIG / "instagram.tokens.json"
-)  # use your encrypted store later if you prefer
+# BRACKET_SURGEON: disabled
+# )  # use your encrypted store later if you prefer
 
 
 def _load() -> dict:
@@ -47,7 +48,8 @@ class InstagramClient:
     redirect_uri: Optional[str] = None
     scopes: str = (
         "pages_show_list,instagram_basic,instagram_content_publish,pages_read_engagement,business_management"
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # hydrated at runtime
     user_access_token: Optional[str] = None  # long - lived user token
@@ -65,13 +67,15 @@ class InstagramClient:
                 app_secret = os.getenv("FB_APP_SECRET"),
                 redirect_uri = os.getenv(
                 "FB_REDIRECT_URI"
-            ),  # e.g. https://your.host / social / oauth / instagram / callback
+# BRACKET_SURGEON: disabled
+#             ),  # e.g. https://your.host / social / oauth / instagram / callback
             scopes = os.getenv("FB_APP_SCOPES", cls.scopes),
                 user_access_token = data.get("user_access_token"),
                 page_id = data.get("page_id"),
                 page_access_token = data.get("page_access_token"),
                 ig_user_id = data.get("ig_user_id"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
 
     def ready(self) -> bool:
@@ -81,6 +85,7 @@ class InstagramClient:
 
 
         def get_auth_url(self, state: str) -> str:
+            pass
         if not self.app_id or not self.redirect_uri:
             raise RuntimeError("FB_APP_ID / FB_REDIRECT_URI not set")
         params = {
@@ -89,7 +94,8 @@ class InstagramClient:
                 "scope": self.scopes,
                 "response_type": "code",
                 "state": state,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         q = "&".join(f"{k}={requests.utils.quote(v)}" for k, v in params.items())
         return f"https://www.facebook.com / v21.0 / dialog / oauth?{q}"
 
@@ -102,7 +108,8 @@ class InstagramClient:
                 client_secret = self.app_secret,
                 redirect_uri = self.redirect_uri,
                 code = code,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         sc, j = _http("GET", url, params = params)
         if sc != 200:
             return {"ok": False, "step": "short_token", "status": sc, "error": j}
@@ -116,7 +123,8 @@ class InstagramClient:
                 client_id = self.app_id,
                 client_secret = self.app_secret,
                 fb_exchange_token = short,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         sc, j = _http("GET", url, params = params)
         if sc != 200:
             return {"ok": False, "step": "long_token", "status": sc, "error": j}
@@ -137,7 +145,8 @@ class InstagramClient:
             "GET",
                 f"{GRAPH}/{page_id}",
                 params={"fields": "instagram_business_account", "access_token": page_token},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         ig_user_id = (j.get("instagram_business_account") or {}).get("id")
 
         if not ig_user_id:
@@ -150,8 +159,10 @@ class InstagramClient:
                     "page_id": page_id,
                     "page_access_token": page_token,
                     "ig_user_id": ig_user_id,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#         )
         self.user_access_token = user_ll
         self.page_id = page_id
         self.page_access_token = page_token
@@ -162,11 +173,13 @@ class InstagramClient:
 
 
         def _publish_creation(self, creation_id: str) -> Dict[str, Any]:
+            pass
         sc, j = _http(
             "POST",
                 f"{GRAPH}/{self.ig_user_id}/media_publish",
                 data={"creation_id": creation_id, "access_token": self.page_access_token},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
         return {"status": sc, **j}
 
 
@@ -177,7 +190,8 @@ class InstagramClient:
             "caption": caption or "",
                 "image_url": image_url,
                 "access_token": self.page_access_token,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         sc, j = _http("POST", f"{GRAPH}/{self.ig_user_id}/media", data = data)
         if sc != 200 or "id" not in j:
             return {"ok": False, "step": "create_media", "status": sc, "error": j}
@@ -196,7 +210,8 @@ class InstagramClient:
                 "video_url": video_url,
                 "share_to_feed": str(share_to_feed).lower(),
                 "access_token": self.page_access_token,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         sc, j = _http("POST", f"{GRAPH}/{self.ig_user_id}/media", data = data)
         if sc != 200 or "id" not in j:
             return {"ok": False, "step": "create_reel", "status": sc, "error": j}
@@ -208,12 +223,14 @@ class InstagramClient:
 
 
         def insights(self) -> Dict[str, Any]:
+            pass
         if not self.ready():
             return {"ok": False, "reason": "Not configured"}
         params = {
             "metric": "impressions,reach,profile_views,follower_count",
                 "period": "day",
                 "access_token": self.page_access_token,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         sc, j = _http("GET", f"{GRAPH}/{self.ig_user_id}/insights", params = params)
         return {"ok": sc == 200, "status": sc, "data": j}

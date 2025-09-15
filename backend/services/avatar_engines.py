@@ -1,16 +1,26 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Avatar Engine Services - Standardized Wrappers for Avatar Generation
-
+""""""
 This module provides standardized wrapper services for different avatar generation engines:
 - Linly - Talker (primary engine)
 - Talking Heads (fallback engine)
+"""
+
+Avatar Engine Services - Standardized Wrappers for Avatar Generation
+
+
+
+""""""
 
 Each wrapper provides a consistent API interface for the orchestrator to use,
 handling engine - specific configurations and error handling.
 
+
+
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import asyncio
@@ -40,14 +50,14 @@ try:
         coord_placeholder,
         get_landmark_and_bbox,
         read_imgs,
-    )
+     )
 
     from musetalk.utils.utils import (
         datagen,
         get_file_type,
         get_video_fps,
         load_all_model,
-    )
+     )
 
     MUSETALK_AVAILABLE = True
 except ImportError as e:
@@ -61,7 +71,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class AvatarRequest:
-    """Standardized avatar generation request."""
+    """
+Standardized avatar generation request.
+
 
     text: str
     voice_settings: Dict[str, Any]
@@ -69,8 +81,15 @@ class AvatarRequest:
     output_path: Optional[str] = None
     source_image: Optional[str] = None
     request_id: Optional[str] = None
-    gender: Optional[str] = None
+   
+""""""
 
+    gender: Optional[str] = None
+   
+
+    
+   
+"""
     def __post_init__(self):
         if self.request_id is None:
             self.request_id = f"avatar_{uuid4().hex[:8]}"
@@ -78,7 +97,9 @@ class AvatarRequest:
 
 @dataclass
 class AvatarResponse:
-    """Standardized avatar generation response."""
+    """
+Standardized avatar generation response.
+
 
     success: bool
     video_path: Optional[str]
@@ -86,9 +107,15 @@ class AvatarResponse:
     engine_used: str
     processing_time: float
     error_message: Optional[str] = None
+   
+""""""
+
     metadata: Optional[Dict[str, Any]] = None
+   
 
-
+    
+   
+"""
 class BaseAvatarEngine(ABC):
     """Abstract base class for avatar generation engines."""
 
@@ -185,7 +212,7 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                 self.is_initialized = True
                 self.logger.info(
                     "Linly - Talker engine initialized successfully with direct model inference"
-                )
+                 )
                 return True
 
             except Exception as e:
@@ -205,19 +232,49 @@ class LinlyTalkerEngine(BaseAvatarEngine):
         return True
 
     async def health_check(self) -> bool:
-        """Check if the models are loaded and ready."""
+        """
+Check if the models are loaded and ready.
+
+       
+""""""
+
         # In test mode, always return healthy
+       
+
+        
+       
+"""
         if self.test_mode:
+       """
+
+        
+       
+
+        # In test mode, always return healthy
+       
+""""""
+
+            
+
             return True
+            
+""""""
+
+            
+           
 
         try:
+            
+"""
+            return True
+            """"""
             if not MUSETALK_AVAILABLE:
                 return False
 
             # Check if models are loaded
             if not self.is_initialized or not all(
                 [self.audio_processor, self.vae, self.unet, self.pe]
-            ):
+#             ):
                 return False
 
             # Check if model files exist
@@ -226,7 +283,7 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                 model_dir / "models" / "musetalk" / "pytorch_model.bin",
                 model_dir / "models" / "whisper" / "tiny.pt",
                 model_dir / "models" / "sd - vae - ft - mse",
-            ]
+             ]
 
             for path in required_paths:
                 if not path.exists():
@@ -240,10 +297,27 @@ class LinlyTalkerEngine(BaseAvatarEngine):
             return False
 
     async def generate_avatar(self, request: AvatarRequest) -> AvatarResponse:
-        """Generate avatar using direct MuseTalk model inference."""
-        start_time = time.time()
+        """
+Generate avatar using direct MuseTalk model inference.
 
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         try:
+       """
+
+        
+       
+
+        start_time = time.time()
+       
+""""""
             if not self.is_initialized:
                 if not await self.initialize():
                     return AvatarResponse(
@@ -253,7 +327,7 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                         engine_used=self.engine_name,
                         processing_time=time.time() - start_time,
                         error_message="Engine not initialized",
-                    )
+                     )
 
             # In test mode, return mock response
             if self.test_mode:
@@ -270,8 +344,8 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                         "model_version": "test - v1.0",
                         "quality_score": 0.95,
                         "processing_details": "test_mode_simulation",
-                    },
-                )
+                     },
+                 )
 
             # Check health before processing
             if not await self.health_check():
@@ -282,16 +356,16 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                     engine_used=self.engine_name,
                     processing_time=time.time() - start_time,
                     error_message="Engine health check failed",
-                )
+                 )
 
             self.logger.info(
                 f"Generating avatar with direct MuseTalk inference for request {request.request_id}"
-            )
+             )
 
             # Run model inference in thread pool to avoid blocking
             result = await asyncio.get_event_loop().run_in_executor(
                 None, self._run_musetalk_inference, request
-            )
+             )
 
             processing_time = time.time() - start_time
 
@@ -306,8 +380,8 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                         "model_version": "musetalk - v1.0",
                         "quality_score": result.get("quality_score", 0.9),
                         "processing_details": "direct_model_inference",
-                    },
-                )
+                     },
+                 )
             else:
                 return AvatarResponse(
                     success=False,
@@ -316,7 +390,7 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                     engine_used=self.engine_name,
                     processing_time=processing_time,
                     error_message=result.get("error", "Unknown inference error"),
-                )
+                 )
 
         except Exception as e:
             return AvatarResponse(
@@ -326,15 +400,39 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                 engine_used=self.engine_name,
                 processing_time=time.time() - start_time,
                 error_message=str(e),
-            )
+             )
 
     def _run_musetalk_inference(self, request: AvatarRequest) -> Dict[str, Any]:
-        """Run MuseTalk model inference in a separate thread."""
-        try:
-            # Change to model directory
-            original_cwd = os.getcwd()
-            os.chdir(str(Path(self.model_path)))
+        """
+Run MuseTalk model inference in a separate thread.
 
+        try:
+           
+""""""
+
+            # Change to model directory
+           
+
+            
+           
+"""
+            original_cwd = os.getcwd()
+           """
+
+            
+           
+
+            os.chdir(str(Path(self.model_path)))
+           
+""""""
+
+           
+
+            
+           
+"""
+            # Change to model directory
+           """"""
             try:
                 # Create temporary files for input/output
                 with tempfile.TemporaryDirectory() as temp_dir:
@@ -356,7 +454,7 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                         Path(request.output_path).parent
                         if request.output_path
                         else Path("./generated")
-                    )
+                     )
                     output_dir.mkdir(exist_ok=True)
                     video_path = output_dir / f"avatar_{request.request_id}.mp4"
 
@@ -371,7 +469,7 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                         "video_path": str(video_path),
                         "duration": duration,
                         "quality_score": 0.9,
-                    }
+                     }
 
             finally:
                 os.chdir(original_cwd)
@@ -381,14 +479,24 @@ class LinlyTalkerEngine(BaseAvatarEngine):
             return {"success": False, "error": str(e)}
 
     def _generate_audio(self, text: str, output_path: str, voice_settings: Dict[str, Any]):
-        """Generate audio from text using TTS."""
-        import wave
-        import numpy as np
+        """
+Generate audio from text using TTS.
 
+        import wave
+        
+"""
+        import numpy as np
+        """"""
         try:
             # Try to use pyttsx3 for TTS if available
             import pyttsx3
+        """
 
+        import numpy as np
+        
+
+       
+""""""
             engine = pyttsx3.init()
 
             # Configure voice settings
@@ -489,13 +597,31 @@ class LinlyTalkerEngine(BaseAvatarEngine):
             raise
 
     def _process_musetalk_batch(self, batch, coord):
-        """Process a batch of audio data through MuseTalk models."""
+        """
+Process a batch of audio data through MuseTalk models.
+
         try:
             # This would contain the actual MuseTalk inference logic
+           
+""""""
+
             # For now, return a placeholder frame
+           
+
+            
+           
+"""
             frames = []
             # In real implementation, this would use the MuseTalk models
             # to generate frames based on audio features and facial coordinates
+           """
+
+            
+           
+
+            # For now, return a placeholder frame
+           
+""""""
             return frames
         except Exception as e:
             self.logger.error(f"Error processing MuseTalk batch: {e}")
@@ -514,12 +640,43 @@ class LinlyTalkerEngine(BaseAvatarEngine):
                 writer.write(frame)
 
     def _get_video_duration(self, video_path: str) -> float:
-        """Get video duration in seconds."""
+        """
+Get video duration in seconds.
+
+        
+"""
         try:
+        """
+
             cap = cv2.VideoCapture(video_path)
+        
+
+        try:
+        
+"""
             fps = cap.get(cv2.CAP_PROP_FPS)
             frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+           """
+
+            
+           
+
             cap.release()
+           
+""""""
+
+           
+
+
+            
+
+           
+"""
+            cap.release()
+           """
+
+            
+           
 
             if fps > 0:
                 return frame_count / fps
@@ -529,8 +686,10 @@ class LinlyTalkerEngine(BaseAvatarEngine):
 
 
 class TalkingHeadsEngine(BaseAvatarEngine):
-    """Talking Heads fallback avatar generation engine wrapper."""
-
+    """
+    Talking Heads fallback avatar generation engine wrapper.
+    """
+    
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         super().__init__("talking - heads - fallback", config)
         self.model_path = self.config.get("model_path", "./models/talking_heads")
@@ -547,7 +706,7 @@ class TalkingHeadsEngine(BaseAvatarEngine):
             if self.test_mode:
                 self.logger.info(
                     "Running in test mode - skipping model loading and service startup"
-                )
+                 )
                 self.is_initialized = True
                 return True
 
@@ -596,13 +755,43 @@ class TalkingHeadsEngine(BaseAvatarEngine):
             raise
 
     async def health_check(self) -> bool:
-        """Check if Talking Heads service is healthy."""
+        """
+Check if Talking Heads service is healthy.
+
+       
+""""""
+
         # In test mode, always return healthy
+       
+
+        
+       
+"""
         if self.test_mode:
+       """
+
+        
+       
+
+        # In test mode, always return healthy
+       
+""""""
+
+            
+
             return True
+            
+""""""
+
+            
+           
 
         # For now, check if model path exists and is accessible
         try:
+            
+"""
+            return True
+            """
             model_exists = os.path.exists(self.model_path)
             self.last_health_check = datetime.now()
             if model_exists:
@@ -615,10 +804,27 @@ class TalkingHeadsEngine(BaseAvatarEngine):
             return False
 
     async def generate_avatar(self, request: AvatarRequest) -> AvatarResponse:
-        """Generate avatar using Talking Heads."""
-        start_time = time.time()
+        """
+Generate avatar using Talking Heads.
 
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         try:
+       """
+
+        
+       
+
+        start_time = time.time()
+       
+""""""
             if not self.is_initialized:
                 if not await self.initialize():
                     return AvatarResponse(
@@ -628,7 +834,7 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                         engine_used=self.engine_name,
                         processing_time=time.time() - start_time,
                         error_message="Engine not initialized",
-                    )
+                     )
 
             # In test mode, return mock response
             if self.test_mode:
@@ -645,8 +851,8 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                         "model_version": "test - fallback - v1.0",
                         "quality_score": 0.88,
                         "fallback_used": True,
-                    },
-                )
+                     },
+                 )
 
             # Check health before processing
             if not await self.health_check():
@@ -657,11 +863,11 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                     engine_used=self.engine_name,
                     processing_time=time.time() - start_time,
                     error_message="Engine health check failed",
-                )
+                 )
 
             self.logger.info(
                 f"Generating avatar with Talking Heads for request {request.request_id}"
-            )
+             )
 
             # Prepare request payload
             payload = {
@@ -670,12 +876,12 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                 "video_settings": request.video_settings,
                 "source_image": request.source_image,
                 "gender": request.gender or "neutral",
-            }
+             }
 
             # Make request to Talking Heads service
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=self.timeout)
-            ) as session:
+#             ) as session:
                 async with session.post(f"{self.base_url}/generate", json=payload) as response:
                     if response.status == 200:
                         result = await response.json()
@@ -692,8 +898,8 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                                 "model_version": result.get("model_version"),
                                 "quality_score": result.get("quality_score"),
                                 "fallback_used": True,
-                            },
-                        )
+                             },
+                         )
                     else:
                         error_text = await response.text()
                         return AvatarResponse(
@@ -703,7 +909,7 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                             engine_used=self.engine_name,
                             processing_time=time.time() - start_time,
                             error_message=f"HTTP {response.status}: {error_text}",
-                        )
+                         )
 
         except asyncio.TimeoutError:
             return AvatarResponse(
@@ -713,7 +919,7 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                 engine_used=self.engine_name,
                 processing_time=time.time() - start_time,
                 error_message="Request timeout",
-            )
+             )
         except Exception as e:
             return AvatarResponse(
                 success=False,
@@ -722,7 +928,7 @@ class TalkingHeadsEngine(BaseAvatarEngine):
                 engine_used=self.engine_name,
                 processing_time=time.time() - start_time,
                 error_message=str(e),
-            )
+             )
 
 
 class AvatarEngineManager:
@@ -745,36 +951,62 @@ class AvatarEngineManager:
                 results[name] = await engine.initialize()
                 self.logger.info(
                     f"Engine {name} initialization: {'SUCCESS' if results[name] else 'FAILED'}"
-                )
+                 )
             except Exception as e:
                 results[name] = False
                 self.logger.error(f"Engine {name} initialization failed: {e}")
         return results
 
     async def get_engine(self, engine_name: str) -> Optional[BaseAvatarEngine]:
-        """Get an engine by name."""
+        """
+Get an engine by name.
+
         engine = self.engines.get(engine_name)
         if engine and not engine.is_initialized:
             await engine.initialize()
+        
+"""
         return engine
-
+        """"""
     async def generate_avatar_with_failover(
         self,
         request: AvatarRequest,
         preferred_engine: str = "linly - talker - enhanced",
-    ) -> AvatarResponse:
-        """Generate avatar with automatic failover."""
+#     ) -> AvatarResponse:
+        """
+Generate avatar with automatic failover.
+
+       
+""""""
+
         # Try preferred engine first
+       
+
+        
+       
+""""""
+
+        return engine
+        
+
         engine = await self.get_engine(preferred_engine)
         if engine:
             response = await engine.generate_avatar(request)
             if response.success:
+                
+"""
                 return response
-
+                """"""
             self.logger.warning(
                 f"Primary engine {preferred_engine} failed: {response.error_message}"
-            )
+             )
+                """
 
+                return response
+                
+
+               
+""""""
         # Try fallback engines
         fallback_engines = [name for name in self.engines.keys() if name != preferred_engine]
         for engine_name in fallback_engines:
@@ -787,7 +1019,7 @@ class AvatarEngineManager:
 
                 self.logger.warning(
                     f"Fallback engine {engine_name} failed: {response.error_message}"
-                )
+                 )
 
         # All engines failed
         return AvatarResponse(
@@ -797,7 +1029,7 @@ class AvatarEngineManager:
             engine_used="none",
             processing_time=0,
             error_message="All avatar engines failed",
-        )
+         )
 
     async def health_check_all(self) -> Dict[str, bool]:
         """Check health of all engines."""
@@ -811,9 +1043,13 @@ class AvatarEngineManager:
         return results
 
     async def get_available_engines(self) -> List[str]:
-        """Get list of available engine names."""
-        return list(self.engines.keys())
+        """
+Get list of available engine names.
 
+        
+"""
+        return list(self.engines.keys())
+        """"""
     async def cleanup_all(self):
         """Cleanup all engines."""
         for engine in self.engines.values():
@@ -821,8 +1057,13 @@ class AvatarEngineManager:
                 await engine.cleanup()
             except Exception as e:
                 self.logger.error(f"Cleanup failed for {engine.engine_name}: {e}")
+        """
 
+        return list(self.engines.keys())
+        
 
+       
+""""""
 # Global engine manager instance
 engine_manager = AvatarEngineManager()
 
@@ -849,24 +1090,61 @@ async def generate_avatar(
     source_image: Optional[str] = None,
     gender: Optional[str] = None,
     preferred_engine: str = "linly - talker - enhanced",
-) -> AvatarResponse:
-    """Generate avatar with automatic failover."""
+# ) -> AvatarResponse:
+    """
+Generate avatar with automatic failover.
+
     request = AvatarRequest(
         text=text,
         voice_settings=voice_settings,
         video_settings=video_settings,
         source_image=source_image,
         gender=gender,
-    )
+    
+""""""
+
+     )
+    
+
+     
+    
+""""""
+
+
+     
+
+    
+
+     )
+    
+""""""
 
     return await engine_manager.generate_avatar_with_failover(request, preferred_engine)
 
 
 async def check_engine_health() -> Dict[str, bool]:
-    """Check health of all avatar engines."""
+        """
+        Check health of all avatar engines.
+        """"""
+
+    return await engine_manager.health_check_all()
+    
+
+   
+""""""
+
+    
+
+
     return await engine_manager.health_check_all()
 
+    
+""""""
+
+    
+   
 
 async def initialize_engines() -> Dict[str, bool]:
-    """Initialize all avatar engines."""
+    
+"""Initialize all avatar engines."""
     return await engine_manager.initialize_all_engines()

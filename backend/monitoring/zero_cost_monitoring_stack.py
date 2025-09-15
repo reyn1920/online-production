@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Zero - Cost Monitoring Stack
-
+""""""
 Implements comprehensive monitoring and analytics using:
 - Prometheus metrics collection
 - Grafana dashboards for visualization
@@ -9,6 +9,8 @@ Implements comprehensive monitoring and analytics using:
 - Performance tracking and alerting
 - Resource usage monitoring
 - Health checks and uptime monitoring
+""""""
+Zero - Cost Monitoring Stack
 """
 
 import json
@@ -36,7 +38,7 @@ try:
         generate_latest,
         push_to_gateway,
         start_http_server,
-    )
+     )
 
     PROMETHEUS_AVAILABLE = True
 except ImportError:
@@ -74,16 +76,24 @@ class AlertSeverity(Enum):
 
 @dataclass
 class MetricDefinition:
-    """Definition of a custom metric"""
+    """
+Definition of a custom metric
+
 
     name: str
     metric_type: MetricType
     description: str
     labels: List[str] = field(default_factory=list)
     buckets: Optional[List[float]] = None  # For histograms
+   
+""""""
+
     unit: Optional[str] = None
+   
 
-
+    
+   
+"""
 @dataclass
 class AlertRule:
     """Alert rule configuration"""
@@ -116,7 +126,9 @@ class MonitoringConfig:
 
 
 class MetricsCollector:
-    """Collects and manages Prometheus metrics"""
+    """
+Collects and manages Prometheus metrics
+
 
     def __init__(self, config: MonitoringConfig):
         self.config = config
@@ -132,11 +144,24 @@ class MetricsCollector:
             self._initialize_custom_metrics()
 
     def _initialize_default_metrics(self):
-        """Initialize default system and application metrics"""
+        
+"""Initialize default system and application metrics"""
+
         if not PROMETHEUS_AVAILABLE:
+            
+
             return
+            
+""""""
+
+            
+           
 
         # System metrics
+            
+"""
+            return
+            """"""
         if self.config.enable_system_metrics:
             self.metrics.update(
                 {
@@ -144,32 +169,32 @@ class MetricsCollector:
                         "system_cpu_usage_percent",
                         "System CPU usage percentage",
                         registry=self.registry,
-                    ),
+                     ),
                     "system_memory_usage": Gauge(
                         "system_memory_usage_bytes",
                         "System memory usage in bytes",
                         ["type"],
                         registry=self.registry,
-                    ),
+                     ),
                     "system_disk_usage": Gauge(
                         "system_disk_usage_bytes",
                         "System disk usage in bytes",
                         ["device", "type"],
                         registry=self.registry,
-                    ),
+                     ),
                     "system_network_io": Counter(
                         "system_network_io_bytes_total",
                         "System network I/O in bytes",
                         ["direction"],
                         registry=self.registry,
-                    ),
+                     ),
                     "system_uptime": Gauge(
                         "system_uptime_seconds",
                         "System uptime in seconds",
                         registry=self.registry,
-                    ),
-                }
-            )
+                     ),
+                 }
+             )
 
         # Application metrics
         if self.config.enable_application_metrics:
@@ -180,75 +205,86 @@ class MetricsCollector:
                         "Total number of scraping requests",
                         ["method", "status", "source"],
                         registry=self.registry,
-                    ),
+                     ),
                     "scraping_duration": Histogram(
                         "scraping_duration_seconds",
                         "Time spent on scraping requests",
                         ["method", "source"],
                         buckets=[0.1, 0.5, 1.0, 2.5, 5.0, 10.0, 30.0, 60.0],
                         registry=self.registry,
-                    ),
+                     ),
                     "api_discovery_total": Counter(
                         "api_discovery_total",
                         "Total number of APIs discovered",
                         ["source", "category", "status"],
                         registry=self.registry,
-                    ),
+                     ),
                     "api_validation_duration": Histogram(
                         "api_validation_duration_seconds",
                         "Time spent validating APIs",
                         ["source"],
                         buckets=[0.5, 1.0, 2.0, 5.0, 10.0, 30.0],
                         registry=self.registry,
-                    ),
+                     ),
                     "cache_operations": Counter(
                         "cache_operations_total",
                         "Total cache operations",
                         ["operation", "result"],
                         registry=self.registry,
-                    ),
+                     ),
                     "active_connections": Gauge(
                         "active_connections",
                         "Number of active connections",
                         ["type"],
                         registry=self.registry,
-                    ),
+                     ),
                     "error_rate": Counter(
                         "errors_total",
                         "Total number of errors",
                         ["component", "error_type"],
                         registry=self.registry,
-                    ),
+                     ),
                     "queue_size": Gauge(
                         "queue_size",
                         "Size of processing queues",
                         ["queue_name"],
                         registry=self.registry,
-                    ),
-                }
-            )
+                     ),
+                 }
+             )
 
     def _initialize_custom_metrics(self):
-        """Initialize custom metrics from configuration"""
-        if not PROMETHEUS_AVAILABLE:
-            return
+        """
+Initialize custom metrics from configuration
 
+        if not PROMETHEUS_AVAILABLE:
+            
+"""
+            return
+            """"""
         for metric_def in self.config.custom_metrics:
             try:
+            """
+
+            return
+            
+
+           
+""""""
                 if metric_def.metric_type == MetricType.COUNTER:
                     metric = Counter(
                         metric_def.name,
                         metric_def.description,
                         metric_def.labels,
                         registry=self.registry,
-                    )
+                     )
                 elif metric_def.metric_type == MetricType.GAUGE:
                     metric = Gauge(
                         metric_def.name,
                         metric_def.description,
                         metric_def.labels,
                         registry=self.registry,
-                    )
+                     )
                 elif metric_def.metric_type == MetricType.HISTOGRAM:
                     metric = Histogram(
                         metric_def.name,
@@ -256,14 +292,14 @@ class MetricsCollector:
                         metric_def.labels,
                         buckets=metric_def.buckets,
                         registry=self.registry,
-                    )
+                     )
                 elif metric_def.metric_type == MetricType.SUMMARY:
                     metric = Summary(
                         metric_def.name,
                         metric_def.description,
                         metric_def.labels,
                         registry=self.registry,
-                    )
+                     )
                 elif metric_def.metric_type == MetricType.INFO:
                     metric = Info(metric_def.name, metric_def.description, registry=self.registry)
                 else:
@@ -275,12 +311,19 @@ class MetricsCollector:
                 self.logger.error(f"Failed to initialize custom metric {metric_def.name}: {e}")
 
     def record_scraping_request(self, method: str, status: str, source: str, duration: float):
-        """Record a scraping request metric"""
-        if not PROMETHEUS_AVAILABLE:
-            return
+        """
+Record a scraping request metric
 
+        if not PROMETHEUS_AVAILABLE:
+            
+"""
+            return
+            """"""
         try:
             self.metrics["scraping_requests_total"].labels(
+            """
+            return
+            """
                 method=method, status=status, source=source
             ).inc()
 
@@ -289,74 +332,161 @@ class MetricsCollector:
             self.logger.error(f"Failed to record scraping metrics: {e}")
 
     def record_api_discovery(self, source: str, category: str, status: str, count: int = 1):
-        """Record API discovery metrics"""
-        if not PROMETHEUS_AVAILABLE:
-            return
+        """
+Record API discovery metrics
 
+        if not PROMETHEUS_AVAILABLE:
+            
+"""
+            return
+            """"""
         try:
             self.metrics["api_discovery_total"].labels(
+            """
+            return
+            """
                 source=source, category=category, status=status
             ).inc(count)
         except Exception as e:
             self.logger.error(f"Failed to record API discovery metrics: {e}")
 
     def record_api_validation(self, source: str, duration: float):
-        """Record API validation metrics"""
-        if not PROMETHEUS_AVAILABLE:
-            return
+        """
+Record API validation metrics
 
+        if not PROMETHEUS_AVAILABLE:
+            
+"""
+            return
+            """"""
         try:
             self.metrics["api_validation_duration"].labels(source=source).observe(duration)
         except Exception as e:
             self.logger.error(f"Failed to record API validation metrics: {e}")
+            """
+
+            return
+            
+
+           
+""""""
 
     def record_cache_operation(self, operation: str, result: str):
-        """Record cache operation metrics"""
+        
+Record cache operation metrics
+"""
         if not PROMETHEUS_AVAILABLE:
-            return
+            """
 
+            return
+            
+
+           
+""""""
         try:
             self.metrics["cache_operations"].labels(operation=operation, result=result).inc()
         except Exception as e:
             self.logger.error(f"Failed to record cache metrics: {e}")
+            """
+
+            return
+            
+
+           
+""""""
 
     def record_error(self, component: str, error_type: str):
-        """Record error metrics"""
+        
+Record error metrics
+"""
         if not PROMETHEUS_AVAILABLE:
-            return
+            """
 
+            return
+            
+
+           
+""""""
         try:
             self.metrics["error_rate"].labels(component=component, error_type=error_type).inc()
         except Exception as e:
             self.logger.error(f"Failed to record error metrics: {e}")
+            """
+
+            return
+            
+
+           
+""""""
 
     def update_queue_size(self, queue_name: str, size: int):
-        """Update queue size metrics"""
+        
+Update queue size metrics
+"""
         if not PROMETHEUS_AVAILABLE:
-            return
+            """
 
+            return
+            
+
+           
+""""""
         try:
             self.metrics["queue_size"].labels(queue_name=queue_name).set(size)
         except Exception as e:
             self.logger.error(f"Failed to update queue size metrics: {e}")
+            """
+
+            return
+            
+
+           
+""""""
 
     def update_active_connections(self, connection_type: str, count: int):
-        """Update active connections metrics"""
+        
+Update active connections metrics
+"""
         if not PROMETHEUS_AVAILABLE:
-            return
+            """
 
+            return
+            
+
+           
+""""""
         try:
             self.metrics["active_connections"].labels(type=connection_type).set(count)
         except Exception as e:
             self.logger.error(f"Failed to update connection metrics: {e}")
+            """
+
+            return
+            
+
+           
+""""""
 
     def collect_system_metrics(self):
-        """Collect system - level metrics"""
+        """
+        Collect system - level metrics
+        """
         if not PROMETHEUS_AVAILABLE or not self.config.enable_system_metrics:
+            """
+
             return
+            
+
+           
+""""""
 
         try:
             # CPU usage
+            
+
+            return
+            
+"""
             cpu_percent = psutil.cpu_percent(interval=1)
             self.metrics["system_cpu_usage"].set(cpu_percent)
 
@@ -373,13 +503,13 @@ class MetricsCollector:
                     device = partition.device.replace("/", "_")
                     self.metrics["system_disk_usage"].labels(device=device, type="used").set(
                         usage.used
-                    )
+                     )
                     self.metrics["system_disk_usage"].labels(device=device, type="free").set(
                         usage.free
-                    )
+                     )
                     self.metrics["system_disk_usage"].labels(device=device, type="total").set(
                         usage.total
-                    )
+                     )
                 except (PermissionError, FileNotFoundError):
                     continue
 
@@ -387,10 +517,10 @@ class MetricsCollector:
             network = psutil.net_io_counters()
             self.metrics["system_network_io"].labels(
                 direction="sent"
-            )._value._value = network.bytes_sent
+#             )._value._value = network.bytes_sent
             self.metrics["system_network_io"].labels(
                 direction="recv"
-            )._value._value = network.bytes_recv
+#             )._value._value = network.bytes_recv
 
             # System uptime
             boot_time = psutil.boot_time()
@@ -401,24 +531,53 @@ class MetricsCollector:
             self.logger.error(f"Failed to collect system metrics: {e}")
 
     def start_collection(self):
-        """Start metrics collection in background thread"""
-        if self.is_running:
-            return
+        """
+Start metrics collection in background thread
 
+        if self.is_running:
+            
+"""
+            return
+            """"""
         self.is_running = True
         self.collection_thread = threading.Thread(target=self._collection_loop, daemon=True)
         self.collection_thread.start()
         self.logger.info("Started metrics collection")
+            """
+
+            return
+            
+
+           
+""""""
 
     def stop_collection(self):
-        """Stop metrics collection"""
+        """
+        Stop metrics collection
+        """"""
+
+        
+       
+
         self.is_running = False
+       
+""""""
         if self.collection_thread:
             self.collection_thread.join(timeout=5)
         self.logger.info("Stopped metrics collection")
+       """
+
+        
+       
+
+        self.is_running = False
+       
+""""""
 
     def _collection_loop(self):
-        """Background loop for collecting metrics"""
+        """
+        Background loop for collecting metrics
+        """
         while self.is_running:
             try:
                 self.collect_system_metrics()
@@ -430,13 +589,15 @@ class MetricsCollector:
     def get_metrics(self) -> str:
         """Get metrics in Prometheus format"""
         if not PROMETHEUS_AVAILABLE:
-            return "# Prometheus not available\\n"
+            return "# Prometheus not available\\n""
 
         return generate_latest(self.registry)
 
 
 class AlertManager:
-    """Manages alerts based on metric thresholds"""
+    """
+Manages alerts based on metric thresholds
+
 
     def __init__(self, config: MonitoringConfig, metrics_collector: MetricsCollector):
         self.config = config
@@ -448,24 +609,56 @@ class AlertManager:
         self.alert_thread = None
 
     def start_monitoring(self):
-        """Start alert monitoring"""
-        if self.is_running or not self.config.alert_rules:
-            return
+        
+"""Start alert monitoring"""
 
+        if self.is_running or not self.config.alert_rules:
+            
+
+            return
+            
+""""""
+            
+           """
         self.is_running = True
         self.alert_thread = threading.Thread(target=self._monitoring_loop, daemon=True)
         self.alert_thread.start()
         self.logger.info("Started alert monitoring")
+            """
+
+            return
+            
+
+           
+""""""
 
     def stop_monitoring(self):
-        """Stop alert monitoring"""
+        """
+        Stop alert monitoring
+        """"""
+
+        
+       
+
         self.is_running = False
+       
+""""""
         if self.alert_thread:
             self.alert_thread.join(timeout=5)
         self.logger.info("Stopped alert monitoring")
+       """
+
+        
+       
+
+        self.is_running = False
+       
+""""""
 
     def _monitoring_loop(self):
-        """Background loop for monitoring alerts"""
+        """
+        Background loop for monitoring alerts
+        """
         while self.is_running:
             try:
                 self._check_alert_rules()
@@ -483,10 +676,19 @@ class AlertManager:
                 self.logger.error(f"Failed to evaluate alert rule {rule.name}: {e}")
 
     def _evaluate_alert_rule(self, rule: AlertRule):
-        """Evaluate a single alert rule"""
-        # This is a simplified implementation
-        # In practice, you'd need to query the actual metric values
+        """
+Evaluate a single alert rule
 
+        # This is a simplified implementation
+       
+""""""
+
+        # In practice, you'd need to query the actual metric values
+       
+
+        
+       
+"""
         metric_name = rule.metric_name
         condition = rule.condition
 
@@ -507,7 +709,7 @@ class AlertManager:
                 "is_firing": False,
                 "started_at": None,
                 "last_evaluation": current_time,
-            }
+             }
 
         alert_state = self.alert_states[alert_key]
 
@@ -535,11 +737,32 @@ class AlertManager:
         alert_state["last_evaluation"] = current_time
 
     def _get_metric_value(self, metric_name: str) -> Optional[float]:
-        """Get current value of a metric (simplified implementation)"""
-        # This would need to be implemented based on your metric storage
-        # For now, return a dummy value
-        return 0.5
+        """
+Get current value of a metric (simplified implementation)
 
+        # This would need to be implemented based on your metric storage
+       
+""""""
+
+        # For now, return a dummy value
+       
+
+        
+       
+""""""
+
+        return 0.5
+        
+
+       
+""""""
+
+        # For now, return a dummy value
+       
+
+        
+       
+"""
     def _evaluate_condition(self, value: float, condition: str) -> bool:
         """Evaluate alert condition"""
         try:
@@ -574,7 +797,7 @@ class AlertManager:
             "timestamp": datetime.now(),
             "labels": rule.labels,
             "status": "firing",
-        }
+         }
 
         self.alert_history.append(alert)
 
@@ -589,7 +812,7 @@ class AlertManager:
         self.logger.log(
             log_level,
             f"ALERT FIRING: {rule.name} - {rule.description} (value: {value}, condition: {rule.condition})",
-        )
+         )
 
         # Send alert notification (implement as needed)
         self._send_alert_notification(alert)
@@ -606,18 +829,36 @@ class AlertManager:
             "timestamp": datetime.now(),
             "labels": rule.labels,
             "status": "resolved",
-        }
+         }
 
         self.alert_history.append(alert)
 
         self.logger.info(f"ALERT RESOLVED: {rule.name} - {rule.description} (value: {value})")
 
     def _send_alert_notification(self, alert: Dict):
-        """Send alert notification (implement based on your needs)"""
+        """
+Send alert notification (implement based on your needs)
+
         # This could send emails, Slack messages, webhooks, etc.
         try:
+           
+""""""
+
             # Log the alert for now - can be extended to send actual notifications
+           
+
+            
+           
+"""
             severity = alert.get("severity", "unknown")
+           """
+
+            
+           
+
+            # Log the alert for now - can be extended to send actual notifications
+           
+""""""
             message = alert.get("message", "No message")
             metric_name = alert.get("metric_name", "unknown")
 
@@ -654,14 +895,17 @@ class AlertManager:
 
 
 class GrafanaDashboardGenerator:
-    """Generates Grafana dashboard configurations"""
+    """
+Generates Grafana dashboard configurations
+
 
     def __init__(self, config: MonitoringConfig):
         self.config = config
         self.logger = logging.getLogger(__name__)
 
     def generate_system_dashboard(self) -> Dict:
-        """Generate system monitoring dashboard"""
+        
+"""Generate system monitoring dashboard"""
         dashboard = {
             "dashboard": {
                 "id": None,
@@ -677,11 +921,11 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "system_cpu_usage_percent",
                                 "legendFormat": "CPU %",
-                            }
-                        ],
+                             }
+                         ],
                         "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100}},
                         "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
-                    },
+                     },
                     {
                         "id": 2,
                         "title": "Memory Usage",
@@ -690,15 +934,15 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "system_memory_usage_bytes{type='used'}",
                                 "legendFormat": "Used",
-                            },
+                             },
                             {
                                 "expr": "system_memory_usage_bytes{type='available'}",
                                 "legendFormat": "Available",
-                            },
-                        ],
+                             },
+                         ],
                         "fieldConfig": {"defaults": {"unit": "bytes"}},
                         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
-                    },
+                     },
                     {
                         "id": 3,
                         "title": "Network I/O",
@@ -707,16 +951,16 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "rate(system_network_io_bytes_total[5m])",
                                 "legendFormat": "{{direction}}",
-                            }
-                        ],
+                             }
+                         ],
                         "fieldConfig": {"defaults": {"unit": "Bps"}},
                         "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8},
-                    },
-                ],
+                     },
+                 ],
                 "time": {"from": "now - 1h", "to": "now"},
                 "refresh": "5s",
-            }
-        }
+             }
+         }
 
         return dashboard
 
@@ -737,10 +981,10 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "rate(scraping_requests_total[5m])",
                                 "legendFormat": "{{method}} - {{status}}",
-                            }
-                        ],
+                             }
+                         ],
                         "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
-                    },
+                     },
                     {
                         "id": 2,
                         "title": "Scraping Duration",
@@ -749,15 +993,15 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "histogram_quantile(0.95, rate(scraping_duration_seconds_bucket[5m]))",
                                 "legendFormat": "95th percentile",
-                            },
+                             },
                             {
                                 "expr": "histogram_quantile(0.50, rate(scraping_duration_seconds_bucket[5m]))",
                                 "legendFormat": "50th percentile",
-                            },
-                        ],
+                             },
+                         ],
                         "fieldConfig": {"defaults": {"unit": "s"}},
                         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
-                    },
+                     },
                     {
                         "id": 3,
                         "title": "API Discovery Rate",
@@ -766,10 +1010,10 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "rate(api_discovery_total[5m])",
                                 "legendFormat": "{{source}} - {{category}}",
-                            }
-                        ],
+                             }
+                         ],
                         "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
-                    },
+                     },
                     {
                         "id": 4,
                         "title": "Error Rate",
@@ -778,10 +1022,10 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "rate(errors_total[5m])",
                                 "legendFormat": "{{component}} - {{error_type}}",
-                            }
-                        ],
+                             }
+                         ],
                         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
-                    },
+                     },
                     {
                         "id": 5,
                         "title": "Cache Hit Rate",
@@ -790,16 +1034,16 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "rate(cache_operations_total{result='hit'}[5m])/rate(cache_operations_total[5m]) * 100",
                                 "legendFormat": "Hit Rate %",
-                            }
-                        ],
+                             }
+                         ],
                         "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100}},
                         "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16},
-                    },
-                ],
+                     },
+                 ],
                 "time": {"from": "now - 1h", "to": "now"},
                 "refresh": "5s",
-            }
-        }
+             }
+         }
 
         return dashboard
 
@@ -814,7 +1058,9 @@ class GrafanaDashboardGenerator:
 
 
 class ZeroCostMonitoringStack:
-    """Main monitoring stack orchestrator"""
+    """
+Main monitoring stack orchestrator
+
 
     def __init__(self, config: Optional[MonitoringConfig] = None):
         self.config = config or MonitoringConfig()
@@ -830,14 +1076,26 @@ class ZeroCostMonitoringStack:
         self.is_running = False
 
     def start(self):
-        """Start the monitoring stack"""
+        
+"""Start the monitoring stack"""
+
         if self.is_running:
+            
+
             return
+            
+""""""
+
+            
+           
 
         try:
             # Start metrics collection
             self.metrics_collector.start_collection()
-
+            
+"""
+            return
+            """"""
             # Start alert monitoring
             self.alert_manager.start_monitoring()
 
@@ -856,15 +1114,25 @@ class ZeroCostMonitoringStack:
             self.stop()
 
     def stop(self):
-        """Stop the monitoring stack"""
-        if not self.is_running:
-            return
+        """
+Stop the monitoring stack
 
+        if not self.is_running:
+            
+"""
+            return
+            """"""
         try:
             # Stop components
             self.metrics_collector.stop_collection()
             self.alert_manager.stop_monitoring()
+            """
 
+            return
+            
+
+           
+""""""
             # Stop metrics server
             if self.metrics_server:
                 # Note: prometheus_client doesn't provide a clean way to stop the server
@@ -887,19 +1155,36 @@ class ZeroCostMonitoringStack:
             self.logger.error(f"Failed to start metrics server: {e}")
 
     def _generate_dashboards(self):
-        """Generate Grafana dashboards"""
+        """
+Generate Grafana dashboards
+
         try:
+           
+""""""
+
             # Generate system dashboard
+           
+
+            
+           
+"""
             system_dashboard = self.dashboard_generator.generate_system_dashboard()
             self.dashboard_generator.save_dashboard(
                 system_dashboard, "grafana_system_dashboard.json"
-            )
+             )
+           """
 
+            
+           
+
+            # Generate system dashboard
+           
+""""""
             # Generate application dashboard
             app_dashboard = self.dashboard_generator.generate_application_dashboard()
             self.dashboard_generator.save_dashboard(
                 app_dashboard, "grafana_application_dashboard.json"
-            )
+             )
 
             self.logger.info("Generated Grafana dashboards")
 
@@ -916,7 +1201,7 @@ class ZeroCostMonitoringStack:
             "active_alerts": len(self.alert_manager.get_active_alerts()),
             "metrics_port": self.config.prometheus_port,
             "uptime": time.time() - getattr(self, "_start_time", time.time()),
-        }
+         }
 
     def get_metrics_summary(self) -> Dict[str, Any]:
         """Get summary of collected metrics"""
@@ -926,15 +1211,15 @@ class ZeroCostMonitoringStack:
         try:
             metrics_text = self.metrics_collector.get_metrics()
             metric_count = len(
-                [line for line in metrics_text.split("\\n") if line and not line.startswith("#")]
-            )
+                [line for line in metrics_text.split("\\n") if line and not line.startswith("#")]"
+             )
             return {
                 "total_metrics": metric_count,
                 "system_metrics_enabled": self.config.enable_system_metrics,
                 "application_metrics_enabled": self.config.enable_application_metrics,
                 "custom_metrics_count": len(self.metrics_collector.custom_metrics),
                 "scrape_interval": self.config.scrape_interval,
-            }
+             }
         except Exception as e:
             return {"error": str(e)}
 
@@ -952,7 +1237,7 @@ def create_default_config() -> MonitoringConfig:
             severity=AlertSeverity.WARNING,
             description="CPU usage is above 80%",
             duration=300,
-        ),
+         ),
         AlertRule(
             name="high_error_rate",
             metric_name="errors_total",
@@ -960,7 +1245,7 @@ def create_default_config() -> MonitoringConfig:
             severity=AlertSeverity.ERROR,
             description="Error rate is too high",
             duration=60,
-        ),
+         ),
         AlertRule(
             name="low_cache_hit_rate",
             metric_name="cache_hit_rate",
@@ -968,8 +1253,8 @@ def create_default_config() -> MonitoringConfig:
             severity=AlertSeverity.WARNING,
             description="Cache hit rate is below 50%",
             duration=600,
-        ),
-    ]
+         ),
+     ]
 
     custom_metrics = [
         MetricDefinition(
@@ -978,14 +1263,14 @@ def create_default_config() -> MonitoringConfig:
             description="Business revenue metric",
             labels=["source", "currency"],
             unit="currency",
-        ),
+         ),
         MetricDefinition(
             name="user_activity_events",
             metric_type=MetricType.COUNTER,
             description="User activity events",
             labels=["event_type", "user_segment"],
-        ),
-    ]
+         ),
+     ]
 
     return MonitoringConfig(
         prometheus_port=8000,
@@ -995,7 +1280,7 @@ def create_default_config() -> MonitoringConfig:
         custom_metrics=custom_metrics,
         enable_system_metrics=True,
         enable_application_metrics=True,
-    )
+     )
 
 
 def save_config(config: MonitoringConfig, filename: str = "monitoring_config.yaml"):
@@ -1018,9 +1303,9 @@ def save_config(config: MonitoringConfig, filename: str = "monitoring_config.yam
                 "description": rule.description,
                 "duration": rule.duration,
                 "labels": rule.labels,
-            }
+             }
             for rule in config.alert_rules
-        ],
+         ],
         "custom_metrics": [
             {
                 "name": metric.name,
@@ -1029,10 +1314,10 @@ def save_config(config: MonitoringConfig, filename: str = "monitoring_config.yam
                 "labels": metric.labels,
                 "buckets": metric.buckets,
                 "unit": metric.unit,
-            }
+             }
             for metric in config.custom_metrics
-        ],
-    }
+         ],
+     }
 
     with open(filename, "w") as f:
         yaml.dump(config_dict, f, default_flow_style=False)
@@ -1054,11 +1339,11 @@ if __name__ == "__main__":
         for i in range(10):
             monitoring_stack.metrics_collector.record_scraping_request(
                 method="requests", status="success", source="publicapis", duration=1.5
-            )
+             )
 
             monitoring_stack.metrics_collector.record_api_discovery(
                 source="publicapis", category="weather", status="validated", count=5
-            )
+             )
 
             time.sleep(2)
 

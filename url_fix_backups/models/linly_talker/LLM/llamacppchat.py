@@ -11,7 +11,8 @@ class LlamacppChat:
             use_mlock = True,
                 flash_attn = True,
                 n_ctx = 1024,  # 设置上下文长度
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
     def chat(self, messages):
@@ -27,8 +28,8 @@ class LlamacppChat:
 #         {
 #             "role": "system",
 #             "content": "A chat between a curious user \
-    and an artificial intelligence assistant. The assistant gives helpful, detailed, \
-    and polite answers to the user's questions. The assistant calls functions with appropriate input when necessary."
+#     and an artificial intelligence assistant. The assistant gives helpful, detailed, \
+#     and polite answers to the user's questions. The assistant calls functions with appropriate input when necessary."
 #         },
 #         {
 #             "role": "user",

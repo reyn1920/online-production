@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Conservative Research System - Self - Healing Health Monitor
 Autonomous system monitoring with predictive failure detection and auto - recovery
 
@@ -9,7 +9,7 @@ This module provides comprehensive system health monitoring with:
 - Automatic recovery mechanisms
 - Performance optimization
 - Resource scaling
-"""
+""""""
 
 import asyncio
 import json
@@ -32,7 +32,8 @@ logging.basicConfig(
     level = logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[logging.FileHandler("system_health.log"), logging.StreamHandler()],
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -102,7 +103,8 @@ class PredictiveAnalyzer:
             'anomaly_detector': None,
             'resource_optimizer': None,
             'failure_classifier': None
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.prediction_accuracy = {}
         self.optimization_suggestions = []
         self.learning_enabled = True
@@ -111,7 +113,8 @@ class PredictiveAnalyzer:
             'performance_patterns': {},
             'optimization_opportunities': [],
             'predictive_maintenance': []
-        }
+# BRACKET_SURGEON: disabled
+#         }
         self.prediction_accuracy = 0.0
 
 
@@ -131,7 +134,8 @@ class PredictiveAnalyzer:
                     m.value
                     for m in self.historical_data[-15:]  # Increased window
                     if m.component_name == metric.component_name
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 if len(recent_values) >= 5:
                     # Multi - factor AI analysis
@@ -144,14 +148,16 @@ class PredictiveAnalyzer:
                         trend_score * 0.4 +
                         anomaly_score * 0.35 +
                         pattern_score * 0.25
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     predictions[component_key] = min(failure_probability, 1.0)
 
                     # Generate optimization suggestions
                     if failure_probability > 0.7:
                         self._generate_optimization_suggestions(metric,
-    failure_probability)
+# BRACKET_SURGEON: disabled
+#     failure_probability)
 
         # Update prediction accuracy
         self._update_prediction_accuracy(predictions)
@@ -172,7 +178,8 @@ class PredictiveAnalyzer:
 
     def _calculate_ai_trend_score(self,
     values: List[float],
-    metric: HealthMetric) -> float:
+# BRACKET_SURGEON: disabled
+#     metric: HealthMetric) -> float:
         """Calculate AI - enhanced trend score for failure prediction"""
         try:
             # Advanced trend analysis with multiple indicators
@@ -205,7 +212,8 @@ class PredictiveAnalyzer:
                 abs(acceleration) * 0.25 +
                 (volatility / mean_value if mean_value > 0 else 0) * 0.2 +
                 threshold_proximity * 0.25
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return min(trend_score, 1.0)
 
@@ -267,7 +275,8 @@ class PredictiveAnalyzer:
                     'avg_failure_threshold': 0.0,
                     'failure_frequency': 0.0,
                     'last_failure_time': None
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             pattern = self.failure_patterns[component_key]
 
@@ -276,14 +285,16 @@ class PredictiveAnalyzer:
                 pattern['failure_count'] += 1
                 pattern['avg_failure_threshold'] = (
                     (pattern['avg_failure_threshold'] * (pattern['failure_count'] - 1) + metric.value)/pattern['failure_count']
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 pattern['last_failure_time'] = metric.timestamp
 
             # Calculate pattern - based risk score
             if pattern['failure_count'] > 0:
                 # Threshold similarity
                 threshold_similarity = 1.0 - abs(metric.value - pattern['avg_failure_threshold']) / max(pattern['avg_failure_threshold'],
-    1.0)
+# BRACKET_SURGEON: disabled
+#     1.0)
                 threshold_similarity = max(0.0, threshold_similarity)
 
                 # Failure frequency factor
@@ -294,7 +305,7 @@ class PredictiveAnalyzer:
                 if pattern['last_failure_time']:
                     time_diff = (metric.timestamp - pattern['last_failure_time']).total_seconds()
                     # Higher risk if recent failure \
-    or if it's been too long (indicating overdue)
+#     or if it's been too long (indicating overdue)
                     if time_diff < 3600:  # Less than 1 hour
                         time_factor = 0.8
                     elif time_diff > 86400 * 7:  # More than 1 week
@@ -306,7 +317,8 @@ class PredictiveAnalyzer:
                     threshold_similarity * 0.5 +
                     frequency_factor * 0.3 +
                     time_factor * 0.2
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return min(pattern_score, 1.0)
 
@@ -318,7 +330,8 @@ class PredictiveAnalyzer:
 
     def _generate_optimization_suggestions(self,
     metric: HealthMetric,
-    risk_score: float):
+# BRACKET_SURGEON: disabled
+#     risk_score: float):
         """Generate AI - powered optimization suggestions"""
         try:
             suggestion = {
@@ -328,7 +341,8 @@ class PredictiveAnalyzer:
                 'timestamp': metric.timestamp.isoformat(),
                 'suggestions': [],
                 'priority': 'high' if risk_score > 0.8 else 'medium'
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Component - specific suggestions
             if metric.component_type == ComponentType.SYSTEM_RESOURCE:
@@ -337,19 +351,22 @@ class PredictiveAnalyzer:
                         'Consider scaling CPU resources',
                         'Optimize CPU - intensive processes',
                         'Implement CPU usage throttling'
-                    ])
+# BRACKET_SURGEON: disabled
+#                     ])
                 elif 'memory' in metric.component_name.lower():
                     suggestion['suggestions'].extend([
                         'Increase memory allocation',
                         'Optimize memory usage patterns',
                         'Implement memory cleanup routines'
-                    ])
+# BRACKET_SURGEON: disabled
+#                     ])
                 elif 'disk' in metric.component_name.lower():
                     suggestion['suggestions'].extend([
                         'Clean up temporary files',
                         'Archive old data',
                         'Expand disk capacity'
-                    ])
+# BRACKET_SURGEON: disabled
+#                     ])
 
             elif metric.component_type == ComponentType.DATABASE:
                 suggestion['suggestions'].extend([
@@ -357,7 +374,8 @@ class PredictiveAnalyzer:
                     'Update database indexes',
                     'Consider database connection pooling',
                     'Review database configuration'
-                ])
+# BRACKET_SURGEON: disabled
+#                 ])
 
             elif metric.component_type == ComponentType.API_ENDPOINT:
                 suggestion['suggestions'].extend([
@@ -365,7 +383,8 @@ class PredictiveAnalyzer:
                     'Optimize API response caching',
                     'Review API endpoint performance',
                     'Consider API load balancing'
-                ])
+# BRACKET_SURGEON: disabled
+#                 ])
 
             # Add to optimization suggestions
             self.optimization_suggestions.append(suggestion)
@@ -389,7 +408,8 @@ class PredictiveAnalyzer:
                         'current_trend': 'stable',
                         'risk_level': 'low',
                         'prediction_confidence': 0.0
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                 # Update trend analysis
                 trend_data = self.ai_insights['trend_analysis'][component_key]
@@ -409,7 +429,8 @@ class PredictiveAnalyzer:
                 'peak_usage_times': self._identify_peak_usage_patterns(),
                 'resource_correlations': self._analyze_resource_correlations(),
                 'efficiency_trends': self._calculate_efficiency_trends()
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Error updating AI insights: {e}")
@@ -429,7 +450,8 @@ class PredictiveAnalyzer:
                     'anomaly_detection': 0.78,
                     'failure_prediction': 0.82,
                     'optimization_effectiveness': 0.75
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             logger.error(f"Error training AI models: {e}")
@@ -447,7 +469,8 @@ class PredictiveAnalyzer:
                         'accuracy_score': 0.8,
                         'prediction_count': 0,
                         'last_update': current_time
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                 self.prediction_accuracy[component]['prediction_count'] += 1
                 self.prediction_accuracy[component]['last_update'] = current_time
@@ -463,7 +486,8 @@ class PredictiveAnalyzer:
                 'daily_peaks': [],
                 'weekly_patterns': {},
                 'seasonal_trends': {}
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # This would be enhanced with actual pattern recognition
             return patterns
@@ -480,7 +504,8 @@ class PredictiveAnalyzer:
                 'cpu_memory_correlation': 0.0,
                 'disk_network_correlation': 0.0,
                 'api_database_correlation': 0.0
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # This would be enhanced with actual correlation analysis
             return correlations
@@ -498,7 +523,8 @@ class PredictiveAnalyzer:
                 'resource_utilization': 0.78,
                 'response_time_trend': 0.82,
                 'error_rate_trend': 0.95
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # This would be enhanced with actual efficiency calculations
             return trends
@@ -518,16 +544,20 @@ class PredictiveAnalyzer:
                     'learning_enabled': self.learning_enabled,
                     'data_points': len(self.historical_data),
                     'models_trained': len([m for m in self.ai_models.values() if m is not None])
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 'performance_summary': {
                     'total_predictions': sum(acc.get('prediction_count',
     0) for acc in self.prediction_accuracy.values()),
                     'avg_accuracy': sum(acc.get('accuracy_score',
     0) for acc in self.prediction_accuracy.values())/max(len(self.prediction_accuracy),
-    1),
+# BRACKET_SURGEON: disabled
+#     1),
                     'optimization_count': len(self.optimization_suggestions)
-                }
-            }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Error generating AI insights report: {e}")
@@ -546,7 +576,8 @@ class AutoRecoverySystem:
                 ComponentType.API_ENDPOINT: self._recover_api,
                 ComponentType.YOUTUBE_ANALYZER: self._recover_youtube_analyzer,
                 ComponentType.SYSTEM_RESOURCE: self._recover_system_resource,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.max_recovery_attempts = 3
         self.recovery_cooldown = 300  # 5 minutes
 
@@ -559,7 +590,8 @@ class AutoRecoverySystem:
 
         if metric.last_recovery and datetime.now() - metric.last_recovery < timedelta(
             seconds = self.recovery_cooldown
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             logger.info(f"Recovery cooldown active for {metric.component_name}")
             return False
 
@@ -582,7 +614,8 @@ class AutoRecoverySystem:
         except Exception as e:
             logger.error(
                 f"Recovery attempt failed for {metric.component_name}: {str(e)}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
 
@@ -694,14 +727,16 @@ class AutoRecoverySystem:
                     ["echo", "3", ">", "/proc / sys / vm / drop_caches"],
                         shell = True,
                         check = False,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
             elif "disk" in metric.component_name.lower():
                 # Clean temporary files
                 subprocess.run(
                     ["find", "/tmp", "-type", "f", "-atime", "+7", "-delete"],
                         check = False,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
             await asyncio.sleep(1)
             return True
@@ -733,7 +768,8 @@ class SystemHealthMonitor:
                 "api_endpoints": self._check_api_health,
                 "system_resources": self._check_system_resources,
                 "network_connectivity": self._check_network_health,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def add_alert_callback(self, callback: Callable[[HealthMetric], None]):
@@ -807,7 +843,8 @@ class SystemHealthMonitor:
                         threshold_critical = 0.8,
                         timestamp = datetime.now(),
                         message = f"Health checker failed: {str(e)}",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 metrics.append(error_metric)
 
         # Determine overall system status
@@ -831,7 +868,8 @@ class SystemHealthMonitor:
                 network_status = network_status,
                 active_processes = active_processes,
                 uptime_seconds = uptime_seconds,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
 
     def _calculate_overall_status(self, metrics: List[HealthMetric]) -> HealthStatus:
@@ -893,8 +931,10 @@ class SystemHealthMonitor:
                         threshold_critical = 5.0,
                         timestamp = datetime.now(),
                         message = f"Database response time: {response_time:.2f}s",
-                        )
-            )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             metrics.append(
@@ -907,8 +947,10 @@ class SystemHealthMonitor:
                         threshold_critical = 0.8,
                         timestamp = datetime.now(),
                         message = f"Database connection failed: {str(e)}",
-                        )
-            )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#             )
 
         return metrics
 
@@ -942,8 +984,10 @@ class SystemHealthMonitor:
                             threshold_critical = 0.5,
                             timestamp = datetime.now(),
                             message = f"Scraper success rate: {success_rate:.1%}",
-                            )
-                )
+# BRACKET_SURGEON: disabled
+#                             )
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 metrics.append(
@@ -956,8 +1000,10 @@ class SystemHealthMonitor:
                             threshold_critical = 0.5,
                             timestamp = datetime.now(),
                             message = f"Scraper failed: {str(e)}",
-                            )
-                )
+# BRACKET_SURGEON: disabled
+#                             )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return metrics
 
@@ -988,8 +1034,10 @@ class SystemHealthMonitor:
                         threshold_critical = 2.0,
                         timestamp = datetime.now(),
                         message = f"Generation speed: {generation_speed} articles / hour",
-                        )
-            )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Quality metric
             quality_status = HealthStatus.HEALTHY
@@ -1008,8 +1056,10 @@ class SystemHealthMonitor:
                         threshold_critical = 0.6,
                         timestamp = datetime.now(),
                         message = f"Content quality: {quality_score:.1%}",
-                        )
-            )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             metrics.append(
@@ -1022,8 +1072,10 @@ class SystemHealthMonitor:
                         threshold_critical = 0.8,
                         timestamp = datetime.now(),
                         message = f"Content generator failed: {str(e)}",
-                        )
-            )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#             )
 
         return metrics
 
@@ -1054,8 +1106,10 @@ class SystemHealthMonitor:
                         threshold_critical = 0.95,
                         timestamp = datetime.now(),
                         message = f"API quota used: {api_quota_used:.1%}",
-                        )
-            )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Analysis accuracy metric
             accuracy_status = HealthStatus.HEALTHY
@@ -1074,8 +1128,10 @@ class SystemHealthMonitor:
                         threshold_critical = 0.6,
                         timestamp = datetime.now(),
                         message = f"Analysis accuracy: {analysis_accuracy:.1%}",
-                        )
-            )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             metrics.append(
@@ -1088,8 +1144,10 @@ class SystemHealthMonitor:
                         threshold_critical = 0.8,
                         timestamp = datetime.now(),
                         message = f"YouTube analyzer failed: {str(e)}",
-                        )
-            )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#             )
 
         return metrics
 
@@ -1103,7 +1161,8 @@ class SystemHealthMonitor:
             {"name": "health_check", "url": "http://localhost:8000 / health"},
                 {"name": "research_api", "url": "http://localhost:8000 / api / research"},
                 {"name": "content_api", "url": "http://localhost:8000 / api / content"},
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
         for endpoint in endpoints:
             try:
@@ -1129,8 +1188,10 @@ class SystemHealthMonitor:
                             threshold_critical = 5.0,
                             timestamp = datetime.now(),
                             message = f"Response time: {response_time:.2f}s, Status: {response.status_code}",
-                            )
-                )
+# BRACKET_SURGEON: disabled
+#                             )
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 metrics.append(
@@ -1143,8 +1204,10 @@ class SystemHealthMonitor:
                             threshold_critical = 5.0,
                             timestamp = datetime.now(),
                             message = f"API endpoint failed: {str(e)}",
-                            )
-                )
+# BRACKET_SURGEON: disabled
+#                             )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return metrics
 
@@ -1171,8 +1234,10 @@ class SystemHealthMonitor:
                     threshold_critical = 95.0,
                     timestamp = datetime.now(),
                     message = f"CPU usage: {cpu_usage:.1f}%",
-                    )
-        )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Memory usage
         memory = psutil.virtual_memory()
@@ -1192,8 +1257,10 @@ class SystemHealthMonitor:
                     threshold_critical = 95.0,
                     timestamp = datetime.now(),
                     message = f"Memory usage: {memory.percent:.1f}%",
-                    )
-        )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Disk usage
         disk = psutil.disk_usage("/")
@@ -1214,8 +1281,10 @@ class SystemHealthMonitor:
                     threshold_critical = 95.0,
                     timestamp = datetime.now(),
                     message = f"Disk usage: {disk_percent:.1f}%",
-                    )
-        )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#         )
 
         return metrics
 
@@ -1237,8 +1306,10 @@ class SystemHealthMonitor:
                     threshold_critical = 0.8,
                     timestamp = datetime.now(),
                     message = f"Network connectivity: {'OK' if network_status else 'FAILED'}",
-                    )
-        )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#         )
 
         return metrics
 
@@ -1258,12 +1329,14 @@ class SystemHealthMonitor:
             m
             for m in metrics
             if m.status in [HealthStatus.CRITICAL, HealthStatus.FAILED]
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for metric in critical_metrics:
             logger.warning(
                 f"Critical issue detected: {metric.component_name} - {metric.message}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Attempt auto - recovery
             recovery_success = await self.recovery_system.attempt_recovery(metric)
@@ -1283,7 +1356,8 @@ class SystemHealthMonitor:
             if probability > 0.7:
                 logger.warning(
                     f"High failure probability ({probability:.1%}) predicted for {component}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 # Implement proactive measures here
 
 
@@ -1310,17 +1384,22 @@ class SystemHealthMonitor:
                 "component_count": len(snapshot.metrics),
                 "healthy_components": len(
                 [m for m in snapshot.metrics if m.status == HealthStatus.HEALTHY]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "warning_components": len(
                 [m for m in snapshot.metrics if m.status == HealthStatus.WARNING]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "critical_components": len(
                 [m for m in snapshot.metrics if m.status == HealthStatus.CRITICAL]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "failed_components": len(
                 [m for m in snapshot.metrics if m.status == HealthStatus.FAILED]
-            ),
-                }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         logger.info(f"System Status: {json.dumps(status_summary, indent = 2)}")
 
@@ -1339,13 +1418,15 @@ class SystemHealthMonitor:
                     "last_check": latest_snapshot.timestamp.isoformat(),
                     "monitoring_duration_hours": len(self.metrics_history)
                 * self.check_interval / 3600,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "resource_usage": {
                 "cpu_percent": latest_snapshot.cpu_usage,
                     "memory_percent": latest_snapshot.memory_usage,
                     "disk_percent": latest_snapshot.disk_usage,
                     "active_processes": latest_snapshot.active_processes,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "component_health": {
                 "total_components": len(latest_snapshot.metrics),
                     "healthy": len(
@@ -1353,44 +1434,56 @@ class SystemHealthMonitor:
                         m
                         for m in latest_snapshot.metrics
                         if m.status == HealthStatus.HEALTHY
-                    ]
-                ),
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ),
                     "warning": len(
                     [
                         m
                         for m in latest_snapshot.metrics
                         if m.status == HealthStatus.WARNING
-                    ]
-                ),
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ),
                     "critical": len(
                     [
                         m
                         for m in latest_snapshot.metrics
                         if m.status == HealthStatus.CRITICAL
-                    ]
-                ),
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ),
                     "failed": len(
                     [
                         m
                         for m in latest_snapshot.metrics
                         if m.status == HealthStatus.FAILED
-                    ]
-                ),
-                    },
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     },
                 "recent_issues": [
                 {
                     "component": m.component_name,
                         "status": m.status.value,
                         "message": m.message,
                         "timestamp": m.timestamp.isoformat(),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for m in latest_snapshot.metrics
                 if m.status
                 in [HealthStatus.WARNING, HealthStatus.CRITICAL, HealthStatus.FAILED]
             ][
                 -10:
-            ],  # Last 10 issues
-        }
+# BRACKET_SURGEON: disabled
+#             ],  # Last 10 issues
+# BRACKET_SURGEON: disabled
+#         }
 
 # Example usage and CLI interface
 if __name__ == "__main__":
@@ -1402,19 +1495,23 @@ if __name__ == "__main__":
         """Example alert callback function"""
         print(
             f"🚨 ALERT: {metric.component_name} is {metric.status.value} - {metric.message}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
     async def main():
         parser = argparse.ArgumentParser(
             description="Conservative Research System Health Monitor"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--interval", type = int, default = 30, help="Check interval in seconds"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         parser.add_argument(
             "--report", action="store_true", help="Generate system report and exit"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         args = parser.parse_args()
 
         monitor = SystemHealthMonitor(check_interval = args.interval)

@@ -1,15 +1,25 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Automated Author - Long - Form Content Generation System
-
+""""""
 This module implements an advanced writing system for creating books \
-    and digital products
+
+#     and digital products
+"""
 using "Ghostwriter Persona" and "Checkpointed Writing" protocols. It supports
 resumable writing sessions, persona - based writing styles, \
-    and structured content generation.
+"""
+#     and structured content generation.
+
+Automated Author - Long - Form Content Generation System
+"""
+
+
+
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import hashlib
@@ -84,7 +94,9 @@ class PersonaType(Enum):
 
 @dataclass
 class GhostwriterPersona:
-    """Defines a ghostwriter persona with specific characteristics."""
+    """
+Defines a ghostwriter persona with specific characteristics.
+
 
     name: str
     persona_type: PersonaType
@@ -95,17 +107,36 @@ class GhostwriterPersona:
     expertise_areas: List[str]
     voice_characteristics: List[str]
     example_phrases: List[str]
-    avoid_patterns: List[str]
+   
+""""""
 
+    avoid_patterns: List[str]
+   
+
+    
+   
+"""
     def to_prompt(self) -> str:
-        """Convert persona to a system prompt."""
-        return f"""
+        """
+Convert persona to a system prompt.
+
+        
+"""
+        return f
+        """
+
+
+
 You are {self.name}, a {self.persona_type.value} ghostwriter with the following characteristics:
 
+"""
 Writing Style: {self.writing_style}
 Tone: {self.tone}
 Vocabulary Level: {self.vocabulary_level}
 Sentence Structure: {self.sentence_structure}
+
+You are {self.name}, a {self.persona_type.value} ghostwriter with the following characteristics:
+"""
 
 Expertise Areas: {', '.join(self.expertise_areas)}
 
@@ -119,12 +150,15 @@ Patterns to Avoid:
 {chr(10).join(f'- {pattern}' for pattern in self.avoid_patterns)}
 
 Maintain this persona consistently throughout all writing.
-"""
+""""""
+
 
 
 @dataclass
 class Chapter:
-    """Represents a chapter or section in the content."""
+    
+Represents a chapter or section in the content.
+"""
 
     number: int
     title: str
@@ -141,7 +175,9 @@ class Chapter:
 
 @dataclass
 class WritingProject:
-    """Represents a complete writing project."""
+    """
+Represents a complete writing project.
+
 
     title: str
     content_type: ContentType
@@ -158,12 +194,20 @@ class WritingProject:
     total_word_count: int = 0
     created_at: datetime = field(default_factory=datetime.now)
     last_checkpoint: Optional[datetime] = None
+   
+""""""
+
     checkpoint_hash: Optional[str] = None
+   
 
-
+    
+   
+"""
 @dataclass
 class WritingCheckpoint:
-    """Represents a checkpoint in the writing process."""
+    """
+Represents a checkpoint in the writing process.
+
 
     project_id: str
     timestamp: datetime
@@ -172,15 +216,21 @@ class WritingCheckpoint:
     content_hash: str
     word_count: int
     progress_data: Dict[str, Any]
+   
+""""""
+
     recovery_data: bytes  # Pickled state for recovery
+   
 
-
+    
+   
+"""
 class OllamaClient:
     """Client for interacting with local Ollama LLM."""
 
     def __init__(
         self, base_url: str = "http://localhost:11434", model: str = "llama3.2"
-    ):
+#     ):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.logger = get_logger(self.__class__.__name__)
@@ -191,16 +241,27 @@ class OllamaClient:
         system_prompt: Optional[str] = None,
         temperature: float = 0.7,
         max_tokens: int = 4000,
-    ) -> str:
-        """Generate text using Ollama API."""
+#     ) -> str:
+        """
+Generate text using Ollama API.
+
+        
+"""
         try:
+        """
             payload = {
                 "model": self.model,
                 "prompt": prompt,
                 "stream": False,
                 "options": {"temperature": temperature, "num_predict": max_tokens},
-            }
+             }
+        """
 
+        try:
+        
+
+       
+""""""
             if system_prompt:
                 payload["system"] = system_prompt
 
@@ -208,7 +269,9 @@ class OllamaClient:
                 f"{self.base_url}/api/generate",
                 json=payload,
                 timeout=180,  # Longer timeout for long - form content
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             response.raise_for_status()
 
             result = response.json()
@@ -230,7 +293,7 @@ class AutomatedAuthor:
         ollama_url: str = "http://localhost:11434",
         ollama_model: str = "llama3.2",
         checkpoint_dir: str = "./checkpoints",
-    ):
+#     ):
         self.ollama = OllamaClient(ollama_url, ollama_model)
         self.checkpoint_dir = Path(checkpoint_dir)
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -262,25 +325,33 @@ class AutomatedAuthor:
                     "Research methodology",
                     "Critical analysis",
                     "Theoretical frameworks",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 voice_characteristics=[
                     "Uses evidence - based arguments",
                     "Employs academic terminology appropriately",
                     "Structures arguments logically",
                     "References credible sources",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 example_phrases=[
                     "The empirical evidence suggests that...",
                     "According to recent research...",
                     "This phenomenon can be understood through the lens of...",
                     "The implications of this finding are significant because...",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 avoid_patterns=[
                     "Overly casual language",
                     "Unsupported claims",
                     "Personal anecdotes without context",
-                ],
-            ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
+             ),
             "business": GhostwriterPersona(
                 name="Marcus Sterling",
                 persona_type=PersonaType.BUSINESS,
@@ -293,25 +364,33 @@ class AutomatedAuthor:
                     "Leadership",
                     "Market analysis",
                     "Operations",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 voice_characteristics=[
                     "Focuses on ROI and business value",
                     "Uses data to support arguments",
                     "Provides actionable recommendations",
                     "Speaks to business outcomes",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 example_phrases=[
                     "The bottom line is...",
                     "This strategy will drive...",
                     "Market data indicates...",
                     "The competitive advantage lies in...",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 avoid_patterns=[
                     "Overly technical jargon",
                     "Theoretical concepts without practical application",
                     "Vague recommendations",
-                ],
-            ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
+             ),
             "creative": GhostwriterPersona(
                 name="Luna Blackwood",
                 persona_type=PersonaType.CREATIVE,
@@ -323,25 +402,33 @@ class AutomatedAuthor:
                     "Storytelling",
                     "Creative expression",
                     "Emotional engagement",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 voice_characteristics=[
                     "Uses vivid imagery and metaphors",
                     "Creates emotional connections",
                     "Employs narrative techniques",
                     "Balances creativity with clarity",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 example_phrases=[
                     "Imagine a world where...",
                     "Picture this scenario...",
                     "The story unfolds like...",
                     "This reminds me of...",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 avoid_patterns=[
                     "Overly dry or technical language",
                     "Lack of emotional resonance",
                     "Monotonous sentence structure",
-                ],
-            ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
+             ),
             "technical": GhostwriterPersona(
                 name="Dr. Samuel Chen",
                 persona_type=PersonaType.TECHNICAL,
@@ -354,26 +441,34 @@ class AutomatedAuthor:
                     "Engineering",
                     "Systems design",
                     "Problem - solving",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 voice_characteristics=[
                     "Explains complex concepts clearly",
                     "Uses examples and analogies",
                     "Provides step - by - step instructions",
                     "Focuses on practical implementation",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 example_phrases=[
-                    "Let's break this down step by step...",
+                    "Let's break this down step by step...",'
                     "The key principle here is...",
                     "To implement this, you would...",
                     "This works because...",
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
                 avoid_patterns=[
                     "Overly complex explanations",
                     "Assumptions about prior knowledge",
                     "Lack of practical examples",
-                ],
-            ),
-        }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ],
+             ),
+         }
 
     def create_project(
         self,
@@ -384,7 +479,7 @@ class AutomatedAuthor:
         persona_name: str,
         topic: str,
         key_themes: List[str],
-    ) -> WritingProject:
+#     ) -> WritingProject:
         """Create a new writing project."""
         self.logger.info(f"Creating new project: {title}")
 
@@ -396,7 +491,9 @@ class AutomatedAuthor:
         # Generate initial outline
         outline = self._generate_outline(
             topic, key_themes, content_type, target_word_count, persona
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         project = WritingProject(
             title=title,
@@ -410,13 +507,17 @@ class AutomatedAuthor:
                 "key_themes": key_themes,
                 "created_by": "AutomatedAuthor",
                 "version": "1.0.0",
-            },
-        )
+             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         # Create chapters from outline
         project.chapters = self._create_chapters_from_outline(
             outline, target_word_count
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         # Save initial checkpoint
         self._save_checkpoint(project)
@@ -430,13 +531,22 @@ class AutomatedAuthor:
         content_type: ContentType,
         target_word_count: int,
         persona: GhostwriterPersona,
-    ) -> str:
+#     ) -> str:
         """Generate a detailed outline for the content."""
         self.logger.info("Generating content outline")
 
         system_prompt = persona.to_prompt()
 
-        prompt = f"""
+       """
+
+
+        
+
+       
+
+        prompt = f
+       
+""""""
 Create a detailed outline for a {content_type.value} on the topic: "{topic}"
 
 Key Themes to Cover:
@@ -450,20 +560,22 @@ Create a comprehensive outline that:
 2. Covers all key themes thoroughly
 3. Is appropriate for the target word count
 4. Includes chapter/section titles and brief descriptions
-5. Maintains your persona's expertise and style
+5. Maintains your persona's expertise and style'
 6. Provides clear learning objectives or value propositions
 
 Format the outline with clear headings and subheadings.
 
 Outline:
-"""
+""""""
 
         return self.ollama.generate(prompt, system_prompt, temperature=0.6)
 
     def _generate_script_content(
         self, topic: str, style: str = "professional", duration: int = 60
-    ) -> str:
-        """Generate script content for video/audio production.
+#     ) -> str:
+        """
+Generate script content for video/audio production.
+
 
         Args:
             topic: The main topic for the script
@@ -472,11 +584,33 @@ Outline:
 
         Returns:
             Generated script content
-        """
-        try:
-            # Estimate words based on duration (average 150 words per minute)
-            target_words = int((duration / 60) * 150)
+       
+""""""
 
+        try:
+           
+
+            
+           
+"""
+            # Estimate words based on duration (average 150 words per minute)
+           """"""
+            
+           """
+
+            target_words = int((duration / 60) * 150)
+           
+
+            
+           
+""""""
+
+            
+           
+
+            # Estimate words based on duration (average 150 words per minute)
+           
+""""""
             # Select appropriate persona based on style
             persona_map = {
                 "professional": "business",
@@ -485,17 +619,33 @@ Outline:
                 "creative": "creative",
                 "technical": "technical",
                 "inspirational": "inspirational",
-            }
+             }
 
             persona_name = persona_map.get(style.lower(), "conversational")
             persona = self.personas.get(persona_name, self.personas["conversational"])
 
-            system_prompt = f"""
+           """
+
+
+            
+
+           
+
+            system_prompt = f
+           
+""""""
+
+
+
 You are {persona.name}, a {persona.persona_type.value} content creator.
 
+"""
 Writing Style: {persona.writing_style}
 Tone: {persona.tone}
 Vocabulary: {persona.vocabulary_level}
+
+You are {persona.name}, a {persona.persona_type.value} content creator.
+"""
 
 Your task is to create an engaging script for a {duration}-second presentation.
 Target approximately {target_words} words.
@@ -508,13 +658,29 @@ Example phrases you might use:
 
 Avoid:
 {chr(10).join(f'• {pattern}' for pattern in persona.avoid_patterns[:3])}
+""""""
+
+
+           
+
+
+            
+
+           
+"""
+            prompt = f
+           """"""
+Create an engaging {duration}-second script about: {topic}
 """
 
-            prompt = f"""
-Create an engaging {duration}-second script about: {topic}
 
 Style: {style}
 Target length: {target_words} words
+
+
+Create an engaging {duration}-second script about: {topic}
+
+"""
 
 The script should:
 1. Have a compelling opening hook
@@ -533,29 +699,38 @@ Script:
                 system_prompt=system_prompt,
                 temperature=0.7,
                 max_tokens=min(target_words * 2, 2000),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             return script_content.strip()
 
         except Exception as e:
             self.logger.error(f"Error generating script content: {e}")
             # Return fallback content
-            return f"""Welcome to our {style} presentation about {topic}.
+            return f"""
+Welcome to our {style} presentation about {topic}.
 
-In this {duration}-second segment, we'll explore the key aspects of {topic} \
-    and provide valuable insights.
 
-Let's dive into the main points:
+In this {duration}-second segment, we'll explore the key aspects of {topic} \'
+#     and provide valuable insights.
+
+Let's dive into the main points:'
 1. Introduction to {topic}
 2. Key benefits and applications
 3. Important considerations
 4. Next steps and recommendations
 
 Thank you for your attention. We hope this information about {topic} has been valuable \
-    and informative."""
+
+#     and informative.
+"""
+
 
     def _get_live_topic_briefing(self, topic: str, key_themes: List[str]) -> str:
-        """Get live briefing from Research Agent for enhanced content generation."""
+        
+Get live briefing from Research Agent for enhanced content generation.
+"""
         if not self.research_agent:
             return ""
 
@@ -576,23 +751,43 @@ Thank you for your attention. We hope this information about {topic} has been va
             if hasattr(self.research_agent, "get_hypocrisy_content_opportunities"):
                 hypocrisy_opportunities = (
                     self.research_agent.get_hypocrisy_content_opportunities(topic)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
             # Compile live briefing
-            live_briefing = f"""
+           """
+
+            
+           
+
+            live_briefing = f
+           
+""""""
+
 === LIVE TOPIC BRIEFING ===
 Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+
 Topic: {topic}
+
+"""
 
 --- LATEST INTELLIGENCE ---
 {briefing.get('summary', 'No recent intelligence available')}
+"""
+
+Topic: {topic}
+
+
 
 --- TRENDING TOPICS ---
+
 """
 
             for trend in trending_topics[:5]:  # Top 5 trends
-                live_briefing += f"• {trend.get('topic', 'Unknown')}: {trend.get('momentum_score',
-    0):.2f} momentum\\n"
+                live_briefing += f"• {trend.get('topic', 'Unknown')}: {trend.get('momentum_score',"
+#     0):.2f} momentum\\n""
 
             live_briefing += "\\n--- RECENT HEADLINES ---\\n"
             for headline in topic_headlines[:8]:  # Top 8 headlines
@@ -619,9 +814,27 @@ Topic: {topic}
     def _create_chapters_from_outline(
         self, outline: str, target_word_count: int
     ) -> List[Chapter]:
-        """Extract chapters from the generated outline."""
+        """
+Extract chapters from the generated outline.
+
+       
+""""""
+
         # Simple parsing - in production, this could be more sophisticated
+       
+
+        
+       
+"""
         lines = outline.split("\\n")
+       """
+
+        
+       
+
+        # Simple parsing - in production, this could be more sophisticated
+       
+""""""
         chapters = []
         current_chapter = None
         chapter_num = 0
@@ -629,13 +842,15 @@ Topic: {topic}
         estimated_words_per_chapter = target_word_count // max(
             1,
             len(
-                [l for l in lines if l.strip().startswith(("Chapter", "Section", "#"))]
-            ),
-        )
+                [l for l in lines if l.strip().startswith(("Chapter", "Section", "#"))]"
+             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         for line in lines:
             line = line.strip()
-            if line.startswith(("Chapter", "Section", "#")) and ":" in line:
+            if line.startswith(("Chapter", "Section", "#")) and ":" in line:"
                 if current_chapter:
                     chapters.append(current_chapter)
 
@@ -646,7 +861,9 @@ Topic: {topic}
                     title=title,
                     outline=line,
                     estimated_length=estimated_words_per_chapter,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
             elif current_chapter and line:
                 current_chapter.outline += f"\\n{line}"
 
@@ -661,20 +878,22 @@ Topic: {topic}
                     title="Introduction",
                     outline="Introduction to the topic",
                     estimated_length=target_word_count // 3,
-                ),
+                 ),
                 Chapter(
                     number=2,
                     title="Main Content",
                     outline="Core content and analysis",
                     estimated_length=target_word_count // 3,
-                ),
+                 ),
                 Chapter(
                     number=3,
                     title="Conclusion",
                     outline="Summary and final thoughts",
                     estimated_length=target_word_count // 3,
-                ),
-            ]
+                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             ]
 
         return chapters
 
@@ -683,9 +902,12 @@ Topic: {topic}
         project: WritingProject,
         chapter_number: int,
         research_context: Optional[str] = None,
-    ) -> str:
-        """Write a specific chapter using Ghostwriter Persona \
-    and Checkpointed Writing protocols."""
+#     ) -> str:
+        """
+Write a specific chapter using Ghostwriter Persona \
+
+#     and Checkpointed Writing protocols.
+"""
         if chapter_number > len(project.chapters):
             raise ValueError(f"Chapter {chapter_number} does not exist")
 
@@ -693,7 +915,6 @@ Topic: {topic}
         self.logger.info(f"Writing chapter {chapter_number}: {chapter.title}")
 
         # Create checkpoint before writing (Checkpointed Writing Protocol)
-        checkpoint_name = f"pre_chapter_{chapter_number}"
         self._save_checkpoint(project)
 
         chapter.status = "in_progress"
@@ -704,7 +925,9 @@ Topic: {topic}
             chapter.key_points
             if isinstance(chapter.key_points, list)
             else [chapter.key_points]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         live_briefing = self._get_live_topic_briefing(topic, key_themes)
 
         # Apply Ghostwriter Persona with enhanced context
@@ -715,24 +938,66 @@ Topic: {topic}
 
         research_section = ""
         if research_context:
-            research_section = f"""
+           """
+
+            
+           
+
+            research_section = f
+           
+""""""
+
 Research Context:
+
+
 {research_context}
 
-Incorporate relevant research findings naturally into the content while maintaining your persona's voice.
 """
+
+Incorporate relevant research findings naturally into the content while maintaining your persona's voice.'
+"""
+
+
+
+{research_context}
+
+""""""
+
+
+        
+
+       
 
         # Add live briefing section
+       
+""""""
         briefing_section = ""
+       """
+
+        
+       
+
+        # Add live briefing section
+       
+""""""
+
         if live_briefing:
-            briefing_section = f"""
-{live_briefing}
+           
 
-Use the live briefing information to make the content more current, relevant, \
-    and engaging while maintaining your persona's voice.
+            
+           
 """
+            briefing_section = f
+           """"""
+{live_briefing}
+"""
+Use the live briefing information to make the content more current, relevant, \
+#     and engaging while maintaining your persona's voice.
 
-        prompt = f"""
+{live_briefing}
+""""""
+        prompt = f
+       """"""
 Write Chapter {chapter.number}: "{chapter.title}" for the {project.content_type.value} titled "{project.title}"
 
 Chapter Outline:
@@ -764,12 +1029,33 @@ As {project.persona.name}, write engaging, high - quality content that:
 10. Uses your characteristic phrases and voice
 
 Chapter Content:
-"""
+""""""
+
 
         try:
-            # Generate chapter content with enhanced error handling
-            content = self._write_chapter_with_segments(prompt, system_prompt, chapter)
+           
 
+            
+           
+"""
+            # Generate chapter content with enhanced error handling
+           """"""
+            
+           """
+
+            content = self._write_chapter_with_segments(prompt, system_prompt, chapter)
+           
+
+            
+           
+""""""
+
+            
+           
+
+            # Generate chapter content with enhanced error handling
+           
+""""""
             # Update chapter with validation
             chapter.content = content
             chapter.word_count = len(content.split())
@@ -785,7 +1071,9 @@ Chapter Content:
 
             self.logger.info(
                 f"Chapter {chapter_number} completed: {chapter.word_count} words"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             return content
 
         except Exception as e:
@@ -796,7 +1084,7 @@ Chapter Content:
 
     def write_complete_project(
         self, project: WritingProject, research_data: Optional[Dict[str, str]] = None
-    ) -> WritingProject:
+#     ) -> WritingProject:
         """Write the complete project using Checkpointed Writing protocol."""
         self.logger.info(f"Starting complete project writing: {project.title}")
 
@@ -808,7 +1096,9 @@ Chapter Content:
                 if chapter.status != "completed":
                     self.logger.info(
                         f"Writing chapter {i}/{len(project.chapters)}: {chapter.title}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
                     research_context = None
                     if research_data and str(i) in research_data:
@@ -821,12 +1111,16 @@ Chapter Content:
                         # Progress update after each chapter
                         self.logger.info(
                             f"Chapter {i} completed. Project progress: {project.progress_percentage:.1f}%"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
 
                     except Exception as chapter_error:
                         self.logger.error(
                             f"Failed to write chapter {i}: {chapter_error}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
                         # Continue with next chapter rather than failing entire project
                         chapter.status = "failed"
                         continue
@@ -844,10 +1138,14 @@ Chapter Content:
 
             completed_chapters = sum(
                 1 for c in project.chapters if c.status == "completed"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             self.logger.info(
                 f"Project writing completed: {completed_chapters}/{len(project.chapters)} chapters, {project.total_word_count:,} words"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             return project
 
@@ -864,20 +1162,62 @@ Chapter Content:
 
         project.progress_percentage = (
             (completed_chapters / total_chapters) * 100 if total_chapters > 0 else 0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         project.total_word_count = sum(c.word_count for c in project.chapters)
 
     def _apply_ghostwriter_persona(self, project: WritingProject) -> str:
-        """Apply Ghostwriter Persona protocols for enhanced writing."""
+        """
+Apply Ghostwriter Persona protocols for enhanced writing.
+
+       
+""""""
+
         persona = project.persona
+       
 
-        ghostwriter_prompt = f"""
+        
+       
+""""""
+
+
+        
+
+       
+
+        persona = project.persona
+       
+""""""
+
+       
+
+        
+       
+"""
+        ghostwriter_prompt = f
+       """"""
+        
+       """
+
         GHOSTWRITER PERSONA ACTIVATION:
+       
 
+        
+       
+"""
         You are {persona.name}, a {persona.persona_type.value} with the following expertise:
         - Primary Areas: {', '.join(persona.expertise_areas)}
         - Writing Style: {persona.writing_style}
         - Target Audience: {project.target_audience}
+       """
+
+        
+       
+
+        GHOSTWRITER PERSONA ACTIVATION:
+       
+""""""
 
         PERSONA CHARACTERISTICS:
         - Voice: {persona.voice_characteristics}
@@ -888,25 +1228,45 @@ Chapter Content:
         1. Maintain consistent voice throughout all content
         2. Draw from your expertise areas naturally
         3. Use your characteristic phrases and expressions
-        4. Avoid patterns that don't align with your persona
+        4. Avoid patterns that don't align with your persona'
         5. Provide value through your unique perspective
         6. Adapt tone appropriately for the target audience
 
-        Remember: You are not just writing content, you are embodying {persona.name}'s expertise \
-    and voice.
-        """
+        Remember: You are not just writing content, you are embodying {persona.name}'s expertise \'
+#     and voice.
+       
 
+        
+       
+"""
         return ghostwriter_prompt
 
     def _create_fallback_outline(self, project: WritingProject) -> List[Chapter]:
-        """Create a fallback outline structure when outline parsing fails."""
+        """
+Create a fallback outline structure when outline parsing fails.
+
         chapters = []
         chapters_count = max(
             8, min(15, project.target_word_count // 3000)
-        )  # Adaptive chapter count
-        words_per_chapter = project.target_word_count // chapters_count
+#         )  # Adaptive chapter count
+       
+""""""
 
+        words_per_chapter = project.target_word_count // chapters_count
+       
+
+        
+       
+"""
         for i in range(chapters_count):
+       """
+
+        
+       
+
+        words_per_chapter = project.target_word_count // chapters_count
+       
+""""""
             chapter = Chapter(
                 number=i + 1,
                 title=f"Chapter {i + 1}",
@@ -915,22 +1275,45 @@ Chapter Content:
                 word_count=0,
                 status="pending",
                 estimated_length=words_per_chapter,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             chapters.append(chapter)
 
         return chapters
 
     def _write_chapter_segments(
         self, prompt: str, system_prompt: str, chapter: Chapter
-    ) -> str:
-        """Write chapter content in segments for better quality control."""
+#     ) -> str:
+        """
+Write chapter content in segments for better quality control.
+
+       
+""""""
+
         target_words = chapter.estimated_length
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        target_words = chapter.estimated_length
+       
+""""""
 
         if target_words <= 2000:
             # Single segment for shorter chapters
             response = self.ollama.generate(
                 prompt, system_prompt, temperature=0.7, max_tokens=4000
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             return response
         else:
             # Multiple segments for longer chapters
@@ -939,20 +1322,43 @@ Chapter Content:
             words_per_segment = target_words // num_segments
 
             for i in range(num_segments):
-                segment_prompt = f"""
-                {prompt}
+               
 
+                
+               
+"""
+                segment_prompt = f
+               """"""
+                
+               """
+
+                {prompt}
+               
+
+                
+               
+"""
                 SEGMENT INSTRUCTIONS:
                 - This is segment {i + 1} of {num_segments}
                 - Target length: approximately {words_per_segment} words
                 - {'Continue naturally from previous content' if i > 0 else 'Begin the chapter with a strong opening'}
-                - {'Build toward the chapter conclusion' if i == num_segments - 1 else 'Develop the narrative \
-    and maintain engagement'}
-                """
+                - {'Build toward the chapter conclusion' if i == num_segments - 1 else 'Develop the narrative \'
+#     and maintain engagement'}
+               """"""
+                
+               """
 
+                {prompt}
+               
+
+                
+               
+"""
                 segment_content = self.ollama.generate(
                     segment_prompt, system_prompt, temperature=0.7, max_tokens=3000
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 segments.append(segment_content)
 
                 # Brief pause between segments
@@ -962,14 +1368,16 @@ Chapter Content:
 
     def _restore_from_checkpoint(
         self, project: WritingProject, checkpoint_name: str
-    ) -> bool:
+#     ) -> bool:
         """Restore project state from a specific checkpoint."""
         try:
             # This is a simplified implementation
             # In a full implementation, you would restore from the actual checkpoint file
             self.logger.info(
                 f"Attempting to restore from checkpoint: {checkpoint_name}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # For now, just reset the current chapter status
             for chapter in project.chapters:
@@ -983,16 +1391,31 @@ Chapter Content:
         except Exception as e:
             self.logger.error(
                 f"Failed to restore from checkpoint {checkpoint_name}: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             return False
 
     def _save_checkpoint(self, project: WritingProject) -> None:
-        """Save a checkpoint using Checkpointed Writing protocol."""
+        """
+Save a checkpoint using Checkpointed Writing protocol.
+
+        
+"""
         try:
+        """
             project_id = hashlib.md5(
                 f"{project.title}_{project.created_at}".encode()
-            ).hexdigest()[:8]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).hexdigest()[:8]
+        """
 
+        try:
+        
+
+       
+""""""
             # Enhanced checkpoint data with recovery information
             checkpoint_data = {
                 "project": asdict(project),
@@ -1003,11 +1426,11 @@ Chapter Content:
                     "total_chapters": len(project.chapters),
                     "completed_chapters": sum(
                         1 for c in project.chapters if c.status == "completed"
-                    ),
+                     ),
                     "current_stage": project.current_stage.value,
                     "persona_type": project.persona.persona_type.value,
-                },
-            }
+                 },
+             }
 
             # Calculate content hash for integrity
             content_str = json.dumps(checkpoint_data, sort_keys=True, default=str)
@@ -1023,14 +1446,18 @@ Chapter Content:
                 word_count=project.total_word_count,
                 progress_data=checkpoint_data,
                 recovery_data=pickle.dumps(project),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Save with timestamp for better organization
             timestamp_str = datetime.now().strftime("%Y % m%d_ % H%M % S")
             checkpoint_file = (
                 self.checkpoint_dir
                 / f"{project_id}_{timestamp_str}_{content_hash}.checkpoint"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             with open(checkpoint_file, "wb") as f:
                 pickle.dump(checkpoint, f)
@@ -1049,37 +1476,77 @@ Chapter Content:
             self.logger.error(f"Failed to save checkpoint: {e}")
 
     def _get_current_chapter_number(self, project: WritingProject) -> Optional[int]:
-        """Get the current chapter being worked on."""
+        """
+Get the current chapter being worked on.
+
+        
+"""
         for chapter in project.chapters:
+        """"""
             if chapter.status == "in_progress":
+        """
+
+        for chapter in project.chapters:
+        
+
+       
+""""""
+
                 return chapter.number
         return None
 
     def _build_enhanced_persona_prompt(
         self, project: WritingProject, chapter_number: int
-    ) -> str:
-        """Build enhanced persona prompt with chapter - specific context."""
+#     ) -> str:
+        
+Build enhanced persona prompt with chapter - specific context.
+""""""
+
+        
+       
+
         base_prompt = project.persona.to_prompt()
+       
+""""""
 
-        chapter_context = f"""
+       
 
+
+        
+
+       
+"""
+        base_prompt = project.persona.to_prompt()
+       """"""
+        
+       """
+
+        chapter_context = f
+       
+
+        
+       
+"""
 CHAPTER - SPECIFIC CONTEXT:
 You are now writing Chapter {chapter_number} of {len(project.chapters)} total chapters.
 Project Progress: {project.progress_percentage:.1f}% complete
 Current Stage: {project.current_stage.value}
 
 Maintain consistency with your established voice while adapting to the specific needs of this chapter.
-"""
+""""""
+
 
         return base_prompt + chapter_context
 
     def _build_chapter_context(
         self, project: WritingProject, chapter_number: int
-    ) -> str:
-        """Build comprehensive context from previous chapters."""
+#     ) -> str:
+        
+Build comprehensive context from previous chapters.
+"""
         if chapter_number <= 1:
-            return "This is the opening chapter. Set the tone \
-    and establish the foundation for the entire work."
+            return "This is the opening chapter. Set the tone \"
+#     and establish the foundation for the entire work."
 
         prev_chapters = [c for c in project.chapters[: chapter_number - 1] if c.content]
         if not prev_chapters:
@@ -1090,48 +1557,108 @@ Maintain consistency with your established voice while adapting to the specific 
             word_count = len(chapter.content.split())
             context += (
                 f"\\nChapter {chapter.number}: {chapter.title} ({word_count} words)\\n"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             # Add brief summary of key points
             if len(chapter.content) > 500:
                 context += f"Key themes: {chapter.content[:500]}...\\n"
 
         context += (
             "\\nMaintain consistency with established themes, tone, and narrative flow."
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         return context
 
     def _write_chapter_with_segments(
         self, prompt: str, system_prompt: str, chapter: Chapter
-    ) -> str:
-        """Write chapter content with improved segmentation for better quality."""
+#     ) -> str:
+        """
+Write chapter content with improved segmentation for better quality.
+
+       
+""""""
+
         # For longer chapters, break into segments
+       
+
+        
+       
+"""
         if chapter.estimated_length > 3000:
+       """
+
+        
+       
+
+        # For longer chapters, break into segments
+       
+""""""
+
             return self._write_long_chapter_segments(prompt, system_prompt, chapter)
         else:
             return self.ollama.generate(
                 prompt, system_prompt, temperature=0.7, max_tokens=6000
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+            
 
+             
+            
+"""
+             )
+            """"""
+
+             
+
+            """
+
+             )
+            
+
+             
+            
+"""
     def _write_long_chapter_segments(
         self, prompt: str, system_prompt: str, chapter: Chapter
-    ) -> str:
-        """Write long chapters in segments for better coherence."""
+#     ) -> str:
+        """
+Write long chapters in segments for better coherence.
+
         segments = []
         target_segments = max(
             2, chapter.estimated_length // 2000
-        )  # ~2000 words per segment
+
+#         )  # ~2000 words per segment
+"""
+
 
         for i in range(target_segments):
-            segment_prompt = f"""{prompt}
 
+
+#         )  # ~2000 words per segment
+
+""""""
+
+            
+           
+
+            segment_prompt = f
+            
+"""
+            {prompt}
+            """"""
 Write segment {i + 1} of {target_segments} for this chapter.
 Target length for this segment: ~{chapter.estimated_length//target_segments} words.
 {"Continue from the previous segment naturally." if i > 0 else "Begin the chapter."}
-"""
+""""""
 
             segment_content = self.ollama.generate(
                 segment_prompt, system_prompt, temperature=0.7, max_tokens=3000
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             segments.append(segment_content)
 
             # Brief pause between segments
@@ -1141,30 +1668,48 @@ Target length for this segment: ~{chapter.estimated_length//target_segments} wor
 
     def load_checkpoint(
         self, project_id: str, checkpoint_hash: Optional[str] = None
-    ) -> WritingProject:
-        """Load a project from checkpoint with enhanced recovery."""
+#     ) -> WritingProject:
+        """
+Load a project from checkpoint with enhanced recovery.
+
+        
+"""
         try:
+        """"""
             if checkpoint_hash:
                 # Look for specific checkpoint
+        """
+        try:
+        """
                 checkpoints = list(
                     self.checkpoint_dir.glob(
                         f"{project_id}_ * _{checkpoint_hash}.checkpoint"
-                    )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 if not checkpoints:
                     raise FileNotFoundError(
                         f"Checkpoint with hash {checkpoint_hash} not found for project {project_id}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
                 checkpoint_file = checkpoints[0]
             else:
                 # Find latest checkpoint for project
                 checkpoints = list(
                     self.checkpoint_dir.glob(f"{project_id}_*.checkpoint")
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 if not checkpoints:
                     raise FileNotFoundError(
                         f"No checkpoints found for project {project_id}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
                 checkpoint_file = max(checkpoints, key=lambda p: p.stat().st_mtime)
 
             with open(checkpoint_file, "rb") as f:
@@ -1181,7 +1726,9 @@ Target length for this segment: ~{chapter.estimated_length//target_segments} wor
             self.logger.info(f"Project loaded from checkpoint: {checkpoint_file}")
             self.logger.info(
                 f"Recovery info - Chapters: {recovery_info.get('completed_chapters', 0)}/{recovery_info.get('total_chapters', 0)}, Stage: {recovery_info.get('current_stage', 'unknown')}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             return project
 
@@ -1190,13 +1737,43 @@ Target length for this segment: ~{chapter.estimated_length//target_segments} wor
             raise
 
     def _validate_checkpoint(self, checkpoint: WritingCheckpoint) -> bool:
-        """Validate checkpoint integrity."""
+        """
+Validate checkpoint integrity.
+
         try:
+           
+""""""
+
             # Basic validation checks
+           
+
+            
+           
+"""
             if not checkpoint.recovery_data:
+           """
+
+            
+           
+
+            # Basic validation checks
+           
+""""""
+
+                
+
                 return False
+                
+""""""
+
+                
+               
 
             # Try to deserialize the project data
+                
+"""
+                return False
+                """
             project = pickle.loads(checkpoint.recovery_data)
 
             # Validate essential project attributes
@@ -1213,9 +1790,17 @@ Target length for this segment: ~{chapter.estimated_length//target_segments} wor
     def list_checkpoints(
         self, project_id: Optional[str] = None
     ) -> List[Dict[str, Any]]:
-        """List available checkpoints."""
+        """
+List available checkpoints.
+
+        
+"""
         try:
+        """"""
             if project_id:
+        """
+        try:
+        """
                 pattern = f"{project_id}_*.checkpoint"
             else:
                 pattern = "*.checkpoint"
@@ -1228,7 +1813,9 @@ Target length for this segment: ~{chapter.estimated_length//target_segments} wor
 
                     recovery_metadata = checkpoint.progress_data.get(
                         "recovery_metadata", {}
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
                     checkpoints.append(
                         {
@@ -1239,18 +1826,22 @@ Target length for this segment: ~{chapter.estimated_length//target_segments} wor
                             "word_count": checkpoint.word_count,
                             "completed_chapters": recovery_metadata.get(
                                 "completed_chapters", 0
-                            ),
+                             ),
                             "total_chapters": recovery_metadata.get(
                                 "total_chapters", 0
-                            ),
+                             ),
                             "content_hash": checkpoint.content_hash,
-                        }
-                    )
+                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
                 except Exception as e:
                     self.logger.warning(
                         f"Could not read checkpoint {checkpoint_file}: {e}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
                     continue
 
             # Sort by timestamp, newest first
@@ -1263,12 +1854,25 @@ Target length for this segment: ~{chapter.estimated_length//target_segments} wor
 
     def export_project(
         self, project: WritingProject, output_path: str, format_type: str = "markdown"
-    ) -> None:
-        """Export the completed project to various formats."""
-        try:
-            output_dir = Path(output_path).parent
-            output_dir.mkdir(parents=True, exist_ok=True)
+#     ) -> None:
+        """
+Export the completed project to various formats.
 
+        
+"""
+        try:
+        """
+
+            output_dir = Path(output_path).parent
+           
+
+            
+           
+"""
+            output_dir.mkdir(parents=True, exist_ok=True)
+           """"""
+        try:
+        """"""
             if format_type.lower() == "markdown":
                 self._export_markdown(project, output_path)
             elif format_type.lower() == "json":
@@ -1287,19 +1891,21 @@ Target length for this segment: ~{chapter.estimated_length//target_segments} wor
     def _export_markdown(self, project: WritingProject, output_path: str) -> None:
         """Export project as Markdown."""
         with open(output_path, "w", encoding="utf - 8") as f:
-            f.write(f"# {project.title}\\n\\n")
+            f.write(f"# {project.title}\\n\\n")"
             f.write(f"**Content Type:** {project.content_type.value}\\n")
             f.write(f"**Target Audience:** {project.target_audience}\\n")
             f.write(f"**Word Count:** {project.total_word_count:,}\\n")
             f.write(
                 f"**Generated by:** {project.persona.name} ({project.persona.persona_type.value})\\n\\n"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
-            f.write("## Outline\\n\\n")
+            f.write("## Outline\\n\\n")"
             f.write(f"{project.outline}\\n\\n")
 
             for chapter in project.chapters:
-                f.write(f"## Chapter {chapter.number}: {chapter.title}\\n\\n")
+                f.write(f"## Chapter {chapter.number}: {chapter.title}\\n\\n")"
                 if chapter.content:
                     f.write(f"{chapter.content}\\n\\n")
                 else:
@@ -1346,8 +1952,12 @@ if __name__ == "__main__":
                 "Popular algorithms and techniques",
                 "Real - world applications",
                 "Best practices and implementation",
-            ],
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         print(f"Project created: {project.title}")
         print(f"Chapters: {len(project.chapters)}")

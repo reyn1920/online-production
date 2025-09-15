@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Autonomous Financial Management Agent
 
 Analyzes profitability across all channels and automatically reallocates
@@ -7,7 +7,7 @@ resources to maximize ROI and ensure sustainable growth.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -115,14 +115,16 @@ class AutonomousFinancialAgent(BaseAgent):
         self.db_path = config.get("db_path", "right_perspective.db")
         self.ollama_client = OllamaIntegration(
             config.get("ollama_config", {"endpoint": "http://localhost:11434"})
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Financial thresholds and parameters
         self.min_roi_threshold = config.get("min_roi_threshold", 0.15)  # 15% minimum ROI
         self.profit_margin_target = config.get("profit_margin_target", 0.25)  # 25% target margin
         self.reallocation_threshold = config.get(
             "reallocation_threshold", 0.1
-        )  # 10% change trigger
+# BRACKET_SURGEON: disabled
+#         )  # 10% change trigger
         self.analysis_frequency = config.get("analysis_frequency", 86400)  # Daily analysis
         self.emergency_cash_reserve = config.get("emergency_reserve", 0.2)  # 20% cash reserve
 
@@ -131,7 +133,8 @@ class AutonomousFinancialAgent(BaseAgent):
         self.diversification_target = config.get("diversification_target", 5)  # Min 5 channels
         self.risk_tolerance = config.get(
             "risk_tolerance", "balanced"
-        )  # conservative/balanced/aggressive
+# BRACKET_SURGEON: disabled
+#         )  # conservative/balanced/aggressive
 
         self.logger = logging.getLogger(__name__)
         self._init_database()
@@ -144,7 +147,7 @@ class AutonomousFinancialAgent(BaseAgent):
 
                 # Channel financials table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS channel_financials (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             channel_id TEXT NOT NULL,
@@ -161,13 +164,15 @@ class AutonomousFinancialAgent(BaseAgent):
                             opportunity_score REAL DEFAULT 0,
                             analysis_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             status TEXT DEFAULT 'active'
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Resource allocations table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS resource_allocations (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             resource_type TEXT NOT NULL,
@@ -183,13 +188,15 @@ class AutonomousFinancialAgent(BaseAgent):
                             status TEXT DEFAULT 'pending',
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             implemented_at TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Financial forecasts table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS financial_forecasts (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             period TEXT NOT NULL,
@@ -203,13 +210,15 @@ class AutonomousFinancialAgent(BaseAgent):
                             risk_factors TEXT,
                             forecast_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             accuracy_score REAL
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Financial alerts table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS financial_alerts (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             alert_type TEXT NOT NULL,
@@ -221,13 +230,15 @@ class AutonomousFinancialAgent(BaseAgent):
                             status TEXT DEFAULT 'active',
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             resolved_at TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Budget tracking table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS budget_tracking (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             period TEXT NOT NULL,
@@ -238,13 +249,15 @@ class AutonomousFinancialAgent(BaseAgent):
                             variance_percentage REAL DEFAULT 0,
                             notes TEXT,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Performance metrics table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS performance_metrics (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             metric_name TEXT NOT NULL,
@@ -253,13 +266,15 @@ class AutonomousFinancialAgent(BaseAgent):
                             channel_id TEXT,
                             category TEXT,
                             measurement_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Allocation history table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS allocation_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             allocation_id TEXT NOT NULL,
@@ -269,23 +284,29 @@ class AutonomousFinancialAgent(BaseAgent):
                             change_reason TEXT,
                             changed_by TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Create indexes
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_financials_channel ON channel_financials(channel_id)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_allocations_resource ON resource_allocations(resource_type)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_alerts_type ON financial_alerts(alert_type)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_metrics_name ON performance_metrics(metric_name)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
         except Exception as e:
@@ -322,7 +343,8 @@ class AutonomousFinancialAgent(BaseAgent):
                     risk_score = self._assess_channel_risk(channel, revenue_data, expense_data)
                     opportunity_score = self._assess_channel_opportunity(
                         channel, revenue_data, expense_data
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Create channel financial object
                     channel_financial = ChannelFinancials(
@@ -338,7 +360,8 @@ class AutonomousFinancialAgent(BaseAgent):
                         growth_rate=growth_rate,
                         risk_score=risk_score,
                         opportunity_score=opportunity_score,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     channel_financials.append(channel_financial)
 
@@ -373,7 +396,8 @@ class AutonomousFinancialAgent(BaseAgent):
             # Calculate optimal allocations using AI - powered analysis
             optimal_allocations = self._calculate_optimal_allocations(
                 channel_financials, current_allocations
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Generate allocation recommendations
             for resource_type, allocation_data in optimal_allocations.items():
@@ -386,7 +410,8 @@ class AutonomousFinancialAgent(BaseAgent):
                     abs(change / current) >= self.reallocation_threshold
                     if current > 0
                     else abs(change) > 100
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     allocation = ResourceAllocation(
                         resource_type=ResourceType(resource_type),
                         current_allocation=current,
@@ -397,7 +422,8 @@ class AutonomousFinancialAgent(BaseAgent):
                         justification=allocation_data["justification"],
                         priority=allocation_data["priority"],
                         implementation_timeline=allocation_data["timeline"],
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     allocations.append(allocation)
                     self._store_resource_allocation(allocation)
@@ -422,7 +448,8 @@ class AutonomousFinancialAgent(BaseAgent):
             "total_reallocation": 0,
             "expected_roi_improvement": 0,
             "details": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for allocation in allocations:
             try:
@@ -433,10 +460,12 @@ class AutonomousFinancialAgent(BaseAgent):
                     implementation_results["successful"] += 1
                     implementation_results["total_reallocation"] += abs(
                         allocation.allocation_change
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     implementation_results[
                         "expected_roi_improvement"
-                    ] += allocation.expected_roi_impact
+# BRACKET_SURGEON: disabled
+#                     ] += allocation.expected_roi_impact
 
                     # Update database
                     self._update_allocation_status(allocation, "implemented")
@@ -450,13 +479,16 @@ class AutonomousFinancialAgent(BaseAgent):
                         "change": allocation.allocation_change,
                         "success": success,
                         "expected_impact": allocation.expected_roi_impact,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 self.logger.error(
                     f"Failed to implement allocation for {allocation.resource_type}: {e}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 implementation_results["failed"] += 1
 
         return implementation_results
@@ -481,19 +513,23 @@ class AutonomousFinancialAgent(BaseAgent):
                     period=period,
                     revenue_projection={
                         RevenueStream(k): v for k, v in forecast_data["revenue"].items()
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     expense_projection={
                         ResourceType(k): v for k, v in forecast_data["expenses"].items()
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     net_profit_projection=forecast_data["net_profit"],
                     roi_projection=forecast_data["roi"],
                     confidence_interval=(
                         forecast_data["confidence_lower"],
                         forecast_data["confidence_upper"],
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     key_assumptions=forecast_data["assumptions"],
                     risk_factors=forecast_data["risks"],
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Store forecast
                 self._store_financial_forecast(forecast)
@@ -513,13 +549,14 @@ class AutonomousFinancialAgent(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT AVG(total_revenue) as avg_revenue,
     AVG(total_expenses) as avg_expenses
                     FROM channel_financials
                     WHERE analysis_date > datetime('now', '-90 days')
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 result = cursor.fetchone()
                 avg_revenue = result[0] or 5000.0
                 avg_expenses = result[1] or 3000.0
@@ -542,14 +579,16 @@ class AutonomousFinancialAgent(BaseAgent):
             RevenueStream.SPONSORED_CONTENT: projected_revenue * 0.3,
             RevenueStream.ADVERTISING_REVENUE: projected_revenue * 0.2,
             RevenueStream.PRODUCT_SALES: projected_revenue * 0.1,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         expense_projection = {
             ResourceType.CONTENT_CREATION: projected_expenses * 0.4,
             ResourceType.ADVERTISING_SPEND: projected_expenses * 0.3,
             ResourceType.TOOL_SUBSCRIPTIONS: projected_expenses * 0.2,
             ResourceType.INFRASTRUCTURE: projected_expenses * 0.1,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return FinancialForecast(
             period=period,
@@ -562,13 +601,16 @@ class AutonomousFinancialAgent(BaseAgent):
                 "Conservative growth estimates based on historical averages",
                 "Stable market conditions assumed",
                 "No major platform algorithm changes",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             risk_factors=[
                 "Platform dependency risk",
                 "Market volatility",
                 "Competition increase",
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
     def monitor_financial_health(self) -> Dict[str, Any]:
         """Monitor overall financial health and generate alerts."""
@@ -582,7 +624,8 @@ class AutonomousFinancialAgent(BaseAgent):
             "active_alerts": [],
             "recommendations": [],
             "key_metrics": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Calculate overall financial health score
@@ -608,7 +651,8 @@ class AutonomousFinancialAgent(BaseAgent):
             # Generate recommendations
             recommendations = self._generate_financial_recommendations(
                 health_score, cash_flow_status, risk_level
-            )
+# BRACKET_SURGEON: disabled
+#             )
             health_report["recommendations"] = recommendations
 
             # Collect key metrics
@@ -629,13 +673,14 @@ class AutonomousFinancialAgent(BaseAgent):
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT DISTINCT channel_id as id, channel_name as name
                     FROM content_performance
                     WHERE created_at > datetime('now', '-90 days')
                     AND status = 'active'
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 return [dict(row) for row in cursor.fetchall()]
         except Exception as e:
             self.logger.error(f"Failed to get active channels: {e}")
@@ -646,7 +691,8 @@ class AutonomousFinancialAgent(BaseAgent):
                 {"id": "instagram_business", "name": "Instagram Business"},
                 {"id": "linkedin_professional", "name": "LinkedIn Professional"},
                 {"id": "twitter_brand", "name": "Twitter Brand"},
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
     def _collect_channel_revenue(self, channel_id: str) -> Dict[str, float]:
         """Collect real revenue data for a specific channel from various sources."""
@@ -744,24 +790,26 @@ class AutonomousFinancialAgent(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT AVG(revenue_generated) as current_revenue
                     FROM content_performance
                     WHERE channel_id = ? AND created_at > datetime('now', '-30 days')
-                """,
+                ""","""
                     (channel_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 current = cursor.fetchone()[0] or 0
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT AVG(revenue_generated) as previous_revenue
                     FROM content_performance
                     WHERE channel_id = ?
                     AND created_at BETWEEN datetime('now', '-60 days') AND datetime('now', '-30 days')
-                """,
+                ""","""
                     (channel_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 previous = cursor.fetchone()[0] or 0
 
                 if previous > 0:
@@ -821,9 +869,11 @@ class AutonomousFinancialAgent(BaseAgent):
 
     def _assess_channel_opportunity(
         self, channel: Dict, revenue_data: Dict, expense_data: Dict
-    ) -> float:
-        """Assess opportunity score for a channel (0.0 = low opportunity,
-        1.0 = high opportunity)."""
+# BRACKET_SURGEON: disabled
+#     ) -> float:
+        """Assess opportunity score for a channel (0.0 = low opportunity,"""
+# BRACKET_SURGEON: disabled
+#         1.0 = high opportunity).""""""
         opportunity_factors = []
 
         # Growth potential based on current performance
@@ -881,13 +931,14 @@ class AutonomousFinancialAgent(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT resource_type, SUM(current_allocation) as total
                     FROM resource_allocations
                     WHERE status = 'active'
                     GROUP BY resource_type
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 return {row[0]: row[1] for row in cursor.fetchall()}
         except Exception as e:
             self.logger.error(f"Failed to get current allocations: {e}")
@@ -914,16 +965,20 @@ class AutonomousFinancialAgent(BaseAgent):
                         "opportunity_score": cf.opportunity_score,
                         "revenue": cf.total_revenue,
                         "expenses": cf.total_expenses,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     for cf in channel_financials
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "current_allocations": current_allocations,
                 "constraints": {
                     "min_roi_threshold": self.min_roi_threshold,
                     "max_single_channel": self.max_single_channel_allocation,
                     "risk_tolerance": self.risk_tolerance,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             # Generate optimization prompt
             optimization_prompt = self._generate_optimization_prompt(analysis_data)
@@ -968,9 +1023,11 @@ class AutonomousFinancialAgent(BaseAgent):
                         "justification": f"Reallocate to high - ROI channels (avg ROI: {statistics.mean([ch.roi for ch in top_channels]):.2%})",
                         "priority": (
                             1 if resource_type == ResourceType.CONTENT_CREATION.value else 2
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "timeline": "immediate",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         return optimal_allocations
 
@@ -1024,7 +1081,8 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Log results
                 self.logger.info(
                     f"Advertising budget adjustment: {success_count}/{total_platforms} platforms updated successfully"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Store allocation change in database
                 self._store_allocation_change(allocation)
@@ -1068,7 +1126,8 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Log results
                 self.logger.info(
                     f"Content budget adjustment: {success_operations}/{total_operations} operations completed successfully"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Store allocation change in database
                 self._store_allocation_change(allocation)
@@ -1112,7 +1171,8 @@ class AutonomousFinancialAgent(BaseAgent):
                 # Log results
                 self.logger.info(
                     f"Tool subscription adjustment: {success_adjustments}/{total_adjustments} adjustments completed successfully"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Store allocation change in database
                 self._store_allocation_change(allocation)
@@ -1129,7 +1189,8 @@ class AutonomousFinancialAgent(BaseAgent):
         try:
             self.logger.info(
                 f"Implementing {allocation.resource_type.value} allocation change: ${allocation.allocation_change:.2f}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Store allocation in database
             with sqlite3.connect(self.db_path) as conn:
@@ -1137,14 +1198,14 @@ class AutonomousFinancialAgent(BaseAgent):
 
                 # Update or insert allocation record
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO resource_allocations (
                         resource_type, channel_id, current_allocation,
                             recommended_allocation, allocation_change,
                             expected_roi_impact, risk_assessment, justification,
                             priority, implementation_timeline, status, created_at
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)
-                """,
+                ""","""
                     (
                         allocation.resource_type.value,
                         "global",  # Generic allocations are global
@@ -1157,23 +1218,27 @@ class AutonomousFinancialAgent(BaseAgent):
                         allocation.priority,
                         allocation.implementation_timeline,
                         datetime.now().isoformat(),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Log allocation change for audit trail
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO allocation_history (
                         resource_type, allocation_amount, change_reason, created_at
                     ) VALUES (?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         allocation.resource_type.value,
                         allocation.allocation_change,
                         allocation.justification,
                         datetime.now().isoformat(),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
 
@@ -1189,22 +1254,26 @@ class AutonomousFinancialAgent(BaseAgent):
                             "resource_type": allocation.resource_type.value,
                             "change_amount": allocation.allocation_change,
                             "expected_roi_impact": allocation.expected_roi_impact,
-                        }
-                    ),
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     ),
                     action_required=f"Monitor {allocation.resource_type.value} performance after implementation",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             return True
 
         except Exception as e:
             self.logger.error(
                 f"Failed to implement {allocation.resource_type.value} allocation: {e}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return False
 
     def _generate_optimization_prompt(self, analysis_data: Dict) -> str:
         """Generate prompt for AI - powered resource optimization."""
-        return f"""
+        return f""""""
 Optimize resource allocation for maximum ROI based on the following financial analysis:
 
 Channels Performance:
@@ -1227,7 +1296,7 @@ Provide optimal resource allocation recommendations including:
 6. Implementation timeline
 
 Format as JSON with resource types as keys.
-"""
+""""""
 
     def _parse_optimization_response(self, ai_response: str) -> Dict[str, Dict]:
         """Parse AI optimization response."""
@@ -1247,19 +1316,20 @@ Format as JSON with resource types as keys.
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO channel_financials (
                         channel_id, channel_name, revenue_streams, expenses,
                             total_revenue, total_expenses, net_profit, roi,
                             profit_margin, growth_rate, risk_score, opportunity_score
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         channel_financial.channel_id,
                         channel_financial.channel_name,
                         json.dumps(
                             {k.value: v for k, v in channel_financial.revenue_streams.items()}
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         json.dumps({k.value: v for k, v in channel_financial.expenses.items()}),
                         channel_financial.total_revenue,
                         channel_financial.total_expenses,
@@ -1269,8 +1339,10 @@ Format as JSON with resource types as keys.
                         channel_financial.growth_rate,
                         channel_financial.risk_score,
                         channel_financial.opportunity_score,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to store channel financials: {e}")
@@ -1287,8 +1359,10 @@ Format as JSON with resource types as keys.
                     "severity": "high",
                     "message": f"Channel {channel_financial.channel_name} ROI ({channel_financial.roi:.1%}) below threshold ({self.min_roi_threshold:.1%})",
                     "channel_id": channel_financial.channel_id,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Revenue decline alert
         if channel_financial.growth_rate < -0.1:  # 10% decline
@@ -1298,22 +1372,27 @@ Format as JSON with resource types as keys.
                     "severity": "medium",
                     "message": f"Channel {channel_financial.channel_name} revenue declining at {channel_financial.growth_rate:.1%}",
                     "channel_id": channel_financial.channel_id,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Opportunity detected alert
         if (
             channel_financial.opportunity_score > 0.8
             and channel_financial.roi > self.min_roi_threshold
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             alerts.append(
                 {
                     "type": FinancialAlert.OPPORTUNITY_DETECTED,
                     "severity": "low",
                     "message": f"High opportunity detected for {channel_financial.channel_name} (score: {channel_financial.opportunity_score:.2f})",
                     "channel_id": channel_financial.channel_id,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Store alerts
         for alert in alerts:
@@ -1325,19 +1404,21 @@ Format as JSON with resource types as keys.
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO financial_alerts (
                         alert_type, channel_id, severity, message, action_required
                     ) VALUES (?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         alert_data["type"].value,
                         alert_data.get("channel_id"),
                         alert_data["severity"],
                         alert_data["message"],
                         "Review and adjust resource allocation",
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to create financial alert: {e}")
@@ -1351,46 +1432,51 @@ Format as JSON with resource types as keys.
 
                 # Get latest channel performance
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM channel_financials
                     WHERE analysis_date > datetime('now', '-7 days')
                     ORDER BY roi DESC
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 channel_performance = [dict(row) for row in cursor.fetchall()]
 
                 # Get active allocations
                 cursor.execute(
-                    """
+                    """"""
                     SELECT resource_type,
     SUM(recommended_allocation) as total_allocation,
                         AVG(expected_roi_impact) as avg_roi_impact
                     FROM resource_allocations
                     WHERE status = 'implemented'
                     GROUP BY resource_type
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 resource_allocations = [dict(row) for row in cursor.fetchall()]
 
                 # Get recent alerts
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM financial_alerts
                     WHERE status = 'active'
                     ORDER BY created_at DESC
                     LIMIT 10
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 recent_alerts = [dict(row) for row in cursor.fetchall()]
 
                 # Calculate summary metrics
                 total_revenue = sum(float(ch.get("total_revenue", 0)) for ch in channel_performance)
                 total_expenses = sum(
                     float(ch.get("total_expenses", 0)) for ch in channel_performance
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 overall_roi = (
                     (total_revenue - total_expenses) / total_expenses if total_expenses > 0 else 0
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return {
                     "timestamp": datetime.now().isoformat(),
@@ -1401,12 +1487,14 @@ Format as JSON with resource types as keys.
                         "overall_roi": overall_roi,
                         "active_channels": len(channel_performance),
                         "active_alerts": len(recent_alerts),
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     "channel_performance": channel_performance,
                     "resource_allocations": resource_allocations,
                     "recent_alerts": recent_alerts,
                     "status": "active",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception as e:
             self.logger.error(f"Failed to generate financial dashboard: {e}")
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
@@ -1425,7 +1513,8 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {amazon_key}",
                         "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get commission data for last 30 days
                     start_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
@@ -1434,7 +1523,8 @@ Format as JSON with resource types as keys.
                     response = requests.get(
                         f"https://webservices.amazon.com/paapi5/getreports?startDate={start_date}&endDate={end_date}&reportType = earnings",
                         headers=headers,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1466,7 +1556,8 @@ Format as JSON with resource types as keys.
                     headers = {
                         "x - ShareASale - Date": timestamp,
                         "x - ShareASale - Authentication": signature,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get commission data
                     start_date = (datetime.now() - timedelta(days=30)).strftime("%m/%d/%Y")
@@ -1475,7 +1566,8 @@ Format as JSON with resource types as keys.
                     response = requests.get(
                         f"https://api.shareasale.com/w.cfm?XMLFormat = 1&affiliateId={affiliate_id}&token={shareasale_key}&requestType = commissionDetail&dateStart={start_date}&dateEnd={end_date}",
                         headers=headers,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if response.status_code == 200:
                         # Parse XML response and extract commission total
@@ -1486,7 +1578,8 @@ Format as JSON with resource types as keys.
                         total_commissions = sum(
                             float(comm.find("commission").text or 0)
                             for comm in root.findall(".//commissiondetail")
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         commissions["shareasale"] = total_commissions
                     else:
                         commissions["shareasale"] = 0.0
@@ -1502,7 +1595,8 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {cj_key}",
                         "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get commission data for last 30 days
                     start_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
@@ -1511,14 +1605,16 @@ Format as JSON with resource types as keys.
                     response = requests.get(
                         f"https://commission - detail.api.cj.com/v3/commissions?date - type = event&start - date={start_date}&end - date={end_date}",
                         headers=headers,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if response.status_code == 200:
                         data = response.json()
                         total_commissions = sum(
                             float(comm.get("commission_amount", 0))
                             for comm in data.get("commissions", [])
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         commissions["cj_affiliate"] = total_commissions
                     else:
                         commissions["cj_affiliate"] = 0.0
@@ -1543,7 +1639,8 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {adsense_key}",
                         "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get AdSense account ID
                     account_id = store.get_secret("GOOGLE_ADSENSE_ACCOUNT_ID")
@@ -1555,13 +1652,15 @@ Format as JSON with resource types as keys.
                     response = requests.get(
                         f"https://adsense.googleapis.com/v2/accounts/{account_id}/reports:generate?dateRange.startDate={start_date}&dateRange.endDate={end_date}&metrics = ESTIMATED_EARNINGS",
                         headers=headers,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if response.status_code == 200:
                         data = response.json()
                         earnings = float(
                             data.get("rows", [{}])[0].get("cells", [{}])[0].get("value", 0)
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         revenue["google_adsense"] = earnings
                     else:
                         revenue["google_adsense"] = 0.0
@@ -1577,7 +1676,8 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {youtube_key}",
                         "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get channel ID
                     channel_id = store.get_secret("YOUTUBE_CHANNEL_ID")
@@ -1589,7 +1689,8 @@ Format as JSON with resource types as keys.
                     response = requests.get(
                         f"https://youtubeanalytics.googleapis.com/v2/reports?ids = channel=={channel_id}&startDate={start_date}&endDate={end_date}&metrics = estimatedRevenue&dimensions = day",
                         headers=headers,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1618,7 +1719,8 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {aspire_key}",
                         "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get campaign earnings for last 30 days
                     start_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
@@ -1627,14 +1729,16 @@ Format as JSON with resource types as keys.
                     response = requests.get(
                         f"https://api.aspireiq.com/v1/campaigns/earnings?start_date={start_date}&end_date={end_date}",
                         headers=headers,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if response.status_code == 200:
                         data = response.json()
                         total_earnings = sum(
                             float(campaign.get("earnings", 0))
                             for campaign in data.get("campaigns", [])
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         revenue["aspireiq_partnerships"] = total_earnings
                     else:
                         revenue["aspireiq_partnerships"] = 0.0
@@ -1647,11 +1751,12 @@ Format as JSON with resource types as keys.
             # This would be stored in the database from manual input
             cursor = self.db_connection.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT SUM(amount) FROM sponsored_content_payments
                 WHERE payment_date >= date('now', '-30 days')
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             manual_partnerships = cursor.fetchone()[0] or 0.0
             revenue["direct_partnerships"] = float(manual_partnerships)
 
@@ -1672,7 +1777,8 @@ Format as JSON with resource types as keys.
                     headers = {
                         "X - Shopify - Access - Token": shopify_key,
                         "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get orders from last 30 days
                     start_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
@@ -1680,13 +1786,15 @@ Format as JSON with resource types as keys.
                     response = requests.get(
                         f"https://{shop_domain}.myshopify.com/admin/api/2023 - 10/orders.json?status = any&created_at_min={start_date}T00:00:00Z&financial_status = paid",
                         headers=headers,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if response.status_code == 200:
                         data = response.json()
                         total_sales = sum(
                             float(order.get("total_price", 0)) for order in data.get("orders", [])
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         revenue["shopify_sales"] = total_sales
                     else:
                         revenue["shopify_sales"] = 0.0
@@ -1709,17 +1817,20 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Basic {credentials}",
                         "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get orders from last 30 days
                     start_date = (datetime.now() - timedelta(days=30)).strftime(
                         "%Y-%m-%dT % H:%M:%S"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     response = requests.get(
                         f"{site_url}/wp - json/wc/v3/orders?status = completed&after={start_date}&per_page = 100",
                         headers=headers,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1748,7 +1859,8 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {stripe_key}",
                         "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get subscription invoices from last 30 days
                     start_timestamp = int((datetime.now() - timedelta(days=30)).timestamp())
@@ -1756,7 +1868,8 @@ Format as JSON with resource types as keys.
                     response = requests.get(
                         f"https://api.stripe.com/v1/invoices?status = paid&created[gte]={start_timestamp}&limit = 100",
                         headers=headers,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1765,7 +1878,8 @@ Format as JSON with resource types as keys.
                             / 100  # Stripe amounts are in cents
                             for invoice in data.get("data", [])
                             if invoice.get("subscription")
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         revenue["stripe_subscriptions"] = subscription_revenue
                     else:
                         revenue["stripe_subscriptions"] = 0.0
@@ -1781,18 +1895,21 @@ Format as JSON with resource types as keys.
                     headers = {
                         "Authorization": f"Bearer {paypal_key}",
                         "Content - Type": "application/json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Get subscription transactions from last 30 days
                     start_date = (datetime.now() - timedelta(days=30)).strftime(
                         "%Y-%m-%dT % H:%M:%S.000Z"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     end_date = datetime.now().strftime("%Y-%m-%dT % H:%M:%S.000Z")
 
                     response = requests.get(
                         f"https://api.paypal.com/v1/billing/subscriptions/transactions?start_time={start_date}&end_time={end_date}",
                         headers=headers,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if response.status_code == 200:
                         data = response.json()
@@ -1801,10 +1918,12 @@ Format as JSON with resource types as keys.
                                 transaction.get("amount_with_breakdown", {})
                                 .get("gross_amount", {})
                                 .get("value", 0)
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             for transaction in data.get("transactions", [])
                             if transaction.get("status") == "COMPLETED"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         revenue["paypal_subscriptions"] = subscription_revenue
                     else:
                         revenue["paypal_subscriptions"] = 0.0
@@ -1824,13 +1943,14 @@ Format as JSON with resource types as keys.
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO resource_allocations
                     (resource_type, current_allocation, recommended_allocation,
                         allocation_change, expected_roi_impact, risk_assessment,
-                         justification, priority, implementation_timeline, status, created_at)
+# BRACKET_SURGEON: disabled
+#                          justification, priority, implementation_timeline, status, created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'implemented', ?)
-                """,
+                ""","""
                     (
                         allocation.resource_type.value,
                         allocation.current_allocation,
@@ -1842,8 +1962,10 @@ Format as JSON with resource types as keys.
                         allocation.priority,
                         allocation.implementation_timeline,
                         datetime.now().isoformat(),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing allocation change: {e}")

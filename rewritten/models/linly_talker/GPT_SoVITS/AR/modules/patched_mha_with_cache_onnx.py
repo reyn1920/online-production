@@ -1,7 +1,8 @@
 from torch.nn.functional import *
 from torch.nn.functional import (
     _canonical_mask,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 def multi_head_attention_forward_patched(
@@ -41,7 +42,8 @@ def multi_head_attention_forward_patched(
         other_name="",
         target_type=query.dtype,
         check_other=False,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     head_dim = embed_dim // num_heads
 
     proj_qkv = linear(query, in_proj_weight, in_proj_bias)
@@ -51,7 +53,8 @@ def multi_head_attention_forward_patched(
         .transpose(0, -2)
         .squeeze(-2)
         .contiguous()
-    )
+# BRACKET_SURGEON: disabled
+#     )
     q, k, v = proj_qkv[0], proj_qkv[1], proj_qkv[2]
 
     if cache["first_infer"] == 1:
@@ -71,7 +74,8 @@ def multi_head_attention_forward_patched(
         other_name="",
         target_type=q.dtype,
         check_other=False,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     attn_mask = attn_mask.unsqueeze(0)
 
     q = q.view(-1, num_heads, head_dim).transpose(0, 1)

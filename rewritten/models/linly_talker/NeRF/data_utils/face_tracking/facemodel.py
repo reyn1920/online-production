@@ -55,14 +55,16 @@ class Face_3DMM(nn.Module):
                 3 * left_contours_flat.unsqueeze(1),
                 3 * left_contours_flat.unsqueeze(1) + 1,
                 3 * left_contours_flat.unsqueeze(1) + 2,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             dim=1,
         ).reshape(-1)
         left_geometry = (
             torch.mm(id_para, self.base_id[:, sel_index])
             + torch.mm(exp_para, self.base_exp[:, sel_index])
             + self.mu[sel_index]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         left_geometry = left_geometry.view(batch_size, -1, 3)
         proj_x = forward_transform(left_geometry, euler_angle, trans, focal_length, cxy)[:, :, 0]
         proj_x = proj_x.reshape(batch_size, 8, num_per_contour)
@@ -70,21 +72,24 @@ class Face_3DMM(nn.Module):
         left_geometry = left_geometry.view(batch_size * 8, num_per_contour, 3)
         left_3dlands = left_geometry[torch.arange(batch_size * 8), arg_min.view(-1), :].view(
             batch_size, 8, 3
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         sel_index = torch.cat(
             (
                 3 * right_contours_flat.unsqueeze(1),
                 3 * right_contours_flat.unsqueeze(1) + 1,
                 3 * right_contours_flat.unsqueeze(1) + 2,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             dim=1,
         ).reshape(-1)
         right_geometry = (
             torch.mm(id_para, self.base_id[:, sel_index])
             + torch.mm(exp_para, self.base_exp[:, sel_index])
             + self.mu[sel_index]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         right_geometry = right_geometry.view(batch_size, -1, 3)
         proj_x = forward_transform(right_geometry, euler_angle, trans, focal_length, cxy)[:, :, 0]
         proj_x = proj_x.reshape(batch_size, 8, num_per_contour)
@@ -92,21 +97,24 @@ class Face_3DMM(nn.Module):
         right_geometry = right_geometry.view(batch_size * 8, num_per_contour, 3)
         right_3dlands = right_geometry[torch.arange(batch_size * 8), arg_max.view(-1), :].view(
             batch_size, 8, 3
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         sel_index = torch.cat(
             (
                 3 * self.keyinds.unsqueeze(1),
                 3 * self.keyinds.unsqueeze(1) + 1,
                 3 * self.keyinds.unsqueeze(1) + 2,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             dim=1,
         ).reshape(-1)
         geometry = (
             torch.mm(id_para, self.base_id[:, sel_index])
             + torch.mm(exp_para, self.base_exp[:, sel_index])
             + self.mu[sel_index]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         lands_3d = geometry.view(-1, self.keyinds.shape[0], 3)
         lands_3d[:, :8, :] = left_3dlands
         lands_3d[:, 9:17, :] = right_3dlands
@@ -120,14 +128,16 @@ class Face_3DMM(nn.Module):
                 3 * sub_index.unsqueeze(1),
                 3 * sub_index.unsqueeze(1) + 1,
                 3 * sub_index.unsqueeze(1) + 2,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             dim=1,
         ).reshape(-1)
         geometry = (
             torch.mm(id_para, self.base_id[:, sel_index])
             + torch.mm(exp_para, self.base_exp[:, sel_index])
             + self.mu[sel_index]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return geometry.reshape(-1, sub_index.shape[0], 3)
 
     def forward_geo(self, id_para, exp_para):

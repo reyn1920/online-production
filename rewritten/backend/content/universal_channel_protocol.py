@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""
+""""""
 Universal Channel Protocol System
 
-Implements the "Can't - Fail" template for all channels with:
+Implements the "Can't - Fail" template for all channels with:'
 1. Topic - Specific Intelligence Feeds
 2. Dedicated Knowledge Bases
 3. Unique Channel Personas
 4. Universal Relentless Optimization
 5. Right Perspective Content Firewall
-"""
+""""""
 
 import json
 import logging
@@ -60,9 +60,9 @@ class ChannelConfig:
 
 
 class UniversalChannelProtocol:
-    """
+    """"""
     Core system for managing all channels with standardized success strategies
-    """
+    """"""
 
     def __init__(self, db_path: str = "data/right_perspective.db"):
         self.db_path = db_path
@@ -85,7 +85,7 @@ class UniversalChannelProtocol:
 
             # Channel configurations table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS channel_configs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         channel_id TEXT NOT NULL UNIQUE,
@@ -101,13 +101,15 @@ class UniversalChannelProtocol:
                         content_repurposing_allowed BOOLEAN DEFAULT 1,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # RSS feed monitoring table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS channel_rss_feeds (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         channel_id TEXT NOT NULL,
@@ -121,13 +123,15 @@ class UniversalChannelProtocol:
                         last_error TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (channel_id) REFERENCES channel_configs (channel_id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Channel - specific knowledge base entries
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS channel_knowledge_base (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         channel_id TEXT NOT NULL,
@@ -142,13 +146,15 @@ class UniversalChannelProtocol:
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (channel_id) REFERENCES channel_configs (channel_id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Enhanced author personas for channels
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS channel_personas (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         persona_id TEXT NOT NULL UNIQUE,
@@ -165,13 +171,15 @@ class UniversalChannelProtocol:
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (channel_id) REFERENCES channel_configs (channel_id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Content firewall rules
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS content_firewall_rules (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         source_channel_id TEXT NOT NULL,
@@ -182,13 +190,15 @@ class UniversalChannelProtocol:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (source_channel_id) REFERENCES channel_configs (channel_id),
                         FOREIGN KEY (target_channel_id) REFERENCES channel_configs (channel_id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Optimization tracking per channel
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS channel_optimization_log (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         channel_id TEXT NOT NULL,
@@ -206,9 +216,11 @@ class UniversalChannelProtocol:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         completed_at TIMESTAMP,
                         FOREIGN KEY (channel_id) REFERENCES channel_configs (channel_id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -233,7 +245,8 @@ class UniversalChannelProtocol:
                     content_repurposing_allowed=bool(row[11]),
                     created_at=datetime.fromisoformat(row[12]),
                     updated_at=datetime.fromisoformat(row[13]),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.channels[config.channel_id] = config
 
     def _initialize_right_perspective_firewall(self):
@@ -254,21 +267,26 @@ class UniversalChannelProtocol:
                         "witty",
                         "authoritative",
                         "provocative",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "humor_style": "political_satire",
                     "expertise_areas": [
                         "politics",
                         "current_events",
                         "conservative_ideology",
-                    ],
-                },
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
                 rss_feeds=[
                     "https://feeds.feedburner.com/breitbart",
                     "https://www.dailywire.com/feeds/rss.xml",
                     "https://townhall.com/feeds/rss",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 firewall_level=ContentFirewallLevel.STRICT,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Set strict firewall rules
         self._set_firewall_rules(
@@ -277,8 +295,10 @@ class UniversalChannelProtocol:
                 "cross_promotion_allowed": False,
                 "asset_sharing_allowed": False,
                 "content_repurposing_allowed": False,
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         # Initialize the firewall instance after protocol is ready
         try:
@@ -297,7 +317,8 @@ class UniversalChannelProtocol:
         persona_config: Dict[str, Any],
         rss_feeds: List[str],
         firewall_level: ContentFirewallLevel = ContentFirewallLevel.STANDARD,
-    ) -> ChannelConfig:
+# BRACKET_SURGEON: disabled
+#     ) -> ChannelConfig:
         """Create a new channel with the Universal Protocol template"""
 
         # Generate persona ID
@@ -321,7 +342,8 @@ class UniversalChannelProtocol:
             content_repurposing_allowed=(firewall_level != ContentFirewallLevel.STRICT),
             created_at=datetime.now(),
             updated_at=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Save to database
         self._save_channel_config(config)
@@ -345,48 +367,58 @@ class UniversalChannelProtocol:
                 "health_studies",
                 "nutrition_facts",
                 "fitness_research",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ChannelType.FINANCE: [
                 "market_data",
                 "economic_indicators",
                 "investment_analysis",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ChannelType.POLITICAL: [
                 "political_facts",
                 "voting_records",
                 "policy_analysis",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ChannelType.BUSINESS: [
                 "business_metrics",
                 "industry_reports",
                 "company_profiles",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ChannelType.SCIENCE: [
                 "research_papers",
                 "scientific_studies",
                 "discovery_news",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ChannelType.LIFESTYLE: [
                 "trend_analysis",
                 "consumer_behavior",
                 "cultural_insights",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ChannelType.EDUCATION: [
                 "academic_research",
                 "learning_methodologies",
                 "educational_stats",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ChannelType.ENTERTAINMENT: [
                 "industry_news",
                 "box_office_data",
                 "celebrity_facts",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ChannelType.SPORTS: [
                 "player_stats",
                 "team_performance",
                 "sports_analytics",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         return base_tables + type_specific_tables.get(channel_type, [])
 
@@ -395,14 +427,15 @@ class UniversalChannelProtocol:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO channel_configs
                 (channel_id, channel_name, channel_type, persona_id, rss_feeds,
                     knowledge_base_tables, firewall_level, optimization_enabled,
                      cross_promotion_allowed, asset_sharing_allowed, content_repurposing_allowed,
-                     created_at, updated_at)
+# BRACKET_SURGEON: disabled
+#                      created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     config.channel_id,
                     config.channel_name,
@@ -417,33 +450,38 @@ class UniversalChannelProtocol:
                     config.content_repurposing_allowed,
                     config.created_at.isoformat(),
                     config.updated_at.isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     def _create_channel_persona(
         self, persona_id: str, channel_id: str, persona_config: Dict[str, Any]
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Create persona for the channel"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO channel_personas
                 (persona_id, channel_id, persona_name, writing_style, tone_attributes,
                     vocabulary_level, humor_style, expertise_areas, target_audience,
-                     voice_characteristics, content_preferences)
+# BRACKET_SURGEON: disabled
+#                      voice_characteristics, content_preferences)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     persona_id,
                     channel_id,
                     persona_config.get("persona_name", "Default Persona"),
                     persona_config.get(
                         "writing_style",
-                        "Professional \
-    and engaging",
-                    ),
+                        "Professional \"
+#     and engaging",
+# BRACKET_SURGEON: disabled
+#                     ),
                     json.dumps(persona_config.get("tone_attributes", ["informative", "friendly"])),
                     persona_config.get("vocabulary_level", "intermediate"),
                     persona_config.get("humor_style", "light"),
@@ -451,8 +489,10 @@ class UniversalChannelProtocol:
                     persona_config.get("target_audience", "General audience"),
                     json.dumps(persona_config.get("voice_characteristics", {})),
                     json.dumps(persona_config.get("content_preferences", {})),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     def _setup_channel_rss_feeds(self, channel_id: str, rss_feeds: List[str]):
@@ -462,13 +502,14 @@ class UniversalChannelProtocol:
 
             for feed_url in rss_feeds:
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO channel_rss_feeds
                     (channel_id, feed_url, status)
                     VALUES (?, ?, 'active')
-                """,
+                ""","""
                     (channel_id, feed_url),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             conn.commit()
 
@@ -480,14 +521,16 @@ class UniversalChannelProtocol:
             for table_name in table_names:
                 # Create a placeholder entry to establish the table relationship
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO channel_knowledge_base
                     (channel_id, table_name, entry_type, title, content, source_url)
                     VALUES (?, ?, 'system', 'Knowledge Base Initialized',
-                        'This knowledge base has been initialized for the channel.', '')
-                """,
+# BRACKET_SURGEON: disabled
+#                         'This knowledge base has been initialized for the channel.', '')
+                ""","""
                     (channel_id, table_name),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             conn.commit()
 
@@ -506,7 +549,8 @@ class UniversalChannelProtocol:
 
     def check_content_firewall(
         self, source_channel_id: str, target_channel_id: str, action_type: str
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Check if an action is allowed between channels based on firewall rules"""
         source_config = self.channels.get(source_channel_id)
         target_config = self.channels.get(target_channel_id)
@@ -538,11 +582,12 @@ class UniversalChannelProtocol:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT * FROM channel_personas WHERE channel_id = ?
-            """,
+            ""","""
                 (channel_id,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             row = cursor.fetchone()
             if row:
@@ -558,7 +603,8 @@ class UniversalChannelProtocol:
                     "target_audience": row[9],
                     "voice_characteristics": json.loads(row[10]),
                     "content_preferences": json.loads(row[11]),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return None
 
     def get_channel_knowledge_base(
@@ -570,22 +616,24 @@ class UniversalChannelProtocol:
 
             if entry_type:
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM channel_knowledge_base
                     WHERE channel_id = ? AND entry_type = ?
                     ORDER BY relevance_score DESC, created_at DESC
-                """,
+                ""","""
                     (channel_id, entry_type),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM channel_knowledge_base
                     WHERE channel_id = ?
                     ORDER BY relevance_score DESC, created_at DESC
-                """,
+                ""","""
                     (channel_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             entries = []
             for row in cursor.fetchall():
@@ -603,8 +651,10 @@ class UniversalChannelProtocol:
                         "tags": json.loads(row[9]) if row[9] else [],
                         "created_at": row[10],
                         "updated_at": row[11],
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return entries
 
@@ -619,7 +669,8 @@ class UniversalChannelProtocol:
         credibility: float = 0.5,
         relevance: float = 0.5,
         tags: List[str] = None,
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Add a knowledge base entry for a channel"""
         if channel_id not in self.channels:
             return False
@@ -627,12 +678,13 @@ class UniversalChannelProtocol:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 INSERT INTO channel_knowledge_base
                 (channel_id, table_name, entry_type, title, content, source_url,
-                    source_credibility, relevance_score, tags)
+# BRACKET_SURGEON: disabled
+#                     source_credibility, relevance_score, tags)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     channel_id,
                     table_name,
@@ -643,8 +695,10 @@ class UniversalChannelProtocol:
                     credibility,
                     relevance,
                     json.dumps(tags or []),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
         return True
@@ -654,11 +708,12 @@ class UniversalChannelProtocol:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT * FROM channel_rss_feeds WHERE channel_id = ?
-            """,
+            ""","""
                 (channel_id,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             feeds = []
             for row in cursor.fetchall():
@@ -675,8 +730,10 @@ class UniversalChannelProtocol:
                         "error_count": row[8],
                         "last_error": row[9],
                         "created_at": row[10],
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return feeds
 
@@ -687,7 +744,8 @@ class UniversalChannelProtocol:
         optimization_type: str,
         variant_a: str,
         variant_b: str,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Start an A/B optimization test for a channel"""
         if channel_id not in self.channels:
             return None
@@ -701,18 +759,20 @@ class UniversalChannelProtocol:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 INSERT INTO channel_optimization_log
                 (channel_id, video_id, optimization_type, variant_a, variant_b)
                 VALUES (?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (channel_id, video_id, optimization_type, variant_a, variant_b),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
         self.logger.info(
             f"Started {optimization_type} optimization test for {channel_id}: {test_id}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return test_id
 
     def get_all_channels(self) -> Dict[str, ChannelConfig]:

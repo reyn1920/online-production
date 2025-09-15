@@ -9,17 +9,21 @@ from pytorch3d.renderer import (DirectionalLights, FoVPerspectiveCameras, Materi
     MeshRasterizer, MeshRenderer, PerspectiveCameras,
                                     PointLights, RasterizationSettings, SoftPhongShader,
                                     TexturesUV, TexturesVertex, blending,
-                                    look_at_view_transform)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                     look_at_view_transform)
 
 from pytorch3d.renderer.blending import (BlendParams, hard_rgb_blend,
 
-    sigmoid_alpha_blend, softmax_rgb_blend)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     sigmoid_alpha_blend, softmax_rgb_blend)
 
 from pytorch3d.structures import Meshes
 
 
 class SoftSimpleShader(nn.Module):
-    """
+    """"""
     Per pixel lighting - the lighting model is applied using the interpolated
     coordinates and normals for each pixel. The blending function returns the
     soft aggregated color using all the faces per pixel.
@@ -27,17 +31,20 @@ class SoftSimpleShader(nn.Module):
     To use the default values, simply initialize the shader with the desired
     device e.g.
 
-    """
+    """"""
 
 
     def __init__(
         self, device="cpu", cameras = None, lights = None, materials = None, blend_params = None
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__()
         self.lights = lights if lights is not None else PointLights(device = device)
         self.materials = (
             materials if materials is not None else Materials(device = device)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.cameras = cameras
         self.blend_params = blend_params if blend_params is not None else BlendParams()
 
@@ -57,14 +64,16 @@ class SoftSimpleShader(nn.Module):
 
         cameras = kwargs.get("cameras", self.cameras)
         if cameras is None:
-            msg = "Cameras must be specified either at initialization \\
-                or in the forward pass of SoftPhongShader"
+            msg = "Cameras must be specified either at initialization \\"
+#                 or in the forward pass of SoftPhongShader"
             raise ValueError(msg)
         znear = kwargs.get("znear", getattr(cameras, "znear", 1.0))
         zfar = kwargs.get("zfar", getattr(cameras, "zfar", 100.0))
         images = softmax_rgb_blend(
             texels, fragments, blend_params, znear = znear, zfar = zfar
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return images
 
 
@@ -78,7 +87,8 @@ class Render_3DMM(nn.Module):
             img_w = 500,
             batch_size = 1,
             device = torch.device("cuda:0"),
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super(Render_3DMM, self).__init__()
 
         self.focal = focal
@@ -90,7 +100,9 @@ class Render_3DMM(nn.Module):
         dir_path = os.path.dirname(os.path.realpath(__file__))
         topo_info = np.load(
             os.path.join(dir_path, "3DMM", "topology_info.npy"), allow_pickle = True
-        ).item()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).item()
         self.tris = torch.as_tensor(topo_info["tris"]).to(self.device)
         self.vert_tris = torch.as_tensor(topo_info["vert_tris"]).to(self.device)
 
@@ -119,29 +131,39 @@ class Render_3DMM(nn.Module):
                 znear = 0.01,
                 zfar = 20,
                 fov = 2 * np.arctan(self.img_w//2/self.focal) * 180.0/np.pi,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         lights = PointLights(
             device = self.device,
                 location=[[0.0, 0.0, 1e5]],
                 ambient_color=[[1, 1, 1]],
                 specular_color=[[0.0, 0.0, 0.0]],
                 diffuse_color=[[0.0, 0.0, 0.0]],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         sigma = 1e-4
         raster_settings = RasterizationSettings(
             image_size=(self.img_h, self.img_w),
                 blur_radius = np.log(1.0/1e-4 - 1.0) * sigma/18.0,
                 faces_per_pixel = 2,
                 perspective_correct = False,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         blend_params = blending.BlendParams(background_color=[0, 0, 0])
         renderer = MeshRenderer(
             rasterizer = MeshRasterizer(raster_settings = raster_settings,
-    cameras = cameras),
+# BRACKET_SURGEON: disabled
+#     cameras = cameras),
                 shader = SoftSimpleShader(
                 lights = lights, blend_params = blend_params, cameras = cameras
-            ),
-                )
+# BRACKET_SURGEON: disabled
+#             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         return renderer.to(self.device)
 
     @staticmethod
@@ -195,7 +217,9 @@ class Render_3DMM(nn.Module):
             rott_geometry,
                 self.tris.float().repeat(rott_geometry.shape[0], 1, 1),
                 face_color,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         rendered_img = self.renderer(mesh)
         rendered_img = torch.clamp(rendered_img, 0, 255)
 

@@ -114,8 +114,10 @@ def transferBFM09(bfm_folder="BFM"):
             "keypoints": keypoints,
             "frontmask2_idx": frontmask2_idx,
             "skinmask": skinmask,
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 # load landmarks for standard face, which is used for image preprocessing
@@ -134,9 +136,11 @@ def load_lm3d(bfm_folder):
             np.mean(Lm3D[lm_idx[[3, 4]], :], 0),
             Lm3D[lm_idx[5], :],
             Lm3D[lm_idx[6], :],
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         axis=0,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     Lm3D = Lm3D[[1, 2, 0, 3, 4], :]
 
     return Lm3D

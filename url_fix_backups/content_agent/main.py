@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Content Agent - Hollywood - Level Creative Pipeline
 Handles video creation, TTS, avatar generation, and content automation
-"""
+""""""
 
 import asyncio
 import json
@@ -32,7 +32,8 @@ try:
         CompositeVideoClip,
         TextClip,
         VideoFileClip,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     logger.warning("MoviePy not available - video editing features disabled")
     VideoFileClip = AudioFileClip = CompositeVideoClip = TextClip = None
@@ -98,7 +99,8 @@ class NewsWatcher:
             "https://feeds.npr.org / 1001 / rss.xml",
             "https://techcrunch.com / feed/",
             "https://feeds.ycombinator.com / hackernews",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def get_trending_topics(self, limit: int = 10) -> List[Dict[str, str]]:
         """Get trending topics from RSS feeds"""
@@ -115,8 +117,10 @@ class NewsWatcher:
                             "link": entry.link,
                             "published": entry.get("published", ""),
                             "source": feed.feed.get("title", "Unknown"),
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
             except Exception as e:
                 logger.warning(f"Failed to fetch from {feed_url}: {e}")
 
@@ -137,7 +141,7 @@ class ScriptGenerator:
     ) -> Dict[str, str]:
         """Generate a video script for the given topic"""
         try:
-            prompt = f"""
+            prompt = f""""""
 Create a compelling {duration}-second video script about: {topic}
 
 Style: {style}
@@ -158,7 +162,7 @@ Return JSON with:
 - script: Full narration script with timing cues
 - key_points: List of main points covered
 - tags: Relevant hashtags / keywords
-"""
+""""""
 
             response = await openai.ChatCompletion.acreate(
                 model="gpt - 4",
@@ -166,12 +170,15 @@ Return JSON with:
                     {
                         "role": "system",
                         "content": "You are a professional video script writer specializing in educational content that goes viral.",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {"role": "user", "content": prompt},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 max_tokens=2000,
                 temperature=0.7,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             content = response.choices[0].message.content
 
@@ -186,8 +193,9 @@ Return JSON with:
                     "description": f"Latest insights on {topic}",
                     "script": content,
                     "key_points": [topic],
-                    "tags": ["#news", "#trending", "#education"],
-                }
+                    "tags": ["#news", "#trending", "#education"],"
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             logger.error(f"Script generation failed: {e}")
@@ -195,11 +203,12 @@ Return JSON with:
             return {
                 "title": f"Analysis: {topic}",
                 "description": f"Insights on {topic}",
-                "script": f"Today we're exploring {topic}. This topic is important because it affects many aspects of our daily lives. Let's dive into the key details \
-    and understand what this means for the future.",
+                "script": f"Today we're exploring {topic}. This topic is important because it affects many aspects of our daily lives. Let's dive into the key details \"
+#     and understand what this means for the future.",
                 "key_points": [topic],
-                "tags": ["#analysis", "#education"],
-            }
+                "tags": ["#analysis", "#education"],"
+# BRACKET_SURGEON: disabled
+#             }
 
 
 class TTSEngine:
@@ -271,10 +280,12 @@ class AvatarGenerator:
                     fontsize=72,
                     color="white",
                     font="Arial - Bold",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 .set_position("center")
                 .set_duration(duration)
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create subtitle text (key points)
             key_points = script_data.get("key_points", [])
@@ -284,12 +295,14 @@ class AvatarGenerator:
                 TextClip(subtitle_text, fontsize=36, color="lightblue", font="Arial")
                 .set_position(("center", "bottom"))
                 .set_duration(duration)
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Composite video
             final_video = CompositeVideoClip([background, title_clip, subtitle_clip]).set_audio(
                 audio_clip
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Write video file
             final_video.write_videofile(
@@ -299,7 +312,8 @@ class AvatarGenerator:
                 audio_codec="aac",
                 temp_audiofile="temp - audio.m4a",
                 remove_temp=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Clean up
             audio_clip.close()
@@ -350,11 +364,13 @@ class AvatarGenerator:
                 ffmpeg.input(
                     "color = c = blue:size = 1920x1080:duration=" + str(duration),
                     f="lavfi",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 .output(output_path, vcodec="libx264", pix_fmt="yuv420p")
                 .overwrite_output()
                 .run(quiet=True)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return output_path
         except Exception as e:
             logger.error(f"Minimal video creation failed: {e}")
@@ -381,13 +397,15 @@ class ContentAgent:
             sys.stdout,
             level=self.config.log_level,
             format="<green>{time:YYYY - MM - DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logger.add(
             "/app / logs / content_agent.log",
             rotation="1 day",
             retention="30 days",
             level=self.config.log_level,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def setup_routes(self):
         """Setup FastAPI routes"""
@@ -399,7 +417,8 @@ class ContentAgent:
                 "timestamp": datetime.now().isoformat(),
                 "tts_available": self.tts_engine.tts is not None,
                 "openai_configured": bool(self.config.openai_api_key),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         @self.app.get("/trending")
         async def get_trending_topics():
@@ -417,13 +436,15 @@ class ContentAgent:
                 # Generate script
                 script_data = await self.script_generator.generate_script(
                     request.topic, request.duration, request.format
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Generate audio
                 audio_path = str(self.config.output_dir / f"{content_id}_audio.wav")
                 await self.tts_engine.generate_audio(
                     script_data["script"], audio_path, request.voice
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Generate video
                 video_path = str(self.config.output_dir / f"{content_id}_video.mp4")
@@ -453,8 +474,10 @@ class ContentAgent:
                         "style": request.style,
                         "voice": request.voice,
                         "resolution": request.resolution,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
                 logger.info(f"✅ Content created successfully: {content_id}")
                 return response
@@ -473,7 +496,8 @@ class ContentAgent:
                     "file_path": str(video_path),
                     "exists": True,
                     "size_mb": video_path.stat().st_size / (1024 * 1024),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 raise HTTPException(status_code=404, detail="Content not found")
 
@@ -491,7 +515,8 @@ class ContentAgent:
             host="0.0.0.0",
             port=8001,
             log_level=self.config.log_level.lower(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         server = uvicorn.Server(config)
         await server.serve()
 

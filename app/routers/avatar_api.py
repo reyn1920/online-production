@@ -1,404 +1,445 @@
 #!/usr/bin/env python3
 """
 Avatar API Router
-Provides endpoints for avatar generation, processing, and management.
+
+Handles avatar generation, customization, and management.
+Provides endpoints for creating and retrieving user avatars.
 """
 
-import base64
-import io
+import logging
 import os
-import sys
-from typing import Any, Dict, Optional
+import secrets
+import time
+from datetime import datetime, timedelta
+from typing import Dict, Any, Optional, List
+from urllib.parse import quote, unquote
 
-from avatar.background_remover import BackgroundRemover
-from avatar.channel_avatar_manager import ChannelAvatarManager
-from avatar.golden_ratio_generator import GoldenRatioAvatarGenerator
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
-from PIL import Image
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, Request, Query, Form
+from fastapi.responses import JSONResponse, Response
+from pydantic import BaseModel, Field
 
-# Add the backend directory to the path
-sys.path.append(os.path.join(os.path.dirname(__file__), "../../backend"))
+router = APIRouter(prefix="/avatar", tags=["avatar"])
 
-router = APIRouter(prefix="/api/avatar", tags=["avatar"])
+# In-memory storage for demo purposes
+avatars: Dict[str, Dict[str, Any]] = {}
+avatar_stats: Dict[str, int] = {"total_created": 0, "total_requests": 0}
 
-# Initialize components
-avatar_generator = GoldenRatioAvatarGenerator()
-background_remover = BackgroundRemover()
-channel_manager = ChannelAvatarManager()
+class AvatarCreate(BaseModel):
+    user_id: str = Field(..., min_length=1, max_length=100, description="User identifier")
+    style: Optional[str] = Field("default", description="Avatar style")
+    color_scheme: Optional[str] = Field("monochrome", description="Color scheme")
+    size: Optional[int] = Field(128, ge=32, le=512, description="Avatar size in pixels")
+    background_color: Optional[str] = Field("#FFFFFF", description="Background color")
+    seed: Optional[str] = Field(None, description="Random seed for consistent generation")
 
+class AvatarResponse(BaseModel):
+    avatar_id: str
+    user_id: str
+    style: str
+    color_scheme: str
+    size: int
+    background_color: str
+    created_at: str
+    url: str
+    svg_data: Optional[str]
 
-class AvatarGenerationRequest(BaseModel):
-    style: str = "geometric"
-    color_scheme: str = "monochrome"
-    size: int = 400
-    customizations: Dict[str, Any] = {
-        "complexity": 0.6,
-        "symmetry": 0.8,
-        "golden_ratio_emphasis": 0.8,
-        "transparency": True,
-        "border_style": "none",
-        "texture": "smooth",
+class AvatarInfo(BaseModel):
+    avatar_id: str
+    user_id: str
+    style: str
+    color_scheme: str
+    size: int
+    created_at: str
+    request_count: int
+
+def generate_avatar_id() -> str:
+    """Generate a unique avatar ID."""
+    return secrets.token_urlsafe(8)
+
+def generate_simple_svg(user_id: str, style: str, color_scheme: str, size: int, bg_color: str) -> str:
+    """Generate a simple SVG avatar."""
+    # Simple geometric avatar generation
+    hash_val = hash(user_id + style + color_scheme)
+    
+    # Color schemes
+    color_schemes = {
+        "monochrome": {"primary": "#000000", "secondary": "#FFFFFF"},
+        "vibrant": {"primary": "#FF6B6B", "secondary": "#4ECDC4"},
+        "pastel": {"primary": "#FFB3BA", "secondary": "#BAFFC9"},
+        "neon": {"primary": "#FF073A", "secondary": "#39FF14"},
+        "earth": {"primary": "#8B4513", "secondary": "#228B22"},
+        "ocean": {"primary": "#006994", "secondary": "#87CEEB"}
+    }
+    
+    colors = color_schemes.get(color_scheme, color_schemes["monochrome"])
+    primary = colors["primary"]
+    secondary = colors["secondary"]
+    
+    # Generate simple geometric shapes based on hash
+    shapes = []
+    for i in range(3):
+        x = (hash_val >> (i * 8)) % (size - 40) + 20
+        y = (hash_val >> ((i + 3) * 8)) % (size - 40) + 20
+        radius = (hash_val >> ((i + 6) * 8)) % 20 + 10
+        color = primary if i % 2 == 0 else secondary
+        shapes.append(f'<circle cx="{x}" cy="{y}" r="{radius}" fill="{color}" opacity="0.8"/>')
+    
+    svg_content = f'''
+    <svg width="{size}" height="{size}" xmlns="http://www.w3.org/2000/svg">
+        <rect width="{size}" height="{size}" fill="{bg_color}"/>
+        {''.join(shapes)}
+    </svg>
+    '''.strip()
+    
+    return svg_content
+
+@router.post("/create", response_model=AvatarResponse)
+async def create_avatar(avatar: AvatarCreate):
+    """Create a new avatar."""
+    # Check if avatar already exists for this user
+    existing_avatar = None
+    for avatar_data in avatars.values():
+        if avatar_data["user_id"] == avatar.user_id:
+            existing_avatar = avatar_data
+            break
+    
+    if existing_avatar:
+        # Update existing avatar
+        avatar_id = existing_avatar["avatar_id"]
+        avatar_data = existing_avatar
+        avatar_data.update({
+            "style": avatar.style,
+            "color_scheme": avatar.color_scheme,
+            "size": avatar.size,
+            "background_color": avatar.background_color,
+            "updated_at": datetime.now().isoformat()
+        })
+    else:
+        # Create new avatar
+        avatar_id = generate_avatar_id()
+        while avatar_id in avatars:
+            avatar_id = generate_avatar_id()
+        
+        avatar_data = {
+            "avatar_id": avatar_id,
+            "user_id": avatar.user_id,
+            "style": avatar.style or "default",
+            "color_scheme": avatar.color_scheme or "monochrome",
+            "size": avatar.size or 128,
+            "background_color": avatar.background_color or "#FFFFFF",
+            "created_at": datetime.now().isoformat(),
+            "request_count": 0
+        }
+        
+        avatars[avatar_id] = avatar_data
+        avatar_stats["total_created"] += 1
+    
+    # Generate SVG
+    svg_data = generate_simple_svg(
+        avatar_data["user_id"],
+        avatar_data["style"],
+        avatar_data["color_scheme"],
+        avatar_data["size"],
+        avatar_data["background_color"]
+    )
+    
+    avatar_data["svg_data"] = svg_data
+    avatar_data["request_count"] += 1
+    avatar_stats["total_requests"] += 1
+    
+    return AvatarResponse(
+        avatar_id=avatar_data["avatar_id"],
+        user_id=avatar_data["user_id"],
+        style=avatar_data["style"],
+        color_scheme=avatar_data["color_scheme"],
+        size=avatar_data["size"],
+        background_color=avatar_data["background_color"],
+        created_at=avatar_data["created_at"],
+        url=f"/avatar/{avatar_id}",
+        svg_data=svg_data
+    )
+
+@router.get("/{avatar_id}", response_model=AvatarResponse)
+async def get_avatar(avatar_id: str):
+    """Retrieve an avatar by ID."""
+    if avatar_id not in avatars:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    avatar_data = avatars[avatar_id]
+    
+    # Generate fresh SVG
+    svg_data = generate_simple_svg(
+        avatar_data["user_id"],
+        avatar_data["style"],
+        avatar_data["color_scheme"],
+        avatar_data["size"],
+        avatar_data["background_color"]
+    )
+    
+    avatar_data["request_count"] += 1
+    avatar_stats["total_requests"] += 1
+    
+    return AvatarResponse(
+        avatar_id=avatar_data["avatar_id"],
+        user_id=avatar_data["user_id"],
+        style=avatar_data["style"],
+        color_scheme=avatar_data["color_scheme"],
+        size=avatar_data["size"],
+        background_color=avatar_data["background_color"],
+        created_at=avatar_data["created_at"],
+        url=f"/avatar/{avatar_id}",
+        svg_data=svg_data
+    )
+
+@router.get("/{avatar_id}/svg")
+async def get_avatar_svg(avatar_id: str):
+    """Get avatar as SVG."""
+    if avatar_id not in avatars:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    avatar_data = avatars[avatar_id]
+    
+    # Generate SVG
+    svg_data = generate_simple_svg(
+        avatar_data["user_id"],
+        avatar_data["style"],
+        avatar_data["color_scheme"],
+        avatar_data["size"],
+        avatar_data["background_color"]
+    )
+    
+    avatar_data["request_count"] += 1
+    avatar_stats["total_requests"] += 1
+    
+    return Response(content=svg_data, media_type="image/svg+xml")
+
+@router.get("/user/{user_id}", response_model=AvatarResponse)
+async def get_user_avatar(user_id: str):
+    """Get avatar by user ID."""
+    # Find avatar for user
+    for avatar_data in avatars.values():
+        if avatar_data["user_id"] == user_id:
+            # Generate fresh SVG
+            svg_data = generate_simple_svg(
+                avatar_data["user_id"],
+                avatar_data["style"],
+                avatar_data["color_scheme"],
+                avatar_data["size"],
+                avatar_data["background_color"]
+            )
+            
+            avatar_data["request_count"] += 1
+            avatar_stats["total_requests"] += 1
+            
+            return AvatarResponse(
+                avatar_id=avatar_data["avatar_id"],
+                user_id=avatar_data["user_id"],
+                style=avatar_data["style"],
+                color_scheme=avatar_data["color_scheme"],
+                size=avatar_data["size"],
+                background_color=avatar_data["background_color"],
+                created_at=avatar_data["created_at"],
+                url=f"/avatar/{avatar_data['avatar_id']}",
+                svg_data=svg_data
+            )
+    
+    raise HTTPException(status_code=404, detail="Avatar not found for user")
+
+@router.get("/user/{user_id}/svg")
+async def get_user_avatar_svg(user_id: str):
+    """Get user avatar as SVG."""
+    # Find avatar for user
+    for avatar_data in avatars.values():
+        if avatar_data["user_id"] == user_id:
+            # Generate SVG
+            svg_data = generate_simple_svg(
+                avatar_data["user_id"],
+                avatar_data["style"],
+                avatar_data["color_scheme"],
+                avatar_data["size"],
+                avatar_data["background_color"]
+            )
+            
+            avatar_data["request_count"] += 1
+            avatar_stats["total_requests"] += 1
+            
+            return Response(content=svg_data, media_type="image/svg+xml")
+    
+    raise HTTPException(status_code=404, detail="Avatar not found for user")
+
+@router.put("/{avatar_id}", response_model=AvatarResponse)
+async def update_avatar(avatar_id: str, avatar: AvatarCreate):
+    """Update an existing avatar."""
+    if avatar_id not in avatars:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    avatar_data = avatars[avatar_id]
+    
+    # Update avatar properties
+    avatar_data.update({
+        "style": avatar.style or avatar_data["style"],
+        "color_scheme": avatar.color_scheme or avatar_data["color_scheme"],
+        "size": avatar.size or avatar_data["size"],
+        "background_color": avatar.background_color or avatar_data["background_color"],
+        "updated_at": datetime.now().isoformat()
+    })
+    
+    # Generate fresh SVG
+    svg_data = generate_simple_svg(
+        avatar_data["user_id"],
+        avatar_data["style"],
+        avatar_data["color_scheme"],
+        avatar_data["size"],
+        avatar_data["background_color"]
+    )
+    
+    return AvatarResponse(
+        avatar_id=avatar_data["avatar_id"],
+        user_id=avatar_data["user_id"],
+        style=avatar_data["style"],
+        color_scheme=avatar_data["color_scheme"],
+        size=avatar_data["size"],
+        background_color=avatar_data["background_color"],
+        created_at=avatar_data["created_at"],
+        url=f"/avatar/{avatar_id}",
+        svg_data=svg_data
+    )
+
+@router.delete("/{avatar_id}")
+async def delete_avatar(avatar_id: str):
+    """Delete an avatar."""
+    if avatar_id not in avatars:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    avatar_data = avatars[avatar_id]
+    del avatars[avatar_id]
+    
+    return {
+        "message": "Avatar deleted successfully",
+        "avatar_id": avatar_id,
+        "user_id": avatar_data["user_id"],
+        "timestamp": datetime.now().isoformat()
     }
 
-
-class ImageProcessRequest(BaseModel):
-    image_data: str  # Base64 encoded image
-    enhance: bool = True
-    target_size: Optional[int] = None
-
-
-class AvatarSaveRequest(BaseModel):
-    channel_id: int
-    image_data: str  # Base64 encoded image
-    make_default: bool = True
-    metadata: Optional[Dict[str, Any]] = None
-
-
-class ChannelAvatarRequest(BaseModel):
-    channel_id: int
-    style: Optional[str] = "golden_ratio"
-    color_scheme: Optional[str] = "monochrome"
-    force_regenerate: bool = False
-
-
-@router.post("/generate")
-async def generate_avatar(request: AvatarGenerationRequest):
-    """
-    Generate a new avatar using golden ratio principles
-    """
-    try:
-        # Generate the avatar
-        result = avatar_generator.generate_avatar(
-            style=request.style,
-            color_scheme=request.color_scheme,
-            size=request.size,
-            **request.customizations,
-        )
-
-        if not result["success"]:
-            raise HTTPException(status_code=400, detail=result["error"])
-
-        # Convert PIL Image to base64
-        img_buffer = io.BytesIO()
-        result["image"].save(img_buffer, format="PNG")
-        img_buffer.seek(0)
-
-        base64_image = base64.b64encode(img_buffer.getvalue()).decode("utf-8")
-        base64_data_uri = f"data:image/png;base64,{base64_image}"
-
-        return JSONResponse(
-            {
-                "success": True,
-                "base64_image": base64_data_uri,
-                "metadata": result["metadata"],
-                "style": request.style,
-                "color_scheme": request.color_scheme,
-                "size": request.size,
-            }
-        )
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Avatar generation failed: {str(e)}",
-        )
-
-
-@router.post("/process-upload")
-async def process_uploaded_image(request: ImageProcessRequest):
-    """
-    Process an uploaded image by removing background and enhancing transparency
-    """
-    try:
-        # Decode base64 image
-        if request.image_data.startswith("data:image"):
-            # Remove data URI prefix
-            base64_data = request.image_data.split(",")[1]
-        else:
-            base64_data = request.image_data
-
-        image_bytes = base64.b64decode(base64_data)
-        image = Image.open(io.BytesIO(image_bytes))
-
-        # Remove background
-        processed_result = background_remover.remove_background(
-            image, enhance_transparency=request.enhance
-        )
-
-        if not processed_result["success"]:
-            raise HTTPException(status_code=400, detail=processed_result["error"])
-
-        processed_image = processed_result["image"]
-
-        # Resize if requested
-        if request.target_size:
-            processed_image = processed_image.resize(
-                (request.target_size, request.target_size), Image.Resampling.LANCZOS
-            )
-
-        # Convert back to base64
-        img_buffer = io.BytesIO()
-        processed_image.save(img_buffer, format="PNG")
-        img_buffer.seek(0)
-
-        base64_processed = base64.b64encode(img_buffer.getvalue()).decode("utf-8")
-        base64_data_uri = f"data:image/png;base64,{base64_processed}"
-
-        return JSONResponse(
-            {
-                "success": True,
-                "processed_image": base64_data_uri,
-                "original_size": image.size,
-                "processed_size": processed_image.size,
-                "has_transparency": processed_image.mode in ("RGBA", "LA"),
-                "metadata": processed_result.get("metadata", {}),
-            }
-        )
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Image processing failed: {str(e)}",
-        )
-
-
-@router.post("/save")
-async def save_avatar_to_channel(request: AvatarSaveRequest):
-    """
-    Save an avatar to a specific channel
-    """
-    try:
-        # Decode base64 image
-        if request.image_data.startswith("data:image"):
-            base64_data = request.image_data.split(",")[1]
-        else:
-            base64_data = request.image_data
-
-        image_bytes = base64.b64decode(base64_data)
-        image = Image.open(io.BytesIO(image_bytes))
-
-        # Save avatar using channel manager
-        result = channel_manager.save_avatar(
-            channel_id=request.channel_id,
-            image=image,
-            is_default=request.make_default,
-            metadata=request.metadata or {},
-        )
-
-        if not result["success"]:
-            raise HTTPException(status_code=400, detail=result["error"])
-
-        return JSONResponse(
-            {
-                "success": True,
-                "avatar_id": result["avatar_id"],
-                "file_path": result["file_path"],
-                "is_default": request.make_default,
-                "metadata": result.get("metadata", {}),
-            }
-        )
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Avatar save failed: {str(e)}",
-        )
-
-
-@router.get("/channel/{channel_id}")
-async def get_channel_avatar(channel_id: int):
-    """
-    Get the current avatar for a specific channel
-    """
-    try:
-        result = channel_manager.get_channel_avatar(channel_id)
-
-        if not result["success"]:
-            raise HTTPException(status_code=404, detail=result["error"])
-
-        return JSONResponse(
-            {
-                "success": True,
-                "avatar_id": result["avatar_id"],
-                "file_path": result["file_path"],
-                "is_default": result["is_default"],
-                "metadata": result.get("metadata", {}),
-                "created_at": result.get("created_at"),
-            }
-        )
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to get channel avatar: {str(e)}",
-        )
-
-
-@router.post("/channel/generate")
-async def generate_channel_avatar(request: ChannelAvatarRequest):
-    """
-    Generate and save a new avatar for a specific channel
-    """
-    try:
-        result = channel_manager.generate_channel_avatar(
-            channel_id=request.channel_id,
-            style=request.style,
-            color_scheme=request.color_scheme,
-            force_regenerate=request.force_regenerate,
-        )
-
-        if not result["success"]:
-            raise HTTPException(status_code=400, detail=result["error"])
-
-        return JSONResponse(
-            {
-                "success": True,
-                "avatar_id": result["avatar_id"],
-                "file_path": result["file_path"],
-                "style": request.style,
-                "color_scheme": request.color_scheme,
-                "metadata": result.get("metadata", {}),
-            }
-        )
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Channel avatar generation failed: {str(e)}",
-        )
-
-
-@router.get("/channels")
-async def get_all_channels():
-    """
-    Get all channels with their avatar information
-    """
-    try:
-        result = channel_manager.get_all_channels()
-        return JSONResponse({"success": True, "channels": result})
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to get channels: {str(e)}",
-        )
-
-
-@router.get("/channel/{channel_id}/avatars")
-async def get_channel_avatars(channel_id: int):
-    """
-    Get all avatars for a specific channel
-    """
-    try:
-        result = channel_manager.get_channel_avatars(channel_id)
-
-        if not result["success"]:
-            raise HTTPException(status_code=404, detail=result["error"])
-
-        return JSONResponse(
-            {
-                "success": True,
-                "channel_id": channel_id,
-                "avatars": result["avatars"],
-                "total_count": len(result["avatars"]),
-            }
-        )
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to get channel avatars: {str(e)}",
-        )
-
-
-@router.delete("/avatar/{avatar_id}")
-async def delete_avatar(avatar_id: int):
-    """
-    Delete a specific avatar
-    """
-    try:
-        result = channel_manager.delete_avatar(avatar_id)
-
-        if not result["success"]:
-            raise HTTPException(status_code=404, detail=result["error"])
-
-        return JSONResponse(
-            {
-                "success": True,
-                "message": "Avatar deleted successfully",
-                "avatar_id": avatar_id,
-            }
-        )
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to delete avatar: {str(e)}",
-        )
-
+@router.get("/list/all")
+async def list_avatars(
+    limit: int = Query(10, ge=1, le=100, description="Number of avatars to return"),
+    user_id: Optional[str] = Query(None, description="Filter by user ID")
+):
+    """List avatars."""
+    filtered_avatars = []
+    
+    for avatar_data in avatars.values():
+        if user_id and avatar_data["user_id"] != user_id:
+            continue
+        
+        filtered_avatars.append({
+            "avatar_id": avatar_data["avatar_id"],
+            "user_id": avatar_data["user_id"],
+            "style": avatar_data["style"],
+            "color_scheme": avatar_data["color_scheme"],
+            "size": avatar_data["size"],
+            "created_at": avatar_data["created_at"],
+            "request_count": avatar_data["request_count"]
+        })
+    
+    # Sort by creation time (newest first)
+    filtered_avatars.sort(key=lambda x: x["created_at"], reverse=True)
+    
+    return {
+        "avatars": filtered_avatars[:limit],
+        "total_count": len(filtered_avatars),
+        "timestamp": datetime.now().isoformat()
+    }
 
 @router.get("/styles")
-async def get_available_styles():
-    """
-    Get all available avatar styles and their configurations
-    """
-    return JSONResponse(
-        {
-            "success": True,
-            "styles": {
-                "geometric": {
-                    "name": "Geometric",
-                    "description": "Clean geometric shapes with golden ratio proportions",
-                    "color_schemes": ["monochrome", "vibrant", "pastel", "neon"],
-                },
-                "organic": {
-                    "name": "Organic",
-                    "description": "Natural flowing forms with golden ratio harmony",
-                    "color_schemes": ["earth", "ocean", "forest", "sunset"],
-                },
-                "minimal": {
-                    "name": "Minimal",
-                    "description": "Simple, clean design with perfect proportions",
-                    "color_schemes": ["monochrome", "grayscale", "accent"],
-                },
-                "abstract": {
-                    "name": "Abstract",
-                    "description": "Creative abstract patterns with mathematical beauty",
-                    "color_schemes": ["vibrant", "gradient", "complementary"],
-                },
-            },
-            "color_schemes": {
-                "monochrome": {"primary": "#000000", "secondary": "#FFFFFF"},
-                "vibrant": {"primary": "#FF6B6B", "secondary": "#4ECDC4"},
-                "pastel": {"primary": "#FFB3BA", "secondary": "#BAFFC9"},
-                "neon": {"primary": "#FF073A", "secondary": "#39FF14"},
-                "earth": {"primary": "#8B4513", "secondary": "#228B22"},
-                "ocean": {"primary": "#006994", "secondary": "#87CEEB"},
-                "forest": {"primary": "#228B22", "secondary": "#90EE90"},
-                "sunset": {"primary": "#FF4500", "secondary": "#FFD700"},
-                "grayscale": {"primary": "#808080", "secondary": "#D3D3D3"},
-                "accent": {"primary": "#000000", "secondary": "#FF6B6B"},
-                "gradient": {"primary": "#667eea", "secondary": "#764ba2"},
-                "complementary": {"primary": "#FF6B6B", "secondary": "#6BCF7F"},
-            },
-        }
-    )
+async def get_avatar_styles():
+    """Get available avatar styles."""
+    styles = [
+        "default", "geometric", "abstract", "minimal", "retro", "modern"
+    ]
+    
+    return {
+        "styles": styles,
+        "total_count": len(styles),
+        "timestamp": datetime.now().isoformat()
+    }
 
+@router.get("/color-schemes")
+async def get_color_schemes():
+    """Get available color schemes."""
+    color_schemes = {
+        "monochrome": {"primary": "#000000", "secondary": "#FFFFFF"},
+        "vibrant": {"primary": "#FF6B6B", "secondary": "#4ECDC4"},
+        "pastel": {"primary": "#FFB3BA", "secondary": "#BAFFC9"},
+        "neon": {"primary": "#FF073A", "secondary": "#39FF14"},
+        "earth": {"primary": "#8B4513", "secondary": "#228B22"},
+        "ocean": {"primary": "#006994", "secondary": "#87CEEB"}
+    }
+    
+    return {
+        "color_schemes": color_schemes,
+        "total_count": len(color_schemes),
+        "timestamp": datetime.now().isoformat()
+    }
+
+@router.get("/stats")
+async def get_avatar_stats():
+    """Get avatar service statistics."""
+    # Calculate style distribution
+    style_stats = {}
+    color_scheme_stats = {}
+    size_stats = {}
+    
+    for avatar_data in avatars.values():
+        style = avatar_data["style"]
+        color_scheme = avatar_data["color_scheme"]
+        size = avatar_data["size"]
+        
+        style_stats[style] = style_stats.get(style, 0) + 1
+        color_scheme_stats[color_scheme] = color_scheme_stats.get(color_scheme, 0) + 1
+        size_stats[size] = size_stats.get(size, 0) + 1
+    
+    return {
+        "total_avatars": len(avatars),
+        "total_created": avatar_stats["total_created"],
+        "total_requests": avatar_stats["total_requests"],
+        "style_distribution": style_stats,
+        "color_scheme_distribution": color_scheme_stats,
+        "size_distribution": size_stats,
+        "timestamp": datetime.now().isoformat()
+    }
 
 @router.get("/health")
-async def health_check():
-    """
-    Health check endpoint for the avatar API
-    """
-    return JSONResponse(
-        {
-            "status": "healthy",
-            "service": "avatar-api",
-            "components": {
-                "avatar_generator": "active",
-                "background_remover": "active",
-                "channel_manager": "active",
-            },
-        }
+async def avatar_health():
+    """Check avatar service health."""
+    return {
+        "ok": True,
+        "total_avatars": len(avatars),
+        "total_created": avatar_stats["total_created"],
+        "total_requests": avatar_stats["total_requests"],
+        "timestamp": datetime.now().isoformat()
+    }
+
+@router.post("/generate-random")
+async def generate_random_avatar(
+    user_id: str = Query(..., description="User identifier"),
+    size: int = Query(128, ge=32, le=512, description="Avatar size")
+):
+    """Generate a random avatar for a user."""
+    import random
+    
+    styles = ["default", "geometric", "abstract", "minimal", "retro", "modern"]
+    color_schemes = ["monochrome", "vibrant", "pastel", "neon", "earth", "ocean"]
+    backgrounds = ["#FFFFFF", "#F0F0F0", "#E0E0E0", "#D0D0D0", "#C0C0C0"]
+    
+    avatar_create = AvatarCreate(
+        user_id=user_id,
+        style=random.choice(styles),
+        color_scheme=random.choice(color_schemes),
+        size=size,
+        background_color=random.choice(backgrounds),
+        seed=str(random.randint(1000, 9999))
     )
+    
+    return await create_avatar(avatar_create)

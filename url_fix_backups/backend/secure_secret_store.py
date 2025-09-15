@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Secure Secret Store
 Fully encrypted secret management system for sensitive information
 
@@ -8,7 +8,7 @@ System Constitution Adherence:
 - Zero - Cost Stack: Uses built - in Python cryptography libraries
 - Additive Evolution: Enhances security without breaking existing functionality
 - Secure Design: Military - grade encryption with multiple security layers
-"""
+""""""
 
 import base64
 import hashlib
@@ -41,7 +41,9 @@ except ImportError:
     CRYPTO_AVAILABLE = False
     print(
         "Warning: cryptography library not available. Install with: pip install cryptography"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 # Configure logging
 logging.basicConfig(level = logging.INFO)
@@ -124,7 +126,8 @@ class SecretStore:
             master_key: Optional[str] = None,
             auto_backup: bool = True,
             backup_interval: int = 3600,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
         if not CRYPTO_AVAILABLE:
             raise ImportError("cryptography library is required for SecretStore")
@@ -187,7 +190,7 @@ class SecretStore:
         """Initialize encrypted database"""
         with sqlite3.connect(self.store_path) as conn:
             conn.executescript(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS secrets (
                     secret_id TEXT PRIMARY KEY,
                         name TEXT NOT NULL UNIQUE,
@@ -207,7 +210,8 @@ class SecretStore:
                         description TEXT,
                         rotation_interval INTEGER,
                         is_active BOOLEAN DEFAULT 1
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS access_log (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -217,7 +221,8 @@ class SecretStore:
                         client_info TEXT,
                         success BOOLEAN DEFAULT 1,
                         error_message TEXT
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS key_rotation_log (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -226,20 +231,24 @@ class SecretStore:
                         new_checksum TEXT,
                         rotation_reason TEXT,
                         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE INDEX IF NOT EXISTS idx_secrets_name ON secrets(name);
                 CREATE INDEX IF NOT EXISTS idx_secrets_type ON secrets(secret_type);
                 CREATE INDEX IF NOT EXISTS idx_secrets_access_level ON secrets(access_level);
                 CREATE INDEX IF NOT EXISTS idx_access_log_secret_id ON access_log(secret_id);
                 CREATE INDEX IF NOT EXISTS idx_access_log_timestamp ON access_log(timestamp);
-            """
-            )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _derive_key(
         self, salt: bytes, method: EncryptionMethod = EncryptionMethod.FERNET
-    ) -> bytes:
+# BRACKET_SURGEON: disabled
+#     ) -> bytes:
         """Derive encryption key from master key and salt"""
         if method == EncryptionMethod.FERNET:
             kdf = PBKDF2HMAC(
@@ -248,7 +257,9 @@ class SecretStore:
                     salt = salt,
                     iterations = 100000,
                     backend = default_backend(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             # Use Scrypt for other methods (more secure but slower)
             kdf = Scrypt(
@@ -259,7 +270,9 @@ class SecretStore:
                     r = 8,
                     p = 1,
                     backend = default_backend(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         return kdf.derive(self.master_key)
 
@@ -280,11 +293,15 @@ class SecretStore:
             nonce = secrets.token_bytes(12)
             cipher = Cipher(
                 algorithms.AES(key), modes.GCM(nonce), backend = default_backend()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             encryptor = cipher.encryptor()
             encrypted_value = (
                 encryptor.update(value.encode("utf - 8")) + encryptor.finalize()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             # Append authentication tag
             encrypted_value += encryptor.tag
             return encrypted_value, salt, nonce
@@ -293,14 +310,19 @@ class SecretStore:
             nonce = secrets.token_bytes(12)
             cipher = Cipher(
                 algorithms.ChaCha20(key,
-    nonce),
+# BRACKET_SURGEON: disabled
+#     nonce),
     mode = None,
     backend = default_backend()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             encryptor = cipher.encryptor()
             encrypted_value = (
                 encryptor.update(value.encode("utf - 8")) + encryptor.finalize()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return encrypted_value, salt, nonce
 
         else:
@@ -313,7 +335,8 @@ class SecretStore:
             salt: bytes,
             nonce: Optional[bytes],
             method: EncryptionMethod,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Decrypt a secret value"""
         key = self._derive_key(salt, method)
 
@@ -332,7 +355,9 @@ class SecretStore:
 
             cipher = Cipher(
                 algorithms.AES(key), modes.GCM(nonce, tag), backend = default_backend()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             decryptor = cipher.decryptor()
             decrypted_value = decryptor.update(encrypted_data) + decryptor.finalize()
             return decrypted_value.decode("utf - 8")
@@ -343,10 +368,13 @@ class SecretStore:
 
             cipher = Cipher(
                 algorithms.ChaCha20(key,
-    nonce),
+# BRACKET_SURGEON: disabled
+#     nonce),
     mode = None,
     backend = default_backend()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             decryptor = cipher.decryptor()
             decrypted_value = decryptor.update(encrypted_value) + decryptor.finalize()
             return decrypted_value.decode("utf - 8")
@@ -366,18 +394,21 @@ class SecretStore:
             action: str,
             success: bool = True,
             error_message: Optional[str] = None,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Log secret access for audit trail"""
         try:
             with sqlite3.connect(self.store_path) as conn:
                 conn.execute(
-                    "INSERT INTO access_log (secret_id,
+                    "INSERT INTO access_log (secret_id,"
     action,
     timestamp,
     success,
-    error_message) VALUES (?, ?, ?, ?, ?)",
+    error_message) VALUES (?, ?, ?, ?, ?)","
                         (secret_id, action, datetime.now(), success, error_message),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
         except Exception as e:
             logger.error(f"Failed to log access: {e}")
 
@@ -409,7 +440,8 @@ class SecretStore:
             tags: Optional[List[str]] = None,
             description: str = "",
             rotation_interval: Optional[int] = None,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Store a secret securely"""
 
         with self._lock:
@@ -419,7 +451,9 @@ class SecretStore:
                 # Encrypt the value
                 encrypted_value, salt, nonce = self._encrypt_value(
                     value, encryption_method
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Calculate checksum
                 checksum = self._calculate_checksum(value)
@@ -440,18 +474,22 @@ class SecretStore:
                         description = description,
                         rotation_interval = rotation_interval,
                         is_active = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Store in database
                 with self._database_transaction() as conn:
                     conn.execute(
-                        """
+                        """"""
                         INSERT INTO secrets (
                             secret_id, name, secret_type, access_level, encryption_method,
                                 encrypted_value, salt, nonce, checksum, created_at, updated_at,
                                 expires_at, tags, description, rotation_interval, is_active
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ""","""
                         (
                             secret_id,
                                 name,
@@ -469,8 +507,11 @@ class SecretStore:
                                 description,
                                 rotation_interval,
                                 True,
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 self._log_access(secret_id, "STORE", True)
                 logger.info(f"Secret '{name}' stored successfully with ID: {secret_id}")
@@ -494,12 +535,16 @@ class SecretStore:
                     row = conn.execute(
                         "SELECT * FROM secrets WHERE name = ? AND is_active = 1",
                             (name,),
-                            ).fetchone()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ).fetchone()
 
                     if not row:
                         self._log_access(
                             "unknown", "GET", False, f"Secret '{name}' not found"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         return None
 
                     # Check access level
@@ -507,10 +552,14 @@ class SecretStore:
                     if secret_access_level.value > access_level_required.value:
                         self._log_access(
                             row["secret_id"], "GET", False, "Insufficient access level"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         logger.warning(
                             f"Access denied for secret '{name}': insufficient access level"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         return None
 
                     # Check expiration
@@ -519,7 +568,9 @@ class SecretStore:
                         if datetime.now() > expires_at:
                             self._log_access(
                                 row["secret_id"], "GET", False, "Secret expired"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             logger.warning(f"Secret '{name}' has expired")
                             return None
 
@@ -530,13 +581,17 @@ class SecretStore:
                             row["salt"],
                             row["nonce"],
                             encryption_method,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Update access statistics
                     conn.execute(
                         "UPDATE secrets SET access_count = access_count + 1, last_accessed = ? WHERE secret_id = ?",
                             (datetime.now(), row["secret_id"]),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     self._log_access(row["secret_id"], "GET", True)
                     return decrypted_value
@@ -557,19 +612,25 @@ class SecretStore:
                     row = conn.execute(
                         "SELECT * FROM secrets WHERE name = ? AND is_active = 1",
                             (name,),
-                            ).fetchone()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ).fetchone()
 
                     if not row:
                         self._log_access(
                             "unknown", "UPDATE", False, f"Secret '{name}' not found"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         return False
 
                     # Encrypt new value
                     encryption_method = EncryptionMethod(row["encryption_method"])
                     encrypted_value, salt, nonce = self._encrypt_value(
                         new_value, encryption_method
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Calculate new checksum
                     old_checksum = row["checksum"]
@@ -577,11 +638,11 @@ class SecretStore:
 
                     # Update secret
                     conn.execute(
-                        """
+                        """"""
                         UPDATE secrets
                         SET encrypted_value = ?, salt = ?, nonce = ?, checksum = ?, updated_at = ?
                         WHERE secret_id = ?
-                    """,
+                    ""","""
                         (
                             encrypted_value,
                                 salt,
@@ -589,24 +650,30 @@ class SecretStore:
                                 new_checksum,
                                 datetime.now(),
                                 row["secret_id"],
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Log rotation
                     conn.execute(
-                        "INSERT INTO key_rotation_log (secret_id,
+                        "INSERT INTO key_rotation_log (secret_id,"
     old_checksum,
     new_checksum,
     rotation_reason,
-    timestamp) VALUES (?, ?, ?, ?, ?)",
+    timestamp) VALUES (?, ?, ?, ?, ?)","
                             (
                             row["secret_id"],
                                 old_checksum,
                                 new_checksum,
                                 "Manual update",
                                 datetime.now(),
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     self._log_access(row["secret_id"], "UPDATE", True)
                     logger.info(f"Secret '{name}' updated successfully")
@@ -628,12 +695,16 @@ class SecretStore:
                     result = conn.execute(
                         "UPDATE secrets SET is_active = 0, updated_at = ? WHERE name = ? AND is_active = 1",
                             (datetime.now(), name),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if result.rowcount == 0:
                         self._log_access(
                             "unknown", "DELETE", False, f"Secret '{name}' not found"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         return False
 
                     self._log_access("unknown", "DELETE", True)
@@ -685,7 +756,8 @@ class SecretStore:
                             "last_accessed": row["last_accessed"],
                             "tags": json.loads(row["tags"] or "[]"),
                             "description": row["description"],
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     secrets.append(secret_info)
 
                 return secrets
@@ -716,7 +788,9 @@ class SecretStore:
                     # Get secret_id first
                     row = conn.execute(
                         "SELECT secret_id FROM secrets WHERE name = ?", (secret_name,)
-                    ).fetchone()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ).fetchone()
 
                     if not row:
                         return []
@@ -724,12 +798,16 @@ class SecretStore:
                     rows = conn.execute(
                         "SELECT * FROM access_log WHERE secret_id = ? ORDER BY timestamp DESC LIMIT ?",
                             (row["secret_id"], limit),
-                            ).fetchall()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ).fetchall()
                 else:
                     rows = conn.execute(
                         "SELECT * FROM access_log ORDER BY timestamp DESC LIMIT ?",
                             (limit,),
-                            ).fetchall()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ).fetchall()
 
                 log_entries = []
                 for row in rows:
@@ -740,7 +818,8 @@ class SecretStore:
                             "timestamp": row["timestamp"],
                             "success": bool(row["success"]),
                             "error_message": row["error_message"],
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     log_entries.append(log_entry)
 
                 return log_entries
@@ -799,9 +878,11 @@ class SecretStore:
                 # Count secrets by type
                 type_counts = {}
                 rows = conn.execute(
-                    "SELECT secret_type,
-    COUNT(*) as count FROM secrets WHERE is_active = 1 GROUP BY secret_type"
-                ).fetchall()
+                    "SELECT secret_type,"
+    COUNT(*) as count FROM secrets WHERE is_active = 1 GROUP BY secret_type""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).fetchall()
 
                 for row in rows:
                     type_counts[row["secret_type"]] = row["count"]
@@ -809,9 +890,11 @@ class SecretStore:
                 # Count secrets by access level
                 access_counts = {}
                 rows = conn.execute(
-                    "SELECT access_level,
-    COUNT(*) as count FROM secrets WHERE is_active = 1 GROUP BY access_level"
-                ).fetchall()
+                    "SELECT access_level,"
+    COUNT(*) as count FROM secrets WHERE is_active = 1 GROUP BY access_level""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).fetchall()
 
                 for row in rows:
                     access_counts[row["access_level"]] = row["count"]
@@ -819,16 +902,22 @@ class SecretStore:
                 # Get total counts
                 total_secrets = conn.execute(
                     "SELECT COUNT(*) as count FROM secrets WHERE is_active = 1"
-                ).fetchone()["count"]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).fetchone()["count"]
 
                 total_access_events = conn.execute(
                     "SELECT COUNT(*) as count FROM access_log"
-                ).fetchone()["count"]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).fetchone()["count"]
 
                 # Get recent activity
                 recent_activity = conn.execute(
                     "SELECT COUNT(*) as count FROM access_log WHERE timestamp > datetime('now', '-24 hours')"
-                ).fetchone()["count"]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).fetchone()["count"]
 
                 return {
                     "total_secrets": total_secrets,
@@ -839,7 +928,8 @@ class SecretStore:
                         "store_path": self.store_path,
                         "auto_backup_enabled": self.auto_backup,
                         "backup_interval": self.backup_interval,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         except Exception as e:
             logger.error(f"Failed to get statistics: {e}")
@@ -862,7 +952,9 @@ def store_api_key(name: str, api_key: str, description: str = "") -> str:
             secret_type = SecretType.API_KEY,
             access_level = AccessLevel.RESTRICTED,
             description = description,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
 def get_api_key(name: str) -> Optional[str]:
@@ -880,7 +972,9 @@ def store_database_url(name: str, url: str, description: str = "") -> str:
             secret_type = SecretType.DATABASE_URL,
             access_level = AccessLevel.CONFIDENTIAL,
             description = description,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
 def get_database_url(name: str) -> Optional[str]:
@@ -903,7 +997,9 @@ if __name__ == "__main__":
             secret_type = SecretType.API_KEY,
             access_level = AccessLevel.RESTRICTED,
             description="OpenAI API key for content generation",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     youtube_id = store.store_secret(
         name="youtube_api_key",
@@ -911,7 +1007,9 @@ if __name__ == "__main__":
             secret_type = SecretType.API_KEY,
             access_level = AccessLevel.RESTRICTED,
             description="YouTube API key for video uploads",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Database URL
     db_id = store.store_secret(
@@ -920,7 +1018,9 @@ if __name__ == "__main__":
             secret_type = SecretType.DATABASE_URL,
             access_level = AccessLevel.CONFIDENTIAL,
             description="Main database connection string",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # JWT secret
     jwt_id = store.store_secret(
@@ -929,7 +1029,9 @@ if __name__ == "__main__":
             secret_type = SecretType.JWT_SECRET,
             access_level = AccessLevel.CONFIDENTIAL,
             description="JWT signing secret",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     print(f"Stored secrets with IDs: {openai_id}, {youtube_id}, {db_id}, {jwt_id}")
 
@@ -949,7 +1051,9 @@ if __name__ == "__main__":
     for secret in secrets_list:
         print(
             f"- {secret['name']} ({secret['secret_type']}) - {secret['access_level']}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     # Get statistics
     print("\\nSecret store statistics:")
@@ -963,6 +1067,8 @@ if __name__ == "__main__":
     for entry in log_entries:
         print(
             f"- {entry['timestamp']}: {entry['action']} - {'SUCCESS' if entry['success'] else 'FAILED'}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     print("\\nSecure secret store test completed successfully!")

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Timeout and Performance Manager for ChatGPT Integration
 Implements Rule 6: Timeout Configuration and Rule 10: Performance Requirements
-"""
+""""""
 
 import asyncio
 import functools
@@ -139,7 +139,8 @@ class TimeoutManager:
             "retry_enabled": True,
             "performance_monitoring": True,
             "alert_slow_operations": True,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _initialize_timeout_configs(self) -> Dict[TimeoutType, TimeoutConfig]:
         """Initialize timeout configurations for different operation types"""
@@ -152,7 +153,8 @@ class TimeoutManager:
                 retry_delay=1.0,
                 circuit_breaker_threshold=5,
                 performance_target=5.0,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             TimeoutType.WEBHOOK: TimeoutConfig(
                 operation_type=TimeoutType.WEBHOOK,
                 default_timeout=self.config["webhook_timeout"],
@@ -161,7 +163,8 @@ class TimeoutManager:
                 retry_delay=0.5,
                 circuit_breaker_threshold=3,
                 performance_target=3.0,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             TimeoutType.DATABASE: TimeoutConfig(
                 operation_type=TimeoutType.DATABASE,
                 default_timeout=self.config["database_timeout"],
@@ -170,7 +173,8 @@ class TimeoutManager:
                 retry_delay=0.1,
                 circuit_breaker_threshold=5,
                 performance_target=1.0,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             TimeoutType.CACHE: TimeoutConfig(
                 operation_type=TimeoutType.CACHE,
                 default_timeout=self.config["cache_timeout"],
@@ -179,7 +183,8 @@ class TimeoutManager:
                 retry_delay=0.05,
                 circuit_breaker_threshold=3,
                 performance_target=0.5,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             TimeoutType.FILE_OPERATION: TimeoutConfig(
                 operation_type=TimeoutType.FILE_OPERATION,
                 default_timeout=self.config["file_operation_timeout"],
@@ -188,7 +193,8 @@ class TimeoutManager:
                 retry_delay=0.2,
                 circuit_breaker_threshold=3,
                 performance_target=2.0,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             TimeoutType.COMPUTATION: TimeoutConfig(
                 operation_type=TimeoutType.COMPUTATION,
                 default_timeout=self.config["computation_timeout"],
@@ -197,8 +203,10 @@ class TimeoutManager:
                 retry_delay=1.0,
                 circuit_breaker_threshold=2,
                 performance_target=30.0,
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         return configs
 
@@ -209,7 +217,8 @@ class TimeoutManager:
             self.circuit_breakers[operation_type] = CircuitBreaker(
                 failure_threshold=config.circuit_breaker_threshold,
                 recovery_timeout=30.0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         return self.circuit_breakers[operation_type]
 
     def _classify_performance(self, duration: float, target: float) -> PerformanceLevel:
@@ -231,7 +240,8 @@ class TimeoutManager:
         operation_type: TimeoutType,
         operation_id: Optional[str] = None,
         custom_timeout: Optional[float] = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Context manager for timeout - controlled operations"""
 
         config = self.timeout_configs[operation_type]
@@ -254,7 +264,8 @@ class TimeoutManager:
                 "type": operation_type,
                 "start_time": start_time,
                 "timeout": timeout,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Execute with timeout
             async with asyncio.timeout(timeout):
@@ -276,8 +287,10 @@ class TimeoutManager:
                     "operation_id": operation_id,
                     "timeout": timeout,
                     "duration": time.time() - start_time,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             raise
 
@@ -307,7 +320,8 @@ class TimeoutManager:
                 retry_count=0,  # Will be updated by retry wrapper
                 error_message=error_message,
                 performance_level=performance_level,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self._record_performance_metric(metric)
 
@@ -320,34 +334,40 @@ class TimeoutManager:
         if len(self.response_times[metric.operation_type]) > 1000:
             self.response_times[metric.operation_type] = self.response_times[metric.operation_type][
                 -1000:
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
         # Log performance if slow or critical
         if metric.performance_level in [
             PerformanceLevel.SLOW,
             PerformanceLevel.CRITICAL,
-        ]:
+# BRACKET_SURGEON: disabled
+#         ]:
             audit_logger.log_security_event(
                 event_description=f"Slow operation detected: {metric.operation_type.value}",
                 severity=(
                     AuditLevel.WARNING
                     if metric.performance_level == PerformanceLevel.SLOW
                     else AuditLevel.ERROR
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 additional_data={
                     "operation_id": metric.operation_id,
                     "duration": metric.duration,
                     "performance_level": metric.performance_level.value,
                     "target": self.timeout_configs[metric.operation_type].performance_target,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
     def with_timeout(
         self,
         operation_type: TimeoutType,
         custom_timeout: Optional[float] = None,
         retry_attempts: Optional[int] = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Decorator for timeout - controlled functions"""
 
         def decorator(func: Callable):
@@ -362,7 +382,8 @@ class TimeoutManager:
                     try:
                         async with self.timeout_context(
                             operation_type=operation_type, custom_timeout=custom_timeout
-                        ) as operation_id:
+# BRACKET_SURGEON: disabled
+#                         ) as operation_id:
                             result = await func(*args, **kwargs)
 
                             # Update retry count in latest metric
@@ -385,8 +406,10 @@ class TimeoutManager:
                                     "attempt": attempt + 1,
                                     "max_attempts": attempts + 1,
                                     "error": str(e),
-                                },
-                            )
+# BRACKET_SURGEON: disabled
+#                                 },
+# BRACKET_SURGEON: disabled
+#                             )
                         else:
                             # Final failure
                             audit_logger.log_security_event(
@@ -395,8 +418,10 @@ class TimeoutManager:
                                 additional_data={
                                     "total_attempts": attempts + 1,
                                     "final_error": str(e),
-                                },
-                            )
+# BRACKET_SURGEON: disabled
+#                                 },
+# BRACKET_SURGEON: disabled
+#                             )
 
                 raise last_exception
 
@@ -428,7 +453,8 @@ class TimeoutManager:
         data: Dict[str, Any],
         headers: Optional[Dict[str, str]] = None,
         timeout: Optional[float] = None,
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Make webhook call with proper timeout handling"""
 
         @self.with_timeout(TimeoutType.WEBHOOK, custom_timeout=timeout)
@@ -466,12 +492,14 @@ class TimeoutManager:
             "p95": response_times[int(0.95 * count)],
             "p99": response_times[int(0.99 * count)],
             "operation_types": [ot.value for ot in operation_types],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Check compliance with Rule 10 (P95 < 5s)
         compliance_status = (
             "compliant" if stats["p95"] <= self.config["performance_target_p95"] else "violation"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         stats["compliance_status"] = compliance_status
 
         return stats
@@ -488,7 +516,8 @@ class TimeoutManager:
                 "duration": duration,
                 "timeout": op_info["timeout"],
                 "time_remaining": max(0, op_info["timeout"] - duration),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return active
 
@@ -503,13 +532,15 @@ class TimeoutManager:
                     "state": cb.state,
                     "failure_count": cb.failure_count,
                     "can_execute": cb.can_execute(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 status[operation_type.value] = {
                     "state": "closed",
                     "failure_count": 0,
                     "can_execute": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return status
 
@@ -524,7 +555,8 @@ class TimeoutManager:
                 "performance_target_p95": self.config["performance_target_p95"],
                 "circuit_breaker_enabled": self.config["circuit_breaker_enabled"],
                 "retry_enabled": self.config["retry_enabled"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "performance_stats": self.get_performance_stats(),
             "circuit_breaker_status": self.get_circuit_breaker_status(),
             "active_operations": self.get_active_operations(),
@@ -532,15 +564,19 @@ class TimeoutManager:
                 "rule_6_timeout_compliance": self.config["chatgpt_api_timeout"] == 30.0,
                 "rule_10_performance_compliance": self.get_performance_stats().get(
                     "compliance_status"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 == "compliant",
                 "circuit_breakers_healthy": all(
                     status["state"] != "open"
                     for status in self.get_circuit_breaker_status().values()
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "recommendations": self._generate_timeout_recommendations(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return report
 

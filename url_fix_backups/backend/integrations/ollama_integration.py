@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Ollama LLM Integration - Advanced Language Model Integration
 
 This module provides comprehensive integration with Ollama for advanced AI - powered
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -118,7 +118,7 @@ class QueryRequest:
     priority: int = 5  # 1 - 10 scale
     timeout: int = 120
     retry_count: int = 3
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=datetime.now):
 
 
 @dataclass
@@ -133,17 +133,17 @@ class QueryResponse:
     quality_score: float
     confidence_level: float
     metadata: Dict[str, Any]
-    completed_at: datetime = field(default_factory=datetime.now)
+    completed_at: datetime = field(default_factory=datetime.now):
     cached: bool = False
 
 
 class OllamaIntegration:
-    """
+    """"""
     Comprehensive Ollama LLM Integration
 
     Provides advanced language model capabilities for strategic analysis,
         content generation, and AI - powered decision making.
-    """
+    """"""
 
     def __init__(self, config: Dict[str, Any]):
         self.config = config
@@ -184,7 +184,8 @@ class OllamaIntegration:
                 "total_tokens_processed": 0,
                 "cache_hit_rate": 0.0,
                 "model_performance": defaultdict(dict),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Setup metrics collection intervals
             self.metrics_collection_interval = self.config.get("metrics_interval", 300)  # 5 minutes
@@ -199,7 +200,8 @@ class OllamaIntegration:
                     "avg_response_time": 0.0,
                     "total_tokens": 0,
                     "quality_scores": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Start background metrics collection
             self._start_metrics_collection()
@@ -248,7 +250,8 @@ class OllamaIntegration:
                 "cache_hit_rate": cache_hit_rate,
                 "active_requests": len(self.active_requests),
                 "total_requests": total_requests,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             self.performance_history.append(metrics_snapshot)
 
@@ -258,7 +261,8 @@ class OllamaIntegration:
                     f"Performance metrics - Requests: {total_requests}, "
                     f"Cache hit rate: {cache_hit_rate:.2%}, "
                     f"CPU: {cpu_usage:.1f}%, Memory: {memory_usage:.1f}%"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             logger.error(f"Failed to collect system metrics: {e}")
@@ -317,7 +321,8 @@ class OllamaIntegration:
                 ["ollama", "serve"],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Wait for service to start
             for i in range(30):  # Wait up to 30 seconds
@@ -351,7 +356,8 @@ class OllamaIntegration:
                         description=f"Ollama model: {model_name}",
                         use_cases=self._determine_model_use_cases(model_name),
                         parameters=self._get_default_model_parameters(model_name),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     self.available_models[model_name] = model
 
@@ -401,7 +407,8 @@ class OllamaIntegration:
             "top_k": 40,
             "repeat_penalty": 1.1,
             "max_tokens": 2000,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _ensure_required_models(self):
         """Ensure required models are downloaded and available"""
@@ -409,7 +416,8 @@ class OllamaIntegration:
             ModelType.STRATEGIC_ANALYSIS.value,
             ModelType.CONTENT_GENERATION.value,
             ModelType.GENERAL_PURPOSE.value,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for model_name in required_models:
             if model_name not in self.available_models:
@@ -427,7 +435,8 @@ class OllamaIntegration:
                 capture_output=True,
                 text=True,
                 timeout=1800,  # 30 minutes timeout
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode == 0:
                 logger.info(f"Successfully downloaded model: {model_name}")
@@ -450,47 +459,53 @@ class OllamaIntegration:
         self.prompt_templates = {
             PromptTemplate.STRATEGIC_BRIEF: PromptConfig(
                 template_name="strategic_brief",
-                system_prompt="You are a senior strategic advisor with 20+ years of experience in business strategy, market analysis, \
-    and corporate planning. Provide comprehensive, actionable insights.",
-                user_prompt_template="Analyze the following business data \
-    and generate a strategic brief: {data}\\n\\nFocus on: {focus_areas}\\n\\nProvide specific recommendations with implementation timelines.",
+                system_prompt="You are a senior strategic advisor with 20+ years of experience in business strategy, market analysis, \"
+#     and corporate planning. Provide comprehensive, actionable insights.",
+                user_prompt_template="Analyze the following business data \"
+#     and generate a strategic brief: {data}\\n\\nFocus on: {focus_areas}\\n\\nProvide specific recommendations with implementation timelines.",
                 parameters={"temperature": 0.7, "top_p": 0.9, "max_tokens": 3000},
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             PromptTemplate.MARKET_ANALYSIS: PromptConfig(
                 template_name="market_analysis",
-                system_prompt="You are a market research expert specializing in digital marketing, content creation, \
-    and online business models. Provide data - driven market insights.",
-                user_prompt_template="Conduct a comprehensive market analysis for: {market_segment}\\n\\nData: {market_data}\\n\\nInclude market size, growth trends, competitive landscape, \
-    and opportunities.",
+                system_prompt="You are a market research expert specializing in digital marketing, content creation, \"
+#     and online business models. Provide data - driven market insights.",
+                user_prompt_template="Conduct a comprehensive market analysis for: {market_segment}\\n\\nData: {market_data}\\n\\nInclude market size, growth trends, competitive landscape, \"
+#     and opportunities.",
                 parameters={"temperature": 0.6, "top_p": 0.85, "max_tokens": 2500},
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             PromptTemplate.COMPETITIVE_INTEL: PromptConfig(
                 template_name="competitive_intelligence",
-                system_prompt="You are a competitive intelligence analyst with expertise in digital business models, content strategies, \
-    and market positioning.",
-                user_prompt_template="Analyze competitive landscape: {competitors}\\n\\nOur position: {our_data}\\n\\nIdentify competitive advantages, threats, \
-    and strategic opportunities.",
+                system_prompt="You are a competitive intelligence analyst with expertise in digital business models, content strategies, \"
+#     and market positioning.",
+                user_prompt_template="Analyze competitive landscape: {competitors}\\n\\nOur position: {our_data}\\n\\nIdentify competitive advantages, threats, \"
+#     and strategic opportunities.",
                 parameters={"temperature": 0.65, "top_p": 0.9, "max_tokens": 2000},
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             PromptTemplate.OPPORTUNITY_ASSESSMENT: PromptConfig(
                 template_name="opportunity_assessment",
-                system_prompt="You are a business development expert specializing in identifying \
-    and evaluating new market opportunities \
-    and revenue streams.",
-                user_prompt_template="Evaluate this business opportunity: {opportunity_data}\\n\\nAssess: market potential, risks, resource requirements, ROI projections, \
-    and implementation strategy.",
+                system_prompt="You are a business development expert specializing in identifying \"
+#     and evaluating new market opportunities \
+#     and revenue streams.",
+                user_prompt_template="Evaluate this business opportunity: {opportunity_data}\\n\\nAssess: market potential, risks, resource requirements, ROI projections, \"
+#     and implementation strategy.",
                 parameters={"temperature": 0.7, "top_p": 0.9, "max_tokens": 2200},
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             PromptTemplate.CONTENT_STRATEGY: PromptConfig(
                 template_name="content_strategy",
-                system_prompt="You are a content strategist \
-    and digital marketing expert with deep knowledge of YouTube, social media, \
-    and content monetization.",
-                user_prompt_template="Develop content strategy for: {platform}\\n\\nTarget audience: {audience}\\n\\nCurrent performance: {performance_data}\\n\\nProvide specific content recommendations \
-    and optimization strategies.",
+                system_prompt="You are a content strategist \"
+#     and digital marketing expert with deep knowledge of YouTube, social media, \
+#     and content monetization.",
+                user_prompt_template="Develop content strategy for: {platform}\\n\\nTarget audience: {audience}\\n\\nCurrent performance: {performance_data}\\n\\nProvide specific content recommendations \"
+#     and optimization strategies.",
                 parameters={"temperature": 0.8, "top_p": 0.9, "max_tokens": 2000},
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info(f"Loaded {len(self.prompt_templates)} prompt templates")
 
@@ -501,7 +516,8 @@ class OllamaIntegration:
         template: Optional[PromptTemplate] = None,
         context: Optional[Dict[str, Any]] = None,
         priority: int = 5,
-    ) -> QueryResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> QueryResponse:
         """Query Ollama LLM with advanced features"""
 
         request_id = self._generate_request_id()
@@ -532,7 +548,8 @@ class OllamaIntegration:
                 parameters=self._get_model_parameters(model_name, template),
                 context=context or {},
                 priority=priority,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Execute query with semaphore control
             async with self.request_semaphore:
@@ -558,7 +575,8 @@ class OllamaIntegration:
                 quality_score=0.0,
                 confidence_level=0.0,
                 metadata={"error": str(e)},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _execute_llm_query(self, request: QueryRequest) -> QueryResponse:
         """Execute the actual LLM query"""
@@ -571,7 +589,8 @@ class OllamaIntegration:
                 "prompt": request.prompt,
                 "stream": False,
                 "options": request.parameters,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Execute request
             async with aiohttp.ClientSession() as session:
@@ -579,7 +598,8 @@ class OllamaIntegration:
                     f"{self.ollama_endpoint}/api / generate",
                     json=payload,
                     timeout=aiohttp.ClientTimeout(total=request.timeout),
-                ) as response:
+# BRACKET_SURGEON: disabled
+#                 ) as response:
                     if response.status == 200:
                         result = await response.json()
                         response_text = result.get("response", "").strip()
@@ -604,8 +624,10 @@ class OllamaIntegration:
                                 "load_duration": result.get("load_duration", 0),
                                 "prompt_eval_count": result.get("prompt_eval_count", 0),
                                 "eval_count": result.get("eval_count", 0),
-                            },
-                        )
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         )
                     else:
                         raise Exception(f"Ollama API error: {response.status}")
 
@@ -616,7 +638,8 @@ class OllamaIntegration:
 
     def _select_optimal_model(
         self, template: Optional[PromptTemplate], context: Optional[Dict]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Select the optimal model based on use case and context"""
         try:
             # Use template - specific model if available
@@ -628,7 +651,8 @@ class OllamaIntegration:
                 elif template in [
                     PromptTemplate.MARKET_ANALYSIS,
                     PromptTemplate.COMPETITIVE_INTEL,
-                ]:
+# BRACKET_SURGEON: disabled
+#                 ]:
                     return ModelType.RESEARCH_SYNTHESIS.value
 
             # Check context for hints
@@ -659,7 +683,8 @@ class OllamaIntegration:
                     "usage_count": model.usage_count,
                     "success_rate": model.success_rate,
                     "avg_response_time": model.average_response_time,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Performance metrics
             recent_requests = len(
@@ -667,8 +692,10 @@ class OllamaIntegration:
                     r
                     for r in self.request_history
                     if r.completed_at > datetime.now() - timedelta(hours=1)
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "service_healthy": service_healthy,
@@ -680,7 +707,8 @@ class OllamaIntegration:
                 "recent_requests_1h": recent_requests,
                 "prompt_templates": len(self.prompt_templates),
                 "max_concurrent": self.max_concurrent_requests,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Status check failed: {e}")
@@ -714,7 +742,7 @@ class OllamaIntegration:
 
             # Create response cache table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS response_cache (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         prompt_hash TEXT UNIQUE NOT NULL,
@@ -726,13 +754,15 @@ class OllamaIntegration:
                         response_time REAL NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         expires_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create performance metrics table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS performance_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         model_name TEXT NOT NULL,
@@ -743,13 +773,15 @@ class OllamaIntegration:
                         success BOOLEAN NOT NULL,
                         error_message TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create model usage statistics table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS model_usage (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         model_name TEXT NOT NULL,
@@ -759,23 +791,29 @@ class OllamaIntegration:
                         failure_count INTEGER DEFAULT 0,
                         last_used TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create indexes for better performance
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_prompt_hash ON response_cache(prompt_hash)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_model_name ON response_cache(model_name)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_expires_at ON response_cache(expires_at)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_performance_model ON performance_metrics(model_name)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_usage_model ON model_usage(model_name)")
 
             self.db_connection.commit()

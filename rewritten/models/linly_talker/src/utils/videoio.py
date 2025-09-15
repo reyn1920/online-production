@@ -27,14 +27,16 @@ def save_video_with_watermark(video, audio, save_path, watermark=False):
             video,
             audio,
             temp_file,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except Exception:
         cmd = r'ffmpeg -y -hide_banner -loglevel error -i "%s" -i "%s" -vcodec copy "%s"' % (
             video,
             audio,
             temp_file,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if not os.path.exists(temp_file):
         print("FFmpeg error")

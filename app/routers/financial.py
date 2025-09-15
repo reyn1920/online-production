@@ -8,541 +8,296 @@ Provides endpoints for financial analysis, resource allocation, and ROI optimiza
 
 import asyncio
 import logging
-import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional, Any
+from uuid import uuid4
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from pydantic import BaseModel, Field
 
-# Try to import financial agent
-try:
-    from backend.agents.financial_agent import FinancialAgent
-except ImportError:
-    try:
-        from copy_of_code.agents.financial_agent import FinancialAgent
-    except ImportError:
-        FinancialAgent = None
-        logging.warning("Financial agent not available - check backend structure")
-
-router = APIRouter()
+# Configure logging
 logger = logging.getLogger(__name__)
 
+# Create router
+router = APIRouter(prefix="/financial", tags=["financial"])
 
-# Request/Response Models
-class FinancialAnalysisRequest(BaseModel):
-    channel_id: str = Field(..., description="Channel identifier")
-    revenue: float = Field(..., description="Revenue amount")
-    costs: float = Field(..., description="Cost amount")
-    time_period: Optional[str] = Field("monthly", description="Analysis time period")
-    include_forecast: Optional[bool] = Field(False, description="Include forecast analysis")
+# In-memory storage for simplified implementation
+financial_data = {}
+analysis_results = {}
+budget_allocations = {}
 
-
-class ResourceAllocationRequest(BaseModel):
-    total_budget: float = Field(..., description="Total budget to allocate")
-    channels: List[str] = Field(..., description="List of channels")
-    strategy: Optional[str] = Field("profit_maximization", description="Allocation strategy")
-    risk_tolerance: Optional[float] = Field(0.3, description="Risk tolerance (0 - 1)")
-
-
-class ROIOptimizationRequest(BaseModel):
-    current_allocations: Dict[str, float] = Field(..., description="Current resource allocations")
-    performance_data: Dict[str, Any] = Field(..., description="Performance metrics")
-    optimization_target: Optional[str] = Field("roi", description="Optimization target")
-
-
-class FinancialReportRequest(BaseModel):
-    start_date: datetime = Field(..., description="Report start date")
-    end_date: datetime = Field(..., description="Report end date")
-    channels: Optional[List[str]] = Field(None, description="Specific channels to include")
-    report_type: Optional[str] = Field("comprehensive", description="Type of report")
-
+# Pydantic Models
+class FinancialRequest(BaseModel):
+    """Request model for financial analysis."""
+    project_id: str
+    budget: float = Field(gt=0, description="Total budget amount")
+    timeframe: str = Field(default="monthly", description="Analysis timeframe")
+    categories: List[str] = Field(default_factory=list, description="Budget categories")
+    metadata: Dict[str, Any] = Field(default_factory=dict)
 
 class FinancialResponse(BaseModel):
-    success: bool
-    data: Optional[Dict[str, Any]] = None
-    message: Optional[str] = None
-    job_id: Optional[str] = None
-
-
-class JobStatusResponse(BaseModel):
-    job_id: str
+    """Response model for financial operations."""
+    id: str
+    project_id: str
+    budget: float
+    allocated_budget: float
+    remaining_budget: float
+    roi_projection: float
+    recommendations: List[str]
+    created_at: str
     status: str
-    progress: Optional[float] = None
-    result: Optional[Dict[str, Any]] = None
-    error: Optional[str] = None
-    created_at: datetime
-    updated_at: datetime
 
+class BudgetAllocation(BaseModel):
+    """Model for budget allocation."""
+    category: str
+    amount: float = Field(gt=0)
+    percentage: float = Field(ge=0, le=100)
+    priority: str = Field(default="medium")
 
-# In-memory job tracking
-financial_jobs = {}
+class ROIAnalysis(BaseModel):
+    """Model for ROI analysis results."""
+    id: str
+    project_id: str
+    investment: float
+    projected_return: float
+    roi_percentage: float
+    payback_period: str
+    risk_level: str
+    created_at: str
 
-# Initialize financial agent
-financial_agent = None
-if FinancialAgent:
-    try:
-        financial_agent = FinancialAgent(
-            agent_id="main_financial_agent",
-            name="Financial Management Agent",
-            config={
-                "analysis_interval": 3600,
-                "reallocation_threshold": 0.15,
-                "min_roi_threshold": 0.1,
-                "risk_tolerance": 0.3,
-                "strategy": "profit_maximization",
-            },
-        )
-        logger.info("Financial agent initialized successfully")
-    except Exception as e:
-        logger.error(f"Failed to initialize financial agent: {e}")
-        financial_agent = None
+# Helper functions
+def calculate_roi(investment: float, projected_return: float) -> float:
+    """Calculate ROI percentage."""
+    if investment <= 0:
+        return 0.0
+    return ((projected_return - investment) / investment) * 100
 
+def generate_recommendations(budget: float, categories: List[str]) -> List[str]:
+    """Generate financial recommendations."""
+    recommendations = [
+        "Consider diversifying budget allocation across categories",
+        "Monitor spending regularly to stay within budget",
+        "Set aside 10-15% for unexpected expenses"
+    ]
+    
+    if budget > 10000:
+        recommendations.append("Consider investing in automation tools for better ROI")
+    
+    if len(categories) > 5:
+        recommendations.append("Consolidate similar categories to simplify tracking")
+    
+    return recommendations
 
-@router.get("/")
-async def financial_interface():
-    """Get financial management interface status"""
-    return {
-        "service": "Financial Agent",
-        "status": "active" if financial_agent else "unavailable",
-        "features": [
-            "Profitability Analysis",
-            "Resource Allocation",
-            "ROI Optimization",
-            "Financial Forecasting",
-            "Performance Monitoring",
-        ],
-    }
-
-
-@router.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {
-        "status": "healthy" if financial_agent else "unavailable",
-        "agent_available": financial_agent is not None,
-        "timestamp": datetime.now().isoformat(),
-    }
-
-
+# API Endpoints
 @router.post("/analyze", response_model=FinancialResponse)
-async def analyze_profitability(
-    request: FinancialAnalysisRequest, background_tasks: BackgroundTasks
-):
-    """Analyze channel profitability"""
-    if not financial_agent:
-        raise HTTPException(status_code=503, detail="Financial agent not available")
-
+async def create_financial_analysis(request: FinancialRequest):
+    """Create a new financial analysis."""
     try:
-        job_id = str(uuid.uuid4())
-
-        # Store job info
-        financial_jobs[job_id] = {
-            "status": "processing",
-            "progress": 0.0,
-            "created_at": datetime.now(),
-            "updated_at": datetime.now(),
-            "type": "profitability_analysis",
+        analysis_id = str(uuid4())
+        
+        # Simulate financial analysis
+        allocated_budget = request.budget * 0.85  # 85% allocation
+        remaining_budget = request.budget - allocated_budget
+        roi_projection = calculate_roi(request.budget, request.budget * 1.2)  # 20% ROI projection
+        
+        analysis_data = {
+            "id": analysis_id,
+            "project_id": request.project_id,
+            "budget": request.budget,
+            "allocated_budget": allocated_budget,
+            "remaining_budget": remaining_budget,
+            "roi_projection": roi_projection,
+            "recommendations": generate_recommendations(request.budget, request.categories),
+            "created_at": datetime.now().isoformat(),
+            "status": "completed"
         }
-
-        # Start analysis in background
-        background_tasks.add_task(run_profitability_analysis, job_id, request.dict())
-
+        
+        financial_data[analysis_id] = analysis_data
+        logger.info(f"Created financial analysis: {analysis_id}")
+        
         return FinancialResponse(
-            success=True, job_id=job_id, message="Profitability analysis started"
+            id=str(analysis_data["id"]),
+            project_id=str(analysis_data["project_id"]),
+            budget=float(analysis_data["budget"]) if isinstance(analysis_data["budget"], (int, float, str)) else 0.0,
+            allocated_budget=float(analysis_data["allocated_budget"]) if isinstance(analysis_data["allocated_budget"], (int, float, str)) else 0.0,
+            remaining_budget=float(analysis_data["remaining_budget"]) if isinstance(analysis_data["remaining_budget"], (int, float, str)) else 0.0,
+            roi_projection=float(analysis_data["roi_projection"]) if isinstance(analysis_data["roi_projection"], (int, float, str)) else 0.0,
+            recommendations=analysis_data["recommendations"] if isinstance(analysis_data["recommendations"], list) else [],
+            created_at=str(analysis_data["created_at"]),
+            status=str(analysis_data["status"])
         )
-
+        
     except Exception as e:
-        logger.error(f"Error starting profitability analysis: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error creating financial analysis: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to create financial analysis")
 
-
-@router.post("/allocate", response_model=FinancialResponse)
-async def optimize_resource_allocation(
-    request: ResourceAllocationRequest, background_tasks: BackgroundTasks
-):
-    """Optimize resource allocation across channels"""
-    if not financial_agent:
-        raise HTTPException(status_code=503, detail="Financial agent not available")
-
-    try:
-        job_id = str(uuid.uuid4())
-
-        # Store job info
-        financial_jobs[job_id] = {
-            "status": "processing",
-            "progress": 0.0,
-            "created_at": datetime.now(),
-            "updated_at": datetime.now(),
-            "type": "resource_allocation",
-        }
-
-        # Start allocation in background
-        background_tasks.add_task(run_resource_allocation, job_id, request.dict())
-
-        return FinancialResponse(success=True, job_id=job_id, message="Resource allocation started")
-
-    except Exception as e:
-        logger.error(f"Error starting resource allocation: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.post("/optimize-roi", response_model=FinancialResponse)
-async def optimize_roi(request: ROIOptimizationRequest, background_tasks: BackgroundTasks):
-    """Optimize ROI across channels"""
-    if not financial_agent:
-        raise HTTPException(status_code=503, detail="Financial agent not available")
-
-    try:
-        job_id = str(uuid.uuid4())
-
-        # Store job info
-        financial_jobs[job_id] = {
-            "status": "processing",
-            "progress": 0.0,
-            "created_at": datetime.now(),
-            "updated_at": datetime.now(),
-            "type": "roi_optimization",
-        }
-
-        # Start optimization in background
-        background_tasks.add_task(run_roi_optimization, job_id, request.dict())
-
-        return FinancialResponse(success=True, job_id=job_id, message="ROI optimization started")
-
-    except Exception as e:
-        logger.error(f"Error starting ROI optimization: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.post("/report", response_model=FinancialResponse)
-async def generate_financial_report(
-    request: FinancialReportRequest, background_tasks: BackgroundTasks
-):
-    """Generate comprehensive financial report"""
-    if not financial_agent:
-        raise HTTPException(status_code=503, detail="Financial agent not available")
-
-    try:
-        job_id = str(uuid.uuid4())
-
-        # Store job info
-        financial_jobs[job_id] = {
-            "status": "processing",
-            "progress": 0.0,
-            "created_at": datetime.now(),
-            "updated_at": datetime.now(),
-            "type": "financial_report",
-        }
-
-        # Start report generation in background
-        background_tasks.add_task(run_financial_report, job_id, request.dict())
-
-        return FinancialResponse(
-            success=True, job_id=job_id, message="Financial report generation started"
-        )
-
-    except Exception as e:
-        logger.error(f"Error starting financial report: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/status/{job_id}", response_model=JobStatusResponse)
-async def get_job_status(job_id: str):
-    """Get status of a financial job"""
-    if job_id not in financial_jobs:
-        raise HTTPException(status_code=404, detail="Job not found")
-
-    job = financial_jobs[job_id]
-    return JobStatusResponse(
-        job_id=job_id,
-        status=job["status"],
-        progress=job.get("progress"),
-        result=job.get("result"),
-        error=job.get("error"),
-        created_at=job["created_at"],
-        updated_at=job["updated_at"],
+@router.get("/analyze/{analysis_id}", response_model=FinancialResponse)
+async def get_financial_analysis(analysis_id: str):
+    """Get a specific financial analysis."""
+    if analysis_id not in financial_data:
+        raise HTTPException(status_code=404, detail="Financial analysis not found")
+    
+    data = financial_data[analysis_id]
+    return FinancialResponse(
+        id=str(data["id"]),
+        project_id=str(data["project_id"]),
+        budget=float(data["budget"]) if isinstance(data["budget"], (int, float, str)) else 0.0,
+        allocated_budget=float(data["allocated_budget"]) if isinstance(data["allocated_budget"], (int, float, str)) else 0.0,
+        remaining_budget=float(data["remaining_budget"]) if isinstance(data["remaining_budget"], (int, float, str)) else 0.0,
+        roi_projection=float(data["roi_projection"]) if isinstance(data["roi_projection"], (int, float, str)) else 0.0,
+        recommendations=data["recommendations"] if isinstance(data["recommendations"], list) else [],
+        created_at=str(data["created_at"]),
+        status=str(data["status"])
     )
 
+@router.get("/analyze", response_model=List[FinancialResponse])
+async def list_financial_analyses(project_id: Optional[str] = None):
+    """List all financial analyses, optionally filtered by project."""
+    analyses = list(financial_data.values())
+    
+    if project_id:
+        analyses = [a for a in analyses if a["project_id"] == project_id]
+    
+    result = []
+    for analysis in analyses:
+        result.append(FinancialResponse(
+            id=str(analysis["id"]),
+            project_id=str(analysis["project_id"]),
+            budget=float(analysis["budget"]) if isinstance(analysis["budget"], (int, float, str)) else 0.0,
+            allocated_budget=float(analysis["allocated_budget"]) if isinstance(analysis["allocated_budget"], (int, float, str)) else 0.0,
+            remaining_budget=float(analysis["remaining_budget"]) if isinstance(analysis["remaining_budget"], (int, float, str)) else 0.0,
+            roi_projection=float(analysis["roi_projection"]) if isinstance(analysis["roi_projection"], (int, float, str)) else 0.0,
+            recommendations=analysis["recommendations"] if isinstance(analysis["recommendations"], list) else [],
+            created_at=str(analysis["created_at"]),
+            status=str(analysis["status"])
+        ))
+    return result
 
-@router.get("/metrics")
-async def get_financial_metrics():
-    """Get current financial metrics"""
-    if not financial_agent:
-        raise HTTPException(status_code=503, detail="Financial agent not available")
-
+@router.post("/allocate", response_model=Dict[str, Any])
+async def allocate_budget(project_id: str, allocations: List[BudgetAllocation]):
+    """Allocate budget across categories."""
     try:
-        # Mock metrics - replace with actual agent data
-        return {
-            "total_revenue": 50000.0,
-            "total_costs": 35000.0,
-            "net_profit": 15000.0,
-            "roi": 0.43,
-            "active_channels": 5,
-            "top_performing_channel": "social_media",
-            "last_updated": datetime.now().isoformat(),
+        allocation_id = str(uuid4())
+        total_percentage = sum(alloc.percentage for alloc in allocations)
+        
+        if total_percentage > 100:
+            raise HTTPException(status_code=400, detail="Total allocation exceeds 100%")
+        
+        allocation_data = {
+            "id": allocation_id,
+            "project_id": project_id,
+            "allocations": [alloc.dict() for alloc in allocations],
+            "total_percentage": total_percentage,
+            "created_at": datetime.now().isoformat(),
+            "status": "active"
         }
+        
+        budget_allocations[allocation_id] = allocation_data
+        logger.info(f"Created budget allocation: {allocation_id}")
+        
+        return allocation_data
+        
     except Exception as e:
-        logger.error(f"Error getting financial metrics: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error creating budget allocation: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to create budget allocation")
 
-
-@router.get("/jobs")
-async def list_financial_jobs():
-    """List all financial jobs"""
-    jobs = []
-    for job_id, job_data in financial_jobs.items():
-        jobs.append(
-            {
-                "job_id": job_id,
-                "type": job_data.get("type"),
-                "status": job_data["status"],
-                "progress": job_data.get("progress"),
-                "created_at": job_data["created_at"].isoformat(),
-                "updated_at": job_data["updated_at"].isoformat(),
-            }
-        )
-
-    return {"jobs": jobs}
-
-
-# Background task functions
-async def run_profitability_analysis(job_id: str, request_data: Dict[str, Any]):
-    """Run profitability analysis in background"""
+@router.post("/roi-analysis", response_model=ROIAnalysis)
+async def create_roi_analysis(project_id: str, investment: float, projected_return: float):
+    """Create ROI analysis."""
     try:
-        # Update job status
-        financial_jobs[job_id]["status"] = "running"
-        financial_jobs[job_id]["progress"] = 0.1
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-
-        # Simulate analysis steps
-        await asyncio.sleep(1)
-        financial_jobs[job_id]["progress"] = 0.3
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-
-        # Mock analysis results
-        channel_id = request_data.get("channel_id")
-        revenue = request_data.get("revenue", 0)
-        costs = request_data.get("costs", 0)
-        profit = revenue - costs
-        margin = (profit / revenue * 100) if revenue > 0 else 0
-
-        await asyncio.sleep(1)
-        financial_jobs[job_id]["progress"] = 0.7
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-
-        # Generate recommendations
-        recommendations = []
-        if margin < 10:
-            recommendations.append("Consider reducing costs or increasing pricing")
-        if profit < 0:
-            recommendations.append("Channel is operating at a loss - immediate action required")
+        analysis_id = str(uuid4())
+        roi_percentage = calculate_roi(investment, projected_return)
+        
+        # Simple payback period calculation (in months)
+        monthly_return = (projected_return - investment) / 12
+        payback_months = investment / monthly_return if monthly_return > 0 else 0
+        payback_period = f"{payback_months:.1f} months"
+        
+        # Risk assessment based on ROI
+        if roi_percentage > 50:
+            risk_level = "high"
+        elif roi_percentage > 20:
+            risk_level = "medium"
         else:
-            recommendations.append("Channel is profitable - consider scaling")
-
-        await asyncio.sleep(1)
-        financial_jobs[job_id]["progress"] = 1.0
-        financial_jobs[job_id]["status"] = "completed"
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-        financial_jobs[job_id]["result"] = {
-            "channel_id": channel_id,
-            "revenue": revenue,
-            "costs": costs,
-            "profit": profit,
-            "margin_percent": round(margin, 2),
-            "recommendations": recommendations,
-            "analysis_date": datetime.now().isoformat(),
+            risk_level = "low"
+        
+        roi_data = {
+            "id": analysis_id,
+            "project_id": project_id,
+            "investment": investment,
+            "projected_return": projected_return,
+            "roi_percentage": roi_percentage,
+            "payback_period": payback_period,
+            "risk_level": risk_level,
+            "created_at": datetime.now().isoformat()
         }
-
+        
+        analysis_results[analysis_id] = roi_data
+        logger.info(f"Created ROI analysis: {analysis_id}")
+        
+        return ROIAnalysis(
+            id=str(roi_data["id"]),
+            project_id=str(roi_data["project_id"]),
+            investment=float(roi_data["investment"]) if isinstance(roi_data["investment"], (int, float, str)) else 0.0,
+            projected_return=float(roi_data["projected_return"]) if isinstance(roi_data["projected_return"], (int, float, str)) else 0.0,
+            roi_percentage=float(roi_data["roi_percentage"]) if isinstance(roi_data["roi_percentage"], (int, float, str)) else 0.0,
+            payback_period=str(roi_data["payback_period"]),
+            risk_level=str(roi_data["risk_level"]),
+            created_at=str(roi_data["created_at"])
+        )
+        
     except Exception as e:
-        logger.error(f"Error in profitability analysis {job_id}: {e}")
-        financial_jobs[job_id]["status"] = "failed"
-        financial_jobs[job_id]["error"] = str(e)
-        financial_jobs[job_id]["updated_at"] = datetime.now()
+        logger.error(f"Error creating ROI analysis: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to create ROI analysis")
 
+@router.get("/roi-analysis/{analysis_id}", response_model=ROIAnalysis)
+async def get_roi_analysis(analysis_id: str):
+    """Get a specific ROI analysis."""
+    if analysis_id not in analysis_results:
+        raise HTTPException(status_code=404, detail="ROI analysis not found")
+    
+    data = analysis_results[analysis_id]
+    return ROIAnalysis(
+        id=str(data["id"]),
+        project_id=str(data["project_id"]),
+        investment=float(data["investment"]) if isinstance(data["investment"], (int, float, str)) else 0.0,
+        projected_return=float(data["projected_return"]) if isinstance(data["projected_return"], (int, float, str)) else 0.0,
+        roi_percentage=float(data["roi_percentage"]) if isinstance(data["roi_percentage"], (int, float, str)) else 0.0,
+        payback_period=str(data["payback_period"]),
+        risk_level=str(data["risk_level"]),
+        created_at=str(data["created_at"])
+    )
 
-async def run_resource_allocation(job_id: str, request_data: Dict[str, Any]):
-    """Run resource allocation optimization in background"""
-    try:
-        # Update job status
-        financial_jobs[job_id]["status"] = "running"
-        financial_jobs[job_id]["progress"] = 0.1
-        financial_jobs[job_id]["updated_at"] = datetime.now()
+@router.get("/health")
+async def financial_health_check():
+    """Health check endpoint for financial service."""
+    return {
+        "status": "healthy",
+        "service": "financial",
+        "analyses_count": len(financial_data),
+        "roi_analyses_count": len(analysis_results),
+        "allocations_count": len(budget_allocations),
+        "timestamp": datetime.now().isoformat()
+    }
 
-        total_budget = request_data.get("total_budget", 0)
-        channels = request_data.get("channels", [])
-        strategy = request_data.get("strategy", "profit_maximization")
-        risk_tolerance = request_data.get("risk_tolerance", 0.3)
+@router.delete("/analyze/{analysis_id}")
+async def delete_financial_analysis(analysis_id: str):
+    """Delete a financial analysis."""
+    if analysis_id not in financial_data:
+        raise HTTPException(status_code=404, detail="Financial analysis not found")
+    
+    del financial_data[analysis_id]
+    logger.info(f"Deleted financial analysis: {analysis_id}")
+    
+    return {"message": "Financial analysis deleted successfully"}
 
-        await asyncio.sleep(1)
-        financial_jobs[job_id]["progress"] = 0.4
-        financial_jobs[job_id]["updated_at"] = datetime.now()
+# Background task for periodic cleanup
+async def cleanup_old_analyses():
+    """Clean up old financial analyses (placeholder for future implementation)."""
+    logger.info("Cleanup task executed")
 
-        # Mock allocation logic
-        num_channels = len(channels)
-        if num_channels == 0:
-            raise ValueError("No channels provided")
-
-        # Simple equal allocation with some variance based on strategy
-        base_allocation = total_budget / num_channels
-        allocations = {}
-
-        for i, channel in enumerate(channels):
-            # Add some variance based on strategy
-            if strategy == "profit_maximization":
-                variance = 0.2 * (i % 2 - 0.5)  # Alternate higher/lower
-            else:
-                variance = 0.1 * (i % 3 - 1)  # More conservative
-
-            allocations[channel] = max(0, base_allocation * (1 + variance))
-
-        # Normalize to ensure total equals budget
-        total_allocated = sum(allocations.values())
-        if total_allocated > 0:
-            for channel in allocations:
-                allocations[channel] = (allocations[channel] / total_allocated) * total_budget
-
-        await asyncio.sleep(1)
-        financial_jobs[job_id]["progress"] = 1.0
-        financial_jobs[job_id]["status"] = "completed"
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-        financial_jobs[job_id]["result"] = {
-            "total_budget": total_budget,
-            "strategy": strategy,
-            "risk_tolerance": risk_tolerance,
-            "allocations": {k: round(v, 2) for k, v in allocations.items()},
-            "allocation_date": datetime.now().isoformat(),
-        }
-
-    except Exception as e:
-        logger.error(f"Error in resource allocation {job_id}: {e}")
-        financial_jobs[job_id]["status"] = "failed"
-        financial_jobs[job_id]["error"] = str(e)
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-
-
-async def run_roi_optimization(job_id: str, request_data: Dict[str, Any]):
-    """Run ROI optimization in background"""
-    try:
-        # Update job status
-        financial_jobs[job_id]["status"] = "running"
-        financial_jobs[job_id]["progress"] = 0.1
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-
-        current_allocations = request_data.get("current_allocations", {})
-        performance_data = request_data.get("performance_data", {})
-        optimization_target = request_data.get("optimization_target", "roi")
-
-        await asyncio.sleep(1)
-        financial_jobs[job_id]["progress"] = 0.5
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-
-        # Mock optimization logic
-        optimized_allocations = {}
-        recommendations = []
-
-        for channel, allocation in current_allocations.items():
-            # Mock performance metrics
-            current_roi = performance_data.get(channel, {}).get("roi", 0.1)
-
-            # Simple optimization: increase allocation for high ROI channels
-            if current_roi > 0.2:
-                optimized_allocations[channel] = allocation * 1.2
-                recommendations.append(f"Increase {channel} allocation by 20% (high ROI)")
-            elif current_roi < 0.05:
-                optimized_allocations[channel] = allocation * 0.8
-                recommendations.append(f"Decrease {channel} allocation by 20% (low ROI)")
-            else:
-                optimized_allocations[channel] = allocation
-                recommendations.append(f"Maintain {channel} allocation (stable ROI)")
-
-        await asyncio.sleep(1)
-        financial_jobs[job_id]["progress"] = 1.0
-        financial_jobs[job_id]["status"] = "completed"
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-        financial_jobs[job_id]["result"] = {
-            "optimization_target": optimization_target,
-            "current_allocations": current_allocations,
-            "optimized_allocations": {k: round(v, 2) for k, v in optimized_allocations.items()},
-            "recommendations": recommendations,
-            "optimization_date": datetime.now().isoformat(),
-        }
-
-    except Exception as e:
-        logger.error(f"Error in ROI optimization {job_id}: {e}")
-        financial_jobs[job_id]["status"] = "failed"
-        financial_jobs[job_id]["error"] = str(e)
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-
-
-async def run_financial_report(job_id: str, request_data: Dict[str, Any]):
-    """Generate financial report in background"""
-    try:
-        # Update job status
-        financial_jobs[job_id]["status"] = "running"
-        financial_jobs[job_id]["progress"] = 0.1
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-
-        start_date = request_data.get("start_date")
-        end_date = request_data.get("end_date")
-        channels = request_data.get("channels")
-        report_type = request_data.get("report_type", "comprehensive")
-
-        await asyncio.sleep(1)
-        financial_jobs[job_id]["progress"] = 0.3
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-
-        # Mock report generation
-        report_data = {
-            "report_type": report_type,
-            "period": {
-                "start_date": start_date,
-                "end_date": end_date,
-            },
-            "summary": {
-                "total_revenue": 75000.0,
-                "total_costs": 52000.0,
-                "net_profit": 23000.0,
-                "roi": 0.44,
-                "profit_margin": 0.31,
-            },
-            "channel_performance": {},
-            "trends": {
-                "revenue_growth": 0.15,
-                "cost_efficiency": 0.08,
-                "roi_improvement": 0.12,
-            },
-            "recommendations": [
-                "Focus on high-performing channels",
-                "Optimize cost structure in underperforming areas",
-                "Consider expanding successful strategies",
-            ],
-        }
-
-        # Add channel-specific data if channels specified
-        if channels:
-            for channel in channels:
-                report_data["channel_performance"][channel] = {
-                    "revenue": 15000.0,
-                    "costs": 10000.0,
-                    "profit": 5000.0,
-                    "roi": 0.5,
-                }
-
-        await asyncio.sleep(2)
-        financial_jobs[job_id]["progress"] = 1.0
-        financial_jobs[job_id]["status"] = "completed"
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-        financial_jobs[job_id]["result"] = {
-            "report": report_data,
-            "generated_at": datetime.now().isoformat(),
-        }
-
-    except Exception as e:
-        logger.error(f"Error in financial report generation {job_id}: {e}")
-        financial_jobs[job_id]["status"] = "failed"
-        financial_jobs[job_id]["error"] = str(e)
-        financial_jobs[job_id]["updated_at"] = datetime.now()
-
-
-__all__ = ["router"]
+@router.post("/cleanup")
+async def trigger_cleanup(background_tasks: BackgroundTasks):
+    """Trigger cleanup of old analyses."""
+    background_tasks.add_task(cleanup_old_analyses)
+    return {"message": "Cleanup task scheduled"}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Enhanced Web Scraping Tools Module
 
 Implements comprehensive web scraping capabilities with:
@@ -9,7 +9,7 @@ Implements comprehensive web scraping capabilities with:
 - Multiple parsing strategies (BeautifulSoup, Selenium, requests - html)
 - Data extraction pipelines with validation
 - Caching and performance optimization
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -128,7 +128,7 @@ class ScrapingConfig:
     cache_duration: int = 3600  # Seconds
     javascript_enabled: bool = False
     headless: bool = True
-    custom_headers: Dict[str, str] = field(default_factory=dict)
+    custom_headers: Dict[str, str] = field(default_factory=dict):
     cookies: Dict[str, str] = field(default_factory=dict)
 
 
@@ -157,7 +157,7 @@ class ScrapingResult:
     raw_html: Optional[str] = None
     error_message: Optional[str] = None
     response_time: float = 0.0
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=datetime.now):
     method_used: Optional[ScrapingMethod] = None
     proxy_used: Optional[str] = None
 
@@ -196,7 +196,8 @@ class EnhancedWebScraper:
             backoff_factor=self.config.retry_delay,
             status_forcelist=[429, 500, 502, 503, 504],
             method_whitelist=["HEAD", "GET", "OPTIONS"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self.session.mount("http://", adapter)
@@ -210,8 +211,10 @@ class EnhancedWebScraper:
                 "Accept - Encoding": "gzip, deflate",
                 "Connection": "keep - alive",
                 "Upgrade - Insecure - Requests": "1",
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         # Add custom headers
         if self.config.custom_headers:
@@ -230,7 +233,8 @@ class EnhancedWebScraper:
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15",
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
             "Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def _load_proxies(self) -> None:
         """Load proxy configurations from file or environment"""
@@ -276,7 +280,8 @@ class EnhancedWebScraper:
             # Check if cache is expired
             if datetime.now() - cached_data["timestamp"] > timedelta(
                 seconds=self.config.cache_duration
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 cache_file.unlink()  # Remove expired cache
                 return None
 
@@ -340,7 +345,8 @@ class EnhancedWebScraper:
                 success=False,
                 data={},
                 error_message="requests library not available",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         start_time = time.time()
         proxy_used = None
@@ -375,7 +381,8 @@ class EnhancedWebScraper:
                 response_time=response_time,
                 method_used=ScrapingMethod.REQUESTS,
                 proxy_used=proxy_used,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except requests.RequestException as e:
             response_time = time.time() - start_time
@@ -383,14 +390,16 @@ class EnhancedWebScraper:
                 url=url,
                 status_code=(
                     getattr(e.response, "status_code", 0) if hasattr(e, "response") else 0
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 success=False,
                 data={},
                 error_message=str(e),
                 response_time=response_time,
                 method_used=ScrapingMethod.REQUESTS,
                 proxy_used=proxy_used,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _scrape_with_selenium(self, url: str) -> ScrapingResult:
         """Scrape using Selenium WebDriver"""
@@ -401,7 +410,8 @@ class EnhancedWebScraper:
                 success=False,
                 data={},
                 error_message="Selenium not available",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         start_time = time.time()
         driver = None
@@ -442,7 +452,8 @@ class EnhancedWebScraper:
             if self.config.javascript_enabled:
                 WebDriverWait(driver, 10).until(
                     lambda d: d.execute_script("return document.readyState") == "complete"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             html = driver.page_source
             response_time = time.time() - start_time
@@ -456,7 +467,8 @@ class EnhancedWebScraper:
                 response_time=response_time,
                 method_used=ScrapingMethod.SELENIUM,
                 proxy_used=proxy_used,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             response_time = time.time() - start_time
@@ -468,7 +480,8 @@ class EnhancedWebScraper:
                 error_message=str(e),
                 response_time=response_time,
                 method_used=ScrapingMethod.SELENIUM,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         finally:
             if driver:
                 driver.quit()
@@ -482,7 +495,8 @@ class EnhancedWebScraper:
                 success=False,
                 data={},
                 error_message="requests - html not available",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         start_time = time.time()
 
@@ -512,7 +526,8 @@ class EnhancedWebScraper:
                 raw_html=html,
                 response_time=response_time,
                 method_used=ScrapingMethod.REQUESTS_HTML,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             response_time = time.time() - start_time
@@ -524,11 +539,13 @@ class EnhancedWebScraper:
                 error_message=str(e),
                 response_time=response_time,
                 method_used=ScrapingMethod.REQUESTS_HTML,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def scrape_url(
         self, url: str, extraction_rules: Optional[List[ExtractionRule]] = None
-    ) -> ScrapingResult:
+# BRACKET_SURGEON: disabled
+#     ) -> ScrapingResult:
         """Scrape a single URL with the configured method"""
         # Check cache first
         cache_key = self._get_cache_key(url, self.config.method)
@@ -572,7 +589,8 @@ class EnhancedWebScraper:
                 "timestamp": result.timestamp,
                 "method_used": result.method_used,
                 "proxy_used": result.proxy_used,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             self._cache_response(cache_key, cache_data)
 
         return result
@@ -660,8 +678,10 @@ class EnhancedWebScraper:
                         success=False,
                         data={},
                         error_message=str(result),
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 final_results.append(result)
 
@@ -669,7 +689,8 @@ class EnhancedWebScraper:
 
     def export_results(
         self, results: List[ScrapingResult], format_type: DataFormat, output_file: str
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Export scraping results to file"""
         try:
             if format_type == DataFormat.JSON:
@@ -684,9 +705,11 @@ class EnhancedWebScraper:
                         "timestamp": r.timestamp.isoformat(),
                         "method_used": r.method_used.value if r.method_used else None,
                         "proxy_used": r.proxy_used,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     for r in results
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 with open(output_file, "w", encoding="utf - 8") as f:
                     json.dump(data, f, indent=2, ensure_ascii=False)
@@ -725,9 +748,11 @@ class EnhancedWebScraper:
                                 "timestamp": result.timestamp.isoformat(),
                                 "method_used": (
                                     result.method_used.value if result.method_used else None
-                                ),
+# BRACKET_SURGEON: disabled
+#                                 ),
                                 "proxy_used": result.proxy_used,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             row.update(result.data)
                             writer.writerow(row)
 
@@ -755,7 +780,8 @@ class EnhancedWebScraper:
             "methods_used": {},
             "status_codes": {},
             "error_types": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Method statistics
         for result in results:
@@ -799,7 +825,8 @@ if __name__ == "__main__":
             rate_limit=1.0,
             cache_responses=True,
             rotate_user_agents=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         scraper = EnhancedWebScraper(config)
 
@@ -812,16 +839,19 @@ if __name__ == "__main__":
                 attribute="content",
                 required=False,
                 default_value="No description",
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             ExtractionRule(name="headings", selector="h1, h2, h3", is_list=True, required=False),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Test URLs
         test_urls = [
             "https://httpbin.org/html",
             "https://httpbin.org/json",
             "https://example.com",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         try:
             # Scrape multiple URLs

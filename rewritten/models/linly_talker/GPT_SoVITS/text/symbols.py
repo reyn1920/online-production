@@ -32,7 +32,8 @@ c = [
     "y",
     "z",
     "zh",
-]
+# BRACKET_SURGEON: disabled
+# ]
 v = [
     "E1",
     "En1",
@@ -229,7 +230,8 @@ v = [
     "van5",
     "ve5",
     "vn5",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 v_without_tone = [
     "E",
@@ -271,7 +273,8 @@ v_without_tone = [
     "van",
     "ve",
     "vn",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 # japanese
 ja_symbols = [
@@ -317,7 +320,8 @@ ja_symbols = [
     # "]", #下降调型
     # "$", #结束符
     # "^", #开始符
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 arpa = {
     "AH0",
@@ -391,7 +395,8 @@ arpa = {
     "OW0",
     "L",
     "SH",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 symbols = [pad] + c + v + ja_symbols + pu_symbols + list(arpa)
 symbols = sorted(set(symbols))

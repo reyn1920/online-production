@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Comprehensive Test Suite for Revenue Systems
 Tests all revenue streams, payment processing, and API monetization
-"""
+""""""
 
 import json
 import os
@@ -24,7 +24,8 @@ try:
         PaymentProcessor,
         PaymentProvider,
         PaymentRequest,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError as e:
     print(f"Warning: Could not import revenue modules: {e}")
     print("Some tests may be skipped")
@@ -78,7 +79,8 @@ class TestRevenueStreamsAPI(unittest.TestCase):
         response = self.client.post(
             "/api / revenue / streams / subscription_revenue / toggle",
             json={"enabled": True},
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.assertEqual(response.status_code, 200)
 
         data = json.loads(response.data)
@@ -103,7 +105,8 @@ class TestRevenueStreamsAPI(unittest.TestCase):
         response = self.client.post(
             "/api / revenue / subscriptions / checkout",
             json={"plan_id": "basic", "customer_email": "test@example.com"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
@@ -135,7 +138,8 @@ class TestAPIMonetization(unittest.TestCase):
         response = self.client.post(
             "/api / monetization / generate - key",
             json={"customer_email": "test@example.com", "plan_type": "basic"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
@@ -149,7 +153,8 @@ class TestAPIMonetization(unittest.TestCase):
         gen_response = self.client.post(
             "/api / monetization / generate - key",
             json={"customer_email": "test@example.com", "plan_type": "basic"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         gen_data = json.loads(gen_response.data)
         api_key = gen_data["api_key"]
@@ -158,7 +163,8 @@ class TestAPIMonetization(unittest.TestCase):
         response = self.client.post(
             "/api / monetization / validate - key",
             json={"api_key": api_key, "endpoint": "test"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
@@ -171,7 +177,8 @@ class TestAPIMonetization(unittest.TestCase):
         gen_response = self.client.post(
             "/api / monetization / generate - key",
             json={"customer_email": "test@example.com", "plan_type": "basic"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         gen_data = json.loads(gen_response.data)
         api_key = gen_data["api_key"]
@@ -181,7 +188,8 @@ class TestAPIMonetization(unittest.TestCase):
             self.client.post(
                 "/api / monetization / validate - key",
                 json={"api_key": api_key, "endpoint": "test"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Check usage
         response = self.client.get(f"/api / monetization / usage/{api_key}")
@@ -197,7 +205,8 @@ class TestAPIMonetization(unittest.TestCase):
         gen_response = self.client.post(
             "/api / monetization / generate - key",
             json={"customer_email": "test@example.com", "plan_type": "basic"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         gen_data = json.loads(gen_response.data)
         api_key = gen_data["api_key"]
@@ -206,7 +215,8 @@ class TestAPIMonetization(unittest.TestCase):
         response = self.client.post(
             "/api / monetization / validate - key",
             json={"api_key": api_key, "endpoint": "test"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
@@ -218,7 +228,8 @@ class TestAPIMonetization(unittest.TestCase):
         gen_response = self.client.post(
             "/api / monetization / generate - key",
             json={"customer_email": "test@example.com", "plan_type": "basic"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         gen_data = json.loads(gen_response.data)
         api_key = gen_data["api_key"]
@@ -270,7 +281,8 @@ class TestPaymentProcessor(unittest.TestCase):
             customer_email="legitimate@example.com",
             payment_method="pm_card_visa",
             provider=PaymentProvider.STRIPE,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         fraud_check = self.processor._perform_fraud_detection(payment_request, "192.168.1.1")
 
@@ -289,10 +301,12 @@ class TestPaymentProcessor(unittest.TestCase):
                     customer_email="suspicious@tempmail.org",
                     payment_method="pm_card_visa",
                     provider=PaymentProvider.STRIPE,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "127.0.0.1",
                 f"test_payment_{time.time()}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Test high - risk transaction
         payment_request = PaymentRequest(
@@ -301,7 +315,8 @@ class TestPaymentProcessor(unittest.TestCase):
             customer_email="suspicious@tempmail.org",  # Temp email
             payment_method="pm_card_visa",
             provider=PaymentProvider.STRIPE,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         fraud_check = self.processor._perform_fraud_detection(payment_request, "127.0.0.1")
 
@@ -327,7 +342,8 @@ class TestPaymentProcessor(unittest.TestCase):
             customer_email="test@example.com",
             payment_method="pm_card_visa",
             provider=PaymentProvider.STRIPE,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         result = self.processor._process_stripe_payment(payment_request, "test_payment_123")
 
@@ -343,13 +359,14 @@ class TestPaymentProcessor(unittest.TestCase):
 
         payment_id = "test_payment_123"
         cursor.execute(
-            """
+            """"""
             INSERT INTO payments
             (payment_id, provider, amount, currency, customer_email, status)
             VALUES (?, ?, ?, ?, ?, ?)
-        """,
+        ""","""
             (payment_id, "stripe", 50.0, "USD", "test@example.com", "completed"),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         conn.commit()
         conn.close()
@@ -413,7 +430,8 @@ class TestIntegrationScenarios(unittest.TestCase):
         response = self.revenue_client.post(
             "/api / revenue / streams / subscription_revenue / toggle",
             json={"enabled": True},
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.assertEqual(response.status_code, 200)
 
         # 3. Check that analytics reflect the enabled stream
@@ -429,7 +447,8 @@ class TestIntegrationScenarios(unittest.TestCase):
         response = self.api_client.post(
             "/api / monetization / generate - key",
             json={"customer_email": "developer@example.com", "plan_type": "pro"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
@@ -440,7 +459,8 @@ class TestIntegrationScenarios(unittest.TestCase):
             response = self.api_client.post(
                 "/api / monetization / validate - key",
                 json={"api_key": api_key, "endpoint": f"test_endpoint_{i % 3}"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             self.assertEqual(response.status_code, 200)
 
         # 3. Check usage statistics
@@ -484,8 +504,10 @@ class TestIntegrationScenarios(unittest.TestCase):
                     "customer_email": "customer@example.com",
                     "payment_method": "pm_card_visa",
                     "provider": "stripe",
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             self.assertEqual(response.status_code, 200)
             data = json.loads(response.data)
@@ -519,12 +541,13 @@ class TestSecurityAndValidation(unittest.TestCase):
     def test_sql_injection_protection(self):
         """Test protection against SQL injection attacks"""
         # Attempt SQL injection in API key validation
-        malicious_key = "'; DROP TABLE api_keys; --"
+        malicious_key = "'; DROP TABLE api_keys; --"'
 
         response = self.client.post(
             "/api / monetization / validate - key",
             json={"api_key": malicious_key, "endpoint": "test"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Should return invalid key, not crash
         self.assertEqual(response.status_code, 401)
@@ -546,7 +569,8 @@ class TestSecurityAndValidation(unittest.TestCase):
         response = self.client.post(
             "/api / monetization / generate - key",
             json={"customer_email": "invalid - email", "plan_type": "basic"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Should still work but might be flagged in fraud detection
         self.assertEqual(response.status_code, 200)
@@ -557,7 +581,8 @@ class TestSecurityAndValidation(unittest.TestCase):
         response = self.client.post(
             "/api / monetization / generate - key",
             json={"customer_email": "test@example.com", "plan_type": "basic"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         data = json.loads(response.data)
         api_key = data["api_key"]
@@ -568,7 +593,8 @@ class TestSecurityAndValidation(unittest.TestCase):
             response = self.client.post(
                 "/api / monetization / validate - key",
                 json={"api_key": api_key, "endpoint": f"bypass_attempt_{i}"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 success_count += 1
@@ -593,7 +619,8 @@ def run_all_tests():
         TestPaymentProcessor,
         TestIntegrationScenarios,
         TestSecurityAndValidation,
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for test_class in test_classes:
         tests = unittest.TestLoader().loadTestsFromTestCase(test_class)
@@ -626,7 +653,8 @@ def run_all_tests():
         ((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100)
         if result.testsRun > 0
         else 0
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(f"\\nSuccess Rate: {success_rate:.1f}%")
 
     return result.wasSuccessful()

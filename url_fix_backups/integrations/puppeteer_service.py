@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Puppeteer Service for Web AI Integration
 Handles browser automation for interacting with web AI platforms
-"""
+""""""
 
 import asyncio
 import json
@@ -55,12 +55,16 @@ class PuppeteerService:
                         "--no - zygote",
                         "--disable - gpu",
                         "--disable - blink - features = AutomationControlled",
-                        "--user - agent = Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,
-    like Gecko) Chrome / 120.0.0.0 Safari / 537.36",
-                        ],
+                        "--user - agent = Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,"
+# BRACKET_SURGEON: disabled
+#     like Gecko) Chrome / 120.0.0.0 Safari / 537.36","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "ignoreDefaultArgs": ["--disable - extensions"],
                     "slowMo": 100,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "retry": {"max_attempts": 3, "delay": 2},
                 "selectors": {
                 "chatgpt": {
@@ -68,21 +72,26 @@ class PuppeteerService:
                         "send_button": 'button[data - testid="send - button"]',
                         "response": '[data - message - author - role="assistant"] .markdown',
                         "loading": ".result - streaming",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "gemini": {
                     "input": '.ql - editor[contenteditable="true"]',
                         "send_button": 'button[aria - label="Send message"]',
                         "response": "[data - response - index] .markdown",
                         "loading": ".loading - indicator",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     "claude": {
                     "input": 'div[contenteditable="true"][data - testid="chat - input"]',
                         "send_button": 'button[aria - label="Send Message"]',
                         "response": '[data - testid="conversation"] .font - claude - message',
                         "loading": ".thinking - indicator",
-                        },
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _setup_logging(self) -> logging.Logger:
@@ -94,7 +103,9 @@ class PuppeteerService:
             handler = logging.StreamHandler()
             formatter = logging.Formatter(
                 "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             handler.setFormatter(formatter)
             logger.addHandler(handler)
 
@@ -124,13 +135,19 @@ class PuppeteerService:
                             "args": self.config["browser"]["args"],
                             "ignoreDefaultArgs": self.config["browser"][
                             "ignoreDefaultArgs"
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                             "slowMo": self.config["browser"]["slowMo"],
                             "timeout": self.config["browser"]["timeout"],
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "allowDangerous": True,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if nav_result.get("success"):
                 # Store session info
@@ -140,7 +157,9 @@ class PuppeteerService:
                         url = url,
                         created_at = datetime.now(),
                         last_used = datetime.now(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 self.logger.info(f"Successfully navigated to {platform}")
                 return session_id
@@ -169,12 +188,16 @@ class PuppeteerService:
             # Fill the input field
             await mcp.call_tool(
                 "puppeteer_fill", {"selector": selectors.get("input"), "value": message}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Click send button
             await mcp.call_tool(
                 "puppeteer_click", {"selector": selectors.get("send_button")}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Wait for response
             await asyncio.sleep(3)  # Initial wait
@@ -188,7 +211,9 @@ class PuppeteerService:
                         await mcp.call_tool(
                             "puppeteer_evaluate",
                                 {"script": f'document.querySelector("{loading_selector}")'},
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         await asyncio.sleep(1)
                     except Exception:
                         break  # Loading indicator not found, response ready
@@ -197,12 +222,15 @@ class PuppeteerService:
             response_result = await mcp.call_tool(
                 "puppeteer_evaluate",
                     {
-                    "script": f"""
+                    "script": f""""""
                     const responseElement = document.querySelector("{selectors.get('response')}");
                     responseElement ? responseElement.innerText : "No response found";
-                """
-                },
-                    )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             response_text = response_result.get("result", "No response received")
 
@@ -233,8 +261,11 @@ class PuppeteerService:
                     "name": screenshot_name,
                         "width": self.config["browser"]["width"],
                         "height": self.config["browser"]["height"],
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return result.get("path", "")
 
@@ -269,7 +300,7 @@ class PuppeteerService:
             mcp = MCPClient()
 
             # Use JavaScript to wait for element
-            script = f"""
+            script = f""""""
                 new Promise((resolve) => {{
                     const checkElement = () => {{
                         const element = document.querySelector("{selector}");
@@ -277,12 +308,15 @@ class PuppeteerService:
                             resolve(true);
                         }} else {{
                             setTimeout(checkElement, 100);
-                        }}
-                    }};
+# BRACKET_SURGEON: disabled
+#                         }}
+# BRACKET_SURGEON: disabled
+#                     }};
                     checkElement();
                     setTimeout(() => resolve(false), {timeout});
-                }});
-            """
+# BRACKET_SURGEON: disabled
+#                 }});
+            """"""
 
             result = await mcp.call_tool("puppeteer_evaluate", {"script": script})
 
@@ -328,7 +362,9 @@ class PuppeteerService:
             # Simple test navigation
             test_result = await mcp.call_tool(
                 "puppeteer_navigate", {"url": "https://www.google.com"}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             mcp_status = "healthy" if test_result.get("success") else "error"
 
@@ -340,7 +376,8 @@ class PuppeteerService:
                 "mcp_puppeteer": mcp_status,
                 "active_sessions": len(self.sessions),
                 "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 if __name__ == "__main__":
 
@@ -357,7 +394,9 @@ if __name__ == "__main__":
         try:
             session_id = await service.navigate_to_platform(
                 "chatgpt", "https://chat.openai.com"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(f"Created session: {session_id}")
 
             # Test screenshot

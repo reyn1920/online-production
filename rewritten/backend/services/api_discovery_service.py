@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Discovery Service
 Automatically discovers and evaluates APIs for different marketing channels
-"""
+""""""
 
 import asyncio
 import json
@@ -57,57 +57,66 @@ class APIDiscoveryService:
                 "youtube data api v3 affiliate",
                 "youtube creator economy api",
                 "youtube channel analytics api",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "tiktok": [
                 "tiktok creator api affiliate marketing",
                 "tiktok business api monetization",
                 "tiktok marketing api free",
                 "tiktok creator fund api",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "instagram": [
                 "instagram basic display api",
                 "instagram graph api creator",
                 "instagram affiliate marketing api",
                 "meta creator api instagram",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "twitter": [
                 "twitter api v2 creator monetization",
                 "twitter spaces api affiliate",
                 "x api creator economy",
                 "twitter developer api free",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "affiliate": [
                 "affiliate marketing api free",
                 "commission tracking api",
                 "affiliate network api integration",
                 "performance marketing api",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "email": [
                 "email marketing api free tier",
                 "transactional email api",
                 "newsletter api integration",
                 "email automation api",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "analytics": [
                 "marketing analytics api free",
                 "social media analytics api",
                 "creator analytics api",
                 "engagement tracking api",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "content": [
                 "content creation api free",
                 "ai content generation api",
                 "stock photo api free",
                 "video editing api",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
         self.init_database()
 
     def init_database(self):
         """Initialize database tables for API discovery"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS discovered_apis (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT UNIQUE,
@@ -124,21 +133,25 @@ class APIDiscoveryService:
                         channel TEXT,
                         is_active BOOLEAN DEFAULT 0,
                         last_verified TEXT
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS api_search_history (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         query TEXT,
                         channel TEXT,
                         results_count INTEGER,
                         search_date TEXT
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     async def __aenter__(self):
@@ -146,8 +159,10 @@ class APIDiscoveryService:
             timeout=30.0,
             headers={
                 "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -209,7 +224,8 @@ class APIDiscoveryService:
             f"site:aws.amazon.com {query}",
             f"{query} API documentation free",
             f"{query} REST API integration",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Simulate search results (in production, integrate with search APIs)
         # For now, return curated results based on known good APIs
@@ -236,8 +252,10 @@ class APIDiscoveryService:
                             "video analytics",
                             "channel data",
                             "playlist management",
-                        ],
-                    },
+# BRACKET_SURGEON: disabled
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "title": "YouTube Analytics API",
                         "url": "https://developers.google.com/youtube/analytics",
@@ -248,10 +266,14 @@ class APIDiscoveryService:
                             "revenue data",
                             "view analytics",
                             "audience insights",
-                        ],
-                    },
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
         # TikTok APIs
         if "tiktok" in query.lower():
@@ -264,9 +286,12 @@ class APIDiscoveryService:
                         "signup_url": "https://developers.tiktok.com/",
                         "cost": "free",
                         "features": ["video upload", "user data", "analytics"],
-                    }
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
         # Email Marketing APIs
         if "email" in query.lower():
@@ -282,8 +307,10 @@ class APIDiscoveryService:
                             "transactional email",
                             "marketing campaigns",
                             "analytics",
-                        ],
-                    },
+# BRACKET_SURGEON: disabled
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "title": "Mailchimp API",
                         "url": "https://mailchimp.com/developer/",
@@ -291,9 +318,12 @@ class APIDiscoveryService:
                         "signup_url": "https://mailchimp.com/signup/",
                         "cost": "freemium",
                         "features": ["list management", "campaigns", "automation"],
-                    },
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
         # Affiliate Marketing APIs
         if "affiliate" in query.lower():
@@ -306,7 +336,8 @@ class APIDiscoveryService:
                         "signup_url": "https://affiliate - program.amazon.com/",
                         "cost": "free",
                         "features": ["product data", "pricing", "affiliate links"],
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "title": "ShareASale API",
                         "url": "https://www.shareasale.com/info/api/",
@@ -317,10 +348,14 @@ class APIDiscoveryService:
                             "merchant data",
                             "commission tracking",
                             "reporting",
-                        ],
-                    },
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
         return results
 
@@ -365,7 +400,8 @@ class APIDiscoveryService:
                 score=score,
                 discovered_at=datetime.now().isoformat(),
                 channel=channel,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Error creating API candidate: {e}")
@@ -378,7 +414,8 @@ class APIDiscoveryService:
         description: str,
         url: str,
         channel: str,
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate a score for an API candidate (0 - 10)"""
         score = 5.0  # Base score
 
@@ -403,7 +440,8 @@ class APIDiscoveryService:
             "rapidapi.com",
             "sendgrid.com",
             "mailchimp.com",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         if any(trusted in domain for trusted in trusted_domains):
             score += 1.0
 
@@ -412,7 +450,8 @@ class APIDiscoveryService:
             "youtube": ["youtube", "video", "creator"],
             "email": ["email", "mail", "newsletter"],
             "affiliate": ["affiliate", "commission", "marketing"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if channel in channel_keywords:
             keywords = channel_keywords[channel]
@@ -434,13 +473,15 @@ class APIDiscoveryService:
                 "instagram",
                 "tiktok",
                 "youtube",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "email": ["email", "mail", "newsletter", "sendgrid", "mailchimp"],
             "affiliate": ["affiliate", "commission", "amazon", "shareasale"],
             "analytics": ["analytics", "tracking", "metrics", "insights"],
             "content": ["content", "media", "image", "video", "photo"],
             "payment": ["payment", "stripe", "paypal", "billing"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for category, keywords in categories.items():
             if any(keyword in text for keyword in keywords):
@@ -456,7 +497,8 @@ class APIDiscoveryService:
             r"(\\d+)\\s * calls?\\s * per\\s*(minute|hour|day)",
             r"quota\\s * of\\s*(\\d+)",
             r"limit\\s * of\\s*(\\d+)",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for pattern in patterns:
             match = re.search(pattern, description.lower())
@@ -483,13 +525,14 @@ class APIDiscoveryService:
             for candidate in candidates:
                 try:
                     conn.execute(
-                        """
+                        """"""
                         INSERT OR REPLACE INTO discovered_apis
                         (name, url, signup_url, category, cost_model, description,
                             features, rate_limits, documentation_url, score,
-                             discovered_at, channel)
+# BRACKET_SURGEON: disabled
+#                              discovered_at, channel)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             candidate.name,
                             candidate.url,
@@ -503,8 +546,10 @@ class APIDiscoveryService:
                             candidate.score,
                             candidate.discovered_at,
                             candidate.channel,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
                 except sqlite3.Error as e:
                     logger.error(f"Error saving candidate {candidate.name}: {e}")
 
@@ -514,15 +559,17 @@ class APIDiscoveryService:
         """Record search history"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT INTO api_search_history (query,
     channel,
     results_count,
-    search_date)
+# BRACKET_SURGEON: disabled
+#     search_date)
                 VALUES (?, ?, ?, ?)
-            """,
+            ""","""
                 (query, channel, results_count, datetime.now().isoformat()),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     def get_top_apis_by_channel(self, channel: str, limit: int = 10) -> List[Dict]:
@@ -530,14 +577,15 @@ class APIDiscoveryService:
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
-                """
+                """"""
                 SELECT * FROM discovered_apis
                 WHERE channel = ?
                 ORDER BY score DESC, cost_model = 'free' DESC
                 LIMIT ?
-            """,
+            ""","""
                 (channel, limit),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return [dict(row) for row in cursor.fetchall()]
 
@@ -546,12 +594,13 @@ class APIDiscoveryService:
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
-                """
+                """"""
                 SELECT * FROM discovered_apis
                 WHERE cost_model IN ('free', 'freemium')
                 ORDER BY score DESC
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             return [dict(row) for row in cursor.fetchall()]
 
@@ -603,7 +652,8 @@ async def main():
             for candidate in candidates[: args.top]:
                 print(
                     f"  • {candidate.name} ({candidate.cost_model}) - Score: {candidate.score:.1f}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 print(f"    {candidate.description}")
                 print(f"    Signup: {candidate.signup_url}\\n")
 
@@ -614,7 +664,8 @@ async def main():
                 for candidate in candidates[:3]:  # Top 3 per channel
                     print(
                         f"  • {candidate.name} ({candidate.cost_model}) - Score: {candidate.score:.1f}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         else:
             print("Use --help for usage information")

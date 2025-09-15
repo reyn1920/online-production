@@ -44,7 +44,8 @@ def main():
     j = r.json()
     assert ("status" in j and j["status"] in ("healthy", "ok", "ready")) or (
         "ok" in j and j["ok"] is True
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Actions
     r = client.get("/api / actions")
@@ -59,12 +60,14 @@ def main():
         r = client.post(
             "/api / create_video",
             json={"prompt": "Test video", "duration": 3, "style": "default"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if (
             r.status_code == 200
             and isinstance(r.json(), dict)
             and r.json().get("status") in ("completed", "ok")
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             # Not saving mp4 path in this API shape; acceptable for CI check
             pass
         else:

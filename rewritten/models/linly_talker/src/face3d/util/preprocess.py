@@ -62,7 +62,8 @@ def resize_n_crop_img(img, lm, t, s, target_size = 224.0, mask = None):
     lm = np.stack([lm[:, 0] - t[0] + w0/2, lm[:, 1] - t[1] + h0/2], axis = 1) * s
     lm = lm - np.reshape(
         np.array([(w/2 - target_size/2), (h/2 - target_size/2)]), [1, 2]
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     return img, lm, mask
 
@@ -78,9 +79,11 @@ def extract_5p(lm):
                 np.mean(lm[lm_idx[[3, 4]], :], 0),
                 lm[lm_idx[5], :],
                 lm[lm_idx[6], :],
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
             axis = 0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
     lm5p = lm5p[[1, 2, 0, 3, 4], :]
     return lm5p
 
@@ -88,23 +91,25 @@ def extract_5p(lm):
 
 
 def align_img(img, lm, lm3D, mask = None, target_size = 224.0, rescale_factor = 102.0):
-    """
+    """"""
     Return:
         transparams        --numpy.array  (raw_W, raw_H, scale, tx, ty)
         img_new            --PIL.Image  (target_size, target_size, 3)
         lm_new             --numpy.array  (68,
-    2),
+# BRACKET_SURGEON: disabled
+#     2),
     y direction is opposite to v direction
         mask_new           --PIL.Image  (target_size, target_size)
 
     Parameters:
         img                --PIL.Image  (raw_H, raw_W, 3)
         lm                 --numpy.array  (68,
-    2),
+# BRACKET_SURGEON: disabled
+#     2),
     y direction is opposite to v direction
         lm3D               --numpy.array  (5, 3)
         mask               --PIL.Image  (raw_H, raw_W, 3)
-    """
+    """"""
 
     w0, h0 = img.size
     if lm.shape[0] != 5:
@@ -113,15 +118,16 @@ def align_img(img, lm, lm3D, mask = None, target_size = 224.0, rescale_factor = 
         lm5p = lm
 
     # calculate translation \
-    and scale factors using 5 facial landmarks \
-    and standard landmarks of a 3D face
+#     and scale factors using 5 facial landmarks \
+#     and standard landmarks of a 3D face
     t, s = POS(lm5p.transpose(), lm3D.transpose())
     s = rescale_factor/s
 
     # processing the image
     img_new, lm_new, mask_new = resize_n_crop_img(
         img, lm, t, s, target_size = target_size, mask = mask
-    )
+# BRACKET_SURGEON: disabled
+#     )
     trans_params = np.array([w0, h0, s, t[0], t[1]])
 
     return trans_params, img_new, lm_new, mask_new

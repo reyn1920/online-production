@@ -12,7 +12,8 @@ from typing import Any, Dict, List, Optional
 from backend.pipelines.blender_handoff import (
     get_blender_path,
     validate_blender_installation,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +126,8 @@ class EnhancedBlenderPipeline:
                     "avatar_file": str(avatar_file),
                     "project_dir": str(project_dir),
                     "config": avatar_config.__dict__,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"ok": False, "error": result["error"]}
 
@@ -148,7 +150,8 @@ class EnhancedBlenderPipeline:
             # Generate scene creation script
             script_content = self._generate_scene_script(
                 avatar_file, audio_file, background_type, project_dir
-            )
+# BRACKET_SURGEON: disabled
+#             )
             script_path = self.scripts_dir / f"create_scene_{project_name}.py"
             script_path.write_text(script_content)
 
@@ -162,7 +165,8 @@ class EnhancedBlenderPipeline:
                     "project_name": project_name,
                     "scene_file": str(scene_file),
                     "project_dir": str(project_dir),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"ok": False, "error": result["error"]}
 
@@ -197,12 +201,14 @@ class EnhancedBlenderPipeline:
                 "status": "starting",
                 "progress": 0,
                 "start_time": time.time(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Execute render in background
             future = self.executor.submit(
                 self._execute_render_process, script_path, project_dir, render_id
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "ok": True,
@@ -210,7 +216,8 @@ class EnhancedBlenderPipeline:
                 "project_name": project_name,
                 "status": "started",
                 "output_path": render_config.output_path,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Render start failed: {e}")
@@ -228,7 +235,8 @@ class EnhancedBlenderPipeline:
             "status": render_info["status"],
             "progress": render_info["progress"],
             "elapsed_time": time.time() - render_info["start_time"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def export_for_davinci_resolve(
         self, project_name: str, export_format: str = "mp4"
@@ -253,7 +261,8 @@ class EnhancedBlenderPipeline:
                     "project_name": project_name,
                     "export_dir": str(export_dir),
                     "format": export_format,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"ok": False, "error": result["error"]}
 
@@ -280,21 +289,24 @@ class EnhancedBlenderPipeline:
             if "thumbnail_images" in cloud_assets:
                 thumbnail_result = await self._integrate_thumbnails(
                     project_dir, cloud_assets["thumbnail_images"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 integration_results["thumbnails"] = thumbnail_result
 
             # Background music
             if "background_music" in cloud_assets:
                 music_result = await self._integrate_background_music(
                     project_dir, cloud_assets["background_music"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 integration_results["background_music"] = music_result
 
             return {
                 "ok": True,
                 "project_name": project_name,
                 "integrations": integration_results,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Cloud software integration failed: {e}")
@@ -302,7 +314,7 @@ class EnhancedBlenderPipeline:
 
     def _generate_avatar_script(self, config: AvatarConfig, project_dir: Path) -> str:
         """Generate Blender script for avatar creation."""
-        return f"""
+        return f""""""
 
 import bpy
 import bmesh
@@ -336,7 +348,8 @@ body_material.use_nodes = True
 body_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.8,
     0.7,
     0.6,
-    1.0)
+# BRACKET_SURGEON: disabled
+#     1.0)
 body.data.materials.append(body_material)
 
 head_material = bpy.data.materials.new(name="Head_Material")
@@ -344,7 +357,8 @@ head_material.use_nodes = True
 head_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (0.9,
     0.8,
     0.7,
-    1.0)
+# BRACKET_SURGEON: disabled
+#     1.0)
 head.data.materials.append(head_material)
 
 # Set up basic lighting
@@ -368,7 +382,7 @@ output_file = r"{project_dir/f"{config.gender}_avatar.blend"}"
 bpy.ops.wm.save_as_mainfile(filepath = output_file)
 
 print(f"Avatar created and saved: {{output_file}}")
-"""
+""""""
 
     def _generate_scene_script(
         self,
@@ -376,20 +390,21 @@ print(f"Avatar created and saved: {{output_file}}")
         audio_file: Optional[str],
         background_type: str,
         project_dir: Path,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate Blender script for scene creation."""
         audio_setup = ""
         if audio_file:
-            audio_setup = f"""
+            audio_setup = f""""""
 # Add audio
 try:
     bpy.ops.sequencer.sound_strip_add(filepath = r"{audio_file}")
     print("Audio added to scene")
 except Exception:
     print("Failed to add audio")
-"""
+""""""
 
-        return f"""
+        return f""""""
 
 import bpy
 import os
@@ -445,11 +460,11 @@ output_file = r"{project_dir/"animated_scene.blend"}"
 bpy.ops.wm.save_as_mainfile(filepath = output_file)
 
 print(f"Scene created and saved: {{output_file}}")
-"""
+""""""
 
     def _generate_render_script(self, config: BlenderRenderConfig, scene_file: Path) -> str:
         """Generate Blender script for rendering."""
-        return f"""
+        return f""""""
 
 import bpy
 import os
@@ -495,13 +510,14 @@ if scene.render.engine == 'CYCLES':
 print("Starting render...")
 bpy.ops.render.render(animation = True)
 print("Render completed!")
-"""
+""""""
 
     def _generate_export_script(
         self, project_dir: Path, export_dir: Path, export_format: str
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate Blender script for exporting to DaVinci Resolve."""
-        return f"""
+        return f""""""
 
 import bpy
 import os
@@ -522,17 +538,19 @@ elif "{export_format}" == "fbx":
         filepath = r"{export_dir/"scene_objects.fbx"}",
             use_selection = False,
             use_active_collection = False
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 elif "{export_format}" == "alembic":
     # Export as Alembic for DaVinci Resolve
     bpy.ops.wm.alembic_export(
         filepath = r"{export_dir/"scene_animation.abc"}",
             selected = False
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 print(f"Export completed to: {export_dir}")
-"""
+""""""
 
     async def _execute_blender_script(self, script_path: Path, project_dir: Path) -> Dict[str, Any]:
         """Execute a Blender script."""
@@ -545,7 +563,8 @@ print(f"Export completed to: {export_dir}")
                 capture_output=True,
                 text=True,
                 timeout=300,  # 5 minute timeout
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode == 0:
                 return {"success": True, "output": result.stdout}
@@ -570,7 +589,8 @@ print(f"Export completed to: {export_dir}")
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Monitor progress (simplified)
             while process.poll() is None:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Linly - Talker Realistic Configuration
 Optimized settings for achieving 100% realistic avatar generation without additional costs.
 
@@ -13,7 +13,7 @@ realism through:
 
 Author: TRAE.AI Production System
 Version: 1.0.0
-"""
+""""""
 
 from typing import Any, Dict
 
@@ -21,7 +21,8 @@ from backend.content.animate_avatar import (
     AnimationConfig,
     AnimationQuality,
     EmotionType,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 class RealisticLinlyConfig:
@@ -56,7 +57,8 @@ class RealisticLinlyConfig:
             enable_caching=True,
             max_cache_size=50,
             real_time_processing=False,  # Prioritize quality over speed
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     @staticmethod
     def get_conversational_config() -> AnimationConfig:
@@ -85,7 +87,8 @@ class RealisticLinlyConfig:
     @staticmethod
     def get_expressive_config(
         emotion: EmotionType = EmotionType.HAPPY,
-    ) -> AnimationConfig:
+# BRACKET_SURGEON: disabled
+#     ) -> AnimationConfig:
         """Get configuration for expressive/emotional content."""
         config = RealisticLinlyConfig.get_ultra_realistic_config()
 
@@ -105,14 +108,15 @@ class RealisticOptimizations:
     def get_script_optimization_tips() -> Dict[str, str]:
         """Get tips for optimizing scripts for natural speech."""
         return {
-            "pacing": "Add natural pauses with commas \
-    and periods. Use '...' for longer pauses.",
+            "pacing": "Add natural pauses with commas \"
+#     and periods. Use '...' for longer pauses.",
             "filler_words": "Include natural filler words: 'so', 'you know', 'actually', 'well'",
-            "contractions": "Use contractions: 'don't', 'can't', 'we'll' instead of formal forms",
+            "contractions": "Use contractions: 'don't', 'can't', 'we'll' instead of formal forms",'
             "breathing": "Add breathing spaces: 'Hello... *pause* ...how are you today?'",
             "emphasis": "Use CAPS for emphasis on key words, but sparingly",
             "pronunciation": "Spell difficult words phonetically: 'Kah - reen' for 'Karine'",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     @staticmethod
     def get_image_preparation_tips() -> Dict[str, str]:
@@ -124,7 +128,8 @@ class RealisticOptimizations:
             "expression": "Start with neutral expression for best results",
             "background": "Clean, simple backgrounds work best",
             "quality": "Avoid blurry, pixelated, or heavily compressed images",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     @staticmethod
     def get_audio_optimization_tips() -> Dict[str, str]:
@@ -136,7 +141,8 @@ class RealisticOptimizations:
             "volume": "Maintain consistent volume levels",
             "format": "Use WAV or high - quality MP3 (320kbps)",
             "length": "Keep segments under 2 minutes for best processing",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     @staticmethod
     def get_post_processing_enhancements() -> Dict[str, Any]:
@@ -147,24 +153,29 @@ class RealisticOptimizations:
                 "type": "subtle_zoom",  # Gentle zoom in/out
                 "intensity": 0.02,  # Very subtle
                 "duration": 10,  # 10 - second cycles
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "lighting_simulation": {
                 "enabled": True,
                 "type": "soft_shadows",
                 "intensity": 0.15,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "background_audio": {
                 "enabled": True,
                 "type": "room_tone",
                 "volume": 0.05,  # Very quiet ambient sound
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "color_grading": {
                 "enabled": True,
                 "warmth": 1.05,  # Slightly warm
                 "contrast": 1.02,  # Subtle contrast boost
                 "saturation": 0.98,  # Slightly desaturated for realism
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
 
 class RealisticWorkflow:
@@ -181,8 +192,10 @@ class RealisticWorkflow:
                     "Ensure good lighting and clear facial features",
                     "Use front - facing or slight angle",
                     "Clean background preferred",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             "step_2_script": {
                 "title": "Optimize Script for Natural Speech",
                 "actions": [
@@ -190,8 +203,10 @@ class RealisticWorkflow:
                     "Include conversational filler words",
                     "Use contractions and natural language",
                     "Keep segments under 2 minutes",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             "step_3_audio": {
                 "title": "Generate or Prepare High - Quality Audio",
                 "actions": [
@@ -199,8 +214,10 @@ class RealisticWorkflow:
                     "Maintain consistent volume",
                     "Add subtle room tone background",
                     "Export as WAV or high - quality MP3",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             "step_4_generation": {
                 "title": "Generate Avatar with Optimal Settings",
                 "actions": [
@@ -208,8 +225,10 @@ class RealisticWorkflow:
                     "Enable all enhancement features",
                     "Set quality to ULTRA",
                     "Use GPU acceleration if available",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             "step_5_post_processing": {
                 "title": "Apply Camera - Like Post - Processing",
                 "actions": [
@@ -217,9 +236,12 @@ class RealisticWorkflow:
                     "Apply soft lighting simulation",
                     "Include background room tone",
                     "Apply natural color grading",
-                ],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     @staticmethod
     def get_quality_checklist() -> Dict[str, bool]:
@@ -235,7 +257,8 @@ class RealisticWorkflow:
             "no_artifacts": False,  # Verify no visual glitches
             "natural_pacing": False,  # Check speech pacing
             "professional_output": False,  # Overall professional quality
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Example usage configurations
@@ -245,7 +268,8 @@ REALISTIC_CONFIGS = {
     "professional": RealisticLinlyConfig.get_professional_config(),
     "expressive_happy": RealisticLinlyConfig.get_expressive_config(EmotionType.HAPPY),
     "expressive_neutral": RealisticLinlyConfig.get_expressive_config(EmotionType.NEUTRAL),
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # Export for easy import
 __all__ = [
@@ -253,4 +277,5 @@ __all__ = [
     "RealisticOptimizations",
     "RealisticWorkflow",
     "REALISTIC_CONFIGS",
-]
+# BRACKET_SURGEON: disabled
+# ]

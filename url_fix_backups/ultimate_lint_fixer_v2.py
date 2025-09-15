@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 ULTIMATE LINT FIXER FOR TRAE.AI v2.0
 Maxed out Python linting fix that handles ALL common PEP8 / flake8 violations + log noise cleanup.
 Run this once and watch your codebase become pristine.
-"""
+""""""
 
 import os
 import re
@@ -19,12 +19,14 @@ SKIP_DIRS = {
     'node_modules', '__pycache__', '.git', '.pytest_cache',
     'build', 'dist', '.tox', 'site - packages', '.mypy_cache',
     'htmlcov', '.coverage', 'eggs', '*.egg - info'
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # File patterns to skip
 SKIP_FILES = {
     '__pycache__', '.pyc', '.pyo', '.pyd', '.so', '.egg'
-}
+# BRACKET_SURGEON: disabled
+# }
 
 class UltimateLintFixer:
     def __init__(self, root_dir: str = "."):
@@ -61,8 +63,12 @@ class UltimateLintFixer:
         for tool in tools:
             try:
                 subprocess.run([sys.executable, '-m', 'pip', 'install', '--upgrade',
-    tool],
-                             check = True, capture_output = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     tool],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                              check = True, capture_output = True)
                 print(f"✅ {tool} ready")
             except subprocess.CalledProcessError:
                 print(f"⚠️  Could not install {tool}, continuing without it")
@@ -105,7 +111,9 @@ class UltimateLintFixer:
             (r'(\\w)=(\\w)', r'\\1 = \\2'),  # a = b -> a = b
             (r'(\\w)\\+(\\w)', r'\\1 + \\2'),  # a + b -> a + b
             (r'(\\w)-(\\w)',
-    r'\\1 - \\2'),   # a - b -> a - b (careful with negative numbers)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     r'\\1 - \\2'),   # a - b -> a - b (careful with negative numbers)
             (r'(\\w)\\*(\\w)', r'\\1 * \\2'),  # a * b -> a * b
             (r'(\\w)/(\\w)', r'\\1 / \\2'),   # a / b -> a / b
             (r'(\\w)%(\\w)', r'\\1 % \\2'),   # a % b -> a % b
@@ -115,7 +123,9 @@ class UltimateLintFixer:
             (r'(\\w)!=(\\w)', r'\\1 != \\2'), # a != b -> a != b
             (r'(\\w)<=(\\w)', r'\\1 <= \\2'), # a <= b -> a <= b
             (r'(\\w)>=(\\w)', r'\\1 >= \\2'), # a >= b -> a >= b
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for pattern, replacement in patterns:
             content = re.sub(pattern, replacement, content)
@@ -197,7 +207,9 @@ class UltimateLintFixer:
     def fix_string_issues(self, content: str) -> str:
         """Fix string - related issues."""
         # Fix invalid escape sequences (common ones)
-        content = re.sub(r'\\\\(?![\\\\\\'\\\\"]nrtbfav0])', r'\\\\\\\\', content)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         content = re.sub(r'\\\\(?![\\\\\\'\\\\"]nrtbfav0])', r'\\\\\\\\', content)
 
         return content
 
@@ -230,10 +242,11 @@ class UltimateLintFixer:
             stripped = line.strip()
 
             # Skip repetitive health check logs
-            if ('GET /health HTTP / 1.1" 200 OK' in stripped or
+            if ('GET /health HTTP / 1.1" 200 OK' in stripped or"
                 'GET /affiliate - credentials' in stripped or
                 'GET /%40vite / client' in stripped or
-                'GET /api / status' in stripped):
+# BRACKET_SURGEON: disabled
+#                 'GET /api / status' in stripped):
                 continue
 
             # Skip IDE webview request logs
@@ -274,7 +287,9 @@ class UltimateLintFixer:
                 '--line - length', '88',
                 '--quiet',
                 str(file_path)
-            ], capture_output = True, text = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ], capture_output = True, text = True)
             return result.returncode == 0
         except Exception:
             return False
@@ -289,7 +304,9 @@ class UltimateLintFixer:
                 '--aggressive',
                 '--max - line - length', '88',
                 str(file_path)
-            ], capture_output = True, text = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ], capture_output = True, text = True)
             return result.returncode == 0
         except Exception:
             return False
@@ -303,7 +320,9 @@ class UltimateLintFixer:
                 '--line - length', '88',
                 '--quiet',
                 str(file_path)
-            ], capture_output = True, text = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ], capture_output = True, text = True)
             return result.returncode == 0
         except Exception:
             return False
@@ -402,7 +421,9 @@ def main():
     parser = argparse.ArgumentParser(description='Ultimate Python lint fixer for trae.ai v2.0')
     parser.add_argument('--dir',
     default='.',
-    help='Directory to process (default: current)')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     help='Directory to process (default: current)')
     args = parser.parse_args()
 
     fixer = UltimateLintFixer(args.dir)

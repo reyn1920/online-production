@@ -21,8 +21,8 @@ class _near_far_from_aabb(Function):
     @staticmethod
     @custom_fwd(cast_inputs=torch.float32)
     def forward(ctx, rays_o, rays_d, aabb, min_near=0.2):
-        """near_far_from_aabb, CUDA implementation
-        Calculate rays' intersection time (near and far) with aabb
+        """near_far_from_aabb, CUDA implementation"""
+        Calculate rays' intersection time (near and far) with aabb'
         Args:
             rays_o: float, [N, 3]
             rays_d: float, [N, 3]
@@ -31,7 +31,7 @@ class _near_far_from_aabb(Function):
         Returns:
             nears: float, [N]
             fars: float, [N]
-        """
+        """"""
         if not rays_o.is_cuda:
             rays_o = rays_o.cuda()
         if not rays_d.is_cuda:
@@ -57,7 +57,7 @@ class _sph_from_ray(Function):
     @staticmethod
     @custom_fwd(cast_inputs=torch.float32)
     def forward(ctx, rays_o, rays_d, radius):
-        """sph_from_ray, CUDA implementation
+        """sph_from_ray, CUDA implementation"""
         get spherical coordinate on the background sphere from rays.
         Assume rays_o are inside the Sphere(radius).
         Args:
@@ -66,7 +66,7 @@ class _sph_from_ray(Function):
             radius: scalar, float
         Return:
             coords: [N, 2], in [-1, 1], theta and phi on a sphere. (further - surface)
-        """
+        """"""
         if not rays_o.is_cuda:
             rays_o = rays_o.cuda()
         if not rays_d.is_cuda:
@@ -90,10 +90,11 @@ sph_from_ray = _sph_from_ray.apply
 class _morton3D(Function):
     @staticmethod
     def forward(ctx, coords):
-        """morton3D, CUDA implementation
+        """morton3D, CUDA implementation"""
             Args:
                 coords: [N,
-        3],
+# BRACKET_SURGEON: disabled
+#         3],
         int32,
         in [0,
         128) (for some reason there is no uint32 tensor in torch...)
@@ -101,7 +102,7 @@ class _morton3D(Function):
             Returns:
                 indices: [N], int32, in [0, 128^3)
 
-        """
+        """"""
         if not coords.is_cuda:
             coords = coords.cuda()
 
@@ -120,13 +121,13 @@ morton3D = _morton3D.apply
 class _morton3D_invert(Function):
     @staticmethod
     def forward(ctx, indices):
-        """morton3D_invert, CUDA implementation
+        """morton3D_invert, CUDA implementation"""
         Args:
             indices: [N], int32, in [0, 128^3)
         Returns:
             coords: [N, 3], int32, in [0, 128)
 
-        """
+        """"""
         if not indices.is_cuda:
             indices = indices.cuda()
 
@@ -146,14 +147,14 @@ class _packbits(Function):
     @staticmethod
     @custom_fwd(cast_inputs=torch.float32)
     def forward(ctx, grid, thresh, bitfield=None):
-        """packbits, CUDA implementation
+        """packbits, CUDA implementation"""
         Pack up the density grid into a bit field to accelerate ray marching.
         Args:
             grid: float, [C, H * H * H], assume H % 2 == 0
             thresh: float, threshold
         Returns:
             bitfield: uint8, [C, H * H * H / 8]
-        """
+        """"""
         if not grid.is_cuda:
             grid = grid.cuda()
         grid = grid.contiguous()
@@ -177,13 +178,13 @@ class _morton3D_dilation(Function):
     @staticmethod
     @custom_fwd(cast_inputs=torch.float32)
     def forward(ctx, grid):
-        """max pooling with morton coord, CUDA implementation
-        or maybe call it dilation... we don't support adjust kernel size.
+        """max pooling with morton coord, CUDA implementation"""
+        or maybe call it dilation... we don't support adjust kernel size.'
         Args:
             grid: float, [C, H * H * H], assume H % 2 == 0
         Returns:
             grid_dilate: float, [C, H * H * H], assume H % 2 == 0bitfield: uint8, [C, H * H * H / 8]
-        """
+        """"""
         if not grid.is_cuda:
             grid = grid.cuda()
         grid = grid.contiguous()
@@ -225,8 +226,9 @@ class _march_rays_train(Function):
         force_all_rays=False,
         dt_gamma=0,
         max_steps=1024,
-    ):
-        """march rays to generate points (forward only)
+# BRACKET_SURGEON: disabled
+#     ):
+        """march rays to generate points (forward only)"""
         Args:
             rays_o / d: float, [N, 3]
             bound: float, scalar
@@ -241,31 +243,37 @@ class _march_rays_train(Function):
             perturb: bool
             align: int, pad output so its size is dividable by align, set to -1 to disable.
             force_all_rays: bool, ignore step_counter \
-    and mean_count, always calculate all rays. Useful if rendering the whole image, instead of some rays.
+#     and mean_count, always calculate all rays. Useful if rendering the whole image, instead of some rays.
             dt_gamma: float,
     called cone_angle in instant - ngp,
     exponentially accelerate ray marching if > 0. (very significant effect,
-    but generally lead to worse performance)
+# BRACKET_SURGEON: disabled
+#     but generally lead to worse performance)
             max_steps: int, max number of sampled points along each ray, also affect min_stepsize.
         Returns:
             xyzs: float, [M,
-    3],
-    all generated points' coords. (all rays concated,
-    need to use `rays` to extract points belonging to each ray)
-            dirs: float, [M, 3], all generated points' view dirs.
+# BRACKET_SURGEON: disabled
+#     3],
+    all generated points' coords. (all rays concated,'
+# BRACKET_SURGEON: disabled
+#     need to use `rays` to extract points belonging to each ray)
+            dirs: float, [M, 3], all generated points' view dirs.'
             deltas: float, [M, 2], first is delta_t, second is rays_t
             rays: int32, [N,
-    3],
-    all rays' (index,
+# BRACKET_SURGEON: disabled
+#     3],
+    all rays' (index,'
     point_offset,
-    point_count),
+# BRACKET_SURGEON: disabled
+#     point_count),
     e.g.,
     xyzs[rays[i,
     1]:rays[i,
     1] + rays[i,
     2]] --> points belonging to rays[i,
-    0]
-        """
+# BRACKET_SURGEON: disabled
+#     0]
+        """"""
 
         if not rays_o.is_cuda:
             rays_o = rays_o.cuda()
@@ -296,7 +304,8 @@ class _march_rays_train(Function):
         if step_counter is None:
             step_counter = torch.zeros(
                 2, dtype=torch.int32, device=rays_o.device
-            )  # point counter, ray counter
+# BRACKET_SURGEON: disabled
+#             )  # point counter, ray counter
 
         if perturb:
             noises = torch.rand(N, dtype=rays_o.dtype, device=rays_o.device)
@@ -322,7 +331,8 @@ class _march_rays_train(Function):
             rays,
             step_counter,
             noises,
-        )  # m is the actually used points number
+# BRACKET_SURGEON: disabled
+#         )  # m is the actually used points number
 
         # print(step_counter, M)
 
@@ -357,7 +367,8 @@ class _march_rays_train(Function):
 
         _backend.march_rays_train_backward(
             grad_xyzs, grad_dirs, rays, deltas, N, M, grad_rays_o, grad_rays_d
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return (
             grad_rays_o,
@@ -375,7 +386,8 @@ class _march_rays_train(Function):
             None,
             None,
             None,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 march_rays_train = _march_rays_train.apply
@@ -385,7 +397,7 @@ class _composite_rays_train(Function):
     @staticmethod
     @custom_fwd(cast_inputs=torch.float32)
     def forward(ctx, sigmas, rgbs, ambient, deltas, rays, T_thresh=1e-4):
-        """composite rays' rgbs, according to the ray marching formula.
+        """composite rays' rgbs, according to the ray marching formula."""
         Args:
             rgbs: float, [M, 3]
             sigmas: float, [M,]
@@ -396,7 +408,7 @@ class _composite_rays_train(Function):
             weights_sum: float, [N,], the alpha channel
             depth: float, [N, ], the Depth
             image: float, [N, 3], the RGB channel (after multiplying alpha!)
-        """
+        """"""
 
         sigmas = sigmas.contiguous()
         rgbs = rgbs.contiguous()
@@ -423,11 +435,13 @@ class _composite_rays_train(Function):
             ambient_sum,
             depth,
             image,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         ctx.save_for_backward(
             sigmas, rgbs, ambient, deltas, rays, weights_sum, ambient_sum, depth, image
-        )
+# BRACKET_SURGEON: disabled
+#         )
         ctx.dims = [M, N, T_thresh]
 
         return weights_sum, ambient_sum, depth, image
@@ -451,7 +465,8 @@ class _composite_rays_train(Function):
             ambient_sum,
             depth,
             image,
-        ) = ctx.saved_tensors
+# BRACKET_SURGEON: disabled
+#         ) = ctx.saved_tensors
         M, N, T_thresh = ctx.dims
 
         grad_sigmas = torch.zeros_like(sigmas)
@@ -476,7 +491,8 @@ class _composite_rays_train(Function):
             grad_sigmas,
             grad_rgbs,
             grad_ambient,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return grad_sigmas, grad_rgbs, grad_ambient, None, None, None
 
@@ -509,15 +525,17 @@ class _march_rays(Function):
         perturb=False,
         dt_gamma=0,
         max_steps=1024,
-    ):
-        """march rays to generate points (forward only, for inference)
+# BRACKET_SURGEON: disabled
+#     ):
+        """march rays to generate points (forward only, for inference)"""
             Args:
                 n_alive: int, number of alive rays
                 n_step: int, how many steps we march
                 rays_alive: int, [N],
-        the alive rays' IDs in N (N >= n_alive,
-        but we only use first n_alive)
-                rays_t: float, [N], the alive rays' time, we only use the first n_alive.
+        the alive rays' IDs in N (N >= n_alive,'
+# BRACKET_SURGEON: disabled
+#         but we only use first n_alive)
+                rays_t: float, [N], the alive rays' time, we only use the first n_alive.'
                 rays_o / d: float, [N, 3]
                 bound: float, scalar
                 density_bitfield: uint8: [CHHH // 8]
@@ -529,17 +547,20 @@ class _march_rays(Function):
                 dt_gamma: float,
         called cone_angle in instant - ngp,
         exponentially accelerate ray marching if > 0. (very significant effect,
-        but generally lead to worse performance)
+# BRACKET_SURGEON: disabled
+#         but generally lead to worse performance)
                 max_steps: int, max number of sampled points along each ray, also affect min_stepsize.
             Returns:
-                xyzs: float, [n_alive * n_step, 3], all generated points' coords
-                dirs: float, [n_alive * n_step, 3], all generated points' view dirs.
+                xyzs: float, [n_alive * n_step, 3], all generated points' coords'
+                dirs: float, [n_alive * n_step, 3], all generated points' view dirs.'
                 deltas: float, [n_alive * n_step,
-        2],
-        all generated points' deltas (here we record two deltas,
+# BRACKET_SURGEON: disabled
+#         2],
+        all generated points' deltas (here we record two deltas,'
         the first is for RGB,
-        the second for depth).
-        """
+# BRACKET_SURGEON: disabled
+#         the second for depth).
+        """"""
 
         if not rays_o.is_cuda:
             rays_o = rays_o.cuda()
@@ -558,7 +579,8 @@ class _march_rays(Function):
         dirs = torch.zeros(M, 3, dtype=rays_o.dtype, device=rays_o.device)
         deltas = torch.zeros(
             M, 2, dtype=rays_o.dtype, device=rays_o.device
-        )  # 2 vals, one for rgb, one for depth
+# BRACKET_SURGEON: disabled
+#         )  # 2 vals, one for rgb, one for depth
 
         if perturb:
             # torch.manual_seed(perturb) # test_gui uses spp index as seed
@@ -585,7 +607,8 @@ class _march_rays(Function):
             dirs,
             deltas,
             noises,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return xyzs, dirs, deltas
 
@@ -609,25 +632,28 @@ class _composite_rays(Function):
         depth,
         image,
         T_thresh=1e-2,
-    ):
-        """composite rays' rgbs, according to the ray marching formula. (for inference)
+# BRACKET_SURGEON: disabled
+#     ):
+        """composite rays' rgbs, according to the ray marching formula. (for inference)"""
             Args:
                 n_alive: int, number of alive rays
                 n_step: int, how many steps we march
-                rays_alive: int, [n_alive], the alive rays' IDs in N (N >= n_alive)
-                rays_t: float, [N], the alive rays' time
+                rays_alive: int, [n_alive], the alive rays' IDs in N (N >= n_alive)'
+                rays_t: float, [N], the alive rays' time'
                 sigmas: float, [n_alive * n_step,]
                 rgbs: float, [n_alive * n_step, 3]
                 deltas: float, [n_alive * n_step,
-        2],
-        all generated points' deltas (here we record two deltas,
+# BRACKET_SURGEON: disabled
+#         2],
+        all generated points' deltas (here we record two deltas,'
         the first is for RGB,
-        the second for depth).
+# BRACKET_SURGEON: disabled
+#         the second for depth).
             In - place Outputs:
                 weights_sum: float, [N,], the alpha channel
                 depth: float, [N,], the depth value
                 image: float, [N, 3], the RGB channel (after multiplying alpha!)
-        """
+        """"""
         _backend.composite_rays(
             n_alive,
             n_step,
@@ -640,7 +666,8 @@ class _composite_rays(Function):
             weights_sum,
             depth,
             image,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return tuple()
 
 
@@ -665,7 +692,8 @@ class _composite_rays_ambient(Function):
         image,
         ambient_sum,
         T_thresh=1e-2,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         _backend.composite_rays_ambient(
             n_alive,
             n_step,
@@ -680,7 +708,8 @@ class _composite_rays_ambient(Function):
             depth,
             image,
             ambient_sum,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return tuple()
 
 
@@ -693,7 +722,7 @@ class _composite_rays_train_sigma(Function):
     @staticmethod
     @custom_fwd(cast_inputs=torch.float32)
     def forward(ctx, sigmas, rgbs, ambient, deltas, rays, T_thresh=1e-4):
-        """composite rays' rgbs, according to the ray marching formula.
+        """composite rays' rgbs, according to the ray marching formula."""
         Args:
             rgbs: float, [M, 3]
             sigmas: float, [M,]
@@ -704,7 +733,7 @@ class _composite_rays_train_sigma(Function):
             weights_sum: float, [N,], the alpha channel
             depth: float, [N, ], the Depth
             image: float, [N, 3], the RGB channel (after multiplying alpha!)
-        """
+        """"""
 
         sigmas = sigmas.contiguous()
         rgbs = rgbs.contiguous()
@@ -731,11 +760,13 @@ class _composite_rays_train_sigma(Function):
             ambient_sum,
             depth,
             image,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         ctx.save_for_backward(
             sigmas, rgbs, ambient, deltas, rays, weights_sum, ambient_sum, depth, image
-        )
+# BRACKET_SURGEON: disabled
+#         )
         ctx.dims = [M, N, T_thresh]
 
         return weights_sum, ambient_sum, depth, image
@@ -759,7 +790,8 @@ class _composite_rays_train_sigma(Function):
             ambient_sum,
             depth,
             image,
-        ) = ctx.saved_tensors
+# BRACKET_SURGEON: disabled
+#         ) = ctx.saved_tensors
         M, N, T_thresh = ctx.dims
 
         grad_sigmas = torch.zeros_like(sigmas)
@@ -784,7 +816,8 @@ class _composite_rays_train_sigma(Function):
             grad_sigmas,
             grad_rgbs,
             grad_ambient,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return grad_sigmas, grad_rgbs, grad_ambient, None, None, None
 
@@ -810,7 +843,8 @@ class _composite_rays_ambient_sigma(Function):
         image,
         ambient_sum,
         T_thresh=1e-2,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         _backend.composite_rays_ambient_sigma(
             n_alive,
             n_step,
@@ -825,7 +859,8 @@ class _composite_rays_ambient_sigma(Function):
             depth,
             image,
             ambient_sum,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return tuple()
 
 
@@ -838,7 +873,7 @@ class _composite_rays_train_uncertainty(Function):
     @staticmethod
     @custom_fwd(cast_inputs=torch.float32)
     def forward(ctx, sigmas, rgbs, ambient, uncertainty, deltas, rays, T_thresh=1e-4):
-        """composite rays' rgbs, according to the ray marching formula.
+        """composite rays' rgbs, according to the ray marching formula."""
         Args:
             rgbs: float, [M, 3]
             sigmas: float, [M,]
@@ -849,7 +884,7 @@ class _composite_rays_train_uncertainty(Function):
             weights_sum: float, [N,], the alpha channel
             depth: float, [N, ], the Depth
             image: float, [N, 3], the RGB channel (after multiplying alpha!)
-        """
+        """"""
 
         sigmas = sigmas.contiguous()
         rgbs = rgbs.contiguous()
@@ -880,7 +915,8 @@ class _composite_rays_train_uncertainty(Function):
             uncertainty_sum,
             depth,
             image,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         ctx.save_for_backward(
             sigmas,
@@ -894,7 +930,8 @@ class _composite_rays_train_uncertainty(Function):
             uncertainty_sum,
             depth,
             image,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         ctx.dims = [M, N, T_thresh]
 
         return weights_sum, ambient_sum, uncertainty_sum, depth, image
@@ -908,7 +945,8 @@ class _composite_rays_train_uncertainty(Function):
         grad_uncertainty_sum,
         grad_depth,
         grad_image,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         # NOTE: grad_depth is not used now! It won't be propagated to sigmas.
 
         grad_weights_sum = grad_weights_sum.contiguous()
@@ -928,7 +966,8 @@ class _composite_rays_train_uncertainty(Function):
             uncertainty_sum,
             depth,
             image,
-        ) = ctx.saved_tensors
+# BRACKET_SURGEON: disabled
+#         ) = ctx.saved_tensors
         M, N, T_thresh = ctx.dims
 
         grad_sigmas = torch.zeros_like(sigmas)
@@ -958,7 +997,8 @@ class _composite_rays_train_uncertainty(Function):
             grad_rgbs,
             grad_ambient,
             grad_uncertainty,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return grad_sigmas, grad_rgbs, grad_ambient, grad_uncertainty, None, None, None
 
@@ -986,7 +1026,8 @@ class _composite_rays_uncertainty(Function):
         ambient_sum,
         uncertainty_sum,
         T_thresh=1e-2,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         _backend.composite_rays_uncertainty(
             n_alive,
             n_step,
@@ -1003,7 +1044,8 @@ class _composite_rays_uncertainty(Function):
             image,
             ambient_sum,
             uncertainty_sum,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return tuple()
 
 
@@ -1016,7 +1058,7 @@ class _composite_rays_train_triplane(Function):
     @staticmethod
     @custom_fwd(cast_inputs=torch.float32)
     def forward(ctx, sigmas, rgbs, amb_aud, amb_eye, uncertainty, deltas, rays, T_thresh=1e-4):
-        """composite rays' rgbs, according to the ray marching formula.
+        """composite rays' rgbs, according to the ray marching formula."""
         Args:
             rgbs: float, [M, 3]
             sigmas: float, [M,]
@@ -1027,7 +1069,7 @@ class _composite_rays_train_triplane(Function):
             weights_sum: float, [N,], the alpha channel
             depth: float, [N, ], the Depth
             image: float, [N, 3], the RGB channel (after multiplying alpha!)
-        """
+        """"""
 
         sigmas = sigmas.contiguous()
         rgbs = rgbs.contiguous()
@@ -1062,7 +1104,8 @@ class _composite_rays_train_triplane(Function):
             uncertainty_sum,
             depth,
             image,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         ctx.save_for_backward(
             sigmas,
@@ -1078,7 +1121,8 @@ class _composite_rays_train_triplane(Function):
             uncertainty_sum,
             depth,
             image,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         ctx.dims = [M, N, T_thresh]
 
         return weights_sum, amb_aud_sum, amb_eye_sum, uncertainty_sum, depth, image
@@ -1093,7 +1137,8 @@ class _composite_rays_train_triplane(Function):
         grad_uncertainty_sum,
         grad_depth,
         grad_image,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         # NOTE: grad_depth is not used now! It won't be propagated to sigmas.
 
         grad_weights_sum = grad_weights_sum.contiguous()
@@ -1116,7 +1161,8 @@ class _composite_rays_train_triplane(Function):
             uncertainty_sum,
             depth,
             image,
-        ) = ctx.saved_tensors
+# BRACKET_SURGEON: disabled
+#         ) = ctx.saved_tensors
         M, N, T_thresh = ctx.dims
 
         grad_sigmas = torch.zeros_like(sigmas)
@@ -1151,7 +1197,8 @@ class _composite_rays_train_triplane(Function):
             grad_amb_aud,
             grad_amb_eye,
             grad_uncertainty,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return (
             grad_sigmas,
@@ -1162,7 +1209,8 @@ class _composite_rays_train_triplane(Function):
             None,
             None,
             None,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 composite_rays_train_triplane = _composite_rays_train_triplane.apply
@@ -1190,7 +1238,8 @@ class _composite_rays_triplane(Function):
         amb_eye_sum,
         uncertainty_sum,
         T_thresh=1e-2,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         _backend.composite_rays_triplane(
             n_alive,
             n_step,
@@ -1209,7 +1258,8 @@ class _composite_rays_triplane(Function):
             amb_aud_sum,
             amb_eye_sum,
             uncertainty_sum,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return tuple()
 
 

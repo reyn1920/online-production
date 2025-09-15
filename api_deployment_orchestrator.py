@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Deployment Orchestrator
 Complete lifecycle management for 100+ APIs
 
@@ -13,7 +13,7 @@ Features:
 
 Usage:
     python api_deployment_orchestrator.py
-"""
+""""""
 
 import asyncio
 import json
@@ -36,7 +36,9 @@ logging.basicConfig(
     level = logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
         handlers=[logging.FileHandler("api_orchestrator.log"), logging.StreamHandler()],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -107,24 +109,29 @@ class APIDeploymentOrchestrator:
                     "rollback_on_failure": True,
                     "health_check_interval": 300,  # 5 minutes
                 "cost_limit_daily": 50.0,  # USD
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 "phases": {
                 1: {"name": "Critical APIs", "max_failures": 0},
                     2: {"name": "Core APIs", "max_failures": 1},
                     3: {"name": "Enhanced APIs", "max_failures": 2},
                     4: {"name": "Optional APIs", "max_failures": 5},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "environments": {
                 "development": {"url": "http://localhost:8000", "auto_deploy": True},
                     "staging": {"url": "https://staging.example.com", "auto_deploy": False},
                     "production": {"url": "https://api.example.com", "auto_deploy": False},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "notifications": {
                 "slack_webhook": None,
                     "email_alerts": [],
                     "discord_webhook": None,
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         try:
             with open(config_file, "r") as f:
@@ -153,7 +160,8 @@ class APIDeploymentOrchestrator:
                     duration = None,
                     logs=[],
                     error = None,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 DeploymentStage(
                 name="API Registration",
                     status="pending",
@@ -162,7 +170,8 @@ class APIDeploymentOrchestrator:
                     duration = None,
                     logs=[],
                     error = None,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 DeploymentStage(
                 name="Integration Testing",
                     status="pending",
@@ -171,7 +180,8 @@ class APIDeploymentOrchestrator:
                     duration = None,
                     logs=[],
                     error = None,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 DeploymentStage(
                 name="Security Validation",
                     status="pending",
@@ -180,7 +190,8 @@ class APIDeploymentOrchestrator:
                     duration = None,
                     logs=[],
                     error = None,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 DeploymentStage(
                 name="Performance Testing",
                     status="pending",
@@ -189,7 +200,8 @@ class APIDeploymentOrchestrator:
                     duration = None,
                     logs=[],
                     error = None,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 DeploymentStage(
                 name="Production Deployment",
                     status="pending",
@@ -198,7 +210,8 @@ class APIDeploymentOrchestrator:
                     duration = None,
                     logs=[],
                     error = None,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 DeploymentStage(
                 name="Health Verification",
                     status="pending",
@@ -207,8 +220,11 @@ class APIDeploymentOrchestrator:
                     duration = None,
                     logs=[],
                     error = None,
-                    ),
-                ]
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     def execute_stage(self, deployment: APIDeployment, stage_index: int) -> bool:
@@ -259,13 +275,16 @@ class APIDeploymentOrchestrator:
             stage.logs.append(f"💥 Exception in {stage.name}: {str(e)}")
             logger.error(
                 f"Stage {stage.name} failed for {deployment.api_name}: {str(e)}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return False
 
 
     def execute_preflight_check(
         self, deployment: APIDeployment, stage: DeploymentStage
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Execute pre - flight checks"""
         stage.logs.append("🔍 Starting pre - flight checks...")
 
@@ -312,7 +331,8 @@ class APIDeploymentOrchestrator:
 
     def execute_api_registration(
         self, deployment: APIDeployment, stage: DeploymentStage
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Execute API registration"""
         stage.logs.append("🚀 Starting API registration...")
 
@@ -339,7 +359,8 @@ class APIDeploymentOrchestrator:
 
     def execute_integration_testing(
         self, deployment: APIDeployment, stage: DeploymentStage
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Execute integration testing"""
         stage.logs.append("🧪 Starting integration testing...")
 
@@ -361,7 +382,9 @@ class APIDeploymentOrchestrator:
                 else:
                     stage.logs.append(
                         f"❌ Integration test failed: {result.error_message}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return False
             else:
                 stage.logs.append("❌ No test result returned")
@@ -374,7 +397,8 @@ class APIDeploymentOrchestrator:
 
     def execute_security_validation(
         self, deployment: APIDeployment, stage: DeploymentStage
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Execute security validation"""
         stage.logs.append("🔒 Starting security validation...")
 
@@ -413,7 +437,8 @@ class APIDeploymentOrchestrator:
 
     def execute_performance_testing(
         self, deployment: APIDeployment, stage: DeploymentStage
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Execute performance testing"""
         stage.logs.append("⚡ Starting performance testing...")
 
@@ -470,7 +495,8 @@ class APIDeploymentOrchestrator:
 
     def execute_production_deployment(
         self, deployment: APIDeployment, stage: DeploymentStage
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Execute production deployment"""
         stage.logs.append("🚀 Starting production deployment...")
 
@@ -502,7 +528,8 @@ class APIDeploymentOrchestrator:
 
     def execute_health_verification(
         self, deployment: APIDeployment, stage: DeploymentStage
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Execute health verification"""
         stage.logs.append("🏥 Starting health verification...")
 
@@ -535,7 +562,8 @@ class APIDeploymentOrchestrator:
                 "api_key": api_key,
                 "env_vars": {},
                 "config_files": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Capture current environment variables
 
@@ -617,7 +645,9 @@ class APIDeploymentOrchestrator:
                 deployment_time = None,
                 rollback_available = False,
                 health_score = 0,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.deployments[api_key] = deployment
 
@@ -659,7 +689,8 @@ class APIDeploymentOrchestrator:
             future_to_api = {
                 executor.submit(self.deploy_api, api_key): api_key
                 for api_key in phase_apis
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             for future in future_to_api:
                 try:
@@ -685,19 +716,25 @@ class APIDeploymentOrchestrator:
             phase_config = self.config["phases"][phase]
             failed_count = sum(
                 1 for d in phase_deployments if d.overall_status == "failed"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             max_failures = phase_config["max_failures"]
 
             if failed_count > max_failures:
                 logger.error(
                     f"Phase {phase} exceeded failure threshold: {failed_count}/{max_failures}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 logger.error("Stopping deployment pipeline")
                 break
             else:
                 logger.info(
                     f"Phase {phase} completed: {failed_count}/{max_failures} failures"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return all_deployments
 
@@ -736,32 +773,44 @@ class APIDeploymentOrchestrator:
         total_deployments = len(self.deployments)
         completed = sum(
             1 for d in self.deployments.values() if d.overall_status == "completed"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         failed = sum(
             1 for d in self.deployments.values() if d.overall_status == "failed"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         running = sum(
             1 for d in self.deployments.values() if d.overall_status == "running"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Phase breakdown
         phase_stats = {}
         for phase in [1, 2, 3, 4]:
             phase_deployments = [
                 d for d in self.deployments.values() if d.phase == phase
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             phase_stats[phase] = {
                 "total": len(phase_deployments),
                     "completed": sum(
                     1 for d in phase_deployments if d.overall_status == "completed"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "failed": sum(
                     1 for d in phase_deployments if d.overall_status == "failed"
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "running": sum(
                     1 for d in phase_deployments if d.overall_status == "running"
-                ),
-                    }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     }
 
         return {
             "summary": {
@@ -773,12 +822,15 @@ class APIDeploymentOrchestrator:
                     (completed/total_deployments * 100)
                     if total_deployments > 0
                     else 0
-                ),
-                    },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     },
                 "phase_breakdown": phase_stats,
                 "deployments": {k: asdict(v) for k, v in self.deployments.items()},
                 "generated_at": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def start_monitoring(self):
@@ -798,7 +850,9 @@ class APIDeploymentOrchestrator:
                             if health_score < 50:
                                 logger.warning(
                                     f"Low health score for {deployment.api_name}: {health_score}"
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                     # Sleep for configured interval
                     time.sleep(self.config["deployment"]["health_check_interval"])
@@ -852,10 +906,14 @@ class APIDeploymentOrchestrator:
                         deployments = self.deploy_phase(phase_num)
                         completed = sum(
                             1 for d in deployments if d.overall_status == "completed"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         print(
                             f"\\n📊 Phase {phase_num}: {completed}/{len(deployments)} successful"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     else:
                         print("❌ Invalid phase. Use 1 - 4")
                 except ValueError:
@@ -867,11 +925,15 @@ class APIDeploymentOrchestrator:
                 all_deployments = self.deploy_all_phases()
                 total = sum(
                     len(deployments) for deployments in all_deployments.values()
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 completed = sum(
                     sum(1 for d in deployments if d.overall_status == "completed")
                     for deployments in all_deployments.values()
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 print(f"\\n📊 Overall: {completed}/{total} successful")
                 input("\\nPress Enter to continue...")
 
@@ -887,7 +949,9 @@ class APIDeploymentOrchestrator:
                                 }.get(deployment.overall_status, "❓")
                         print(
                             f"  {status_emoji} {deployment.api_name}: {deployment.overall_status}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 else:
                     print("\\n📋 No deployments found")
                 input("\\nPress Enter to continue...")
@@ -896,13 +960,17 @@ class APIDeploymentOrchestrator:
                 report = self.generate_deployment_report()
                 filename = (
                     f"deployment_report_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 with open(filename, "w") as f:
                     json.dump(report, f, indent = 2)
                 print(f"\\n📄 Report saved to {filename}")
                 print(
                     f"📊 Summary: {report['summary']['completed']}/{report['summary']['total_deployments']} successful"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 input("\\nPress Enter to continue...")
 
             elif choice == "6":

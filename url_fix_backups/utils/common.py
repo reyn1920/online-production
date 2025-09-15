@@ -26,7 +26,7 @@ class Provider:
 
 
 def get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
-    """Get secret from environment variables.
+    """Get secret from environment variables."""
 
     Args:
         key: Environment variable name
@@ -34,7 +34,7 @@ def get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
 
     Returns:
         Secret value or default
-    """
+    """"""
     return os.getenv(key, default)
 
 
@@ -46,7 +46,7 @@ async def http_with_fallback(
     timeout: float = 10.0,
     **kwargs,
 ) -> Optional[dict]:
-    """Make HTTP request with error handling and fallback.
+    """Make HTTP request with error handling and fallback."""
 
     Args:
         url: Request URL
@@ -58,7 +58,7 @@ async def http_with_fallback(
 
     Returns:
         Response JSON or None on error
-    """
+    """"""
     try:
         async with httpx.AsyncClient(timeout=timeout) as client:
             if method.upper() == "GET":

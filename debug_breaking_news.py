@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 Debug script to isolate BreakingNewsWatcher initialization issues.
-"""
+""""""
 
 import logging
 import os

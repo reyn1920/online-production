@@ -6,7 +6,7 @@ from typeguard import check_argument_types
 
 
 def initialize(model: torch.nn.Module, init: str):
-    """Initialize weights of a neural network module.
+    """Initialize weights of a neural network module."""
 
     Parameters are initialized using the given method or distribution.
 
@@ -16,7 +16,7 @@ def initialize(model: torch.nn.Module, init: str):
     Args:
         model: Target.
         init: Method of initialization.
-    """
+    """"""
     assert check_argument_types()
     print("init with", init)
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 Auto Discovery Service
 
 Automatically researches and adds new APIs when marketing channels are added.
 Integrates web search, API discovery, and cost tracking services.
-"""
+""""""
 
 import json
 import logging
@@ -72,7 +72,8 @@ class AutoDiscoveryService:
                 preferred_pricing="freemium",
                 auto_discovery_enabled=True,
                 discovery_frequency_days=14,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "tiktok": ChannelProfile(
                 name="TikTok",
                 category="short_video",
@@ -81,7 +82,8 @@ class AutoDiscoveryService:
                 preferred_pricing="free",
                 auto_discovery_enabled=True,
                 discovery_frequency_days=7,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "instagram": ChannelProfile(
                 name="Instagram",
                 category="social_media",
@@ -90,7 +92,8 @@ class AutoDiscoveryService:
                 preferred_pricing="freemium",
                 auto_discovery_enabled=True,
                 discovery_frequency_days=10,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "email": ChannelProfile(
                 name="Email Marketing",
                 category="email",
@@ -99,7 +102,8 @@ class AutoDiscoveryService:
                 preferred_pricing="freemium",
                 auto_discovery_enabled=True,
                 discovery_frequency_days=30,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "sms": ChannelProfile(
                 name="SMS Marketing",
                 category="messaging",
@@ -108,8 +112,10 @@ class AutoDiscoveryService:
                 preferred_pricing="freemium",
                 auto_discovery_enabled=True,
                 discovery_frequency_days=21,
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     def _init_database(self):
         """Initialize the auto - discovery database."""
@@ -119,7 +125,7 @@ class AutoDiscoveryService:
 
                 # Channel profiles table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS channel_profiles (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             name TEXT UNIQUE NOT NULL,
@@ -132,13 +138,17 @@ class AutoDiscoveryService:
                             discovery_frequency_days INTEGER NOT NULL,
                             created_at TEXT NOT NULL,
                             updated_at TEXT NOT NULL
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Discovery history table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS discovery_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             channel TEXT NOT NULL,
@@ -148,13 +158,17 @@ class AutoDiscoveryService:
                             total_cost_estimate REAL,
                             discovery_data TEXT NOT NULL,
                             created_at TEXT NOT NULL
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # API recommendations table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS api_recommendations (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             channel TEXT NOT NULL,
@@ -166,9 +180,13 @@ class AutoDiscoveryService:
                             status TEXT DEFAULT 'pending',
                             created_at TEXT NOT NULL,
                             updated_at TEXT NOT NULL
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 conn.commit()
                 self.logger.info("Auto - discovery database initialized")
@@ -178,7 +196,8 @@ class AutoDiscoveryService:
 
     def add_channel(
         self, channel_name: str, custom_profile: Optional[ChannelProfile] = None
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Add a new channel and automatically discover APIs for it."""
         try:
             # Use custom profile or default
@@ -194,8 +213,11 @@ class AutoDiscoveryService:
                         budget_limit=25.0,
                         preferred_pricing="freemium",
                         auto_discovery_enabled=True,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Save profile to database
             self._save_channel_profile(profile)
@@ -204,13 +226,17 @@ class AutoDiscoveryService:
             if profile.auto_discovery_enabled:
                 self.logger.info(
                     f"Running initial API discovery for new channel: {channel_name}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 discovery_result = self.discover_apis_for_channel(channel_name)
 
                 if discovery_result:
                     self.logger.info(
                         f"Discovered {len(discovery_result.discovered_apis)} APIs for {channel_name}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return True
 
             return True
@@ -233,7 +259,9 @@ class AutoDiscoveryService:
             # Step 1: Web search for APIs
             discovered_apis = self.web_search.search_apis_for_channel(
                 channel_name.lower(), max_results=15
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Step 2: Use API discovery service for additional candidates
             additional_apis = self.api_discovery.discover_channel_apis(channel_name)
@@ -257,7 +285,9 @@ class AutoDiscoveryService:
                 discovery_timestamp=datetime.now(),
                 next_discovery_date=datetime.now()
                 + timedelta(days=profile.discovery_frequency_days),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Step 6: Save results
             self._save_discovery_result(discovery_result)
@@ -269,7 +299,9 @@ class AutoDiscoveryService:
 
             self.logger.info(
                 f"Discovery completed for {channel_name}: {len(recommended_apis)} recommended APIs"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return discovery_result
 
         except Exception as e:
@@ -286,7 +318,9 @@ class AutoDiscoveryService:
 
             self.logger.info(
                 f"Running scheduled discovery for {len(due_channels)} channels"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             for channel_name in due_channels:
                 result = self.discover_apis_for_channel(channel_name)
@@ -324,7 +358,8 @@ class AutoDiscoveryService:
                 continue
             elif (
                 profile.preferred_pricing == "freemium" and api.pricing_model == "paid"
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 continue
 
             # Calculate preference score
@@ -340,7 +375,8 @@ class AutoDiscoveryService:
 
     def _calculate_preference_score(
         self, api: APICandidate, profile: ChannelProfile
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate how well an API matches channel preferences."""
         score = 0.5  # Base score
 
@@ -354,11 +390,14 @@ class AutoDiscoveryService:
             "free": {"free": 0.3, "freemium": 0.1, "paid": 0.0},
             "freemium": {"free": 0.3, "freemium": 0.2, "paid": 0.1},
             "paid": {"free": 0.2, "freemium": 0.2, "paid": 0.2},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         score += pricing_scores.get(profile.preferred_pricing, {}).get(
             api.pricing_model, 0.0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return min(1.0, score)
 
@@ -369,18 +408,22 @@ class AutoDiscoveryService:
         analysis = {
             "total_free_apis": len(
                 [api for api in apis if api.pricing_model == "free"]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "total_freemium_apis": len(
                 [api for api in apis if api.pricing_model == "freemium"]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "total_paid_apis": len(
                 [api for api in apis if api.pricing_model == "paid"]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "estimated_monthly_cost": 0.0,
             "within_budget": True,
             "budget_limit": budget_limit,
             "cost_breakdown": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Estimate costs (simplified)
         for api in apis:
@@ -391,7 +434,9 @@ class AutoDiscoveryService:
 
                 cost_match = re.search(
                     r"\\$([0 - 9,]+(?:\\.[0 - 9]{2})?)", api.cost_estimate or ""
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if cost_match:
                     cost = float(cost_match.group(1).replace(",", ""))
                     analysis["estimated_monthly_cost"] += cost
@@ -400,8 +445,11 @@ class AutoDiscoveryService:
                             "api": api.name,
                             "cost": cost,
                             "pricing_model": api.pricing_model,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         analysis["within_budget"] = analysis["estimated_monthly_cost"] <= budget_limit
 
@@ -416,13 +464,15 @@ class AutoDiscoveryService:
                 now = datetime.now().isoformat()
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO channel_profiles
                     (name, category, priority_features, budget_limit, preferred_pricing,
                         auto_discovery_enabled, last_discovery_run, discovery_frequency_days,
-                         created_at, updated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          created_at, updated_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         profile.name,
                         profile.category,
@@ -434,12 +484,16 @@ class AutoDiscoveryService:
                             profile.last_discovery_run.isoformat()
                             if profile.last_discovery_run
                             else None
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         profile.discovery_frequency_days,
                         now,
                         now,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 conn.commit()
 
@@ -454,7 +508,9 @@ class AutoDiscoveryService:
 
                 cursor.execute(
                     "SELECT * FROM channel_profiles WHERE name = ?", (channel_name,)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 row = cursor.fetchone()
                 if row:
@@ -467,9 +523,12 @@ class AutoDiscoveryService:
                         auto_discovery_enabled=bool(row[6]),
                         last_discovery_run=(
                             datetime.fromisoformat(row[7]) if row[7] else None
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         discovery_frequency_days=row[8],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 return None
 
@@ -484,12 +543,14 @@ class AutoDiscoveryService:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO discovery_history
                     (channel, discovery_timestamp, apis_discovered, apis_recommended,
-                        total_cost_estimate, discovery_data, created_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         total_cost_estimate, discovery_data, created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         result.channel,
                         result.discovery_timestamp.isoformat(),
@@ -498,8 +559,11 @@ class AutoDiscoveryService:
                         result.cost_analysis.get("estimated_monthly_cost", 0.0),
                         json.dumps(asdict(result), default=str),
                         datetime.now().isoformat(),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 conn.commit()
 
@@ -516,12 +580,14 @@ class AutoDiscoveryService:
 
                 for api in result.recommended_apis[:5]:  # Save top 5 recommendations
                     cursor.execute(
-                        """
+                        """"""
                         INSERT OR REPLACE INTO api_recommendations
                         (channel, api_name, provider, pricing_model, quality_score,
-                            recommendation_reason, status, created_at, updated_at)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             recommendation_reason, status, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             result.channel,
                             api.name,
@@ -532,8 +598,11 @@ class AutoDiscoveryService:
                             "pending",
                             now,
                             now,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 conn.commit()
 
@@ -549,12 +618,14 @@ class AutoDiscoveryService:
                 now = datetime.now()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT name, last_discovery_run, discovery_frequency_days
                     FROM channel_profiles
                     WHERE auto_discovery_enabled = 1
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 due_channels = []
 
@@ -584,15 +655,17 @@ class AutoDiscoveryService:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT api_name, provider, pricing_model, quality_score,
                         recommendation_reason, status, created_at
                     FROM api_recommendations
                     WHERE channel = ?
                     ORDER BY quality_score DESC
-                """,
+                ""","""
                     (channel_name,),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 recommendations = []
                 for row in cursor.fetchall():
@@ -605,8 +678,11 @@ class AutoDiscoveryService:
                             "recommendation_reason": row[4],
                             "status": row[5],
                             "created_at": row[6],
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 return recommendations
 
@@ -627,7 +703,9 @@ class AutoDiscoveryService:
                 # Active channels
                 cursor.execute(
                     "SELECT COUNT(*) FROM channel_profiles WHERE auto_discovery_enabled = 1"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 active_channels = cursor.fetchone()[0]
 
                 # Total discoveries
@@ -640,11 +718,13 @@ class AutoDiscoveryService:
 
                 # Recent activity
                 cursor.execute(
-                    """
+                    """"""
                     SELECT COUNT(*) FROM discovery_history
                     WHERE created_at > datetime('now', '-7 days')
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 recent_discoveries = cursor.fetchone()[0]
 
                 return {
@@ -655,8 +735,10 @@ class AutoDiscoveryService:
                     "recent_discoveries": recent_discoveries,
                     "discovery_rate": (
                         recent_discoveries / 7 if recent_discoveries > 0 else 0
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             self.logger.error(f"Error getting discovery stats: {e}")
@@ -673,14 +755,18 @@ if __name__ == "__main__":
         "--action",
         choices=["add - channel", "discover", "scheduled", "stats", "recommendations"],
         required=True,
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--channel", help="Channel name")
     parser.add_argument("--budget", type=float, help="Budget limit for channel")
     parser.add_argument(
         "--pricing",
         choices=["free", "freemium", "paid"],
         help="Preferred pricing model",
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     args = parser.parse_args()
 
@@ -697,12 +783,16 @@ if __name__ == "__main__":
                 budget_limit=args.budget or 25.0,
                 preferred_pricing=args.pricing or "freemium",
                 auto_discovery_enabled=True,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         success = service.add_channel(args.channel, profile)
         print(
             f"Channel '{args.channel}' {'added successfully' if success else 'failed to add'}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     elif args.action == "discover" and args.channel:
         result = service.discover_apis_for_channel(args.channel)
@@ -711,18 +801,25 @@ if __name__ == "__main__":
             print(f"Discovered APIs: {len(result.discovered_apis)}")
             print(f"Recommended APIs: {len(result.recommended_apis)}")
             print(
-                f"Estimated Monthly Cost: ${result.cost_analysis.get('estimated_monthly_cost',
-    0):.2f}"
-            )
+                f"Estimated Monthly Cost: ${result.cost_analysis.get('estimated_monthly_cost',"
+# BRACKET_SURGEON: disabled
+#     0):.2f}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(
                 f"Within Budget: {result.cost_analysis.get('within_budget', 'Unknown')}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             print("\\nTop Recommendations:")
             for api in result.recommended_apis[:3]:
                 print(
                     f"  {api.name} ({api.provider}) - {api.pricing_model} - Score: {api.quality_score:.2f}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     elif args.action == "scheduled":
         results = service.run_scheduled_discovery()
@@ -742,7 +839,9 @@ if __name__ == "__main__":
         for rec in recommendations:
             print(
                 f"  {rec['api_name']} ({rec['provider']}) - {rec['pricing_model']} - Score: {rec['quality_score']:.2f}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     else:
         parser.print_help()

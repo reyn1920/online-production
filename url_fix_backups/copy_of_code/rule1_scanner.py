@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Rule - 1 Content Scanner and Enforcer
 
 This module provides comprehensive content scanning and enforcement capabilities
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import hashlib
 import json
@@ -67,27 +67,28 @@ class EnforcementResult:
 
 
 class Rule1DeepScanner:
-    """
+    """"""
     Deep content scanner for Rule - 1 compliance.
 
     Scans directories and files for forbidden terms and content patterns
     that violate platform guidelines or content policies.
-    """
+    """"""
 
     def __init__(
         self,
         forbidden_terms_db: str = "data / forbidden_terms.json",
         scan_results_db: str = "data / scan_results.sqlite",
         backup_dir: str = "data / backups",
-    ):
-        """
+# BRACKET_SURGEON: disabled
+#     ):
+        """"""
         Initialize the Rule - 1 Deep Scanner.
 
         Args:
             forbidden_terms_db: Path to forbidden terms database
             scan_results_db: Path to scan results SQLite database
             backup_dir: Directory for file backups
-        """
+        """"""
         self.logger = get_logger(__name__)
         self.forbidden_terms_db = Path(forbidden_terms_db)
         self.scan_results_db = Path(scan_results_db)
@@ -126,11 +127,13 @@ class Rule1DeepScanner:
             ".sql",
             ".sh",
             ".bat",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.logger.info(
             f"Rule1DeepScanner initialized with {len(self.forbidden_terms)} forbidden terms"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _load_forbidden_terms(self) -> Dict[str, Dict[str, Any]]:
         """Load forbidden terms from database file."""
@@ -145,10 +148,12 @@ class Rule1DeepScanner:
                         r"\\b(racist|racism)\\b",
                         r"\\b(sexist|sexism)\\b",
                         r"\\b(homophobic|homophobia)\\b",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "replacement": "[CONTENT_REMOVED]",
                     "description": "Hate speech and discriminatory content",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "violence": {
                     "category": "violence",
                     "severity": "high",
@@ -156,10 +161,12 @@ class Rule1DeepScanner:
                         r"\\b(kill|murder|assassinate)\\s+(someone|people|person)\\b",
                         r"\\b(bomb|explosion|terrorist)\\s+(attack|threat)\\b",
                         r"\\b(violence|violent)\\s+(content|imagery)\\b",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "replacement": "[VIOLENT_CONTENT_REMOVED]",
                     "description": "Violent content and threats",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "misinformation": {
                     "category": "misinformation",
                     "severity": "medium",
@@ -167,10 +174,12 @@ class Rule1DeepScanner:
                         r"\\b(fake|false)\\s+(news|information)\\b",
                         r"\\b(conspiracy|hoax)\\s+(theory|theories)\\b",
                         r"\\b(misinformation|disinformation)\\b",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "replacement": "[UNVERIFIED_CLAIM]",
                     "description": "Misinformation and false claims",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "spam": {
                     "category": "spam",
                     "severity": "low",
@@ -178,10 +187,12 @@ class Rule1DeepScanner:
                         r"\\b(click\\s + here|buy\\s + now)\\b",
                         r"\\b(limited\\s + time|act\\s + now)\\b",
                         r"\\b(free\\s + money|get\\s + rich)\\b",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "replacement": "[PROMOTIONAL_CONTENT]",
                     "description": "Spam and promotional content",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "personal_info": {
                     "category": "privacy",
                     "severity": "high",
@@ -189,11 +200,14 @@ class Rule1DeepScanner:
                         r"\\b\\d{3}-\\d{2}-\\d{4}\\b",  # SSN pattern
                         r"\\b\\d{4}\\s?\\d{4}\\s?\\d{4}\\s?\\d{4}\\b",  # Credit card pattern
                         r"\\b[A - Za - z0 - 9._%+-]+@[A - Za - z0 - 9.-]+\\.[A - Z|a - z]{2,}\\b",  # Email pattern
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "replacement": "[PERSONAL_INFO_REDACTED]",
                     "description": "Personal information and sensitive data",
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             with open(self.forbidden_terms_db, "w") as f:
                 json.dump(default_terms, f, indent=2)
@@ -212,7 +226,7 @@ class Rule1DeepScanner:
         """Initialize the scan results database."""
         with sqlite3.connect(self.scan_results_db) as conn:
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS scan_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         file_path TEXT NOT NULL,
@@ -222,12 +236,14 @@ class Rule1DeepScanner:
                         file_hash TEXT,
                         violations_json TEXT,
                         scan_duration_ms INTEGER DEFAULT 0
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS enforcement_history (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         file_path TEXT NOT NULL,
@@ -237,15 +253,18 @@ class Rule1DeepScanner:
                         original_hash TEXT,
                         new_hash TEXT,
                         enforcer_version TEXT
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create indexes for better performance
             conn.execute("CREATE INDEX IF NOT EXISTS idx_scan_file_path ON scan_results(file_path)")
             conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_enforcement_file_path ON enforcement_history(file_path)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     def _calculate_file_hash(self, file_path: Path) -> str:
@@ -295,7 +314,8 @@ class Rule1DeepScanner:
                     file_size=0,
                     scan_timestamp=start_time.isoformat(),
                     file_hash="",
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             if not self._is_text_file(file_path):
                 self.logger.debug(f"Skipping non - text file: {file_path}")
@@ -306,7 +326,8 @@ class Rule1DeepScanner:
                     file_size=file_path.stat().st_size,
                     scan_timestamp=start_time.isoformat(),
                     file_hash=self._calculate_file_hash(file_path),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Read file content
             with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
@@ -335,9 +356,12 @@ class Rule1DeepScanner:
                                     "end_pos": match.end(),
                                     "context": self._get_context(
                                         content, match.start(), match.end()
-                                    ),
-                                }
-                            )
+# BRACKET_SURGEON: disabled
+#                                     ),
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                             )
                     except re.error as e:
                         self.logger.error(f"Invalid regex pattern '{pattern}': {e}")
 
@@ -349,7 +373,8 @@ class Rule1DeepScanner:
                 file_size=file_path.stat().st_size,
                 scan_timestamp=start_time.isoformat(),
                 file_hash=self._calculate_file_hash(file_path),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Store result in database
             self._store_scan_result(result, (datetime.now() - start_time).total_seconds() * 1000)
@@ -370,7 +395,8 @@ class Rule1DeepScanner:
                 file_size=0,
                 scan_timestamp=start_time.isoformat(),
                 file_hash="",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _get_context(self, content: str, start: int, end: int, context_size: int = 50) -> str:
         """Get context around a match for better understanding."""
@@ -388,16 +414,17 @@ class Rule1DeepScanner:
         try:
             with sqlite3.connect(self.scan_results_db) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO scan_results
                     (file_path,
     total_violations,
     file_size,
     file_hash,
     violations_json,
-    scan_duration_ms)
+# BRACKET_SURGEON: disabled
+#     scan_duration_ms)
                     VALUES (?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         result.file_path,
                         result.total_violations,
@@ -405,8 +432,10 @@ class Rule1DeepScanner:
                         result.file_hash,
                         json.dumps(result.violations),
                         int(duration_ms),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing scan result: {e}")
@@ -448,7 +477,8 @@ class Rule1DeepScanner:
         total_violations = sum(r.total_violations for r in results)
         self.logger.info(
             f"Directory scan completed: {len(results)} files, {total_violations} violations"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return results
 
@@ -462,23 +492,25 @@ class Rule1DeepScanner:
 
                 if file_path:
                     cursor = conn.execute(
-                        """
+                        """"""
                         SELECT * FROM scan_results
                         WHERE file_path = ?
                         ORDER BY scan_timestamp DESC
                         LIMIT ?
-                    """,
+                    ""","""
                         (file_path, limit),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     cursor = conn.execute(
-                        """
+                        """"""
                         SELECT * FROM scan_results
                         ORDER BY scan_timestamp DESC
                         LIMIT ?
-                    """,
+                    ""","""
                         (limit,),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 return [dict(row) for row in cursor.fetchall()]
 
@@ -494,7 +526,8 @@ class Rule1DeepScanner:
         severity: str = "medium",
         replacement: str = "[CONTENT_REMOVED]",
         description: str = "",
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Add a new forbidden term to the database."""
         try:
             self.forbidden_terms[term_id] = {
@@ -503,7 +536,8 @@ class Rule1DeepScanner:
                 "patterns": patterns,
                 "replacement": replacement,
                 "description": description,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Save to file
             with open(self.forbidden_terms_db, "w") as f:
@@ -538,20 +572,20 @@ class Rule1DeepScanner:
 
 
 class Rule1Enforcer:
-    """
+    """"""
     Content enforcer for Rule - 1 compliance.
 
     Automatically replaces forbidden content with approved alternatives,
         maintaining content integrity while ensuring compliance.
-    """
+    """"""
 
     def __init__(self, scanner: Rule1DeepScanner):
-        """
+        """"""
         Initialize the Rule - 1 Enforcer.
 
         Args:
             scanner: Rule1DeepScanner instance for content analysis
-        """
+        """"""
         self.scanner = scanner
         self.logger = get_logger(__name__)
 
@@ -600,7 +634,8 @@ class Rule1Enforcer:
                     original_hash=original_hash,
                     new_hash=original_hash,
                     enforcement_timestamp=start_time.isoformat(),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Read file content
             with open(file_path, "r", encoding="utf - 8", errors="ignore") as f:
@@ -617,7 +652,8 @@ class Rule1Enforcer:
                 if term_id in self.scanner.forbidden_terms:
                     replacement = self.scanner.forbidden_terms[term_id].get(
                         "replacement", "[CONTENT_REMOVED]"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Apply replacement
                     new_content, count = re.subn(
@@ -625,13 +661,15 @@ class Rule1Enforcer:
                         replacement,
                         content,
                         flags=re.IGNORECASE | re.MULTILINE,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     if count > 0:
                         content = new_content
                         replacements_made += count
                         self.logger.debug(
                             f"Replaced {count} instances of pattern '{pattern}' in {file_path}"
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
             # Write modified content back to file
             if replacements_made > 0:
@@ -652,7 +690,8 @@ class Rule1Enforcer:
                 original_hash=original_hash,
                 new_hash=new_hash,
                 enforcement_timestamp=start_time.isoformat(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Store enforcement history
             self._store_enforcement_result(result)
@@ -678,23 +717,25 @@ class Rule1Enforcer:
                 original_hash=original_hash,
                 new_hash=original_hash,
                 enforcement_timestamp=start_time.isoformat(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _store_enforcement_result(self, result: EnforcementResult):
         """Store enforcement result in database."""
         try:
             with sqlite3.connect(self.scanner.scan_results_db) as conn:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO enforcement_history
                     (file_path,
     replacements_made,
     backup_path,
     original_hash,
     new_hash,
-    enforcer_version)
+# BRACKET_SURGEON: disabled
+#     enforcer_version)
                     VALUES (?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         result.file_path,
                         result.replacements_made,
@@ -702,8 +743,10 @@ class Rule1Enforcer:
                         result.original_hash,
                         result.new_hash,
                         "1.0.0",
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Error storing enforcement result: {e}")
@@ -746,7 +789,8 @@ class Rule1Enforcer:
         total_replacements = sum(r.replacements_made for r in results)
         self.logger.info(
             f"Directory enforcement completed: {len(results)} files, {total_replacements} replacements"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return results
 
@@ -757,7 +801,8 @@ class Rule1Enforcer:
                 # Find the most recent backup
                 backups = list(
                     self.scanner.backup_dir.glob(f"{file_path.stem}_*{file_path.suffix}.backup")
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 if not backups:
                     self.logger.error(f"No backup found for {file_path}")
                     return False
@@ -788,23 +833,25 @@ class Rule1Enforcer:
 
                 if file_path:
                     cursor = conn.execute(
-                        """
+                        """"""
                         SELECT * FROM enforcement_history
                         WHERE file_path = ?
                         ORDER BY enforcement_timestamp DESC
                         LIMIT ?
-                    """,
+                    ""","""
                         (file_path, limit),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     cursor = conn.execute(
-                        """
+                        """"""
                         SELECT * FROM enforcement_history
                         ORDER BY enforcement_timestamp DESC
                         LIMIT ?
-                    """,
+                    ""","""
                         (limit,),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 return [dict(row) for row in cursor.fetchall()]
 
@@ -819,17 +866,17 @@ if __name__ == "__main__":
     import tempfile
 
     # Create test content with violations
-    test_content = """
+    test_content = """"""
     This is a test file with some problematic content.
 
-    Here's some hate speech that should be detected.
+    Here's some hate speech that should be detected.'
     This contains fake news and misinformation.
 
     Contact us at test@example.com or call 123 - 45 - 6789.
     Credit card: 1234 5678 9012 3456
 
     Click here to buy now! Limited time offer!
-    """
+    """"""
 
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
@@ -844,7 +891,8 @@ if __name__ == "__main__":
             forbidden_terms_db=str(temp_path / "forbidden_terms.json"),
             scan_results_db=str(temp_path / "scan_results.sqlite"),
             backup_dir=str(temp_path / "backups"),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         enforcer = Rule1Enforcer(scanner)
 
@@ -855,7 +903,8 @@ if __name__ == "__main__":
         for violation in scan_result.violations:
             print(
                 f"  - {violation['category']}: {violation['match']} (line {violation['line_number']})"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Enforce compliance
         print("\\n=== ENFORCING COMPLIANCE ===")

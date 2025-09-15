@@ -1,9 +1,9 @@
 #!/usr / bin / env python3
-"""
+""""""
 Full AI Integration Activator for Trae.ai
 Activates complete integration of ChatGPT, Gemini, and Abacus AI into the dashboard
 Provides real browser automation and seamless AI assistance across all functions
-"""
+""""""
 
 import asyncio
 import json
@@ -62,10 +62,12 @@ class FullAIIntegrationActivator:
                     "analysis",
                     "writing",
                     "problem_solving",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "priority": 1,
                 "active": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "gemini": {
                 "name": "Google Gemini",
                 "url": "https://gemini.google.com / app",
@@ -75,10 +77,12 @@ class FullAIIntegrationActivator:
                     "reasoning",
                     "multimodal",
                     "data_processing",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "priority": 2,
                 "active": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "abacus": {
                 "name": "Abacus AI",
                 "url": "https://apps.abacus.ai / chatllm/?appId = 1024a18ebe",
@@ -88,11 +92,14 @@ class FullAIIntegrationActivator:
                     "analytics",
                     "predictions",
                     "optimization",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "priority": 3,
                 "active": False,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info("Full AI Integration Activator initialized")
 
@@ -111,7 +118,8 @@ class FullAIIntegrationActivator:
                     "mcp.config.usrlocalmcp.Puppeteer",
                     "puppeteer_navigate",
                     {"url": platform_info["url"]},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if nav_result.success:
                     platform_info["active"] = True
@@ -123,7 +131,8 @@ class FullAIIntegrationActivator:
                         "mcp.config.usrlocalmcp.Puppeteer",
                         "puppeteer_screenshot",
                         {"name": f"{platform_key}_activation_verification"},
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 else:
                     activation_results[platform_key] = False
@@ -159,7 +168,8 @@ class FullAIIntegrationActivator:
                     # Create AI service session
                     session = await self.mcp_integration.interact_with_ai_service(
                         platform_key, query
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     results[platform_key] = {
                         "platform": platform_info["name"],
@@ -168,7 +178,8 @@ class FullAIIntegrationActivator:
                         "duration": session.total_duration,
                         "capabilities": platform_info["capabilities"],
                         "timestamp": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     if session.success:
                         self.status.successful_requests += 1
@@ -180,7 +191,8 @@ class FullAIIntegrationActivator:
                         "success": False,
                         "error": str(e),
                         "timestamp": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         self.status.last_activity = datetime.now()
 
@@ -194,7 +206,8 @@ class FullAIIntegrationActivator:
             "consensus_response": consensus_response,
             "platforms_used": len([r for r in results.values() if r["success"]]),
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _generate_consensus_response(self, results: Dict[str, Any]) -> str:
         """Generate a consensus response from all AI platform results"""
@@ -204,7 +217,8 @@ class FullAIIntegrationActivator:
             if result["success"] and "response" in result:
                 successful_responses.append(
                     {"platform": result["platform"], "response": result["response"]}
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         if not successful_responses:
             return "No successful responses from AI platforms."
@@ -264,7 +278,8 @@ class FullAIIntegrationActivator:
             "/api / ai / abacus": "Abacus AI integration endpoint",
             "/api / ai / consensus": "Multi - platform consensus endpoint",
             "/api / ai / status": "AI integration status endpoint",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for endpoint, description in endpoints.items():
             logger.info(f"Registered endpoint: {endpoint} - {description}")
@@ -287,11 +302,14 @@ class FullAIIntegrationActivator:
                     "active": info["active"],
                     "capabilities": info["capabilities"],
                     "url": info["url"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for platform_key, info in self.ai_platforms.items()
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def run_full_integration_test(self) -> Dict[str, Any]:
         """Run a comprehensive test of the full AI integration"""
@@ -303,7 +321,8 @@ class FullAIIntegrationActivator:
             "dashboard_integration": False,
             "overall_success": False,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Step 1: Activate all platforms
@@ -313,8 +332,8 @@ class FullAIIntegrationActivator:
 
             # Step 2: Test processing with all platforms
             logger.info("Step 2: Testing AI processing...")
-            test_query = "Analyze the current state of AI integration in this Trae.ai system \
-    and provide recommendations for optimization."
+            test_query = "Analyze the current state of AI integration in this Trae.ai system \"
+#     and provide recommendations for optimization."
             processing_results = await self.process_with_all_ai(test_query, "analysis")
             test_results["processing"] = processing_results
 
@@ -329,7 +348,8 @@ class FullAIIntegrationActivator:
                 platforms_activated >= 2
                 and processing_results["platforms_used"] >= 1  # At least 2 platforms active
                 and dashboard_integration  # At least 1 successful processing  # Dashboard integration successful
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if test_results["overall_success"]:
                 logger.info("✅ Full AI integration test PASSED")

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Cloud Software Integration Verification
 
 This script verifies that all requested cloud software products are properly
@@ -16,7 +16,7 @@ Requested Software:
 - Training
 - Scriptelo
 - EXTRA SOFTWARE (additional integrations)
-"""
+""""""
 
 import json
 import sqlite3
@@ -39,7 +39,8 @@ def verify_database_integration() -> Dict[str, Any]:
         "voiceover_cash_machine": "BONUS: Voiceover - Cash - Machine",
         "training": "Training",
         "scriptelo": "Scriptelo",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     verification_results = {
         "timestamp": datetime.now().isoformat(),
@@ -50,7 +51,8 @@ def verify_database_integration() -> Dict[str, Any]:
         "database_tables": [],
         "integration_status": "UNKNOWN",
         "details": {},
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     try:
         # Connect to database
@@ -65,12 +67,13 @@ def verify_database_integration() -> Dict[str, Any]:
 
         # Verify database tables exist
         cursor = conn.execute(
-            """
+            """"""
             SELECT name FROM sqlite_master
             WHERE type='table' AND name LIKE '%software%'
             ORDER BY name
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         tables = [row["name"] for row in cursor.fetchall()]
         verification_results["database_tables"] = tables
@@ -79,7 +82,8 @@ def verify_database_integration() -> Dict[str, Any]:
             "cloud_software",
             "software_usage_logs",
             "software_integration_status",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         missing_tables = [table for table in expected_tables if table not in tables]
 
         if missing_tables:
@@ -89,13 +93,14 @@ def verify_database_integration() -> Dict[str, Any]:
 
         # Check all required software is in database
         cursor = conn.execute(
-            """
+            """"""
             SELECT software_name, display_name, category, status, integration_type,
                 authentication_method, capabilities, license_type, notes
             FROM cloud_software
             ORDER BY software_name
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         found_software = {}
         for row in cursor.fetchall():
@@ -108,40 +113,44 @@ def verify_database_integration() -> Dict[str, Any]:
             if software_key not in found_software:
                 verification_results["missing_software"].append(
                     {"key": software_key, "display_name": display_name}
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Get integration status counts
         cursor = conn.execute(
-            """
+            """"""
             SELECT status, COUNT(*) as count
             FROM cloud_software
             GROUP BY status
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         status_counts = {row["status"]: row["count"] for row in cursor.fetchall()}
         verification_results["details"]["status_distribution"] = status_counts
 
         # Get integration type distribution
         cursor = conn.execute(
-            """
+            """"""
             SELECT integration_type, COUNT(*) as count
             FROM cloud_software
             GROUP BY integration_type
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         integration_counts = {row["integration_type"]: row["count"] for row in cursor.fetchall()}
         verification_results["details"]["integration_types"] = integration_counts
 
         # Get category distribution
         cursor = conn.execute(
-            """
+            """"""
             SELECT category, COUNT(*) as count
             FROM cloud_software
             GROUP BY category
-        """
-        )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
 
         category_counts = {row["category"]: row["count"] for row in cursor.fetchall()}
         verification_results["details"]["categories"] = category_counts

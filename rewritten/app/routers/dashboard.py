@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Dashboard Router - FastAPI router for dashboard functionality
 Integrates dashboard endpoints with the main FastAPI application
-"""
+""""""
 
 import logging
 from datetime import datetime
@@ -18,7 +18,8 @@ try:
         track_api_call,
         track_page_view,
         track_user_action,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     analytics_engine = None
     track_api_call = lambda *args, **kwargs: None
@@ -36,7 +37,8 @@ try:
         require_permission,
         require_role,
         validate_password_strength,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     # Fallback auth components
     Permission = None
@@ -62,20 +64,24 @@ dashboard_data = {
         "status": "operational",
         "uptime": "99.9%",
         "last_updated": datetime.now().isoformat(),
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "metrics": {
         "total_users": 1250,
         "active_sessions": 45,
         "api_calls_today": 8750,
         "revenue_today": 2340.50,
-    },
+# BRACKET_SURGEON: disabled
+#     },
     "services": {
         "youtube_automation": {"status": "active", "last_run": "2024-01-15T10:30:00Z"},
         "content_pipeline": {"status": "active", "last_run": "2024-01-15T11:15:00Z"},
         "marketing_agent": {"status": "active", "last_run": "2024-01-15T09:45:00Z"},
         "financial_tracking": {"status": "active", "last_run": "2024-01-15T12:00:00Z"},
-    },
-}
+# BRACKET_SURGEON: disabled
+#     },
+# BRACKET_SURGEON: disabled
+# }
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -88,13 +94,15 @@ async def dashboard_home(request: Request):
                 "request": request,
                 "title": "Production Dashboard",
                 "data": dashboard_data,
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         logger.error(f"Error loading dashboard: {e}")
         # Fallback to simple HTML response
         return HTMLResponse(
-            content="""
+            content=""""""
             <!DOCTYPE html>
             <html>
             <head>
@@ -170,20 +178,20 @@ async def dashboard_home(request: Request):
                         <a href="/avatar">Avatar Services</a>
                     </div>
 
-                    <div class="paste-section" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 30px;">
+                    <div class="paste-section" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 30px;">"
                         <h3>📋 Paste Information</h3>
-                        <p style="color: #666; margin-bottom: 20px;">Paste information here to share with the AI assistant:</p>
+                        <p style="color: #666; margin-bottom: 20px;">Paste information here to share with the AI assistant:</p>"
                         <form id="pasteForm" style="margin-bottom: 20px;">
                             <textarea id="pasteContent" placeholder="Paste your content here..."
-                                style="width: 100%; height: 200px; padding: 15px; border: 1px solid #ddd; border-radius: 6px; font-family: monospace; font-size: 14px; resize: vertical;"></textarea>
+                                style="width: 100%; height: 200px; padding: 15px; border: 1px solid #ddd; border-radius: 6px; font-family: monospace; font-size: 14px; resize: vertical;"></textarea>"
                             <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;">
-                                <button type="submit" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Submit Paste</button>
-                                <button type="button" onclick="clearPaste()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Clear</button>
+                                <button type="submit" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Submit Paste</button>"
+                                <button type="button" onclick="clearPaste()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Clear</button>"
                                 <span id="pasteStatus" style="margin-left: 10px; font-size: 14px;"></span>
                             </div>
                         </form>
-                        <div id="pasteHistory" style="max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 15px; background: #f8f9fa;">
-                            <h4 style="margin-top: 0; color: #666;">Recent Pastes:</h4>
+                        <div id="pasteHistory" style="max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 15px; background: #f8f9fa;">"
+                            <h4 style="margin-top: 0; color: #666;">Recent Pastes:</h4>"
                             <div id="pasteList">No pastes yet.</div>
                         </div>
                     </div>
@@ -196,20 +204,23 @@ async def dashboard_home(request: Request):
                             if (pasteHistory.length === 0) {
                                 pasteList.innerHTML = 'No pastes yet.';
                                 return;
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                             pasteList.innerHTML = pasteHistory.slice(-5).reverse().map((paste, index) => `
-                                <div style="margin-bottom: 15px; padding: 10px; background: white; border-radius: 4px; border-left: 3px solid #007bff;">
-                                    <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${paste.timestamp}</div>
+                                <div style="margin-bottom: 15px; padding: 10px; background: white; border-radius: 4px; border-left: 3px solid #007bff;">"
+                                    <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${paste.timestamp}</div>"
                                     <div style="font-family: monospace; font-size: 13px; max-height: 100px; overflow-y: auto; white-space: pre-wrap;">${paste.content.substring(0, 200)}${paste.content.length > 200 ? '...' : ''}</div>
                                 </div>
                             `).join('');
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                         function clearPaste() {
                             document.getElementById('pasteContent').value = '';
                             document.getElementById('pasteStatus').textContent = '';
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                         document.getElementById('pasteForm').addEventListener('submit', async function(e) {
                             e.preventDefault();
@@ -218,51 +229,58 @@ async def dashboard_home(request: Request):
 
                             if (!content) {
                                 statusEl.textContent = 'Please enter some content';
-                                statusEl.style.color = '#dc3545';
+                                statusEl.style.color = '#dc3545';'
                                 return;
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                             try {
                                 statusEl.textContent = 'Saving paste...';
-                                statusEl.style.color = '#007bff';
+                                statusEl.style.color = '#007bff';'
 
                                 const pasteData = {
                                     content: content,
                                     timestamp: new Date().toLocaleString(),
                                     id: Date.now().toString()
-                                };
+# BRACKET_SURGEON: disabled
+#                                 };
 
                                 pasteHistory.push(pasteData);
                                 if (pasteHistory.length > 50) {
                                     pasteHistory = pasteHistory.slice(-50);
-                                }
+# BRACKET_SURGEON: disabled
+#                                 }
 
                                 localStorage.setItem('pasteHistory', JSON.stringify(pasteHistory));
                                 updatePasteDisplay();
 
                                 statusEl.textContent = 'Paste saved successfully!';
-                                statusEl.style.color = '#28a745';
+                                statusEl.style.color = '#28a745';'
 
                                 document.getElementById('pasteContent').value = '';
 
                                 setTimeout(() => {
                                     statusEl.textContent = '';
-                                }, 3000);
+# BRACKET_SURGEON: disabled
+#                                 }, 3000);
 
                             } catch (error) {
                                 console.error('Error saving paste:', error);
                                 statusEl.textContent = 'Error saving paste';
-                                statusEl.style.color = '#dc3545';
-                            }
-                        });
+                                statusEl.style.color = '#dc3545';'
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         });
 
                         updatePasteDisplay();
                     </script>
                 </div>
             </body>
             </html>
-            """
-        )
+            """"""
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @router.get("/api/status")
@@ -295,7 +313,8 @@ async def restart_service(service_name: str):
 
     return JSONResponse(
         {"message": f"Service {service_name} restart initiated", "status": "restarting"}
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/api/health")
@@ -308,9 +327,12 @@ async def health_check():
             "version": "1.0.0",
             "services": {
                 name: service["status"] for name, service in dashboard_data["services"].items()
-            },
-        }
-    )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/api/logs")
@@ -323,20 +345,24 @@ async def get_recent_logs(limit: int = Query(default=100, le=1000)):
             "level": "INFO",
             "service": "youtube_automation",
             "message": "Successfully processed 15 videos",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "timestamp": datetime.now().isoformat(),
             "level": "INFO",
             "service": "content_pipeline",
             "message": "Generated 8 new articles",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "timestamp": datetime.now().isoformat(),
             "level": "WARNING",
             "service": "marketing_agent",
             "message": "Rate limit approaching for social media API",
-        },
-    ]
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     ]
 
     return JSONResponse({"logs": sample_logs[:limit], "total": len(sample_logs)})
 
@@ -355,15 +381,18 @@ async def save_paste(content: str = Form(...)):
         "content": content,
         "timestamp": datetime.now().isoformat(),
         "length": len(content),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     return JSONResponse(
         {
             "message": "Paste saved successfully",
             "paste_id": paste_id,
             "data": paste_data,
-        }
-    )
+# BRACKET_SURGEON: disabled
+#         }
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/api/paste/{paste_id}")
@@ -374,8 +403,10 @@ async def get_paste(paste_id: str):
         {
             "error": "Paste storage not implemented",
             "message": "This would retrieve paste content from database",
-        }
-    )
+# BRACKET_SURGEON: disabled
+#         }
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/analytics")
@@ -387,7 +418,8 @@ async def analytics_dashboard(request: Request):
             "unique_visitors": 3200,
             "api_calls": 8750,
             "conversion_rate": 3.2,
-        }
+# BRACKET_SURGEON: disabled
+#         }
     else:
         analytics_data = {
             "page_views": 0,
@@ -395,12 +427,14 @@ async def analytics_dashboard(request: Request):
             "api_calls": 0,
             "conversion_rate": 0.0,
             "note": "Analytics engine not available",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     return templates.TemplateResponse(
         "analytics.html",
         {"request": request, "title": "Analytics Dashboard", "data": analytics_data},
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/settings")
@@ -416,9 +450,12 @@ async def settings_page(request: Request):
                 "notifications": True,
                 "auto_refresh": 30,
                 "timezone": "UTC",
-            },
-        },
-    )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.post("/api/settings")
@@ -427,7 +464,8 @@ async def update_settings(
     notifications: bool = Form(default=True),
     auto_refresh: int = Form(default=30),
     timezone: str = Form(default="UTC"),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Update dashboard settings"""
     settings = {
         "theme": theme,
@@ -435,7 +473,8 @@ async def update_settings(
         "auto_refresh": auto_refresh,
         "timezone": timezone,
         "updated_at": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # In a real implementation, save to database or config file
     return JSONResponse({"message": "Settings updated successfully", "settings": settings})

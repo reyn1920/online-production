@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Complete Application Launcher
 Unified entry point for the entire TRAE.AI ecosystem
 
@@ -20,7 +20,7 @@ Environment Variables:
     OPENAI_API_KEY - OpenAI API key
     ANTHROPIC_API_KEY - Anthropic API key
     And other service - specific API keys
-"""
+""""""
 
 import asyncio
 import logging
@@ -42,7 +42,8 @@ sys.path.insert(0, str(project_root))
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -74,7 +75,8 @@ class TraeAILauncher:
             "anthropic",
             "flask",
             "flask_socketio",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         missing_packages = []
         for package in required_packages:
@@ -113,7 +115,8 @@ class TraeAILauncher:
             "static / videos",
             "static / images",
             "static / audio",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for directory in directories:
             Path(directory).mkdir(parents=True, exist_ok=True)
@@ -136,14 +139,16 @@ class TraeAILauncher:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 env=os.environ.copy(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.processes[name] = {
                 "process": process,
                 "port": port,
                 "module": module_path,
                 "cwd": cwd,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Give the service time to start
             time.sleep(2)
@@ -172,32 +177,38 @@ class TraeAILauncher:
                 "module": "content - agent / main.py",
                 "port": 8001,
                 "cwd": str(project_root / "content - agent"),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "name": "Marketing Agent",
                 "module": "marketing - agent / main.py",
                 "port": 8002,
                 "cwd": str(project_root / "marketing - agent"),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "name": "Monetization Bundle",
                 "module": "monetization - bundle / main.py",
                 "port": 8003,
                 "cwd": str(project_root / "monetization - bundle"),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "name": "Analytics Dashboard",
                 "module": "analytics - dashboard / main.py",
                 "port": 8004,
                 "cwd": str(project_root / "analytics - dashboard"),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "name": "Orchestrator",
                 "module": "orchestrator / main.py",
                 "port": 8000,
                 "cwd": str(project_root / "orchestrator"),
-            },
-        ]
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         success_count = 0
         for service in services:
@@ -247,12 +258,14 @@ class TraeAILauncher:
             ("Analytics Dashboard", "8004", "Business intelligence and reporting"),
             ("Orchestrator", "8000", "Service coordination and management"),
             ("Main Dashboard", "8083", "Total access command center"),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for name, port, description in services_info:
             status = (
                 "🟢 RUNNING" if name in self.processes or name == "Main Dashboard" else "🔴 STOPPED"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             print(f"{status} {name:<20} Port {port:<6} - {description}")
 
         print("\\n🌐 Access URLs:")

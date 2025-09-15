@@ -37,7 +37,7 @@ class ServiceConfig:
     health_check_timeout: int = 5
     restart_delay: int = 5
     max_restarts_per_hour: int = 10
-    process_match_pattern: str = None
+    process_match_pattern: Optional[str] = None
     critical: bool = True
 
 
@@ -153,7 +153,8 @@ class ProcessWatchdog:
             restart_time
             for restart_time in self.restart_history[service_name]
             if restart_time > cutoff_time
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Check if we're under the restart limit
         return len(self.restart_history[service_name]) < config.max_restarts_per_hour
@@ -171,7 +172,8 @@ class ProcessWatchdog:
                 cwd=config.working_dir,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Convert to psutil process for better monitoring
             psutil_proc = psutil.Process(proc.pid)
@@ -253,7 +255,8 @@ class ProcessWatchdog:
             "healthy": False,
             "action_taken": None,
             "restart_count_last_hour": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Check if process is running
@@ -317,7 +320,8 @@ class ProcessWatchdog:
                 monitoring_report = {
                     "timestamp": datetime.now().isoformat(),
                     "services": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 # Monitor each service
                 for service_name in self.services:
@@ -329,7 +333,8 @@ class ProcessWatchdog:
                     f"{name}: {status['action_taken']}"
                     for name, status in monitoring_report["services"].items()
                     if status.get("action_taken") and status["action_taken"] != "none"
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 if actions_taken:
                     logger.info(f"📊 Watchdog actions: {', '.join(actions_taken)}")
@@ -363,14 +368,16 @@ class ProcessWatchdog:
             "watchdog_running": self.running,
             "timestamp": datetime.now().isoformat(),
             "services": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for service_name in self.services:
             service_status = {
                 "running": self._is_process_running(service_name),
                 "healthy": self._check_service_health(service_name),
                 "restart_count_last_hour": len(self.restart_history.get(service_name, [])),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             if service_name in self.service_processes:
                 proc = self.service_processes[service_name]

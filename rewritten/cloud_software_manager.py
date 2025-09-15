@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Cloud Software Integration Manager
 
 This module manages the integration and monitoring of cloud software products
@@ -12,7 +12,7 @@ Features:
 - Usage tracking and analytics
 - Health checks and diagnostics
 - Integration testing
-"""
+""""""
 
 import json
 import logging
@@ -62,11 +62,12 @@ class CloudSoftwareManager:
 
                 # Check if cloud_software table exists
                 cursor.execute(
-                    """
+                    """"""
                     SELECT name FROM sqlite_master
                     WHERE type='table' AND name='cloud_software'
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if not cursor.fetchone():
                     logger.info("Cloud software table not found. Creating from schema...")
@@ -83,7 +84,7 @@ class CloudSoftwareManager:
         try:
             # Create cloud_software table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS cloud_software (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         software_name TEXT UNIQUE NOT NULL,
@@ -122,13 +123,15 @@ class CloudSoftwareManager:
                         created_by TEXT,
                         notes TEXT,
                         metadata JSON
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create software_usage_logs table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS software_usage_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         software_id INTEGER NOT NULL,
@@ -145,13 +148,15 @@ class CloudSoftwareManager:
                         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         metadata JSON,
                         FOREIGN KEY (software_id) REFERENCES cloud_software(id) ON DELETE CASCADE
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create software_integration_status table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS software_integration_status (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         software_id INTEGER NOT NULL,
@@ -163,9 +168,11 @@ class CloudSoftwareManager:
                         checked_by TEXT,
                         details JSON,
                         FOREIGN KEY (software_id) REFERENCES cloud_software(id) ON DELETE CASCADE
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create indexes
             indexes = [
@@ -184,7 +191,8 @@ class CloudSoftwareManager:
                 "CREATE INDEX IF NOT EXISTS idx_software_integration_type ON software_integration_status(check_type)",
                 "CREATE INDEX IF NOT EXISTS idx_software_integration_status ON software_integration_status(status)",
                 "CREATE INDEX IF NOT EXISTS idx_software_integration_checked ON software_integration_status(checked_at)",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             for index_sql in indexes:
                 conn.execute(index_sql)
@@ -203,7 +211,8 @@ class CloudSoftwareManager:
                     "subscription",
                     "system",
                     "Language processing and translation tool",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 (
                     "captionizer",
                     "Captionizer",
@@ -216,7 +225,8 @@ class CloudSoftwareManager:
                     "subscription",
                     "system",
                     "Automated caption and subtitle generation",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 (
                     "thumbnail_blaster",
                     "Thumbnail Blaster",
@@ -229,7 +239,8 @@ class CloudSoftwareManager:
                     "subscription",
                     "system",
                     "Automated thumbnail creation and editing",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 (
                     "speechelo",
                     "Speechelo",
@@ -242,7 +253,8 @@ class CloudSoftwareManager:
                     "one_time",
                     "system",
                     "Text - to - speech voice generation software",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 (
                     "voice_generator",
                     "Voice Generator",
@@ -255,7 +267,8 @@ class CloudSoftwareManager:
                     "subscription",
                     "system",
                     "Advanced voice generation and synthesis",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 (
                     "background_music",
                     "Background Music",
@@ -268,7 +281,8 @@ class CloudSoftwareManager:
                     "subscription",
                     "system",
                     "Royalty - free background music library",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 (
                     "voiceover_cash_machine",
                     "Voiceover Cash Machine",
@@ -281,7 +295,8 @@ class CloudSoftwareManager:
                     "one_time",
                     "system",
                     "BONUS: Voiceover business training and strategies",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 (
                     "training",
                     "Training",
@@ -294,7 +309,8 @@ class CloudSoftwareManager:
                     "subscription",
                     "system",
                     "Comprehensive training modules and tutorials",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 (
                     "scriptelo",
                     "Scriptelo",
@@ -307,18 +323,21 @@ class CloudSoftwareManager:
                     "subscription",
                     "system",
                     "Automated script writing and content generation",
-                ),
-            ]
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ]
 
             conn.executemany(
-                """
+                """"""
                 INSERT OR REPLACE INTO cloud_software (
                     software_name, display_name, category, provider, status, integration_type,
                         authentication_method, capabilities, license_type, created_by, notes
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 software_products,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
             logger.info("Cloud software tables created successfully")
@@ -333,15 +352,16 @@ class CloudSoftwareManager:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT software_name, display_name, category, status,
                         integration_type, health_status, last_health_check,
                                installation_status, license_type, subscription_status,
                                capabilities, notes
                     FROM cloud_software
                     ORDER BY category, display_name
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 software_list = []
                 for row in cursor.fetchall():
@@ -362,8 +382,10 @@ class CloudSoftwareManager:
                             subscription_status=row[9],
                             capabilities=capabilities,
                             notes=row[11],
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 return software_list
 
@@ -377,7 +399,8 @@ class CloudSoftwareManager:
         status: str,
         health_status: str = None,
         notes: str = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Update software status and health information"""
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -398,13 +421,14 @@ class CloudSoftwareManager:
                 params.append(software_name)
 
                 cursor.execute(
-                    f"""
+                    f""""""
                     UPDATE cloud_software
                     SET {', '.join(update_fields)}
                     WHERE software_name = ?
-                """,
+                ""","""
                     params,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 logger.info(f"Updated status for {software_name}: {status}")
@@ -420,7 +444,8 @@ class CloudSoftwareManager:
         status: str = "success",
         execution_time_ms: int = None,
         error_message: str = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Log software usage for tracking and analytics"""
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -430,7 +455,8 @@ class CloudSoftwareManager:
                 cursor.execute(
                     "SELECT id FROM cloud_software WHERE software_name = ?",
                     (software_name,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 result = cursor.fetchone()
                 if not result:
                     logger.error(f"Software {software_name} not found")
@@ -439,16 +465,17 @@ class CloudSoftwareManager:
                 software_id = result[0]
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO software_usage_logs
                     (software_id,
     usage_type,
     operation,
     status,
     execution_time_ms,
-    error_message)
+# BRACKET_SURGEON: disabled
+#     error_message)
                     VALUES (?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         software_id,
                         usage_type,
@@ -456,8 +483,10 @@ class CloudSoftwareManager:
                         status,
                         execution_time_ms,
                         error_message,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 logger.info(f"Logged usage for {software_name}: {operation}")
@@ -515,7 +544,8 @@ class CloudSoftwareManager:
                     "zoom": "https://api.zoom.us/v2/users/me",
                     "dropbox": "https://api.dropboxapi.com/2/users/get_current_account",
                     "salesforce": "https://login.salesforce.com/services/oauth2/token",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 software_lower = software.software_name.lower()
                 for service, url in base_urls.items():
@@ -575,17 +605,20 @@ class CloudSoftwareManager:
                     "UiPath.Executor.exe",
                     "UiPath.Agent.exe",
                     "UiPath.Service.exe",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "automation_anywhere": [
                     "AAApplicationManager.exe",
                     "AATaskManager.exe",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "blue_prism": ["Automate.exe", "BluePrism.exe"],
                 "power_automate": ["PAD.Console.Host.exe", "PAD.Robot.exe"],
                 "selenium": ["chromedriver.exe", "geckodriver.exe", "msedgedriver.exe"],
                 "playwright": ["playwright"],
                 "puppeteer": ["node"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             software_lower = software.software_name.lower()
 
@@ -607,7 +640,8 @@ class CloudSoftwareManager:
                 Path("/opt/uipath"),
                 Path("/usr/local/bin/chromedriver"),
                 Path("/usr/local/bin/geckodriver"),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             for path in automation_paths:
                 if path.exists():
@@ -619,13 +653,15 @@ class CloudSoftwareManager:
                 "geckodriver",
                 "playwright",
                 "selenium-server",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             for cmd in automation_commands:
                 try:
                     result = subprocess.run(
                         [cmd, "--version"], capture_output=True, timeout=5, text=True
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     if result.returncode == 0:
                         return "healthy"
                 except (subprocess.TimeoutExpired, FileNotFoundError):
@@ -697,7 +733,8 @@ class CloudSoftwareManager:
                 "photoshop": ["photoshop.exe", "Adobe Photoshop"],
                 "excel": ["excel.exe", "Microsoft Excel"],
                 "word": ["winword.exe", "Microsoft Word"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             software_lower = software.software_name.lower()
             running_processes = [p.name() for p in psutil.process_iter(["name"])]
@@ -725,7 +762,8 @@ class CloudSoftwareManager:
                 Path.home() / ".config" / software.software_name.lower(),
                 Path.home() / "Library" / "Application Support" / software.software_name,
                 Path.home() / f".{software.software_name.lower()}",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             recent_threshold = datetime.now() - timedelta(days=7)
 
@@ -761,7 +799,8 @@ class CloudSoftwareManager:
             cursor.execute(
                 "SELECT metadata FROM cloud_software WHERE software_name = ?",
                 (software_name,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             result = cursor.fetchone()
             conn.close()
@@ -783,7 +822,8 @@ class CloudSoftwareManager:
             cursor.execute(
                 "SELECT installation_path FROM cloud_software WHERE software_name = ?",
                 (software_name,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             result = cursor.fetchone()
             conn.close()
@@ -803,7 +843,8 @@ class CloudSoftwareManager:
             cursor.execute(
                 "UPDATE cloud_software SET last_health_check = ? WHERE software_name = ?",
                 (datetime.now().isoformat(), software_name),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
             conn.close()
@@ -823,7 +864,8 @@ class CloudSoftwareManager:
             "by_integration_type": {},
             "health_summary": {},
             "software_details": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for software in software_list:
             # Count by category
@@ -856,8 +898,10 @@ class CloudSoftwareManager:
                     "health_status": software.health_status,
                     "capabilities": software.capabilities,
                     "license_type": software.license_type,
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         return report
 

@@ -1,6 +1,18 @@
 # Runtime-safe registry (encoded risky terms so guards won't flag them)
 from __future__ import annotations
-from typing import List, Dict
+from typing import NoReturn
+import os
+import shutil
+from pathlib import Path
+import logging
+
+# Set up logging for policy enforcement
+logger = logging.getLogger(__name__)
+
+def _log(action: str, path: str, metadata: dict[str, object] | None = None):
+    """Log policy enforcement actions"""
+    metadata = metadata or {}
+    logger.warning(f"Policy enforcement: {action} blocked for path: {path}, metadata: {metadata}")
 
 def _t(*codes: int) -> str:
     return "".join(chr(c) for c in codes)
@@ -39,7 +51,7 @@ ENCODED_PATHS = [
     "assets/",
 ]
 
-DO_NOT_DELETE: Dict[str, List[str]] = {
+DO_NOT_DELETE: dict[str, object] = {
     "apps": [
         "DaVinci Resolve Pro",
         "Speechelo",
@@ -59,7 +71,7 @@ DO_NOT_DELETE: Dict[str, List[str]] = {
 }
 
 # Revenue sources (11-point strategy)
-REVENUE_SOURCES: Dict[str, List[str]] = {
+REVENUE_SOURCES: dict[str, list[str]] = {
     "primary": [
         "YouTube Ad Revenue",
         "Affiliate Marketing",
@@ -94,9 +106,30 @@ REVENUE_SOURCES: Dict[str, List[str]] = {
         "Revenue Tracker Service",
         "Financial Management Agent",
         "Business Metrics Dashboard",
-    ],
+    ]
 }
 
-def decoded_paths() -> List[str]:
+def decoded_paths() -> list[str]:
     # Decode any encoded strings; leave normal ones unchanged
     return [p for p in ENCODED_PATHS]
+
+def _block(tag: str): 
+    def inner(*args: object, **kwargs: object) -> NoReturn: 
+        path = args[0] if args else "<unknown>" 
+        _log(f"block_{tag}", str(path), {"args": list(map(str, args))}) 
+        raise PermissionError("Delete operations are disabled by policy.") 
+    return inner 
+
+def enforce_no_delete() -> None: 
+    """Enforce no-delete policy by blocking common deletion operations"""
+    # Block common deletion entry points 
+    os.remove = _block("remove")          # type: ignore[assignment] 
+    os.unlink = _block("unlink")          # type: ignore[assignment] 
+    os.rmdir  = _block("rmdir")           # type: ignore[assignment] 
+    shutil.rmtree = _block("rmtree")      # type: ignore[assignment] 
+
+    # Block Path.unlink as well 
+    def _blocked_unlink(self: Path, *args: object, **kwargs: object) -> NoReturn: 
+        _log("block_unlink", str(self)) 
+        raise PermissionError("Delete operations are disabled by policy.") 
+    Path.unlink = _blocked_unlink         # type: ignore[assignment]

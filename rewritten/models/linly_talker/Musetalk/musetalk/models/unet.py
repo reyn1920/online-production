@@ -30,7 +30,8 @@ class UNet:
         unet_config,
         model_path,
         use_float16=False,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         with open(unet_config, "r") as f:
             unet_config = json.load(f)
         self.model = UNet2DConditionModel(**unet_config)
@@ -40,7 +41,8 @@ class UNet:
             torch.load(model_path)
             if torch.cuda.is_available()
             else torch.load(model_path, map_location=self.device)
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.model.load_state_dict(weights)
         if use_float16:
             self.model = self.model.half()

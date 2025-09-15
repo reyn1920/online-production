@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 Channel Personas System
 
 Provides unique voice, personality, and writing style for each channel,
-ensuring distinct content creation that matches the channel's brand and audience.
-"""
+ensuring distinct content creation that matches the channel's brand and audience.'
+""""""
 
 import json
 import logging
@@ -68,9 +68,9 @@ class PersonaProfile:
 
 
 class ChannelPersonas:
-    """
+    """"""
     Manages persona profiles and content adaptation for all channels
-    """
+    """"""
 
     def __init__(self, db_path: str = "data / right_perspective.db"):
         self.db_path = db_path
@@ -92,35 +92,42 @@ class ChannelPersonas:
                         "analytical",
                         "forward - thinking",
                         "precise",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "expertise_areas": [
                         "technology",
                         "innovation",
                         "software development",
                         "digital trends",
-                    ],
-                    "target_audience": "Tech professionals, developers, \
-    and early adopters",
+# BRACKET_SURGEON: disabled
+#                     ],
+                    "target_audience": "Tech professionals, developers, \"
+#     and early adopters",
                     "catchphrases": [
-                        "Let's dive into the code",
+                        "Let's dive into the code",'
                         "The future is being built today",
                         "Innovation never sleeps",
-                        "Here's what the data tells us",
-                    ],
+                        "Here's what the data tells us",'
+# BRACKET_SURGEON: disabled
+#                     ],
                     "preferred_formats": [
                         "tutorials",
                         "analysis",
                         "reviews",
                         "predictions",
-                    ],
-                },
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
                 "voice_characteristics": {
                     "sentence_structure": "complex_technical",
                     "jargon_usage": "high",
                     "explanation_depth": "detailed",
                     "examples_style": "code_snippets",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.WELLNESS: {
                 "base_persona": {
                     "writing_style": WritingStyle.INSPIRATIONAL,
@@ -131,28 +138,34 @@ class ChannelPersonas:
                         "nutrition",
                         "mental wellness",
                         "fitness",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "target_audience": "Health - conscious individuals seeking balanced lifestyle",
                     "catchphrases": [
                         "Your wellness journey starts here",
                         "Small steps, big changes",
                         "Listen to your body",
                         "Wellness is a way of life",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "preferred_formats": [
                         "guides",
                         "tips",
                         "personal stories",
                         "research summaries",
-                    ],
-                },
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
                 "voice_characteristics": {
                     "sentence_structure": "encouraging",
                     "jargon_usage": "minimal",
                     "explanation_depth": "accessible",
                     "examples_style": "real_life_scenarios",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.FINANCE: {
                 "base_persona": {
                     "writing_style": WritingStyle.AUTHORITATIVE,
@@ -162,34 +175,41 @@ class ChannelPersonas:
                         "data - driven",
                         "strategic",
                         "cautious",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "expertise_areas": [
                         "investing",
                         "market analysis",
                         "financial planning",
                         "economics",
-                    ],
-                    "target_audience": "Investors, financial professionals, \
-    and wealth builders",
+# BRACKET_SURGEON: disabled
+#                     ],
+                    "target_audience": "Investors, financial professionals, \"
+#     and wealth builders",
                     "catchphrases": [
-                        "The numbers don't lie",
+                        "The numbers don't lie",'
                         "Smart money moves",
                         "Risk and reward go hand in hand",
-                        "Your financial future depends on today's decisions",
-                    ],
+                        "Your financial future depends on today's decisions",'
+# BRACKET_SURGEON: disabled
+#                     ],
                     "preferred_formats": [
                         "market analysis",
                         "investment guides",
                         "economic commentary",
-                    ],
-                },
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
                 "voice_characteristics": {
                     "sentence_structure": "analytical",
                     "jargon_usage": "moderate",
                     "explanation_depth": "thorough",
                     "examples_style": "case_studies",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.POLITICAL: {
                 "base_persona": {
                     "writing_style": WritingStyle.SATIRICAL,
@@ -199,34 +219,41 @@ class ChannelPersonas:
                         "witty",
                         "provocative",
                         "authoritative",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "expertise_areas": [
                         "politics",
                         "current events",
                         "conservative ideology",
                         "media criticism",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "target_audience": "Conservative viewers seeking alternative perspectives",
                     "catchphrases": [
-                        "Let's get to the truth",
-                        "The mainstream media won't tell you this",
-                        "Common sense isn't so common anymore",
+                        "Let's get to the truth",'
+                        "The mainstream media won't tell you this",'
+                        "Common sense isn't so common anymore",'
                         "Wake up, America",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "preferred_formats": [
                         "commentary",
                         "analysis",
                         "satire",
                         "fact - checking",
-                    ],
-                },
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
                 "voice_characteristics": {
                     "sentence_structure": "punchy",
                     "jargon_usage": "political_terms",
                     "explanation_depth": "opinionated",
                     "examples_style": "current_events",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.BUSINESS: {
                 "base_persona": {
                     "writing_style": WritingStyle.PROFESSIONAL,
@@ -236,34 +263,41 @@ class ChannelPersonas:
                         "results - oriented",
                         "pragmatic",
                         "leadership - focused",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "expertise_areas": [
                         "entrepreneurship",
                         "management",
                         "strategy",
                         "growth",
-                    ],
-                    "target_audience": "Business leaders, entrepreneurs, \
-    and professionals",
+# BRACKET_SURGEON: disabled
+#                     ],
+                    "target_audience": "Business leaders, entrepreneurs, \"
+#     and professionals",
                     "catchphrases": [
                         "Success leaves clues",
                         "Execute with excellence",
                         "Growth requires change",
                         "Leadership is influence",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "preferred_formats": [
                         "case studies",
                         "strategy guides",
                         "leadership insights",
-                    ],
-                },
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
                 "voice_characteristics": {
                     "sentence_structure": "action_oriented",
                     "jargon_usage": "business_terms",
                     "explanation_depth": "strategic",
                     "examples_style": "business_cases",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.SCIENCE: {
                 "base_persona": {
                     "writing_style": WritingStyle.ACADEMIC,
@@ -273,35 +307,43 @@ class ChannelPersonas:
                         "methodical",
                         "evidence - based",
                         "wonder - filled",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "expertise_areas": [
                         "research",
                         "discovery",
                         "scientific method",
                         "innovation",
-                    ],
-                    "target_audience": "Science enthusiasts, researchers, \
-    and curious minds",
+# BRACKET_SURGEON: disabled
+#                     ],
+                    "target_audience": "Science enthusiasts, researchers, \"
+#     and curious minds",
                     "catchphrases": [
                         "Science reveals the extraordinary",
                         "Evidence leads the way",
                         "Discovery changes everything",
                         "The universe has secrets to tell",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "preferred_formats": [
                         "research summaries",
                         "discovery stories",
                         "explanations",
-                    ],
-                },
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
                 "voice_characteristics": {
                     "sentence_structure": "methodical",
                     "jargon_usage": "scientific_terms",
                     "explanation_depth": "comprehensive",
                     "examples_style": "research_findings",
-                },
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _initialize_tone_modifiers(self) -> Dict[str, Dict[str, Any]]:
         """Initialize tone modifiers for different attributes"""
@@ -311,63 +353,78 @@ class ChannelPersonas:
                     "Oh, how surprising...",
                     "Let me guess...",
                     "Shocking news:",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "transitions": [
-                    "But here's the kicker",
+                    "But here's the kicker",'
                     "Plot twist",
                     "Surprise, surprise",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "emphasis_words": ["obviously", "clearly", "naturally", "of course"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "witty": {
                 "sentence_starters": [
-                    "Here's a thought:",
+                    "Here's a thought:",'
                     "Picture this:",
                     "Fun fact:",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "transitions": [
                     "Speaking of which",
                     "On a related note",
-                    "While we're at it",
-                ],
+                    "While we're at it",'
+# BRACKET_SURGEON: disabled
+#                 ],
                 "emphasis_words": ["cleverly", "brilliantly", "ingeniously"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "authoritative": {
                 "sentence_starters": [
                     "The fact is",
                     "Research shows",
                     "Evidence indicates",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "transitions": ["Furthermore", "Additionally", "Moreover"],
                 "emphasis_words": ["definitively", "conclusively", "undeniably"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "caring": {
                 "sentence_starters": [
                     "I understand that",
                     "Many of us feel",
-                    "It's important to remember",
-                ],
+                    "It's important to remember",'
+# BRACKET_SURGEON: disabled
+#                 ],
                 "transitions": [
                     "With that in mind",
                     "Taking this into account",
                     "Considering this",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "emphasis_words": ["gently", "compassionately", "thoughtfully"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "analytical": {
                 "sentence_starters": [
                     "The data suggests",
                     "Analysis reveals",
                     "Breaking this down",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "transitions": [
                     "Examining further",
                     "Digging deeper",
                     "Looking at the metrics",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "emphasis_words": ["systematically", "methodically", "precisely"],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _initialize_style_patterns(self) -> Dict[WritingStyle, Dict[str, Any]]:
         """Initialize writing style patterns"""
@@ -378,33 +435,39 @@ class ChannelPersonas:
                 "questions": "frequent",
                 "personal_pronouns": "you / we",
                 "examples": "relatable",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             WritingStyle.PROFESSIONAL: {
                 "sentence_length": "medium",
                 "contractions": False,
                 "questions": "strategic",
                 "personal_pronouns": "minimal",
                 "examples": "industry_specific",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             WritingStyle.SATIRICAL: {
                 "sentence_length": "punchy",
                 "contractions": True,
                 "questions": "rhetorical",
                 "personal_pronouns": "I / you",
                 "examples": "exaggerated",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             WritingStyle.INSPIRATIONAL: {
                 "sentence_length": "varied",
                 "contractions": True,
                 "questions": "motivational",
                 "personal_pronouns": "you",
                 "examples": "success_stories",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def create_persona(
         self, channel_id: str, custom_config: Dict[str, Any] = None
-    ) -> PersonaProfile:
+# BRACKET_SURGEON: disabled
+#     ) -> PersonaProfile:
         """Create a persona for a channel"""
         config = self.protocol.get_channel_config(channel_id)
         if not config:
@@ -429,10 +492,12 @@ class ChannelPersonas:
             persona_name=persona_config.get("persona_name", f"{config.channel_name} Host"),
             writing_style=WritingStyle(
                 persona_config.get("writing_style", WritingStyle.PROFESSIONAL)
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             vocabulary_level=VocabularyLevel(
                 persona_config.get("vocabulary_level", VocabularyLevel.INTERMEDIATE)
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             tone_attributes=persona_config.get("tone_attributes", ["informative", "engaging"]),
             humor_style=persona_config.get("humor_style", "light"),
             expertise_areas=persona_config.get("expertise_areas", []),
@@ -442,7 +507,8 @@ class ChannelPersonas:
             catchphrases=persona_config.get("catchphrases", []),
             avoid_topics=persona_config.get("avoid_topics", []),
             preferred_formats=persona_config.get("preferred_formats", []),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Save to database
         self._save_persona(persona)
@@ -460,27 +526,31 @@ class ChannelPersonas:
                 "target_audience": "General audience",
                 "catchphrases": [],
                 "preferred_formats": ["informational", "entertaining"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "voice_characteristics": {
                 "sentence_structure": "balanced",
                 "jargon_usage": "minimal",
                 "explanation_depth": "moderate",
                 "examples_style": "everyday",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _save_persona(self, persona: PersonaProfile):
         """Save persona to database"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO channel_personas
                 (persona_id, channel_id, persona_name, writing_style, tone_attributes,
                     vocabulary_level, humor_style, expertise_areas, target_audience,
-                     voice_characteristics, content_preferences)
+# BRACKET_SURGEON: disabled
+#                      voice_characteristics, content_preferences)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     persona.persona_id,
                     persona.channel_id,
@@ -498,10 +568,14 @@ class ChannelPersonas:
                             "avoid_topics": persona.avoid_topics,
                             "preferred_formats": persona.preferred_formats,
                             **persona.content_preferences,
-                        }
-                    ),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     def get_persona(self, channel_id: str) -> Optional[PersonaProfile]:
@@ -528,11 +602,13 @@ class ChannelPersonas:
             catchphrases=content_prefs.get("catchphrases", []),
             avoid_topics=content_prefs.get("avoid_topics", []),
             preferred_formats=content_prefs.get("preferred_formats", []),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def adapt_content_to_persona(
         self, channel_id: str, content: str, content_type: str = "script"
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Adapt content to match channel persona"""
         persona = self.get_persona(channel_id)
         if not persona:
@@ -606,7 +682,8 @@ class ChannelPersonas:
 
     def _add_persona_elements(
         self, content: str, persona: PersonaProfile, content_type: str
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Add persona - specific elements to content"""
         modified_content = content
 
@@ -630,13 +707,15 @@ class ChannelPersonas:
         if persona.expertise_areas:
             expertise_markers = {
                 "technology": [
-                    "As someone who's been in tech for years",
+                    "As someone who's been in tech for years",'
                     "From a technical standpoint",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "health": ["From a wellness perspective", "Speaking from experience"],
                 "finance": ["From a financial standpoint", "Looking at the numbers"],
-                "politics": ["Let's be honest here", "The reality is"],
-            }
+                "politics": ["Let's be honest here", "The reality is"],'
+# BRACKET_SURGEON: disabled
+#             }
 
             for area in persona.expertise_areas:
                 if area in expertise_markers and random.random() < 0.2:
@@ -649,28 +728,29 @@ class ChannelPersonas:
     def _add_contractions(self, text: str) -> str:
         """Add contractions to make text more conversational"""
         contractions = {
-            "do not": "don't",
-            "does not": "doesn't",
-            "did not": "didn't",
-            "will not": "won't",
-            "would not": "wouldn't",
-            "could not": "couldn't",
-            "should not": "shouldn't",
-            "cannot": "can't",
-            "is not": "isn't",
-            "are not": "aren't",
-            "was not": "wasn't",
-            "were not": "weren't",
-            "have not": "haven't",
-            "has not": "hasn't",
-            "had not": "hadn't",
-            "it is": "it's",
-            "that is": "that's",
-            "there is": "there's",
-            "you are": "you're",
-            "we are": "we're",
-            "they are": "they're",
-        }
+            "do not": "don't",'
+            "does not": "doesn't",'
+            "did not": "didn't",'
+            "will not": "won't",'
+            "would not": "wouldn't",'
+            "could not": "couldn't",'
+            "should not": "shouldn't",'
+            "cannot": "can't",'
+            "is not": "isn't",'
+            "are not": "aren't",'
+            "was not": "wasn't",'
+            "were not": "weren't",'
+            "have not": "haven't",'
+            "has not": "hasn't",'
+            "had not": "hadn't",'
+            "it is": "it's",'
+            "that is": "that's",'
+            "there is": "there's",'
+            "you are": "you're",'
+            "we are": "we're",'
+            "they are": "they're",'
+# BRACKET_SURGEON: disabled
+#         }
 
         for full, contracted in contractions.items():
             text = text.replace(full, contracted)
@@ -681,28 +761,29 @@ class ChannelPersonas:
     def _remove_contractions(self, text: str) -> str:
         """Remove contractions for formal writing"""
         expansions = {
-            "don't": "do not",
-            "doesn't": "does not",
-            "didn't": "did not",
-            "won't": "will not",
-            "wouldn't": "would not",
-            "couldn't": "could not",
-            "shouldn't": "should not",
-            "can't": "cannot",
-            "isn't": "is not",
-            "aren't": "are not",
-            "wasn't": "was not",
-            "weren't": "were not",
-            "haven't": "have not",
-            "hasn't": "has not",
-            "hadn't": "had not",
-            "it's": "it is",
-            "that's": "that is",
-            "there's": "there is",
-            "you're": "you are",
-            "we're": "we are",
-            "they're": "they are",
-        }
+            "don't": "do not",'
+            "doesn't": "does not",'
+            "didn't": "did not",'
+            "won't": "will not",'
+            "wouldn't": "would not",'
+            "couldn't": "could not",'
+            "shouldn't": "should not",'
+            "can't": "cannot",'
+            "isn't": "is not",'
+            "aren't": "are not",'
+            "wasn't": "was not",'
+            "weren't": "were not",'
+            "haven't": "have not",'
+            "hasn't": "has not",'
+            "hadn't": "had not",'
+            "it's": "it is",'
+            "that's": "that is",'
+            "there's": "there is",'
+            "you're": "you are",'
+            "we're": "we are",'
+            "they're": "they are",'
+# BRACKET_SURGEON: disabled
+#         }
 
         for contracted, full in expansions.items():
             text = text.replace(contracted, full)
@@ -755,7 +836,8 @@ class ChannelPersonas:
                     if (
                         word.lower() in ["however", "therefore", "furthermore", "moreover"]
                         and i > 8
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         first_part = " ".join(words[:i])
                         second_part = " ".join(words[i:])
                         balanced_sentences.extend([first_part, second_part])
@@ -781,7 +863,8 @@ class ChannelPersonas:
             "content_format_suggestions": persona.preferred_formats,
             "expertise_angles": self._get_expertise_angles(persona.expertise_areas, content_topic),
             "audience_considerations": persona.target_audience,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return suggestions
 
@@ -797,7 +880,8 @@ class ChannelPersonas:
             "analytical": "Break down complex topics with logical reasoning",
             "inspirational": "Motivate and encourage positive action",
             "conversational": "Write as if speaking directly to a friend",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for tone in tone_attributes:
             if tone in tone_guidance_map:
@@ -812,23 +896,28 @@ class ChannelPersonas:
                 "Use contractions and casual language",
                 "Ask rhetorical questions to engage readers",
                 "Include personal anecdotes when appropriate",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             WritingStyle.PROFESSIONAL: [
                 "Maintain formal tone throughout",
                 "Use industry - specific terminology appropriately",
                 "Structure content with clear headings and sections",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             WritingStyle.SATIRICAL: [
                 "Use exaggeration for comedic effect",
                 "Include ironic observations about current events",
                 "Balance humor with substantive points",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             WritingStyle.INSPIRATIONAL: [
                 "Focus on positive outcomes and possibilities",
                 "Include success stories and examples",
                 "End with actionable steps or encouragement",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         return style_tips_map.get(writing_style, [])
 

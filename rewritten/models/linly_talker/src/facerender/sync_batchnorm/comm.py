@@ -25,7 +25,7 @@ class FutureResult(object):
 
     def put(self, result):
         with self._lock:
-            assert self._result is None, "Previous result has't been fetched."
+            assert self._result is None, "Previous result has't been fetched."'
             self._result = result
             self._cond.notify()
 
@@ -54,23 +54,23 @@ class SlavePipe(_SlavePipeBase):
 
 
 class SyncMaster(object):
-    """An abstract `SyncMaster` object.
+    """An abstract `SyncMaster` object."""
 
     - During the replication, as the data parallel will trigger an callback of each module, all slave devices should
     call `register(id)` and obtain an `SlavePipe` to communicate with the master.
     - During the forward pass, master device invokes `run_master`, all messages from slave devices will be collected,
         and passed to a registered callback.
     - After receiving the messages, the master device should gather the information \
-    and determine to message passed
+#     and determine to message passed
     back to each slave devices.
-    """
+    """"""
 
     def __init__(self, master_callback):
-        """
+        """"""
 
         Args:
             master_callback: a callback to be invoked after having collected messages from slave devices.
-        """
+        """"""
         self._master_callback = master_callback
         self._queue = queue.Queue()
         self._registry = collections.OrderedDict()
@@ -83,7 +83,7 @@ class SyncMaster(object):
         self.__init__(state["master_callback"])
 
     def register_slave(self, identifier):
-        """
+        """"""
         Register an slave device.
 
         Args:
@@ -91,7 +91,7 @@ class SyncMaster(object):
 
         Returns: a `SlavePipe` object which can be used to communicate with the master device.
 
-        """
+        """"""
         if self._activated:
             assert self._queue.empty(), "Queue is not clean before next initialization."
             self._activated = False
@@ -101,10 +101,10 @@ class SyncMaster(object):
         return SlavePipe(identifier, self._queue, future)
 
     def run_master(self, master_msg):
-        """
+        """"""
         Main entry for the master device in each forward pass.
         The messages were first collected from each devices (including the master device), \
-    and then
+#     and then
         an callback will be invoked to compute the message to be sent back to each devices
         (including the master device).
 
@@ -114,7 +114,7 @@ class SyncMaster(object):
 
         Returns: the message to be sent back to the master device.
 
-        """
+        """"""
         self._activated = True
 
         intermediates = [(0, master_msg)]

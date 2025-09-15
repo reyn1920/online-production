@@ -48,7 +48,8 @@ class AnalyticsEngine:
                     hour=random.randint(0, 23),
                     minute=random.randint(0, 59),
                     second=random.randint(0, 59),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 event_types = [
                     "page_view",
@@ -57,7 +58,8 @@ class AnalyticsEngine:
                     "error",
                     "performance_metric",
                     "feature_usage",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 event = AnalyticsEvent(
                     event_type=random.choice(event_types),
@@ -67,13 +69,16 @@ class AnalyticsEngine:
                     properties={
                         "page": random.choice(
                             ["/dashboard", "/api / status", "/api / metrics", "/health"]
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "duration": random.randint(100, 5000),
                         "status": random.choice(["success", "error", "warning"]),
                         "browser": random.choice(["Chrome", "Firefox", "Safari", "Edge"]),
                         "device": random.choice(["desktop", "mobile", "tablet"]),
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
                 self.events.append(event)
 
     def track_event(self, event: AnalyticsEvent):
@@ -115,7 +120,8 @@ class AnalyticsEngine:
             "event_types": dict(event_types),
             "daily_activity": dict(daily_activity),
             "top_pages": dict(sorted(page_views.items(), key=lambda x: x[1], reverse=True)[:10]),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_performance_metrics(self, days: int = 7) -> Dict[str, Any]:
         """Get performance analytics"""
@@ -148,7 +154,8 @@ class AnalyticsEngine:
             "errors": error_count,
             "successes": success_count,
             "uptime_percent": round(100 - error_rate, 2),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_user_analytics(self, days: int = 7) -> Dict[str, Any]:
         """Get user behavior analytics"""
@@ -178,15 +185,18 @@ class AnalyticsEngine:
             "hourly_activity": dict(hourly_activity),
             "peak_hour": (
                 max(hourly_activity.items(), key=lambda x: x[1])[0] if hourly_activity else 0
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_feature_usage(self, days: int = 7) -> Dict[str, Any]:
         """Get feature usage analytics"""
         cutoff_date = datetime.now() - timedelta(days=days)
         recent_events = [
             e for e in self.events if e.timestamp >= cutoff_date and e.event_type == "feature_usage"
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         feature_usage = defaultdict(int)
         for event in recent_events:
@@ -196,7 +206,8 @@ class AnalyticsEngine:
         return {
             "feature_usage": dict(sorted(feature_usage.items(), key=lambda x: x[1], reverse=True)),
             "total_feature_interactions": sum(feature_usage.values()),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_real_time_stats(self) -> Dict[str, Any]:
         """Get real - time statistics"""
@@ -217,8 +228,10 @@ class AnalyticsEngine:
                 else "medium"
                 if len(very_recent_events) < 50
                 else "high"
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     def generate_report(self, days: int = 7) -> Dict[str, Any]:
         """Generate comprehensive analytics report"""
@@ -230,7 +243,8 @@ class AnalyticsEngine:
             "users": self.get_user_analytics(days),
             "features": self.get_feature_usage(days),
             "real_time": self.get_real_time_stats(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def export_data(self, format: str = "json", days: int = 30) -> str:
         """Export analytics data in specified format"""
@@ -264,8 +278,10 @@ class AnalyticsEngine:
                         event.user_id or "",
                         event.session_id or "",
                         json.dumps(event.properties or {}),
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
             return output.getvalue()
 
@@ -287,7 +303,8 @@ def track_page_view(page: str, user_id: str = None, session_id: str = None, **kw
         user_id=user_id,
         session_id=session_id,
         properties={"page": page, **kwargs},
-    )
+# BRACKET_SURGEON: disabled
+#     )
     analytics_engine.track_event(event)
 
 
@@ -303,8 +320,10 @@ def track_api_call(endpoint: str, method: str, status_code: int, duration_ms: in
             "duration": duration_ms,
             "status": "success" if 200 <= status_code < 400 else "error",
             **kwargs,
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
     analytics_engine.track_event(event)
 
 
@@ -316,7 +335,8 @@ def track_user_action(action: str, user_id: str = None, session_id: str = None, 
         user_id=user_id,
         session_id=session_id,
         properties={"action": action, **kwargs},
-    )
+# BRACKET_SURGEON: disabled
+#     )
     analytics_engine.track_event(event)
 
 
@@ -327,5 +347,6 @@ def track_feature_usage(feature: str, user_id: str = None, **kwargs):
         timestamp=datetime.now(),
         user_id=user_id,
         properties={"feature": feature, **kwargs},
-    )
+# BRACKET_SURGEON: disabled
+#     )
     analytics_engine.track_event(event)

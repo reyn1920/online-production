@@ -8,12 +8,14 @@ from text import symbols
 # Regular expression matching Japanese without punctuation marks:
 _japanese_characters = re.compile(
     r"[A - Za - z\\d\\u3005\\u3040-\\u30ff\\u4e00-\\u9fff\\uff11-\\uff19\\uff21-\\uff3a\\uff41-\\uff5a\\uff66-\\uff9d]"
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Regular expression matching non - Japanese characters or punctuation marks:
 _japanese_marks = re.compile(
     r"[^A - Za - z\\d\\u3005\\u3040-\\u30ff\\u4e00-\\u9fff\\uff11-\\uff19\\uff21-\\uff3a\\uff41-\\uff5a\\uff66-\\uff9d]"
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # List of (symbol, Japanese) pairs for marks:
 _symbols_to_japanese = [(re.compile("%s" % x[0]), x[1]) for x in [("％", "パーセント")]]
@@ -22,12 +24,14 @@ _symbols_to_japanese = [(re.compile("%s" % x[0]), x[1]) for x in [("％", "パ�
 _real_sokuon = [
     (re.compile("%s" % x[0]), x[1])
     for x in [
-        (r"Q([↑↓]*[kg])", r"k#\\1"),
-        (r"Q([↑↓]*[tdjʧ])", r"t#\\1"),
+        (r"Q([↑↓]*[kg])", r"k#\\1"),"
+        (r"Q([↑↓]*[tdjʧ])", r"t#\\1"),"
         (r"Q([↑↓]*[sʃ])", r"s\\1"),
-        (r"Q([↑↓]*[pb])", r"p#\\1"),
-    ]
-]
+        (r"Q([↑↓]*[pb])", r"p#\\1"),"
+# BRACKET_SURGEON: disabled
+#     ]
+# BRACKET_SURGEON: disabled
+# ]
 
 # List of (consonant, hatsuon) pairs:
 _real_hatsuon = [
@@ -37,8 +41,10 @@ _real_hatsuon = [
         (r"N([↑↓]*[ʧʥj])", r"n^\\1"),
         (r"N([↑↓]*[tdn])", r"n\\1"),
         (r"N([↑↓]*[kg])", r"ŋ\\1"),
-    ]
-]
+# BRACKET_SURGEON: disabled
+#     ]
+# BRACKET_SURGEON: disabled
+# ]
 
 
 def post_replace_ph(ph):
@@ -53,7 +59,8 @@ def post_replace_ph(ph):
         "·": ",",
         "、": ",",
         "...": "…",
-    }
+# BRACKET_SURGEON: disabled
+#     }
     if ph in rep_map.keys():
         ph = rep_map[ph]
     if ph in symbols:
@@ -99,10 +106,10 @@ def text_normalize(text):
 
 
 def pyopenjtalk_g2p_prosody(text, drop_unvoiced_vowels=True):
-    """Extract phoneme + prosoody symbol sequence from input full - context labels.
+    """Extract phoneme + prosoody symbol sequence from input full - context labels."""
 
     The algorithm is based on `Prosodic features control by symbols as input of
-    sequence - to - sequence acoustic modeling for neural TTS`_ with some r9y9's tweaks.
+    sequence - to - sequence acoustic modeling for neural TTS`_ with some r9y9's tweaks.'
 
     Args:
         text (str): Input text.
@@ -119,7 +126,7 @@ def pyopenjtalk_g2p_prosody(text, drop_unvoiced_vowels=True):
     .. _`Prosodic features control by symbols as input of sequence - to - sequence acoustic
         modeling for neural TTS`: https://doi.org/10.1587/transinf.2020EDP7104
 
-    """
+    """"""
     labels = pyopenjtalk.make_label(pyopenjtalk.run_frontend(text))
     N = len(labels)
 
@@ -163,7 +170,7 @@ def pyopenjtalk_g2p_prosody(text, drop_unvoiced_vowels=True):
         a2_next = _numeric_feature_by_regex(r"\\+(\\d+)\\+", labels[n + 1])
         # accent phrase border
         if a3 == 1 and a2_next == 1 and p3 in "aeiouAEIOUNcl":
-            phones.append("#")
+            phones.append("#")"
         # pitch falling
         elif a1 == 0 and a2_next == a2 + 1 and a2 != f1:
             phones.append("]")

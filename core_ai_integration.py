@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
 Core AI Integration System
 Embeds ChatGPT, Gemini, and Abacus AI into all application functions
 
 This module provides a unified interface to integrate the three AI platforms
 into every aspect of the application, ensuring they are always available
 and integrated into all tasks and operations.
-"""
+""""""
 
 import asyncio
 import json
@@ -84,22 +84,26 @@ class CoreAIIntegration:
                 "send_selector": 'button[data - testid="send - button"]',
                 "output_selector": '[data - message - author - role="assistant"] .markdown',
                 "ready": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "https://gemini.google.com/app": {
                 "name": "Gemini",
                 "input_selector": 'rich - textarea[placeholder*="Enter a prompt"]',
                 "send_selector": 'button[aria - label="Send message"]',
                 "output_selector": ".model - response - text",
                 "ready": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "https://apps.abacus.ai/chatllm/?appId = 1024a18ebe": {
                 "name": "Abacus AI",
                 "input_selector": 'textarea[placeholder*="Type your message"]',
                 "send_selector": 'button[type="submit"]',
                 "output_selector": ".message - content",
                 "ready": True,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         self.platforms = {
             AIPlatform.CHATGPT: {
@@ -111,14 +115,16 @@ class CoreAIIntegration:
                     "analysis",
                     "writing",
                     "problem_solving",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "last_used": None,
                 "usage_count": 0,
                 "cost_per_request": 0.002,  # Estimated cost per request
                 "service_type": "freemium",
                 "monthly_limit": 40,  # Free tier limit
                 "total_cost": 0.0,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             AIPlatform.GEMINI: {
                 "url": "https://gemini.google.com/app",
                 "status": "available",
@@ -128,14 +134,16 @@ class CoreAIIntegration:
                     "reasoning",
                     "multimodal",
                     "data_processing",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "last_used": None,
                 "usage_count": 0,
                 "cost_per_request": 0.00075,  # Estimated cost per request
                 "service_type": "freemium",
                 "monthly_limit": 60,  # Free tier limit
                 "total_cost": 0.0,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             AIPlatform.ABACUS: {
                 "url": "https://apps.abacus.ai/chatllm/?appId = 1024a18ebe",
                 "status": "available",
@@ -145,15 +153,18 @@ class CoreAIIntegration:
                     "analytics",
                     "predictions",
                     "optimization",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "last_used": None,
                 "usage_count": 0,
                 "cost_per_request": 0.001,  # Estimated cost per request
                 "service_type": "freemium",
                 "monthly_limit": 50,  # Free tier limit
                 "total_cost": 0.0,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # Integration statistics
         self.stats = {
@@ -163,7 +174,8 @@ class CoreAIIntegration:
             "platform_usage": {platform.value: 0 for platform in AIPlatform},
             "session_start": datetime.now(),
             "last_activity": datetime.now(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Task integration mapping
         self.task_mappings = {
@@ -177,8 +189,10 @@ class CoreAIIntegration:
                 AIPlatform.CHATGPT,
                 AIPlatform.GEMINI,
                 AIPlatform.ABACUS,
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info("Core AI Integration System initialized")
         logger.info(f"Available platforms: {list(self.platforms.keys())}")
@@ -187,7 +201,8 @@ class CoreAIIntegration:
         """Get recommended AI platforms for a specific task type"""
         return self.task_mappings.get(
             task_type, [AIPlatform.CHATGPT, AIPlatform.GEMINI, AIPlatform.ABACUS]
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def get_platform_status(self) -> Dict[str, Any]:
         """Get current status of all AI platforms"""
@@ -199,7 +214,8 @@ class CoreAIIntegration:
                 "capabilities": info["capabilities"],
                 "usage_count": info["usage_count"],
                 "last_used": (info["last_used"].isoformat() if info["last_used"] else None),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         return status
 
     async def process_with_ai(self, request: AIRequest) -> AIResponse:
@@ -227,7 +243,8 @@ class CoreAIIntegration:
                     api_name=f"web_ai_{request.platform.value}",
                     requests_count=1,
                     cost=request_cost,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Use web automation for supported platforms
             platform_url = platform_info["url"]
@@ -251,9 +268,12 @@ class CoreAIIntegration:
                     "priority": request.priority,
                     "method": (
                         "web_automation" if platform_url in self.web_platforms else "simulation"
-                    ),
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             self.stats["successful_requests"] += 1
             logger.info(f"Successfully processed request with {request.platform.value}")
@@ -273,7 +293,8 @@ class CoreAIIntegration:
                 timestamp=datetime.now(),
                 processing_time=processing_time,
                 error=str(e),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _process_with_web_ai(self, request: AIRequest, platform_url: str) -> str:
         """Process content using web - based AI platform automation"""
@@ -327,7 +348,8 @@ class CoreAIIntegration:
                 platform=platform,
                 task_type=task_type,
                 context={"multi_platform": True, "total_platforms": len(platforms)},
-            )
+# BRACKET_SURGEON: disabled
+#             )
             tasks.append(self.process_with_ai(request))
 
         # Process all platforms concurrently
@@ -343,7 +365,8 @@ class CoreAIIntegration:
                     timestamp=datetime.now(),
                     processing_time=0.0,
                     error=str(result),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 responses[platform.value] = result
 
@@ -354,13 +377,14 @@ class CoreAIIntegration:
 
         def wrapper(*args, **kwargs):
             # Add AI context to function execution
-            ai_context = {
+            {
                 "function_name": func.__name__,
                 "args_count": len(args),
                 "kwargs_keys": list(kwargs.keys()),
                 "timestamp": datetime.now().isoformat(),
                 "ai_platforms_available": [p.value for p in self.platforms.keys()],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Execute original function
             result = func(*args, **kwargs)
@@ -384,13 +408,15 @@ class CoreAIIntegration:
             "failed_requests": self.stats["failed_requests"],
             "success_rate": (
                 self.stats["successful_requests"] / max(1, self.stats["total_requests"])
-            )
+# BRACKET_SURGEON: disabled
+#             )
             * 100,
             "platform_usage": self.stats["platform_usage"],
             "last_activity": self.stats["last_activity"].isoformat(),
             "platforms_status": self.get_platform_status(),
             "cost_analytics": cost_stats,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def create_ai_enhanced_context(self, base_context: Dict[str, Any]) -> Dict[str, Any]:
         """Enhance any context with AI integration information"""
@@ -403,9 +429,12 @@ class CoreAIIntegration:
                     "platform_urls": {p.value: info["url"] for p, info in self.platforms.items()},
                     "integration_stats": self.get_integration_stats(),
                     "cost_summary": self.get_cost_summary(),
-                }
-            }
-        )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
         return enhanced_context
 
     def get_cost_analytics(self) -> Dict[str, Any]:
@@ -423,10 +452,12 @@ class CoreAIIntegration:
                 "service_type": platform_info["service_type"],
                 "remaining_free_requests": max(
                     0, platform_info["monthly_limit"] - platform_info["usage_count"]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "cost_efficiency": platform_info["total_cost"]
                 / max(1, platform_info["usage_count"]),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return {
             "total_cost": total_cost,
@@ -434,7 +465,8 @@ class CoreAIIntegration:
             "average_cost_per_request": total_cost / max(1, total_requests),
             "platform_breakdown": platform_costs,
             "cost_tracking_enabled": self.cost_tracker is not None,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_cost_summary(self) -> Dict[str, Any]:
         """Get a summary of current costs and budget status"""
@@ -453,7 +485,8 @@ class CoreAIIntegration:
             "session_requests": analytics["total_requests"],
             "monthly_costs": monthly_costs,
             "cost_recommendations": self._get_cost_recommendations(analytics),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _get_cost_recommendations(self, analytics: Dict[str, Any]) -> List[str]:
         """Generate cost optimization recommendations"""
@@ -464,12 +497,14 @@ class CoreAIIntegration:
             if data["cost_efficiency"] > 0.005:  # High cost per request
                 recommendations.append(
                     f"Consider reducing usage of {platform} - high cost per request (${data['cost_efficiency']:.4f})"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             if data["remaining_free_requests"] <= 5:  # Near free tier limit
                 recommendations.append(
                     f"Approaching free tier limit for {platform} - {data['remaining_free_requests']} requests remaining"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Overall cost recommendations
         if analytics["total_cost"] > 1.0:  # High session cost
@@ -478,15 +513,18 @@ class CoreAIIntegration:
         # Add web platform recommendations
         recommendations.append(
             "Web platforms (ChatGPT, Gemini, Abacus AI) are cost-effective - no API fees required"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         recommendations.append(
             "Browser automation allows unlimited usage within platform free tiers"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if not recommendations:
             recommendations.append(
                 "AI usage is cost - efficient - no immediate optimizations needed"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return recommendations
 
@@ -512,7 +550,8 @@ def get_ai_cost_analytics() -> Dict[str, Any]:
 
 async def ask_ai(
     prompt: str, platform: AIPlatform = AIPlatform.CHATGPT, task_type: str = "general"
-) -> AIResponse:
+# BRACKET_SURGEON: disabled
+# ) -> AIResponse:
     """Simple function to ask any AI platform a question"""
     request = AIRequest(prompt=prompt, platform=platform, task_type=task_type)
     return await core_ai.process_with_ai(request)
@@ -546,7 +585,8 @@ __all__ = [
     "ask_all_ai",
     "ai_integrated",
     "get_ai_context",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 if __name__ == "__main__":
     # Demo usage
@@ -560,7 +600,8 @@ if __name__ == "__main__":
             "Analyze this code for optimization opportunities",
             AIPlatform.CHATGPT,
             "code_analysis",
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"ChatGPT Response: {response.content[:100]}...")
 
         # Test multiple platforms

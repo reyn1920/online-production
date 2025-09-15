@@ -1,11 +1,11 @@
 #!/usr / bin / env python3
-"""
+""""""
 LIVE Production Deployment Readiness Checker
 
 This script verifies that all components are ready for LIVE production deployment.
 NO VIRTUAL ENVIRONMENTS - Production deployment only.
 Automation requires explicit user authorization.
-"""
+""""""
 
 import os
 import json
@@ -56,7 +56,9 @@ def check_git_status():
     try:
         # Check if we're in a git repository
         result = subprocess.run(['git', 'status', '--porcelain'],
-            capture_output = True, text = True, check = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             capture_output = True, text = True, check = True)
 
         if result.stdout.strip():
             print("⚠️  Git status: Uncommitted changes detected - NOT READY FOR LIVE")
@@ -139,7 +141,9 @@ def check_ai_integrations():
         ('backend / ai_benchmark_integration.py', 'AI Benchmark Integration'),
         ('app / quality_dashboard.py', 'Quality Dashboard'),
         ('app / dashboard.py', 'Main Dashboard')
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
 
     all_exist = True
     for file_path, description in ai_files:
@@ -159,17 +163,23 @@ def generate_readiness_report(results):
                 'passed_checks': sum(1 for r in results.values() if r),
                 'failed_checks': sum(1 for r in results.values() if not r),
                 'success_rate': round((sum(1 for r in results.values() if r) / len(results)) * 100,
-    2)
-        },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     2)
+# BRACKET_SURGEON: disabled
+#         },
             'detailed_results': results,
             'deployment_status': 'READY' if all(results.values()) else 'NOT_READY',
             'next_steps': []
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Add specific next steps based on failures
     if not results.get('github_secrets_info', True):
-        report['next_steps'].append('Configure GitHub repository secrets (NETLIFY_AUTH_TOKEN,
-    NETLIFY_SITE_ID)')
+        report['next_steps'].append('Configure GitHub repository secrets (NETLIFY_AUTH_TOKEN,'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     NETLIFY_SITE_ID)')
 
     if not results.get('netlify_config', True):
         report['next_steps'].append('Set up Netlify site and configuration')
@@ -183,7 +193,9 @@ def generate_readiness_report(results):
                 'Set up Netlify site',
                 'Run staging deployment test',
                 'Deploy to production'
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
     return report
 
@@ -202,7 +214,8 @@ def main():
             'netlify_config': check_netlify_config(),
             'environment_template': check_environment_template(),
             'ai_integrations': check_ai_integrations()
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     print("\\n" + "=" * 50)
 

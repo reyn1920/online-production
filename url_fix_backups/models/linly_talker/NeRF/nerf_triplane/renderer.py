@@ -10,7 +10,9 @@ import trimesh
 
 from .utils import (convert_poses, custom_meshgrid, euler_angles_to_matrix,
 
-    get_audio_features)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     get_audio_features)
 
 
 def sample_pdf(bins, weights, n_samples, det = False):
@@ -28,7 +30,9 @@ def sample_pdf(bins, weights, n_samples, det = False):
     if det:
         u = torch.linspace(
             0.0 + 0.5 / n_samples, 1.0 - 0.5 / n_samples, steps = n_samples
-        ).to(weights.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).to(weights.device)
         u = u.expand(list(cdf.shape[:-1]) + [n_samples])
     else:
         u = torch.rand(list(cdf.shape[:-1]) + [n_samples]).to(weights.device)
@@ -90,7 +94,7 @@ class NeRFRenderer(nn.Module):
 
         # prepare aabb with a 6D tensor (xmin, ymin, zmin, xmax, ymax, zmax)
         # NOTE: aabb (can be rectangular) is only used to generate points, we still rely on bound (always cubic) to calculate density grid \
-    and hashing.
+#     and hashing.
         aabb_train = torch.FloatTensor(
             [
                 -opt.bound,
@@ -99,8 +103,12 @@ class NeRFRenderer(nn.Module):
                     opt.bound,
                     opt.bound / 2,
                     opt.bound,
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         aabb_infer = aabb_train.clone()
         self.register_buffer("aabb_train", aabb_train)
         self.register_buffer("aabb_infer", aabb_infer)
@@ -112,34 +120,44 @@ class NeRFRenderer(nn.Module):
         if self.individual_dim > 0:
             self.individual_codes = nn.Parameter(
                 torch.randn(self.individual_num, self.individual_dim) * 0.1
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if self.torso:
             self.individual_dim_torso = opt.ind_dim_torso
             if self.individual_dim_torso > 0:
                 self.individual_codes_torso = nn.Parameter(
                     torch.randn(self.individual_num, self.individual_dim_torso) * 0.1
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # optimize camera pose
         self.train_camera = self.opt.train_camera
         if self.train_camera:
             self.camera_dR = nn.Parameter(
                 torch.zeros(self.individual_num, 3)
-            )  # euler angle
+# BRACKET_SURGEON: disabled
+#             )  # euler angle
             self.camera_dT = nn.Parameter(
                 torch.zeros(self.individual_num, 3)
-            )  # xyz offset
+# BRACKET_SURGEON: disabled
+#             )  # xyz offset
 
         # extra state for cuda raymarching
 
         # 3D head density grid
         density_grid = torch.zeros(
             [self.cascade, self.grid_size**3]
-        )  # [CAS, H * H * H]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # [CAS, H * H * H]
         density_bitfield = torch.zeros(
             self.cascade * self.grid_size**3 // 8, dtype = torch.uint8
-        )  # [CAS * H * H * H // 8]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # [CAS * H * H * H // 8]
         self.register_buffer("density_grid", density_grid)
         self.register_buffer("density_bitfield", density_bitfield)
         self.mean_density = 0
@@ -154,7 +172,8 @@ class NeRFRenderer(nn.Module):
         # step counter
         step_counter = torch.zeros(
             16, 2, dtype = torch.int32
-        )  # 16 is hardcoded for averaging...
+# BRACKET_SURGEON: disabled
+#         )  # 16 is hardcoded for averaging...
         self.register_buffer("step_counter", step_counter)
         self.mean_count = 0
         self.local_step = 0
@@ -207,7 +226,8 @@ class NeRFRenderer(nn.Module):
             max_steps = 1024,
             T_thresh = 1e-4,
             **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         # rays_o, rays_d: [B, N, 3], assumes B == 1
         # auds: [B, 16]
         # index: [B]
@@ -225,7 +245,9 @@ class NeRFRenderer(nn.Module):
                 self.camera_dR[index]/180 * np.pi + 1e-8
             ).squeeze(
                 0
-            )  # [1, 3] --> [3, 3]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )  # [1, 3] --> [3, 3]
 
             rays_o = rays_o + dT
             rays_d = rays_d @ dR
@@ -241,7 +263,9 @@ class NeRFRenderer(nn.Module):
                 rays_d,
                 self.aabb_train if self.training else self.aabb_infer,
                 self.min_near,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         nears = nears.detach()
         fars = fars.detach()
 
@@ -285,10 +309,14 @@ class NeRFRenderer(nn.Module):
                     force_all_rays,
                     dt_gamma,
                     max_steps,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             sigmas, rgbs, amb_aud, amb_eye, uncertainty = self(
                 xyzs, dirs, enc_a, ind_code, eye
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             sigmas = self.density_scale * sigmas
 
             # print(f'valid RGB query ratio: {mask.sum().item()/mask.shape[0]} (total = {mask.sum().item()})')
@@ -302,7 +330,9 @@ class NeRFRenderer(nn.Module):
     ambient.abs().sum(-1),
     uncertainty,
     deltas,
-    rays)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     rays)
             weights_sum, amb_aud_sum, amb_eye_sum, uncertainty_sum, depth, image = (
                 raymarching.composite_rays_train_triplane(
                     sigmas,
@@ -312,8 +342,12 @@ class NeRFRenderer(nn.Module):
                         uncertainty,
                         deltas,
                         rays,
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # for training only
             results["weights_sum"] = weights_sum
@@ -337,7 +371,9 @@ class NeRFRenderer(nn.Module):
             n_alive = N
             rays_alive = torch.arange(n_alive,
     dtype = torch.int32,
-    device = device)  # [N]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     device = device)  # [N]
             rays_t = nears.clone()  # [N]
 
             step = 0
@@ -371,11 +407,15 @@ class NeRFRenderer(nn.Module):
                         perturb if step == 0 else False,
                         dt_gamma,
                         max_steps,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 sigmas, rgbs, ambients_aud, ambients_eye, uncertainties = self(
                     xyzs, dirs, enc_a, ind_code, eye
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 sigmas = self.density_scale * sigmas
 
                 # raymarching.composite_rays_uncertainty(n_alive,
@@ -392,7 +432,9 @@ class NeRFRenderer(nn.Module):
     image,
     ambient_sum,
     uncertainty_sum,
-    T_thresh)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     T_thresh)
                 raymarching.composite_rays_triplane(
                     n_alive,
                         n_step,
@@ -411,14 +453,18 @@ class NeRFRenderer(nn.Module):
                         amb_eye_sum,
                         uncertainty_sum,
                         T_thresh,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 rays_alive = rays_alive[rays_alive >= 0]
 
                 # print(f'step = {step},
     n_step = {n_step},
     n_alive = {n_alive},
-    xyzs: {xyzs.shape}')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     xyzs: {xyzs.shape}')
 
                 step += n_step
 
@@ -477,12 +523,16 @@ class NeRFRenderer(nn.Module):
             # 2D density grid for acceleration...
             density_thresh_torso = min(
                 self.density_thresh_torso, self.mean_density_torso
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             occupancy = F.grid_sample(
                 self.density_grid_torso.view(1, 1, self.grid_size, self.grid_size),
                     bg_coords.view(1, -1, 1, 2),
                     align_corners = True,
-                    ).view(-1)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ).view(-1)
             mask = occupancy > density_thresh_torso
 
             # masked query of torso
@@ -492,7 +542,9 @@ class NeRFRenderer(nn.Module):
             if mask.any():
                 torso_alpha_mask, torso_color_mask, deform = self.forward_torso(
                     bg_coords[mask], poses, ind_code_torso
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 torso_alpha[mask] = torso_alpha_mask.float()
                 torso_color[mask] = torso_color_mask.float()
@@ -508,7 +560,9 @@ class NeRFRenderer(nn.Module):
 
             # print(torso_alpha.shape,
     torso_alpha.max().item(),
-    torso_alpha.min().item())
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     torso_alpha.min().item())
 
         results["bg_color"] = bg_color
 
@@ -533,13 +587,19 @@ class NeRFRenderer(nn.Module):
 
         X = torch.arange(
             self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-        ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).split(S)
         Y = torch.arange(
             self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-        ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).split(S)
         Z = torch.arange(
             self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-        ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).split(S)
 
         count = torch.zeros_like(self.density_grid)
         poses = poses.to(count.device)
@@ -555,13 +615,17 @@ class NeRFRenderer(nn.Module):
                     coords = torch.cat(
                         [xx.reshape(-1, 1), yy.reshape(-1, 1), zz.reshape(-1, 1)],
                             dim=-1,
-                            )  # [N, 3], in [0, 128)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )  # [N, 3], in [0, 128)
                     indices = raymarching.morton3D(coords).long()  # [N]
                     world_xyzs = (
                         2 * coords.float()/(self.grid_size - 1) - 1
                     ).unsqueeze(
                         0
-                    )  # [1, N, 3] in [-1, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )  # [1, N, 3] in [-1, 1]
 
                     # cascading
                     for cas in range(self.cascade):
@@ -577,10 +641,14 @@ class NeRFRenderer(nn.Module):
 
                             # world2cam transform (poses is c2w,
     so we need to transpose it. Another transpose is needed for batched matmul,
-    so the final form is without transpose.)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     so the final form is without transpose.)
                             cam_xyzs = cas_world_xyzs - poses[
                                 head:tail, :3, 3
-                            ].unsqueeze(1)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ].unsqueeze(1)
                             cam_xyzs = cam_xyzs @ poses[head:tail, :3, :3]  # [S, N, 3]
 
                             # query if point is covered by any camera
@@ -588,11 +656,15 @@ class NeRFRenderer(nn.Module):
                             mask_x = (
                                 torch.abs(cam_xyzs[:, :, 0])
                                 < cx / fx * cam_xyzs[:, :, 2] + half_grid_size * 2
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             mask_y = (
                                 torch.abs(cam_xyzs[:, :, 1])
                                 < cy / fy * cam_xyzs[:, :, 2] + half_grid_size * 2
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             mask = (mask_z & mask_x & mask_y).sum(0).reshape(-1)  # [N]
 
                             # update count
@@ -617,7 +689,9 @@ class NeRFRenderer(nn.Module):
         rand_idx = random.randint(0, self.aud_features.shape[0] - 1)
         auds = get_audio_features(self.aud_features, self.att, rand_idx).to(
             self.density_bitfield.device
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # encode audio
         enc_a = self.encode_audio(auds)
@@ -631,20 +705,28 @@ class NeRFRenderer(nn.Module):
             if self.exp_eye:
                 eye = self.eye_area[[rand_idx]].to(
                     self.density_bitfield.device
-                )  # [1, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )  # [1, 1]
             else:
                 eye = None
 
             # full update
             X = torch.arange(
                 self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-            ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).split(S)
             Y = torch.arange(
                 self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-            ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).split(S)
             Z = torch.arange(
                 self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-            ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).split(S)
 
             for xs in X:
                 for ys in Y:
@@ -655,11 +737,15 @@ class NeRFRenderer(nn.Module):
                         coords = torch.cat(
                             [xx.reshape(-1, 1), yy.reshape(-1, 1), zz.reshape(-1, 1)],
                                 dim=-1,
-                                )  # [N, 3], in [0, 128)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )  # [N, 3], in [0, 128)
                         indices = raymarching.morton3D(coords).long()  # [N]
                         xyzs = (
                             2 * coords.float()/(self.grid_size - 1) - 1
-                        )  # [N, 3] in [-1, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )  # [N, 3] in [-1, 1]
 
                         # cascading
                         for cas in range(self.cascade):
@@ -670,14 +756,17 @@ class NeRFRenderer(nn.Module):
                             # add noise in [-hgs, hgs]
                             cas_xyzs += (
                                 torch.rand_like(cas_xyzs) * 2 - 1
-                            ) * half_grid_size
+# BRACKET_SURGEON: disabled
+#                             ) * half_grid_size
                             # query density
                             sigmas = (
                                 self.density(cas_xyzs, enc_a, eye)["sigma"]
                                 .reshape(-1)
                                 .detach()
                                 .to(tmp_grid.dtype)
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             sigmas *= self.density_scale
                             # assign
                             tmp_grid[cas, indices] = sigmas
@@ -689,7 +778,9 @@ class NeRFRenderer(nn.Module):
             valid_mask = (self.density_grid >= 0) & (tmp_grid >= 0)
             self.density_grid[valid_mask] = torch.maximum(
                 self.density_grid[valid_mask] * decay, tmp_grid[valid_mask]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.mean_density = torch.mean(
                 self.density_grid.clamp(min = 0)
             ).item()  # -1 non - training regions are viewed as 0 density.
@@ -699,7 +790,9 @@ class NeRFRenderer(nn.Module):
             density_thresh = min(self.mean_density, self.density_thresh)
             self.density_bitfield = raymarching.packbits(
                 self.density_grid, density_thresh, self.density_bitfield
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         ### update torso density grid
         if self.torso:
@@ -717,10 +810,14 @@ class NeRFRenderer(nn.Module):
 
             X = torch.arange(
                 self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-            ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).split(S)
             Y = torch.arange(
                 self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-            ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).split(S)
 
             half_grid_size = 1 / self.grid_size
 
@@ -729,13 +826,17 @@ class NeRFRenderer(nn.Module):
                     xx, yy = custom_meshgrid(xs, ys)
                     coords = torch.cat(
                         [xx.reshape(-1, 1), yy.reshape(-1, 1)], dim=-1
-                    )  # [N, 2], in [0, 128)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )  # [N, 2], in [0, 128)
                     indices = (
                         coords[:, 1] * self.grid_size + coords[:, 0]
                     ).long()  # NOTE: xy transposed!
                     xys = (
                         2 * coords.float()/(self.grid_size - 1) - 1
-                    )  # [N, 2] in [-1, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )  # [N, 2] in [-1, 1]
                     xys = xys * (1 - half_grid_size)
                     # add noise in [-hgs, hgs]
                     xys += (torch.rand_like(xys) * 2 - 1) * half_grid_size
@@ -750,36 +851,50 @@ class NeRFRenderer(nn.Module):
             # tmp_grid_torso = F.max_pool2d(tmp_grid_torso,
     kernel_size = 3,
     stride = 1,
-    padding = 1)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     padding = 1)
             tmp_grid_torso = F.max_pool2d(
                 tmp_grid_torso, kernel_size = 5, stride = 1, padding = 2
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             tmp_grid_torso = tmp_grid_torso.view(-1)
 
             self.density_grid_torso = torch.maximum(
                 self.density_grid_torso * decay, tmp_grid_torso
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.mean_density_torso = torch.mean(self.density_grid_torso).item()
 
             # density_thresh_torso = min(self.density_thresh_torso,
-    self.mean_density_torso)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     self.mean_density_torso)
             # print(f'[density grid torso] min={self.density_grid_torso.min().item():.4f},
     max={self.density_grid_torso.max().item():.4f},
     mean={self.mean_density_torso:.4f},
-    occ_rate={(self.density_grid_torso > density_thresh_torso).sum() / (128**2):.3f}')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     occ_rate={(self.density_grid_torso > density_thresh_torso).sum() / (128**2):.3f}')
 
         ### update step counter
         total_step = min(16, self.local_step)
         if total_step > 0:
             self.mean_count = int(
                 self.step_counter[:total_step, 0].sum().item() / total_step
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         self.local_step = 0
 
         # print(f'[density grid] min={self.density_grid.min().item():.4f},
     max={self.density_grid.max().item():.4f},
     mean={self.mean_density:.4f},
-    occ_rate={(self.density_grid > 0.01).sum() / (128**3 * self.cascade):.3f} | [step counter] mean={self.mean_count}')
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     occ_rate={(self.density_grid > 0.01).sum() / (128**3 * self.cascade):.3f} | [step counter] mean={self.mean_count}')
 
     @torch.no_grad()
 
@@ -794,7 +909,9 @@ class NeRFRenderer(nn.Module):
         rand_idx = random.randint(0, self.aud_features.shape[0] - 1)
         auds = get_audio_features(self.aud_features, self.att, rand_idx).to(
             self.density_bitfield.device
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # encode audio
         enc_a = self.encode_audio(auds)
@@ -809,13 +926,19 @@ class NeRFRenderer(nn.Module):
         # full update
         X = torch.arange(
             self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-        ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).split(S)
         Y = torch.arange(
             self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-        ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).split(S)
         Z = torch.arange(
             self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-        ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).split(S)
 
         for xs in X:
             for ys in Y:
@@ -826,11 +949,15 @@ class NeRFRenderer(nn.Module):
                     coords = torch.cat(
                         [xx.reshape(-1, 1), yy.reshape(-1, 1), zz.reshape(-1, 1)],
                             dim=-1,
-                            )  # [N, 3], in [0, 128)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )  # [N, 3], in [0, 128)
                     indices = raymarching.morton3D(coords).long()  # [N]
                     xyzs = (
                         2 * coords.float()/(self.grid_size - 1) - 1
-                    )  # [N, 3] in [-1, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )  # [N, 3] in [-1, 1]
 
                     # cascading
                     for cas in range(self.cascade):
@@ -844,11 +971,15 @@ class NeRFRenderer(nn.Module):
                         aud_norms = (
                             self.density(cas_xyzs.to(tmp_grid.dtype), enc_a, eye)[
                                 "ambient_aud"
-                            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
                             .reshape(-1)
                             .detach()
                             .to(tmp_grid.dtype)
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         # assign
                         tmp_grid[cas, indices] = aud_norms
 
@@ -858,7 +989,9 @@ class NeRFRenderer(nn.Module):
         # # ema update
         # valid_mask = (self.density_grid >= 0) & (tmp_grid >= 0)
         # self.density_grid[valid_mask] = torch.maximum(self.density_grid[valid_mask] * decay,
-    tmp_grid[valid_mask])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     tmp_grid[valid_mask])
 
     @torch.no_grad()
 
@@ -873,7 +1006,9 @@ class NeRFRenderer(nn.Module):
         rand_idx = random.randint(0, self.aud_features.shape[0] - 1)
         auds = get_audio_features(self.aud_features, self.att, rand_idx).to(
             self.density_bitfield.device
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # encode audio
         enc_a = self.encode_audio(auds)
@@ -888,13 +1023,19 @@ class NeRFRenderer(nn.Module):
         # full update
         X = torch.arange(
             self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-        ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).split(S)
         Y = torch.arange(
             self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-        ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).split(S)
         Z = torch.arange(
             self.grid_size, dtype = torch.int32, device = self.density_bitfield.device
-        ).split(S)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).split(S)
 
         for xs in X:
             for ys in Y:
@@ -905,11 +1046,15 @@ class NeRFRenderer(nn.Module):
                     coords = torch.cat(
                         [xx.reshape(-1, 1), yy.reshape(-1, 1), zz.reshape(-1, 1)],
                             dim=-1,
-                            )  # [N, 3], in [0, 128)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )  # [N, 3], in [0, 128)
                     indices = raymarching.morton3D(coords).long()  # [N]
                     xyzs = (
                         2 * coords.float()/(self.grid_size - 1) - 1
-                    )  # [N, 3] in [-1, 1]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )  # [N, 3] in [-1, 1]
 
                     # cascading
                     for cas in range(self.cascade):
@@ -923,11 +1068,15 @@ class NeRFRenderer(nn.Module):
                         eye_norms = (
                             self.density(cas_xyzs.to(tmp_grid.dtype), enc_a, eye)[
                                 "ambient_eye"
-                            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
                             .reshape(-1)
                             .detach()
                             .to(tmp_grid.dtype)
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         # assign
                         tmp_grid[cas, indices] = eye_norms
 
@@ -937,7 +1086,9 @@ class NeRFRenderer(nn.Module):
         # # ema update
         # valid_mask = (self.density_grid >= 0) & (tmp_grid >= 0)
         # self.density_grid[valid_mask] = torch.maximum(self.density_grid[valid_mask] * decay,
-    tmp_grid[valid_mask])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     tmp_grid[valid_mask])
 
 
     def render(
@@ -950,7 +1101,8 @@ class NeRFRenderer(nn.Module):
             staged = False,
             max_ray_batch = 4096,
             **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         # rays_o, rays_d: [B, N, 3], assumes B == 1
         # auds: [B, 29, 16]
         # eye: [B, 1]
@@ -983,7 +1135,8 @@ class NeRFRenderer(nn.Module):
             staged = False,
             max_ray_batch = 4096,
             **kwargs
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         # rays_o, rays_d: [B, N, 3], assumes B == 1
         # auds: [B, 29, 16]
         # eye: [B, 1]

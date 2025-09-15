@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 GoLive Commander: Comprehensive Production Deployment Checklist
 Implements automated testing, security scans, and deployment validation
 Based on the three core principles: Automation, Security, and Reliability
-"""
+""""""
 
 import os
 import sys
@@ -18,35 +18,50 @@ from pathlib import Path
 
 dataclass
 class ChecklistItem:
-    ""Represents a single checklist item with validation""""
+    ""Represents a single checklist item with validation"""""""
 
     name: str
     description: str
     category: str
     priority: str  # critical', high', medium', low''
-    status: str = pending"  # pending', running', passed', failed', skipped'"
-    error_message: Optionalstr] = None
-    execution_time: Optionalfloat] = None
-    timestamp: Optionalstr] = None
+    status: str = pending"  # pending', running', passed', failed', skipped'""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     error_message: Optionalstr] = None
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     execution_time: Optionalfloat] = None
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timestamp: Optionalstr] = None
 
 
 dataclass
 class GoLiveReport:
-    ""Comprehensive golive validation report""""
+    ""Comprehensive golive validation report"""""""
 
     project_name: str
     environment: str
     start_time: str
-    end_time: Optionalstr] = None
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     end_time: Optionalstr] = None
     total_checks: int = 0
     passed_checks: int = 0
     failed_checks: int = 0
     skipped_checks: int = 0
-    critical_failures: Liststr] = None
-    warnings: Liststr] = None
-    recommendations: Liststr] = None
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     critical_failures: Liststr] = None
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     warnings: Liststr] = None
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     recommendations: Liststr] = None
 
-    def __post_init__self):
+# BRACKET_SURGEON: disabled
+#     def __post_init__self):
         if selfcritical_failures is None:
             selfcritical_failures = []
         if selfwarnings is None:
@@ -56,51 +71,67 @@ class GoLiveReport:
 
 
 class GoLiveChecker:
-    ""Comprehensive golive validation system""""
+    ""Comprehensive golive validation system"""""""
 
-    def __init__self, project_path: str = ".", environment: str = production"):"
-        selfproject_path = Pathproject_path)resolve()
+# BRACKET_SURGEON: disabled
+#     def __init__self, project_path: str = ".", environment: str = production"):"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         selfproject_path = Pathproject_path)resolve()
         selfenvironment = environment
-        selfchecklist: ListChecklistItem] = []
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         selfchecklist: ListChecklistItem] = []
         selfreport = GoLiveReport(
             project_nameselfproject_pathname,
             environmentenvironment,
             start_timedatetimenow()isoformat(),
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self_initialize_checklist()
 
-    def _initialize_checklistself):
-        ""Initialize the comprehensive golive checklist""""
+# BRACKET_SURGEON: disabled
+#     def _initialize_checklistself):
+        ""Initialize the comprehensive golive checklist"""""""
 
         # Critical Infrastructure Checks
-        selfchecklistextend(
+        selfchecklistextend(:
             [
                 ChecklistItem(
                     environment_separation","
                     Verify separate development, staging, and production environments","
                     infrastructure","
                     critical","
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 ChecklistItem(
                     secrets_management","
                     Validate no hardcoded secrets in codebase","
                     security","
                     critical","
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 ChecklistItem(
                     env_variables","
                     Check environment variable configuration","
                     configuration","
                     critical","
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 ChecklistItem(
                     build_process","
                     Validate build process completes successfully","
                     build","
                     critical","
-                ),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Security Validation
         selfchecklistextend(
@@ -110,37 +141,49 @@ class GoLiveChecker:
                     Scan for vulnerable dependencies","
                     security","
                     high","
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 ChecklistItem(
                     secret_scan","
                     Scan for exposed secrets and API keys","
                     security","
                     critical","
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 ChecklistItem(
                     ssl_certificate","
                     Verify SSL certificate configuration","
                     security","
                     high","
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 ChecklistItem(
                     cors_policy","
                     Validate CORS policy configuration","
                     security","
                     medium","
-                ),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Code Quality Checks
         selfchecklistextend(
             [
-                ChecklistItem(linting", Run code linting and style checks", quality", high"),"
-                ChecklistItem(unit_tests", Execute unit test suite", testing", high"),"
-                ChecklistItem(integration_tests", Run integration tests", testing", high"),"
-                ChecklistItem(e2e_tests", Execute endtoend tests", testing", medium"),"
-            ]
-        )
+                ChecklistItem(linting", Run code linting and style checks", quality", high"),""
+                ChecklistItem(unit_tests", Execute unit test suite", testing", high"),""
+                ChecklistItem(integration_tests", Run integration tests", testing", high"),""
+                ChecklistItem(e2e_tests", Execute endtoend tests", testing", medium"),""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Performance and Monitoring
         selfchecklistextend(
@@ -150,21 +193,28 @@ class GoLiveChecker:
                     Establish performance baseline metrics","
                     performance","
                     medium","
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 ChecklistItem(
                     health_checks","
                     Implement application health checks","
                     monitoring","
                     high","
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 ChecklistItem(
                     error_tracking","
                     Configure error tracking and logging","
                     monitoring","
                     high","
-                ),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Deployment Validation
         selfchecklistextend(
@@ -174,46 +224,60 @@ class GoLiveChecker:
                     Validate deployment configuration","
                     deployment","
                     critical","
-                ),
-                ChecklistItem(rollback_plan", Verify rollback procedures", deployment", high"),"
+# BRACKET_SURGEON: disabled
+#                 ),
+                ChecklistItem(rollback_plan", Verify rollback procedures", deployment", high"),""
                 ChecklistItem(
                     smoke_tests","
                     Execute postdeployment smoke tests","
                     deployment","
                     critical","
-                ),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
-    def run_checkself, item: ChecklistItem) -> bool:
-        ""Execute a single checklist item""""
+# BRACKET_SURGEON: disabled
+#     def run_checkself, item: ChecklistItem) -> bool:
+        ""Execute a single checklist item"""""""
         start_time = timetime()
         itemstatus = running""
         itemtimestamp = datetimenow()isoformat()
 
         try:
-            success = self_execute_checkitem)
-            itemstatus = passed" if success else failed""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             success = self_execute_checkitem)
+            itemstatus = passed" if success else failed""""""
 
             if not success and itempriority == critical":"
-                selfreportcritical_failuresappendf"itemname}: itemdescription}")"
+# BRACKET_SURGEON: disabled
+#                 selfreportcritical_failuresappendf"itemname}: itemdescription}")""
 
             return success
 
         except Exception as e:
             itemstatus = failed""
-            itemerror_message = stre)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             itemerror_message = stre)
 
             if itempriority == critical":"
-                selfreportcritical_failuresappendf"itemname}: stre)}")"
+# BRACKET_SURGEON: disabled
+#                 selfreportcritical_failuresappendf"itemname}: stre)}")""
 
             return False
 
         finally:
             itemexecution_time = timetime() - start_time
 
-    def _execute_checkself, item: ChecklistItem) -> bool:
-        ""Execute the actual validation logic for each check""""
+# BRACKET_SURGEON: disabled
+#     def _execute_checkself, item: ChecklistItem) -> bool:
+        ""Execute the actual validation logic for each check"""""""
 
         if itemname == secrets_management":"
             return self_check_secrets_management()
@@ -238,62 +302,87 @@ class GoLiveChecker:
         elif itemname == smoke_tests":"
             return self_run_smoke_tests()
         else:
+            pass
             # Default implementation for other checks
-            return self_generic_checkitem)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             return self_generic_checkitem)
 
-    def _check_secrets_managementself) -> bool:
-        ""Validate no hardcoded secrets in codebase""""
+# BRACKET_SURGEON: disabled
+#     def _check_secrets_managementself) -> bool:
+        ""Validate no hardcoded secrets in codebase"""""""
         secret_patterns = [
-            rapi_-]key[s]*[=:][s]*["\'][w\-\.]+["\']',"
-            rsecret_-]key[s]*[=:][s]*["\'][w\-\.]+["\']',"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             rapi_-]key[s]*[=:][s]*["\'][w\-\.]+["\']',"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             rsecret_-]key[s]*[=:][s]*["\'][w\-\.]+["\']',"
             rpassword[s]*[=:][s]*["\'][w\-\.]+["\']',"
             rtoken[s]*[=:][s]*["\'][w\-\.]+["\']',"
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         import re
 
-        for root, dirs, files in oswalkselfproject_path):
+# BRACKET_SURGEON: disabled
+#         for root, dirs, files in oswalkselfproject_path):
             # Skip common directories that shouldnt contain secrets'
-            dirs[:] = d for d in dirs if d not in ["git", node_modules", "venv", __pycache__"]]"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             dirs[:] = d for d in dirs if d not in ["git", node_modules", "venv", __pycache__"]]"
 
             for file in files:
-                if fileendswith(("py", "js", "ts", "jsx", "tsx", "json", "yaml", "yml")):"
-                    file_path = ospathjoinroot, file)
+                if fileendswith(("py", "js", "ts", "jsx", "tsx", "json", "yaml", "yml")):"":
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     file_path = ospathjoinroot, file)
                     try:
-                        with openfile_path, r", encoding=utf-8") as f:"
+# BRACKET_SURGEON: disabled
+#                         with openfile_path, r", encoding=utf-8") as f:""
                             content = fread()
 
                         for pattern in secret_patterns:
-                            if researchpattern, content, reIGNORECASE):
+# BRACKET_SURGEON: disabled
+#                             if researchpattern, content, reIGNORECASE):
                                 selfreportcritical_failuresappend(
-                                    fPotential hardcoded secret found in file_path}""
-                                )
+# BRACKET_SURGEON: disabled
+#                                     fPotential hardcoded secret found in file_path}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                                 return False
-                    except UnicodeDecodeError, PermissionError):
+# BRACKET_SURGEON: disabled
+#                     except UnicodeDecodeError, PermissionError):
                         continue
 
         return True
 
-    def _check_environment_variablesself) -> bool:
-        ""Check environment variable configuration""""
-        env_files = ["envexample", "envlocal", "envproduction"]"
+# BRACKET_SURGEON: disabled
+#     def _check_environment_variablesself) -> bool:
+        ""Check environment variable configuration"""""""
+        env_files = ["envexample", "envlocal", "envproduction"]""
 
         for env_file in env_files:
             env_path = selfproject_path / env_file
             if env_pathexists():
                 try:
-                    with openenv_path, r") as f:"
+# BRACKET_SURGEON: disabled
+#                     with openenv_path, r") as f:"
                         content = fread()
                         # Check for placeholder values
-                        if your_api_key_here" in contentlower() or changeme" in contentlower():"
-                            selfreportwarningsappendfPlaceholder values found in env_file}")"
+                        if your_api_key_here" in contentlower() or changeme" in contentlower():""
+# BRACKET_SURGEON: disabled
+#                             selfreportwarningsappendfPlaceholder values found in env_file}")"
                 except Exception:
                     pass
 
         return True
 
-    def _check_build_processself) -> bool:
-        ""Validate build process""""
+# BRACKET_SURGEON: disabled
+#     def _check_build_processself) -> bool:
+        ""Validate build process"""""""
         package_json = selfproject_path / packagejson""
 
         if package_jsonexists():
@@ -304,9 +393,12 @@ class GoLiveChecker:
                     capture_outputTrue,
                     textTrue,
                     timeout=300,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return resultreturncode == 0
-            except subprocessTimeoutExpired, FileNotFoundError):
+# BRACKET_SURGEON: disabled
+#             except subprocessTimeoutExpired, FileNotFoundError):
                 return False
 
         # Check for Python build
@@ -315,20 +407,26 @@ class GoLiveChecker:
         )exists():
             try:
                 result = subprocessrun(
-                    sysexecutable, "m", build"],"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     sysexecutable, "m", build"],"
                     cwdselfproject_path,
                     capture_outputTrue,
                     textTrue,
                     timeout=300,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return resultreturncode == 0
-            except subprocessTimeoutExpired, FileNotFoundError):
+# BRACKET_SURGEON: disabled
+#             except subprocessTimeoutExpired, FileNotFoundError):
                 pass
 
         return True
 
-    def _check_dependenciesself) -> bool:
-        ""Check for vulnerable dependencies""""
+# BRACKET_SURGEON: disabled
+#     def _check_dependenciesself) -> bool:
+        ""Check for vulnerable dependencies"""""""
         package_json = selfproject_path / packagejson""
 
         if package_jsonexists():
@@ -338,7 +436,9 @@ class GoLiveChecker:
                     cwdselfproject_path,
                     capture_outputTrue,
                     textTrue,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return resultreturncode == 0
             except FileNotFoundError:
                 pass
@@ -349,32 +449,38 @@ class GoLiveChecker:
             if selfproject_path / req_file)exists():
                 try:
                     result = subprocessrun(
-                        [safety", check"],"
+                        [safety", check"],""
                         cwdselfproject_path,
                         capture_outputTrue,
                         textTrue,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return resultreturncode == 0
                 except FileNotFoundError:
                     pass
 
         return True
 
-    def _check_secret_exposureself) -> bool:
-        ""Scan for exposed secrets using gitleaks or similar""""
+# BRACKET_SURGEON: disabled
+#     def _check_secret_exposureself) -> bool:
+        ""Scan for exposed secrets using gitleaks or similar"""""""
         try:
             result = subprocessrun(
-                [gitleaks", detect", "-source", strselfproject_path), "-nogit"],"
+                [gitleaks", detect", "-source", strselfproject_path), "-nogit"],""
                 capture_outputTrue,
                 textTrue,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return resultreturncode == 0
         except FileNotFoundError:
             # Fallback to basic pattern matching
             return self_check_secrets_management()
 
-    def _check_lintingself) -> bool:
-        ""Run linting checks""""
+# BRACKET_SURGEON: disabled
+#     def _check_lintingself) -> bool:
+        ""Run linting checks"""""""
         package_json = selfproject_path / packagejson""
 
         if package_jsonexists():
@@ -384,113 +490,140 @@ class GoLiveChecker:
                     cwdselfproject_path,
                     capture_outputTrue,
                     textTrue,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return resultreturncode == 0
             except FileNotFoundError:
                 pass
 
         # Check Python linting
-        python_files = listselfproject_pathglob("**/*py"))"
+        python_files = listselfproject_pathglob("**/*py"))""
         if python_files:
             try:
                 result = subprocessrun(
                     [flake8", strselfproject_path)], capture_outputTrue, textTrue"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return resultreturncode == 0
             except FileNotFoundError:
                 pass
 
         return True
 
-    def _run_unit_testsself) -> bool:
-        ""Execute unit tests""""
+# BRACKET_SURGEON: disabled
+#     def _run_unit_testsself) -> bool:
+        ""Execute unit tests"""""""
         package_json = selfproject_path / packagejson""
 
         if package_jsonexists():
             try:
                 result = subprocessrun(
-                    [npm", test"],"
+                    [npm", test"],""
                     cwdselfproject_path,
                     capture_outputTrue,
                     textTrue,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return resultreturncode == 0
             except FileNotFoundError:
                 pass
 
         # Check Python tests
-        if selfproject_path / tests")exists() or listselfproject_pathglob(test_*py")):"
+        if selfproject_path / tests")exists() or listselfproject_pathglob(test_*py")):""
             try:
                 result = subprocessrun(
-                    [python", "m", pytest"],"
+                    [python", "m", pytest"],""
                     cwdselfproject_path,
                     capture_outputTrue,
                     textTrue,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return resultreturncode == 0
             except FileNotFoundError:
                 pass
 
         return True
 
-    def _run_integration_testsself) -> bool:
-        ""Run integration tests""""
+# BRACKET_SURGEON: disabled
+#     def _run_integration_testsself) -> bool:
+        ""Run integration tests"""""""
         # Look for integration test directories or files
         integration_paths = [
-            selfproject_path / tests" / integration","
+            selfproject_path / tests" / integration",""
             selfproject_path / integration_tests","
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for path in integration_paths:
             if pathexists():
                 try:
                     result = subprocessrun(
-                        [python", "m", pytest", strpath)],"
+                        [python", "m", pytest", strpath)],""
                         cwdselfproject_path,
                         capture_outputTrue,
                         textTrue,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return resultreturncode == 0
                 except FileNotFoundError:
                     pass
 
         return True
 
-    def _check_health_endpointsself) -> bool:
-        ""Check for health check endpoints""""
+# BRACKET_SURGEON: disabled
+#     def _check_health_endpointsself) -> bool:
+        ""Check for health check endpoints"""""""
         # Look for common health check patterns in code
         health_patterns = ["health", "status", "ping", healthcheck"]"
 
-        for root, dirs, files in oswalkselfproject_path):
-            dirs[:] = d for d in dirs if d not in ["git", node_modules", "venv"]]"
+# BRACKET_SURGEON: disabled
+#         for root, dirs, files in oswalkselfproject_path):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             dirs[:] = d for d in dirs if d not in ["git", node_modules", "venv"]]"
 
             for file in files:
-                if fileendswith(("py", "js", "ts")):"
-                    file_path = ospathjoinroot, file)
+                if fileendswith(("py", "js", "ts")):""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     file_path = ospathjoinroot, file)
                     try:
-                        with openfile_path, r", encoding=utf-8") as f:"
+# BRACKET_SURGEON: disabled
+#                         with openfile_path, r", encoding=utf-8") as f:""
                             content = fread()lower()
 
                         for pattern in health_patterns:
                             if pattern in content:
                                 return True
-                    except UnicodeDecodeError, PermissionError):
+# BRACKET_SURGEON: disabled
+#                     except UnicodeDecodeError, PermissionError):
                         continue
 
         selfreportrecommendationsappend(
             Consider implementing health check endpoints for monitoring""
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return True
 
-    def _check_deployment_configself) -> bool:
-        ""Validate deployment configuration""""
+# BRACKET_SURGEON: disabled
+#     def _check_deployment_configself) -> bool:
+        ""Validate deployment configuration"""""""
         config_files = [
             netlifytoml","
             verceljson","
             Dockerfile","
-            "githubworkflows","
+            "githubworkflows",""
             dockercomposeyml","
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for config_file in config_files:
             if selfproject_path / config_file)exists():
@@ -499,16 +632,18 @@ class GoLiveChecker:
         selfreportwarningsappend(No deployment configuration files found")"
         return False
 
-    def _run_smoke_testsself) -> bool:
-        ""Execute postdeployment smoke tests""""
+# BRACKET_SURGEON: disabled
+#     def _run_smoke_testsself) -> bool:
+        ""Execute postdeployment smoke tests"""""""
         # Basic smoke test - check if main files exist and are valid
-        main_files = [indexhtml", mainpy", apppy", packagejson"]"
+        main_files = [indexhtml", mainpy", apppy", packagejson"]""
 
         for main_file in main_files:
             file_path = selfproject_path / main_file
             if file_pathexists():
                 try:
-                    with openfile_path, r") as f:"
+# BRACKET_SURGEON: disabled
+#                     with openfile_path, r") as f:"
                         content = fread()
                         if lencontentstrip()) == 0:
                             return False
@@ -517,33 +652,45 @@ class GoLiveChecker:
 
         return True
 
-    def _generic_checkself, item: ChecklistItem) -> bool:
-        ""Generic check implementation for items without specific logic""""
+# BRACKET_SURGEON: disabled
+#     def _generic_checkself, item: ChecklistItem) -> bool:
+        ""Generic check implementation for items without specific logic"""""""
         # Placeholder for checks that dont have specific implementation yet'
         return True
 
-    def run_all_checksself, fail_fast: bool = False) -> GoLiveReport:
-        ""Execute all checklist items""""
-        printf"n🚀 Starting GoLive Validation for selfreportproject_name}")"
-        printfEnvironment: selfenvironment}")"
-        printfTotal checks: lenselfchecklist)}n")"
+# BRACKET_SURGEON: disabled
+#     def run_all_checksself, fail_fast: bool = False) -> GoLiveReport:
+        ""Execute all checklist items"""""""
+# BRACKET_SURGEON: disabled
+#         printf"n🚀 Starting GoLive Validation for selfreportproject_name}")""
+# BRACKET_SURGEON: disabled
+#         printfEnvironment: selfenvironment}")"
+# BRACKET_SURGEON: disabled
+#         printfTotal checks: lenselfchecklist)}n")"
 
         for item in selfchecklist:
-            printf"⏳ Running: itemdescription}")"
+# BRACKET_SURGEON: disabled
+#             printf"⏳ Running: itemdescription}")""
 
-            success = selfrun_checkitem)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             success = selfrun_checkitem)
 
             if success:
-                printf"✅ itemname}: PASSED")"
+# BRACKET_SURGEON: disabled
+#                 printf"✅ itemname}: PASSED")""
                 selfreportpassed_checks += 1
             else:
-                printf"❌ itemname}: FAILED")"
+# BRACKET_SURGEON: disabled
+#                 printf"❌ itemname}: FAILED")""
                 if itemerror_message:
-                    printf"   Error: itemerror_message}")"
+                    pass
+# BRACKET_SURGEON: disabled
+#                     printf"   Error: itemerror_message}")""
                 selfreportfailed_checks += 1
 
                 if fail_fast and itempriority == critical":"
-                    print("n🛑 Critical failure detected. Stopping validation.")"
+                    print("n🛑 Critical failure detected. Stopping validation.")""
                     break
 
             selfreporttotal_checks += 1
@@ -555,59 +702,81 @@ class GoLiveChecker:
 
         return selfreport
 
-    def _print_summaryself):
-        ""Print validation summary""""
-        printf"n{'='*60}")"
-        print("🎯 GOLIVE VALIDATION SUMMARY")"
-        printf"{'='*60}")"
-        printfProject: selfreportproject_name}")"
-        printfEnvironment: selfenvironment}")"
-        printfTotal Checks: selfreporttotal_checks}")"
-        printf"✅ Passed: selfreportpassed_checks}")"
-        printf"❌ Failed: selfreportfailed_checks}")"
-        printf"⏭️  Skipped: selfreportskipped_checks}")"
+# BRACKET_SURGEON: disabled
+#     def _print_summaryself):
+        ""Print validation summary"""""""
+        printf"n{'='*60}")""
+        print("🎯 GOLIVE VALIDATION SUMMARY")""
+        printf"{'='*60}")""
+# BRACKET_SURGEON: disabled
+#         printfProject: selfreportproject_name}")"
+# BRACKET_SURGEON: disabled
+#         printfEnvironment: selfenvironment}")"
+# BRACKET_SURGEON: disabled
+#         printfTotal Checks: selfreporttotal_checks}")"
+# BRACKET_SURGEON: disabled
+#         printf"✅ Passed: selfreportpassed_checks}")""
+# BRACKET_SURGEON: disabled
+#         printf"❌ Failed: selfreportfailed_checks}")""
+# BRACKET_SURGEON: disabled
+#         printf"⏭️  Skipped: selfreportskipped_checks}")""
 
         if selfreportcritical_failures:
-            print("n🚨 CRITICAL FAILURES:")"
+            print("n🚨 CRITICAL FAILURES:")""
             for failure in selfreportcritical_failures:
-                printf"   • failure}")"
+                pass
+# BRACKET_SURGEON: disabled
+#                 printf"   • failure}")""
 
         if selfreportwarnings:
-            print("n⚠️  WARNINGS:")"
+            print("n⚠️  WARNINGS:")""
             for warning in selfreportwarnings:
-                printf"   • warning}")"
+                pass
+# BRACKET_SURGEON: disabled
+#                 printf"   • warning}")""
 
         if selfreportrecommendations:
-            print("n💡 RECOMMENDATIONS:")"
+            print("n💡 RECOMMENDATIONS:")""
             for rec in selfreportrecommendations:
-                printf"   • rec}")"
+                pass
+# BRACKET_SURGEON: disabled
+#                 printf"   • rec}")""
 
         # Overall status
         if selfreportcritical_failures:
-            print("n🛑 OVERALL STATUS: NOT READY FOR PRODUCTION")"
-            print("   Critical issues must be resolved before golive.")"
+            print("n🛑 OVERALL STATUS: NOT READY FOR PRODUCTION")""
+            print("   Critical issues must be resolved before golive.")""
         elif selfreportfailed_checks > 0:
-            print("n⚠️  OVERALL STATUS: PROCEED WITH CAUTION")"
-            print("   Some checks failed but no critical issues detected.")"
+            print("n⚠️  OVERALL STATUS: PROCEED WITH CAUTION")""
+            print("   Some checks failed but no critical issues detected.")""
         else:
-            print("n🎉 OVERALL STATUS: READY FOR PRODUCTION")"
-            print("   All checks passed successfully!")"
+            print("n🎉 OVERALL STATUS: READY FOR PRODUCTION")""
+            print("   All checks passed successfully!")""
 
-        print("n📊 Detailed report saved to: go_live_reportjson")"
+        print("n📊 Detailed report saved to: go_live_reportjson")""
 
-    def save_reportself, filename: str = go_live_reportjson"):"
-        ""Save detailed report to file""""
+# BRACKET_SURGEON: disabled
+#     def save_reportself, filename: str = go_live_reportjson"):"
+        ""Save detailed report to file"""""""
         report_data = {
-            report": asdictselfreport),"
-            checklist": asdictitem) for item in selfchecklist],"
-        }
+# BRACKET_SURGEON: disabled
+#             report": asdictselfreport),"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             checklist": asdictitem) for item in selfchecklist],"
+# BRACKET_SURGEON: disabled
+#         }
 
-        with openfilename, w") as f:"
-            jsondumpreport_data, f, indent=2)
+# BRACKET_SURGEON: disabled
+#         with openfilename, w") as f:"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             jsondumpreport_data, f, indent=2)
 
-    def generate_github_workflowself) -> str:
-        ""Generate GitHub Actions workflow for golive validation""""
-        workflow = """"
+# BRACKET_SURGEON: disabled
+#     def generate_github_workflowself) -> str:
+        ""Generate GitHub Actions workflow for golive validation"""""""
+        workflow = """""""
 name: GoLive Validation
 
 on:
@@ -625,69 +794,78 @@ on:
 jobs:
   golivevalidation:
     runson: ubuntulatest
-    
+
     steps:
     - name: Checkout code
       uses: actionscheckoutv4
-    
+
     - name: Setup Nodejs
       uses: actionssetupnodev4
       with:
-        nodeversion: '18''
+        nodeversion: '18''''''
         cache: npm''
-    
+
     - name: Setup Python
       uses: actionssetuppythonv4
       with:
-        pythonversion: '3.11''
-    
+        pythonversion: '3.11''''''
+
     - name: Install dependencies
       run: |
         npm ci
         pip install r requirementstxt || true
-    
+
     - name: Run GoLive Validation
       run: |
         python go_live_checklistpy -environment ${{ githubeventinputsenvironment }}
-    
+
     - name: Upload validation report
       uses: actionsuploadartifactv3
       if: always()
       with:
         name: golivereport
         path: go_live_reportjson
-""""
+"""""""
         return workflow
 
 
 def main():
-    ""Main entry point""""
+    ""Main entry point"""""""
     import argparse
 
-    parser = argparseArgumentParserdescription=GoLive Validation Checklist")"
+# BRACKET_SURGEON: disabled
+#     parser = argparseArgumentParserdescription=GoLive Validation Checklist")"
     parseradd_argument(
-        "-environment","
-        "e","
+        "-environment",""
+        "e",""
         default=production","
         choices=[development", staging", production"],"
         help=Target environment","
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parseradd_argument("-projectpath", "p", default=".", help=Path to project directory")"
     parseradd_argument(
-        "-failfast", "f", action=store_true", help=Stop on first critical failure""
-    )
+        "-failfast", "f", action=store_true", help=Stop on first critical failure""""""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parseradd_argument(
-        "-generateworkflow","
-        "w","
+        "-generateworkflow",""
+        "w",""
         action=store_true","
         help=Generate GitHub Actions workflow","
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parseradd_argument(
-        "-output","
-        "o","
+        "-output",""
+        "o",""
         default=go_live_reportjson","
         help=Output file for detailed report","
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     args = parserparse_args()
 
@@ -695,21 +873,33 @@ def main():
         checker = GoLiveChecker()
         workflow_content = checkergenerate_github_workflow()
 
-        workflow_dir = Path("githubworkflows")"
-        workflow_dirmkdirparentsTrue, exist_okTrue)
+        workflow_dir = Path("githubworkflows")""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         workflow_dirmkdirparentsTrue, exist_okTrue)
 
         workflow_file = workflow_dir / golivevalidationyml""
-        with openworkflow_file, w") as f:"
-            fwriteworkflow_content)
+# BRACKET_SURGEON: disabled
+#         with openworkflow_file, w") as f:"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             fwriteworkflow_content)
 
-        printf"✅ GitHub Actions workflow generated: workflow_file}")"
+# BRACKET_SURGEON: disabled
+#         printf"✅ GitHub Actions workflow generated: workflow_file}")""
         return
 
     # Run validation
-    checker = GoLiveCheckerproject_pathargsproject_path, environmentargsenvironment)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     checker = GoLiveCheckerproject_pathargsproject_path, environmentargsenvironment)
 
-    report = checkerrun_all_checksfail_fastargsfail_fast)
-    checkersave_reportargsoutput)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     report = checkerrun_all_checksfail_fastargsfail_fast)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     checkersave_reportargsoutput)
 
     # Exit with appropriate code
     if reportcritical_failures:

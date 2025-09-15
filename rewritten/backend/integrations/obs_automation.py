@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI OBS Studio Automation Integration
 
 Provides comprehensive automation for OBS Studio live streaming and recording.
@@ -20,7 +20,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import asyncio
 import base64
@@ -198,10 +198,10 @@ class RecordingSession:
 
 
 class OBSAutomation:
-    """
+    """"""
     Comprehensive OBS Studio automation system for streaming and recording.
     Integrates with TRAE.AI content pipeline for automated live content creation.
-    """
+    """"""
 
 
     def __init__(
@@ -210,7 +210,8 @@ class OBSAutomation:
             obs_port: int = 4455,
             obs_password: Optional[str] = None,
             secrets_db_path: str = "data/secrets.sqlite",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         self.logger = setup_logger("obs_automation")
         self.secret_store = SecretStore(secrets_db_path)
 
@@ -237,36 +238,45 @@ class OBSAutomation:
             StreamQuality.LOW: {
                 "video": {"width": 854, "height": 480, "fps": 30, "bitrate": 1000},
                     "audio": {"bitrate": 128, "sample_rate": 44100},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 StreamQuality.MEDIUM: {
                 "video": {"width": 1280, "height": 720, "fps": 30, "bitrate": 2500},
                     "audio": {"bitrate": 160, "sample_rate": 44100},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 StreamQuality.HIGH: {
                 "video": {"width": 1920, "height": 1080, "fps": 30, "bitrate": 4500},
                     "audio": {"bitrate": 192, "sample_rate": 48000},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 StreamQuality.ULTRA: {
                 "video": {"width": 1920, "height": 1080, "fps": 60, "bitrate": 8000},
                     "audio": {"bitrate": 320, "sample_rate": 48000},
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Platform configurations
         self.platform_configs = {
             StreamingPlatform.YOUTUBE: {
                 "server": "rtmp://a.rtmp.youtube.com/live2",
                     "service": "YouTube - RTMPS",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 StreamingPlatform.TWITCH: {
                 "server": "rtmp://live.twitch.tv/app",
                     "service": "Twitch",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 StreamingPlatform.FACEBOOK: {
                 "server": "rtmps://live - api - s.facebook.com:443/rtmp",
                     "service": "Facebook Live",
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         self.logger.info("OBS Automation initialized")
 
@@ -281,7 +291,9 @@ class OBSAutomation:
             if not self._is_obs_running():
                 self.logger.warning(
                     "OBS Studio is not running. Please start OBS Studio."
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return False
 
             # Connect to OBS WebSocket
@@ -372,17 +384,22 @@ class OBSAutomation:
                     # Generate authentication response
                     secret = base64.b64encode(
                         hashlib.sha256((self.obs_password + salt).encode()).digest()
-                    ).decode()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ).decode()
 
                     auth_response = base64.b64encode(
                         hashlib.sha256((secret + challenge).encode()).digest()
-                    ).decode()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ).decode()
 
                     # Send authentication
                     identify_request = {
                         "op": 1,  # Identify
                         "d": {"rpcVersion": 1, "authentication": auth_response},
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     await self.obs_websocket.send(json.dumps(identify_request))
                     response = await self.obs_websocket.recv()
@@ -410,8 +427,10 @@ class OBSAutomation:
                 "requestType": request_type,
                     "requestId": request_id,
                     "requestData": request_data or {},
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
         await self.obs_websocket.send(json.dumps(request))
 
@@ -439,11 +458,15 @@ class OBSAutomation:
                 # Get scene items
                 items_response = await self._send_request(
                     "GetSceneItemList", {"sceneName": scene_name}
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 items_data = items_response.get("responseData", {}).get(
                     "sceneItems", []
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 scene_items = []
                 for item_data in items_data:
@@ -453,7 +476,9 @@ class OBSAutomation:
                         settings={},
                             visible = item_data.get("sceneItemEnabled", True),
                             locked = item_data.get("sceneItemLocked", False),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     scene_items.append(scene_item)
 
                 self.scenes[scene_name] = Scene(name = scene_name, items = scene_items)
@@ -480,7 +505,9 @@ class OBSAutomation:
                 try:
                     response = await asyncio.wait_for(
                         self.obs_websocket.recv(), timeout = 1.0
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     data = json.loads(response)
 
@@ -541,7 +568,9 @@ class OBSAutomation:
                     if session.start_time:
                         duration = (
                             datetime.now() - datetime.fromisoformat(session.start_time)
-                        ).total_seconds()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ).total_seconds()
                         session.duration = int(duration)
                     self.logger.info(f"Stream {session.id} stopped")
 
@@ -561,7 +590,9 @@ class OBSAutomation:
                     if session.start_time:
                         duration = (
                             datetime.now() - datetime.fromisoformat(session.start_time)
-                        ).total_seconds()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ).total_seconds()
                         session.duration = int(duration)
                     self.logger.info(f"Recording {session.id} stopped")
 
@@ -584,8 +615,11 @@ class OBSAutomation:
                         "sceneName": scene.name,
                             "sourceName": item.name,
                             "sceneItemEnabled": item.visible,
-                            },
-                        )
+# BRACKET_SURGEON: disabled
+#                             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             self.scenes[scene.name] = scene
             self.logger.info(f"Created scene: {scene.name}")
@@ -613,8 +647,11 @@ class OBSAutomation:
                     "sourceName": item.name,
                         "sourceKind": item.source_type.value,
                         "sourceSettings": item.settings,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             self.logger.error(f"Failed to create source {item.name}: {e}")
@@ -625,7 +662,9 @@ class OBSAutomation:
         try:
             await self._send_request(
                 "SetCurrentProgramScene", {"sceneName": scene_name}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self.active_scene = scene_name
             self.logger.info(f"Switched to scene: {scene_name}")
@@ -671,11 +710,14 @@ class OBSAutomation:
                 "service": platform_config.get("service", "Custom"),
                     "server": config.server_url or platform_config.get("server"),
                     "key": config.stream_key,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             await self._send_request(
                 "SetStreamServiceSettings", {"streamServiceSettings": service_settings}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Set video settings based on quality
             if config.quality in self.quality_presets:
@@ -691,8 +733,11 @@ class OBSAutomation:
                             "outputHeight": video_settings["height"],
                             "fpsNumerator": video_settings["fps"],
                             "fpsDenominator": 1,
-                            },
-                        )
+# BRACKET_SURGEON: disabled
+#                             },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         except Exception as e:
             self.logger.error(f"Failed to configure streaming: {e}")
@@ -732,7 +777,9 @@ class OBSAutomation:
             # Create session
             session = RecordingSession(id = session_id,
     config = config,
-    status="recording")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     status="recording")
 
             self.recording_sessions[session_id] = session
 
@@ -751,14 +798,17 @@ class OBSAutomation:
             record_settings = {
                 "rec_format": config.format.value,
                     "filename_formatting": config.filename_format,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             if config.output_path:
                 record_settings["rec_folder"] = config.output_path
 
             await self._send_request(
                 "SetRecordDirectory", {"recordDirectory": config.output_path}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             self.logger.error(f"Failed to configure recording: {e}")
@@ -800,10 +850,12 @@ class OBSAutomation:
             if stream_data.get("outputActive"):
                 session.duration = (
                     stream_data.get("outputDuration", 0)//1000000
-                )  # Convert from nanoseconds
+# BRACKET_SURGEON: disabled
+#                 )  # Convert from nanoseconds
                 session.bitrate = (
                     stream_data.get("outputBytes", 0) * 8/1000
-                )  # Convert to kbps
+# BRACKET_SURGEON: disabled
+#                 )  # Convert to kbps
                 session.total_frames = stream_data.get("outputTotalFrames", 0)
                 session.dropped_frames = stream_data.get("outputSkippedFrames", 0)
 
@@ -817,9 +869,12 @@ class OBSAutomation:
                     "dropped_frames": session.dropped_frames,
                     "drop_percentage": (
                     session.dropped_frames/max(session.total_frames, 1)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 * 100,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Failed to get stream stats: {e}")
@@ -842,7 +897,8 @@ class OBSAutomation:
             if record_data.get("outputActive"):
                 session.duration = (
                     record_data.get("outputDuration", 0)//1000000
-                )  # Convert from nanoseconds
+# BRACKET_SURGEON: disabled
+#                 )  # Convert from nanoseconds
                 session.file_size = record_data.get("outputBytes", 0)
                 session.output_file = record_data.get("outputPath")
 
@@ -853,7 +909,8 @@ class OBSAutomation:
                     "file_size": session.file_size,
                     "output_file": session.output_file,
                     "recording_active": record_data.get("outputActive", False),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Failed to get recording stats: {e}")
@@ -862,7 +919,8 @@ class OBSAutomation:
 
     async def create_automated_workflow(
         self, workflow_name: str, scenes: List[Scene], schedule: List[Dict[str, Any]]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Create an automated streaming/recording workflow."""
         try:
             workflow_id = str(uuid.uuid4())
@@ -878,7 +936,8 @@ class OBSAutomation:
                     "scenes": [scene.name for scene in scenes],
                     "schedule": schedule,
                     "created_at": datetime.now().isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Schedule workflow execution
             asyncio.create_task(self._execute_workflow(workflow_config))
@@ -947,14 +1006,16 @@ class OBSAutomation:
             "status": "healthy",
                 "timestamp": datetime.now().isoformat(),
                 "components": {},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Check OBS connection
         health["components"]["obs_connection"] = {
             "connected": self.connected,
                 "host": self.obs_host,
                 "port": self.obs_port,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Check OBS process
         health["components"]["obs_process"] = {"running": self._is_obs_running()}
@@ -963,12 +1024,15 @@ class OBSAutomation:
         health["components"]["sessions"] = {
             "active_streams": len(
                 [s for s in self.stream_sessions.values() if s.status == "live"]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "active_recordings": len(
                 [s for s in self.recording_sessions.values() if s.status == "recording"]
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "total_scenes": len(self.scenes),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Overall status
         if not self.connected or not self._is_obs_running():
@@ -1030,9 +1094,15 @@ if __name__ == "__main__":
                         name="Display Capture",
                             source_type = SourceType.DISPLAY_CAPTURE,
                             settings={"monitor": 0},
-                            )
-                ],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             try:
                 await automation.create_scene(test_scene)

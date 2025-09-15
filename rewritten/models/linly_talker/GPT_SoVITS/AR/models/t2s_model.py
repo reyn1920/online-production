@@ -3,12 +3,16 @@
 import torch
 from AR.models.utils import (logits_to_probs, make_pad_mask,
 
-    multinomial_sample_one_no_sync, sample, topk_sampling)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     multinomial_sample_one_no_sync, sample, topk_sampling)
 
 from AR.modules.embedding import SinePositionalEmbedding, TokenEmbedding
 from AR.modules.transformer import (LayerNorm, TransformerEncoder,
 
-    TransformerEncoderLayer)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     TransformerEncoderLayer)
 
 from torch import nn
 from torch.nn import functional as F
@@ -25,7 +29,8 @@ default_config = {
         "vocab_size": 1024 + 1,
         "phoneme_vocab_size": 512,
         "EOS": 1024,
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 class Text2SemanticDecoder(nn.Module):
@@ -49,16 +54,24 @@ class Text2SemanticDecoder(nn.Module):
         self.bert_proj = nn.Linear(1024, self.embedding_dim)
         self.ar_text_embedding = TokenEmbedding(
             self.embedding_dim, self.phoneme_vocab_size, self.p_dropout
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.ar_text_position = SinePositionalEmbedding(
             self.embedding_dim, dropout = 0.1, scale = False, alpha = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.ar_audio_embedding = TokenEmbedding(
             self.embedding_dim, self.vocab_size, self.p_dropout
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.ar_audio_position = SinePositionalEmbedding(
             self.embedding_dim, dropout = 0.1, scale = False, alpha = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.h = TransformerEncoder(
             TransformerEncoderLayer(
@@ -68,10 +81,13 @@ class Text2SemanticDecoder(nn.Module):
                     dropout = 0.1,
                     batch_first = True,
                     norm_first = norm_first,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 num_layers = self.num_layers,
                 norm = LayerNorm(self.model_dim) if norm_first else None,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.ar_predict_layer = nn.Linear(self.model_dim, self.vocab_size, bias = False)
         self.loss_fct = nn.CrossEntropyLoss(reduction="sum")
@@ -82,14 +98,16 @@ class Text2SemanticDecoder(nn.Module):
                 average="micro",
                 multidim_average="global",
                 ignore_index = self.EOS,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def forward(self, x, x_lens, y, y_lens, bert_feature):
-        """
+        """"""
         x: phoneme_ids
         y: semantic_ids
-        """
+        """"""
         x = self.ar_text_embedding(x)
         x = x + self.bert_proj(bert_feature.transpose(1, 2))
         x = self.ar_text_position(x)
@@ -114,22 +132,29 @@ class Text2SemanticDecoder(nn.Module):
             torch.zeros((x_len, x_len), dtype = torch.bool, device = x.device),
                 (0, y_len),
                 value = True,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         y_attn_mask = F.pad(
             torch.triu(
                 torch.ones(y_len, y_len, dtype = torch.bool, device = x.device),
                     diagonal = 1,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 (x_len, 0),
                 value = False,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         xy_attn_mask = torch.concat([x_attn_mask, y_attn_mask], dim = 0)
         bsz, src_len = x.shape[0], x_len + y_len
         _xy_padding_mask = (
             ar_xy_padding_mask.view(bsz, 1, 1, src_len)
             .expand(-1, self.num_head, -1, -1)
             .reshape(bsz * self.num_head, 1, src_len)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         xy_attn_mask = xy_attn_mask.logical_or(_xy_padding_mask)
         new_attn_mask = torch.zeros_like(xy_attn_mask, dtype = x.dtype)
         new_attn_mask.masked_fill_(xy_attn_mask, float("-inf"))
@@ -139,7 +164,9 @@ class Text2SemanticDecoder(nn.Module):
         xy_dec, _ = self.h(
             (xy_pos, None),
                 mask = xy_attn_mask,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         logits = self.ar_predict_layer(xy_dec[:, x_len:]).permute(0, 2, 1)
         # loss
         # from feiteng: 每次 duration 越多, 梯度更新也应该更多, 所以用 sum
@@ -159,7 +186,8 @@ class Text2SemanticDecoder(nn.Module):
             top_k: int = -100,
             early_stop_num: int = -1,
             temperature: float = 1.0,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         x = self.ar_text_embedding(x)
         x = x + self.bert_proj(bert_feature.transpose(1, 2))
         x = self.ar_text_position(x)
@@ -180,34 +208,47 @@ class Text2SemanticDecoder(nn.Module):
                 x_attn_mask,
                     (0, y_len),
                     value = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             y_attn_mask = F.pad(
                 torch.triu(torch.ones(y_len, y_len, dtype = torch.bool), diagonal = 1),
                     (x_len, 0),
                     value = False,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             xy_attn_mask = torch.concat([x_attn_mask_pad, y_attn_mask], dim = 0).to(
                 y.device
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             xy_dec, _ = self.h(
                 (xy_pos, None),
                     mask = xy_attn_mask,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             logits = self.ar_predict_layer(xy_dec[:, -1])
             samples = topk_sampling(
                 logits, top_k = top_k, top_p = 1.0, temperature = temperature
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if early_stop_num != -1 and (y.shape[1] - prefix_len) > early_stop_num:
                 print("use early stop num:", early_stop_num)
                 stop = True
 
             if torch.argmax(logits, dim=-1)[0] == self.EOS or samples[0, 0] == self.EOS:
+                pass
                 # print(torch.argmax(logits,
     dim=-1)[0] == self.EOS,
     samples[0,
-    0] == self.EOS)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     0] == self.EOS)
                 stop = True
             if stop:
                 if prompts.shape[1] == y.shape[1]:
@@ -226,7 +267,9 @@ class Text2SemanticDecoder(nn.Module):
     def pad_y_eos(self, y, y_mask_int, eos_id):
         targets = F.pad(y, (0, 1), value = 0) + eos_id * F.pad(
             y_mask_int, (0, 1), value = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         # 错位
         return targets[:, :-1], targets[:, 1:]
 
@@ -240,7 +283,8 @@ class Text2SemanticDecoder(nn.Module):
             top_k: int = -100,
             early_stop_num: int = -1,
             temperature: float = 1.0,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         x = self.ar_text_embedding(x)
         x = x + self.bert_proj(bert_feature.transpose(1, 2))
         x = self.ar_text_position(x)
@@ -262,14 +306,17 @@ class Text2SemanticDecoder(nn.Module):
             # "xy_dec":None,###不需要，本来只需要最后一个做logits
             "first_infer": 1,
                 "stage": 0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         for idx in tqdm(range(1500)):
             if cache["first_infer"] == 1:
                 y_emb = self.ar_audio_embedding(y)
             else:
                 y_emb = torch.cat(
                     [cache["y_emb"], self.ar_audio_embedding(y[:, -1:])], 1
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             cache["y_emb"] = y_emb
             y_pos = self.ar_audio_position(y_emb)
             # x 和逐渐增长的 y 一起输入给模型
@@ -284,53 +331,75 @@ class Text2SemanticDecoder(nn.Module):
                     x_attn_mask,
                         (0, y_len),  ###xx的纯0扩展到xx纯0 + xy纯1，(x,x + y)
                     value = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 y_attn_mask = F.pad(  ###yy的右上1扩展到左边xy的0,(y,x + y)
                     torch.triu(torch.ones(y_len,
     y_len,
-    dtype = torch.bool),
-    diagonal = 1),
+# BRACKET_SURGEON: disabled
+#     dtype = torch.bool),
+# BRACKET_SURGEON: disabled
+#     diagonal = 1),
                         (x_len, 0),
                         value = False,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 xy_attn_mask = torch.concat([x_attn_mask_pad, y_attn_mask], dim = 0).to(
                     y.device
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
+                pass
                 ###最右边一列（是错的）
                 # xy_attn_mask = torch.ones((1,
-    x_len + y_len),
-    dtype = torch.bool,device = xy_pos.device)
+# BRACKET_SURGEON: disabled
+#     x_len + y_len),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     dtype = torch.bool,device = xy_pos.device)
                 # xy_attn_mask[:,-1]=False
                 ###最下面一行（是对的）
                 xy_attn_mask = torch.zeros(
                     (1, x_len + y_len), dtype = torch.bool, device = xy_pos.device
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             # pdb.set_trace()
             ###缓存重头戏
             # print(1111,xy_pos.shape,xy_attn_mask.shape,x_len,y_len)
             xy_dec, _ = self.h((xy_pos, None), mask = xy_attn_mask, cache = cache)
             logits = self.ar_predict_layer(
                 xy_dec[:, -1]
-            )  ##不用改，如果用了cache的默认就是只有一帧，取最后一帧一样的
+# BRACKET_SURGEON: disabled
+#             )  ##不用改，如果用了cache的默认就是只有一帧，取最后一帧一样的
             # samples = topk_sampling(logits,
     top_k = top_k,
     top_p = 1.0,
-    temperature = temperature)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     temperature = temperature)
             if idx == 0:  ###第一次跑不能EOS否则没有了
                 logits = logits[:, :-1]  ###刨除1024终止符号的概率
             samples = sample(
                 logits[0], y, top_k = top_k, top_p = 1.0, repetition_penalty = 1.35
-            )[0].unsqueeze(0)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )[0].unsqueeze(0)
             if early_stop_num != -1 and (y.shape[1] - prefix_len) > early_stop_num:
                 print("use early stop num:", early_stop_num)
                 stop = True
 
             if torch.argmax(logits, dim=-1)[0] == self.EOS or samples[0, 0] == self.EOS:
+                pass
                 # print(torch.argmax(logits,
     dim=-1)[0] == self.EOS,
     samples[0,
-    0] == self.EOS)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     0] == self.EOS)
                 stop = True
             if stop:
                 if prompts.shape[1] == y.shape[1]:

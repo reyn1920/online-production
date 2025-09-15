@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Compliance Monitor for ChatGPT Integration
 Implements continuous monitoring of all 15 mandatory rules
-"""
+""""""
 
 import asyncio
 import json
@@ -83,7 +83,8 @@ class ComplianceMonitor:
             "rate_limit_hits": 0,
             "webhook_failures": 0,
             "system_health": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Setup logging
         self.logger = logging.getLogger("compliance_monitor")
@@ -98,11 +99,13 @@ class ComplianceMonitor:
                 "response_time_p95": 5000,  # 5 seconds
                 "rate_limit_violations": 10,
                 "webhook_failures": 5,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "auto_remediation": True,
             "notification_endpoints": [],
             "compliance_report_interval": 3600,  # 1 hour
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if config_path and Path(config_path).exists():
             with open(config_path, "r") as f:
@@ -124,7 +127,8 @@ class ComplianceMonitor:
                 severity="critical",
                 auto_remediation=False,
                 monitoring_interval=300,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_02": ComplianceRule(
                 rule_id="rule_02",
                 rule_number="Rule 2",
@@ -135,7 +139,8 @@ class ComplianceMonitor:
                 severity="high",
                 auto_remediation=True,
                 monitoring_interval=60,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_03": ComplianceRule(
                 rule_id="rule_03",
                 rule_number="Rule 3",
@@ -146,7 +151,8 @@ class ComplianceMonitor:
                 severity="medium",
                 auto_remediation=False,
                 monitoring_interval=300,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_04": ComplianceRule(
                 rule_id="rule_04",
                 rule_number="Rule 4",
@@ -157,7 +163,8 @@ class ComplianceMonitor:
                 severity="high",
                 auto_remediation=True,
                 monitoring_interval=180,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_05": ComplianceRule(
                 rule_id="rule_05",
                 rule_number="Rule 5",
@@ -168,7 +175,8 @@ class ComplianceMonitor:
                 severity="critical",
                 auto_remediation=False,
                 monitoring_interval=600,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_06": ComplianceRule(
                 rule_id="rule_06",
                 rule_number="Rule 6",
@@ -179,19 +187,21 @@ class ComplianceMonitor:
                 severity="medium",
                 auto_remediation=True,
                 monitoring_interval=300,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_07": ComplianceRule(
                 rule_id="rule_07",
                 rule_number="Rule 7",
                 category=RuleCategory.MONITORING,
                 title="System Monitoring",
-                description="Health checks \
-    and metrics must be continuously monitored",
+                description="Health checks \"
+#     and metrics must be continuously monitored",
                 check_function="check_system_monitoring",
                 severity="high",
                 auto_remediation=False,
                 monitoring_interval=120,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_08": ComplianceRule(
                 rule_id="rule_08",
                 rule_number="Rule 8",
@@ -202,7 +212,8 @@ class ComplianceMonitor:
                 severity="critical",
                 auto_remediation=False,
                 monitoring_interval=600,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_09": ComplianceRule(
                 rule_id="rule_09",
                 rule_number="Rule 9",
@@ -213,7 +224,8 @@ class ComplianceMonitor:
                 severity="medium",
                 auto_remediation=False,
                 monitoring_interval=3600,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_10": ComplianceRule(
                 rule_id="rule_10",
                 rule_number="Rule 10",
@@ -224,7 +236,8 @@ class ComplianceMonitor:
                 severity="high",
                 auto_remediation=True,
                 monitoring_interval=180,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_11": ComplianceRule(
                 rule_id="rule_11",
                 rule_number="Rule 11",
@@ -235,7 +248,8 @@ class ComplianceMonitor:
                 severity="high",
                 auto_remediation=True,
                 monitoring_interval=300,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_12": ComplianceRule(
                 rule_id="rule_12",
                 rule_number="Rule 12",
@@ -246,7 +260,8 @@ class ComplianceMonitor:
                 severity="medium",
                 auto_remediation=False,
                 monitoring_interval=86400,  # daily
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_13": ComplianceRule(
                 rule_id="rule_13",
                 rule_number="Rule 13",
@@ -257,7 +272,8 @@ class ComplianceMonitor:
                 severity="medium",
                 auto_remediation=False,
                 monitoring_interval=3600,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_14": ComplianceRule(
                 rule_id="rule_14",
                 rule_number="Rule 14",
@@ -268,7 +284,8 @@ class ComplianceMonitor:
                 severity="high",
                 auto_remediation=True,
                 monitoring_interval=86400,  # daily
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "rule_15": ComplianceRule(
                 rule_id="rule_15",
                 rule_number="Rule 15",
@@ -279,8 +296,10 @@ class ComplianceMonitor:
                 severity="high",
                 auto_remediation=False,
                 monitoring_interval=604800,  # weekly
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         return rules
 
@@ -294,14 +313,16 @@ class ComplianceMonitor:
             event_description="Compliance monitoring started",
             severity=AuditLevel.INFO,
             additional_data={"rules_count": len(self.rules)},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Start monitoring tasks
         tasks = [
             asyncio.create_task(self._monitor_rules()),
             asyncio.create_task(self._generate_periodic_reports()),
             asyncio.create_task(self._monitor_system_health()),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         await asyncio.gather(*tasks)
 
@@ -315,7 +336,8 @@ class ComplianceMonitor:
                 if (
                     rule.last_check is None
                     or (current_time - rule.last_check).total_seconds() >= rule.monitoring_interval
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     try:
                         # Execute rule check
                         check_result = await self._execute_rule_check(rule)
@@ -335,13 +357,16 @@ class ComplianceMonitor:
                                 AuditLevel.INFO
                                 if rule.status == ComplianceStatus.COMPLIANT
                                 else AuditLevel.WARNING
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             additional_data={
                                 "rule_id": rule_id,
                                 "status": rule.status.value,
                                 "violations_count": len(check_result["violations"]),
-                            },
-                        )
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         )
 
                     except Exception as e:
                         self.logger.error(f"Error checking rule {rule_id}: {str(e)}")
@@ -349,7 +374,8 @@ class ComplianceMonitor:
                             event_description=f"Compliance check failed: {rule.title}",
                             severity=AuditLevel.ERROR,
                             additional_data={"rule_id": rule_id, "error": str(e)},
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
             await asyncio.sleep(30)  # Check every 30 seconds
 
@@ -360,7 +386,8 @@ class ComplianceMonitor:
             return {
                 "status": ComplianceStatus.WARNING,
                 "violations": [{"error": f"Check function {rule.check_function} not found"}],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return await check_function()
 
@@ -377,8 +404,10 @@ class ComplianceMonitor:
                         "type": "missing_api_key",
                         "key": key,
                         "timestamp": datetime.now().isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Check for hardcoded keys in code (basic check)
         # In production, this would scan actual code files
@@ -394,15 +423,18 @@ class ComplianceMonitor:
         if (
             self.performance_metrics["rate_limit_hits"]
             > self.config["alert_thresholds"]["rate_limit_violations"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             violations.append(
                 {
                     "type": "rate_limit_exceeded",
                     "hits": self.performance_metrics["rate_limit_hits"],
                     "threshold": self.config["alert_thresholds"]["rate_limit_violations"],
                     "timestamp": datetime.now().isoformat(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         status = ComplianceStatus.COMPLIANT if not violations else ComplianceStatus.WARNING
         return {"status": status, "violations": violations}
@@ -422,8 +454,10 @@ class ComplianceMonitor:
                         "rate": error_rate,
                         "threshold": self.config["alert_thresholds"]["error_rate"],
                         "timestamp": datetime.now().isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         status = ComplianceStatus.COMPLIANT if not violations else ComplianceStatus.WARNING
         return {"status": status, "violations": violations}
@@ -446,15 +480,18 @@ class ComplianceMonitor:
         if (
             self.performance_metrics["webhook_failures"]
             > self.config["alert_thresholds"]["webhook_failures"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             violations.append(
                 {
                     "type": "webhook_failures",
                     "failures": self.performance_metrics["webhook_failures"],
                     "threshold": self.config["alert_thresholds"]["webhook_failures"],
                     "timestamp": datetime.now().isoformat(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         status = ComplianceStatus.COMPLIANT if not violations else ComplianceStatus.WARNING
         return {"status": status, "violations": violations}
@@ -485,8 +522,10 @@ class ComplianceMonitor:
                         "type": "high_cpu_usage",
                         "usage": cpu_usage,
                         "timestamp": datetime.now().isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             if memory_usage > 90:
                 violations.append(
@@ -494,8 +533,10 @@ class ComplianceMonitor:
                         "type": "high_memory_usage",
                         "usage": memory_usage,
                         "timestamp": datetime.now().isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             violations.append(
@@ -503,8 +544,10 @@ class ComplianceMonitor:
                     "type": "monitoring_error",
                     "error": str(e),
                     "timestamp": datetime.now().isoformat(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         status = ComplianceStatus.COMPLIANT if not violations else ComplianceStatus.WARNING
         return {"status": status, "violations": violations}
@@ -538,7 +581,8 @@ class ComplianceMonitor:
         if self.performance_metrics["api_response_times"]:
             p95_response_time = sorted(self.performance_metrics["api_response_times"])[
                 int(0.95 * len(self.performance_metrics["api_response_times"]))
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             if p95_response_time > self.config["alert_thresholds"]["response_time_p95"]:
                 violations.append(
@@ -547,8 +591,10 @@ class ComplianceMonitor:
                         "p95_time": p95_response_time,
                         "threshold": self.config["alert_thresholds"]["response_time_p95"],
                         "timestamp": datetime.now().isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         status = ComplianceStatus.COMPLIANT if not violations else ComplianceStatus.WARNING
         return {"status": status, "violations": violations}
@@ -615,8 +661,10 @@ class ComplianceMonitor:
                     "rule_id": rule.rule_id,
                     "violation": violation,
                     "auto_remediation": rule.auto_remediation,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             # Attempt auto - remediation if enabled
             if rule.auto_remediation:
@@ -637,7 +685,8 @@ class ComplianceMonitor:
             # Save report
             report_file = Path(
                 f"/var / log / trae / compliance / report_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.json"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             report_file.parent.mkdir(parents=True, exist_ok=True)
 
             with open(report_file, "w") as f:
@@ -648,7 +697,8 @@ class ComplianceMonitor:
                 event_description="Compliance report generated",
                 severity=AuditLevel.INFO,
                 additional_data={"report_file": str(report_file)},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _monitor_system_health(self):
         """Monitor overall system health"""
@@ -660,7 +710,8 @@ class ComplianceMonitor:
                     "memory_usage": psutil.virtual_memory().percent,
                     "disk_usage": psutil.disk_usage("/").percent,
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             except Exception as e:
                 self.logger.error(f"Error collecting system health metrics: {str(e)}")
@@ -671,7 +722,8 @@ class ComplianceMonitor:
         """Generate comprehensive compliance report"""
         compliant_rules = sum(
             1 for rule in self.rules.values() if rule.status == ComplianceStatus.COMPLIANT
-        )
+# BRACKET_SURGEON: disabled
+#         )
         total_rules = len(self.rules)
         compliance_percentage = (compliant_rules / total_rules) * 100
 
@@ -683,19 +735,23 @@ class ComplianceMonitor:
                 "compliant_rules": compliant_rules,
                 "compliance_percentage": compliance_percentage,
                 "monitoring_active": self.monitoring_active,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "rule_status": {
                 rule_id: {
                     "status": rule.status.value,
                     "last_check": (rule.last_check.isoformat() if rule.last_check else None),
                     "violations_count": len(rule.violations),
                     "category": rule.category.value,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for rule_id, rule in self.rules.items()
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "performance_metrics": self.performance_metrics,
             "recommendations": self._generate_recommendations(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return report
 
@@ -705,7 +761,8 @@ class ComplianceMonitor:
 
         non_compliant_rules = [
             rule for rule in self.rules.values() if rule.status != ComplianceStatus.COMPLIANT
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         if non_compliant_rules:
             recommendations.append(f"Address {len(non_compliant_rules)} non - compliant rules")
@@ -725,7 +782,8 @@ class ComplianceMonitor:
 
         audit_logger.log_security_event(
             event_description="Compliance monitoring stopped", severity=AuditLevel.INFO
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 # Global compliance monitor instance

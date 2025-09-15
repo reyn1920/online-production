@@ -17,7 +17,8 @@ app = FastAPI(
     title="Paste Integration Demo",
     description="Demonstration of integrated paste functionality",
     version="1.0.0",
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Add CORS middleware
 app.add_middleware(
@@ -26,7 +27,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # In - memory storage for pastes
 pastes_storage = []
@@ -48,7 +50,7 @@ class PasteResponse(BaseModel):
 async def root():
     """Main page with integrated paste functionality"""
     return HTMLResponse(
-        content="""
+        content=""""""
 <!DOCTYPE html>
 <html>
 <head>
@@ -60,7 +62,8 @@ async def root():
             padding: 20px;
             background: linear - gradient(135deg, #667eea 0%, #764ba2 100%);
             min - height: 100vh;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .container {
             max - width: 900px;
             margin: 0 auto;
@@ -68,13 +71,15 @@ async def root():
             padding: 30px;
             border - radius: 15px;
             box - shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
+# BRACKET_SURGEON: disabled
+#         }
         h1 {
             color: #333;
             text - align: center;
             margin - bottom: 30px;
             font - size: 2.5em;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .integration - status {
             background: #e8f5e8;
             border: 2px solid #4caf50;
@@ -82,11 +87,13 @@ async def root():
             border - radius: 8px;
             margin - bottom: 20px;
             text - align: center;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .integration - status h3 {
             color: #2e7d32;
             margin: 0;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         textarea {
             width: 100%;
             height: 200px;
@@ -97,7 +104,8 @@ async def root():
             font - family: 'Courier New', monospace;
             font - size: 14px;
             resize: vertical;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         input[type="text"] {
             width: 100%;
             padding: 12px;
@@ -105,7 +113,8 @@ async def root():
             border: 2px solid #ddd;
             border - radius: 8px;
             font - size: 16px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         button {
             padding: 12px 25px;
             margin: 8px;
@@ -116,11 +125,13 @@ async def root():
             cursor: pointer;
             font - size: 16px;
             transition: transform 0.2s;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         button:hover {
             transform: translateY(-2px);
             box - shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .paste - item {
             border: 1px solid #e0e0e0;
             margin: 15px 0;
@@ -128,10 +139,12 @@ async def root():
             border - radius: 10px;
             background: #fafafa;
             transition: box - shadow 0.3s;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .paste - item:hover {
             box - shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .paste - meta {
             color: #666;
             font - size: 0.9em;
@@ -139,14 +152,16 @@ async def root():
             display: flex;
             justify - content: space - between;
             align - items: center;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         pre {
             background: #f8f9fa;
             padding: 15px;
             border - radius: 8px;
             overflow - x: auto;
             border - left: 4px solid #667eea;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .stats {
             display: flex;
             justify - content: space - around;
@@ -154,15 +169,18 @@ async def root():
             padding: 15px;
             background: #f0f0f0;
             border - radius: 8px;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .stat - item {
             text - align: center;
-        }
+# BRACKET_SURGEON: disabled
+#         }
         .stat - number {
             font - size: 2em;
             font - weight: bold;
             color: #667eea;
-        }
+# BRACKET_SURGEON: disabled
+#         }
     </style>
 </head>
 <body>
@@ -214,12 +232,15 @@ async def root():
                         method: 'POST',
                             headers: {
                             'Content - Type': 'application / json',
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             body: JSON.stringify({
                             content: content,
                                 title: title || null
-                        })
-                    });
+# BRACKET_SURGEON: disabled
+#                         })
+# BRACKET_SURGEON: disabled
+#                     });
 
                     if (response.ok) {
                         clearForm();
@@ -227,14 +248,18 @@ async def root():
                         showNotification('Paste saved successfully!', 'success');
                     } else {
                         showNotification('Failed to save paste', 'error');
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 } catch (error) {
                     showNotification('Error saving paste: ' + error.message, 'error');
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             } else {
                 showNotification('Please enter some content', 'warning');
-            }
-        });
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         });
 
         async function loadPastes() {
             try {
@@ -243,19 +268,23 @@ async def root():
                     pastes = await response.json();
                     renderPastes();
                     updateStats();
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             } catch (error) {
                 console.error('Error loading pastes:', error);
                 showNotification('Error loading pastes', 'error');
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         function renderPastes() {
             const container = document.getElementById('pastes');
             if (pastes.length === 0) {
                 container.innerHTML = '<p style="text - align: center; color: #666; font - style: italic;">No pastes yet. Create your first paste above!</p>';
                 return;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             container.innerHTML = pastes.map(paste => `
                 <div class="paste - item">
@@ -270,16 +299,19 @@ async def root():
                     <pre>${paste.content}</pre>
                 </div>
             `).join('');
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function clearForm() {
             document.getElementById('content').value = '';
             document.getElementById('title').value = '';
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function updateStats() {
             document.getElementById('pasteCount').textContent = pastes.length;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function showNotification(message, type) {
             // Simple notification system
@@ -298,23 +330,26 @@ async def root():
 
             switch(type) {
                 case 'success':
-                    notification.style.background = '#4caf50';
+                    notification.style.background = '#4caf50';'
                     break;
                 case 'error':
-                    notification.style.background = '#f44336';
+                    notification.style.background = '#f44336';'
                     break;
                 case 'warning':
-                    notification.style.background = '#ff9800';
+                    notification.style.background = '#ff9800';'
                     break;
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             notification.textContent = message;
             document.body.appendChild(notification);
 
             setTimeout(() => {
                 notification.remove();
-            }, 3000);
-        }
+# BRACKET_SURGEON: disabled
+#             }, 3000);
+# BRACKET_SURGEON: disabled
+#         }
 
         // Load pastes on page load
         loadPastes();
@@ -324,8 +359,9 @@ async def root():
     </script>
 </body>
 </html>
-    """
-    )
+    """"""
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @app.get("/health")
@@ -336,7 +372,8 @@ async def health_check():
         "service": "paste_integration_demo",
         "timestamp": datetime.now().isoformat(),
         "integration_status": "active",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @app.post("/api / paste", response_model=PasteResponse)
@@ -348,7 +385,8 @@ async def create_paste(paste_data: PasteCreate):
         "content": paste_data.content,
         "title": paste_data.title,
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
     pastes_storage.append(new_paste)
     return new_paste
 
@@ -382,7 +420,8 @@ async def get_stats():
     if (
         _stats_cache["data"] is not None
         and current_time - _stats_cache["timestamp"] < CACHE_DURATION
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         return _stats_cache["data"]
 
     # Generate fresh stats
@@ -392,7 +431,8 @@ async def get_stats():
         "integration_status": "fully_integrated",
         "last_updated": datetime.now().isoformat(),
         "cache_status": "fresh",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Update cache
     _stats_cache["data"] = stats

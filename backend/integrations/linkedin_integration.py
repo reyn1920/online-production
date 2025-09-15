@@ -2,66 +2,43 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict
+from ._base_social import BaseSocialClient
 
 @dataclass
-
-
-class LinkedInClient:
-    client_id: Optional[str] = None
-    client_secret: Optional[str] = None
-    access_token: Optional[str] = None
+class LinkedInClient(BaseSocialClient):
+    """LinkedIn integration client for social media posting."""
+    name = "linkedin"
+    client_id: str | None = None
+    client_secret: str | None = None
+    access_token: str | None = None
 
     @classmethod
-
-
     def from_env(cls) -> "LinkedInClient":
+        """Create LinkedInClient instance from environment variables."""
         return cls(
-            client_id = os.getenv("LI_CLIENT_ID"),
-                client_secret = os.getenv("LI_CLIENT_SECRET"),
-                access_token = os.getenv("LI_ACCESS_TOKEN"),
-                )
+            client_id=os.getenv("LI_CLIENT_ID"),
+            client_secret=os.getenv("LI_CLIENT_SECRET"),
+            access_token=os.getenv("LI_ACCESS_TOKEN"),
+        )
 
+    def _check_ready(self) -> bool:
+        """Check if LinkedIn client is ready for use."""
+        return bool(self.client_id and self.client_secret and self.access_token)
 
     def ready(self) -> bool:
-        # OFF by default: returns True only when creds exist
-        return bool(self.access_token or (self.client_id and self.client_secret))
+        """Check if LinkedIn client is ready for use."""
+        return self._check_ready()
 
-    def is_configured(self) -> bool:
-        """Check if LinkedIn integration is configured"""
-        return self.ready()
-
-    async def post_content(self, text: str, url: str | None = None) -> Dict[str, Any]:
-        """Post content to LinkedIn"""
+    def post_message(self, message: str, link: str | None = None) -> Dict[str, Any]:
+        """Post a message to LinkedIn."""
         if not self.ready():
-            return {"ok": False, "error": "LinkedIn not configured"}
-        # TODO: Use LinkedIn API
+            return {"ok": False, "reason": "linkedin_not_configured"}
+        
+        # TODO: Use LinkedIn API to post message
         # Placeholder for real call (intentionally not calling any API here).
-        return {"ok": True, "provider": "linkedin", "text_len": len(text), "url": url}
+        return {"ok": True, "provider": "linkedin", "message_len": len(message), "link": link}
 
-    # --- Stubs (no network calls yet) ---
-
-    def post_text(self, text: str, media_url: str = "") -> Dict[str, Any]:
-        if not self.ready():
-            raise RuntimeError("LinkedIn not configured")
-        return {"ok": True, "id": "li_post_stub", "text": text, "media": media_url}
-
-
-    def post_article(
-        self, title: str, content: str, media_url: str = ""
-    ) -> Dict[str, Any]:
-        if not self.ready():
-            raise RuntimeError("LinkedIn not configured")
-        return {
-            "ok": True,
-                "id": "li_article_stub",
-                "title": title,
-                "content": content,
-                "media": media_url,
-                }
-
-
-    def insights(self) -> Dict[str, Any]:
-        if not self.ready():
-            return {"error": "LinkedIn integration not configured"}
-        return {"ok": True, "followers": 0, "impressions": 0, "engagement": 0}
+    def post(self, message: str, link: str | None = None) -> Dict[str, Any]:
+        """Legacy method for backward compatibility."""
+        return self.post_message(message, link)

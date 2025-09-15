@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
+""""""
 TTS Engine Debug Test
-"""
+""""""
 
 import logging
 import sys
@@ -13,7 +13,7 @@ sys.path.append(str(Path(__file__).parent.parent / "backend"))
 logging.basicConfig(level=logging.INFO)
 
 try:
-    from backend.tts_engine import TTSEngine, VoiceConfig
+    from backend.tts_engine import TTSEngine
 
     print("✅ TTS Engine imports successful")
 

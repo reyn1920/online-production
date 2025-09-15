@@ -7,9 +7,9 @@ from torch import nn
 
 
 def kp2gaussian(kp, spatial_size, kp_variance):
-    """
+    """"""
     Transform a keypoint into gaussian like representation
-    """
+    """"""
     mean = kp["value"]
 
     coordinate_grid = make_coordinate_grid(spatial_size, mean.type())
@@ -31,9 +31,9 @@ def kp2gaussian(kp, spatial_size, kp_variance):
 
 
 def make_coordinate_grid_2d(spatial_size, type):
-    """
+    """"""
     Create a meshgrid [-1,1] x [-1,1] of given spatial_size.
-    """
+    """"""
     h, w = spatial_size
     x = torch.arange(w).type(type)
     y = torch.arange(h).type(type)
@@ -75,17 +75,23 @@ class ResBottleneck(nn.Module):
         super(ResBottleneck, self).__init__()
         self.conv1 = nn.Conv2d(
             in_channels = in_features, out_channels = in_features // 4, kernel_size = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.conv2 = nn.Conv2d(
             in_channels = in_features // 4,
                 out_channels = in_features // 4,
                 kernel_size = 3,
                 padding = 1,
                 stride = stride,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.conv3 = nn.Conv2d(
             in_channels = in_features // 4, out_channels = in_features, kernel_size = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.norm1 = BatchNorm2d(in_features // 4, affine = True)
         self.norm2 = BatchNorm2d(in_features // 4, affine = True)
         self.norm3 = BatchNorm2d(in_features, affine = True)
@@ -97,7 +103,9 @@ class ResBottleneck(nn.Module):
                     out_channels = in_features,
                     kernel_size = 1,
                     stride = stride,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             self.norm4 = BatchNorm2d(in_features, affine = True)
 
 
@@ -119,9 +127,9 @@ class ResBottleneck(nn.Module):
 
 
 class ResBlock2d(nn.Module):
-    """
+    """"""
     Res block, preserve spatial resolution.
-    """
+    """"""
 
 
     def __init__(self, in_features, kernel_size, padding):
@@ -131,13 +139,17 @@ class ResBlock2d(nn.Module):
                 out_channels = in_features,
                 kernel_size = kernel_size,
                 padding = padding,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.conv2 = nn.Conv2d(
             in_channels = in_features,
                 out_channels = in_features,
                 kernel_size = kernel_size,
                 padding = padding,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.norm1 = BatchNorm2d(in_features, affine = True)
         self.norm2 = BatchNorm2d(in_features, affine = True)
 
@@ -154,9 +166,9 @@ class ResBlock2d(nn.Module):
 
 
 class ResBlock3d(nn.Module):
-    """
+    """"""
     Res block, preserve spatial resolution.
-    """
+    """"""
 
 
     def __init__(self, in_features, kernel_size, padding):
@@ -166,13 +178,17 @@ class ResBlock3d(nn.Module):
                 out_channels = in_features,
                 kernel_size = kernel_size,
                 padding = padding,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.conv2 = nn.Conv3d(
             in_channels = in_features,
                 out_channels = in_features,
                 kernel_size = kernel_size,
                 padding = padding,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.norm1 = BatchNorm3d(in_features, affine = True)
         self.norm2 = BatchNorm3d(in_features, affine = True)
 
@@ -189,9 +205,9 @@ class ResBlock3d(nn.Module):
 
 
 class UpBlock2d(nn.Module):
-    """
+    """"""
     Upsampling block for use in decoder.
-    """
+    """"""
 
 
     def __init__(self,
@@ -199,7 +215,8 @@ class UpBlock2d(nn.Module):
     out_features,
     kernel_size = 3,
     padding = 1,
-    groups = 1):
+# BRACKET_SURGEON: disabled
+#     groups = 1):
         super(UpBlock2d, self).__init__()
 
         self.conv = nn.Conv2d(
@@ -208,7 +225,9 @@ class UpBlock2d(nn.Module):
                 kernel_size = kernel_size,
                 padding = padding,
                 groups = groups,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.norm = BatchNorm2d(out_features, affine = True)
 
 
@@ -221,9 +240,9 @@ class UpBlock2d(nn.Module):
 
 
 class UpBlock3d(nn.Module):
-    """
+    """"""
     Upsampling block for use in decoder.
-    """
+    """"""
 
 
     def __init__(self,
@@ -231,7 +250,8 @@ class UpBlock3d(nn.Module):
     out_features,
     kernel_size = 3,
     padding = 1,
-    groups = 1):
+# BRACKET_SURGEON: disabled
+#     groups = 1):
         super(UpBlock3d, self).__init__()
 
         self.conv = nn.Conv3d(
@@ -240,7 +260,9 @@ class UpBlock3d(nn.Module):
                 kernel_size = kernel_size,
                 padding = padding,
                 groups = groups,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.norm = BatchNorm3d(out_features, affine = True)
 
 
@@ -254,9 +276,9 @@ class UpBlock3d(nn.Module):
 
 
 class DownBlock2d(nn.Module):
-    """
+    """"""
     Downsampling block for use in encoder.
-    """
+    """"""
 
 
     def __init__(self,
@@ -264,7 +286,8 @@ class DownBlock2d(nn.Module):
     out_features,
     kernel_size = 3,
     padding = 1,
-    groups = 1):
+# BRACKET_SURGEON: disabled
+#     groups = 1):
         super(DownBlock2d, self).__init__()
         self.conv = nn.Conv2d(
             in_channels = in_features,
@@ -272,7 +295,9 @@ class DownBlock2d(nn.Module):
                 kernel_size = kernel_size,
                 padding = padding,
                 groups = groups,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.norm = BatchNorm2d(out_features, affine = True)
         self.pool = nn.AvgPool2d(kernel_size=(2, 2))
 
@@ -286,9 +311,9 @@ class DownBlock2d(nn.Module):
 
 
 class DownBlock3d(nn.Module):
-    """
+    """"""
     Downsampling block for use in encoder.
-    """
+    """"""
 
 
     def __init__(self,
@@ -296,21 +321,26 @@ class DownBlock3d(nn.Module):
     out_features,
     kernel_size = 3,
     padding = 1,
-    groups = 1):
+# BRACKET_SURGEON: disabled
+#     groups = 1):
         super(DownBlock3d, self).__init__()
-        """
+        """"""
         self.conv = nn.Conv3d(in_channels = in_features,
     out_channels = out_features,
     kernel_size = kernel_size,
-            padding = padding, groups = groups, stride=(1, 2, 2))
-        """
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             padding = padding, groups = groups, stride=(1, 2, 2))
+        """"""
         self.conv = nn.Conv3d(
             in_channels = in_features,
                 out_channels = out_features,
                 kernel_size = kernel_size,
                 padding = padding,
                 groups = groups,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.norm = BatchNorm3d(out_features, affine = True)
         self.pool = nn.AvgPool3d(kernel_size=(1, 2, 2))
 
@@ -324,14 +354,15 @@ class DownBlock3d(nn.Module):
 
 
 class SameBlock2d(nn.Module):
-    """
+    """"""
     Simple block, preserve spatial resolution.
-    """
+    """"""
 
 
     def __init__(
         self, in_features, out_features, groups = 1, kernel_size = 3, padding = 1, lrelu = False
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super(SameBlock2d, self).__init__()
         self.conv = nn.Conv2d(
             in_channels = in_features,
@@ -339,7 +370,9 @@ class SameBlock2d(nn.Module):
                 kernel_size = kernel_size,
                 padding = padding,
                 groups = groups,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.norm = BatchNorm2d(out_features, affine = True)
         if lrelu:
             self.ac = nn.LeakyReLU()
@@ -355,16 +388,17 @@ class SameBlock2d(nn.Module):
 
 
 class Encoder(nn.Module):
-    """
+    """"""
     Hourglass Encoder
-    """
+    """"""
 
 
     def __init__(self,
     block_expansion,
     in_features,
     num_blocks = 3,
-    max_features = 256):
+# BRACKET_SURGEON: disabled
+#     max_features = 256):
         super(Encoder, self).__init__()
 
         down_blocks = []
@@ -375,12 +409,17 @@ class Encoder(nn.Module):
                         in_features
                         if i == 0
                         else min(max_features, block_expansion * (2**i))
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         min(max_features, block_expansion * (2 ** (i + 1))),
                         kernel_size = 3,
                         padding = 1,
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         self.down_blocks = nn.ModuleList(down_blocks)
 
 
@@ -392,16 +431,17 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    """
+    """"""
     Hourglass Decoder
-    """
+    """"""
 
 
     def __init__(self,
     block_expansion,
     in_features,
     num_blocks = 3,
-    max_features = 256):
+# BRACKET_SURGEON: disabled
+#     max_features = 256):
         super(Decoder, self).__init__()
 
         up_blocks = []
@@ -409,11 +449,15 @@ class Decoder(nn.Module):
         for i in range(num_blocks)[::-1]:
             in_filters = (1 if i == num_blocks - 1 else 2) * min(
                 max_features, block_expansion * (2 ** (i + 1))
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             out_filters = min(max_features, block_expansion * (2**i))
             up_blocks.append(
                 UpBlock3d(in_filters, out_filters, kernel_size = 3, padding = 1)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.up_blocks = nn.ModuleList(up_blocks)
         # self.out_filters = block_expansion
@@ -424,7 +468,9 @@ class Decoder(nn.Module):
                 out_channels = self.out_filters,
                 kernel_size = 3,
                 padding = 1,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.norm = BatchNorm3d(self.out_filters, affine = True)
 
 
@@ -443,16 +489,17 @@ class Decoder(nn.Module):
 
 
 class Hourglass(nn.Module):
-    """
+    """"""
     Hourglass architecture.
-    """
+    """"""
 
 
     def __init__(self,
     block_expansion,
     in_features,
     num_blocks = 3,
-    max_features = 256):
+# BRACKET_SURGEON: disabled
+#     max_features = 256):
         super(Hourglass, self).__init__()
         self.encoder = Encoder(block_expansion, in_features, num_blocks, max_features)
         self.decoder = Decoder(block_expansion, in_features, num_blocks, max_features)
@@ -464,9 +511,9 @@ class Hourglass(nn.Module):
 
 
 class KPHourglass(nn.Module):
-    """
+    """"""
     Hourglass architecture.
-    """
+    """"""
 
 
     def __init__(
@@ -477,7 +524,8 @@ class KPHourglass(nn.Module):
             reshape_depth,
             num_blocks = 3,
             max_features = 256,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super(KPHourglass, self).__init__()
 
         self.down_blocks = nn.Sequential()
@@ -489,28 +537,38 @@ class KPHourglass(nn.Module):
                         in_features
                         if i == 0
                         else min(max_features, block_expansion * (2**i))
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         min(max_features, block_expansion * (2 ** (i + 1))),
                         kernel_size = 3,
                         padding = 1,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         in_filters = min(max_features, block_expansion * (2**num_blocks))
         self.conv = nn.Conv2d(
             in_channels = in_filters, out_channels = reshape_features, kernel_size = 1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.up_blocks = nn.Sequential()
         for i in range(num_blocks):
             in_filters = min(max_features, block_expansion * (2 ** (num_blocks - i)))
             out_filters = min(
                 max_features, block_expansion * (2 ** (num_blocks - i - 1))
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.up_blocks.add_module(
                 "up" + str(i),
                     UpBlock3d(in_filters, out_filters, kernel_size = 3, padding = 1),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         self.reshape_depth = reshape_depth
         self.out_filters = out_filters
@@ -527,9 +585,9 @@ class KPHourglass(nn.Module):
 
 
 class AntiAliasInterpolation2d(nn.Module):
-    """
+    """"""
     Band - limited downsampling, for better preservation of the input signal.
-    """
+    """"""
 
 
     def __init__(self, channels, scale):
@@ -546,7 +604,9 @@ class AntiAliasInterpolation2d(nn.Module):
         kernel = 1
         meshgrids = torch.meshgrid(
             [torch.arange(size, dtype = torch.float32) for size in kernel_size]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         for size, std, mgrid in zip(kernel_size, sigma, meshgrids):
             mean = (size - 1) / 2
             kernel *= torch.exp(-((mgrid - mean) ** 2) / (2 * std**2))
@@ -586,7 +646,9 @@ class SPADE(nn.Module):
 
         self.mlp_shared = nn.Sequential(
             nn.Conv2d(label_nc, nhidden, kernel_size = 3, padding = 1), nn.ReLU()
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.mlp_gamma = nn.Conv2d(nhidden, norm_nc, kernel_size = 3, padding = 1)
         self.mlp_beta = nn.Conv2d(nhidden, norm_nc, kernel_size = 3, padding = 1)
 
@@ -613,10 +675,14 @@ class SPADEResnetBlock(nn.Module):
         # create conv layers
         self.conv_0 = nn.Conv2d(
             fin, fmiddle, kernel_size = 3, padding = dilation, dilation = dilation
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.conv_1 = nn.Conv2d(
             fmiddle, fout, kernel_size = 3, padding = dilation, dilation = dilation
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if self.learned_shortcut:
             self.conv_s = nn.Conv2d(fin, fout, kernel_size = 1, bias = False)
         # apply spectral norm if specified
@@ -662,7 +728,8 @@ class audio2image(nn.Module):
             he_estimator_video,
             he_estimator_audio,
             train_params,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__()
         # Attributes
         self.generator = generator
@@ -702,9 +769,13 @@ class audio2image(nn.Module):
                     torch.zeros_like(roll),
                     torch.sin(roll),
                     torch.cos(roll),
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 dim = 1,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         roll_mat = roll_mat.view(roll_mat.shape[0], 3, 3)
 
         pitch_mat = torch.cat(
@@ -718,9 +789,13 @@ class audio2image(nn.Module):
                     -torch.sin(pitch),
                     torch.zeros_like(pitch),
                     torch.cos(pitch),
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 dim = 1,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         pitch_mat = pitch_mat.view(pitch_mat.shape[0], 3, 3)
 
         yaw_mat = torch.cat(
@@ -734,9 +809,13 @@ class audio2image(nn.Module):
                     torch.zeros_like(yaw),
                     torch.zeros_like(yaw),
                     torch.ones_like(yaw),
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 dim = 1,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         yaw_mat = yaw_mat.view(yaw_mat.shape[0], 3, 3)
 
         rot_mat = torch.einsum("bij,bjk,bkm->bim", roll_mat, pitch_mat, yaw_mat)
@@ -776,8 +855,12 @@ class audio2image(nn.Module):
         kp_source = self.keypoint_transformation(kp_canonical, pose_source)
         kp_transformed_generated = self.keypoint_transformation(
             kp_canonical, pose_generated
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         generated = self.generator(
             source_image, kp_source = kp_source, kp_driving = kp_transformed_generated
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return generated

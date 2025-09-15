@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 API Discovery Routes
 Backend endpoints for API discovery and management
-"""
+""""""
 
 import asyncio
 import json
@@ -68,10 +68,13 @@ def discover_apis():
                     {
                         "error": "API Discovery Service not available",
                         "apis": get_mock_apis(channel),
-                    }
-                ),
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 ),
                 200,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Run the async discovery service
         loop = asyncio.new_event_loop()
@@ -104,9 +107,11 @@ def discover_apis():
                                 "score": api.score,
                                 "discovered_at": api.discovered_at,
                                 "channel": api.channel,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             for api in apis
-                        ]
+# BRACKET_SURGEON: disabled
+#                         ]
 
                     return serialized_results
 
@@ -117,8 +122,10 @@ def discover_apis():
                     "success": True,
                     "apis": results,
                     "timestamp": datetime.now().isoformat(),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         finally:
             loop.close()
@@ -128,7 +135,8 @@ def discover_apis():
         return (
             jsonify({"error": str(e), "apis": get_mock_apis(channel)}),
             200,
-        )  # Return mock data instead of error
+# BRACKET_SURGEON: disabled
+#         )  # Return mock data instead of error
 
 
 @api_discovery_bp.route("/free - apis", methods=["GET"])
@@ -145,12 +153,13 @@ def get_free_apis():
         with sqlite3.connect(db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
-                """
+                """"""
                 SELECT * FROM discovered_apis
                 WHERE cost_model IN ('free', 'freemium')
                 ORDER BY score DESC, name ASC
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             apis = []
             for row in cursor.fetchall():
@@ -189,14 +198,15 @@ def get_channel_apis(channel):
         with sqlite3.connect(db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
-                """
+                """"""
                 SELECT * FROM discovered_apis
                 WHERE channel = ?
                 ORDER BY score DESC, cost_model = 'free' DESC
                 LIMIT ?
-            """,
+            ""","""
                 (channel, limit),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             apis = []
             for row in cursor.fetchall():
@@ -219,8 +229,10 @@ def get_channel_apis(channel):
                 "success": True,
                 "channel": channel,
                 "apis": get_mock_channel_apis(channel, 5),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @api_discovery_bp.route("/api - stats", methods=["GET"])
@@ -237,11 +249,12 @@ def get_api_stats():
 
             # Free APIs
             free_cursor = conn.execute(
-                """
+                """"""
                 SELECT COUNT(*) as count FROM discovered_apis
                 WHERE cost_model IN ('free', 'freemium')
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             free_apis = free_cursor.fetchone()[0]
 
             # Average score
@@ -250,19 +263,21 @@ def get_api_stats():
 
             # Channels with APIs
             channels_cursor = conn.execute(
-                """
+                """"""
                 SELECT COUNT(DISTINCT channel) as count FROM discovered_apis
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             channels_count = channels_cursor.fetchone()[0]
 
             # Recent discoveries
             recent_cursor = conn.execute(
-                """
+                """"""
                 SELECT COUNT(*) as count FROM discovered_apis
                 WHERE date(discovered_at) = date('now')
-            """
-            )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
             recent_discoveries = recent_cursor.fetchone()[0]
 
         return jsonify(
@@ -274,9 +289,12 @@ def get_api_stats():
                     "avg_score": round(avg_score, 1),
                     "channels_count": channels_count,
                     "recent_discoveries": recent_discoveries,
-                },
-            }
-        )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     except Exception as e:
         logger.error(f"Error in get_api_stats: {e}")
@@ -289,9 +307,12 @@ def get_api_stats():
                     "avg_score": 0.0,
                     "channels_count": 8,
                     "recent_discoveries": 0,
-                },
-            }
-        )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @api_discovery_bp.route("/search - history", methods=["GET"])
@@ -306,13 +327,14 @@ def get_search_history():
         with sqlite3.connect(db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
-                """
+                """"""
                 SELECT * FROM api_search_history
                 ORDER BY search_date DESC
                 LIMIT ?
-            """,
+            ""","""
                 (limit,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             history = [dict(row) for row in cursor.fetchall()]
 
@@ -336,20 +358,22 @@ def get_mock_apis(channel):
                 "signup_url": "https://console.cloud.google.com/",
                 "category": "social",
                 "cost_model": "free",
-                "description": "Access YouTube data including videos, channels, playlists, \
-    and more",
+                "description": "Access YouTube data including videos, channels, playlists, \"
+#     and more",
                 "features": [
                     "video analytics",
                     "channel data",
                     "playlist management",
                     "search",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "rate_limits": "10,000 requests per day",
                 "documentation_url": "https://developers.google.com / youtube / v3",
                 "score": 8.5,
                 "discovered_at": datetime.now().isoformat(),
                 "channel": "youtube",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "name": "YouTube Analytics API",
                 "url": "https://developers.google.com / youtube / analytics",
@@ -363,8 +387,10 @@ def get_mock_apis(channel):
                 "score": 8.0,
                 "discovered_at": datetime.now().isoformat(),
                 "channel": "youtube",
-            },
-        ],
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ],
         "email": [
             {
                 "name": "SendGrid API",
@@ -378,14 +404,17 @@ def get_mock_apis(channel):
                     "marketing campaigns",
                     "analytics",
                     "templates",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "rate_limits": "100 emails / day free",
                 "documentation_url": "https://sendgrid.com / docs/",
                 "score": 7.8,
                 "discovered_at": datetime.now().isoformat(),
                 "channel": "email",
-            }
-        ],
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         ],
         "affiliate": [
             {
                 "name": "Amazon Associates API",
@@ -400,9 +429,12 @@ def get_mock_apis(channel):
                 "score": 9.0,
                 "discovered_at": datetime.now().isoformat(),
                 "channel": "affiliate",
-            }
-        ],
-    }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     }
 
     if channel == "all":
         return mock_data
@@ -426,7 +458,8 @@ def get_mock_free_apis():
             "score": 8.5,
             "discovered_at": datetime.now().isoformat(),
             "channel": "youtube",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "name": "Twitter API v2",
             "url": "https://developer.twitter.com / en / docs / twitter - api",
@@ -440,7 +473,8 @@ def get_mock_free_apis():
             "score": 7.5,
             "discovered_at": datetime.now().isoformat(),
             "channel": "twitter",
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "name": "Amazon Associates API",
             "url": "https://webservices.amazon.com / paapi5 / documentation/",
@@ -454,8 +488,10 @@ def get_mock_free_apis():
             "score": 9.0,
             "discovered_at": datetime.now().isoformat(),
             "channel": "affiliate",
-        },
-    ]
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     ]
 
 
 def get_mock_channel_apis(channel, limit):

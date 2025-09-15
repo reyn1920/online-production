@@ -57,7 +57,9 @@ from musev.models.ip_adapter_face_loader import \\
 from musev.models.ip_adapter_loader import (load_ip_adapter_image_proj_by_name,
 
     load_ip_adapter_vision_clip_encoder_by_name,
-                                                load_vision_clip_encoder_by_name)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                                 load_vision_clip_encoder_by_name)
 
 from musev.models.referencenet import ReferenceNet2D
 from musev.models.referencenet_loader import load_referencenet_by_name
@@ -161,7 +163,8 @@ args_dict = {
         "w_ind_noise": 0.5,
         "width": None,
         "write_info": False,
-}
+# BRACKET_SURGEON: disabled
+# }
 args = Namespace(**args_dict)
 print("args")
 pprint(args)
@@ -173,7 +176,8 @@ cross_attention_dim = args.cross_attention_dim
 time_size = args.time_size  # 一次视频生成的帧数
 n_batch = (
     args.n_batch
-)  # 按照time_size的尺寸 生成n_batch次，总帧数 = time_size * n_batch
+# BRACKET_SURGEON: disabled
+# )  # 按照time_size的尺寸 生成n_batch次，总帧数 = time_size * n_batch
 fps = args.fps
 # need_redraw = args.need_redraw  # 视频重绘视频使用视频网络
 # use_video_redraw = args.use_video_redraw  # 视频重绘视频使用视频网络
@@ -181,16 +185,19 @@ fix_condition_images = args.fix_condition_images
 use_condition_image = args.use_condition_image  # 当 test_data 中有图像时，作为初始图像
 redraw_condition_image = (
     args.redraw_condition_image
-)  # 用于视频生成的首帧是否使用重绘后的
+# BRACKET_SURGEON: disabled
+# )  # 用于视频生成的首帧是否使用重绘后的
 need_img_based_video_noise = (
     args.need_img_based_video_noise
-)  # 视频加噪过程中是否使用首帧 condition_images
+# BRACKET_SURGEON: disabled
+# )  # 视频加噪过程中是否使用首帧 condition_images
 img_weight = args.img_weight
 height = args.height  # 如果测试数据中没有单独指定宽高，则默认这里
 width = args.width  # 如果测试数据中没有单独指定宽高，则默认这里
 img_length_ratio = (
     args.img_length_ratio
-)  # 如果测试数据中没有单独指定图像宽高比resize比例，则默认这里
+# BRACKET_SURGEON: disabled
+# )  # 如果测试数据中没有单独指定图像宽高比resize比例，则默认这里
 n_cols = args.n_cols
 noise_type = args.noise_type
 strength = args.strength  # 首帧重绘程度参数
@@ -206,13 +213,17 @@ sd_model_name = (
     args.sd_model_name
     if args.sd_model_name in ["all", "None"]
     else args.sd_model_name.split(",")
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 unet_model_cfg_path = args.unet_model_cfg_path
 unet_model_name = args.unet_model_name
 test_data_path = args.test_data_path
 target_datas = (
     args.target_datas if args.target_datas == "all" else args.target_datas.split(",")
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 device = "cuda" if torch.cuda.is_available() else "cpu"
 torch_dtype = torch.float16
 negprompt_cfg_path = args.negprompt_cfg_path
@@ -245,7 +256,9 @@ redraw_condition_image_with_ipdapter = args.redraw_condition_image_with_ipdapter
 redraw_condition_image_with_facein = args.redraw_condition_image_with_facein
 redraw_condition_image_with_ip_adapter_face = (
     args.redraw_condition_image_with_ip_adapter_face
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 w_ind_noise = args.w_ind_noise
 ip_adapter_scale = args.ip_adapter_scale
 facein_scale = args.facein_scale
@@ -278,16 +291,24 @@ negative_embedding = [
         [
         "MuseV/checkpoints/embedding/ng_deepnegative_v1_75t.pt",
             "ng_deepnegative_v1_75t",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "MuseV/checkpoints/embedding/EasyNegativeV2.safetensors",
             "EasyNegativeV2",
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         [
         "MuseV/checkpoints/embedding/bad_prompt_version2 - neg.pt",
             "bad_prompt_version2 - neg",
-            ],
-]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# ]
 prefix_prompt = ""
 suffix_prompt = ", beautiful, masterpiece, best quality"
 suffix_prompt = ""
@@ -300,7 +321,9 @@ def load_yaml(path):
         OmegaConf.load(path),
     structured_config_mode = SCMode.INSTANTIATE,
     resolve = True
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return tasks
 
 # if test_data_path.endswith(".yaml"):
@@ -314,6 +337,8 @@ def load_yaml(path):
 #     test_data
 #     for test_data in test_datas_src
 #     if target_datas == "all" or test_data.get("name", None) in target_datas
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
 # ]
 
 # test_datas = fiss_tasks(test_datas)
@@ -324,7 +349,11 @@ def load_yaml(path):
 #     raise ValueError(
 #         "n_test_datas == 0, set target_datas = None or set atleast one of {}".format(
 #             " ".join(list(d.get("name", "None") for d in test_datas_src))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
 #         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
 #     )
 # print("n_test_datas", n_test_datas)
 # # pprint(test_datas)
@@ -359,7 +388,8 @@ if sd_model_name != "None":
         k: v
         for k, v in sd_model_params_dict_src.items()
         if sd_model_name == "all" or k in sd_model_name
-    }
+# BRACKET_SURGEON: disabled
+#     }
 else:
     # 使用命令行给的sd_model_path, 需要单独设置 sd_model_name 为None，
     sd_model_name = os.path.basename(sd_model_cfg_path).split(".")[0]
@@ -369,8 +399,12 @@ if len(sd_model_params_dict) == 0:
     raise ValueError(
         "has not target model, please set one of {}".format(
             " ".join(list(sd_model_params_dict_src.keys()))
-        )
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 print("running model, T2I SD")
 pprint(sd_model_params_dict)
 
@@ -401,14 +435,20 @@ if referencenet_model_name is not None:
     elif os.path.isfile(referencenet_model_cfg_path):
         referencenet_model_params_dict_src = load_pyhon_obj(
             referencenet_model_cfg_path, "MODEL_CFG"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(
             "referencenet_model_params_dict_src",
                 referencenet_model_params_dict_src.keys(),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         referencenet_model_path = referencenet_model_params_dict_src[
             referencenet_model_name
-        ]["net"]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]["net"]
     else:
         raise ValueError(f"expect dir or file, but given {referencenet_model_cfg_path}")
 else:
@@ -419,11 +459,15 @@ print("referencenet: ", referencenet_model_name, referencenet_model_path)
 if ip_adapter_model_name is not None:
     ip_adapter_model_params_dict_src = load_pyhon_obj(
         ip_adapter_model_cfg_path, "MODEL_CFG"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     print("ip_adapter_model_params_dict_src", ip_adapter_model_params_dict_src.keys())
     ip_adapter_model_params_dict = ip_adapter_model_params_dict_src[
         ip_adapter_model_name
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
 else:
     ip_adapter_model_params_dict = None
 print("ip_adapter: ", ip_adapter_model_name, ip_adapter_model_params_dict)
@@ -441,19 +485,27 @@ print("facein: ", facein_model_name, facein_model_params_dict)
 if ip_adapter_face_model_name is not None:
     ip_adapter_face_model_params_dict_src = load_pyhon_obj(
         ip_adapter_face_model_cfg_path, "MODEL_CFG"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     print(
         "ip_adapter_face_model_params_dict_src",
             ip_adapter_face_model_params_dict_src.keys(),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     ip_adapter_face_model_params_dict = ip_adapter_face_model_params_dict_src[
         ip_adapter_face_model_name
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
 else:
     ip_adapter_face_model_params_dict = None
 print(
     "ip_adapter_face: ", ip_adapter_face_model_name, ip_adapter_face_model_params_dict
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 # negative_prompt
 
@@ -471,12 +523,16 @@ video_negative_prompt_name, video_negative_prompt = get_negative_prompt(
     video_negative_prompt,
         cfg_path = negprompt_cfg_path,
         n = negtive_prompt_length,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 negative_prompt_name, negative_prompt = get_negative_prompt(
     negative_prompt,
         cfg_path = negprompt_cfg_path,
         n = negtive_prompt_length,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 print("video_negprompt", video_negative_prompt_name, video_negative_prompt)
 print("negprompt", negative_prompt_name, negative_prompt)
@@ -491,7 +547,9 @@ if referencenet_model_name is not None and not use_v2v_predictor:
             # sd_model="MuseV/checkpoints//Moore - AnimateAnyone/AnimateAnyone/reference_unet.pth",
             sd_referencenet_model = referencenet_model_path,
             cross_attention_dim = cross_attention_dim,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 else:
     referencenet = None
     referencenet_model_name = "no"
@@ -500,10 +558,14 @@ if vision_clip_extractor_class_name is not None and not use_v2v_predictor:
     vision_clip_extractor = load_vision_clip_encoder_by_name(
         ip_image_encoder = vision_clip_model_path,
             vision_clip_extractor_class_name = vision_clip_extractor_class_name,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     logger.info(
         f"vision_clip_extractor, name={vision_clip_extractor_class_name}, path={vision_clip_model_path}"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 else:
     vision_clip_extractor = None
     logger.info(f"vision_clip_extractor, None")
@@ -528,16 +590,21 @@ class MuseV:
                 model_name = ip_adapter_model_name,
                     ip_image_encoder = ip_adapter_model_params_dict.get(
                     "ip_image_encoder", vision_clip_model_path
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     ip_ckpt = ip_adapter_model_params_dict["ip_ckpt"],
                     cross_attention_dim = cross_attention_dim,
                     clip_embeddings_dim = ip_adapter_model_params_dict["clip_embeddings_dim"],
                     clip_extra_context_tokens = ip_adapter_model_params_dict[
                     "clip_extra_context_tokens"
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     ip_scale = ip_adapter_model_params_dict["ip_scale"],
                     device = device,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             ip_adapter_image_proj = None
             ip_adapter_model_name = "no"
@@ -560,10 +627,14 @@ class MuseV:
                         # facein 目前没参与训练，但在unet中定义了，载入相关参数会报错，所以用strict控制
                     strict = not (facein_model_name is not None),
                         need_t2i_ip_adapter_face = ip_adapter_face_model_name is not None,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 if not use_v2v_predictor
                     else None
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if facein_model_name is not None and not use_v2v_predictor:
                 (
@@ -577,12 +648,16 @@ class MuseV:
                         clip_embeddings_dim = facein_model_params_dict["clip_embeddings_dim"],
                         clip_extra_context_tokens = facein_model_params_dict[
                         "clip_extra_context_tokens"
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                         ip_scale = facein_model_params_dict["ip_scale"],
                         device = device,
                         # facein目前没有参与unet中的训练，需要单独载入参数
                     unet = unet,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 face_emb_extractor = None
                 facein_image_proj = None
@@ -595,19 +670,27 @@ class MuseV:
                     model_name = ip_adapter_face_model_name,
                         ip_image_encoder = ip_adapter_face_model_params_dict[
                         "ip_image_encoder"
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                         ip_ckpt = ip_adapter_face_model_params_dict["ip_ckpt"],
                         cross_attention_dim = cross_attention_dim,
                         clip_embeddings_dim = ip_adapter_face_model_params_dict[
                         "clip_embeddings_dim"
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                         clip_extra_context_tokens = ip_adapter_face_model_params_dict[
                         "clip_extra_context_tokens"
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                         ip_scale = ip_adapter_face_model_params_dict["ip_scale"],
                         device = device,
                         unet = unet,  # ip_adapter_face 目前没有参与unet中的训练，需要单独载入参数
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 ip_adapter_face_emb_extractor = None
                 ip_adapter_face_image_proj = None
@@ -631,15 +714,21 @@ class MuseV:
                         vae_model = test_model_vae_model_path,
                         ip_adapter_face_emb_extractor = ip_adapter_face_emb_extractor,
                         ip_adapter_face_image_proj = ip_adapter_face_image_proj,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 if not use_v2v_predictor
                     else video_sd_predictor
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             if use_v2v_predictor:
                 print(
                     "text2video use video_sd_predictor, sd_predictor type is ",
                         type(self.sd_predictor),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             logger.debug(f"load sd_predictor"),
 
         pass
@@ -656,7 +745,8 @@ class MuseV:
             video_len,
             img_edge_ratio: float = 1.0,
             progress = gr.Progress(track_tqdm = True),
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         progress(0, desc="Starting...")
         # Save the uploaded image to a specified path
         if not os.path.exists(CACHE_PATH):
@@ -684,7 +774,8 @@ class MuseV:
                 "img_length_ratio": img_edge_ratio,
                 # 'style': 'anime',
                 # 'sex': 'female'
-        }
+# BRACKET_SURGEON: disabled
+#         }
         batch = []
         texts = []
         print("\\n test_data", test_data, self.model_name)
@@ -699,7 +790,9 @@ class MuseV:
         test_data_condition_images_index = test_data.get("condition_images_index", None)
         test_data_redraw_condition_image = test_data.get(
             "redraw_condition_image", redraw_condition_image
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         # read condition_image
         if (
             test_data_condition_images_path is not None
@@ -709,18 +802,27 @@ class MuseV:
                 or (
                     isinstance(test_data_condition_images_path, str)
                     and is_image(test_data_condition_images_path)
-                )
-            )
-        ):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# BRACKET_SURGEON: disabled
+#         ):
             (
                 test_data_condition_images,
                     test_data_condition_images_name,
-                    ) = read_image_and_name(test_data_condition_images_path)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) = read_image_and_name(test_data_condition_images_path)
             condition_image_height = test_data_condition_images.shape[3]
             condition_image_width = test_data_condition_images.shape[4]
             logger.debug(
                 f"test_data_condition_images use {test_data_condition_images_path}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             test_data_condition_images = None
             test_data_condition_images_name = "no"
@@ -737,7 +839,9 @@ class MuseV:
 
         test_data_img_length_ratio = float(
             test_data.get("img_length_ratio", img_length_ratio)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # 为了和video2video保持对齐，使用64而不是8作为宽、高最小粒度
         # test_data_height = int(test_data_height * test_data_img_length_ratio//8 * 8)
@@ -756,16 +860,24 @@ class MuseV:
         test_data_img_weight = float(test_data.get("img_weight", img_weight))
         logger.debug(
             f"test_data_condition_images_path {test_data_condition_images_path}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         logger.debug(
             f"test_data_condition_images_index {test_data_condition_images_index}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         test_data_refer_image_path = test_data.get(
             "refer_image", referencenet_image_path
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         test_data_ipadapter_image_path = test_data.get(
             "ipadapter_image", ipadapter_image_path
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         test_data_refer_face_image_path = test_data.get("face_image", face_image_path)
 
         if negprompt_cfg_path is not None:
@@ -776,10 +888,13 @@ class MuseV:
                         ) = get_negative_prompt(
                     test_data.get(
                         "video_negative_prompt",
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                         cfg_path = negprompt_cfg_path,
                         n = negtive_prompt_length,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 test_data_video_negative_prompt_name = video_negative_prompt_name
                 test_data_video_negative_prompt = video_negative_prompt
@@ -790,26 +905,37 @@ class MuseV:
                         ) = get_negative_prompt(
                     test_data.get(
                         "negative_prompt",
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                         cfg_path = negprompt_cfg_path,
                         n = negtive_prompt_length,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 test_data_negative_prompt_name = negative_prompt_name
                 test_data_negative_prompt = negative_prompt
         else:
             test_data_video_negative_prompt = test_data.get(
                 "video_negative_prompt", video_negative_prompt
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             test_data_video_negative_prompt_name = test_data_video_negative_prompt[
                 :negtive_prompt_length
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             test_data_negative_prompt = test_data.get(
                 "negative_prompt", negative_prompt
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             test_data_negative_prompt_name = test_data_negative_prompt[
                 :negtive_prompt_length
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
         # 准备 test_data_refer_image
         if referencenet is not None:
@@ -820,7 +946,9 @@ class MuseV:
             else:
                 test_data_refer_image, test_data_refer_image_name = read_image_and_name(
                     test_data_refer_image_path
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 logger.debug(f"test_data_refer_image use {test_data_refer_image_path}")
         else:
             test_data_refer_image = None
@@ -835,15 +963,21 @@ class MuseV:
 
                 logger.debug(
                     f"test_data_ipadapter_image use test_data_condition_images"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 (
                     test_data_ipadapter_image,
                         test_data_ipadapter_image_name,
-                        ) = read_image_and_name(test_data_ipadapter_image_path)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) = read_image_and_name(test_data_ipadapter_image_path)
                 logger.debug(
                     f"test_data_ipadapter_image use f{test_data_ipadapter_image_path}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         else:
             test_data_ipadapter_image = None
             test_data_ipadapter_image_name = "no"
@@ -853,22 +987,29 @@ class MuseV:
         if (
             self.facein_image_proj is not None
             or self.ip_adapter_face_image_proj is not None
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             if test_data_refer_face_image_path is None:
                 test_data_refer_face_image = test_data_condition_images
                 test_data_refer_face_image_name = test_data_condition_images_name
 
                 logger.debug(
                     f"test_data_refer_face_image use test_data_condition_images"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 (
                     test_data_refer_face_image,
                         test_data_refer_face_image_name,
-                        ) = read_image_and_name(test_data_refer_face_image_path)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) = read_image_and_name(test_data_refer_face_image_path)
                 logger.debug(
                     f"test_data_refer_face_image use f{test_data_refer_face_image_path}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         else:
             test_data_refer_face_image = None
             test_data_refer_face_image_name = "no"
@@ -891,7 +1032,9 @@ class MuseV:
         if add_static_video_prompt:
             test_data_video_negative_prompt = "static video, {}".format(
                 test_data_video_negative_prompt
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         for i_num in range(n_repeat):
             test_data_seed = random.randint(0, 1e8) if seed in [None, -1] else seed
             cpu_generator, gpu_generator = set_all_seed(int(test_data_seed))
@@ -905,13 +1048,17 @@ class MuseV:
                 f"_c - i={test_data_condition_images_name[:5]}_r - c={test_data_redraw_condition_image}"
                 f"_w={test_data_w_ind_noise}_{test_data_video_negative_prompt_name}"
                 f"_r={test_data_refer_image_name[:3]}_ip={test_data_refer_image_name[:3]}_f={test_data_refer_face_image_name[:3]}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             save_file_name = clean_str_for_save(save_file_name)
             output_path = os.path.join(
                 output_dir,
                     f"{save_file_name}.{save_filetype}",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             if os.path.exists(output_path) and not overwrite:
                 print("existed", output_path)
                 continue
@@ -973,7 +1120,9 @@ class MuseV:
                     context_batch_size = context_batch_size,
                     interpolation_factor = interpolation_factor,
                     # parallel_denoise parameter end
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             out = np.concatenate([out_videos], axis = 0)
 
             texts = ["out"]
@@ -987,7 +1136,9 @@ class MuseV:
                     write_info = args.write_info,
                     save_filetype = save_filetype,
                     save_images = save_images,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             print("Save to", output_path)
 
 
@@ -1005,7 +1156,9 @@ class MuseV:
                 fourcc = cv2.VideoWriter_fourcc(*"XVID")
                 output_video = cv2.VideoWriter(
                     output_path, fourcc, fps, (frame_width, frame_height)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # 逐帧读取并转换为RGB
                 while True:
@@ -1032,10 +1185,10 @@ class MuseV:
             return res_path
 
 if __name__ == "__main__":
-    prompt = "(masterpiece,
+    prompt = "(masterpiece,"
     best quality,
     highres:1),(1boy,
-    solo:1),(eye blinks:1.8),(head wave:1.3)"
+    solo:1),(eye blinks:1.8),(head wave:1.3)""
     image_ph = "MuseV/data/images/yongen.jpeg"
     image_np = cv2.imread(image_ph)
     seed = -1
@@ -1054,4 +1207,6 @@ if __name__ == "__main__":
         # w,
         # h,
         # video_len,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
         # img_edge_ratio)

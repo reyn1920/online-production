@@ -67,7 +67,8 @@ class PNGAvatarProcessor:
             "high": {"dpi": 300, "quality": 95},
                 "medium": {"dpi": 150, "quality": 85},
                 "low": {"dpi": 72, "quality": 75},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def process_uploaded_image(
@@ -77,7 +78,7 @@ class PNGAvatarProcessor:
             enhance_quality: bool = True,
             target_style: str = "realistic",
             ) -> Dict[str, Any]:
-        """Process uploaded PNG image for avatar generation.
+        """Process uploaded PNG image for avatar generation."""
 
         Args:
             image_path: Path to uploaded image file
@@ -87,7 +88,7 @@ class PNGAvatarProcessor:
 
         Returns:
             Dictionary with processed image data and metadata
-        """
+        """"""
         try:
             self.logger.info(f"Processing uploaded image: {image_path}")
 
@@ -110,21 +111,29 @@ class PNGAvatarProcessor:
                 processed_image, base64_data = (
                     self.background_remover.process_avatar_upload(
                         processed_image, enhance = True
-                    )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 processing_steps.append("Background removed with AI segmentation")
 
             # Step 2: Resize to target dimensions
             processed_image = self._resize_image(processed_image, self.target_size)
             processing_steps.append(
                 f"Resized to {self.target_size[0]}x{self.target_size[1]}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Step 3: Apply style - specific enhancements
             if enhance_quality:
                 processed_image = self._apply_style_enhancements(
                     processed_image, target_style
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 processing_steps.append(f"Applied {target_style} style enhancements")
 
             # Step 4: Generate final output formats
@@ -151,8 +160,10 @@ class PNGAvatarProcessor:
                         "style_applied": target_style,
                         "file_size_kb": len(outputs["base64"])
                     * 3/4/1024,  # Approximate
-                },
-                    }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Error processing uploaded image: {e}")
@@ -160,12 +171,14 @@ class PNGAvatarProcessor:
                 "success": False,
                     "error": str(e),
                     "original_path": image_path if "image_path" in locals() else None,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def _resize_image(
         self, image: Image.Image, target_size: Tuple[int, int]
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Resize image while maintaining aspect ratio and quality."""
         # Calculate aspect ratio preserving dimensions
         original_width, original_height = image.size
@@ -248,7 +261,7 @@ class PNGAvatarProcessor:
     def create_avatar_from_paste(
         self, pasted_image_data: str, style: str = "realistic"
     ) -> Dict[str, Any]:
-        """Create avatar from pasted image data (base64 or data URI).
+        """Create avatar from pasted image data (base64 or data URI)."""
 
         Args:
             pasted_image_data: Base64 encoded image or data URI
@@ -256,7 +269,7 @@ class PNGAvatarProcessor:
 
         Returns:
             Dictionary with processed avatar data
-        """
+        """"""
         try:
             self.logger.info("Creating avatar from pasted image data")
 
@@ -281,7 +294,9 @@ class PNGAvatarProcessor:
                     remove_background = True,
                     enhance_quality = True,
                     target_style = style,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Clean up temporary file
             if temp_path.exists():
@@ -312,7 +327,8 @@ class PNGAvatarProcessor:
                 return {
                     "valid": False,
                         "error": f"Unsupported format: {image.format}. Supported: {self.get_supported_formats()}",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             # Check dimensions
             width, height = image.size
@@ -320,13 +336,15 @@ class PNGAvatarProcessor:
                 return {
                     "valid": False,
                         "error": "Image too small (minimum 100x100 pixels)",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             if width > 4000 or height > 4000:
                 return {
                     "valid": False,
                         "error": "Image too large (maximum 4000x4000 pixels)",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             return {
                 "valid": True,
@@ -334,7 +352,8 @@ class PNGAvatarProcessor:
                     "size": image.size,
                     "mode": image.mode,
                     "has_transparency": image.mode in ("RGBA", "LA"),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             return {"valid": False, "error": f"Invalid image file: {str(e)}"}
@@ -344,7 +363,7 @@ png_processor = PNGAvatarProcessor()
 
 
 def process_avatar_image(image_path: str, style: str = "realistic") -> Tuple[str, str]:
-    """Process avatar image and return status and data URI.
+    """Process avatar image and return status and data URI."""
 
     This function is designed to integrate with the existing Gradio interface.
 
@@ -354,7 +373,7 @@ def process_avatar_image(image_path: str, style: str = "realistic") -> Tuple[str
 
     Returns:
         Tuple of (status_message, data_uri_or_none)
-    """
+    """"""
     if not image_path:
         return "❌ No image uploaded. Please upload a PNG image to start.", None
 
@@ -367,7 +386,9 @@ def process_avatar_image(image_path: str, style: str = "realistic") -> Tuple[str
         # Process the image
         result = png_processor.process_uploaded_image(
             image_path, remove_background = True, enhance_quality = True, target_style = style
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if result["success"]:
             status_msg = "✅ Avatar processed successfully!\\n\\n"

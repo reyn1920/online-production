@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Monetization Services Agent
 
 Provides direct monetization services including:
@@ -10,7 +10,7 @@ Provides direct monetization services including:
 
 This agent creates revenue - generating services that can be offered to clients
 while leveraging the existing AI infrastructure.
-"""
+""""""
 
 import asyncio
 import json
@@ -182,7 +182,8 @@ class MonetizationServicesAgent(BaseAgent):
             AgentCapability.MARKETING,
             AgentCapability.CONTENT_CREATION,
             AgentCapability.RESEARCH,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     def _initialize_service_packages(self) -> Dict[str, ServicePackage]:
         """Initialize available service packages."""
@@ -202,10 +203,12 @@ class MonetizationServicesAgent(BaseAgent):
                 "Keyword gap analysis",
                 "Basic competitor comparison",
                 "Action plan with priorities",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             requirements=["Website URL", "Target keywords (up to 10)"],
             deliverables=["PDF report", "Excel action plan", "Video walkthrough"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         packages["seo_pro"] = ServicePackage(
             service_type=ServiceType.SEO_AUDIT,
@@ -221,19 +224,23 @@ class MonetizationServicesAgent(BaseAgent):
                 "Link building opportunities",
                 "Local SEO analysis",
                 "Performance tracking setup",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             requirements=[
                 "Website URL",
                 "Target keywords (up to 25)",
                 "Top 5 competitors",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             deliverables=[
                 "Comprehensive PDF report",
                 "Excel action plan",
                 "Video walkthrough",
                 "30 - day follow - up",
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
         # Social Media Graphics Services
         packages["graphics_basic"] = ServicePackage(
@@ -249,10 +256,12 @@ class MonetizationServicesAgent(BaseAgent):
                 "Brand color integration",
                 "High - resolution files",
                 "Commercial usage rights",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             requirements=["Brand colors", "Logo/brand assets", "Content themes"],
             deliverables=["ZIP file with graphics", "Usage guidelines", "Source files"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         packages["graphics_pro"] = ServicePackage(
             service_type=ServiceType.SOCIAL_GRAPHICS,
@@ -268,20 +277,24 @@ class MonetizationServicesAgent(BaseAgent):
                 "Story templates",
                 "Brand style guide",
                 "Monthly refresh option",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             requirements=[
                 "Brand guidelines",
                 "Logo/brand assets",
                 "Content calendar",
                 "Target audience info",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             deliverables=[
                 "Complete graphics suite",
                 "Brand style guide",
                 "Animation files",
                 "Template library",
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
         return packages
 
@@ -293,9 +306,11 @@ class MonetizationServicesAgent(BaseAgent):
                     {
                         "orders": [],
                         "stats": {"total_revenue": 0, "completed_orders": 0},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     f,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
     async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Process monetization service tasks."""
@@ -303,7 +318,8 @@ class MonetizationServicesAgent(BaseAgent):
             return {
                 "status": "skipped",
                 "reason": "Direct monetization services disabled in configuration",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         task_type = task.get("type", "")
 
@@ -346,8 +362,10 @@ class MonetizationServicesAgent(BaseAgent):
                 created_at=datetime.now(timezone.utc),
                 due_date=datetime.now(timezone.utc).replace(
                     hour=datetime.now().hour + package.delivery_time_hours
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             # Save order to database
             await self._save_order(order)
@@ -360,7 +378,8 @@ class MonetizationServicesAgent(BaseAgent):
                 "order_id": order_id,
                 "estimated_delivery": order.due_date.isoformat(),
                 "price": package.price,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error creating service order: {e}")
@@ -420,15 +439,18 @@ class MonetizationServicesAgent(BaseAgent):
                             "score": comp_analysis.get("overall_score", 0),
                             "strengths": comp_analysis.get("strengths", []),
                             "opportunities": comp_analysis.get("opportunities", []),
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
                 except Exception as e:
                     self.logger.warning(f"Could not analyze competitor {competitor}: {e}")
 
             # Generate action plan using AI
             action_plan = await self._generate_seo_action_plan(
                 seo_results, keyword_analysis, competitor_insights
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create audit result
             audit_result = SEOAuditResult(
@@ -440,7 +462,8 @@ class MonetizationServicesAgent(BaseAgent):
                 competitor_insights=competitor_insights,
                 action_plan=action_plan,
                 estimated_impact=self._calculate_seo_impact(seo_results, action_plan),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Save deliverables
             deliverables_path = await self._save_seo_deliverables(order_id, audit_result)
@@ -455,7 +478,8 @@ class MonetizationServicesAgent(BaseAgent):
                 "status": "success",
                 "audit_result": asdict(audit_result),
                 "deliverables_path": str(deliverables_path),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error processing SEO audit: {e}")
@@ -469,7 +493,7 @@ class MonetizationServicesAgent(BaseAgent):
                 return {"status": "error", "message": "Order not found"}
 
             # Extract requirements
-            brand_colors = order.requirements.get("brand_colors", ["#1DA1F2", "#FFFFFF"])
+            brand_colors = order.requirements.get("brand_colors", ["#1DA1F2", "#FFFFFF"])"
             content_themes = order.requirements.get("content_themes", ["general"])
             platforms = order.requirements.get("platforms", ["instagram", "facebook", "twitter"])
 
@@ -480,7 +504,8 @@ class MonetizationServicesAgent(BaseAgent):
                 content_themes,
                 platforms,
                 order.service_package.tier,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Save deliverables
             deliverables_path = await self._save_graphics_deliverables(order_id, graphics_package)
@@ -495,7 +520,8 @@ class MonetizationServicesAgent(BaseAgent):
                 "status": "success",
                 "graphics_package": asdict(graphics_package),
                 "deliverables_path": str(deliverables_path),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error generating social graphics: {e}")
@@ -506,7 +532,7 @@ class MonetizationServicesAgent(BaseAgent):
     ) -> List[Dict[str, Any]]:
         """Generate AI - powered SEO action plan."""
         try:
-            prompt = f"""
+            prompt = f""""""
             Based on the following SEO analysis, create a prioritized action plan:
 
             SEO Results: {json.dumps(seo_results, indent = 2)}
@@ -521,10 +547,11 @@ class MonetizationServicesAgent(BaseAgent):
                     "impact": "expected impact description",
                     "effort": "low|medium|high",
                     "timeline": "immediate|1 - 2 weeks|1 month|ongoing"
-            }}
+# BRACKET_SURGEON: disabled
+#             }}
 
             Focus on actionable, specific recommendations that will have measurable impact.
-            """
+            """"""
 
             response = await self.ollama.generate_response(prompt, model="llama3.1")
 
@@ -545,7 +572,8 @@ class MonetizationServicesAgent(BaseAgent):
                     "impact": "Improve crawlability and indexing",
                     "effort": "medium",
                     "timeline": "1 - 2 weeks",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 {
                     "priority": "high",
                     "category": "content",
@@ -553,8 +581,10 @@ class MonetizationServicesAgent(BaseAgent):
                     "impact": "Increase organic rankings",
                     "effort": "medium",
                     "timeline": "ongoing",
-                },
-            ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             ]
 
         except Exception as e:
             self.logger.error(f"Error generating SEO action plan: {e}")
@@ -567,7 +597,8 @@ class MonetizationServicesAgent(BaseAgent):
         content_themes: List[str],
         platforms: List[str],
         tier: ServiceTier,
-    ) -> GraphicsPackage:
+# BRACKET_SURGEON: disabled
+#     ) -> GraphicsPackage:
         """Create a social media graphics package with actual image generation."""
         try:
             # Determine graphics count based on tier
@@ -591,7 +622,8 @@ class MonetizationServicesAgent(BaseAgent):
                     platforms,
                     graphics_count,
                     images_dir,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 graphics_urls = [str(img_path) for img_path in generated_images]
             else:
                 # Fallback to placeholder URLs
@@ -609,8 +641,10 @@ class MonetizationServicesAgent(BaseAgent):
                 graphics_urls=graphics_urls,
                 generated_images=(
                     [str(img) for img in generated_images] if generated_images else None
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             return package
 
@@ -627,7 +661,8 @@ class MonetizationServicesAgent(BaseAgent):
             "traffic_increase_percent": min(high_priority_actions * 15, 100),
             "ranking_improvement": min(high_priority_actions * 5, 30),
             "technical_score_improvement": min(base_score * 0.3, 25),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _generate_actual_graphics(
         self,
@@ -650,12 +685,14 @@ class MonetizationServicesAgent(BaseAgent):
                 (1080, 1080),
                 (1080, 1350),
                 (1920, 1080),
-            ],  # Square, Portrait, Story
+# BRACKET_SURGEON: disabled
+#             ],  # Square, Portrait, Story
             "facebook": [(1200, 630), (1080, 1080), (1920, 1080)],  # Cover, Post, Story
             "twitter": [(1200, 675), (1080, 1080)],  # Header, Post
             "linkedin": [(1200, 627), (1080, 1080)],  # Article, Post
             "pinterest": [(1000, 1500), (735, 1102)],  # Standard, Optimal
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Generate graphics for each platform and theme combination
@@ -666,7 +703,7 @@ class MonetizationServicesAgent(BaseAgent):
                 size = sizes[i % len(sizes)]
 
                 # Create image
-                img = Image.new("RGB", size, color=brand_colors[0] if brand_colors else "#1DA1F2")
+                img = Image.new("RGB", size, color=brand_colors[0] if brand_colors else "#1DA1F2")"
                 draw = ImageDraw.Draw(img)
 
                 # Add gradient background
@@ -694,7 +731,8 @@ class MonetizationServicesAgent(BaseAgent):
 
     async def _add_gradient_background(
         self, img: Image.Image, draw: ImageDraw.Draw, brand_colors: List[str]
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Add gradient background to image."""
         try:
             width, height = img.size
@@ -722,7 +760,8 @@ class MonetizationServicesAgent(BaseAgent):
         theme: str,
         platform: str,
         size: Tuple[int, int],
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Add text content to image."""
         try:
             width, height = size
@@ -758,11 +797,12 @@ class MonetizationServicesAgent(BaseAgent):
         draw: ImageDraw.Draw,
         brand_colors: List[str],
         size: Tuple[int, int],
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Add design elements to image."""
         try:
             width, height = size
-            accent_color = brand_colors[1] if len(brand_colors) > 1 else "#FFFFFF"
+            accent_color = brand_colors[1] if len(brand_colors) > 1 else "#FFFFFF""
 
             # Add corner decorations
             corner_size = min(width, height) // 10
@@ -774,14 +814,16 @@ class MonetizationServicesAgent(BaseAgent):
             draw.rectangle(
                 [(width - corner_size, height - corner_size), (width, height)],
                 fill=accent_color,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Add border
             border_width = max(2, min(width, height) // 200)
             draw.rectangle([(0, 0), (width, border_width)], fill=accent_color)  # Top
             draw.rectangle(
                 [(0, height - border_width), (width, height)], fill=accent_color
-            )  # Bottom
+# BRACKET_SURGEON: disabled
+#             )  # Bottom
             draw.rectangle([(0, 0), (border_width, height)], fill=accent_color)  # Left
             draw.rectangle([(width - border_width, 0), (width, height)], fill=accent_color)  # Right
 
@@ -796,7 +838,8 @@ class MonetizationServicesAgent(BaseAgent):
             "lifestyle": ["BALANCE", "WELLNESS", "MINDFUL", "AUTHENTIC", "THRIVE"],
             "tech": ["DIGITAL", "FUTURE", "INNOVATION", "SMART", "CONNECTED"],
             "general": ["QUALITY", "EXCELLENCE", "PROFESSIONAL", "PREMIUM", "ELITE"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         texts = theme_texts.get(theme, theme_texts["general"])
 
@@ -829,7 +872,8 @@ class MonetizationServicesAgent(BaseAgent):
 
     async def _save_graphics_deliverables(
         self, order_id: str, graphics_package: GraphicsPackage
-    ) -> Path:
+# BRACKET_SURGEON: disabled
+#     ) -> Path:
         """Save social media graphics deliverables with PDF packaging."""
         deliverables_dir = self.deliverables_path / order_id
         deliverables_dir.mkdir(exist_ok=True)
@@ -876,20 +920,23 @@ class MonetizationServicesAgent(BaseAgent):
         if GRAPHICS_AVAILABLE:
             pdf_path = await self._create_graphics_pdf_package(
                 order_id, graphics_package, deliverables_dir
-            )
+# BRACKET_SURGEON: disabled
+#             )
             graphics_package.pdf_package_path = str(pdf_path)
 
         # Create brand guidelines document
         brand_guidelines_path = await self._create_brand_guidelines(
             order_id, graphics_package, deliverables_dir
-        )
+# BRACKET_SURGEON: disabled
+#         )
         graphics_package.brand_guidelines_path = str(brand_guidelines_path)
 
         return deliverables_dir
 
     async def _create_graphics_pdf_package(
         self, order_id: str, graphics_package: GraphicsPackage, deliverables_dir: Path
-    ) -> Path:
+# BRACKET_SURGEON: disabled
+#     ) -> Path:
         """Create a PDF package containing all graphics and guidelines."""
         try:
             pdf_path = deliverables_dir / f"graphics_package_{order_id}.pdf"
@@ -905,8 +952,9 @@ class MonetizationServicesAgent(BaseAgent):
                 parent=styles["Heading1"],
                 fontSize=24,
                 spaceAfter=30,
-                textColor=HexColor("#1DA1F2"),
-            )
+                textColor=HexColor("#1DA1F2"),"
+# BRACKET_SURGEON: disabled
+#             )
             story.append(Paragraph("Social Media Graphics Package", title_style))
             story.append(Paragraph(f"Order ID: {order_id}", styles["Normal"]))
             story.append(Spacer(1, 20))
@@ -917,20 +965,26 @@ class MonetizationServicesAgent(BaseAgent):
                 Paragraph(
                     f"Graphics Count: {graphics_package.graphics_count}",
                     styles["Normal"],
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             story.append(
                 Paragraph(
                     f"Platforms: {', '.join(graphics_package.platforms)}",
                     styles["Normal"],
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             story.append(
                 Paragraph(
                     f"Brand Colors: {', '.join(graphics_package.brand_colors)}",
                     styles["Normal"],
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
             story.append(Spacer(1, 20))
 
             # Usage guidelines
@@ -942,7 +996,8 @@ class MonetizationServicesAgent(BaseAgent):
                 "Commercial usage rights included",
                 "Resize appropriately for each platform",
                 "Test graphics on different devices",
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
             for guideline in guidelines:
                 story.append(Paragraph(f"• {guideline}", styles["Normal"]))
 
@@ -956,7 +1011,8 @@ class MonetizationServicesAgent(BaseAgent):
                 "twitter": "Header: 1200x675, Post: 1080x1080",
                 "linkedin": "Article: 1200x627, Post: 1080x1080",
                 "pinterest": "Standard: 1000x1500, Optimal: 735x1102",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             for platform in graphics_package.platforms:
                 if platform in platform_specs:
@@ -964,8 +1020,10 @@ class MonetizationServicesAgent(BaseAgent):
                         Paragraph(
                             f"<b>{platform.title()}:</b> {platform_specs[platform]}",
                             styles["Normal"],
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Build PDF
             doc.build(story)
@@ -979,29 +1037,30 @@ class MonetizationServicesAgent(BaseAgent):
 
     async def _create_brand_guidelines(
         self, order_id: str, graphics_package: GraphicsPackage, deliverables_dir: Path
-    ) -> Path:
+# BRACKET_SURGEON: disabled
+#     ) -> Path:
         """Create brand guidelines document."""
         try:
             guidelines_path = deliverables_dir / "brand_guidelines.md"
 
             with open(guidelines_path, "w") as f:
-                f.write(f"# Brand Guidelines - {order_id}\\n\\n")
-                f.write("## Color Palette\\n")
+                f.write(f"# Brand Guidelines - {order_id}\\n\\n")"
+                f.write("## Color Palette\\n")"
                 for i, color in enumerate(graphics_package.brand_colors, 1):
                     f.write(f"- **Color {i}:** {color}\\n")
 
-                f.write("\\n## Typography\\n")
+                f.write("\\n## Typography\\n")"
                 for font in graphics_package.font_preferences:
                     f.write(f"- {font}\\n")
 
-                f.write("\\n## Platform Guidelines\\n")
+                f.write("\\n## Platform Guidelines\\n")"
                 for platform in graphics_package.platforms:
-                    f.write(f"\\n### {platform.title()}\\n")
+                    f.write(f"\\n### {platform.title()}\\n")"
                     f.write("- Maintain consistent branding\\n")
                     f.write("- Use appropriate dimensions\\n")
                     f.write("- Follow platform best practices\\n")
 
-                f.write("\\n## Usage Rights\\n")
+                f.write("\\n## Usage Rights\\n")"
                 f.write("- Commercial usage permitted\\n")
                 f.write("- Modification allowed\\n")
                 f.write("- Attribution not required\\n")
@@ -1039,20 +1098,21 @@ class MonetizationServicesAgent(BaseAgent):
                 "order_id": order_id,
                 "delivered_at": order.completed_at.isoformat(),
                 "email_sent": email_sent,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error delivering service: {e}")
             return {"status": "error", "message": str(e)}
 
     def get_service_packages(self) -> Dict[str, Any]:
-        """Get available service packages.
+        """Get available service packages."""
 
         Returns:
             Dict[str, Any]: Always returns a dictionary with 'packages' \
-    and 'total_packages' keys.
+#     and 'total_packages' keys.
                            Never returns None to prevent TypeError when calling .get() on the result.
-        """
+        """"""
         result = self._get_service_packages()
         # Extra safety check to ensure we never return None
         if result is None:
@@ -1061,15 +1121,16 @@ class MonetizationServicesAgent(BaseAgent):
                 "packages": {},
                 "total_packages": 0,
                 "error": "Service packages unavailable",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         return result
 
     def _get_service_packages(self) -> Dict[str, Any]:
-        """Get available service packages.
+        """Get available service packages."""
 
         Returns:
             Dict[str, Any]: Always returns a dictionary, never None.
-        """
+        """"""
         try:
             # Ensure service_packages is initialized
             if self.service_packages is None:
@@ -1082,7 +1143,8 @@ class MonetizationServicesAgent(BaseAgent):
                         "packages": {},
                         "total_packages": 0,
                         "error": f"Initialization failed: {init_error}",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Handle empty service packages
             if not self.service_packages:
@@ -1091,7 +1153,8 @@ class MonetizationServicesAgent(BaseAgent):
                     "packages": {},
                     "total_packages": 0,
                     "error": "No service packages available",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Convert service packages to dictionary format
             packages_dict = {}
@@ -1109,7 +1172,8 @@ class MonetizationServicesAgent(BaseAgent):
             result = {
                 "packages": packages_dict,
                 "total_packages": len(self.service_packages),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Final safety check
             if result is None:
@@ -1118,7 +1182,8 @@ class MonetizationServicesAgent(BaseAgent):
                     "packages": {},
                     "total_packages": 0,
                     "error": "Unexpected None result",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             return result
 
@@ -1157,7 +1222,8 @@ class MonetizationServicesAgent(BaseAgent):
                     if order_data.get("completed_at"):
                         order_data["completed_at"] = datetime.fromisoformat(
                             order_data["completed_at"]
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                     # Reconstruct service package
                     pkg_data = order_data["service_package"]
@@ -1171,7 +1237,8 @@ class MonetizationServicesAgent(BaseAgent):
                         features=pkg_data["features"],
                         requirements=pkg_data["requirements"],
                         deliverables=pkg_data["deliverables"],
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     return ServiceOrder(
                         order_id=order_data["order_id"],
@@ -1185,7 +1252,8 @@ class MonetizationServicesAgent(BaseAgent):
                         deliverables_path=order_data.get("deliverables_path"),
                         client_feedback=order_data.get("client_feedback"),
                         rating=order_data.get("rating"),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             return None
 
@@ -1270,7 +1338,8 @@ class MonetizationServicesAgent(BaseAgent):
                 status=DeliveryStatus.PENDING,
                 created_at=datetime.now(timezone.utc),
                 due_date=due_date,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Save order to file - based database
             self._save_order_to_file(order)
@@ -1282,7 +1351,8 @@ class MonetizationServicesAgent(BaseAgent):
                 "order_id": order_id,
                 "estimated_delivery": order.due_date.isoformat(),
                 "price": package.price,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error creating order: {e}")
@@ -1332,14 +1402,16 @@ class MonetizationServicesAgent(BaseAgent):
                     "price": order.service_package.price,
                     "delivery_time_hours": order.service_package.delivery_time_hours,
                     "features": order.service_package.features,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "requirements": order.requirements,
                 "status": order.status.value,
                 "created_at": order.created_at.isoformat(),
                 "due_date": order.due_date.isoformat(),
                 "completed_at": (order.completed_at.isoformat() if order.completed_at else None),
                 "deliverables_path": order.deliverables_path,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Add to orders list
             data["orders"].append(order_dict)
@@ -1372,14 +1444,14 @@ class MonetizationServicesAgent(BaseAgent):
             msg = MIMEMultipart()
             msg["From"] = email_user
             msg["To"] = order.client_email
-            msg["Subject"] = f"Your {order.service_package.name} is Ready - Order #{order.order_id}"
+            msg["Subject"] = f"Your {order.service_package.name} is Ready - Order #{order.order_id}""
 
             # Email body
-            body = f"""
+            body = f""""""
             Dear Valued Client,
 
             Your {order.service_package.name} has been completed \
-    and is ready for download!
+#     and is ready for download!
 
             Order Details:
             - Order ID: {order.order_id}
@@ -1387,16 +1459,16 @@ class MonetizationServicesAgent(BaseAgent):
             - Completed: {order.completed_at.strftime('%Y-%m-%d %H:%M UTC') if order.completed_at else 'N/A'}
 
             Your deliverables are attached to this email. Please review the included guidelines \
-    and documentation.
+#     and documentation.
 
             If you have any questions \
-    or need revisions, please don't hesitate to contact us.
+#     or need revisions, please don't hesitate to contact us.
 
             Thank you for choosing our services!
 
             Best regards,
                 AI Services Team
-            """
+            """"""
 
             msg.attach(MIMEText(body, "plain"))
 
@@ -1413,7 +1485,8 @@ class MonetizationServicesAgent(BaseAgent):
 
             self.logger.info(
                 f"Delivery email sent to {order.client_email} for order {order.order_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return True
 
         except Exception as e:
@@ -1436,7 +1509,8 @@ class MonetizationServicesAgent(BaseAgent):
                                 "Content - Disposition",
                                 "attachment",
                                 filename=file_path.name,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             msg.attach(attachment)
 
         except Exception as e:
@@ -1461,7 +1535,8 @@ class MonetizationServicesAgent(BaseAgent):
                     order.get("status") == "completed"
                     and order.get("completed_at")
                     and order.get("created_at")
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     try:
                         created = datetime.fromisoformat(order["created_at"])
                         completed = datetime.fromisoformat(order["completed_at"])
@@ -1472,19 +1547,22 @@ class MonetizationServicesAgent(BaseAgent):
 
             avg_completion_hours = (
                 sum(completion_times) / len(completion_times) if completion_times else 0
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Get unique clients
             unique_clients = len(
                 set(o.get("client_email", "") for o in orders if o.get("client_email"))
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Calculate total revenue from completed orders
             total_revenue = sum(
                 o.get("service_package", {}).get("price", 0)
                 for o in orders
                 if o.get("status") == "completed"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             completion_rate = (completed_orders / max(total_orders, 1)) * 100
 
@@ -1497,7 +1575,8 @@ class MonetizationServicesAgent(BaseAgent):
                 "total_revenue": total_revenue,
                 "unique_clients": unique_clients,
                 "completion_rate": round(completion_rate, 2),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error getting engagement stats: {e}")
@@ -1510,7 +1589,8 @@ class MonetizationServicesAgent(BaseAgent):
                 "total_revenue": 0,
                 "unique_clients": 0,
                 "completion_rate": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _execute_with_monitoring(self, task: Dict[str, Any], context) -> Dict[str, Any]:
         """Execute task with monitoring - required abstract method implementation"""
@@ -1524,7 +1604,8 @@ class MonetizationServicesAgent(BaseAgent):
                 "success": False,
                 "error": str(e),
                 "task_id": task.get("id", "unknown"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
         """Rephrase task - required abstract method implementation"""
@@ -1535,7 +1616,8 @@ class MonetizationServicesAgent(BaseAgent):
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrase accuracy - required abstract method implementation"""
         # For now, always return True as basic validation
         return True
@@ -1546,7 +1628,7 @@ class MonetizationServicesAgent(BaseAgent):
         target_keywords: Optional[List[str]] = None,
         competitors: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
-        """Perform SEO audit workflow.
+        """Perform SEO audit workflow."""
 
         Args:
             website_url: The website URL to audit
@@ -1555,7 +1637,7 @@ class MonetizationServicesAgent(BaseAgent):
 
         Returns:
             Dict containing audit results and recommendations
-        """
+        """"""
         try:
             # Validate input
             if not website_url:
@@ -1570,8 +1652,10 @@ class MonetizationServicesAgent(BaseAgent):
                     "website_url": website_url,
                     "target_keywords": target_keywords or [],
                     "competitors": competitors or [],
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             # Process the audit synchronously for immediate results
 
@@ -1597,7 +1681,8 @@ class MonetizationServicesAgent(BaseAgent):
                         "audit_data": audit_result.get("audit_result", {}),
                         "deliverables_path": audit_result.get("deliverables_path"),
                         "message": "SEO audit completed successfully",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     return audit_result
 

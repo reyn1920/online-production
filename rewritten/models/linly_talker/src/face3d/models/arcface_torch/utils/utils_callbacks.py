@@ -24,18 +24,21 @@ class CallBackVerification(object):
         for i in range(len(self.ver_list)):
             acc1, std1, acc2, std2, xnorm, embeddings_list = verification.test(
                 self.ver_list[i], backbone, 10, 10
-            )
+# BRACKET_SURGEON: disabled
+#             )
             logging.info("[%s][%d]XNorm: %f" % (self.ver_name_list[i], global_step, xnorm))
             logging.info(
                 "[%s][%d]Accuracy - Flip: %1.5f+-%1.5f"
                 % (self.ver_name_list[i], global_step, acc2, std2)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if acc2 > self.highest_acc_list[i]:
                 self.highest_acc_list[i] = acc2
             logging.info(
                 "[%s][%d]Accuracy - Highest: %1.5f"
                 % (self.ver_name_list[i], global_step, self.highest_acc_list[i])
-            )
+# BRACKET_SURGEON: disabled
+#             )
             results.append(acc2)
 
     def init_dataset(self, val_targets, data_dir, image_size):
@@ -74,7 +77,8 @@ class CallBackLogging(object):
         fp16: bool,
         learning_rate: float,
         grad_scaler: torch.cuda.amp.GradScaler,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         if self.rank == 0 and global_step > 0 and global_step % self.frequent == 0:
             if self.init:
                 try:
@@ -102,8 +106,10 @@ class CallBackLogging(object):
                             global_step,
                             grad_scaler.get_scale(),
                             time_for_end,
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     msg = (
                         "Speed %.2f samples/sec   Loss %.4f   LearningRate %.4f   Epoch: %d   Global Step: %d   "
@@ -115,8 +121,10 @@ class CallBackLogging(object):
                             epoch,
                             global_step,
                             time_for_end,
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
                 logging.info(msg)
                 loss.reset()
                 self.tic = time.time()
@@ -135,7 +143,8 @@ class CallBackModelCheckpoint(object):
         global_step,
         backbone,
         partial_fc,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         if global_step > 100 and self.rank == 0:
             path_module = os.path.join(self.output, "backbone.pth")
             torch.save(backbone.module.state_dict(), path_module)

@@ -1,7 +1,7 @@
 #!/usr / bin / env python3
-"""
+""""""
 VidScriptPro Debug Test
-"""
+""""""
 
 import logging
 import sys
@@ -24,9 +24,13 @@ try:
         print(f"🤖 Model: {script_gen.model}")
         print(f"🌐 Base URL: {script_gen.base_url}")
         print(
-            f"📊 Available methods: {[attr for attr in dir(script_gen) if not attr.startswith('_') \
-    and callable(getattr(script_gen, attr))]}"
-        )
+            f"📊 Available methods: {[attr for attr in dir(script_gen) if not attr.startswith('_') \"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     and callable(getattr(script_gen, attr))]}"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     except Exception as e:
         print(f"❌ VidScriptPro initialization failed: {e}")

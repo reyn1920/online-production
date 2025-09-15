@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 API Monetization System
 Provides API key management, usage tracking, rate limiting, and billing
-"""
+""""""
 
 import logging
 import sqlite3
@@ -62,20 +62,22 @@ class APIMonetization:
 
             # API keys table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS api_keys (
                     api_key TEXT PRIMARY KEY,
                         customer_email TEXT NOT NULL,
                         plan_type TEXT DEFAULT 'basic',
                         status TEXT DEFAULT 'active',
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # API usage tracking table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS api_usage (
                     id TEXT PRIMARY KEY,
                         api_key TEXT NOT NULL,
@@ -85,13 +87,15 @@ class APIMonetization:
                         customer_id TEXT NOT NULL,
                         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (api_key) REFERENCES api_keys (api_key)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Billing records table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS billing_records (
                     id TEXT PRIMARY KEY,
                         api_key TEXT NOT NULL,
@@ -103,9 +107,11 @@ class APIMonetization:
                         status TEXT DEFAULT 'pending',
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (api_key) REFERENCES api_keys (api_key)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
         logger.info("API monetization database initialized")
@@ -125,7 +131,8 @@ class APIMonetization:
                     return (
                         jsonify({"success": False, "error": "Customer email required"}),
                         400,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Generate unique API key
                 api_key = f"ak_{int(time.time())}_{hash(customer_email) % 10000}"
@@ -135,19 +142,21 @@ class APIMonetization:
                     cursor = conn.cursor()
 
                     cursor.execute(
-                        """
+                        """"""
                         INSERT OR REPLACE INTO api_keys
                         (api_key, customer_email, plan_type, status, created_at)
                         VALUES (?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             api_key,
                             customer_email,
                             plan_type,
                             "active",
                             datetime.now().isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                     conn.commit()
 
@@ -157,8 +166,10 @@ class APIMonetization:
                         "api_key": api_key,
                         "plan_type": plan_type,
                         "rate_limits": self._get_rate_limits(plan_type),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 logger.error(f"Error generating API key: {e}")
@@ -180,19 +191,21 @@ class APIMonetization:
                     cursor = conn.cursor()
 
                     cursor.execute(
-                        """
+                        """"""
                         SELECT customer_email, plan_type, status FROM api_keys
                         WHERE api_key = ?
-                    """,
+                    ""","""
                         (api_key,),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     result = cursor.fetchone()
                     if not result:
                         return (
                             jsonify({"success": False, "error": "Invalid API key"}),
                             401,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                     customer_email, plan_type, status = result
 
@@ -200,12 +213,14 @@ class APIMonetization:
                         return (
                             jsonify({"success": False, "error": "API key is inactive"}),
                             401,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 # Check rate limits
                 rate_limit_ok, remaining_requests = self._check_rate_limit(
                     api_key, endpoint, plan_type
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if not rate_limit_ok:
                     return (
@@ -214,10 +229,13 @@ class APIMonetization:
                                 "success": False,
                                 "error": "Rate limit exceeded",
                                 "remaining_requests": 0,
-                            }
-                        ),
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         ),
                         429,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Record API usage
                 self._record_api_usage(api_key, endpoint, customer_email)
@@ -228,8 +246,10 @@ class APIMonetization:
                         "customer_email": customer_email,
                         "plan_type": plan_type,
                         "remaining_requests": remaining_requests,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 logger.error(f"Error validating API key: {e}")
@@ -245,14 +265,15 @@ class APIMonetization:
                     # Get current month usage
                     current_month = datetime.now().strftime("%Y-%m")
                     cursor.execute(
-                        """
+                        """"""
                         SELECT endpoint, SUM(requests_count) as total_requests
                         FROM api_usage
                         WHERE api_key = ? AND strftime('%Y-%m', usage_date) = ?
                         GROUP BY endpoint
-                    """,
+                    ""","""
                         (api_key, current_month),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     usage_by_endpoint = {}
                     total_requests = 0
@@ -264,11 +285,12 @@ class APIMonetization:
 
                     # Get plan info
                     cursor.execute(
-                        """
+                        """"""
                         SELECT plan_type FROM api_keys WHERE api_key = ?
-                    """,
+                    ""","""
                         (api_key,),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     result = cursor.fetchone()
                     plan_type = result[0] if result else "basic"
@@ -285,8 +307,10 @@ class APIMonetization:
                         "usage_by_endpoint": usage_by_endpoint,
                         "rate_limits": rate_limits,
                         "remaining_requests": max(0, rate_limits["monthly_limit"] - total_requests),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 logger.error(f"Error getting API usage: {e}")
@@ -302,31 +326,34 @@ class APIMonetization:
                     # Get current month usage
                     current_month = datetime.now().strftime("%Y-%m")
                     cursor.execute(
-                        """
+                        """"""
                         SELECT SUM(requests_count) as total_requests
                         FROM api_usage
                         WHERE api_key = ? AND strftime('%Y-%m', usage_date) = ?
-                    """,
+                    ""","""
                         (api_key, current_month),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     result = cursor.fetchone()
                     total_requests = result[0] if result and result[0] else 0
 
                     # Get plan info
                     cursor.execute(
-                        """
+                        """"""
                         SELECT plan_type, customer_email FROM api_keys WHERE api_key = ?
-                    """,
+                    ""","""
                         (api_key,),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     result = cursor.fetchone()
                     if not result:
                         return (
                             jsonify({"success": False, "error": "API key not found"}),
                             404,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                     plan_type, customer_email = result
 
@@ -338,8 +365,10 @@ class APIMonetization:
                         "customer_email": customer_email,
                         "billing_period": current_month,
                         "total_requests": total_requests,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return jsonify({"success": True, "billing": billing_info})
 
@@ -362,8 +391,10 @@ class APIMonetization:
                         "Basic API Access",
                         "Email Support",
                         "Standard Rate Limits",
-                    ],
-                },
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
                 "pro": {
                     "name": "Pro API Plan",
                     "price": 29.99,
@@ -376,8 +407,10 @@ class APIMonetization:
                         "Priority Support",
                         "Higher Rate Limits",
                         "Analytics Dashboard",
-                    ],
-                },
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
                 "enterprise": {
                     "name": "Enterprise API Plan",
                     "price": 99.99,
@@ -391,9 +424,12 @@ class APIMonetization:
                         "Custom Rate Limits",
                         "Advanced Analytics",
                         "Dedicated Account Manager",
-                    ],
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
             return jsonify({"success": True, "plans": plans})
 
@@ -405,20 +441,24 @@ class APIMonetization:
                 "requests_per_hour": 1000,
                 "monthly_limit": 10000,
                 "cost_per_request": 0.001,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "pro": {
                 "requests_per_minute": 300,
                 "requests_per_hour": 10000,
                 "monthly_limit": 100000,
                 "cost_per_request": 0.0008,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "enterprise": {
                 "requests_per_minute": 1000,
                 "requests_per_hour": 50000,
                 "monthly_limit": 1000000,
                 "cost_per_request": 0.0005,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
         return limits.get(plan_type, limits["basic"])
 
     def _check_rate_limit(self, api_key, endpoint, plan_type):
@@ -432,13 +472,14 @@ class APIMonetization:
                 # Check monthly limit
                 current_month = datetime.now().strftime("%Y-%m")
                 cursor.execute(
-                    """
+                    """"""
                     SELECT SUM(requests_count) as total_requests
                     FROM api_usage
                     WHERE api_key = ? AND strftime('%Y-%m', usage_date) = ?
-                """,
+                ""","""
                     (api_key, current_month),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 result = cursor.fetchone()
                 monthly_usage = result[0] if result and result[0] else 0
@@ -449,13 +490,14 @@ class APIMonetization:
                 # Check hourly limit (aggregate across all endpoints for this API key)
                 current_hour = datetime.now().strftime("%Y-%m-%d %H")
                 cursor.execute(
-                    """
+                    """"""
                     SELECT SUM(requests_count) as hourly_requests
                     FROM api_usage
                     WHERE api_key = ? AND strftime('%Y-%m-%d %H', created_at) = ?
-                """,
+                ""","""
                     (api_key, current_hour),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 result = cursor.fetchone()
                 hourly_usage = result[0] if result and result[0] else 0
@@ -466,13 +508,14 @@ class APIMonetization:
                 # Check per - minute limit (aggregate across all endpoints for this API key)
                 current_minute = datetime.now().strftime("%Y-%m-%d %H:%M")
                 cursor.execute(
-                    """
+                    """"""
                     SELECT SUM(requests_count) as minute_requests
                     FROM api_usage
                     WHERE api_key = ? AND strftime('%Y-%m-%d %H:%M', created_at) = ?
-                """,
+                ""","""
                     (api_key, current_minute),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 result = cursor.fetchone()
                 minute_usage = result[0] if result and result[0] else 0
@@ -503,7 +546,7 @@ class APIMonetization:
                 # Always create a new record for each request to enable proper rate limiting
                 # This allows us to track individual requests with precise timestamps
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO api_usage
                     (id,
     api_key,
@@ -511,9 +554,10 @@ class APIMonetization:
     requests_count,
     usage_date,
     customer_id,
-    created_at)
+# BRACKET_SURGEON: disabled
+#     created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         usage_id,
                         api_key,
@@ -522,8 +566,10 @@ class APIMonetization:
                         usage_date,
                         customer_email,
                         current_time.isoformat(),
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
 
@@ -558,7 +604,8 @@ class APIMonetization:
             "overage_cost": overage_cost,
             "total_cost": total_cost,
             "cost_per_request": cost_per_request,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def run(self, host="0.0.0.0", port=5002, debug=False):
         """Run the API monetization server"""

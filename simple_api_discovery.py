@@ -41,6 +41,9 @@ class SimpleAPIDiscovery:
 
                 print(f"✅ Found {len(free_apis)} free APIs out of {len(all_apis)} total")
                 return free_apis[:50]  # Limit to first 50 for processing
+            else:
+                print(f"❌ Failed to fetch APIs: HTTP {response.status_code}")
+                return []
 
         except Exception as e:
             print(f"❌ Error discovering APIs: {e}")
@@ -70,7 +73,7 @@ class SimpleAPIDiscovery:
                     # Insert API data
                     conn.execute(
                         """
-                        INSERT OR REPLACE INTO discovered_apis 
+                        INSERT OR REPLACE INTO discovered_apis
                         (name, description, url, category, auth_required, https_support, cors_support)
                         VALUES (?, ?, ?, ?, ?, ?, ?)
                         """,
@@ -84,6 +87,7 @@ class SimpleAPIDiscovery:
                             api.get("Cors", "unknown")
                         )
                     )
+#                     )
                     saved_count += 1
 
                 conn.commit()
@@ -102,13 +106,13 @@ class SimpleAPIDiscovery:
                 "apis_discovered": api_count,
                 "discovery_status": "completed"
             }
-            
+
             with open("config/api_discovery.json", "w") as f:
                 json.dump(config, f, indent=2)
-            
+
             print(f"✅ Updated system config with {api_count} APIs")
             return True
-            
+
         except Exception as e:
             print(f"❌ Error updating config: {e}")
             return False
@@ -116,7 +120,7 @@ class SimpleAPIDiscovery:
     def generate_report(self) -> Dict[str, Any]:
         """Generate discovery report"""
         print("📊 Generating discovery report...")
-        
+
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
@@ -124,9 +128,9 @@ class SimpleAPIDiscovery:
                 # Get category statistics
                 cursor = conn.execute(
                     """
-                    SELECT category, COUNT(*) as count 
-                    FROM discovered_apis 
-                    GROUP BY category 
+                    SELECT category, COUNT(*) as count
+                    FROM discovered_apis
+                    GROUP BY category
                     ORDER BY count DESC
                     """
                 )
@@ -136,7 +140,7 @@ class SimpleAPIDiscovery:
                 # Get total count
                 cursor = conn.execute(
                     """
-                    SELECT COUNT(*) as total 
+                    SELECT COUNT(*) as total
                     FROM discovered_apis
                     """
                 )
@@ -146,9 +150,9 @@ class SimpleAPIDiscovery:
                 # Get recent discoveries
                 cursor = conn.execute(
                     """
-                    SELECT name, category, description 
-                    FROM discovered_apis 
-                    ORDER BY rowid DESC 
+                    SELECT name, category, description
+                    FROM discovered_apis
+                    ORDER BY rowid DESC
                     LIMIT 10
                     """
                 )

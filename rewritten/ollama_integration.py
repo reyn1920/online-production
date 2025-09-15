@@ -4,7 +4,7 @@ import requests
 
 
 def ask_ollama(model, prompt):
-    """Send a prompt to Ollama and get the response.
+    """Send a prompt to Ollama and get the response."""
 
     Args:
         model (str): The model name to use (e.g., 'codellama:latest', 'llama2:7b')
@@ -12,7 +12,7 @@ def ask_ollama(model, prompt):
 
     Returns:
         str: The complete response from the model
-    """
+    """"""
     url = "http://localhost:11434/api/generate"
     payload = {"model": model, "prompt": prompt}
     resp = requests.post(url, json=payload, stream=True)

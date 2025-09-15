@@ -20,7 +20,8 @@ def make_title_slide(text, out_path, w=1920, h=1080, dur=6):
         "-vf",
         f"drawtext = fontfile='{FONT}':text='{textwrap.fill(text,40)}':x=(w - tw)/2:y=(h - th)/2:fontsize = 48:fontcolor = white",
         out_path,
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     subprocess.run(cmd, check=True)
 
 
@@ -42,9 +43,11 @@ def concat_videos(parts, out_path):
             "-c",
             "copy",
             out_path,
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         check=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def tts_to_wav(text, wav_path):
@@ -92,7 +95,9 @@ def make_slideshow_with_audio(lines, out_dir, total_minutes=None):
             "-b:a",
             "192k",
             out,
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         check=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return out

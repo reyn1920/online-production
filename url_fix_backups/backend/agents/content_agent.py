@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Content Agent - The Automated Studio (Upgraded)
 
 The creative engine that uses the new, API - first creative pipeline for all
@@ -10,9 +10,9 @@ API - First Pipeline:
 - Text: Local Ollama LLM running VidScriptPro framework
 - Voice: Local XTTS - v2 (via Coqui TTS) - Direct Python library integration
 - 3D Avatars: Native Python pipeline using Blender + MPFB Plugin
-- Video Editing: Blender's Video Sequence Editor (VSE) via bpy Python API
+- Video Editing: Blender's Video Sequence Editor (VSE) via bpy Python API'
 - Art & Graphics: Inkscape CLI + Pillow Python library
-"""
+""""""
 
 import base64
 import hashlib
@@ -118,7 +118,8 @@ class ContentAgent(BaseAgent):
         # DaVinci Resolve Pro Configuration
         self.davinci_resolve_path = (
             "/Applications / DaVinci Resolve / DaVinci Resolve.app / Contents / MacOS / Resolve"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.davinci_scripts_dir = "scripts / davinci"
         self.davinci_project_dir = "projects / davinci"
 
@@ -142,7 +143,8 @@ class ContentAgent(BaseAgent):
             "scriptelo_templates": "data / scriptelo_templates.json",
             "thumbnail_blaster_styles": "data / thumbnail_styles.json",
             "ai_tones": self._load_ai_tone_database(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Blender Configuration
         self.blender_executable = "/Applications / Blender.app / Contents / MacOS / Blender"
@@ -161,7 +163,8 @@ class ContentAgent(BaseAgent):
             "images": "content / images",
             "models": "content / models",
             "templates": "content / templates",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Create directories
         for dir_path in self.content_dirs.values():
@@ -185,21 +188,26 @@ class ContentAgent(BaseAgent):
                     "solution",
                     "demonstration",
                     "call_to_action",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "tone": "informative",
                 "duration": "5 - 10 minutes",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "promotional": {
                 "structure": ["attention", "interest", "desire", "action"],
                 "tone": "persuasive",
                 "duration": "2 - 5 minutes",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "entertainment": {
                 "structure": ["setup", "conflict", "resolution", "twist"],
                 "tone": "engaging",
                 "duration": "3 - 8 minutes",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     @property
     def capabilities(self) -> List[AgentCapability]:
@@ -208,7 +216,8 @@ class ContentAgent(BaseAgent):
             AgentCapability.CONTENT_CREATION,
             AgentCapability.EXECUTION,
             AgentCapability.ANALYSIS,
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def _execute_with_monitoring(
         self, task: Dict[str, Any], context: TaskContext
@@ -225,13 +234,15 @@ class ContentAgent(BaseAgent):
             elif task_type == "voice_synthesis":
                 result = await self._synthesize_voice_async(
                     task.get("text", ""), task.get("voice_profile_id", "default")
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 result = {
                     "success": True,
                     "message": f"Processed {task_type} task",
                     "task_id": task_id,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             self.logger.info(f"Completed content task {task_id}")
             return result
@@ -248,7 +259,8 @@ class ContentAgent(BaseAgent):
             "make": "produce",
             "build": "craft",
             "write": "compose",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         rephrased = original_task.lower()
         for old, new in content_keywords.items():
@@ -258,7 +270,8 @@ class ContentAgent(BaseAgent):
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context: TaskContext
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate that rephrased task maintains original intent"""
         original_text = original_task.get("description", str(original_task))
 
@@ -286,7 +299,8 @@ class ContentAgent(BaseAgent):
                 "message": f"Video production task {task_id} processed",
                 "task_id": task_id,
                 "output_path": f"/tmp / video_{task_id}.mp4",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {"success": False, "error": str(e), "task_id": task_id}
 
@@ -300,20 +314,22 @@ class ContentAgent(BaseAgent):
                 "text": text[:50] + "..." if len(text) > 50 else text,
                 "voice_profile_id": voice_profile_id,
                 "output_path": f"/tmp / voice_{voice_profile_id}.wav",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {
                 "success": False,
                 "error": str(e),
                 "text": text,
                 "voice_profile_id": voice_profile_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def initialize_database(self):
         """Initialize content database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS content_projects (
                     project_id TEXT PRIMARY KEY,
                         title TEXT NOT NULL,
@@ -325,12 +341,14 @@ class ContentAgent(BaseAgent):
                         metadata TEXT NOT NULL,
                         created_at TIMESTAMP NOT NULL,
                         updated_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS voice_profiles (
                     profile_id TEXT PRIMARY KEY,
                         name TEXT NOT NULL,
@@ -342,12 +360,14 @@ class ContentAgent(BaseAgent):
                         sample_text TEXT NOT NULL,
                         model_path TEXT NOT NULL,
                         created_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS avatar_profiles (
                     avatar_id TEXT PRIMARY KEY,
                         name TEXT NOT NULL,
@@ -359,12 +379,14 @@ class ContentAgent(BaseAgent):
                         accessories TEXT NOT NULL,
                         blend_file_path TEXT NOT NULL,
                         created_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS content_templates (
                     template_id TEXT PRIMARY KEY,
                         name TEXT NOT NULL,
@@ -373,21 +395,25 @@ class ContentAgent(BaseAgent):
                         parameters TEXT NOT NULL,
                         success_metrics TEXT NOT NULL,
                         created_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS content_analytics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         project_id TEXT NOT NULL,
                         metric_name TEXT NOT NULL,
                         metric_value REAL NOT NULL,
                         recorded_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
     def start_content_generation(self):
         """Start autonomous content generation"""
@@ -412,7 +438,8 @@ class ContentAgent(BaseAgent):
         voice_profile: str,
         avatar_profile: str,
         template_type: str = "educational",
-    ) -> ContentProject:
+# BRACKET_SURGEON: disabled
+#     ) -> ContentProject:
         """Create complete video content using API - first pipeline"""
         project_id = hashlib.md5(f"{title}_{datetime.now().isoformat()}".encode()).hexdigest()[:12]
 
@@ -426,13 +453,15 @@ class ContentAgent(BaseAgent):
                 "voice_profile": voice_profile,
                 "avatar_profile": avatar_profile,
                 "template_type": template_type,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             assets=[],
             output_files=[],
             metadata={},
             created_at=datetime.now(),
             updated_at=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self._save_content_project(project)
 
@@ -447,10 +476,11 @@ class ContentAgent(BaseAgent):
         """Generate video script using Ollama LLM with VidScriptPro framework"""
         template = self.vidscript_templates.get(
             template_type, self.vidscript_templates["educational"]
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Construct VidScriptPro prompt
-        vidscript_prompt = f"""
+        vidscript_prompt = f""""""
         You are VidScriptPro, an expert video script writer. Create a {template['tone']} video script
         with a target duration of {template['duration']}.
 
@@ -466,7 +496,7 @@ class ContentAgent(BaseAgent):
         5. Optimize for viewer retention
 
         Format the response as JSON with sections: title, hook, main_content, visual_cues, call_to_action, estimated_duration
-        """
+        """"""
 
         try:
             response = requests.post(
@@ -476,9 +506,11 @@ class ContentAgent(BaseAgent):
                     "prompt": vidscript_prompt,
                     "stream": False,
                     "options": {"temperature": 0.7, "top_p": 0.9},
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 timeout=120,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if response.status_code == 200:
                 result = response.json()
@@ -492,14 +524,16 @@ class ContentAgent(BaseAgent):
                         "title": "Generated Script",
                         "content": script_text,
                         "estimated_duration": template["duration"],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                 return {
                     "success": True,
                     "script": script_data,
                     "model_used": self.ollama_model,
                     "template_type": template_type,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 raise Exception(f"Ollama API error: {response.status_code}")
 
@@ -514,8 +548,8 @@ class ContentAgent(BaseAgent):
         emotion: str = "neutral",
         speed: float = 1.0,
     ) -> Dict[str, Any]:
-        """Hollywood - level voice synthesis using Coqui TTS with emotion \
-    and speed control"""
+        """Hollywood - level voice synthesis using Coqui TTS with emotion \"""
+#     and speed control""""""
         try:
             voice_profile = self._get_voice_profile(voice_profile_id)
             if not voice_profile:
@@ -527,7 +561,8 @@ class ContentAgent(BaseAgent):
             # Generate unique filename
             audio_filename = (
                 f"voice_{hashlib.md5(styled_text.encode()).hexdigest()[:8]}_{emotion}_{speed}.wav"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             output_path = Path(self.voice_output_dir) / audio_filename
 
             # Coqui TTS synthesis with advanced features
@@ -539,7 +574,8 @@ class ContentAgent(BaseAgent):
                 "emotion": emotion,
                 "speed": speed,
                 "output_path": str(output_path),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Execute Coqui TTS (would use actual TTS library)
             synthesis_result = self._execute_coqui_tts_synthesis(synthesis_params)
@@ -557,7 +593,8 @@ class ContentAgent(BaseAgent):
                 "emotion": emotion,
                 "speed": speed,
                 "quality_enhanced": True,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Coqui TTS synthesis failed: {e}")
@@ -595,7 +632,8 @@ class ContentAgent(BaseAgent):
                 str(script_path),
                 "--",
                 str(output_path),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
 
@@ -605,7 +643,8 @@ class ContentAgent(BaseAgent):
                     "blend_file": str(output_path),
                     "avatar_profile": avatar_profile["name"],
                     "animation_type": animation_type,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 raise Exception(f"Blender execution failed: {result.stderr}")
 
@@ -616,7 +655,7 @@ class ContentAgent(BaseAgent):
     def create_video_with_blender_vse(
         self, project_id: str, assets: Dict[str, str]
     ) -> Dict[str, Any]:
-        """Create video using Blender's Video Sequence Editor via bpy API"""
+        """Create video using Blender's Video Sequence Editor via bpy API"""'
         try:
             # Create Blender VSE script
             script_content = self._generate_blender_vse_script(project_id, assets)
@@ -639,7 +678,8 @@ class ContentAgent(BaseAgent):
                 str(script_path),
                 "--",
                 str(output_path),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
 
@@ -648,7 +688,8 @@ class ContentAgent(BaseAgent):
                     "success": True,
                     "video_file": str(output_path),
                     "project_id": project_id,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 raise Exception(f"Blender VSE execution failed: {result.stderr}")
 
@@ -698,7 +739,8 @@ class ContentAgent(BaseAgent):
             "--export - width = 1280",
             "--export - height = 720",
             "--export - dpi = 300",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         result = subprocess.run(cmd, capture_output=True, text=True)
 
@@ -710,7 +752,8 @@ class ContentAgent(BaseAgent):
                 "success": True,
                 "thumbnail_file": str(png_path),
                 "svg_source": str(svg_path),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         else:
             raise Exception(f"Inkscape execution failed: {result.stderr}")
 
@@ -751,7 +794,8 @@ class ContentAgent(BaseAgent):
         style: str,
         sample_text: str,
         model_path: str,
-    ) -> VoiceProfile:
+# BRACKET_SURGEON: disabled
+#     ) -> VoiceProfile:
         """Create new voice profile"""
         profile_id = hashlib.md5(f"{name}_{voice_model}".encode()).hexdigest()[:12]
 
@@ -766,7 +810,8 @@ class ContentAgent(BaseAgent):
             sample_text=sample_text,
             model_path=model_path,
             created_at=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self._save_voice_profile(profile)
         return profile
@@ -780,7 +825,8 @@ class ContentAgent(BaseAgent):
         style: str,
         clothing: str,
         accessories: List[str],
-    ) -> AvatarProfile:
+# BRACKET_SURGEON: disabled
+#     ) -> AvatarProfile:
         """Create new avatar profile"""
         avatar_id = hashlib.md5(f"{name}_{gender}_{age}".encode()).hexdigest()[:12]
 
@@ -799,7 +845,8 @@ class ContentAgent(BaseAgent):
             accessories=accessories,
             blend_file_path=str(blend_path),
             created_at=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self._save_avatar_profile(profile)
         return profile
@@ -841,7 +888,8 @@ class ContentAgent(BaseAgent):
             # Step 1: Generate script
             script_result = self.generate_script_with_ollama(
                 requirements["script_prompt"], requirements["template_type"]
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not script_result["success"]:
                 raise Exception(f"Script generation failed: {script_result['error']}")
@@ -852,7 +900,8 @@ class ContentAgent(BaseAgent):
                 requirements["voice_profile"],
                 emotion="professional",
                 speed=1.0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not voice_result["success"]:
                 raise Exception(f"Voice synthesis failed: {voice_result['error']}")
@@ -860,7 +909,8 @@ class ContentAgent(BaseAgent):
             # Step 3: Create 3D avatar
             avatar_result = self.create_3d_avatar_with_blender(
                 requirements["avatar_profile"], "talking"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not avatar_result["success"]:
                 raise Exception(f"Avatar creation failed: {avatar_result['error']}")
@@ -870,7 +920,8 @@ class ContentAgent(BaseAgent):
                 "audio": voice_result["audio_file"],
                 "avatar": avatar_result["blend_file"],
                 "script": script_result["script"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             video_result = self.create_video_with_blender_vse(project_id, video_assets)
 
@@ -891,9 +942,10 @@ class ContentAgent(BaseAgent):
 
     def _generate_blender_avatar_script(
         self, avatar_profile: Dict[str, Any], animation_type: str
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate Blender Python script for avatar creation"""
-        return f"""
+        return f""""""
 
 import bpy
 import sys
@@ -944,11 +996,11 @@ try:
 except Exception as e:
     print(f"Error creating avatar: {{e}}")
     sys.exit(1)
-"""
+""""""
 
     def _generate_blender_vse_script(self, project_id: str, assets: Dict[str, str]) -> str:
         """Generate Blender VSE Python script for video creation"""
-        return f"""
+        return f""""""
 
 import bpy
 import sys
@@ -980,7 +1032,8 @@ if os.path.exists(audio_path):
         filepath = audio_path,
             frame_start = 1,
             channel = 1
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 # Add avatar / video strips
 avatar_path = '{assets.get('avatar', '')}'
@@ -998,7 +1051,8 @@ if script_data:
             frame_start = 1,
             frame_end = 60,
             channel = 3
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     text_strip = bpy.context.scene.sequence_editor.active_strip
     text_strip.text = script_data.get('title', 'Generated Video')
@@ -1010,16 +1064,16 @@ scene.render.filepath = output_path
 bpy.ops.render.render(animation = True)
 
 print(f"Video rendered to: {{output_path}}")
-"""
+""""""
 
     def _generate_thumbnail_svg_template(self, parameters: Dict[str, Any]) -> str:
         """Generate SVG template for thumbnail"""
         title = parameters.get("title", "Video Title")
         subtitle = parameters.get("subtitle", "")
-        background_color = parameters.get("background_color", "#FF6B35")
-        text_color = parameters.get("text_color", "#FFFFFF")
+        background_color = parameters.get("background_color", "#FF6B35")"
+        text_color = parameters.get("text_color", "#FFFFFF")"
 
-        return f"""
+        return f""""""
 <?xml version="1.0" encoding="UTF - 8"?>
 <svg width="1280" height="720" xmlns="http://www.w3.org / 2000 / svg">
   <!-- Background -->
@@ -1032,7 +1086,7 @@ print(f"Video rendered to: {{output_path}}")
       <stop offset="100%" style="stop - color:rgba(0,0,0,0.1);stop - opacity:1" />
     </linearGradient>
   </defs>
-  <rect width="1280" height="720" fill="url(#grad1)"/>
+  <rect width="1280" height="720" fill="url(#grad1)"/>"
 
   <!-- Main title -->
   <text x="640" y="300" font - family="Arial, sans - serif" font - size="72"
@@ -1050,7 +1104,7 @@ print(f"Video rendered to: {{output_path}}")
   <circle cx="100" cy="100" r="50" fill="rgba(255,255,255,0.2)"/>
   <circle cx="1180" cy="620" r="30" fill="rgba(255,255,255,0.15)"/>
 </svg>
-"""
+""""""
 
     # Database helper methods
 
@@ -1058,12 +1112,13 @@ print(f"Video rendered to: {{output_path}}")
         """Save content project to database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO content_projects
                 (project_id, title, content_type, status, requirements, assets,
-                    output_files, metadata, created_at, updated_at)
+# BRACKET_SURGEON: disabled
+#                     output_files, metadata, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     project.project_id,
                     project.title,
@@ -1075,19 +1130,22 @@ print(f"Video rendered to: {{output_path}}")
                     json.dumps(project.metadata),
                     project.created_at.isoformat(),
                     project.updated_at.isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
     def _save_voice_profile(self, profile: VoiceProfile):
         """Save voice profile to database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO voice_profiles
                 (profile_id, name, voice_model, language, gender, age_range,
-                    style, sample_text, model_path, created_at)
+# BRACKET_SURGEON: disabled
+#                     style, sample_text, model_path, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     profile.profile_id,
                     profile.name,
@@ -1099,19 +1157,22 @@ print(f"Video rendered to: {{output_path}}")
                     profile.sample_text,
                     profile.model_path,
                     profile.created_at.isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
     def _save_avatar_profile(self, profile: AvatarProfile):
         """Save avatar profile to database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO avatar_profiles
                 (avatar_id, name, gender, age, ethnicity, style, clothing,
-                    accessories, blend_file_path, created_at)
+# BRACKET_SURGEON: disabled
+#                     accessories, blend_file_path, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     profile.avatar_id,
                     profile.name,
@@ -1123,15 +1184,18 @@ print(f"Video rendered to: {{output_path}}")
                     json.dumps(profile.accessories),
                     profile.blend_file_path,
                     profile.created_at.isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
     def _get_content_project(self, project_id: str) -> Optional[Dict[str, Any]]:
         """Get content project from database"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT * FROM content_projects WHERE project_id = ?", (project_id,)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             row = cursor.fetchone()
             if row:
                 columns = [description[0] for description in cursor.description]
@@ -1149,7 +1213,8 @@ print(f"Video rendered to: {{output_path}}")
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT * FROM voice_profiles WHERE profile_id = ?", (profile_id,)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             row = cursor.fetchone()
             if row:
                 columns = [description[0] for description in cursor.description]
@@ -1172,32 +1237,36 @@ print(f"Video rendered to: {{output_path}}")
         """Update project status"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 UPDATE content_projects
                 SET status = ?, updated_at = ?
                 WHERE project_id = ?
-            """,
+            ""","""
                 (status, datetime.now().isoformat(), project_id),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def _update_project_completion(
         self, project_id: str, output_files: List[str], assets: List[str]
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Update project with completion data"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 UPDATE content_projects
                 SET status = 'completed', output_files = ?, assets = ?, updated_at = ?
                 WHERE project_id = ?
-            """,
+            ""","""
                 (
                     json.dumps(output_files),
                     json.dumps(assets),
                     datetime.now().isoformat(),
                     project_id,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
     def _load_humor_style_db(self) -> Dict[str, Any]:
         """Load humor style database for Right Perspective tone"""
@@ -1214,22 +1283,28 @@ print(f"Video rendered to: {{output_path}}")
                 "sarcastic": {
                     "intensity": 0.7,
                     "markers": ["oh really", "sure thing", "absolutely"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "witty": {
                     "intensity": 0.8,
                     "markers": ["clever", "brilliant", "genius"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "dry": {
                     "intensity": 0.6,
                     "markers": ["fascinating", "wonderful", "amazing"],
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "timing_patterns": {
                 "pause_before_punchline": 0.5,
                 "emphasis_duration": 1.2,
                 "comedic_timing": True,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _load_spechelo_voice_database(self) -> Dict[str, Any]:
         """Load Spechelo voice database for premium voice options"""
@@ -1239,20 +1314,25 @@ print(f"Video rendered to: {{output_path}}")
                     "gender": "male",
                     "accent": "american",
                     "style": "professional",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "sarah_conversational": {
                     "gender": "female",
                     "accent": "british",
                     "style": "conversational",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "mike_energetic": {
                     "gender": "male",
                     "accent": "australian",
                     "style": "energetic",
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "voice_effects": ["echo", "reverb", "pitch_shift", "speed_control"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _load_ai_tone_database(self) -> Dict[str, Any]:
         """Load AI tone database for consistent brand voice"""
@@ -1261,8 +1341,10 @@ print(f"Video rendered to: {{output_path}}")
                 "educational": {"formality": 0.7, "enthusiasm": 0.8, "humor": 0.6},
                 "promotional": {"formality": 0.5, "enthusiasm": 0.9, "humor": 0.4},
                 "entertainment": {"formality": 0.3, "enthusiasm": 0.9, "humor": 0.9},
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _apply_humor_style_to_text(self, text: str) -> str:
         """Apply Right Perspective humor style to text"""
@@ -1300,13 +1382,15 @@ print(f"Video rendered to: {{output_path}}")
                 language=params.get("language", "en"),
                 emotion=params.get("emotion", "neutral"),
                 speed=params.get("speed", 1.0),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "success": True,
                 "duration": len(params["text"]) * 0.08,  # Estimate
                 "quality": "hollywood_level",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except ImportError:
             # Fallback simulation
@@ -1317,7 +1401,8 @@ print(f"Video rendered to: {{output_path}}")
                 "success": True,
                 "duration": len(params["text"]) * 0.08,
                 "quality": "simulated",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             raise Exception(f"TTS synthesis failed: {e}")
 
@@ -1332,7 +1417,8 @@ print(f"Video rendered to: {{output_path}}")
                 "eq_boost": {"low": 1.1, "mid": 1.2, "high": 1.05},
                 "compression": {"ratio": 3.0, "threshold": -18},
                 "limiter": {"ceiling": -0.1, "release": 50},
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Simulate enhancement
             if audio_path.exists():
@@ -1378,13 +1464,15 @@ print(f"Video rendered to: {{output_path}}")
                 task_data["voice_profile"],
                 task_data["avatar_profile"],
                 task_data.get("template_type", "educational"),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return {"success": True, "project": asdict(project)}
 
         elif task_type == "generate_script":
             result = self.generate_script_with_ollama(
                 task_data["prompt"], task_data.get("template_type", "educational")
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
 
         elif task_type == "synthesize_voice":
@@ -1393,19 +1481,22 @@ print(f"Video rendered to: {{output_path}}")
                 task_data["voice_profile"],
                 task_data.get("emotion", "neutral"),
                 task_data.get("speed", 1.0),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
 
         elif task_type == "create_avatar":
             result = self.create_3d_avatar_with_blender(
                 task_data["avatar_profile"], task_data.get("animation_type", "talking")
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
 
         elif task_type == "create_graphics":
             result = self.create_graphics_with_inkscape(
                 task_data["graphic_type"], task_data["parameters"]
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
 
         elif task_type == "start_generation":
@@ -1417,7 +1508,8 @@ print(f"Video rendered to: {{output_path}}")
                 task_data["avatar_profile"],
                 task_data["audio_file"],
                 task_data.get("emotion", "neutral"),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
 
         elif task_type == "davinci_resolve_edit":
@@ -1425,13 +1517,15 @@ print(f"Video rendered to: {{output_path}}")
                 task_data["project_name"],
                 task_data["assets"],
                 task_data.get("edit_style", "professional"),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
 
         elif task_type == "spechelo_voice":
             result = self.create_spechelo_voice_synthesis(
                 task_data["text"], task_data.get("voice_config", {})
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return result
 
         elif task_type == "blaster_thumbnail":
@@ -1446,10 +1540,11 @@ print(f"Video rendered to: {{output_path}}")
             combined_path = os.path.join(
                 self.content_dirs["avatars"],
                 f"combined_animations_{int(time.time())}.fbx",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Blender script to combine animations
-            combine_script = f"""
+            combine_script = f""""""
 
 import bpy
 import os
@@ -1471,7 +1566,7 @@ for i, anim_file in enumerate(animation_files):
 # Export combined animations
 bpy.ops.export_scene.fbx(filepath='{combined_path}')
 print(f'Combined animations saved to: {combined_path}')
-"""
+""""""
 
             result = subprocess.run(
                 [
@@ -1479,11 +1574,13 @@ print(f'Combined animations saved to: {combined_path}')
                     "--background",
                     "--python - expr",
                     combine_script,
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 capture_output=True,
                 text=True,
                 timeout=300,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode == 0 and os.path.exists(combined_path):
                 return combined_path
@@ -1508,10 +1605,13 @@ print(f'Combined animations saved to: {combined_path}')
                         "observational_comedy",
                         "political_satire",
                         "cultural_commentary",
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "delivery_style": "deadpan_serious",
-                }
-            }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
 
             style = humor_styles["right_perspective"]
 
@@ -1525,7 +1625,8 @@ print(f'Combined animations saved to: {combined_path}')
             if "experts say" in text.lower():
                 styled_text = styled_text.replace(
                     "experts say", "the same experts who predicted..."
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Add observational comedy markers
             sentences = styled_text.split(". ")
@@ -1550,7 +1651,8 @@ print(f'Combined animations saved to: {combined_path}')
             cursor.execute(
                 "SELECT * FROM avatar_profiles WHERE avatar_id = ?",
                 (avatar_profile_id,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             row = cursor.fetchone()
             if row:
@@ -1565,7 +1667,8 @@ print(f'Combined animations saved to: {combined_path}')
                     "accessories": json.loads(row[7]) if row[7] else [],
                     "blend_file_path": row[8],
                     "created_at": row[9],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             return None
 
         except Exception as e:
@@ -1582,7 +1685,7 @@ print(f'Combined animations saved to: {combined_path}')
                 return {"success": False, "error": "Avatar profile not found"}
 
             # Linly - Talker processing
-            linly_script = f"""
+            linly_script = f""""""
 
 import sys
 
@@ -1595,7 +1698,8 @@ import torch
 talker = LinlyTalker(
     model_path='{self.linly_talker_path}/models',
         device='cuda' if torch.cuda.is_available() else 'cpu'
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Load avatar image
 avatar_image = '{avatar_profile['blend_file_path']}'
@@ -1607,10 +1711,11 @@ result = talker.generate_talking_video(
         audio_path = audio_path,
         emotion='{emotion}',
         output_path='{self.content_dirs['video']}/talking_avatar_{avatar_profile_id}.mp4'
-)
+# BRACKET_SURGEON: disabled
+# )
 
 print(f"Talking avatar generated: {{result['output_path']}}")
-"""
+""""""
 
             # Execute Linly - Talker script
             result = subprocess.run(
@@ -1618,7 +1723,8 @@ print(f"Talking avatar generated: {{result['output_path']}}")
                 capture_output=True,
                 text=True,
                 timeout=600,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode == 0:
                 output_path = f"{self.content_dirs['video']}/talking_avatar_{avatar_profile_id}.mp4"
@@ -1628,7 +1734,8 @@ print(f"Talking avatar generated: {{result['output_path']}}")
                     "avatar_profile": avatar_profile["name"],
                     "emotion": emotion,
                     "audio_duration": self._get_audio_duration(audio_file),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 # Fallback to Talking Heads model
                 return self._create_talking_avatar_fallback(avatar_profile_id, audio_file, emotion)
@@ -1642,7 +1749,7 @@ print(f"Talking avatar generated: {{result['output_path']}}")
     ) -> Dict[str, Any]:
         """Fallback talking avatar creation using Talking Heads model"""
         try:
-            talking_heads_script = f"""
+            talking_heads_script = f""""""
 
 import sys
 
@@ -1664,7 +1771,8 @@ video_frames = model.generate_frames(
     avatar_image = avatar_profile['blend_file_path'],
         audio_path = audio_path,
         emotion='{emotion}'
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # Save video
 output_path = '{self.content_dirs['video']}/talking_head_{avatar_profile_id}.mp4'
@@ -1676,14 +1784,15 @@ for frame in video_frames:
 
 out.release()
 print(f"Talking head video saved: {{output_path}}")
-"""
+""""""
 
             result = subprocess.run(
                 ["python", "-c", talking_heads_script],
                 capture_output=True,
                 text=True,
                 timeout=600,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode == 0:
                 output_path = f"{self.content_dirs['video']}/talking_head_{avatar_profile_id}.mp4"
@@ -1692,7 +1801,8 @@ print(f"Talking head video saved: {{output_path}}")
                     "talking_avatar_video": output_path,
                     "method": "talking_heads_fallback",
                     "emotion": emotion,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 raise Exception(f"Talking Heads fallback failed: {result.stderr}")
 
@@ -1708,7 +1818,7 @@ print(f"Talking head video saved: {{output_path}}")
         """Create DaVinci Resolve Pro project with Hollywood - level editing"""
         try:
             # DaVinci Resolve Python API script
-            resolve_script = f"""
+            resolve_script = f""""""
 
 import sys
 
@@ -1755,7 +1865,8 @@ if project:
         'timelineResolutionWidth': edit_config.get('resolution_width', 1920),
             'timelineResolutionHeight': edit_config.get('resolution_height', 1080),
             'timelineFrameRate': edit_config.get('frame_rate', 30)
-    }}
+# BRACKET_SURGEON: disabled
+#     }}
 
     timeline.SetSetting(timeline_settings)
 
@@ -1791,7 +1902,8 @@ if project:
             'FormatWidth': edit_config.get('export_width', 1920),
             'FormatHeight': edit_config.get('export_height', 1080),
             'FrameRate': edit_config.get('export_fps', 30)
-    }}
+# BRACKET_SURGEON: disabled
+#     }}
 
     # Start render
     project.SetRenderSettings(export_settings)
@@ -1806,7 +1918,7 @@ if project:
 else:
     print(f"Failed to create project: {project_name}")
     sys.exit(1)
-"""
+""""""
 
             # Write script to file
             script_path = Path(self.davinci_scripts_dir) / f"project_{project_name}.py"
@@ -1821,7 +1933,8 @@ else:
                 capture_output=True,
                 text=True,
                 timeout=1800,
-            )  # 30 minutes timeout
+# BRACKET_SURGEON: disabled
+#             )  # 30 minutes timeout
 
             if result.returncode == 0:
                 export_path = f"{self.davinci_project_dir}/exports/{project_name}_final.mp4"
@@ -1832,7 +1945,8 @@ else:
                     "edit_style": edit_style,
                     "timeline_created": True,
                     "render_started": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 raise Exception(f"DaVinci Resolve execution failed: {result.stderr}")
 
@@ -1853,16 +1967,19 @@ else:
                     "highlights": -0.2,
                     "shadows": 0.1,
                     "lut": "Rec709_to_sRGB",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "audio_mixing": {
                     "normalize": True,
                     "noise_reduction": True,
                     "eq_preset": "voice_enhance",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "export_width": 1920,
                 "export_height": 1080,
                 "export_fps": 30,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "cinematic": {
                 "resolution_width": 3840,
                 "resolution_height": 2160,
@@ -1873,16 +1990,19 @@ else:
                     "highlights": -0.3,
                     "shadows": 0.2,
                     "lut": "Alexa_LogC_to_Rec709",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "audio_mixing": {
                     "normalize": True,
                     "surround_sound": True,
                     "dynamic_range": "wide",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "export_width": 3840,
                 "export_height": 2160,
                 "export_fps": 24,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "social_media": {
                 "resolution_width": 1080,
                 "resolution_height": 1920,
@@ -1893,17 +2013,21 @@ else:
                     "highlights": -0.1,
                     "shadows": 0.05,
                     "lut": "Instagram_Style",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "audio_mixing": {
                     "normalize": True,
                     "loudness_target": -16,
                     "eq_preset": "mobile_optimized",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "export_width": 1080,
                 "export_height": 1920,
                 "export_fps": 30,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         return styles.get(style, styles["professional"])
 
@@ -1931,12 +2055,14 @@ else:
                 "pitch": voice_config.get("pitch", 0),
                 "emphasis": voice_config.get("emphasis", "normal"),
                 "effects": voice_config.get("effects", []),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Generate audio file
             audio_filename = (
                 f"spechelo_{voice_name}_{hashlib.md5(styled_text.encode()).hexdigest()[:8]}.mp3"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             output_path = Path(self.voice_output_dir) / audio_filename
 
             # Simulate Spechelo synthesis
@@ -1949,7 +2075,8 @@ else:
                 "voice_settings": voice_settings,
                 "duration": len(styled_text) * 0.08,
                 "quality": "spechelo_premium",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Spechelo voice synthesis failed: {e}")
@@ -1986,7 +2113,8 @@ else:
                 "text_effects": style_config.get("text_effects"),
                 "overlay_elements": style_config.get("overlay_elements"),
                 "color_scheme": style_config.get("color_scheme"),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Create thumbnail using enhanced parameters
             result = self._create_thumbnail_with_inkscape(enhanced_params)
@@ -1995,14 +2123,16 @@ else:
                 # Apply additional Blaster Suite enhancements
                 enhanced_thumbnail = self._apply_blaster_suite_enhancements(
                     result["thumbnail_file"], style_config
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return {
                     "success": True,
                     "thumbnail_file": enhanced_thumbnail,
                     "style_applied": style_name,
                     "blaster_suite_enhanced": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return result
 
@@ -2012,7 +2142,8 @@ else:
 
     def _apply_blaster_suite_enhancements(
         self, thumbnail_path: str, style_config: Dict[str, Any]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Apply Blaster Suite enhancements to thumbnail"""
         try:
             with Image.open(thumbnail_path) as img:
@@ -2104,7 +2235,8 @@ if __name__ == "__main__":
         "professional",
         "Hello, this is a test of the voice synthesis system.",
         "models / voice / professional_male.wav",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(f"Created voice profile: {voice_profile.name}")
 
     # Create avatar profile
@@ -2116,13 +2248,15 @@ if __name__ == "__main__":
         "realistic",
         "business_suit",
         ["glasses", "watch"],
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(f"Created avatar profile: {avatar_profile.name}")
 
     # Generate script
     script_result = content_agent.generate_script_with_ollama(
         "How to use AI for content creation", "educational"
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(f"Generated script: {script_result['success']}")
 
     # Create video project
@@ -2132,7 +2266,8 @@ if __name__ == "__main__":
         voice_profile.profile_id,
         avatar_profile.avatar_id,
         "educational",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     print(f"Created video project: {video_project.title}")
 
     # Start content generation

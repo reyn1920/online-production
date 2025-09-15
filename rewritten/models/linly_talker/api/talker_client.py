@@ -38,7 +38,8 @@ def request_talker_response(source_image_path, driven_audio_path, payload, outpu
         "blink_every": str(payload.get("blink_every", True)),
         "talker_method": payload.get("talker_method", "SadTalker"),
         "fps": str(payload.get("fps", 30)),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Prepare files for upload
     with open(source_image_path, "rb") as image_file, open(driven_audio_path, "rb") as audio_file:
@@ -47,13 +48,16 @@ def request_talker_response(source_image_path, driven_audio_path, payload, outpu
                 os.path.basename(source_image_path),
                 image_file,
                 "image/jpeg",
-            ),  # Adjust MIME type if necessary
+# BRACKET_SURGEON: disabled
+#             ),  # Adjust MIME type if necessary
             "driven_audio": (
                 os.path.basename(driven_audio_path),
                 audio_file,
                 "audio/wav",
-            ),  # Adjust MIME type if necessary
-        }
+# BRACKET_SURGEON: disabled
+#             ),  # Adjust MIME type if necessary
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Sending POST request to the server with form data and files
@@ -74,7 +78,8 @@ if __name__ == "__main__":
         "Wav2Lip",
         "Wav2Lipv2",
         "NeRFTalk",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     result_dir = "outputs"
     os.makedirs(result_dir, exist_ok=True)
     # Loop to change model and generate Talker response
@@ -95,11 +100,13 @@ if __name__ == "__main__":
             "blink_every": True,
             "talker_method": model_name,
             "fps": 30,
-        }
+# BRACKET_SURGEON: disabled
+#         }
         request_talker_response(
             "inputs/example.png",
             "answer.wav",  # 确保音频文件路径正确
             payload,
             os.path.join(result_dir, f"output_video_{model_name}.mp4"),
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print("\\n" + "-" * 50 + "\\n")

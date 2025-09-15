@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Intelligent Scaling Policies for TRAE AI Application
 Implements dynamic scaling based on multiple metrics and machine learning predictions
-"""
+""""""
 
 import asyncio
 import logging
@@ -22,7 +22,8 @@ from sklearn.preprocessing import StandardScaler
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -112,7 +113,8 @@ class PrometheusClient:
 
     async def query_range(
         self, query: str, start: datetime, end: datetime, step: str = "1m"
-    ) -> Dict:
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
         """Query Prometheus for a range of data"""
         url = f"{self.base_url}/api/v1/query_range"
         params = {
@@ -120,7 +122,8 @@ class PrometheusClient:
             "start": start.timestamp(),
             "end": end.timestamp(),
             "step": step,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             async with self.session.get(url, params=params) as response:
@@ -188,7 +191,8 @@ class PredictiveScaler:
                 minute,
                 recent_trend,
                 long_trend,
-            ] + lag_values
+# BRACKET_SURGEON: disabled
+#             ] + lag_values
             X.append(features)
             y.append(data[i].value)
 
@@ -272,7 +276,8 @@ class IntelligentScalingEngine:
                     weight=rule_config.get("weight", 1.0),
                     enabled=rule_config.get("enabled", True),
                     emergency_threshold=rule_config.get("emergency_threshold"),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 self.scaling_rules.append(rule)
 
             logger.info(f"Loaded {len(self.scaling_rules)} scaling rules")
@@ -293,7 +298,8 @@ class IntelligentScalingEngine:
                 max_replicas=10,
                 cooldown_seconds=300,
                 emergency_threshold=90.0,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             ScalingRule(
                 name="api_memory_scaling",
                 service="api",
@@ -304,7 +310,8 @@ class IntelligentScalingEngine:
                 max_replicas=10,
                 cooldown_seconds=300,
                 emergency_threshold=95.0,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             ScalingRule(
                 name="content_queue_scaling",
                 service="content - agent",
@@ -315,15 +322,18 @@ class IntelligentScalingEngine:
                 max_replicas=8,
                 cooldown_seconds=180,
                 weight=1.5,
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
     async def get_current_replicas(self, service: str) -> int:
         """Get current number of replicas for a service"""
         try:
             containers = self.docker_client.containers.list(
                 filters={"label": f"com.docker.compose.service={service}"}
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return len([c for c in containers if c.status == "running"])
         except Exception as e:
             logger.error(f"Error getting replica count for {service}: {e}")
@@ -345,10 +355,12 @@ class IntelligentScalingEngine:
                     "--scale",
                     f"{service}={target_replicas}",
                     "-d",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 capture_output=True,
                 text=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if result.returncode == 0:
                 logger.info(f"Successfully scaled {service} to {target_replicas} replicas")
@@ -375,7 +387,8 @@ class IntelligentScalingEngine:
             MetricType.QUEUE_SIZE: f'model_generation_queue_size{{service="{service}"}}',
             MetricType.ACTIVE_CONNECTIONS: f'database_connections_active{{service="{service}"}}',
             MetricType.CACHE_HIT_RATE: f'rate(cache_hits_total{{service="{service}"}}[5m])/(rate(cache_hits_total{{service="{service}"}}[5m]) + rate(cache_misses_total{{service="{service}"}}[5m])) * 100',
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         query = queries.get(metric_type)
         if not query:
@@ -432,7 +445,8 @@ class IntelligentScalingEngine:
             reason = f"Scale up: {rule.metric_type.value} = {current_value:.2f} >= {rule.scale_up_threshold}"
             confidence = min(
                 1.0, (current_value - rule.scale_up_threshold) / rule.scale_up_threshold
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Scale down decision
         elif current_value <= rule.scale_down_threshold and current_replicas > rule.min_replicas:
@@ -442,7 +456,8 @@ class IntelligentScalingEngine:
             confidence = min(
                 1.0,
                 (rule.scale_down_threshold - current_value) / rule.scale_down_threshold,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         if action != ScalingAction.NO_ACTION:
             return ScalingDecision(
@@ -453,7 +468,8 @@ class IntelligentScalingEngine:
                 reason=reason,
                 confidence=confidence * rule.weight,
                 metrics_used=[rule.metric_type.value],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return None
 
@@ -475,7 +491,8 @@ class IntelligentScalingEngine:
                 decision = max(service_decisions_list, key=lambda d: d.confidence)
                 logger.info(
                     f"Resolved conflict for {service}: chose {decision.action.value} with confidence {decision.confidence:.2f}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Execute scaling
             success = await self.scale_service(decision.service, decision.target_replicas)
@@ -485,7 +502,8 @@ class IntelligentScalingEngine:
                 ] = time.time()
                 logger.info(
                     f"Executed scaling decision: {decision.service} {decision.action.value} to {decision.target_replicas} replicas - {decision.reason}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 logger.error(f"Failed to execute scaling decision for {decision.service}")
 
@@ -543,19 +561,23 @@ class IntelligentScalingEngine:
                                     value=float(value),
                                     service=rule.service,
                                     metric_type=rule.metric_type,
-                                )
-                            )
+# BRACKET_SURGEON: disabled
+#                                 )
+# BRACKET_SURGEON: disabled
+#                             )
 
                     if historical_data:
                         self.predictive_scaler.add_historical_data(
                             rule.service, rule.metric_type, historical_data
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         self.predictive_scaler.train_model(rule.service, rule.metric_type)
 
             except Exception as e:
                 logger.error(
                     f"Error training model for {rule.service} {rule.metric_type.value}: {e}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
 
 async def main():

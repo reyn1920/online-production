@@ -1,13 +1,22 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI System Smoke Test Agent
-
+""""""
 A comprehensive automated testing agent that implements the complete go - live checklist
+"""
 for verifying system integrity \
-    and operational readiness. This agent provides one - click
+#     and operational readiness. This agent provides one - click
+
+
 verification of all critical system components and workflows.
 
+TRAE.AI System Smoke Test Agent
+""""""
+
 Features:
+
+"""
+
 - Automated pre - flight infrastructure checks
 - Live 5 - minute smoke test protocol
 - Real - time test result streaming
@@ -15,7 +24,8 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0 - Go - Live Integration
-"""
+
+
 
 import asyncio
 import json
@@ -57,7 +67,8 @@ except ImportError:
 
 
 class TestStatus(Enum):
-    """Test execution status enumeration."""
+    
+"""Test execution status enumeration."""
 
     PENDING = "pending"
     RUNNING = "running"
@@ -76,7 +87,9 @@ class TestSeverity(Enum):
 
 @dataclass
 class TestResult:
-    """Individual test result data structure."""
+    """
+Individual test result data structure.
+
 
     test_id: str
     name: str
@@ -85,8 +98,15 @@ class TestResult:
     duration_ms: int
     message: str
     details: Optional[Dict[str, Any]] = None
-    timestamp: Optional[datetime] = None
+   
+""""""
 
+    timestamp: Optional[datetime] = None
+   
+
+    
+   
+"""
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.now()
@@ -94,7 +114,9 @@ class TestResult:
 
 @dataclass
 class SmokeTestReport:
-    """Complete smoke test execution report."""
+    """
+Complete smoke test execution report.
+
 
     test_run_id: str
     start_time: datetime
@@ -107,20 +129,45 @@ class SmokeTestReport:
     critical_failures: int
     overall_status: TestStatus
     test_results: List[TestResult]
+   
+""""""
+
     system_info: Dict[str, Any]
+   
 
-
+    
+   
+"""
 class SystemSmokeTestAgent(BaseAgent):
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
+   
+
+    
+   
+"""
     Advanced system smoke test agent implementing the complete go - live checklist.
+   """"""
+    
+   """
 
     This agent provides comprehensive automated testing capabilities including:
     - Infrastructure sanity checks
     - Service health verification
     - End - to - end workflow testing
     - Real - time result streaming
-    """
+   
 
+    
+   
+"""
     def __init__(self, agent_id: str = "system - smoke - test - agent"):
         super().__init__(agent_id)
         self.logger = get_logger(f"trae_ai.agents.{agent_id}")
@@ -150,9 +197,18 @@ class SystemSmokeTestAgent(BaseAgent):
         return [AgentCapability.AUDITING, AgentCapability.EXECUTION]
 
     def set_result_callback(self, callback: Callable[[TestResult], None]):
-        """Set callback function for real - time test result streaming."""
-        self.result_callback = callback
+        """
+Set callback function for real - time test result streaming.
 
+       
+""""""
+
+        self.result_callback = callback
+       
+
+        
+       
+"""
     def _emit_test_result(self, result: TestResult):
         """Emit test result to callback if configured."""
         if self.result_callback:
@@ -167,14 +223,30 @@ class SystemSmokeTestAgent(BaseAgent):
         name: str,
         test_func: Callable,
         severity: TestSeverity = TestSeverity.CRITICAL,
-    ) -> TestResult:
-        """Execute a single test with timing and error handling."""
-        start_time = time.time()
+#     ) -> TestResult:
+        """
+Execute a single test with timing and error handling.
 
+       
+""""""
+
+        start_time = time.time()
+       
+
+        
+       
+"""
         try:
             self.logger.info(f"Running test: {name}")
             success, message, details = test_func()
+       """
 
+        
+       
+
+        start_time = time.time()
+       
+""""""
             duration_ms = int((time.time() - start_time) * 1000)
             status = TestStatus.PASSED if success else TestStatus.FAILED
 
@@ -186,7 +258,7 @@ class SystemSmokeTestAgent(BaseAgent):
                 duration_ms=duration_ms,
                 message=message,
                 details=details,
-            )
+             )
 
         except Exception as e:
             duration_ms = int((time.time() - start_time) * 1000)
@@ -198,7 +270,7 @@ class SystemSmokeTestAgent(BaseAgent):
                 duration_ms=duration_ms,
                 message=f"Test execution failed: {str(e)}",
                 details={"exception": str(e), "type": type(e).__name__},
-            )
+             )
 
         self._emit_test_result(result)
         return result
@@ -208,22 +280,40 @@ class SystemSmokeTestAgent(BaseAgent):
     # ========================================================================
 
     def _test_dashboard_port_configuration(self) -> tuple[bool, str, Dict[str, Any]]:
-        """Verify dashboard is configured for correct port."""
-        expected_port = 8080
-        actual_port = self.dashboard_port
+        """
+Verify dashboard is configured for correct port.
 
+        expected_port = 8080
+       
+""""""
+
+        actual_port = self.dashboard_port
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        actual_port = self.dashboard_port
+       
+""""""
         if actual_port == expected_port:
             return (
                 True,
                 f"Dashboard port correctly configured: {actual_port}",
                 {"port": actual_port},
-            )
+             )
         else:
             return (
                 False,
                 f"Dashboard port misconfigured. Expected: {expected_port}, Actual: {actual_port}",
                 {"expected_port": expected_port, "actual_port": actual_port},
-            )
+             )
 
     def _test_secrets_availability(self) -> tuple[bool, str, Dict[str, Any]]:
         """Verify all required secrets are loaded and accessible."""
@@ -249,8 +339,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 {
                     "available_secrets": available_secrets,
                     "total_count": len(available_secrets),
-                },
-            )
+                 },
+             )
         else:
             return (
                 False,
@@ -258,8 +348,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 {
                     "missing_secrets": missing_secrets,
                     "available_secrets": available_secrets,
-                },
-            )
+                 },
+             )
 
     def _test_disk_space_availability(self) -> tuple[bool, str, Dict[str, Any]]:
         """Verify at least 5GB of free disk space is available."""
@@ -283,8 +373,8 @@ class SystemSmokeTestAgent(BaseAgent):
                         "total_gb": round(total_gb, 2),
                         "used_gb": round(used_gb, 2),
                         "required_gb": required_gb,
-                    },
-                )
+                     },
+                 )
             else:
                 return (
                     False,
@@ -293,19 +383,30 @@ class SystemSmokeTestAgent(BaseAgent):
                         "free_gb": round(free_gb, 2),
                         "required_gb": required_gb,
                         "deficit_gb": round(required_gb - free_gb, 2),
-                    },
-                )
+                     },
+                 )
 
         except Exception as e:
             return False, f"Failed to check disk space: {str(e)}", {"error": str(e)}
 
     def _test_ffmpeg_installation(self) -> tuple[bool, str, Dict[str, Any]]:
-        """Verify FFmpeg is installed and accessible."""
+        """
+Verify FFmpeg is installed and accessible.
+
+        
+"""
         try:
+        """
             result = subprocess.run(
                 ["ffmpeg", "-version"], capture_output=True, text=True, timeout=10
-            )
+             )
+        """
 
+        try:
+        
+
+       
+""""""
             if result.returncode == 0:
                 # Extract version info from output
                 version_line = result.stdout.split("\\n")[0] if result.stdout else "Unknown version"
@@ -313,13 +414,13 @@ class SystemSmokeTestAgent(BaseAgent):
                     True,
                     f"FFmpeg is installed and accessible: {version_line}",
                     {"version_output": version_line, "return_code": result.returncode},
-                )
+                 )
             else:
                 return (
                     False,
                     f"FFmpeg command failed with return code: {result.returncode}",
                     {"return_code": result.returncode, "stderr": result.stderr},
-                )
+                 )
 
         except subprocess.TimeoutExpired:
             return False, "FFmpeg command timed out", {"error": "timeout"}
@@ -357,25 +458,36 @@ class SystemSmokeTestAgent(BaseAgent):
                 True,
                 f"All {len(critical_dirs)} critical directories are writable",
                 {"test_results": test_results, "directories_tested": critical_dirs},
-            )
+             )
         else:
             return (
                 False,
                 f"Write permission failed for {len(failed_dirs)} directories: {', '.join(failed_dirs)}",
                 {"test_results": test_results, "failed_directories": failed_dirs},
-            )
+             )
 
     # ========================================================================
     # LIVE SYSTEM HEALTH CHECKS
     # ========================================================================
 
     def _test_dashboard_health_endpoint(self) -> tuple[bool, str, Dict[str, Any]]:
-        """Verify dashboard health endpoint responds correctly."""
+        """
+Verify dashboard health endpoint responds correctly.
+
+        
+"""
         try:
+        """
             response = requests.get(
                 f"{self.base_url}/api/health", timeout=self.health_check_timeout
-            )
+             )
+        """
 
+        try:
+        
+
+       
+""""""
             if response.status_code == 200:
                 try:
                     health_data = response.json()
@@ -386,8 +498,8 @@ class SystemSmokeTestAgent(BaseAgent):
                             "status_code": response.status_code,
                             "response_time_ms": int(response.elapsed.total_seconds() * 1000),
                             "health_data": health_data,
-                        },
-                    )
+                         },
+                     )
                 except json.JSONDecodeError:
                     return (
                         True,
@@ -395,8 +507,8 @@ class SystemSmokeTestAgent(BaseAgent):
                         {
                             "status_code": response.status_code,
                             "response_time_ms": int(response.elapsed.total_seconds() * 1000),
-                        },
-                    )
+                         },
+                     )
             else:
                 return (
                     False,
@@ -404,31 +516,42 @@ class SystemSmokeTestAgent(BaseAgent):
                     {
                         "status_code": response.status_code,
                         "response_text": response.text[:200],
-                    },
-                )
+                     },
+                 )
 
         except ConnectionError:
             return (
                 False,
                 f"Cannot connect to dashboard at {self.base_url}",
                 {"url": f"{self.base_url}/api/health", "error": "connection_refused"},
-            )
+             )
         except Timeout:
             return (
                 False,
                 f"Dashboard health check timed out after {self.health_check_timeout}s",
                 {"timeout_seconds": self.health_check_timeout},
-            )
+             )
         except Exception as e:
             return False, f"Dashboard health check failed: {str(e)}", {"error": str(e)}
 
     def _test_orchestrator_health_endpoint(self) -> tuple[bool, str, Dict[str, Any]]:
-        """Verify orchestrator health endpoint responds correctly."""
+        """
+Verify orchestrator health endpoint responds correctly.
+
+        
+"""
         try:
+        """
             response = requests.get(
                 f"{self.orchestrator_url}/api/health", timeout=self.health_check_timeout
-            )
+             )
+        """
 
+        try:
+        
+
+       
+""""""
             if response.status_code == 200:
                 try:
                     health_data = response.json()
@@ -439,8 +562,8 @@ class SystemSmokeTestAgent(BaseAgent):
                             "status_code": response.status_code,
                             "response_time_ms": int(response.elapsed.total_seconds() * 1000),
                             "health_data": health_data,
-                        },
-                    )
+                         },
+                     )
                 except json.JSONDecodeError:
                     return (
                         True,
@@ -448,8 +571,8 @@ class SystemSmokeTestAgent(BaseAgent):
                         {
                             "status_code": response.status_code,
                             "response_time_ms": int(response.elapsed.total_seconds() * 1000),
-                        },
-                    )
+                         },
+                     )
             else:
                 return (
                     False,
@@ -457,8 +580,8 @@ class SystemSmokeTestAgent(BaseAgent):
                     {
                         "status_code": response.status_code,
                         "response_text": response.text[:200],
-                    },
-                )
+                     },
+                 )
 
         except ConnectionError:
             return (
@@ -467,30 +590,47 @@ class SystemSmokeTestAgent(BaseAgent):
                 {
                     "url": f"{self.orchestrator_url}/api/health",
                     "error": "connection_refused",
-                },
-            )
+                 },
+             )
         except Timeout:
             return (
                 False,
                 f"Orchestrator health check timed out after {self.health_check_timeout}s",
                 {"timeout_seconds": self.health_check_timeout},
-            )
+             )
         except Exception as e:
             return (
                 False,
                 f"Orchestrator health check failed: {str(e)}",
                 {"error": str(e)},
-            )
+             )
 
     # ========================================================================
     # END - TO - END WORKFLOW TESTING
     # ========================================================================
 
     def _test_video_creation_workflow(self) -> tuple[bool, str, Dict[str, Any]]:
-        """Execute complete end - to - end video creation workflow test."""
-        workflow_start_time = time.time()
+        """
+Execute complete end - to - end video creation workflow test.
 
+       
+""""""
+
+        workflow_start_time = time.time()
+       
+
+        
+       
+"""
         # Step 1: Create video task
+       """
+
+        
+       
+
+        workflow_start_time = time.time()
+       
+""""""
         task_creation_result = self._create_test_video_task()
         if not task_creation_result[0]:
             return task_creation_result
@@ -520,8 +660,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 "task_creation": task_creation_result[2],
                 "polling_result": polling_result[2],
                 "file_verification": file_verification_result[2],
-            },
-        )
+             },
+         )
 
     def _create_test_video_task(self) -> tuple[bool, str, Dict[str, Any]]:
         """Create a test video creation task."""
@@ -531,14 +671,14 @@ class SystemSmokeTestAgent(BaseAgent):
             "duration": 30,
             "priority": "high",
             "test_mode": True,
-        }
+         }
 
         try:
             response = requests.post(
                 f"{self.base_url}/api/workflows/create - video",
                 json=test_payload,
                 timeout=30,
-            )
+             )
 
             if response.status_code in [200, 201]:
                 try:
@@ -553,8 +693,8 @@ class SystemSmokeTestAgent(BaseAgent):
                                 "task_id": task_id,
                                 "status_code": response.status_code,
                                 "response_data": response_data,
-                            },
-                        )
+                             },
+                         )
                     else:
                         return (
                             False,
@@ -562,8 +702,8 @@ class SystemSmokeTestAgent(BaseAgent):
                             {
                                 "status_code": response.status_code,
                                 "response_data": response_data,
-                            },
-                        )
+                             },
+                         )
 
                 except json.JSONDecodeError:
                     return (
@@ -572,8 +712,8 @@ class SystemSmokeTestAgent(BaseAgent):
                         {
                             "status_code": response.status_code,
                             "response_text": response.text[:200],
-                        },
-                    )
+                         },
+                     )
             else:
                 return (
                     False,
@@ -581,27 +721,43 @@ class SystemSmokeTestAgent(BaseAgent):
                     {
                         "status_code": response.status_code,
                         "response_text": response.text[:200],
-                    },
-                )
+                     },
+                 )
 
         except Exception as e:
             return False, f"Failed to create video task: {str(e)}", {"error": str(e)}
 
     def _poll_task_until_completion(self, task_id: str) -> tuple[bool, str, Dict[str, Any]]:
-        """Poll task status until completion or timeout."""
+        """
+Poll task status until completion or timeout.
+
         start_time = time.time()
         poll_count = 0
-        last_status = None
+       
+""""""
 
+        last_status = None
+       
+
+        
+       
+"""
         while (time.time() - start_time) < self.max_task_wait_time:
             poll_count += 1
+       """
 
+        
+       
+
+        last_status = None
+       
+""""""
             try:
                 response = requests.get(
                     f"{self.base_url}/api/tasks",
                     params={"task_id": task_id},
                     timeout=10,
-                )
+                 )
 
                 if response.status_code == 200:
                     try:
@@ -617,7 +773,7 @@ class SystemSmokeTestAgent(BaseAgent):
                                 False,
                                 "Invalid task data format received",
                                 {"response_data": tasks_data},
-                            )
+                             )
 
                         current_status = task_data.get("status", "unknown")
                         last_status = current_status
@@ -633,8 +789,8 @@ class SystemSmokeTestAgent(BaseAgent):
                                     "poll_count": poll_count,
                                     "duration_ms": duration,
                                     "task_data": task_data,
-                                },
-                            )
+                                 },
+                             )
                         elif current_status == TaskStatus.FAILED:
                             return (
                                 False,
@@ -644,8 +800,8 @@ class SystemSmokeTestAgent(BaseAgent):
                                     "final_status": current_status,
                                     "poll_count": poll_count,
                                     "task_data": task_data,
-                                },
-                            )
+                                 },
+                             )
 
                         # Task still in progress, continue polling
                         time.sleep(self.task_poll_interval)
@@ -655,20 +811,20 @@ class SystemSmokeTestAgent(BaseAgent):
                             False,
                             "Task status endpoint returned invalid JSON",
                             {"status_code": response.status_code},
-                        )
+                         )
                 else:
                     return (
                         False,
                         f"Task status check failed with status {response.status_code}",
                         {"status_code": response.status_code},
-                    )
+                     )
 
             except Exception as e:
                 return (
                     False,
                     f"Error polling task status: {str(e)}",
                     {"error": str(e), "poll_count": poll_count},
-                )
+                 )
 
         # Timeout reached
         return (
@@ -679,8 +835,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 "timeout_seconds": self.max_task_wait_time,
                 "poll_count": poll_count,
                 "last_status": last_status,
-            },
-        )
+             },
+         )
 
     def _verify_video_output_file(self, task_id: str) -> tuple[bool, str, Dict[str, Any]]:
         """Verify that the video output file exists and is valid."""
@@ -691,7 +847,7 @@ class SystemSmokeTestAgent(BaseAgent):
                 False,
                 "Outputs directory does not exist",
                 {"outputs_dir": str(outputs_dir)},
-            )
+             )
 
         # Look for video files related to this task
         video_extensions = [".mp4", ".avi", ".mov", ".mkv"]
@@ -706,7 +862,7 @@ class SystemSmokeTestAgent(BaseAgent):
             all_videos = list(outputs_dir.glob(f"*{ext}"))
             recent_videos = [
                 f for f in all_videos if f.stat().st_mtime > (time.time() - 600)  # 10 minutes
-            ]
+             ]
             found_files.extend(recent_videos)
 
         # Remove duplicates
@@ -720,8 +876,8 @@ class SystemSmokeTestAgent(BaseAgent):
                     "outputs_dir": str(outputs_dir),
                     "searched_extensions": video_extensions,
                     "task_id": task_id,
-                },
-            )
+                 },
+             )
 
         # Check the most recent file
         most_recent_file = max(found_files, key=lambda f: f.stat().st_mtime)
@@ -732,7 +888,7 @@ class SystemSmokeTestAgent(BaseAgent):
                 False,
                 f"Video output file is empty: {most_recent_file.name}",
                 {"file_path": str(most_recent_file), "file_size": file_size},
-            )
+             )
 
         return (
             True,
@@ -742,8 +898,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 "file_size": file_size,
                 "file_count": len(found_files),
                 "all_found_files": [str(f) for f in found_files],
-            },
-        )
+             },
+         )
 
     # ========================================================================
     # MAIN SMOKE TEST EXECUTION
@@ -751,12 +907,31 @@ class SystemSmokeTestAgent(BaseAgent):
 
     @dashboard_action("Run Complete Smoke Test", "Execute comprehensive system smoke test protocol")
     async def run_complete_smoke_test(self) -> SmokeTestReport:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Execute the complete system smoke test protocol.
+       """
+
+        
+       
 
         Returns:
             SmokeTestReport: Comprehensive test execution report
-        """
+       
+""""""
+
+       
+
+        
+       
+"""
+        Execute the complete system smoke test protocol.
+       """"""
         test_run_id = f"smoke - test-{int(time.time())}"
         start_time = datetime.now()
         self.test_start_time = start_time
@@ -774,52 +949,52 @@ class SystemSmokeTestAgent(BaseAgent):
                 "Dashboard Port Configuration",
                 self._test_dashboard_port_configuration,
                 TestSeverity.CRITICAL,
-            ),
+             ),
             (
                 "secrets_check",
                 "Required Secrets Availability",
                 self._test_secrets_availability,
                 TestSeverity.CRITICAL,
-            ),
+             ),
             (
                 "disk_space",
                 "Disk Space Availability",
                 self._test_disk_space_availability,
                 TestSeverity.WARNING,
-            ),
+             ),
             (
                 "ffmpeg_install",
                 "FFmpeg Installation",
                 self._test_ffmpeg_installation,
                 TestSeverity.CRITICAL,
-            ),
+             ),
             (
                 "dir_permissions",
                 "Directory Write Permissions",
                 self._test_directory_permissions,
                 TestSeverity.CRITICAL,
-            ),
+             ),
             # Live system health checks
             (
                 "dashboard_health",
                 "Dashboard Health Endpoint",
                 self._test_dashboard_health_endpoint,
                 TestSeverity.CRITICAL,
-            ),
+             ),
             (
                 "orchestrator_health",
                 "Orchestrator Health Endpoint",
                 self._test_orchestrator_health_endpoint,
                 TestSeverity.WARNING,
-            ),
+             ),
             # End - to - end workflow testing
             (
                 "video_workflow",
                 "Complete Video Creation Workflow",
                 self._test_video_creation_workflow,
                 TestSeverity.CRITICAL,
-            ),
-        ]
+             ),
+         ]
 
         # Execute all tests
         for test_id, test_name, test_func, severity in test_suite:
@@ -840,7 +1015,7 @@ class SystemSmokeTestAgent(BaseAgent):
             1
             for r in test_results
             if r.status == TestStatus.FAILED and r.severity == TestSeverity.CRITICAL
-        )
+         )
 
         # Determine overall status
         if critical_failures > 0:
@@ -861,8 +1036,8 @@ class SystemSmokeTestAgent(BaseAgent):
                 "DASHBOARD_PORT": os.getenv("DASHBOARD_PORT"),
                 "ORCHESTRATOR_PORT": os.getenv("ORCHESTRATOR_PORT"),
                 "TRAE_MASTER_KEY": "***" if os.getenv("TRAE_MASTER_KEY") else None,
-            },
-        }
+             },
+         }
 
         # Create final report
         report = SmokeTestReport(
@@ -878,7 +1053,7 @@ class SystemSmokeTestAgent(BaseAgent):
             overall_status=overall_status,
             test_results=test_results,
             system_info=system_info,
-        )
+         )
 
         self.current_test_run = report
 
@@ -886,28 +1061,28 @@ class SystemSmokeTestAgent(BaseAgent):
         if overall_status == TestStatus.PASSED:
             self.logger.info(
                 "✅ ALL TESTS PASSED. The TRAE.AI system is 100% live and fully operational."
-            )
+             )
         else:
             self.logger.error(
                 f"❌ SMOKE TEST FAILED. {critical_failures} critical failures, {failed_tests} total failures."
-            )
+             )
 
         return report
 
     @dashboard_action(
         name="Get Test Summary",
-        description="Retrieve summary of recent smoke test results \
-    and system status",
+        description="Retrieve summary of recent smoke test results \"
+#     and system status",
         category="System Testing",
         requires_auth=False,
-    )
+     )
     def get_test_summary(self) -> Dict[str, Any]:
         """Get a summary of the current or last test run."""
         if not self.current_test_run:
             return {
                 "status": "no_test_run",
                 "message": "No smoke test has been executed yet",
-            }
+             }
 
         report = self.current_test_run
 
@@ -923,7 +1098,7 @@ class SystemSmokeTestAgent(BaseAgent):
                 "failed_tests": report.failed_tests,
                 "skipped_tests": report.skipped_tests,
                 "critical_failures": report.critical_failures,
-            },
+             },
             "test_results": [
                 {
                     "test_id": r.test_id,
@@ -932,10 +1107,10 @@ class SystemSmokeTestAgent(BaseAgent):
                     "severity": r.severity.value,
                     "duration_ms": r.duration_ms,
                     "message": r.message,
-                }
+                 }
                 for r in report.test_results
-            ],
-        }
+             ],
+         }
 
     # ========================================================================
     # BASE AGENT IMPLEMENTATION
@@ -957,6 +1132,6 @@ class SystemSmokeTestAgent(BaseAgent):
 
     def _validate_rephrase_accuracy(
         self, original: str, rephrased: str, context: Dict[str, Any]
-    ) -> bool:
+#     ) -> bool:
         """Validate rephrased task accuracy."""
         return "smoke test" in rephrased.lower() or "system test" in rephrased.lower()

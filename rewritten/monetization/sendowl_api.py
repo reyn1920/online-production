@@ -9,7 +9,8 @@ from .base_monetization import (
     BaseMonetizationAPI,
     Product,
     ProductResponse,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,8 @@ class SendOwlAPI(BaseMonetizationAPI):
             api_key=api_key,
             base_url="https://www.sendowl.com/api/v1",
             rate_limit=120,  # SendOwl allows 120 requests per minute
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.api_secret = api_secret
 
     def _get_auth_headers(self) -> Dict[str, str]:
@@ -34,7 +36,8 @@ class SendOwlAPI(BaseMonetizationAPI):
             "Authorization": f"Basic {encoded_credentials}",
             "Content - Type": "application/json",
             "Accept": "application/json",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def create_product(self, product: Product) -> ProductResponse:
         """Create a new product in SendOwl."""
@@ -53,8 +56,10 @@ class SendOwlAPI(BaseMonetizationAPI):
                     "link_expiry": product.metadata.get("link_expiry", 72),  # hours
                     "instant_buy": product.metadata.get("instant_buy", True),
                     "add_to_cart": product.metadata.get("add_to_cart", True),
-                }
-            }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request("POST", "/products", data=product_data)
             product_response = response.json()
@@ -69,7 +74,8 @@ class SendOwlAPI(BaseMonetizationAPI):
                 product_id=str(product_id),
                 product_url=product_response["product"].get("sales_page_url"),
                 platform_data=product_response,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Failed to create SendOwl product: {e}")
@@ -85,8 +91,10 @@ class SendOwlAPI(BaseMonetizationAPI):
                     "price_currency": product.currency,
                     "description": product.description,
                     "tags": ", ".join(product.tags) if product.tags else "",
-                }
-            }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request("PUT", f"/products/{product_id}", data=product_data)
             product_response = response.json()
@@ -96,7 +104,8 @@ class SendOwlAPI(BaseMonetizationAPI):
                 product_id=product_id,
                 product_url=product_response["product"].get("sales_page_url"),
                 platform_data=product_response,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Failed to update SendOwl product {product_id}: {e}")
@@ -126,7 +135,8 @@ class SendOwlAPI(BaseMonetizationAPI):
             params = {
                 "per_page": min(limit, 100),  # SendOwl max is 100
                 "page": (offset // limit) + 1,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request("GET", "/products", params=params)
             products_data = response.json()
@@ -143,7 +153,8 @@ class SendOwlAPI(BaseMonetizationAPI):
                 "from": start_date.strftime("%Y-%m-%d"),
                 "to": end_date.strftime("%Y-%m-%d"),
                 "per_page": 100,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request("GET", "/orders", params=params)
             orders_data = response.json()
@@ -170,7 +181,8 @@ class SendOwlAPI(BaseMonetizationAPI):
                 "currency": "USD",
                 "orders": orders,
                 "refunds": refunds,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to get SendOwl sales data: {e}")
@@ -189,8 +201,10 @@ class SendOwlAPI(BaseMonetizationAPI):
                     "amount": str(discount_percent),
                     "usage_limit": 1000,  # Default usage limit
                     "active": True,
-                }
-            }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Add product restrictions if specified
             if product_ids:
@@ -221,8 +235,10 @@ class SendOwlAPI(BaseMonetizationAPI):
                 "total_commissions": sum(
                     float(commission.get("amount", 0))
                     for commission in commissions_data.get("affiliate_commissions", [])
-                ),
-            }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to get SendOwl affiliate data: {e}")
@@ -236,7 +252,8 @@ class SendOwlAPI(BaseMonetizationAPI):
                 # Implementation depends on file handling strategy
                 logger.info(
                     f"Would upload digital file {file_path} to SendOwl product {product_id}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 logger.error(f"Failed to upload digital file {file_path}: {e}")
 
@@ -251,8 +268,10 @@ class SendOwlAPI(BaseMonetizationAPI):
                     "price": str(bundle_price),
                     "product_ids": product_ids,
                     "package_type": "bundle",
-                }
-            }
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = self._make_request("POST", "/packages", data=bundle_data)
             return response.json()
@@ -275,8 +294,10 @@ class SendOwlAPI(BaseMonetizationAPI):
                     download.get("buyer_email")
                     for download in downloads
                     if download.get("buyer_email")
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "platform": "SendOwl",
@@ -284,7 +305,8 @@ class SendOwlAPI(BaseMonetizationAPI):
                 "unique_customers": unique_customers,
                 "average_downloads_per_customer": total_downloads / max(unique_customers, 1),
                 "downloads": downloads,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             logger.error(f"Failed to get SendOwl download analytics: {e}")

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Linly Talker + DaVinci Resolve + Blender Integration Demo
 
 This script demonstrates how to use the AI video production pipeline
@@ -7,7 +7,7 @@ with sample content and configurations.
 
 Usage:
     python demo_integration.py
-"""
+""""""
 
 import os
 import sys
@@ -28,26 +28,27 @@ def create_sample_assets():
 
     # Sample script content
     sample_scripts = {
-        "welcome": """
+        "welcome": """"""
         Hello and welcome to our AI - powered video production demonstration.
-        Today, I'll show you how artificial intelligence can create
+        Today, I'll show you how artificial intelligence can create'
         professional - quality videos with minimal human intervention.
         This technology represents the future of content creation.
-        """,
-        "business_presentation": """
+        ""","""
+        "business_presentation": """"""
         Good morning, team. Let me present our quarterly results.
         Our revenue has grown by 25% this quarter, exceeding all expectations.
         The new AI integration features have been particularly successful,
             driving both customer satisfaction and operational efficiency.
-        """,
-        "educational": """
-        In this lesson, we'll explore the fundamentals of machine learning.
+        ""","""
+        "educational": """"""
+        In this lesson, we'll explore the fundamentals of machine learning.'
         Machine learning is a subset of artificial intelligence that enables
         computers to learn \
-    and improve from experience without being explicitly programmed.
-        Let's dive into the key concepts and practical applications.
-        """,
-    }
+#     and improve from experience without being explicitly programmed.
+        Let's dive into the key concepts and practical applications.'
+        ""","""
+# BRACKET_SURGEON: disabled
+#     }
 
     # Save sample scripts
     for name, content in sample_scripts.items():
@@ -152,7 +153,8 @@ def demo_advanced_integration():
         voice_sample=voice_sample,
         additional_assets=additional_assets,
         environment_type="studio",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     return result
 
@@ -160,7 +162,7 @@ def demo_advanced_integration():
 def create_installation_guide():
     """Create installation and setup guide"""
 
-    guide_content = """
+    guide_content = """"""
 # AI Video Production Pipeline - Installation Guide
 
 ## Prerequisites
@@ -273,7 +275,7 @@ For issues and questions:
    - Linly Talker: https://github.com / Kedreamix / Linly - Talker
    - DaVinci Resolve: Blackmagic Design documentation
    - Blender: https://docs.blender.org/
-"""
+""""""
 
     guide_path = "/Users / thomasbrianreynolds / online production / INSTALLATION_GUIDE.md"
     with open(guide_path, "w") as f:

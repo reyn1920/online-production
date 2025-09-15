@@ -22,8 +22,10 @@ class FacialLandmarkDetector(nn.Module):
                 transforms.Resize(self.config.INPUT.SIZE),
                 transforms.ToTensor(),
                 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-            ]
-        )
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         )
         if pretrained:
             self.load_state_dict(torch.load(os.path.join(root, "model.pth")))
 
@@ -48,7 +50,8 @@ class FacialLandmarkDetector(nn.Module):
             [
                 self.config.INPUT.SIZE[0] / (rect[:, 2] - rect[:, 0]),
                 self.config.INPUT.SIZE[1] / (rect[:, 3] - rect[:, 1]),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
         ).t()
         return landmark / scale[:, None, :] + rect[:, None, :2]
 

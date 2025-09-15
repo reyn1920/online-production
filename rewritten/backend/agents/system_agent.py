@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI System Agent - The Chief Engineer
 
 The "industrial immune system" that runs Autonomous Diagnosis and Repair (ADR)
 protocol and watchdog "heartbeat" system to ensure all other agents are always
 online and healthy. Implements aggressive technical debt management.
-"""
+""""""
 
 import json
 import logging
@@ -32,7 +32,9 @@ try:
 
     sys.path.append(
         os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     from app.actions import dashboard_action
 
@@ -81,7 +83,9 @@ class SystemHealth:
         # Service health
         service_health = sum(self.service_status.values())/max(
             1, len(self.service_status)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Error penalty
         error_penalty = max(0, 1 - (self.error_count/100))
@@ -93,7 +97,9 @@ class SystemHealth:
             + agent_health * 0.25
             + service_health * 0.15
             + error_penalty * 0.1
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 @dataclass
 
@@ -134,7 +140,8 @@ class SystemAgent(BaseAgent):
         agent_id: str = "SystemAgent",
         name: str = "System Management Agent",
         main_loop = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         super().__init__(agent_id)
         self.name = name
         self.db_path = db_path
@@ -152,10 +159,12 @@ class SystemAgent(BaseAgent):
         self.watchdog_enabled = os.getenv("WATCHDOG_ENABLED", "true").lower() == "true"
         self.watchdog_threshold = int(
             os.getenv("WATCHDOG_THRESHOLD_SECONDS", "300")
-        )  # 5 minutes default
+# BRACKET_SURGEON: disabled
+#         )  # 5 minutes default
         self.watchdog_check_interval = int(
             os.getenv("WATCHDOG_CHECK_INTERVAL", "60")
-        )  # 1 minute default
+# BRACKET_SURGEON: disabled
+#         )  # 1 minute default
         self.last_system_activity = datetime.now()
         self.watchdog_alerts_sent = 0
         self.max_watchdog_alerts = int(os.getenv("MAX_WATCHDOG_ALERTS", "3"))
@@ -185,7 +194,7 @@ class SystemAgent(BaseAgent):
         """Initialize system monitoring database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS system_health (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         timestamp TIMESTAMP NOT NULL,
@@ -197,12 +206,16 @@ class SystemAgent(BaseAgent):
                         error_count INTEGER NOT NULL,
                         uptime_seconds INTEGER NOT NULL,
                         health_score REAL NOT NULL
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS diagnostic_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         component TEXT NOT NULL,
@@ -211,12 +224,16 @@ class SystemAgent(BaseAgent):
                         suggested_action TEXT,
                         confidence REAL NOT NULL,
                         timestamp TIMESTAMP NOT NULL
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS repair_actions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         action_id TEXT NOT NULL,
@@ -227,31 +244,39 @@ class SystemAgent(BaseAgent):
                         success BOOLEAN NOT NULL,
                         timestamp TIMESTAMP NOT NULL,
                         execution_time REAL NOT NULL
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS agent_registry (
                     agent_name TEXT PRIMARY KEY,
                         agent_class TEXT NOT NULL,
                         last_heartbeat TIMESTAMP,
                         status TEXT NOT NULL,
                         registered_at TIMESTAMP NOT NULL
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     # Back - compat: expose both names so any caller works
 
 
     def _health_summary(self, report: dict) -> str:
-        """
+        """"""
         Create a short, readable summary of a health report.
         Expected shape:
           {"healthy": int, "unhealthy": int, "notes": [str, ...]}
-        """
+        """"""
         try:
             healthy = int(report.get("healthy", 0))
             unhealthy = int(report.get("unhealthy", 0))
@@ -260,7 +285,9 @@ class SystemAgent(BaseAgent):
                 notes = [str(notes)]
             note_str = (
                 ("; ".join(map(str, notes)))[:200] if notes else "All checks passed."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except Exception as e:
             # Never fail formatting; degrade gracefully
             return f"health summary unavailable ({type(e).__name__}: {e})"
@@ -283,29 +310,39 @@ class SystemAgent(BaseAgent):
         # Start heartbeat monitoring
         self.heartbeat_thread = threading.Thread(
             target = self._heartbeat_monitor, daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.heartbeat_thread.start()
 
         # Start health monitoring
         self.health_thread = threading.Thread(target=self._health_monitor,
-                                             daemon=True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                              daemon=True)
         self.health_thread.start()
 
         # Start repair processor
         self.repair_thread = threading.Thread(
             target=self._repair_processor, daemon=True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.repair_thread.start()
 
         # Start watchdog monitor if enabled
         if self.watchdog_enabled:
             self.watchdog_thread = threading.Thread(
                 target = self._watchdog_monitor, daemon = True
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.watchdog_thread.start()
             self.logger.info(
                 f"Watchdog system enabled (threshold: {self.watchdog_threshold}s)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         self.logger.info("System monitoring started")
 
@@ -325,7 +362,8 @@ class SystemAgent(BaseAgent):
             hasattr(self, "watchdog_thread")
             and self.watchdog_thread
             and self.watchdog_thread.is_alive()
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             self.watchdog_thread.join(timeout = 5)
 
         self.logger.info("System monitoring stopped")
@@ -338,19 +376,22 @@ class SystemAgent(BaseAgent):
 
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO agent_registry
                 (agent_name, agent_class, last_heartbeat, status, registered_at)
                 VALUES (?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     agent_name,
                         agent_class,
                         datetime.now().isoformat(),
                         "active",
                         datetime.now().isoformat(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         self.logger.info(f"Registered agent: {agent_name} ({agent_class})")
 
@@ -362,13 +403,15 @@ class SystemAgent(BaseAgent):
 
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    """
+                    """"""
                     UPDATE agent_registry
                     SET last_heartbeat = ?, status = 'active'
                     WHERE agent_name = ?
-                """,
+                ""","""
                     (datetime.now().isoformat(), agent_name),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             # Update system activity on agent heartbeat
             if self.watchdog_enabled:
@@ -382,7 +425,9 @@ class SystemAgent(BaseAgent):
 
     @dashboard_action(
         "Get System Health", "Retrieve current system health metrics and status"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
     def get_system_health(self) -> SystemHealth:
@@ -400,7 +445,9 @@ class SystemAgent(BaseAgent):
             time_since_heartbeat = (current_time - last_heartbeat).total_seconds()
             agent_status[agent_name] = time_since_heartbeat < (
                 self.heartbeat_interval * 2
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Service status
         service_status = {}
@@ -408,7 +455,9 @@ class SystemAgent(BaseAgent):
             try:
                 result = subprocess.run(
                     check_command, shell = True, capture_output = True, timeout = 10
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 service_status[service_name] = result.returncode == 0
             except Exception:
                 service_status[service_name] = False
@@ -428,11 +477,15 @@ class SystemAgent(BaseAgent):
                 service_status = service_status,
                 error_count = error_count,
                 uptime_seconds = uptime_seconds,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     @dashboard_action(
         "Run System Diagnostics", "Perform comprehensive system health diagnostics"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
     def run_diagnostics(self) -> List[DiagnosticResult]:
@@ -450,8 +503,12 @@ class SystemAgent(BaseAgent):
                         suggested_action="restart_high_cpu_processes",
                         confidence = 0.9,
                         timestamp = datetime.now(),
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         elif health.cpu_usage > 70:
             results.append(
                 DiagnosticResult(
@@ -461,8 +518,12 @@ class SystemAgent(BaseAgent):
                         suggested_action="monitor_cpu_usage",
                         confidence = 0.8,
                         timestamp = datetime.now(),
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Memory diagnostics
         if health.memory_usage > 90:
@@ -474,8 +535,12 @@ class SystemAgent(BaseAgent):
                         suggested_action="clear_memory_cache",
                         confidence = 0.9,
                         timestamp = datetime.now(),
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Agent diagnostics
         for agent_name, is_healthy in health.agent_status.items():
@@ -488,8 +553,12 @@ class SystemAgent(BaseAgent):
                             suggested_action="restart_agent",
                             confidence = 0.95,
                             timestamp = datetime.now(),
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Service diagnostics
         for service_name, is_healthy in health.service_status.items():
@@ -502,8 +571,12 @@ class SystemAgent(BaseAgent):
                             suggested_action="restart_service",
                             confidence = 0.9,
                             timestamp = datetime.now(),
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Disk space diagnostics
         if health.disk_usage > 90:
@@ -515,8 +588,12 @@ class SystemAgent(BaseAgent):
                         suggested_action="cleanup_disk_space",
                         confidence = 0.9,
                         timestamp = datetime.now(),
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Save diagnostic results
         self._save_diagnostic_results(results)
@@ -528,7 +605,9 @@ class SystemAgent(BaseAgent):
         """Execute automated repair action"""
         action_id = (
             f"repair_{datetime.now().strftime('%Y % m%d_ % H%M % S')}_{diagnostic.component}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         start_time = time.time()
 
         repair_action = RepairAction(
@@ -540,7 +619,9 @@ class SystemAgent(BaseAgent):
                 success = False,
                 timestamp = datetime.now(),
                 execution_time = 0,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         try:
             success = False
@@ -576,7 +657,9 @@ class SystemAgent(BaseAgent):
 
             self.logger.info(
                 f"Repair action {action_id}: {'SUCCESS' if success else 'FAILED'}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             repair_action.success = False
@@ -600,7 +683,9 @@ class SystemAgent(BaseAgent):
                     # Use main event loop via run_coroutine_threadsafe
                     future = asyncio.run_coroutine_threadsafe(
                         self._heartbeat_monitor_async_single(), self.main_loop
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     future.result(timeout = 30)  # Wait for completion with timeout
                 else:
                     # Fallback to synchronous monitoring if no main loop
@@ -622,7 +707,9 @@ class SystemAgent(BaseAgent):
                 if time_since_heartbeat > (self.heartbeat_interval * 3):
                     self.logger.warning(
                         f"Agent {agent_name} missed heartbeat ({time_since_heartbeat:.1f}s)"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Queue repair action
                     diagnostic = DiagnosticResult(
@@ -632,7 +719,9 @@ class SystemAgent(BaseAgent):
                             suggested_action="restart_agent",
                             confidence = 0.9,
                             timestamp = current_time,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     self.repair_queue.put(diagnostic)
 
         except Exception as e:
@@ -650,7 +739,9 @@ class SystemAgent(BaseAgent):
                 if time_since_heartbeat > (self.heartbeat_interval * 3):
                     self.logger.warning(
                         f"Agent {agent_name} missed heartbeat ({time_since_heartbeat:.1f}s)"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Queue repair action
                     diagnostic = DiagnosticResult(
@@ -660,7 +751,9 @@ class SystemAgent(BaseAgent):
                             suggested_action="restart_agent",
                             confidence = 0.9,
                             timestamp = current_time,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     self.repair_queue.put(diagnostic)
 
         except Exception as e:
@@ -690,7 +783,9 @@ class SystemAgent(BaseAgent):
                     # Use main event loop via run_coroutine_threadsafe
                     future = asyncio.run_coroutine_threadsafe(
                         self._health_monitor_async_single(), self.main_loop
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     future.result(timeout = 30)  # Wait for completion with timeout
                 else:
                     # Fallback to synchronous monitoring if no main loop
@@ -719,7 +814,9 @@ class SystemAgent(BaseAgent):
                         suggested_action="immediate_intervention",
                         confidence = 0.95,
                         timestamp = datetime.now(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.repair_queue.put(diagnostic)
 
             elif health_score < self.warning_threshold:
@@ -730,7 +827,9 @@ class SystemAgent(BaseAgent):
                         suggested_action="monitor_closely",
                         confidence = 0.8,
                         timestamp = datetime.now(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.repair_queue.put(diagnostic)
 
         except Exception as e:
@@ -755,7 +854,9 @@ class SystemAgent(BaseAgent):
                         suggested_action="immediate_intervention",
                         confidence = 0.95,
                         timestamp = datetime.now(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.repair_queue.put(diagnostic)
 
             elif health_score < self.warning_threshold:
@@ -766,7 +867,9 @@ class SystemAgent(BaseAgent):
                         suggested_action="monitor_closely",
                         confidence = 0.8,
                         timestamp = datetime.now(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self.repair_queue.put(diagnostic)
 
         except Exception as e:
@@ -848,7 +951,9 @@ class SystemAgent(BaseAgent):
                 subprocess.run(
                     ["launchctl", "kickstart", "-k", f"gui/501/{service_name}"],
                         check = True,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 subprocess.run(["systemctl", "restart", service_name], check = True)
 
@@ -885,7 +990,9 @@ class SystemAgent(BaseAgent):
                     subprocess.run(
                         ["find", temp_dir, "-type", "f", "-atime", "+7", "-delete"],
                             check = True,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             # Clean logs older than 30 days
             log_dirs = ["/var/log", "./logs"]
@@ -894,7 +1001,9 @@ class SystemAgent(BaseAgent):
                     subprocess.run(
                         ["find", log_dir, "-name", "*.log", "-mtime", "+30", "-delete"],
                             check = True,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             self.logger.info("Cleaned up disk space")
             return True
@@ -930,19 +1039,21 @@ class SystemAgent(BaseAgent):
             # Count errors from the last N hours
             cutoff_time = datetime.now() - timedelta(hours=hours)
             error_count = 0
-            
+
             # Check system logs for errors
             try:
                 # On macOS/Linux, check system logs
                 result = subprocess.run(
                     ['grep', '-c', 'ERROR', '/var/log/system.log'],
                     capture_output=True, text=True, timeout=5
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if result.returncode == 0:
                     error_count += int(result.stdout.strip())
             except (subprocess.TimeoutExpired, ValueError, FileNotFoundError):
                 pass
-            
+
             # Check application logs if they exist
             log_dir = Path('logs')
             if log_dir.exists():
@@ -954,7 +1065,7 @@ class SystemAgent(BaseAgent):
                                     error_count += 1
                     except Exception:
                         continue
-            
+
             return error_count
         except Exception as e:
             self.logger.error(f"Error counting recent errors: {e}")
@@ -966,7 +1077,9 @@ class SystemAgent(BaseAgent):
         try:
             self.logger.warning(
                 "Investigating system stall - gathering diagnostic information"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Get current system metrics
             health = self.get_system_health()
@@ -974,15 +1087,21 @@ class SystemAgent(BaseAgent):
             # Log detailed system state
             self.logger.info(
                 f"System Health Score: {health.overall_health_score():.2f}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.logger.info(f"CPU Usage: {health.cpu_usage:.1f}%")
             self.logger.info(f"Memory Usage: {health.memory_usage:.1f}%")
             self.logger.info(
                 f"Active Agents: {sum(health.agent_status.values())}/{len(health.agent_status)}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.logger.info(
                 f"Active Services: {sum(health.service_status.values())}/{len(health.service_status)}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Check for stuck processes
             stuck_processes = []
@@ -991,17 +1110,22 @@ class SystemAgent(BaseAgent):
                     if (
                         proc.info["status"] == "zombie"
                         or proc.info["cpu_times"].user > 3600
-                    ):  # 1 hour CPU time
+# BRACKET_SURGEON: disabled
+#                     ):  # 1 hour CPU time
                         stuck_processes.append(
                             f"{proc.info['name']} (PID: {proc.info['pid']})"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     continue
 
             if stuck_processes:
                 self.logger.warning(
                     f"Potentially stuck processes: {', '.join(stuck_processes)}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Reset watchdog activity to prevent immediate re - triggering
             self.update_system_activity()
@@ -1018,12 +1142,14 @@ class SystemAgent(BaseAgent):
         """Save health metrics to database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT INTO system_health
                 (timestamp, cpu_usage, memory_usage, disk_usage,
-                    agent_status, service_status, error_count, uptime_seconds, health_score)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     agent_status, service_status, error_count, uptime_seconds, health_score)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     health.timestamp.isoformat(),
                         health.cpu_usage,
@@ -1034,8 +1160,11 @@ class SystemAgent(BaseAgent):
                         health.error_count,
                         health.uptime_seconds,
                         health.overall_health_score(),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def _save_diagnostic_results(self, results: List[DiagnosticResult]):
@@ -1043,16 +1172,18 @@ class SystemAgent(BaseAgent):
         with sqlite3.connect(self.db_path) as conn:
             for result in results:
                 conn.execute(
-                    """
+                    """"""
                     INSERT INTO diagnostic_results
                     (component,
     status,
     message,
     suggested_action,
     confidence,
-    timestamp)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     timestamp)
                     VALUES (?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         result.component,
                             result.status,
@@ -1060,20 +1191,25 @@ class SystemAgent(BaseAgent):
                             result.suggested_action,
                             result.confidence,
                             result.timestamp.isoformat(),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
 
     def _save_repair_action(self, action: RepairAction):
         """Save repair action to database"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT INTO repair_actions
                 (action_id, component, action_type, description, command,
-                    success, timestamp, execution_time)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     success, timestamp, execution_time)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     action.action_id,
                         action.component,
@@ -1083,8 +1219,11 @@ class SystemAgent(BaseAgent):
                         action.success,
                         action.timestamp.isoformat(),
                         action.execution_time,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def update_system_activity(self):
@@ -1093,7 +1232,9 @@ class SystemAgent(BaseAgent):
         if self.watchdog_alerts_sent > 0:
             self.logger.info(
                 "System activity detected, resetting watchdog alert counter"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self.watchdog_alerts_sent = 0
 
 
@@ -1102,14 +1243,18 @@ class SystemAgent(BaseAgent):
         self.logger.info(
             f"Watchdog monitor started (threshold: {self.watchdog_threshold}s, "
             f"check interval: {self.watchdog_check_interval}s)"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         while self.monitoring_active:
             try:
                 current_time = datetime.now()
                 time_since_activity = (
                     current_time - self.last_system_activity
-                ).total_seconds()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).total_seconds()
 
                 if time_since_activity > self.watchdog_threshold:
                     if self.watchdog_alerts_sent < self.max_watchdog_alerts:
@@ -1123,16 +1268,20 @@ class SystemAgent(BaseAgent):
                                 suggested_action="investigate_system_stall",
                                 confidence = 0.95,
                                 timestamp = current_time,
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                         # Queue for repair/investigation
                         self.repair_queue.put(diagnostic)
 
                         # Log critical alert
                         self.logger.critical(
-                            f"WATCHDOG ALERT #{self.watchdog_alerts_sent}: System cadence stalled for {time_since_activity:.1f}s "
+                            f"WATCHDOG ALERT #{self.watchdog_alerts_sent}: System cadence stalled for {time_since_activity:.1f}s ""
                             f"(threshold: {self.watchdog_threshold}s). Last activity: {self.last_system_activity}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                         # Save to database
                         self._save_diagnostic_result(diagnostic)
@@ -1140,10 +1289,14 @@ class SystemAgent(BaseAgent):
                     elif self.watchdog_alerts_sent == self.max_watchdog_alerts:
                         self.logger.warning(
                             f"Watchdog alert limit reached ({self.max_watchdog_alerts}). Suppressing further alerts until activity resumes."
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         self.watchdog_alerts_sent += (
                             1  # Increment to prevent repeated warnings
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 time.sleep(self.watchdog_check_interval)
 
@@ -1166,7 +1319,8 @@ class SystemAgent(BaseAgent):
             "success": True,
             "health": asdict(health),
             "health_score": health.overall_health_score(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         elif task_type == "run_diagnostics":
             results = self.run_diagnostics()
@@ -1198,7 +1352,8 @@ class SystemAgent(BaseAgent):
             "memory_usage": health.memory_usage,
             "disk_usage": health.disk_usage,
             "timestamp": health.timestamp.isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
         except Exception as e:
             return {"ok": False, "error": str(e)}
 
@@ -1215,7 +1370,8 @@ class SystemAgent(BaseAgent):
                 "monitoring_active": self.monitoring_active,
                 "registered_agents": list(self.registered_agents.keys()),
                 "registered_services": list(self.registered_services.keys()),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {"timestamp": time.time(), "error": str(e)}
 
@@ -1246,7 +1402,9 @@ class SystemAgent(BaseAgent):
             AgentCapability.SYSTEM_MONITORING,
                 AgentCapability.AUTONOMOUS_REPAIR,
                 AgentCapability.HEALTH_DIAGNOSTICS,
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     async def _execute_with_monitoring(
@@ -1259,7 +1417,8 @@ class SystemAgent(BaseAgent):
                 "success": True,
                 "result": result,
                 "monitoring": "System health monitored during execution",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Task execution failed: {e}")
             return {"success": False, "error": str(e)}
@@ -1273,7 +1432,8 @@ class SystemAgent(BaseAgent):
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrased task accuracy"""
         return True
 

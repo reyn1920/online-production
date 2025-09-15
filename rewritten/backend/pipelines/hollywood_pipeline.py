@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Hollywood Pipeline for TRAE.AI System
 Handles video generation and processing workflows
-"""
+""""""
 
 import logging
 import subprocess
@@ -13,9 +13,9 @@ logger = logging.getLogger(__name__)
 
 
 class HollywoodPipeline:
-    """
+    """"""
     Video generation pipeline using ffmpeg and other tools
-    """
+    """"""
 
     def __init__(self, output_dir: str = "./videos"):
         self.output_dir = Path(output_dir)
@@ -34,7 +34,7 @@ class HollywoodPipeline:
             return False
 
     def generate_video(self, script_content: str, title: str, duration: int = 30) -> Dict[str, Any]:
-        """
+        """"""
         Generate video from script content
 
         Args:
@@ -44,7 +44,7 @@ class HollywoodPipeline:
 
         Returns:
             Dict with generation results
-        """
+        """"""
         try:
             # Sanitize filename
             safe_title = "".join(c for c in title if c.isalnum() or c in (" ", "-", "_")).rstrip()
@@ -67,7 +67,8 @@ class HollywoodPipeline:
                     "title": title,
                     "duration": duration,
                     "mock": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Real video generation with ffmpeg
             # Create a simple test pattern video
@@ -83,7 +84,8 @@ class HollywoodPipeline:
                 "-pix_fmt",
                 "yuv420p",
                 str(video_path),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True, text=True)
 
@@ -94,7 +96,8 @@ class HollywoodPipeline:
                     "title": title,
                     "duration": duration,
                     "size_bytes": (video_path.stat().st_size if video_path.exists() else 0),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"status": "error", "error": f"ffmpeg failed: {result.stderr}"}
 
@@ -103,7 +106,7 @@ class HollywoodPipeline:
             return {"status": "error", "error": str(e)}
 
     def generate_thumbnail(self, video_path: str) -> Dict[str, Any]:
-        """
+        """"""
         Generate thumbnail from video
 
         Args:
@@ -111,7 +114,7 @@ class HollywoodPipeline:
 
         Returns:
             Dict with thumbnail generation results
-        """
+        """"""
         try:
             video_file = Path(video_path)
 
@@ -119,7 +122,8 @@ class HollywoodPipeline:
                 return {
                     "status": "error",
                     "error": f"Video file not found: {video_path}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             thumbnail_path = video_file.with_suffix(".jpg")
 
@@ -132,7 +136,8 @@ class HollywoodPipeline:
                     "status": "ok",
                     "thumbnail_path": str(thumbnail_path.with_suffix(".txt")),
                     "mock": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Real thumbnail generation
             cmd = [
@@ -147,7 +152,8 @@ class HollywoodPipeline:
                 "-q:v",
                 "2",  # High quality
                 str(thumbnail_path),
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True, text=True)
 
@@ -157,14 +163,15 @@ class HollywoodPipeline:
                 return {
                     "status": "error",
                     "error": f"Thumbnail generation failed: {result.stderr}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             logger.error(f"Thumbnail generation failed: {e}")
             return {"status": "error", "error": str(e)}
 
     def batch_process(self, scripts: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """
+        """"""
         Process multiple scripts in batch
 
         Args:
@@ -172,7 +179,7 @@ class HollywoodPipeline:
 
         Returns:
             Dict with batch processing results
-        """
+        """"""
         results = []
 
         for script in scripts:
@@ -195,11 +202,12 @@ class HollywoodPipeline:
             "successful": successful,
             "failed": len(scripts) - successful,
             "results": results,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 def create_pipeline(output_dir: str = "./videos") -> HollywoodPipeline:
-    """
+    """"""
     Factory function to create Hollywood pipeline instance
 
     Args:
@@ -207,12 +215,12 @@ def create_pipeline(output_dir: str = "./videos") -> HollywoodPipeline:
 
     Returns:
         HollywoodPipeline instance
-    """
+    """"""
     return HollywoodPipeline(output_dir)
 
 
 def generate_script_from_csv_row(row: Dict[str, Any]) -> str:
-    """
+    """"""
     Generate video script from CSV row data
 
     Args:
@@ -220,7 +228,7 @@ def generate_script_from_csv_row(row: Dict[str, Any]) -> str:
 
     Returns:
         Generated script content
-    """
+    """"""
     title = row.get("title", "Untitled")
     description = row.get("description", "")
 

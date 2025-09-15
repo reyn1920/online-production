@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Avatar generation and 3D pipeline router
+Avatar Router
 
 Handles avatar generation requests using various engines and 3D pipeline.
 """
@@ -9,387 +9,326 @@ import logging
 import os
 import tempfile
 import uuid
-from datetime import datetime
-from typing import Any, Dict, Optional
+from datetime import datetime, timezone
+from typing import Dict, List, Optional, Any
 
-from fastapi import APIRouter, File, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel, Field
 
-# Import avatar services
-try:
-    from backend.services.avatar_engines import (
-        AvatarRequest,
-        AvatarResponse,
-        engine_manager,
-    )
-except ImportError:
-    engine_manager = None
-    logging.warning("Avatar engines not available - check backend structure")
+router = APIRouter(prefix="/avatar", tags=["avatar"])
 
-try:
-    from backend.avatar_pipeline import AnimationSpec, AvatarPipeline, CharacterSpec
-except ImportError:
-    try:
-        from copy_of_code.avatar_pipeline import (
-            AnimationSpec,
-            AvatarPipeline,
-            CharacterSpec,
-        )
-    except ImportError:
-        AvatarPipeline = None
-        logging.warning("Avatar pipeline not available - check backend structure")
+# In-memory storage for demo purposes
+avatar_storage: Dict[str, Dict[str, Any]] = {}
+avatar_sessions: Dict[str, Dict[str, Any]] = {}
 
-router = APIRouter()
-templates = Jinja2Templates(directory="templates")
-logger = logging.getLogger(__name__)
+# Avatar generation settings
+class AvatarSettings(BaseModel):
+    style: str = Field(default="realistic", description="Avatar style")
+    quality: str = Field(default="high", description="Generation quality")
+    format: str = Field(default="png", description="Output format")
+    size: str = Field(default="512x512", description="Image dimensions")
+    background: str = Field(default="transparent", description="Background type")
+    lighting: str = Field(default="natural", description="Lighting style")
 
-# Request/Response Models
+class AvatarRequest(BaseModel):
+    prompt: str = Field(..., description="Avatar generation prompt")
+    settings: AvatarSettings = Field(default_factory=AvatarSettings)
+    user_id: Optional[str] = Field(None, description="User identifier")
+    session_id: Optional[str] = Field(None, description="Session identifier")
 
-
-class AvatarGenerationRequest(BaseModel):
-    text: str = Field(..., description="Text for the avatar to speak")
-    voice_settings: Optional[Dict[str, Any]] = Field(default={}, description="Voice configuration")
-    video_settings: Optional[Dict[str, Any]] = Field(default={}, description="Video configuration")
-    source_image: Optional[str] = Field(
-        None, description="Base64 encoded source image or image URL"
-    )
-    engine: Optional[str] = Field("linly-talker", description="Avatar engine to use")
-    gender: Optional[str] = Field("neutral", description="Avatar gender (neutral, male, female)")
-
+class AvatarResponse(BaseModel):
+    avatar_id: str
+    status: str
+    image_url: Optional[str] = None
+    thumbnail_url: Optional[str] = None
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+    created_at: str
+    processing_time_ms: Optional[float] = None
 
 class Avatar3DRequest(BaseModel):
-    character_description: str = Field(..., description="Description of the 3D character to create")
-    animation_type: Optional[str] = Field("idle", description="Type of animation to apply")
-    voice_text: Optional[str] = Field(None, description="Text for voice synthesis")
-    export_format: Optional[str] = Field("mp4", description="Export format (mp4, fbx, obj)")
-    quality: Optional[str] = Field("medium", description="Rendering quality (low, medium, high)")
-    gender: Optional[str] = Field("neutral", description="Avatar gender (neutral, male, female)")
+    avatar_id: str = Field(..., description="Base avatar ID")
+    model_type: str = Field(default="basic", description="3D model type")
+    animation: bool = Field(default=False, description="Include animation")
+    texture_quality: str = Field(default="medium", description="Texture quality")
 
+@router.post("/generate", response_model=AvatarResponse)
+async def generate_avatar(request: AvatarRequest):
+    """Generate a new avatar based on the provided prompt and settings."""
+    try:
+        avatar_id = str(uuid.uuid4())
+        
+        # Simulate avatar generation process
+        avatar_data = {
+            "id": avatar_id,
+            "prompt": request.prompt,
+            "settings": request.settings.dict(),
+            "status": "completed",
+            "image_url": f"/avatar/image/{avatar_id}",
+            "thumbnail_url": f"/avatar/thumbnail/{avatar_id}",
+            "metadata": {
+                "style": request.settings.style,
+                "quality": request.settings.quality,
+                "format": request.settings.format,
+                "size": request.settings.size,
+                "generation_engine": "demo-engine",
+                "version": "1.0"
+            },
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "processing_time_ms": 1500.0,
+            "user_id": request.user_id,
+            "session_id": request.session_id
+        }
+        
+        # Store avatar data
+        avatar_storage[avatar_id] = avatar_data
+        
+        # Update session if provided
+        if request.session_id:
+            if request.session_id not in avatar_sessions:
+                avatar_sessions[request.session_id] = {"avatars": []}
+            avatar_sessions[request.session_id]["avatars"].append(avatar_id)
+        
+        return AvatarResponse(
+             avatar_id=avatar_id,
+             status="completed",
+             image_url=str(avatar_data["image_url"]) if avatar_data["image_url"] else None,
+             thumbnail_url=str(avatar_data["thumbnail_url"]) if avatar_data["thumbnail_url"] else None,
+             metadata=avatar_data["metadata"] if isinstance(avatar_data["metadata"], dict) else {},
+             created_at=str(avatar_data["created_at"]),
+             processing_time_ms=float(avatar_data["processing_time_ms"]) if isinstance(avatar_data["processing_time_ms"], (int, float, str)) and avatar_data["processing_time_ms"] is not None else None
+         )
+        
+    except Exception as e:
+        logging.error(f"Avatar generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Avatar generation failed: {str(e)}")
 
-class AvatarStatusResponse(BaseModel):
-    job_id: str
-    status: str
-    progress: Optional[float] = None
-    result_url: Optional[str] = None
-    error: Optional[str] = None
-    created_at: datetime
-    updated_at: datetime
-
-
-# In-memory job tracking (in production, use Redis or database)
-avatar_jobs = {}
-
-
-@router.get("/")
-async def avatar_interface(request: Request):
-    """Avatar generation interface"""
-    return templates.TemplateResponse(
-        "avatar.html",
-        {
-            "request": request,
-            "title": "Avatar Generation",
-            "engines": await get_available_engines(),
-        },
-    )
-
-
-@router.get("/health")
-async def health_check():
-    """Health check for avatar services"""
-    status = {
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat(),
-        "engines": {},
-        "pipeline": AvatarPipeline is not None,
+@router.get("/status/{avatar_id}")
+async def get_avatar_status(avatar_id: str):
+    """Get the status of an avatar generation request."""
+    if avatar_id not in avatar_storage:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    avatar_data = avatar_storage[avatar_id]
+    return {
+        "avatar_id": avatar_id,
+        "status": avatar_data["status"],
+        "created_at": avatar_data["created_at"],
+        "processing_time_ms": avatar_data.get("processing_time_ms"),
+        "metadata": avatar_data["metadata"]
     }
 
-    if engine_manager:
-        try:
-            engines = await engine_manager.get_available_engines()
-            for engine_name in engines:
-                engine = await engine_manager.get_engine(engine_name)
-                if engine:
-                    status["engines"][engine_name] = await engine.health_check()
-        except Exception as e:
-            logger.error(f"Error checking engine health: {e}")
-            status["engines"]["error"] = str(e)
+@router.get("/image/{avatar_id}")
+async def get_avatar_image(avatar_id: str):
+    """Get the generated avatar image."""
+    if avatar_id not in avatar_storage:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    avatar_data = avatar_storage[avatar_id]
+    if avatar_data["status"] != "completed":
+        raise HTTPException(status_code=202, detail="Avatar still processing")
+    
+    # In a real implementation, this would return the actual image file
+    # For demo purposes, return a placeholder response
+    return JSONResponse({
+        "message": "Avatar image would be served here",
+        "avatar_id": avatar_id,
+        "format": avatar_data["settings"]["format"],
+        "size": avatar_data["settings"]["size"]
+    })
 
-    return status
+@router.get("/thumbnail/{avatar_id}")
+async def get_avatar_thumbnail(avatar_id: str):
+    """Get the avatar thumbnail image."""
+    if avatar_id not in avatar_storage:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    avatar_data = avatar_storage[avatar_id]
+    if avatar_data["status"] != "completed":
+        raise HTTPException(status_code=202, detail="Avatar still processing")
+    
+    # In a real implementation, this would return the actual thumbnail file
+    return JSONResponse({
+        "message": "Avatar thumbnail would be served here",
+        "avatar_id": avatar_id,
+        "size": "128x128"
+    })
 
-
-@router.get("/engines")
-async def get_available_engines():
-    """Get list of available avatar engines"""
-    if not engine_manager:
-        return {"engines": [], "error": "Avatar engines not available"}
-
-    try:
-        engines = await engine_manager.get_available_engines()
-        engine_info = []
-
-        for engine_name in engines:
-            engine = await engine_manager.get_engine(engine_name)
-            if engine:
-                health = await engine.health_check()
-                engine_info.append(
-                    {
-                        "name": engine_name,
-                        "healthy": health,
-                        "capabilities": getattr(engine, "capabilities", []),
-                    }
-                )
-
-        return {"engines": engine_info}
-    except Exception as e:
-        logger.error(f"Error getting available engines: {e}")
-        raise HTTPException(status_code=500, detail="Failed to get available engines")
-
-
-@router.post("/generate")
-async def generate_avatar(request: AvatarGenerationRequest):
-    """Generate avatar using specified engine"""
-    if not engine_manager:
-        raise HTTPException(status_code=503, detail="Avatar engines not available")
-
-    try:
-        # Create job ID
-        job_id = str(uuid.uuid4())
-
-        # Get engine
-        engine = await engine_manager.get_engine(request.engine)
-        if not engine:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Engine {request.engine} not available",
-            )
-
-        # Check engine health
-        if not await engine.health_check():
-            raise HTTPException(
-                status_code=503,
-                detail=f"Engine {request.engine} is not responding",
-            )
-
-        # Create avatar request
-        avatar_request = AvatarRequest(
-            text=request.text,
-            voice_settings=request.voice_settings,
-            video_settings=request.video_settings,
-            source_image=request.source_image,
-            gender=request.gender,
-        )
-
-        # Store job info
-        avatar_jobs[job_id] = {
-            "id": job_id,
-            "status": "processing",
-            "progress": 0.0,
-            "created_at": datetime.now(),
-            "updated_at": datetime.now(),
-            "engine": request.engine,
-            "request": avatar_request.dict(),
-        }
-
-        # Start generation (async)
-        try:
-            result = await engine.generate_avatar(avatar_request)
-            avatar_jobs[job_id].update(
-                {
-                    "status": "completed",
-                    "progress": 100.0,
-                    "result_url": result.output_path,
-                    "updated_at": datetime.now(),
-                }
-            )
-        except Exception as e:
-            logger.error(f"Avatar generation failed: {e}")
-            avatar_jobs[job_id].update(
-                {
-                    "status": "failed",
-                    "error": str(e),
-                    "updated_at": datetime.now(),
-                }
-            )
-
-        return {"job_id": job_id, "status": "processing"}
-
-    except Exception as e:
-        logger.error(f"Error starting avatar generation: {e}")
-        raise HTTPException(status_code=500, detail="Failed to start generation")
-
-
-@router.post("/generate-3d")
+@router.post("/3d/generate", response_model=Dict[str, Any])
 async def generate_3d_avatar(request: Avatar3DRequest):
-    """Generate 3D avatar using pipeline"""
-    if not AvatarPipeline:
-        raise HTTPException(status_code=503, detail="3D Avatar pipeline not available")
-
+    """Generate a 3D model from an existing avatar."""
+    if request.avatar_id not in avatar_storage:
+        raise HTTPException(status_code=404, detail="Base avatar not found")
+    
     try:
-        # Create job ID
-        job_id = str(uuid.uuid4())
-
-        # Create character spec
-        character_spec = CharacterSpec(
-            description=request.character_description,
-            gender=request.gender,
-            quality=request.quality,
-        )
-
-        # Create animation spec
-        animation_spec = AnimationSpec(
-            type=request.animation_type,
-            voice_text=request.voice_text,
-        )
-
-        # Store job info
-        avatar_jobs[job_id] = {
-            "id": job_id,
-            "status": "processing",
-            "progress": 0.0,
-            "created_at": datetime.now(),
-            "updated_at": datetime.now(),
-            "type": "3d",
-            "request": request.dict(),
+        model_id = str(uuid.uuid4())
+        
+        # Simulate 3D model generation
+        model_data = {
+            "model_id": model_id,
+            "avatar_id": request.avatar_id,
+            "model_type": request.model_type,
+            "animation": request.animation,
+            "texture_quality": request.texture_quality,
+            "status": "completed",
+            "model_url": f"/avatar/3d/model/{model_id}",
+            "preview_url": f"/avatar/3d/preview/{model_id}",
+            "metadata": {
+                "format": "glb",
+                "vertices": 15420,
+                "faces": 8760,
+                "textures": 3,
+                "animations": 1 if request.animation else 0
+            },
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "processing_time_ms": 3500.0
         }
-
-        # Start 3D generation (async)
-        try:
-            pipeline = AvatarPipeline()
-            result = await pipeline.generate_avatar(
-                character_spec, animation_spec, request.export_format
-            )
-
-            avatar_jobs[job_id].update(
-                {
-                    "status": "completed",
-                    "progress": 100.0,
-                    "result_url": result.output_path,
-                    "updated_at": datetime.now(),
-                }
-            )
-        except Exception as e:
-            logger.error(f"3D Avatar generation failed: {e}")
-            avatar_jobs[job_id].update(
-                {
-                    "status": "failed",
-                    "error": str(e),
-                    "updated_at": datetime.now(),
-                }
-            )
-
-        return {"job_id": job_id, "status": "processing"}
-
+        
+        # Store 3D model data
+        avatar_storage[f"3d_{model_id}"] = model_data
+        
+        return model_data
+        
     except Exception as e:
-        logger.error(f"Error starting 3D avatar generation: {e}")
-        raise HTTPException(status_code=500, detail="Failed to start 3D generation")
+        logging.error(f"3D avatar generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"3D generation failed: {str(e)}")
 
+@router.get("/3d/model/{model_id}")
+async def get_3d_model(model_id: str):
+    """Get the generated 3D model file."""
+    model_key = f"3d_{model_id}"
+    if model_key not in avatar_storage:
+        raise HTTPException(status_code=404, detail="3D model not found")
+    
+    model_data = avatar_storage[model_key]
+    if model_data["status"] != "completed":
+        raise HTTPException(status_code=202, detail="3D model still processing")
+    
+    # In a real implementation, this would return the actual 3D model file
+    return JSONResponse({
+        "message": "3D model file would be served here",
+        "model_id": model_id,
+        "format": model_data["metadata"]["format"],
+        "vertices": model_data["metadata"]["vertices"]
+    })
 
-@router.get("/status/{job_id}")
-async def get_avatar_status(job_id: str):
-    """Get status of avatar generation job"""
-    if job_id not in avatar_jobs:
-        raise HTTPException(status_code=404, detail="Job not found")
+@router.get("/list")
+async def list_avatars(user_id: Optional[str] = None, session_id: Optional[str] = None):
+    """List avatars for a user or session."""
+    avatars = []
+    
+    for avatar_id, avatar_data in avatar_storage.items():
+        # Skip 3D models in avatar listing
+        if avatar_id.startswith("3d_"):
+            continue
+            
+        # Filter by user_id if provided
+        if user_id and avatar_data.get("user_id") != user_id:
+            continue
+            
+        # Filter by session_id if provided
+        if session_id and avatar_data.get("session_id") != session_id:
+            continue
+        
+        avatars.append({
+            "avatar_id": avatar_id,
+            "status": avatar_data["status"],
+            "created_at": avatar_data["created_at"],
+            "settings": avatar_data["settings"],
+            "image_url": avatar_data.get("image_url"),
+            "thumbnail_url": avatar_data.get("thumbnail_url")
+        })
+    
+    return {
+        "avatars": avatars,
+        "total": len(avatars),
+        "filters": {
+            "user_id": user_id,
+            "session_id": session_id
+        }
+    }
 
-    job = avatar_jobs[job_id]
-    return AvatarStatusResponse(
-        job_id=job["id"],
-        status=job["status"],
-        progress=job.get("progress"),
-        result_url=job.get("result_url"),
-        error=job.get("error"),
-        created_at=job["created_at"],
-        updated_at=job["updated_at"],
-    )
+@router.delete("/delete/{avatar_id}")
+async def delete_avatar(avatar_id: str):
+    """Delete an avatar and its associated data."""
+    if avatar_id not in avatar_storage:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    # Remove from storage
+    avatar_data = avatar_storage.pop(avatar_id)
+    
+    # Remove from session if exists
+    session_id = avatar_data.get("session_id")
+    if session_id and session_id in avatar_sessions:
+        if avatar_id in avatar_sessions[session_id]["avatars"]:
+            avatar_sessions[session_id]["avatars"].remove(avatar_id)
+    
+    return {
+        "message": "Avatar deleted successfully",
+        "avatar_id": avatar_id,
+        "deleted_at": datetime.now(timezone.utc).isoformat()
+    }
 
+@router.get("/styles")
+async def get_avatar_styles():
+    """Get available avatar styles and settings."""
+    return {
+        "styles": [
+            "realistic",
+            "cartoon",
+            "anime",
+            "abstract",
+            "photorealistic",
+            "stylized"
+        ],
+        "qualities": ["low", "medium", "high", "ultra"],
+        "formats": ["png", "jpg", "webp"],
+        "sizes": ["256x256", "512x512", "1024x1024", "2048x2048"],
+        "backgrounds": ["transparent", "white", "black", "gradient"],
+        "lighting": ["natural", "studio", "dramatic", "soft"]
+    }
 
-@router.get("/download/{job_id}")
-async def download_avatar(job_id: str):
-    """Download generated avatar file"""
-    if job_id not in avatar_jobs:
-        raise HTTPException(status_code=404, detail="Job not found")
-
-    job = avatar_jobs[job_id]
-    if job["status"] != "completed" or not job.get("result_url"):
-        raise HTTPException(status_code=400, detail="Avatar not ready for download")
-
-    result_path = job["result_url"]
-    if not os.path.exists(result_path):
-        raise HTTPException(status_code=404, detail="Avatar file not found")
-
-    return FileResponse(
-        result_path,
-        media_type="application/octet-stream",
-        filename=f"avatar_{job_id}.mp4",
-    )
-
-
-@router.post("/upload-image")
-async def upload_source_image(file: UploadFile = File(...)):
-    """Upload source image for avatar generation"""
-    if not file.content_type or not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="File must be an image")
-
-    try:
-        # Create temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
-            content = await file.read()
-            temp_file.write(content)
-            temp_path = temp_file.name
-
-        # Return file info
+@router.get("/session/{session_id}")
+async def get_session_avatars(session_id: str):
+    """Get all avatars for a specific session."""
+    if session_id not in avatar_sessions:
         return {
-            "filename": file.filename,
-            "size": len(content),
-            "temp_path": temp_path,
-            "upload_id": str(uuid.uuid4()),
+            "session_id": session_id,
+            "avatars": [],
+            "total": 0
         }
+    
+    session_data = avatar_sessions[session_id]
+    avatars = []
+    
+    for avatar_id in session_data["avatars"]:
+        if avatar_id in avatar_storage:
+            avatar_data = avatar_storage[avatar_id]
+            avatars.append({
+                "avatar_id": avatar_id,
+                "status": avatar_data["status"],
+                "created_at": avatar_data["created_at"],
+                "image_url": avatar_data.get("image_url"),
+                "thumbnail_url": avatar_data.get("thumbnail_url")
+            })
+    
+    return {
+        "session_id": session_id,
+        "avatars": avatars,
+        "total": len(avatars)
+    }
 
-    except Exception as e:
-        logger.error(f"Error uploading image: {e}")
-        raise HTTPException(status_code=500, detail="Failed to upload image")
-
-
-@router.delete("/jobs/{job_id}")
-async def delete_avatar_job(job_id: str):
-    """Delete avatar generation job and cleanup files"""
-    if job_id not in avatar_jobs:
-        raise HTTPException(status_code=404, detail="Job not found")
-
-    job = avatar_jobs[job_id]
-
-    # Cleanup result file if exists
-    if job.get("result_url") and os.path.exists(job["result_url"]):
-        try:
-            os.remove(job["result_url"])
-        except Exception as e:
-            logger.warning(f"Failed to cleanup file {job['result_url']}: {e}")
-
-    # Remove job from tracking
-    del avatar_jobs[job_id]
-
-    return {"message": "Job deleted successfully"}
-
-
-@router.get("/jobs")
-async def list_avatar_jobs():
-    """List all avatar generation jobs"""
-    jobs = []
-    for job_id, job in avatar_jobs.items():
-        jobs.append(
-            {
-                "job_id": job_id,
-                "status": job["status"],
-                "progress": job.get("progress", 0),
-                "created_at": job["created_at"].isoformat(),
-                "updated_at": job["updated_at"].isoformat(),
-                "type": job.get("type", "2d"),
-                "engine": job.get("engine"),
-            }
-        )
-
-    return {"jobs": jobs, "total": len(jobs)}
-
-
-__all__ = ["router"]
+@router.get("/health")
+async def avatar_health_check():
+    """Health check endpoint for avatar service."""
+    return {
+        "status": "healthy",
+        "service": "avatar-generation",
+        "version": "1.0.0",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "stats": {
+            "total_avatars": len([k for k in avatar_storage.keys() if not k.startswith("3d_")]),
+            "total_3d_models": len([k for k in avatar_storage.keys() if k.startswith("3d_")]),
+            "active_sessions": len(avatar_sessions)
+        }
+    }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 AI Model Generation Repair Script
 
 This script diagnoses and repairs common issues with AI model generation,
@@ -7,7 +7,7 @@ specifically for the Linly - Talker avatar generation system.
 
 Author: Trae AI Assistant
 Date: 2025 - 01 - 27
-"""
+""""""
 
 import json
 import logging
@@ -24,8 +24,12 @@ logging.basicConfig(
     handlers=[
         logging.FileHandler("model_repair.log"),
         logging.StreamHandler(sys.stdout),
-    ],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -45,14 +49,18 @@ class ModelGenerationRepair:
             "mapping_00109 - model.pth.tar",
             "Obama_ave.pth",
             "Obama.json",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         # Critical directories
         self.required_dirs = [
             "GPT_SoVITS/pretrained_models",
             "MuseTalk",
             "gfpgan/weights",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
     def check_environment(self) -> Dict[str, Any]:
         """Check the current environment and identify issues."""
@@ -65,7 +73,8 @@ class ModelGenerationRepair:
             "test_mode_disabled": False,
             "services_running": False,
             "issues": issues,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Check if checkpoints directory exists and has content
         if not self.checkpoints_path.exists():
@@ -75,13 +84,17 @@ class ModelGenerationRepair:
                 list(self.checkpoints_path.glob("*.pth"))
                 + list(self.checkpoints_path.glob("*.safetensors"))
                 + list(self.checkpoints_path.glob("*.tar"))
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if len(checkpoint_files) < 3:  # Should have multiple checkpoint files
                 issues.append(
-                    f"Only {
-                        len(checkpoint_files)} checkpoint files found, expected more"
-                )
+                    f"Only {"
+                        len(checkpoint_files)} checkpoint files found, expected more""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 status["checkpoints_exist"] = True
                 logger.info(f"✅ Found {len(checkpoint_files)} checkpoint files")
@@ -94,9 +107,11 @@ class ModelGenerationRepair:
 
         if missing_files:
             issues.append(
-                f"Missing required checkpoint files: {
-                    ', '.join(missing_files)}"
-            )
+                f"Missing required checkpoint files: {"
+                    ', '.join(missing_files)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             status["models_downloaded"] = True
             logger.info("✅ All required checkpoint files found")
@@ -118,9 +133,11 @@ class ModelGenerationRepair:
         download_processes = self._check_download_processes()
         if download_processes:
             logger.info(
-                f"📥 Model download in progress: {
-                    len(download_processes)} processes"
-            )
+                f"📥 Model download in progress: {"
+                    len(download_processes)} processes""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             status["download_in_progress"] = True
 
         return status
@@ -130,7 +147,9 @@ class ModelGenerationRepair:
         try:
             result = subprocess.run(
                 ["ps", "aux"], capture_output=True, text=True, check=True
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             download_processes = []
             for line in result.stdout.split("\\n"):
@@ -140,8 +159,11 @@ class ModelGenerationRepair:
                         "download_models.sh",
                         "huggingface_download",
                         "modelscope_download",
-                    ]
-                ):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ):
                     download_processes.append(line.strip())
 
             return download_processes
@@ -200,7 +222,9 @@ class ModelGenerationRepair:
                 stderr=subprocess.PIPE,
                 text=True,
                 cwd=str(self.linly_talker_path),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Send option 2 (Huggingface) to the script
             stdout, stderr = process.communicate(input="2\\n")
@@ -225,7 +249,9 @@ class ModelGenerationRepair:
             subprocess.run(
                 ["pkill", "-f", "demo_app.py"],
                 check=False,  # Don't fail if no process found
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Wait a moment for cleanup
 
@@ -239,7 +265,9 @@ class ModelGenerationRepair:
                 logger.info("Starting Linly - Talker demo...")
                 subprocess.Popen(
                     ["python", str(demo_script)], cwd=str(self.linly_talker_path)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 logger.info("✅ Services restarted")
                 return True
             else:
@@ -260,18 +288,22 @@ class ModelGenerationRepair:
                 "use_basic_models": True,
                 "skip_heavy_processing": True,
                 "enable_caching": True,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "model_paths": {
                 "wav2lip": "checkpoints/wav2lip_gan.pth",
                 "sadtalker": "checkpoints/SadTalker_V0.0.2_256.safetensors",
                 "mapping": "checkpoints/mapping_00109 - model.pth.tar",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "performance": {
                 "max_video_length": 30,
                 "reduce_quality_if_needed": True,
                 "timeout_seconds": 120,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             config_file = self.base_path / "config" / "fallback_avatar_config.json"
@@ -300,7 +332,8 @@ class ModelGenerationRepair:
             "repairs_attempted": [],
             "repairs_successful": [],
             "final_status": None,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Step 2: Repair test mode
         if not status.get("test_mode_disabled", False):

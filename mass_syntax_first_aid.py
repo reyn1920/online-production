@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""
+""""""
 Mass Syntax First Aid
 - Repairs common whitespace-mangling that broke parsing across your tree.
 - Focused fixes:
   • 1e-5  -> 1e-5   (also handles E, +, leading decimals)
   • trailing ")" after common assignment typos (api_key, device, language, etc.) when unmatched
-  • stray backslash-only continuation after "from X import \" by joining next line
+  • stray backslash-only continuation after "from X import \" by joining next line"
   • normalizes tabs->spaces
   • comments-out orphaned English-only lines that break parsing (best-effort, minimal risk)
 
 After edits, each file is ast-parsed; if still broken, we restore original content.
 A report is printed at the end.
-"""
+""""""
 from __future__ import annotations
 import ast
 import os
@@ -34,7 +34,8 @@ SKIP_DIRS = {
     "dist",
     ".mypy_cache",
     ".ruff_cache",
-}
+# BRACKET_SURGEON: disabled
+# }
 # Add noisy snapshots to skip if desired (you can remove these later)
 SKIP_DIRS |= {"url_fix_backups", "copy_of_code"}
 
@@ -45,27 +46,30 @@ if os.environ.get("FIX_BACKUPS", "0") == "1":
 
 # Patterns
 RE_EXP = re.compile(
-    r"""
+    r""""""
     (?<![A-Za-z0-9_])                 # no identifier just before
     (?P<base>(?:\d+\.\d+|\d+|\.\d+))  # 12.34 or 12 or .34
     \s*[eE]\s*                        # e or E with optional spaces
     (?P<sign>[+-])\s*                 # sign with optional spaces
     (?P<exp>\d+)                      # exponent digits
     (?![A-Za-z0-9_])                  # no identifier just after
-""",
+""","""
     re.VERBOSE,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 RE_TRAILING_PAREN_CANDIDATE = re.compile(
     r"""^\s*(?P<lhs>(?:[A-Za-z_][A-Za-z0-9_\.]*\s*=\s*.+?))\)\s*$"""
-)
+# BRACKET_SURGEON: disabled
+# )
 
 RE_FROM_IMPORT_BACKSLASH = re.compile(r"^\s*from\s+.+\s+import\s*\\\s*$")
 
 RE_ORPHAN_TEXT_LINE = re.compile(
-    r"""^\s*(?:and|or|then|this|these|that|if|else|elif|note|default|returns|usage)\b[^\#'"]*$""",
+    r"""^\s*(?:and|or|then|this|these|that|if|else|elif|note|default|returns|usage)\b[^\#'"]*$""","
     re.IGNORECASE,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 SAFE_STR_ASSIGN_KEYS = ("api_key", "language", "values")
 SAFE_VAR_KEYS = ("device",)
@@ -104,7 +108,9 @@ def maybe_fix_trailing_paren(line: str) -> str:
     lhs = m.group("lhs")
     # Only if no opening paren on this line AND likely just an assignment typo
     if "(" not in lhs and count_unmatched_closing_paren(line) >= 1:
-        return lhs  # drop the trailing ")"
+        pass
+# BRACKET_SURGEON: disabled
+#         return lhs  # drop the trailing ")"
     return line
 
 
@@ -122,13 +128,12 @@ def comment_orphan_text(line: str) -> str:
     if RE_ORPHAN_TEXT_LINE.match(line):
         # Avoid commenting inside triple-quoted blocks heuristic: if line starts with quotes, skip
         stripped = line.lstrip()
-        if not (stripped.startswith(("'''", '"""', "'", '"'))):
-            return re.sub(r"^(\s*)", r"\1# ", line)
+        if not (stripped.startswith(("'''", '"""', "'", '"'))):'''"""
+            return re.sub(r"^(\s*)", r"\1# ", line)"
     return line
 
 
 def first_aid(text: str) -> str:
-    original = text
 
     # 1) normalize tabs
     text = normalize_tabs(text)
@@ -156,8 +161,9 @@ def first_aid(text: str) -> str:
 
         # 3c) comment orphan English-only lines that look like prose
         if line.strip() and not line.lstrip().startswith(
-            ("#", "from ", "import ", "def ", "class ", "@")
-        ):
+            ("#", "from ", "import ", "def ", "class ", "@")"
+# BRACKET_SURGEON: disabled
+#         ):
             # very conservative: only if it looks like a bare prose fragment
             if RE_ORPHAN_TEXT_LINE.match(line):
                 line = comment_orphan_text(line)
@@ -211,7 +217,7 @@ def try_fix_file(path: Path) -> tuple[bool, str]:
 
 def main() -> int:
     root = Path(os.getcwd())
-    changed, fixed, broken, skipped = 0, 0, 0, 0
+    _changed, fixed, broken, skipped = 0, 0, 0, 0
 
     for p in root.rglob("*.py"):
         if any(part in SKIP_DIRS for part in p.parts):

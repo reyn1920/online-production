@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 Golden Ratio Avatar Generator
 
 Generates aesthetically pleasing avatars using golden ratio proportions
 and mathematical design principles for channels without existing avatars.
-"""
+""""""
 
 import colorsys
 import logging
@@ -64,7 +64,7 @@ class GoldenRatioAvatarGenerator:
     """Generates avatars using golden ratio proportions."""
 
     # Golden ratio constant
-    PHI = (1 + math.sqrt(5)) / 2  # ≈ 1.618
+    PHI = (1 + math.sqrt(5)) / 2: # ≈ 1.618
 
     def __init__(self, config: Optional[GoldenRatioConfig] = None):
         self.config = config or GoldenRatioConfig()
@@ -78,7 +78,8 @@ class GoldenRatioAvatarGenerator:
             "minor_section": 1 - (1 / self.PHI),  # ≈ 0.382
             "spiral_ratio": self.PHI,
             "rectangle_ratio": self.PHI,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info(f"Initialized Golden Ratio Avatar Generator with PHI={self.PHI:.3f}")
 
@@ -171,7 +172,8 @@ class GoldenRatioAvatarGenerator:
 
     def _generate_geometric_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate geometric avatar using golden ratio proportions."""
         w, h = image.size
         center_x, center_y = w // 2, h // 2
@@ -188,7 +190,8 @@ class GoldenRatioAvatarGenerator:
             (major_w, 0, w, minor_h),
             (major_w, minor_h, w, h),
             (0, major_h, minor_w, h),
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for i, rect in enumerate(rectangles):
             color = colors[i % len(colors)]
@@ -201,7 +204,8 @@ class GoldenRatioAvatarGenerator:
 
     def _generate_organic_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate organic avatar with natural golden ratio curves."""
         w, h = image.size
         center_x, center_y = w // 2, h // 2
@@ -225,15 +229,18 @@ class GoldenRatioAvatarGenerator:
                     y - circle_radius,
                     x + circle_radius,
                     y + circle_radius,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 fill=color,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return image
 
     def _generate_minimalist_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate minimalist avatar with clean golden ratio proportions."""
         w, h = image.size
 
@@ -254,15 +261,18 @@ class GoldenRatioAvatarGenerator:
                 division_y - accent_size,
                 division_x + accent_size,
                 division_y + accent_size,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             fill=colors[3],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return image
 
     def _generate_professional_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate professional avatar suitable for business channels."""
         w, h = image.size
         center_x, center_y = w // 2, h // 2
@@ -283,23 +293,28 @@ class GoldenRatioAvatarGenerator:
                 center_y - main_radius,
                 center_x + main_radius,
                 center_y + main_radius,
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             fill=colors[-1],
             outline=colors[0],
             width=3,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Accent elements at golden ratio positions
         accent_positions = [
             (
                 int(w * self.proportions["major_section"]),
                 int(h * self.proportions["minor_section"]),
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             (
                 int(w * self.proportions["minor_section"]),
                 int(h * self.proportions["major_section"]),
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
         for x, y in accent_positions:
             accent_radius = int(main_radius * self.proportions["minor_section"])
@@ -309,15 +324,18 @@ class GoldenRatioAvatarGenerator:
                     y - accent_radius,
                     x + accent_radius,
                     y + accent_radius,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 fill=colors[1],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return image
 
     def _generate_creative_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate creative avatar with artistic golden ratio elements."""
         w, h = image.size
         center_x, center_y = w // 2, h // 2
@@ -359,7 +377,8 @@ class GoldenRatioAvatarGenerator:
 
     def _generate_tech_avatar(
         self, image: Image.Image, draw: ImageDraw.Draw, colors: List
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Generate tech - style avatar with digital golden ratio patterns."""
         w, h = image.size
 
@@ -395,11 +414,13 @@ class GoldenRatioAvatarGenerator:
             draw.ellipse(
                 (x1 - node_size, y1 - node_size, x1 + node_size, y1 + node_size),
                 fill=colors[1],
-            )
+# BRACKET_SURGEON: disabled
+#             )
             draw.ellipse(
                 (x2 - node_size, y2 - node_size, x2 + node_size, y2 + node_size),
                 fill=colors[1],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return image
 
@@ -410,7 +431,8 @@ class GoldenRatioAvatarGenerator:
         center_y: int,
         initial_radius: int,
         color: Tuple[int, int, int, int],
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Draw a golden spiral."""
         points = self._calculate_golden_spiral_points(center_x, center_y, initial_radius, 30)
 
@@ -441,7 +463,8 @@ class GoldenRatioAvatarGenerator:
         image: Image.Image,
         channel_name: str,
         colors: List[Tuple[int, int, int, int]],
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Add channel name text using golden ratio positioning."""
         draw = ImageDraw.Draw(image)
         w, h = image.size
@@ -470,7 +493,8 @@ class GoldenRatioAvatarGenerator:
                         channel_name,
                         font=font,
                         fill=outline_color,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         # Draw main text
         draw.text((text_x, text_y), channel_name, font=font, fill=text_color)
@@ -518,7 +542,8 @@ class GoldenRatioAvatarGenerator:
                 base_hue=random.random(),
                 complexity=0.3 + (i * 0.2),
                 seed=i,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             generator = GoldenRatioAvatarGenerator(config)
             avatar = generator.generate_avatar(channel_name)
@@ -532,7 +557,8 @@ class GoldenRatioAvatarGenerator:
 
 def create_channel_avatar(
     channel_name: str, style: str = "professional", output_dir: str = "assets/avatars"
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     """Create a golden ratio avatar for a channel."""
     try:
         style_enum = AvatarStyle(style.lower())
@@ -566,7 +592,8 @@ if __name__ == "__main__":
         ("Creative Studio", AvatarStyle.CREATIVE),
         ("Business Pro", AvatarStyle.PROFESSIONAL),
         ("Art & Design", AvatarStyle.ORGANIC),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     for channel_name, style in test_channels:
         config = GoldenRatioConfig(style=style, include_text=True)

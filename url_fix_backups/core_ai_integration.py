@@ -1,12 +1,12 @@
 #!/usr / bin / env python3
-"""
+""""""
 Core AI Integration System
 Embeds ChatGPT, Gemini, and Abacus AI into all application functions
 
 This module provides a unified interface to integrate the three AI platforms
 into every aspect of the application, ensuring they are always available
 and integrated into all tasks and operations.
-"""
+""""""
 
 import asyncio
 import json
@@ -87,22 +87,26 @@ class CoreAIIntegration:
                     'send_selector': 'button[data - testid="send - button"]',
                     'output_selector': '[data - message - author - role="assistant"] .markdown',
                     'ready': True
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 'https://gemini.google.com / app': {
                 'name': 'Gemini',
                     'input_selector': 'rich - textarea[placeholder*="Enter a prompt"]',
                     'send_selector': 'button[aria - label="Send message"]',
                     'output_selector': '.model - response - text',
                     'ready': True
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 'https://apps.abacus.ai / chatllm/?appId = 1024a18ebe': {
                 'name': 'Abacus AI',
                     'input_selector': 'textarea[placeholder*="Type your message"]',
                     'send_selector': 'button[type="submit"]',
                     'output_selector': '.message - content',
                     'ready': True
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.platforms = {
             AIPlatform.CHATGPT: {
@@ -115,7 +119,8 @@ class CoreAIIntegration:
                 "service_type": "freemium",
                     "monthly_limit": 40,  # Free tier limit
                 "total_cost": 0.0
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 AIPlatform.GEMINI: {
                 "url": "https://gemini.google.com / app",
                     "status": "available",
@@ -126,7 +131,8 @@ class CoreAIIntegration:
                 "service_type": "freemium",
                     "monthly_limit": 60,  # Free tier limit
                 "total_cost": 0.0
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 AIPlatform.ABACUS: {
                 "url": "https://apps.abacus.ai / chatllm/?appId = 1024a18ebe",
                     "status": "available",
@@ -137,8 +143,10 @@ class CoreAIIntegration:
                 "service_type": "freemium",
                     "monthly_limit": 50,  # Free tier limit
                 "total_cost": 0.0
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Integration statistics
         self.stats = {
@@ -148,7 +156,8 @@ class CoreAIIntegration:
                 "platform_usage": {platform.value: 0 for platform in AIPlatform},
                 "session_start": datetime.now(),
                 "last_activity": datetime.now()
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Task integration mapping
         self.task_mappings = {
@@ -159,7 +168,8 @@ class CoreAIIntegration:
                 "research": [AIPlatform.GEMINI, AIPlatform.CHATGPT],
                 "optimization": [AIPlatform.ABACUS, AIPlatform.GEMINI],
                 "problem_solving": [AIPlatform.CHATGPT, AIPlatform.GEMINI, AIPlatform.ABACUS]
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         logger.info("Core AI Integration System initialized")
         logger.info(f"Available platforms: {list(self.platforms.keys())}")
@@ -169,7 +179,9 @@ class CoreAIIntegration:
         """Get recommended AI platforms for a specific task type"""
         return self.task_mappings.get(task_type, [AIPlatform.CHATGPT,
     AIPlatform.GEMINI,
-    AIPlatform.ABACUS])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     AIPlatform.ABACUS])
 
 
     def get_platform_status(self) -> Dict[str, Any]:
@@ -182,7 +194,8 @@ class CoreAIIntegration:
                     "capabilities": info["capabilities"],
                     "usage_count": info["usage_count"],
                     "last_used": info["last_used"].isoformat() if info["last_used"] else None
-            }
+# BRACKET_SURGEON: disabled
+#             }
         return status
 
 
@@ -211,13 +224,17 @@ class CoreAIIntegration:
                     api_name = f"web_ai_{request.platform.value}",
                         requests_count = 1,
                         cost = request_cost
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Use web automation for supported platforms
             platform_url = platform_info["url"]
             if platform_url in self.web_platforms:
                 response_content = await self._process_with_web_ai(request,
-    platform_url)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     platform_url)
             else:
                 # Fallback to simulated response for other platforms
                 response_content = self._generate_platform_response(request)
@@ -235,8 +252,11 @@ class CoreAIIntegration:
                         "context_provided": request.context is not None,
                         "priority": request.priority,
                         "method": "web_automation" if platform_url in self.web_platforms else "simulation"
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self.stats["successful_requests"] += 1
             logger.info(f"Successfully processed request with {request.platform.value}")
@@ -256,7 +276,9 @@ class CoreAIIntegration:
                     timestamp = datetime.now(),
                     processing_time = processing_time,
                     error = str(e)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     async def _process_with_web_ai(self, request: AIRequest, platform_url: str) -> str:
@@ -265,16 +287,16 @@ class CoreAIIntegration:
             platform_config = self.web_platforms[platform_url]
 
             # Create prompt for the AI platform
-            prompt = f"Task: {request.task_type \
-    or 'general'}\\n\\nPrompt: {request.prompt}"
+            prompt = f"Task: {request.task_type \"
+#     or 'general'}\\n\\nPrompt: {request.prompt}"
             if request.context:
                 prompt += f"\\n\\nContext: {request.context}"
 
             # For now, return a structured response indicating web automation would be used
             # In a full implementation, this would use browser automation tools like Selenium \
-    or Playwright
-            return f"{platform_config['name']} Web Response: Ready to process '{request.prompt}' via web interface at {platform_url}\\n\\nAutomation Status: Platform is open \
-    and ready for interaction\\nMethod: Browser automation with selectors configured\\nInput Selector: {platform_config['input_selector']}\\nSend Selector: {platform_config['send_selector']}\\nOutput Selector: {platform_config['output_selector']}"
+#     or Playwright
+            return f"{platform_config['name']} Web Response: Ready to process '{request.prompt}' via web interface at {platform_url}\\n\\nAutomation Status: Platform is open \"
+#     and ready for interaction\\nMethod: Browser automation with selectors configured\\nInput Selector: {platform_config['input_selector']}\\nSend Selector: {platform_config['send_selector']}\\nOutput Selector: {platform_config['output_selector']}"
 
         except Exception as e:
             logger.error(f"Web AI processing error: {e}")
@@ -301,7 +323,9 @@ class CoreAIIntegration:
     prompt: str,
     task_type: str = "general",
     platforms: Optional[List[AIPlatform]] = None) -> Dict[str,
-    AIResponse]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     AIResponse]:
         """Process a request with multiple AI platforms for comprehensive analysis"""
         if platforms is None:
             platforms = self.get_platform_for_task(task_type)
@@ -315,7 +339,9 @@ class CoreAIIntegration:
                     platform = platform,
                     task_type = task_type,
                     context={"multi_platform": True, "total_platforms": len(platforms)}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             tasks.append(self.process_with_ai(request))
 
         # Process all platforms concurrently
@@ -331,7 +357,9 @@ class CoreAIIntegration:
                         timestamp = datetime.now(),
                         processing_time = 0.0,
                         error = str(result)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 responses[platform.value] = result
 
@@ -350,7 +378,8 @@ class CoreAIIntegration:
                     "kwargs_keys": list(kwargs.keys()),
                     "timestamp": datetime.now().isoformat(),
                     "ai_platforms_available": [p.value for p in self.platforms.keys()]
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Execute original function
             result = func(*args, **kwargs)
@@ -378,13 +407,16 @@ class CoreAIIntegration:
                 "last_activity": self.stats["last_activity"].isoformat(),
                 "platforms_status": self.get_platform_status(),
                 "cost_analytics": cost_stats
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def create_ai_enhanced_context(self,
     base_context: Dict[str,
     Any]) -> Dict[str,
-    Any]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     Any]:
         """Enhance any context with AI integration information"""
         enhanced_context = base_context.copy()
         enhanced_context.update({
@@ -395,8 +427,11 @@ class CoreAIIntegration:
     info in self.platforms.items()},
                     "integration_stats": self.get_integration_stats(),
                     "cost_summary": self.get_cost_summary()
-            }
-        })
+# BRACKET_SURGEON: disabled
+#             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         })
         return enhanced_context
 
 
@@ -416,8 +451,11 @@ class CoreAIIntegration:
                     "remaining_free_requests": max(0,
     platform_info["monthly_limit"] - platform_info["usage_count"]),
                     "cost_efficiency": platform_info["total_cost"] / max(1,
-    platform_info["usage_count"])
-            }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     platform_info["usage_count"])
+# BRACKET_SURGEON: disabled
+#             }
 
         return {
             "total_cost": total_cost,
@@ -425,7 +463,8 @@ class CoreAIIntegration:
                 "average_cost_per_request": total_cost / max(1, total_requests),
                 "platform_breakdown": platform_costs,
                 "cost_tracking_enabled": self.cost_tracker is not None
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def get_cost_summary(self) -> Dict[str, Any]:
@@ -445,7 +484,8 @@ class CoreAIIntegration:
                 "session_requests": analytics["total_requests"],
                 "monthly_costs": monthly_costs,
                 "cost_recommendations": self._get_cost_recommendations(analytics)
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def _get_cost_recommendations(self, analytics: Dict[str, Any]) -> List[str]:
@@ -465,9 +505,11 @@ class CoreAIIntegration:
             recommendations.append("Session cost is high - consider optimizing AI usage patterns")
 
         # Add web platform recommendations
-        recommendations.append("Web platforms (ChatGPT,
+        recommendations.append("Web platforms (ChatGPT,"
     Gemini,
-    Abacus AI) are cost - effective - no API fees required")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     Abacus AI) are cost - effective - no API fees required")
         recommendations.append("Browser automation allows unlimited usage within platform free tiers")
 
         if not recommendations:
@@ -495,7 +537,8 @@ def get_ai_cost_analytics() -> Dict[str, Any]:
 
 async def ask_ai(prompt: str,
     platform: AIPlatform = AIPlatform.CHATGPT,
-    task_type: str = "general") -> AIResponse:
+# BRACKET_SURGEON: disabled
+#     task_type: str = "general") -> AIResponse:
     """Simple function to ask any AI platform a question"""
     request = AIRequest(prompt = prompt, platform = platform, task_type = task_type)
     return await core_ai.process_with_ai(request)
@@ -528,7 +571,9 @@ __all__ = [
         'ask_all_ai',
         'ai_integrated',
         'get_ai_context'
-]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# ]
 
 if __name__ == "__main__":
     # Demo usage
@@ -540,7 +585,9 @@ if __name__ == "__main__":
 
         # Test single platform
         response = await ask_ai("Analyze this code for optimization opportunities",
-    AIPlatform.CHATGPT, "code_analysis")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     AIPlatform.CHATGPT, "code_analysis")
         print(f"ChatGPT Response: {response.content[:100]}...")
 
         # Test multiple platforms

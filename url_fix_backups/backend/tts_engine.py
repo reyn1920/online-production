@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TTS Engine - Coqui TTS Integration for TRAE.AI
 
 This module provides high - quality text - to - speech generation using Coqui TTS,
@@ -14,7 +14,7 @@ Features:
 
 Author: TRAE.AI Content Generation System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -55,7 +55,7 @@ except ImportError:
 
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO):
 logger = logging.getLogger(__name__)
 
 
@@ -91,11 +91,11 @@ class TTSEngine:
     """High - quality text - to - speech engine using Coqui TTS."""
 
     def __init__(self, cache_dir: Optional[str] = None):
-        """Initialize TTS Engine.
+        """Initialize TTS Engine."""
 
         Args:
             cache_dir: Directory to cache models and audio files
-        """
+        """"""
         self.tts_available = TTS_AVAILABLE
 
         if not self.tts_available:
@@ -116,7 +116,8 @@ class TTSEngine:
             speed=1.0,
             pitch=1.0,
             volume=1.0,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         logger.info(f"TTS Engine initialized with {len(self.available_models)} available models")
 
@@ -134,7 +135,8 @@ class TTSEngine:
                 "multilingual": [],
                 "english": [],
                 "other_languages": [],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             for model in models:
                 if "multilingual" in model.lower():
@@ -177,8 +179,9 @@ class TTSEngine:
         text: str,
         voice_config: Optional[VoiceConfig] = None,
         output_path: Optional[str] = None,
-    ) -> SynthesisResult:
-        """Synthesize text to speech.
+# BRACKET_SURGEON: disabled
+#     ) -> SynthesisResult:
+        """Synthesize text to speech."""
 
         Args:
             text: Text to synthesize
@@ -187,7 +190,7 @@ class TTSEngine:
 
         Returns:
             SynthesisResult with audio file path and metadata
-        """
+        """"""
         if not self.tts_available:
             raise RuntimeError("TTS Engine is not available - Coqui TTS not installed")
 
@@ -224,7 +227,8 @@ class TTSEngine:
             if config.speed != 1.0 or config.pitch != 1.0 or config.volume != 1.0:
                 output_path = self._post_process_audio(
                     output_path, config.speed, config.pitch, config.volume
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Get audio duration
             duration = self._get_audio_duration(output_path)
@@ -242,8 +246,10 @@ class TTSEngine:
                     "text_length": len(text),
                     "words_count": len(text.split()),
                     "gpu_used": torch.cuda.is_available(),
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             logger.info(f"Synthesis completed in {synthesis_time:.2f}s, duration: {duration:.2f}s")
             return result
@@ -254,7 +260,8 @@ class TTSEngine:
 
     def _post_process_audio(
         self, audio_path: str, speed: float, pitch: float, volume: float
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Post - process audio with speed, pitch, and volume adjustments."""
         try:
             # Load audio
@@ -301,7 +308,7 @@ class TTSEngine:
         voice_config: Optional[VoiceConfig] = None,
         output_dir: Optional[str] = None,
     ) -> List[SynthesisResult]:
-        """Synthesize multiple texts in batch.
+        """Synthesize multiple texts in batch."""
 
         Args:
             texts: List of texts to synthesize
@@ -310,7 +317,7 @@ class TTSEngine:
 
         Returns:
             List of SynthesisResult objects
-        """
+        """"""
         if not texts:
             return []
 
@@ -342,14 +349,14 @@ class TTSEngine:
         return results
 
     def get_available_voices(self, language: str = "en") -> List[str]:
-        """Get available voices for a language.
+        """Get available voices for a language."""
 
         Args:
             language: Language code (e.g., 'en', 'es', 'fr')
 
         Returns:
             List of available voice model names
-        """
+        """"""
         voices = []
 
         # Add multilingual models
@@ -367,14 +374,14 @@ class TTSEngine:
         return voices
 
     def get_model_info(self, model_name: str) -> Dict[str, Any]:
-        """Get information about a specific model.
+        """Get information about a specific model."""
 
         Args:
             model_name: Name of the model
 
         Returns:
             Dictionary with model information
-        """
+        """"""
         try:
             tts = self._load_model(model_name)
 
@@ -385,7 +392,8 @@ class TTSEngine:
                 "sample_rate": getattr(tts, "sample_rate", 22050),
                 "is_multi_speaker": False,
                 "is_multi_lingual": False,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Extract language from model name
             if "/en/" in model_name:
@@ -409,14 +417,14 @@ class TTSEngine:
             return {"model_name": model_name, "error": str(e)}
 
     def cleanup_cache(self, max_age_days: int = 7) -> int:
-        """Clean up old cached audio files.
+        """Clean up old cached audio files."""
 
         Args:
             max_age_days: Maximum age of files to keep in days
 
         Returns:
             Number of files deleted
-        """
+        """"""
         try:
             deleted_count = 0
             current_time = datetime.now()
@@ -460,13 +468,15 @@ if __name__ == "__main__":
             speed=1.1,
             pitch=1.05,
             volume=0.9,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         result2 = tts_engine.synthesize_text(
-            "This is a test with custom voice settings including speed, pitch, \
-    and volume adjustments.",
+            "This is a test with custom voice settings including speed, pitch, \"
+#     and volume adjustments.",
             voice_config=custom_config,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"✅ Custom synthesis successful: {result2.audio_path}")
 
         # Test batch synthesis
@@ -475,7 +485,8 @@ if __name__ == "__main__":
             "First sentence for batch processing.",
             "Second sentence with different content.",
             "Third and final sentence in the batch.",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         batch_results = tts_engine.batch_synthesize(batch_texts)
         print(f"✅ Batch synthesis completed: {len(batch_results)} files generated")

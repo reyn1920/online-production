@@ -16,7 +16,7 @@ class ChannelAvatarManager:
     def __init__(self, db_path: str = None):
         self.db_path = (
             db_path or "/Users/thomasbrianreynolds/online production/right_perspective.db"
-        )
+         )
         self.logger = logging.getLogger(__name__)
         self.avatar_generator = GoldenRatioAvatarGenerator()
         self.background_remover = BackgroundRemover()
@@ -26,27 +26,62 @@ class ChannelAvatarManager:
         self.avatar_dir.mkdir(parents=True, exist_ok=True)
 
     def _get_db_connection(self) -> sqlite3.Connection:
-        """Get database connection with proper configuration."""
+        """
+Get database connection with proper configuration.
+
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
+        
+"""
+        return conn
+        """"""
+        """
+
+
         return conn
 
+        
+
+       
+""""""
+
     def get_channel_avatar(self, channel_id: int) -> Optional[Dict]:
-        """Get avatar for a specific channel, generating one if missing.
+        
+Get avatar for a specific channel, generating one if missing.
+"""
 
         Args:
             channel_id: ID of the channel
 
         Returns:
-            Dictionary with avatar information or None if channel doesn't exist
-        """
+            Dictionary with avatar information or None if channel doesn't exist'
+       """
+
+        
+       
+
         try:
             with self._get_db_connection() as conn:
+               
+""""""
+
                 # Check if channel exists
+               
+
+                
+               
+"""
                 channel = conn.execute(
                     "SELECT * FROM channels WHERE id = ?", (channel_id,)
                 ).fetchone()
+               """
 
+                
+               
+
+                # Check if channel exists
+               
+""""""
                 if not channel:
                     self.logger.warning(f"Channel {channel_id} not found")
                     return None
@@ -63,7 +98,7 @@ class ChannelAvatarManager:
                 # No avatar found, generate one automatically
                 self.logger.info(
                     f"No avatar found for channel {channel_id}, generating golden ratio avatar"
-                )
+                 )
                 return self._generate_default_avatar(channel_id, channel["channel_name"])
 
         except Exception as e:
@@ -71,7 +106,9 @@ class ChannelAvatarManager:
             return None
 
     def _generate_default_avatar(self, channel_id: int, channel_name: str) -> Dict:
-        """Generate a default avatar using golden ratio principles.
+        """
+Generate a default avatar using golden ratio principles.
+
 
         Args:
             channel_id: ID of the channel
@@ -79,18 +116,40 @@ class ChannelAvatarManager:
 
         Returns:
             Dictionary with generated avatar information
-        """
-        try:
-            # Generate avatar configuration based on channel name
-            avatar_config = self._create_avatar_config_from_name(channel_name)
+       
+""""""
 
+        try:
+           
+
+            
+           
+"""
+            # Generate avatar configuration based on channel name
+           """"""
+            
+           """
+
+            avatar_config = self._create_avatar_config_from_name(channel_name)
+           
+
+            
+           
+""""""
+
+            
+           
+
+            # Generate avatar configuration based on channel name
+           
+""""""
             # Generate the avatar
             avatar_data = self.avatar_generator.generate_avatar(
                 style=avatar_config["style"],
                 color_scheme=avatar_config["color_scheme"],
                 size=avatar_config["size"],
                 customizations=avatar_config["customizations"],
-            )
+             )
 
             # Save avatar to database
             avatar_id = self._save_avatar_to_db(
@@ -98,7 +157,7 @@ class ChannelAvatarManager:
                 avatar_data=avatar_data,
                 is_default=True,
                 generation_method="golden_ratio_auto",
-            )
+             )
 
             # Save avatar file
             avatar_filename = f"channel_{channel_id}_default.png"
@@ -116,24 +175,48 @@ class ChannelAvatarManager:
                 "generation_method": "golden_ratio_auto",
                 "config": avatar_config,
                 "created_at": datetime.now().isoformat(),
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Error generating default avatar: {e}")
             raise
 
     def _create_avatar_config_from_name(self, channel_name: str) -> Dict:
-        """Create avatar configuration based on channel name characteristics.
+        """
+Create avatar configuration based on channel name characteristics.
+
 
         Args:
             channel_name: Name of the channel
 
         Returns:
             Avatar configuration dictionary
-        """
-        # Create a hash from the channel name for consistent generation
-        name_hash = hashlib.md5(channel_name.encode()).hexdigest()
+       
+""""""
 
+       
+
+        
+       
+"""
+        # Create a hash from the channel name for consistent generation
+       """"""
+        
+       """
+
+        name_hash = hashlib.md5(channel_name.encode()).hexdigest()
+       
+
+        
+       
+""""""
+
+        
+       
+
+        # Create a hash from the channel name for consistent generation
+       
+""""""
         # Use hash to determine style characteristics
         hash_int = int(name_hash[:8], 16)
 
@@ -146,7 +229,7 @@ class ChannelAvatarManager:
             "warm",
             "cool",
             "vibrant",
-        ]
+         ]
 
         # Deterministic selection based on hash
         style = styles[hash_int % len(styles)]
@@ -163,7 +246,7 @@ class ChannelAvatarManager:
             "transparency": True,
             "border_style": "none" if len(channel_name) < 10 else "subtle",
             "texture": "smooth" if "tech" in channel_name.lower() else "organic",
-        }
+         }
 
         return {
             "style": style,
@@ -171,7 +254,7 @@ class ChannelAvatarManager:
             "size": size,
             "customizations": customizations,
             "generation_seed": name_hash[:16],
-        }
+         }
 
     def _save_avatar_to_db(
         self,
@@ -179,8 +262,10 @@ class ChannelAvatarManager:
         avatar_data: Dict,
         is_default: bool = False,
         generation_method: str = "manual",
-    ) -> int:
-        """Save avatar information to database.
+#     ) -> int:
+        """
+Save avatar information to database.
+
 
         Args:
             channel_id: ID of the channel
@@ -190,16 +275,27 @@ class ChannelAvatarManager:
 
         Returns:
             ID of the created avatar record
-        """
+       
+""""""
+
         try:
+            
+
             with self._get_db_connection() as conn:
+            
+"""
                 cursor = conn.execute(
-                    """
+                   """
+
+                    
+                   
+
                     INSERT INTO avatars (
                         channel_id, is_default, base_face_image,
                             generation_method, config_json, created_at
                     ) VALUES (?, ?, ?, ?, ?, ?)
-                    """,
+                    
+""","""
                     (
                         channel_id,
                         is_default,
@@ -207,8 +303,15 @@ class ChannelAvatarManager:
                         generation_method,
                         json.dumps(avatar_data.get("config", {})),
                         datetime.now().isoformat(),
-                    ),
-                )
+                     ),
+                 )
+            """
+
+            with self._get_db_connection() as conn:
+            
+
+           
+""""""
                 return cursor.lastrowid
 
         except Exception as e:
@@ -217,8 +320,10 @@ class ChannelAvatarManager:
 
     def upload_custom_avatar(
         self, channel_id: int, image_data: str, make_default: bool = True
-    ) -> Dict:
-        """Upload and process a custom avatar image.
+#     ) -> Dict:
+        """
+Upload and process a custom avatar image.
+
 
         Args:
             channel_id: ID of the channel
@@ -227,11 +332,33 @@ class ChannelAvatarManager:
 
         Returns:
             Dictionary with upload results
-        """
-        try:
-            # Validate and process the image (remove background)
-            processing_result = validate_and_process_avatar(image_data)
+       
+""""""
 
+        try:
+           
+
+            
+           
+"""
+            # Validate and process the image (remove background)
+           """"""
+            
+           """
+
+            processing_result = validate_and_process_avatar(image_data)
+           
+
+            
+           
+""""""
+
+            
+           
+
+            # Validate and process the image (remove background)
+           
+""""""
             if not processing_result["success"]:
                 return {"success": False, "error": processing_result["error"]}
 
@@ -241,7 +368,7 @@ class ChannelAvatarManager:
                     conn.execute(
                         "UPDATE avatars SET is_default = 0 WHERE channel_id = ?",
                         (channel_id,),
-                    )
+                     )
 
             # Save processed avatar
             avatar_data = {
@@ -251,15 +378,15 @@ class ChannelAvatarManager:
                     "background_removed": True,
                     "original_info": processing_result["original_info"],
                     "processed_info": processing_result["processed_info"],
-                },
-            }
+                 },
+             }
 
             avatar_id = self._save_avatar_to_db(
                 channel_id=channel_id,
                 avatar_data=avatar_data,
                 is_default=make_default,
                 generation_method="custom_upload",
-            )
+             )
 
             # Save avatar file
             avatar_filename = f"channel_{channel_id}_custom_{avatar_id}.png"
@@ -279,32 +406,53 @@ class ChannelAvatarManager:
                 "avatar_id": avatar_id,
                 "avatar_url": f"/static/avatars/{avatar_filename}",
                 "processing_info": processing_result,
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Error uploading custom avatar: {e}")
             return {"success": False, "error": str(e)}
 
     def get_all_channel_avatars(self, channel_id: int) -> List[Dict]:
-        """Get all avatars for a specific channel.
+        """
+Get all avatars for a specific channel.
+
 
         Args:
             channel_id: ID of the channel
 
         Returns:
             List of avatar dictionaries
-        """
+       
+""""""
+
         try:
+            
+
             with self._get_db_connection() as conn:
+            
+"""
                 avatars = conn.execute(
-                    """
+                   """
+
+                    
+                   
+
                     SELECT * FROM avatars
                     WHERE channel_id = ?
                     ORDER BY is_default DESC, created_at DESC
-                    """,
-                    (channel_id,),
-                ).fetchall()
+                    
+""","""
 
+                    (channel_id,),
+               
+
+                
+               
+"""
+                ).fetchall()
+               """"""
+            with self._get_db_connection() as conn:
+            """"""
                 return [dict(avatar) for avatar in avatars]
 
         except Exception as e:
@@ -312,7 +460,9 @@ class ChannelAvatarManager:
             return []
 
     def set_default_avatar(self, channel_id: int, avatar_id: int) -> bool:
-        """Set a specific avatar as the default for a channel.
+        """
+Set a specific avatar as the default for a channel.
+
 
         Args:
             channel_id: ID of the channel
@@ -320,20 +470,21 @@ class ChannelAvatarManager:
 
         Returns:
             True if successful, False otherwise
-        """
+       
+""""""
         try:
             with self._get_db_connection() as conn:
                 # First, remove default status from all avatars for this channel
                 conn.execute(
                     "UPDATE avatars SET is_default = 0 WHERE channel_id = ?",
                     (channel_id,),
-                )
+                 )
 
                 # Set the specified avatar as default
                 cursor = conn.execute(
                     "UPDATE avatars SET is_default = 1 WHERE id = ? AND channel_id = ?",
                     (avatar_id, channel_id),
-                )
+                 )
 
                 return cursor.rowcount > 0
 
@@ -342,7 +493,9 @@ class ChannelAvatarManager:
             return False
 
     def delete_avatar(self, channel_id: int, avatar_id: int) -> bool:
-        """Delete an avatar (cannot delete if it's the only one).
+        """
+Delete an avatar (cannot delete if it's the only one).
+
 
         Args:
             channel_id: ID of the channel
@@ -350,15 +503,30 @@ class ChannelAvatarManager:
 
         Returns:
             True if successful, False otherwise
-        """
+       
+""""""
+
         try:
             with self._get_db_connection() as conn:
+               
+
+                
+               
+"""
                 # Check if this is the only avatar
+               """"""
                 avatar_count = conn.execute(
                     "SELECT COUNT(*) as count FROM avatars WHERE channel_id = ?",
                     (channel_id,),
                 ).fetchone()["count"]
+               """
 
+                
+               
+
+                # Check if this is the only avatar
+               
+""""""
                 if avatar_count <= 1:
                     self.logger.warning(f"Cannot delete the only avatar for channel {channel_id}")
                     return False
@@ -376,7 +544,7 @@ class ChannelAvatarManager:
                 cursor = conn.execute(
                     "DELETE FROM avatars WHERE id = ? AND channel_id = ?",
                     (avatar_id, channel_id),
-                )
+                 )
 
                 # If this was the default avatar, make another one default
                 if avatar["is_default"]:
@@ -389,7 +557,7 @@ class ChannelAvatarManager:
                         conn.execute(
                             "UPDATE avatars SET is_default = 1 WHERE id = ?",
                             (remaining_avatar["id"],),
-                        )
+                         )
 
                 return cursor.rowcount > 0
 
@@ -399,8 +567,10 @@ class ChannelAvatarManager:
 
     def regenerate_avatar(
         self, channel_id: int, style: str = None, color_scheme: str = None
-    ) -> Dict:
-        """Regenerate the default avatar for a channel.
+#     ) -> Dict:
+        """
+Regenerate the default avatar for a channel.
+
 
         Args:
             channel_id: ID of the channel
@@ -409,14 +579,26 @@ class ChannelAvatarManager:
 
         Returns:
             Dictionary with regeneration results
-        """
+       
+""""""
+
         try:
             # Get channel info
+            
+
             with self._get_db_connection() as conn:
+            
+"""
                 channel = conn.execute(
                     "SELECT * FROM channels WHERE id = ?", (channel_id,)
                 ).fetchone()
+            """
 
+            with self._get_db_connection() as conn:
+            
+
+           
+""""""
                 if not channel:
                     return {"success": False, "error": "Channel not found"}
 
@@ -435,14 +617,14 @@ class ChannelAvatarManager:
                 color_scheme=avatar_config["color_scheme"],
                 size=avatar_config["size"],
                 customizations=avatar_config["customizations"],
-            )
+             )
 
             # Remove old default avatar
             with self._get_db_connection() as conn:
                 conn.execute(
                     "UPDATE avatars SET is_default = 0 WHERE channel_id = ?",
                     (channel_id,),
-                )
+                 )
 
             # Save new avatar
             avatar_id = self._save_avatar_to_db(
@@ -450,7 +632,7 @@ class ChannelAvatarManager:
                 avatar_data=avatar_data,
                 is_default=True,
                 generation_method="golden_ratio_regenerated",
-            )
+             )
 
             # Save avatar file
             avatar_filename = f"channel_{channel_id}_regen_{avatar_id}.png"
@@ -464,44 +646,74 @@ class ChannelAvatarManager:
                 "avatar_id": avatar_id,
                 "avatar_url": f"/static/avatars/{avatar_filename}",
                 "config": avatar_config,
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Error regenerating avatar: {e}")
             return {"success": False, "error": str(e)}
 
     def ensure_all_channels_have_avatars(self) -> Dict:
-        """Ensure all channels have at least one avatar, generating if needed.
+        """
+Ensure all channels have at least one avatar, generating if needed.
+
 
         Returns:
             Dictionary with processing results
-        """
+       
+""""""
+
         try:
             with self._get_db_connection() as conn:
+               
+
+                
+               
+"""
                 # Get all channels without avatars
+               """
+
+                
+               
+
                 channels_without_avatars = conn.execute(
-                    """
+                   
+""""""
                     SELECT c.* FROM channels c
                     LEFT JOIN avatars a ON c.id = a.channel_id
                     WHERE a.id IS NULL
-                    """
-                ).fetchall()
+                    """"""
 
+               
+
+                
+               
+"""
+                ).fetchall()
+               """"""
+                
+               """
+
+                # Get all channels without avatars
+               
+
+                
+               
+"""
                 results = {"processed_channels": [], "errors": [], "total_processed": 0}
 
                 for channel in channels_without_avatars:
                     try:
                         avatar_info = self._generate_default_avatar(
                             channel["id"], channel["channel_name"]
-                        )
+                         )
 
                         results["processed_channels"].append(
                             {
                                 "channel_id": channel["id"],
                                 "channel_name": channel["channel_name"],
                                 "avatar_info": avatar_info,
-                            }
-                        )
+                             }
+                         )
 
                         results["total_processed"] += 1
 
@@ -511,8 +723,8 @@ class ChannelAvatarManager:
                                 "channel_id": channel["id"],
                                 "channel_name": channel["channel_name"],
                                 "error": str(e),
-                            }
-                        )
+                             }
+                         )
 
                 return results
 
@@ -522,27 +734,45 @@ class ChannelAvatarManager:
                 "processed_channels": [],
                 "errors": [{"error": str(e)}],
                 "total_processed": 0,
-            }
+             }
 
 
 # Utility functions for easy integration
 
 
 def get_or_create_channel_avatar(channel_id: int) -> Optional[Dict]:
-    """Quick function to get or create a channel avatar.
+    """
+Quick function to get or create a channel avatar.
+
 
     Args:
         channel_id: ID of the channel
 
     Returns:
         Avatar information dictionary
-    """
+   
+""""""
+
     manager = ChannelAvatarManager()
+    
+
+    return manager.get_channel_avatar(channel_id)
+    
+""""""
+
+    
+   
+
+    
+"""
+
     return manager.get_channel_avatar(channel_id)
 
-
+    """"""
 def upload_and_process_avatar(channel_id: int, image_data: str) -> Dict:
-    """Quick function to upload and process a custom avatar.
+    """
+Quick function to upload and process a custom avatar.
+
 
     Args:
         channel_id: ID of the channel
@@ -550,6 +780,7 @@ def upload_and_process_avatar(channel_id: int, image_data: str) -> Dict:
 
     Returns:
         Upload results dictionary
-    """
+   
+""""""
     manager = ChannelAvatarManager()
     return manager.upload_custom_avatar(channel_id, image_data)

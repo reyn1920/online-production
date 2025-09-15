@@ -1,15 +1,20 @@
 {
-  "include": ["backend", "app", "scripts", "tests"],
+  "include": ["backend", "services", "scripts", "monetization", "orchestrator"],
   "exclude": [
-    "**/__pycache__",
-    ".venv*",
-    "node_modules",
-    "dist",
-    "build",
-    "rewritten",
-    "url_fix_backup",
-    "models/linly_talker",
+    "**/__pycache__/**",
+    "**/.mypy_cache/**",
+    "venv*/**",
+    "**/site-packages/**",
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "frontend/dist/**",
+    "rewritten/**",
+    "url_fix_backups/**",
+    "public/**",
+    "static/**",
     "chat"
   ],
-  "reportMissingImports": "warning"
+  "reportMissingImports": true,
+  "pythonVersion": "3.11"
 }

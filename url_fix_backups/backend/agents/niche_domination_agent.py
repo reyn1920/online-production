@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Proactive Niche Domination Agent
 
 Autonomously monitors growth metrics and expands into new channels / niches
@@ -8,7 +8,7 @@ with data - driven decision making.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -111,28 +111,36 @@ class ProactiveNicheDominationAgent(BaseAgent):
             agent_id: str = "niche_domination_agent",
             name: str = "Niche Domination Agent",
             config: Dict[str, Any] = None,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__(agent_id, name)
         self.config = config or {}
         self.db_path = self.config.get("db_path", "right_perspective.db")
         self.ollama_client = OllamaIntegration(
             self.config.get("ollama_config", {"endpoint": "http://localhost:11434"})
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         # Fix: Extract ollama_url as string from config to prevent rstrip() error on dict
         ollama_url = _as_str(
             self.config.get("ollama_url", "http://localhost:11434"),
                 "http://localhost:11434",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.content_generator = AutomatedAuthor(ollama_url = ollama_url)
 
         # Thresholds for expansion triggers
         self.engagement_threshold = self.config.get("engagement_threshold", 0.15)  # 15%
         self.growth_threshold = self.config.get(
             "growth_threshold", 0.20
-        )  # 20% monthly growth
+# BRACKET_SURGEON: disabled
+#         )  # 20% monthly growth
         self.opportunity_score_threshold = self.config.get(
             "opportunity_threshold", 0.75
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.market_gap_threshold = self.config.get("market_gap_threshold", 0.30)
 
         # Analysis parameters
@@ -152,7 +160,7 @@ class ProactiveNicheDominationAgent(BaseAgent):
 
                 # Growth metrics table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS growth_metrics (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             channel TEXT NOT NULL,
@@ -164,13 +172,17 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             market_saturation REAL,
                             competition_density REAL,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Niche opportunities table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS niche_opportunities (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             niche_name TEXT NOT NULL,
@@ -187,13 +199,17 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             status TEXT DEFAULT 'identified',
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Expansion tracking table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS niche_expansions (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             opportunity_id INTEGER,
@@ -203,21 +219,32 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             roi_metrics TEXT,
                             status TEXT DEFAULT 'active',
                             FOREIGN KEY (opportunity_id) REFERENCES niche_opportunities (id)
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Create indexes
                 cursor.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_growth_metrics_channel_niche ON growth_metrics(channel,
-    niche)"
-                )
+                    "CREATE INDEX IF NOT EXISTS idx_growth_metrics_channel_niche ON growth_metrics(channel,"
+# BRACKET_SURGEON: disabled
+#     niche)""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_opportunities_score ON niche_opportunities(opportunity_score DESC)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_expansions_status ON niche_expansions(status)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 conn.commit()
         except Exception as e:
@@ -254,18 +281,24 @@ class ProactiveNicheDominationAgent(BaseAgent):
             + trending_opportunities
             + competitor_weaknesses
             + seasonal_opportunities
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Filter and rank opportunities
         qualified_opportunities = [
             opp
             for opp in all_opportunities
             if opp.opportunity_score >= self.opportunity_score_threshold
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         # Sort by opportunity score
         qualified_opportunities.sort(key = lambda x: x.opportunity_score,
-    reverse = True)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     reverse = True)
 
         # Store opportunities in database
         for opp in qualified_opportunities:
@@ -273,7 +306,9 @@ class ProactiveNicheDominationAgent(BaseAgent):
 
         self.logger.info(
             f"Identified {len(qualified_opportunities)} qualified opportunities"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return qualified_opportunities
 
 
@@ -288,7 +323,7 @@ class ProactiveNicheDominationAgent(BaseAgent):
 
                 # Get recent performance data
                 cursor.execute(
-                    """
+                    """"""
                     SELECT channel, niche,
                         AVG(engagement_rate) as avg_engagement,
                                AVG(subscriber_growth) as avg_growth,
@@ -299,10 +334,14 @@ class ProactiveNicheDominationAgent(BaseAgent):
                     FROM growth_metrics
                     WHERE created_at > datetime('now', '-{} days')
                     GROUP BY channel, niche
-                """.format(
+                """.format("""
                     self.analysis_window_days
-                    )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 for row in cursor.fetchall():
                     metrics.append(
@@ -316,8 +355,12 @@ class ProactiveNicheDominationAgent(BaseAgent):
                                 market_saturation = row["avg_saturation"] or 0,
                                 competition_density = row["avg_competition"] or 0,
                                 timestamp = datetime.now(),
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as e:
             self.logger.error(f"Failed to collect current metrics: {e}")
 
@@ -337,7 +380,9 @@ class ProactiveNicheDominationAgent(BaseAgent):
                 + min(metric.subscriber_growth / self.growth_threshold, 1.0) * 0.25
                 + min(metric.view_velocity / 1000, 1.0) * 0.2  # Normalize view velocity
                 + min(metric.revenue_per_view * 1000, 1.0) * 0.25  # Normalize revenue
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Only consider if performance is above threshold
             if performance_score >= 0.7:
@@ -345,7 +390,8 @@ class ProactiveNicheDominationAgent(BaseAgent):
                 for channel_type in ChannelType:
                     if (
                         channel_type.value != metric.channel
-                    ):  # Don't expand to same channel
+# BRACKET_SURGEON: disabled
+#                     ):  # Don't expand to same channel
                         opportunity = NicheOpportunity(
                             niche_name = f"{metric.niche}_expansion_{channel_type.value}",
                                 channel_type = channel_type,
@@ -354,21 +400,27 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             trigger_type = ExpansionTrigger.HIGH_ENGAGEMENT,
                                 market_size = self._estimate_market_size(
                                 metric.niche, channel_type
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                                 competition_level = 1.0 - metric.market_saturation,
                                 entry_difficulty = self._calculate_entry_difficulty(
                                 channel_type
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                                 revenue_potential = metric.revenue_per_view
                             * 0.8,  # Conservative estimate
                             content_requirements = self._get_content_requirements(
                                 metric.niche, channel_type
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                                 recommended_strategy = self._generate_expansion_strategy(
                                 metric, channel_type
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                                 confidence_level = performance_score,
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         opportunities.append(opportunity)
 
         return opportunities
@@ -399,7 +451,9 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             content_requirements = gap["content_requirements"],
                             recommended_strategy = gap["strategy"],
                             confidence_level = gap["confidence"],
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     opportunities.append(opportunity)
 
         except Exception as e:
@@ -433,7 +487,9 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             content_requirements = trend["content_types"],
                             recommended_strategy = trend["strategy"],
                             confidence_level = trend["trend_strength"],
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     opportunities.append(opportunity)
 
         except Exception as e:
@@ -464,7 +520,9 @@ class ProactiveNicheDominationAgent(BaseAgent):
                             content_requirements = weakness["content_gaps"],
                             recommended_strategy = weakness["attack_strategy"],
                             confidence_level = weakness["confidence"],
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     opportunities.append(opportunity)
 
         except Exception as e:
@@ -494,7 +552,9 @@ class ProactiveNicheDominationAgent(BaseAgent):
                         content_requirements = season_opp["content_calendar"],
                         recommended_strategy = season_opp["timing_strategy"],
                         confidence_level = season_opp["predictability"],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 opportunities.append(opportunity)
 
         except Exception as e:
@@ -514,7 +574,9 @@ class ProactiveNicheDominationAgent(BaseAgent):
             # 2. Generate initial content batch
             initial_content = self._generate_initial_content(
                 opportunity, content_strategy
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # 3. Set up channel / platform presence
             channel_setup = self._setup_channel_presence(opportunity)
@@ -522,7 +584,9 @@ class ProactiveNicheDominationAgent(BaseAgent):
             # 4. Deploy initial content
             deployment_success = self._deploy_initial_content(
                 opportunity, initial_content
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # 5. Set up monitoring and optimization
             monitoring_setup = self._setup_expansion_monitoring(opportunity)
@@ -534,8 +598,11 @@ class ProactiveNicheDominationAgent(BaseAgent):
                         channel_setup,
                         deployment_success,
                         monitoring_setup,
-                        ]
-            ):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# BRACKET_SURGEON: disabled
+#             ):
                 # Record successful expansion
                 self._record_expansion(opportunity)
                 self.logger.info(f"Successfully expanded into {opportunity.niche_name}")
@@ -551,9 +618,9 @@ class ProactiveNicheDominationAgent(BaseAgent):
 
     def _generate_market_gap_prompt(self) -> str:
         """Generate AI prompt for market gap analysis."""
-        return """
+        return """"""
 Analyze the current digital content landscape \
-    and identify 5 underserved market niches with high growth potential.
+#     and identify 5 underserved market niches with high growth potential.
 
 For each niche, provide:
 1. Niche name and description
@@ -564,7 +631,9 @@ For each niche, provide:
     linkedin,
     podcast,
     blog,
-    newsletter)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     newsletter)
 3. Market size estimate (search volume / audience size)
 4. Competition level (0.0 - 1.0, where 1.0 is highly competitive)
 5. Entry difficulty (0.0 - 1.0, where 1.0 is very difficult)
@@ -581,7 +650,7 @@ Focus on niches that are:
 - Have sustainable long - term potential
 
 Format as JSON array with these fields.
-"""
+""""""
 
 
     def _parse_market_gaps(self, ai_response: str) -> List[Dict]:
@@ -642,7 +711,9 @@ Format as JSON array with these fields.
             + competition_score * 0.25
             + monetization_score * 0.25
             + trend_strength_score * 0.2
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return opportunity_score
 
@@ -671,7 +742,8 @@ Format as JSON array with these fields.
                             "topic": trend,
                                 "search_volume": int(
                                 avg_interest * 1000
-                            ),  # Estimate volume
+# BRACKET_SURGEON: disabled
+#                             ),  # Estimate volume
                             "competition": 0.5,  # Default competition
                             "best_channel": "youtube",
                                 "monetization_potential": 0.6,
@@ -679,8 +751,11 @@ Format as JSON array with these fields.
                                 "strategy": "Capitalize on trending interest",
                                 "trend_strength": min(avg_interest / 100, 1.0),
                                 "source": "google_trends",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             self.logger.error(f"Error fetching Google Trends: {e}")
@@ -712,13 +787,15 @@ Format as JSON array with these fields.
                 # Get trending topics for worldwide
                 trending_topics = api.get_place_trends(1)[0][
                     "trends"
-                ]  # WOEID 1 = worldwide
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]  # WOEID 1 = worldwide
 
                 for trend in trending_topics[:10]:  # Top 10 trends
                     if trend["tweet_volume"]:  # Only trends with volume data
                         trends.append(
                             {
-                                "topic": trend["name"].replace("#", ""),
+                                "topic": trend["name"].replace("#", ""),"
                                     "search_volume": trend["tweet_volume"],
                                     "competition": 0.7,  # Twitter trends are competitive
                                 "best_channel": "twitter",
@@ -727,10 +804,14 @@ Format as JSON array with these fields.
                                     "strategy": "Real - time engagement with trending topics",
                                     "trend_strength": min(
                                     trend["tweet_volume"] / 100000, 1.0
-                                ),
+# BRACKET_SURGEON: disabled
+#                                 ),
                                     "source": "twitter_trends",
-                                    }
-                        )
+# BRACKET_SURGEON: disabled
+#                                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
         except Exception as e:
             self.logger.error(f"Error fetching Twitter trends: {e}")
@@ -759,7 +840,8 @@ Format as JSON array with these fields.
                         "regionCode": "US",
                         "maxResults": 20,
                         "key": api_key,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 response = requests.get(url, params = params)
                 response.raise_for_status()
@@ -779,7 +861,9 @@ Format as JSON array with these fields.
                         if len(word) > 3:  # Filter short words
                             topic_counts[word] = topic_counts.get(word, 0) + int(
                                 stats.get("viewCount", 0)
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 # Convert to trend format
                 for topic, view_count in sorted(
@@ -797,8 +881,11 @@ Format as JSON array with these fields.
                                 "strategy": "Create content around trending video topics",
                                 "trend_strength": min(view_count / 10000000, 1.0),
                                 "source": "youtube_trending",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             self.logger.error(f"Error fetching YouTube trends: {e}")
@@ -837,8 +924,11 @@ Format as JSON array with these fields.
                                 "strategy": "Create content around Reddit discussions",
                                 "trend_strength": min(post_data["score"] / 10000, 1.0),
                                 "source": "reddit_trends",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             self.logger.error(f"Error fetching Reddit trends: {e}")
@@ -859,7 +949,8 @@ Format as JSON array with these fields.
                     "strategy": "Product reviews with affiliate links",
                     "trend_strength": 0.8,
                     "source": "fallback",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "topic": "Health and Wellness",
                     "search_volume": 35000,
@@ -870,8 +961,11 @@ Format as JSON array with these fields.
                     "strategy": "Wellness content with product partnerships",
                     "trend_strength": 0.75,
                     "source": "fallback",
-                    },
-                ]
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     def _analyze_competitors(self) -> List[Dict]:
@@ -890,18 +984,19 @@ Format as JSON array with these fields.
         """Get seasonal opportunities for the current month."""
         seasonal_calendar = {
             1: ["New Year Resolutions", "Winter Fitness", "Tax Preparation"],
-                2: ["Valentine's Day", "Winter Sports", "Home Organization"],
+                2: ["Valentine's Day", "Winter Sports", "Home Organization"],'
                 3: ["Spring Cleaning", "Gardening Prep", "Easter Crafts"],
                 4: ["Spring Fashion", "Outdoor Activities", "Tax Season"],
-                5: ["Mother's Day", "Graduation", "Summer Prep"],
-                6: ["Father's Day", "Summer Travel", "Wedding Season"],
+                5: ["Mother's Day", "Graduation", "Summer Prep"],'
+                6: ["Father's Day", "Summer Travel", "Wedding Season"],'
                 7: ["Summer Activities", "Vacation Planning", "BBQ Recipes"],
                 8: ["Back to School", "Late Summer Travel", "Harvest Prep"],
                 9: ["Fall Fashion", "School Supplies", "Halloween Prep"],
                 10: ["Halloween", "Fall Decorating", "Holiday Planning"],
                 11: ["Thanksgiving", "Black Friday", "Holiday Shopping"],
                 12: ["Christmas", "New Year Planning", "Gift Guides"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         seasonal_topics = seasonal_calendar.get(month, [])
         opportunities = []
@@ -920,11 +1015,16 @@ Format as JSON array with these fields.
                         f"{topic} guide",
                             f"{topic} tips",
                             f"{topic} reviews",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         "timing_strategy": f"Create {topic} content 2 - 4 weeks before peak demand",
                         "predictability": 0.9,  # Seasonal trends are predictable
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return opportunities
 
@@ -941,7 +1041,8 @@ Format as JSON array with these fields.
                 ChannelType.PODCAST: 15000,
                 ChannelType.BLOG: 25000,
                 ChannelType.NEWSLETTER: 10000,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return base_sizes.get(channel_type, 50000)
 
@@ -957,7 +1058,8 @@ Format as JSON array with these fields.
                 ChannelType.PODCAST: 0.6,  # Technical setup required
             ChannelType.BLOG: 0.4,
                 ChannelType.NEWSLETTER: 0.3,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return difficulty_scores.get(channel_type, 0.5)
 
@@ -972,7 +1074,9 @@ Format as JSON array with these fields.
                     "thumbnails",
                     "descriptions",
                     "tags",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                 ChannelType.TIKTOK: ["short videos", "trending audio", "hashtags"],
                 ChannelType.INSTAGRAM: ["images", "stories", "reels", "captions"],
                 ChannelType.TWITTER: ["tweets", "threads", "images"],
@@ -980,14 +1084,16 @@ Format as JSON array with these fields.
                 ChannelType.PODCAST: ["audio content", "show notes", "transcripts"],
                 ChannelType.BLOG: ["articles", "SEO optimization", "images"],
                 ChannelType.NEWSLETTER: ["email content", "subject lines", "CTAs"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return channel_requirements.get(channel_type, ["content"])
 
 
     def _generate_expansion_strategy(
         self, metric: GrowthMetrics, channel_type: ChannelType
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate expansion strategy for a high - performing niche."""
         return f"Leverage success in {metric.niche} on {metric.channel} by adapting content format for {channel_type.value}. Focus on {metric.niche} content with proven engagement patterns."
 
@@ -998,13 +1104,15 @@ Format as JSON array with these fields.
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO niche_opportunities (
                         niche_name, channel_type, opportunity_score, trigger_type,
                             market_size, competition_level, entry_difficulty, revenue_potential,
                             content_requirements, recommended_strategy, confidence_level
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ""","""
                     (
                         opportunity.niche_name,
                             opportunity.channel_type.value,
@@ -1017,8 +1125,11 @@ Format as JSON array with these fields.
                             json.dumps(opportunity.content_requirements),
                             opportunity.recommended_strategy,
                             opportunity.confidence_level,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to store opportunity: {e}")
@@ -1032,10 +1143,12 @@ Format as JSON array with these fields.
 
     def _generate_initial_content(
         self, opportunity: NicheOpportunity, strategy: Any
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Generate initial content batch for expansion."""
         # Use the automated content generator
             try:
+                pass
             content_count = 5  # Initial batch size
             for i in range(content_count):
                 content = self.content_generator.generate_content(
@@ -1044,8 +1157,11 @@ Format as JSON array with these fields.
                         opportunity.content_requirements[0]
                         if opportunity.content_requirements
                         else "article"
-                    ),
-                        )
+# BRACKET_SURGEON: disabled
+#                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 if not content:
                     return False
             return True
@@ -1062,7 +1178,8 @@ Format as JSON array with these fields.
 
     def _deploy_initial_content(
         self, opportunity: NicheOpportunity, content: Any
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Deploy initial content to the target channel."""
         # Placeholder for content deployment
         return True
@@ -1084,24 +1201,32 @@ Format as JSON array with these fields.
                 cursor.execute(
                     "SELECT id FROM niche_opportunities WHERE niche_name = ? AND channel_type = ?",
                         (opportunity.niche_name, opportunity.channel_type.value),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 opp_id = cursor.fetchone()
 
                 if opp_id:
                     cursor.execute(
-                        """
+                        """"""
                         INSERT INTO niche_expansions (
                             opportunity_id, initial_content_count, current_performance, status
-                        ) VALUES (?, ?, ?, ?)
-                    """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) VALUES (?, ?, ?, ?)
+                    ""","""
                         (opp_id[0], 5, json.dumps({"status": "launched"}), "active"),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Update opportunity status
                     cursor.execute(
                         "UPDATE niche_opportunities SET status = 'executed' WHERE id = ?",
                             (opp_id[0],),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     conn.commit()
         except Exception as e:
@@ -1117,44 +1242,52 @@ Format as JSON array with these fields.
 
                 # Get opportunity summary
                 cursor.execute(
-                    """
+                    """"""
                     SELECT status,
     COUNT(*) as count,
     AVG(opportunity_score) as avg_score
                     FROM niche_opportunities
                     GROUP BY status
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 opportunity_summary = {
                     row["status"]: {
                         "count": row["count"],
                             "avg_score": row["avg_score"],
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     for row in cursor.fetchall()
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 # Get active expansions
                 cursor.execute(
-                    """
+                    """"""
                     SELECT no.niche_name, no.channel_type, ne.expansion_date, ne.status
                     FROM niche_expansions ne
                     JOIN niche_opportunities no ON ne.opportunity_id = no.id
                     WHERE ne.status = 'active'
                     ORDER BY ne.expansion_date DESC
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 active_expansions = [dict(row) for row in cursor.fetchall()]
 
                 # Get top opportunities
                 cursor.execute(
-                    """
+                    """"""
                     SELECT niche_name, channel_type, opportunity_score, trigger_type
                     FROM niche_opportunities
                     WHERE status = 'identified'
                     ORDER BY opportunity_score DESC
                     LIMIT 10
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 top_opportunities = [dict(row) for row in cursor.fetchall()]
 
                 return {
@@ -1164,8 +1297,10 @@ Format as JSON array with these fields.
                         "top_opportunities": top_opportunities,
                         "total_opportunities": sum(
                         s["count"] for s in opportunity_summary.values()
-                    ),
-                        }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                         }
         except Exception as e:
             self.logger.error(f"Failed to generate expansion report: {e}")
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
@@ -1200,7 +1335,8 @@ Format as JSON array with these fields.
                 "expand": "expand into new niches for",
                 "monitor": "monitor growth metrics for",
                 "dominate": "establish dominance in",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         rephrased = task_description.lower()
         for keyword, replacement in niche_keywords.items():
@@ -1213,7 +1349,8 @@ Format as JSON array with these fields.
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrase accuracy - required by BaseAgent"""
         # Simple validation - check if key niche domination terms are preserved
         niche_terms = [
@@ -1224,7 +1361,9 @@ Format as JSON array with these fields.
                 "opportunity",
                 "domination",
                 "competition",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         original_description = str(original_task.get("description", original_task))
         original_lower = original_description.lower()
@@ -1248,4 +1387,5 @@ Format as JSON array with these fields.
                 "market_analysis": "analyze market gaps and competition",
                 "trend_monitoring": "track trending topics across platforms",
                 "growth_metrics": "monitor and analyze growth performance",
-                }
+# BRACKET_SURGEON: disabled
+#                 }

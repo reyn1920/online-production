@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI "100% Live" System Verification Protocol
 
 This module provides comprehensive end - to - end testing for the TRAE.AI application,
@@ -13,7 +13,7 @@ The test suite:
 5. Validates actual video file creation
 
 This is the definitive smoke test to ensure 100% system integrity.
-"""
+""""""
 
 import os
 import subprocess
@@ -54,14 +54,14 @@ class TRAELiveSystemTest:
                 print(f"Error during cleanup: {e}")
 
     def launch_live_system(self, timeout: int = 30) -> bool:
-        """Launch the TRAE.AI live system and wait for it to be ready.
+        """Launch the TRAE.AI live system and wait for it to be ready."""
 
         Args:
             timeout: Maximum time to wait for system startup
 
         Returns:
             bool: True if system started successfully, False otherwise
-        """
+        """"""
         try:
             # Set environment variables for the live system
             env = os.environ.copy()
@@ -76,7 +76,8 @@ class TRAELiveSystemTest:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Wait for system to be ready
             start_time = time.time()
@@ -116,24 +117,26 @@ class TRAELiveSystemTest:
         print(f"Dashboard health check passed: {health_data}")
 
     def create_video_task(self) -> str:
-        """Create a new video generation task via API.
+        """Create a new video generation task via API."""
 
         Returns:
             str: Task ID of the created task
-        """
+        """"""
         task_data = {
             "topic": "TRAE.AI System Verification Test Video",
             "duration": 30,
             "style": "professional",
             "description": "Automated test video for system integrity verification",
             "priority": "high",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         response = requests.post(
             f"{self.dashboard_url}/api/workflows/create - video",
             json=task_data,
             timeout=30,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         assert response.status_code in [
             200,
@@ -144,7 +147,8 @@ class TRAELiveSystemTest:
             task_response.get("task_id")
             or task_response.get("id")
             or task_response.get("workflow_id")
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         assert (
             task_id is not None
@@ -153,14 +157,14 @@ class TRAELiveSystemTest:
         return task_id
 
     def verify_task_queued(self, task_id: str) -> bool:
-        """Verify that a task was successfully queued.
+        """Verify that a task was successfully queued."""
 
         Args:
             task_id: ID of the task to verify
 
         Returns:
             bool: True if task is found in queue, False otherwise
-        """
+        """"""
         try:
             response = requests.get(f"{self.dashboard_url}/api/tasks", timeout=10)
 
@@ -185,7 +189,7 @@ class TRAELiveSystemTest:
             return False
 
     def poll_task_completion(self, task_id: str, timeout: int = 300) -> Dict[str, Any]:
-        """Poll the task queue to monitor task completion.
+        """Poll the task queue to monitor task completion."""
 
         Args:
             task_id: ID of the task to monitor
@@ -193,7 +197,7 @@ class TRAELiveSystemTest:
 
         Returns:
             Dict: Final task status data
-        """
+        """"""
         start_time = time.time()
         last_status = None
 
@@ -238,14 +242,14 @@ class TRAELiveSystemTest:
         raise TimeoutError(f"Task {task_id} did not complete within {timeout} seconds")
 
     def verify_video_file_creation(self, task_id: str) -> Path:
-        """Verify that a video file was actually created.
+        """Verify that a video file was actually created."""
 
         Args:
             task_id: ID of the completed task
 
         Returns:
             Path: Path to the created video file
-        """
+        """"""
         # Check common video file patterns
         possible_patterns = [
             f"{task_id}.mp4",
@@ -253,7 +257,8 @@ class TRAELiveSystemTest:
             f"output_{task_id}.mp4",
             "latest_video.mp4",
             "test_video.mp4",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for pattern in possible_patterns:
             video_path = self.output_dir / pattern
@@ -313,7 +318,8 @@ class TestTRAELiveSystemIntegrity:
         try:
             response = requests.get(
                 f"{trae_live_system.dashboard_url}/api/agents/status", timeout=10
-            )
+# BRACKET_SURGEON: disabled
+#             )
             assert response.status_code == 200
 
             status_data = response.json()
@@ -353,11 +359,13 @@ class TestTRAELiveSystemIntegrity:
             elif final_status["status"] == "failed":
                 pytest.fail(
                     f"Video creation task failed: {final_status.get('error', 'Unknown error')}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 print(
                     f"⚠️  Task status: {final_status.get('status')} - Task did not complete successfully"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 pytest.fail(f"Video creation task ended with status: {final_status.get('status')}")
         except TimeoutError as e:
             # For a production system, timeout should be treated as a failure
@@ -393,8 +401,10 @@ def run_system_integrity_tests():
             "--color = yes",
             "-k",
             "TestTRAELiveSystemIntegrity",  # Only run the live system tests
-        ]
-    )
+# BRACKET_SURGEON: disabled
+#         ]
+# BRACKET_SURGEON: disabled
+#     )
 
     if exit_code == 0:
         print("\\n" + "=" * 80)

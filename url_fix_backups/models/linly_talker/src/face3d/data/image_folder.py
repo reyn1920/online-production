@@ -1,8 +1,8 @@
-"""A modified image folder class
+"""A modified image folder class"""
 
 We modify the official PyTorch image folder (https://github.com / pytorch / vision / blob / master / torchvision / datasets / folder.py)
 so that this class can load images from both current directory and its subdirectories.
-"""
+""""""
 
 import os
 import os.path
@@ -26,7 +26,8 @@ IMG_EXTENSIONS = [
     ".TIF",
     ".tiff",
     ".TIFF",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 
 def is_image_file(filename):
@@ -57,8 +58,10 @@ class ImageFolder(data.Dataset):
                 RuntimeError(
                     "Found 0 images in: " + root + "\\n"
                     "Supported image extensions are: " + ",".join(IMG_EXTENSIONS)
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         self.root = root
         self.imgs = imgs

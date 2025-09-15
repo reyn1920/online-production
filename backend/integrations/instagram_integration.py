@@ -60,13 +60,13 @@ class InstagramClient:
             app_secret=os.getenv("FB_APP_SECRET"),
             redirect_uri=os.getenv(
                 "FB_REDIRECT_URI"
-            ),  # e.g. https://your.host/social/oauth/instagram/callback
+#             ),  # e.g. https://your.host/social/oauth/instagram/callback
             scopes=os.getenv("FB_APP_SCOPES", cls.scopes),
             user_access_token=data.get("user_access_token"),
             page_id=data.get("page_id"),
             page_access_token=data.get("page_access_token"),
             ig_user_id=data.get("ig_user_id"),
-        )
+         )
 
     def ready(self) -> bool:
         return bool(self.page_access_token and self.ig_user_id)
@@ -82,7 +82,7 @@ class InstagramClient:
             "scope": self.scopes,
             "response_type": "code",
             "state": state,
-        }
+         }
         q = "&".join(f"{k}={requests.utils.quote(v)}" for k, v in params.items())
         return f"https://www.facebook.com/v21.0/dialog/oauth?{q}"
 
@@ -94,7 +94,7 @@ class InstagramClient:
             client_secret=self.app_secret,
             redirect_uri=self.redirect_uri,
             code=code,
-        )
+         )
         sc, j = _http("GET", url, params=params)
         if sc != 200:
             return {"ok": False, "step": "short_token", "status": sc, "error": j}
@@ -108,7 +108,7 @@ class InstagramClient:
             client_id=self.app_id,
             client_secret=self.app_secret,
             fb_exchange_token=short,
-        )
+         )
         sc, j = _http("GET", url, params=params)
         if sc != 200:
             return {"ok": False, "step": "long_token", "status": sc, "error": j}
@@ -129,7 +129,7 @@ class InstagramClient:
             "GET",
             f"{GRAPH}/{page_id}",
             params={"fields": "instagram_business_account", "access_token": page_token},
-        )
+         )
         ig_user_id = (j.get("instagram_business_account") or {}).get("id")
 
         if not ig_user_id:
@@ -142,8 +142,8 @@ class InstagramClient:
                 "page_id": page_id,
                 "page_access_token": page_token,
                 "ig_user_id": ig_user_id,
-            }
-        )
+             }
+         )
         self.user_access_token = user_ll
         self.page_id = page_id
         self.page_access_token = page_token
@@ -157,7 +157,7 @@ class InstagramClient:
             "POST",
             f"{GRAPH}/{self.ig_user_id}/media_publish",
             data={"creation_id": creation_id, "access_token": self.page_access_token},
-        )
+         )
         return {"status": sc, **j}
 
     def post_image(self, caption: str, image_url: str) -> Dict[str, Any]:
@@ -167,7 +167,7 @@ class InstagramClient:
             "caption": caption or "",
             "image_url": image_url,
             "access_token": self.page_access_token,
-        }
+         }
         sc, j = _http("POST", f"{GRAPH}/{self.ig_user_id}/media", data=data)
         if sc != 200 or "id" not in j:
             return {"ok": False, "step": "create_media", "status": sc, "error": j}
@@ -183,7 +183,7 @@ class InstagramClient:
             "video_url": video_url,
             "share_to_feed": str(share_to_feed).lower(),
             "access_token": self.page_access_token,
-        }
+         }
         sc, j = _http("POST", f"{GRAPH}/{self.ig_user_id}/media", data=data)
         if sc != 200 or "id" not in j:
             return {"ok": False, "step": "create_reel", "status": sc, "error": j}
@@ -200,6 +200,6 @@ class InstagramClient:
             "metric": "impressions,reach,profile_views,follower_count",
             "period": "day",
             "access_token": self.page_access_token,
-        }
+         }
         sc, j = _http("GET", f"{GRAPH}/{self.ig_user_id}/insights", params=params)
         return {"ok": sc == 200, "status": sc, "data": j}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Pet Care API Services
 
 Secure API service manager for pet care and veterinary services.
@@ -8,7 +8,7 @@ Follows go - live security practices:
 - Proper error handling
 - Rate limiting awareness
 - Secure credential management
-"""
+""""""
 
 import asyncio
 import logging
@@ -68,7 +68,8 @@ class PetCareAPIManager:
         self.session = aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(total=30),
             headers={"User - Agent": "PetCare - App/1.0"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -95,7 +96,8 @@ class PetCareAPIManager:
 
     async def _make_request(
         self, url: str, headers: Dict[str, str], params: Optional[Dict[str, Any]] = None
-    ) -> APIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> APIResponse:
         """Make secure HTTP request with error handling"""
         if not self.session:
             return APIResponse(success=False, error="Session not initialized")
@@ -106,7 +108,8 @@ class PetCareAPIManager:
                     await response.json()
                     if response.content_type == "application/json"
                     else await response.text()
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Extract rate limit info if available
                 rate_limit_remaining = None
@@ -119,7 +122,8 @@ class PetCareAPIManager:
                     error=(f"HTTP {response.status}: {data}" if response.status != 200 else None),
                     status_code=response.status,
                     rate_limit_remaining=rate_limit_remaining,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except asyncio.TimeoutError:
             return APIResponse(success=False, error="Request timeout")
@@ -131,7 +135,8 @@ class PetCareAPIManager:
 
     async def get_bird_observations(
         self, region_code: str = "US", days_back: int = 7
-    ) -> APIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> APIResponse:
         """Get recent bird observations from eBird API"""
         if not self.ebird_token:
             return APIResponse(success=False, error="eBird API token not configured")
@@ -196,7 +201,8 @@ class PetCareAPIManager:
 
     async def search_adoptable_pets(
         self, animal_type: str = "dog", location: str = "10001", limit: int = 20
-    ) -> APIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> APIResponse:
         """Search for adoptable pets using Petfinder API"""
         if not self.petfinder_key or not self.petfinder_secret:
             return APIResponse(success=False, error="Petfinder API credentials not configured")
@@ -213,7 +219,8 @@ class PetCareAPIManager:
                 "grant_type": "client_credentials",
                 "client_id": self.petfinder_key,
                 "client_secret": self.petfinder_secret,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             async with self.session.post(token_url, data=token_data) as token_response:
                 if token_response.status != 200:
@@ -225,7 +232,8 @@ class PetCareAPIManager:
                 if not access_token:
                     return APIResponse(
                         success=False, error="No access token received from Petfinder"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Now search for pets
             search_url = "https://api.petfinder.com/v2/animals"
@@ -235,7 +243,8 @@ class PetCareAPIManager:
                 "location": location,
                 "limit": limit,
                 "status": "adoptable",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             response = await self._make_request(search_url, headers, params)
 
@@ -257,33 +266,42 @@ class PetCareAPIManager:
                 "configured": bool(self.ebird_token),
                 "rate_limited": (
                     not self._check_rate_limit("ebird") if "ebird" in self._rate_limits else False
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "dog_api": {
                 "configured": bool(self.dog_api_key),
                 "rate_limited": (
                     not self._check_rate_limit("dog_api")
                     if "dog_api" in self._rate_limits
                     else False
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "cat_api": {
                 "configured": bool(self.cat_api_key),
                 "rate_limited": (
                     not self._check_rate_limit("cat_api")
                     if "cat_api" in self._rate_limits
                     else False
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "petfinder": {
                 "configured": bool(self.petfinder_key and self.petfinder_secret),
                 "rate_limited": (
                     not self._check_rate_limit("petfinder")
                     if "petfinder" in self._rate_limits
                     else False
-                ),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
 
 class VetServicesManager:
@@ -308,20 +326,25 @@ class VetServicesManager:
             "vetster": {
                 "configured": bool(self.vetster_key),
                 "description": "Online veterinary consultations",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "pawp": {
                 "configured": bool(self.pawp_key),
                 "description": "Emergency vet chat service",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "airvet": {
                 "configured": bool(self.airvet_key),
                 "description": "Virtual veterinary care",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "calendly": {
                 "configured": bool(self.calendly_token),
                 "description": "Appointment scheduling",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def check_availability(self, service: str) -> APIResponse:
         """Check availability for veterinary services (stub implementation)"""
@@ -331,7 +354,8 @@ class VetServicesManager:
             "pawp": self.pawp_key,
             "airvet": self.airvet_key,
             "calendly": self.calendly_token,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if service not in services:
             return APIResponse(success=False, error=f"Unknown service: {service}")
@@ -347,8 +371,10 @@ class VetServicesManager:
                 "available": True,
                 "next_available": datetime.now().isoformat(),
                 "message": f"{service} service is available (stub response)",
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
 
 # Export classes

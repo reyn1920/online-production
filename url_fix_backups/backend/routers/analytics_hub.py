@@ -55,7 +55,8 @@ clients = {
     "linkedin": LinkedInClient.from_env(),
     "pinterest": PinterestClient.from_env(),
     "reddit": RedditClient.from_env(),
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # Simple file - based cache for analytics data
 ANALYTICS_CACHE_FILE = "analytics_cache.json"
@@ -116,7 +117,8 @@ async def get_analytics_overview():
                     impressions = insights.get("impressions", 0)
                     engagement = insights.get(
                         "engagement", insights.get("saves", insights.get("karma", 0))
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     reach = insights.get("reach", impressions)  # Use impressions as fallback
                     posts = insights.get("posts", insights.get("pins", 0))
 
@@ -137,23 +139,28 @@ async def get_analytics_overview():
                             posts=posts,
                             last_updated=datetime.now().isoformat(),
                         ).dict()
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     platform_metrics.append(
                         {
                             "platform": platform,
                             "error": insights.get("error", "Unknown error"),
                             "last_updated": datetime.now().isoformat(),
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
             except Exception as e:
                 platform_metrics.append(
                     {
                         "platform": platform,
                         "error": str(e),
                         "last_updated": datetime.now().isoformat(),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
     # Create unified metrics
     unified = UnifiedMetrics(
@@ -165,14 +172,16 @@ async def get_analytics_overview():
         platforms_active=platforms_active,
         platforms_configured=platforms_configured,
         last_updated=datetime.now().isoformat(),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     overview = {
         "unified_metrics": unified.dict(),
         "platform_metrics": platform_metrics,
         "engagement_rate": round((total_engagement / max(total_followers, 1)) * 100, 2),
         "reach_rate": round((total_reach / max(total_impressions, 1)) * 100, 2),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Cache the results
     cache_data = {"overview": overview}
@@ -202,7 +211,8 @@ async def get_platform_analytics(platform: str):
             insights["engagement_rate"] = round(
                 (insights.get("engagement", 0) / max(insights.get("followers", 1), 1)) * 100,
                 2,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             insights["story_views"] = insights.get("story_views", 0)
         elif platform == "tiktok":
             # TikTok - specific metrics
@@ -220,7 +230,8 @@ async def get_platform_analytics(platform: str):
             # Pinterest - specific metrics
             insights["monthly_views"] = insights.get(
                 "monthly_views", insights.get("impressions", 0)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             insights["pin_clicks"] = insights.get("pin_clicks", insights.get("engagement", 0))
         elif platform == "reddit":
             # Reddit - specific metrics
@@ -231,7 +242,8 @@ async def get_platform_analytics(platform: str):
             "platform": platform,
             "insights": insights,
             "last_updated": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -253,19 +265,23 @@ async def get_platform_comparison():
                         "engagement": insights.get(
                             "engagement",
                             insights.get("saves", insights.get("karma", 0)),
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "engagement_rate": round(
                             (insights.get("engagement", 0) / max(insights.get("followers", 1), 1))
                             * 100,
                             2,
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                         "status": "active",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                 else:
                     comparison[platform] = {
                         "status": "error",
                         "error": insights.get("error", "Unknown error"),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             except Exception as e:
                 comparison[platform] = {"status": "error", "error": str(e)}
         else:
@@ -287,26 +303,32 @@ async def get_trends_analysis():
                 "linkedin": {"7d": "+3.4%", "30d": "+12.6%"},
                 "pinterest": {"7d": "+1.8%", "30d": "+7.2%"},
                 "reddit": {"7d": "+0.9%", "30d": "+4.1%"},
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "engagement_trends": {
                 "best_performing_platform": "tiktok",
                 "highest_engagement_rate": "instagram",
                 "fastest_growing": "tiktok",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "content_performance": {
                 "top_content_type": "video",
                 "best_posting_time": "18:00 - 20:00",
                 "optimal_frequency": "2 - 3 posts / day",
-            },
-        },
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         },
         "recommendations": [
             "Focus more content on TikTok for growth",
             "Maintain Instagram engagement with stories",
             "Cross - post successful content to Facebook",
             "Use LinkedIn for professional content",
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "last_updated": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.post("/refresh")
@@ -323,7 +345,8 @@ async def refresh_analytics_cache():
         "message": "Analytics cache refreshed",
         "timestamp": datetime.now().isoformat(),
         "overview": overview,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/health")
@@ -335,4 +358,5 @@ async def analytics_health():
         "platforms_configured": sum(1 for client in clients.values() if client.ready()),
         "cache_exists": os.path.exists(ANALYTICS_CACHE_FILE),
         "timestamp": datetime.now().isoformat(),
-    }
+# BRACKET_SURGEON: disabled
+#     }

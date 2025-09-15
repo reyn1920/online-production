@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
+""""""
 Main Application - Integrated AI Platform
 Combines RouteLL, free API fallback, web AI platforms, avatar generation,
 and always - available ChatGPT, Gemini, and Abacus AI integration
-"""
+""""""
 
 import asyncio
 import json
@@ -33,7 +33,9 @@ from core_ai_integration import (
     get_ai_context,
     AIPlatform,
     AIResponse,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 from utils.credit_optimizer import CreditOptimizer
 from utils.rate_limiter import RateLimiter
@@ -46,7 +48,9 @@ from services.avatar_generation_service import (
     AvatarQuality,
     AvatarRequest,
     AvatarStyle,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 
 
 class IntegratedAIPlatform:
@@ -88,7 +92,8 @@ class IntegratedAIPlatform:
             "credits_used": 0.0,
             "credits_saved": 0.0,
             "session_start": datetime.now(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Enhanced service health status with AI platforms
         self.service_health = {
@@ -100,7 +105,8 @@ class IntegratedAIPlatform:
             "gemini": "available",
             "abacus_ai": "available",
             "core_ai_integration": "active",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Log AI platform URLs
         ai_status = self.core_ai.get_platform_status()
@@ -118,8 +124,8 @@ class IntegratedAIPlatform:
 
         # Get AI insights from all platforms
         task_content = f"Task: {task}\nContent: {content}\nPlease provide analysis"
-        ai_prompt = task_content + " \
-    and recommendations."
+        ai_prompt = task_content + " \"
+#     and recommendations."
         ai_responses = await ask_all_ai(ai_prompt, task_type)
 
         # Update statistics
@@ -138,13 +144,16 @@ class IntegratedAIPlatform:
             "ai_insights": ai_responses,
             "enhanced_context": get_ai_context(
                 {"task": task, "content_length": len(content)}
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def get_ai_recommendation(
         self, query: str, platform: AIPlatform = AIPlatform.CHATGPT
-    ) -> AIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> AIResponse:
         """Get a recommendation from a specific AI platform"""
         self.logger.info(f"Getting AI recommendation from {platform.value}")
         response = await ask_ai(query, platform, "recommendation")
@@ -185,13 +194,15 @@ class IntegratedAIPlatform:
             "analysis_type": analysis_type,
             "content_analyzed": (
                 content[:200] + "..." if len(content) > 200 else content
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "ai_insights": ai_responses,
             "consensus_points": self._extract_consensus(ai_responses),
             "unique_insights": self._extract_unique_insights(ai_responses),
             "timestamp": datetime.now().isoformat(),
             "platforms_used": list(ai_responses.keys()),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return analysis_report
 
@@ -203,7 +214,9 @@ class IntegratedAIPlatform:
         # Look for common themes or keywords
         all_responses = [
             resp.content.lower() for resp in ai_responses.values() if resp.success
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         common_words = [
             "optimize",
@@ -212,12 +225,16 @@ class IntegratedAIPlatform:
             "recommend",
             "suggest",
             "consider",
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         for word in common_words:
             if sum(1 for response in all_responses if word in response) >= 2:
                 consensus_points.append(
                     f"Multiple AI platforms suggest focusing on: {word}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return consensus_points[:5]  # Limit to top 5 consensus points
 
@@ -249,7 +266,8 @@ class IntegratedAIPlatform:
             "uptime_seconds": (
                 datetime.now() - base_stats["session_start"]
             ).total_seconds(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return enhanced_stats
 
@@ -261,8 +279,12 @@ class IntegratedAIPlatform:
             handlers=[
                 logging.StreamHandler(),
                 logging.FileHandler("logs/main_app.log"),
-            ],
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     async def initialize(self):
         """Initialize all services and perform health checks"""
@@ -293,7 +315,9 @@ class IntegratedAIPlatform:
                 routell_health = await self.routell_client.health_check()
                 self.service_health["routell"] = (
                     "healthy" if routell_health.get("status") == "healthy" else "error"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.service_health["routell"] = "available"
         except Exception as e:
@@ -306,7 +330,9 @@ class IntegratedAIPlatform:
                 fallback_health = await self.fallback_system.health_check()
                 self.service_health["fallback"] = (
                     "healthy" if fallback_health.get("status") == "healthy" else "error"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.service_health["fallback"] = "available"
         except Exception as e:
@@ -319,7 +345,9 @@ class IntegratedAIPlatform:
                 web_ai_health = await self.web_ai_client.health_check()
                 self.service_health["web_ai"] = (
                     "healthy" if web_ai_health.get("status") == "healthy" else "error"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 self.service_health["web_ai"] = "available"
         except Exception as e:
@@ -332,12 +360,16 @@ class IntegratedAIPlatform:
                 avatar_health = await self.avatar_service.health_check()
                 self.service_health["avatar_service"] = (
                     "healthy" if avatar_health else "error"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 avatar_health = await self.avatar_service.get_service_analytics()
                 self.service_health["avatar_service"] = (
                     "healthy" if avatar_health else "error"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except Exception as e:
             self.logger.warning(f"Avatar service health check failed: {e}")
             self.service_health["avatar_service"] = "error"
@@ -351,8 +383,9 @@ class IntegratedAIPlatform:
         use_fallback: bool = True,
         use_web_ai: bool = False,
         web_platform: WebAIPlatform = None,
-    ) -> APIResponse:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> APIResponse:
+        """"""
         Intelligent chat completion with automatic fallback
 
         Args:
@@ -364,7 +397,7 @@ class IntegratedAIPlatform:
 
         Returns:
             API response with completion
-        """
+        """"""
         start_time = time.time()
         self.platform_stats["total_requests"] += 1
 
@@ -380,18 +413,24 @@ class IntegratedAIPlatform:
                         timestamp=datetime.now().isoformat(),
                         error="Rate limit exceeded",
                         response_time_ms=int((time.time() - start_time) * 1000),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Try web AI first if requested
             if use_web_ai:
                 return await self._try_web_ai_completion(
                     messages, web_platform, start_time
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Try RouteLL first
             routell_response = await self._try_routell_completion(
                 messages, model, start_time
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if routell_response.success:
                 return routell_response
 
@@ -413,7 +452,9 @@ class IntegratedAIPlatform:
                 timestamp=datetime.now().isoformat(),
                 error="All services unavailable",
                 response_time_ms=int((time.time() - start_time) * 1000),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             self.logger.error(f"Chat completion failed: {e}")
@@ -426,11 +467,14 @@ class IntegratedAIPlatform:
                 timestamp=datetime.now().isoformat(),
                 error=str(e),
                 response_time_ms=int((time.time() - start_time) * 1000),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def _try_routell_completion(
         self, messages: List[Dict], model: str, start_time: float
-    ) -> APIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> APIResponse:
         """Try RouteLL completion"""
         try:
             self.logger.info("Attempting RouteLL completion")
@@ -443,7 +487,9 @@ class IntegratedAIPlatform:
                 self.platform_stats["credits_used"] += response.credits_used or 0
                 self.logger.info(
                     f"RouteLL completion successful, credits used: {response.credits_used}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return response
 
@@ -457,11 +503,14 @@ class IntegratedAIPlatform:
                 timestamp=datetime.now().isoformat(),
                 error=f"RouteLL error: {str(e)}",
                 response_time_ms=int((time.time() - start_time) * 1000),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def _try_fallback_completion(
         self, messages: List[Dict], start_time: float
-    ) -> APIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> APIResponse:
         """Try fallback completion"""
         try:
             self.logger.info("Attempting fallback completion")
@@ -477,7 +526,9 @@ class IntegratedAIPlatform:
 
                 self.logger.info(
                     f"Fallback completion successful with {fallback_response.provider}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 return APIResponse(
                     success=True,
@@ -487,7 +538,9 @@ class IntegratedAIPlatform:
                     model_used=fallback_response.model or "fallback",
                     provider=fallback_response.provider,
                     fallback_used=True,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 return APIResponse(
                     success=False,
@@ -498,7 +551,9 @@ class IntegratedAIPlatform:
                     error=f"Fallback error: {fallback_response.error}",
                     response_time_ms=int((time.time() - start_time) * 1000),
                     fallback_used=True,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.logger.warning(f"Fallback completion failed: {e}")
@@ -511,11 +566,14 @@ class IntegratedAIPlatform:
                 error=f"Fallback error: {str(e)}",
                 response_time_ms=int((time.time() - start_time) * 1000),
                 fallback_used=True,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def _try_web_ai_completion(
         self, messages: List[Dict], platform: WebAIPlatform, start_time: float
-    ) -> APIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> APIResponse:
         """Try web AI completion"""
         try:
             platform = platform or WebAIPlatform.CHATGPT
@@ -541,7 +599,9 @@ class IntegratedAIPlatform:
                     model_used=f"web-{platform.value}",
                     provider=platform.value,
                     fallback_used=True,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 return APIResponse(
                     success=False,
@@ -552,7 +612,9 @@ class IntegratedAIPlatform:
                     error=f"Web AI error: {response.error}",
                     response_time_ms=int((time.time() - start_time) * 1000),
                     provider=platform.value,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.logger.warning(f"Web AI completion failed: {e}")
@@ -564,7 +626,9 @@ class IntegratedAIPlatform:
                 timestamp=datetime.now().isoformat(),
                 error=f"Web AI error: {str(e)}",
                 response_time_ms=int((time.time() - start_time) * 1000),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def generate_avatar(
         self,
@@ -572,8 +636,9 @@ class IntegratedAIPlatform:
         style: AvatarStyle = AvatarStyle.REALISTIC,
         quality: AvatarQuality = AvatarQuality.STANDARD,
         use_multi_platform: bool = False,
-    ) -> Dict:
-        """
+# BRACKET_SURGEON: disabled
+#     ) -> Dict:
+        """"""
         Generate avatar using the avatar generation service
 
         Args:
@@ -584,7 +649,7 @@ class IntegratedAIPlatform:
 
         Returns:
             Avatar generation result
-        """
+        """"""
         try:
             self.logger.info(f"Generating avatar: {description}")
 
@@ -593,7 +658,9 @@ class IntegratedAIPlatform:
                 style=style,
                 quality=quality,
                 use_multi_platform=use_multi_platform,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             result = await self.avatar_service.generate_avatar(request)
 
@@ -614,7 +681,9 @@ class IntegratedAIPlatform:
         """Get comprehensive platform analytics"""
         session_duration = (
             datetime.now() - self.platform_stats["session_start"]
-        ).total_seconds()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).total_seconds()
 
         # Get service - specific analytics
         try:
@@ -636,30 +705,37 @@ class IntegratedAIPlatform:
                 "success_rate": (
                     self.platform_stats["successful_requests"]
                     / max(self.platform_stats["total_requests"], 1)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 * 100,
                 "requests_per_minute": (
                     self.platform_stats["total_requests"]
                     / max(session_duration / 60, 1)
-                ),
-            },
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             },
             "service_usage": {
                 "routell_requests": self.platform_stats["routell_requests"],
                 "fallback_requests": self.platform_stats["fallback_requests"],
                 "web_ai_requests": self.platform_stats["web_ai_requests"],
                 "avatar_generations": self.platform_stats["avatar_generations"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "cost_analysis": {
                 "credits_used": self.platform_stats["credits_used"],
                 "credits_saved": self.platform_stats["credits_saved"],
                 "estimated_cost_usd": self.platform_stats["credits_used"]
                 * 0.01,  # Rough estimate
                 "estimated_savings_usd": self.platform_stats["credits_saved"] * 0.01,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "service_health": self.service_health,
             "avatar_service_analytics": avatar_analytics,
             "fallback_analytics": fallback_analytics,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return analytics
 
@@ -679,10 +755,13 @@ class IntegratedAIPlatform:
             # Log final statistics
             final_analytics = await self.get_platform_analytics()
             self.logger.info(
-                f"Final platform analytics: {json.dumps(final_analytics,
+                f"Final platform analytics: {json.dumps(final_analytics,"
     indent = 2,
-    default = str)}"
-            )
+# BRACKET_SURGEON: disabled
+#     default = str)}""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self.logger.info("Platform cleanup completed successfully")
 
@@ -721,8 +800,11 @@ async def main():
             {
                 "role": "user",
                 "content": "Hello! Can you help me with a coding question?",
-            }
-        ]
+# BRACKET_SURGEON: disabled
+#             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         response = await platform.chat_completion(messages, use_web_ai=False)
         print(f"   Success: {response.success}")
@@ -737,12 +819,17 @@ async def main():
             {
                 "role": "user",
                 "content": "What are the best practices for avatar design?",
-            }
-        ]
+# BRACKET_SURGEON: disabled
+#             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         web_response = await platform.chat_completion(
             web_messages, use_web_ai=True, web_platform=WebAIPlatform.CHATGPT
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(f"   Success: {web_response.success}")
         print(f"   Provider: {web_response.provider}")
         if web_response.success:
@@ -754,7 +841,9 @@ async def main():
             description="A professional software engineer with a friendly demeanor",
             style=AvatarStyle.PROFESSIONAL,
             quality=AvatarQuality.HIGH,
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         print(f"   Success: {avatar_result['success']}")
         if avatar_result["success"]:
@@ -769,7 +858,9 @@ async def main():
             style=AvatarStyle.CYBERPUNK,
             quality=AvatarQuality.PREMIUM,
             use_multi_platform=True,
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         print(f"   Success: {multi_avatar_result['success']}")
         if multi_avatar_result["success"]:

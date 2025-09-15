@@ -12,11 +12,14 @@ REQUIREMENTS_FILE = "requirements_creative.txt"
 HOMEBREW_URL = "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 
 # System dependencies required by Python packages (key: package name,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
 # value: brew formula)
 SYS_DEPS = {
     "py3exiv2": "boost",
     # Add other known system dependencies here
-}
+# BRACKET_SURGEON: disabled
+# }
 
 # --- Doctor Script ---
 
@@ -26,7 +29,9 @@ def check_command(command):
     return (
         subprocess.run(["which", command], capture_output=True, text=True).returncode
         == 0
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 def check_prerequisites():
@@ -35,10 +40,14 @@ def check_prerequisites():
     if not check_command("brew"):
         logging.error(
             "Homebrew is not installed. It is required to install system libraries."
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         logging.info(
             "Please install Homebrew by running the following command, then run this script again:"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(f'\\n/bin/bash -c "$(curl -fsSL {HOMEBREW_URL})"\\n')
         return False
     logging.info("✅ Homebrew is installed.")
@@ -53,7 +62,9 @@ def check_system_libraries():
         logging.info(f"-> Checking for '{formula}' (required by '{pkg}')...")
         result = subprocess.run(
             ["brew", "list", formula], capture_output=True, text=True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if result.returncode != 0:
             missing_libs.append(formula)
 
@@ -61,7 +72,9 @@ def check_system_libraries():
         logging.error("The following required system libraries are missing.")
         logging.info(
             "Please install them by running this command, then run this script again:"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(f"\\nbrew install {' '.join(missing_libs)}\\n")
         return False
 
@@ -88,7 +101,9 @@ def install_dependencies():
     """Installs Python packages from the requirements file."""
     logging.info(
         f"Step 4: Installing creative dependencies from '{REQUIREMENTS_FILE}'..."
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     pip_executable = os.path.join(VENV_PATH, "bin", "pip")
 
     # It is critical to first upgrade pip inside the new venv
@@ -98,7 +113,9 @@ def install_dependencies():
         command = [pip_executable, "install", "-r", REQUIREMENTS_FILE]
         process = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Stream output in real - time
         for line in iter(process.stdout.readline, ""):
@@ -115,13 +132,18 @@ def install_dependencies():
         return True
     except subprocess.CalledProcessError as e:
         logging.error(
-            f"Failed to install dependencies. pip exited with status {
-                e.returncode}."
-        )
+            f"Failed to install dependencies. pip exited with status {"
+# BRACKET_SURGEON: disabled
+#                 e.returncode}.""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         logging.error(
-            f"Please check the error messages above. You may need to modify '{REQUIREMENTS_FILE}' to resolve version conflicts \
-    or remove incompatible packages like 'open3d'."
-        )
+            f"Please check the error messages above. You may need to modify '{REQUIREMENTS_FILE}' to resolve version conflicts \"
+#     or remove incompatible packages like 'open3d'."
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return False
 
 

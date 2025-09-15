@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Performance Monitor - Real - time performance tracking and automatic scaling
 
 This module provides comprehensive performance monitoring for the automated model
@@ -15,7 +15,7 @@ Features:
 - Historical performance analysis
 - Bottleneck detection and optimization
 - Load prediction and capacity planning
-"""
+""""""
 
 import asyncio
 import json
@@ -75,7 +75,7 @@ class PerformanceMetric:
     metric_type: MetricType
     value: float
     timestamp: float
-    tags: Dict[str, str] = field(default_factory = dict)
+    tags: Dict[str, str] = field(default_factory = dict):
     metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
@@ -169,9 +169,12 @@ class MetricsCollector:
             # Filter metrics within time window
             recent_metrics = [
                 m for m in self.metrics[metric_name] if m.timestamp >= cutoff_time
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             if not recent_metrics:
+                pass
         return {}
 
             values = [m.value for m in recent_metrics]
@@ -186,12 +189,14 @@ class MetricsCollector:
             "p95": self._percentile(values, 0.95),
             "p99": self._percentile(values, 0.99),
             "rate_per_second": len(values) / time_window,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def _percentile(self, values: List[float], percentile: float) -> float:
         """Calculate percentile"""
         if not values:
+            pass
         return 0
         sorted_values = sorted(values)
         index = int(len(sorted_values) * percentile)
@@ -216,7 +221,9 @@ class ResourceMonitor:
         self.monitoring = True
         self.monitor_thread = threading.Thread(
             target = self._monitor_loop, args=(interval,), daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.monitor_thread.start()
         logging.getLogger(__name__).info("Resource monitoring started")
 
@@ -252,8 +259,12 @@ class ResourceMonitor:
                     metric_type = MetricType.GAUGE,
                     value = cpu_percent,
                     timestamp = timestamp,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Memory metrics
         memory = psutil.virtual_memory()
@@ -263,8 +274,12 @@ class ResourceMonitor:
                     metric_type = MetricType.GAUGE,
                     value = memory.percent,
                     timestamp = timestamp,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.metrics_collector.record_metric(
             PerformanceMetric(
@@ -272,8 +287,12 @@ class ResourceMonitor:
                     metric_type = MetricType.GAUGE,
                     value = memory.available/(1024**3),
                     timestamp = timestamp,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Disk metrics
         disk = psutil.disk_usage("/")
@@ -283,8 +302,12 @@ class ResourceMonitor:
                     metric_type = MetricType.GAUGE,
                     value=(disk.used / disk.total) * 100,
                     timestamp = timestamp,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Network metrics
         network = psutil.net_io_counters()
@@ -294,8 +317,12 @@ class ResourceMonitor:
                     metric_type = MetricType.COUNTER,
                     value = network.bytes_sent,
                     timestamp = timestamp,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.metrics_collector.record_metric(
             PerformanceMetric(
@@ -303,8 +330,12 @@ class ResourceMonitor:
                     metric_type = MetricType.COUNTER,
                     value = network.bytes_recv,
                     timestamp = timestamp,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
 class AlertManager:
@@ -327,7 +358,8 @@ class AlertManager:
             condition: str = "greater_than",
             time_window: int = 300,
             min_samples: int = 3,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Add an alert rule"""
         self.alert_rules[metric_name] = {
             "threshold": threshold,
@@ -335,7 +367,8 @@ class AlertManager:
             "condition": condition,
             "time_window": time_window,
             "min_samples": min_samples,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def add_notification_callback(self, callback: Callable):
@@ -356,7 +389,9 @@ class AlertManager:
         """Check alert for specific metric"""
         stats = self.metrics_collector.get_metric_stats(
             metric_name, rule["time_window"]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if not stats or stats["count"] < rule["min_samples"]:
             return
@@ -387,7 +422,9 @@ class AlertManager:
                         threshold = threshold,
                         current_value = current_value,
                         timestamp = time.time(),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 self.active_alerts[alert_id] = alert
                 self.alert_history.append(alert)
@@ -432,7 +469,8 @@ class AutoScaler:
             min_capacity: int = 1,
             max_capacity: int = 10,
             scaling_factor: float = 1.5,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Add auto - scaling rule"""
         self.scaling_rules[resource_type] = {
             "scale_up_threshold": scale_up_threshold,
@@ -441,7 +479,8 @@ class AutoScaler:
             "min_capacity": min_capacity,
             "max_capacity": max_capacity,
             "scaling_factor": scaling_factor,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def evaluate_scaling(:
@@ -454,7 +493,9 @@ class AutoScaler:
             try:
                 recommendation = self._evaluate_resource_scaling(
                     resource_type, rule, current_capacities.get(resource_type, 1)
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if recommendation:
                     recommendations.append(recommendation)
             except Exception as e:
@@ -470,11 +511,13 @@ class AutoScaler:
         # Check if enough time has passed since last scaling
         last_scaling = self.last_scaling_time.get(resource_type, 0)
         if time.time() - last_scaling < self.min_scaling_interval:
+            pass
         return None
 
         # Get metric statistics
         stats = self.metrics_collector.get_metric_stats(rule["metric_name"])
         if not stats:
+            pass
         return None
 
         current_value = stats["mean"]
@@ -489,29 +532,39 @@ class AutoScaler:
         if (
             current_value > scale_up_threshold
             and current_capacity < rule["max_capacity"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             # Scale up
             action = ScalingAction.SCALE_UP
             recommended_capacity = min(
                 int(current_capacity * rule["scaling_factor"]), rule["max_capacity"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             confidence = min(
                 (current_value - scale_up_threshold) / scale_up_threshold, 1.0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             reasoning = f"Metric {rule['metric_name']} ({current_value:.2f}) exceeds scale - up threshold ({scale_up_threshold})"
 
         elif (
             current_value < scale_down_threshold
             and current_capacity > rule["min_capacity"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             # Scale down
             action = ScalingAction.SCALE_DOWN
             recommended_capacity = max(
                 int(current_capacity / rule["scaling_factor"]), rule["min_capacity"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             confidence = min(
                 (scale_down_threshold - current_value) / scale_down_threshold, 1.0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             reasoning = f"Metric {rule['metric_name']} ({current_value:.2f}) below scale - down threshold ({scale_down_threshold})"
 
         if action != ScalingAction.MAINTAIN:
@@ -525,9 +578,12 @@ class AutoScaler:
                     reasoning = reasoning,
                     estimated_impact = self._estimate_scaling_impact(
                     current_capacity, recommended_capacity, stats
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     timestamp = time.time(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             self.scaling_history.append(recommendation)
             self.last_scaling_time[resource_type] = time.time()
@@ -548,7 +604,8 @@ class AutoScaler:
             "latency_change_percent": (1 / capacity_ratio - 1) * 100,
             "cost_change_percent": (capacity_ratio - 1) * 100,
             "reliability_improvement": min(capacity_ratio * 0.1, 0.5),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 class PerformanceMonitor:
@@ -581,7 +638,7 @@ class PerformanceMonitor:
 
             # Performance metrics table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS performance_metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
@@ -591,13 +648,17 @@ class PerformanceMonitor:
                         tags TEXT,
                         metadata TEXT,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Performance alerts table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS performance_alerts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         alert_id TEXT UNIQUE NOT NULL,
@@ -610,13 +671,17 @@ class PerformanceMonitor:
                         resolved BOOLEAN DEFAULT FALSE,
                         resolution_time REAL,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Scaling recommendations table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS scaling_recommendations (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         recommendation_id TEXT UNIQUE NOT NULL,
@@ -630,13 +695,17 @@ class PerformanceMonitor:
                         timestamp REAL NOT NULL,
                         applied BOOLEAN DEFAULT FALSE,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Performance reports table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS performance_reports (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         report_id TEXT UNIQUE NOT NULL,
@@ -649,21 +718,32 @@ class PerformanceMonitor:
                         overall_health_score REAL,
                         trends TEXT,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Create indexes
             cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_metrics_name_timestamp ON performance_metrics(name,
-    timestamp)"
-            )
+                "CREATE INDEX IF NOT EXISTS idx_metrics_name_timestamp ON performance_metrics(name,"
+# BRACKET_SURGEON: disabled
+#     timestamp)""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_alerts_timestamp ON performance_alerts(timestamp)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_scaling_timestamp ON scaling_recommendations(timestamp)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.commit()
 
@@ -673,34 +753,50 @@ class PerformanceMonitor:
         # CPU usage alerts
         self.alert_manager.add_alert_rule(
             "system.cpu.usage_percent", 80.0, AlertSeverity.WARNING
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.alert_manager.add_alert_rule(
             "system.cpu.usage_percent", 95.0, AlertSeverity.CRITICAL
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Memory usage alerts
         self.alert_manager.add_alert_rule(
             "system.memory.usage_percent", 85.0, AlertSeverity.WARNING
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.alert_manager.add_alert_rule(
             "system.memory.usage_percent", 95.0, AlertSeverity.CRITICAL
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Model generation latency alerts
         self.alert_manager.add_alert_rule(
             "model.generation.latency_ms", 30000.0, AlertSeverity.WARNING
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.alert_manager.add_alert_rule(
             "model.generation.latency_ms", 60000.0, AlertSeverity.CRITICAL
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Error rate alerts
         self.alert_manager.add_alert_rule(
             "model.generation.error_rate", 0.05, AlertSeverity.WARNING
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.alert_manager.add_alert_rule(
             "model.generation.error_rate", 0.10, AlertSeverity.CRITICAL
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def _setup_default_scaling(self):
@@ -714,7 +810,9 @@ class PerformanceMonitor:
                 min_capacity = 1,
                 max_capacity = 8,
                 scaling_factor = 1.5,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # API server scaling
         self.auto_scaler.add_scaling_rule(
@@ -725,7 +823,9 @@ class PerformanceMonitor:
                 min_capacity = 1,
                 max_capacity = 5,
                 scaling_factor = 2.0,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def start_monitoring(self):
@@ -741,7 +841,9 @@ class PerformanceMonitor:
         # Start main monitoring loop
         self.monitor_thread = threading.Thread(
             target = self._monitoring_loop, daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.monitor_thread.start()
 
         logging.getLogger(__name__).info("Performance monitoring started")
@@ -781,7 +883,8 @@ class PerformanceMonitor:
 
     def record_model_generation_metric(:
         self, generation_time_ms: float, success: bool, model_type: str
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Record model generation performance metric"""
         timestamp = time.time()
 
@@ -793,8 +896,12 @@ class PerformanceMonitor:
                     value = generation_time_ms,
                     timestamp = timestamp,
                     tags={"model_type": model_type, "success": str(success)},
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Record success / failure
         self.metrics_collector.record_metric(
@@ -804,8 +911,12 @@ class PerformanceMonitor:
                     value = 1,
                     timestamp = timestamp,
                     tags={"model_type": model_type},
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         if not success:
             self.metrics_collector.record_metric(
@@ -815,13 +926,18 @@ class PerformanceMonitor:
                         value = 1,
                         timestamp = timestamp,
                         tags={"model_type": model_type},
-                        )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def record_api_request_metric(:
         self, endpoint: str, response_time_ms: float, status_code: int
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Record API request performance metric"""
         timestamp = time.time()
 
@@ -833,8 +949,12 @@ class PerformanceMonitor:
                     value = 1,
                     timestamp = timestamp,
                     tags={"endpoint": endpoint, "status_code": str(status_code)},
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Record response time
         self.metrics_collector.record_metric(
@@ -844,8 +964,12 @@ class PerformanceMonitor:
                     value = response_time_ms,
                     timestamp = timestamp,
                     tags={"endpoint": endpoint},
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Calculate requests per second
         recent_requests = len(
@@ -853,8 +977,12 @@ class PerformanceMonitor:
                 m
                 for m in self.metrics_collector.metrics["api.requests_total"]
                 if m.timestamp >= timestamp - 60  # Last minute
-            ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.metrics_collector.record_metric(
             PerformanceMetric(
@@ -862,8 +990,12 @@ class PerformanceMonitor:
                     metric_type = MetricType.GAUGE,
                     value = recent_requests / 60.0,
                     timestamp = timestamp,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def get_scaling_recommendations(:
@@ -880,7 +1012,8 @@ class PerformanceMonitor:
 
     def generate_performance_report(:
         self, start_time: float, end_time: float
-    ) -> PerformanceReport:
+# BRACKET_SURGEON: disabled
+#     ) -> PerformanceReport:
         """Generate comprehensive performance report"""
         report_id = f"perf_report_{int(time.time())}"
 
@@ -899,7 +1032,9 @@ class PerformanceMonitor:
             alert
             for alert in self.alert_manager.alert_history
             if start_time <= alert.timestamp <= end_time
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         # Calculate overall health score
         health_score = self._calculate_health_score(metrics_summary, alerts)
@@ -917,7 +1052,9 @@ class PerformanceMonitor:
                 alerts = alerts,
                 overall_health_score = health_score,
                 trends = trends,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Store report in database
         self._store_performance_report(report)
@@ -937,12 +1074,16 @@ class PerformanceMonitor:
                 "model.generation.latency_ms",
                 "api.response_time_ms",
                 "api.requests_per_second",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for metric_name in key_metrics:
             stats = self.metrics_collector.get_metric_stats(
                 metric_name, int(end_time - start_time)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if stats:
                 summary[metric_name] = stats
 
@@ -958,7 +1099,9 @@ class PerformanceMonitor:
         # Check CPU bottleneck
         cpu_stats = self.metrics_collector.get_metric_stats(
             "system.cpu.usage_percent", int(end_time - start_time)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if cpu_stats and cpu_stats["mean"] > 80:
             bottlenecks.append(
                 {
@@ -966,13 +1109,18 @@ class PerformanceMonitor:
             "severity": "high" if cpu_stats["mean"] > 90 else "medium",
             "description": f"High CPU usage: {cpu_stats['mean']:.1f}% average",
             "recommendation": "Consider scaling up compute resources",
-        }
-            )
+# BRACKET_SURGEON: disabled
+#         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Check memory bottleneck
         memory_stats = self.metrics_collector.get_metric_stats(
             "system.memory.usage_percent", int(end_time - start_time)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if memory_stats and memory_stats["mean"] > 85:
             bottlenecks.append(
                 {
@@ -980,13 +1128,18 @@ class PerformanceMonitor:
             "severity": "high" if memory_stats["mean"] > 95 else "medium",
             "description": f"High memory usage: {memory_stats['mean']:.1f}% average",
             "recommendation": "Consider increasing memory allocation",
-        }
-            )
+# BRACKET_SURGEON: disabled
+#         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Check latency bottleneck
         latency_stats = self.metrics_collector.get_metric_stats(
             "model.generation.latency_ms", int(end_time - start_time)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         if latency_stats and latency_stats["p95"] > 30000:  # 30 seconds
             bottlenecks.append(
                 {
@@ -994,15 +1147,19 @@ class PerformanceMonitor:
             "severity": "high" if latency_stats["p95"] > 60000 else "medium",
             "description": f"High generation latency: {latency_stats['p95']:.0f}ms P95",
             "recommendation": "Optimize model generation pipeline",
-        }
-            )
+# BRACKET_SURGEON: disabled
+#         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return bottlenecks
 
 
     def _calculate_health_score(:
         self, metrics_summary: Dict[str, Any], alerts: List[PerformanceAlert]
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate overall system health score (0 - 100)"""
         score = 100.0
 
@@ -1045,7 +1202,8 @@ class PerformanceMonitor:
             "memory_trend": "stable",
             "latency_trend": "stable",
             "throughput_trend": "stable",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # For now, return stable trends
         # TODO: Implement proper trend analysis using time series data
@@ -1066,15 +1224,19 @@ class PerformanceMonitor:
                 for metric_name, metric_deque in self.metrics_collector.metrics.items():
                     recent_metrics = [
                         m for m in metric_deque if m.timestamp >= cutoff_time
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
                     for metric in recent_metrics:
                         cursor.execute(
-                            """
+                            """"""
                             INSERT OR IGNORE INTO performance_metrics (
                                 name, metric_type, value, timestamp, tags, metadata
-                            ) VALUES (?, ?, ?, ?, ?, ?)
-                        """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ) VALUES (?, ?, ?, ?, ?, ?)
+                        ""","""
                             (
                                 metric.name,
                                     metric.metric_type.value,
@@ -1082,8 +1244,11 @@ class PerformanceMonitor:
                                     metric.timestamp,
                                     json.dumps(metric.tags),
                                     json.dumps(metric.metadata),
-                                    ),
-                                )
+# BRACKET_SURGEON: disabled
+#                                     ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                 conn.commit()
 
@@ -1098,12 +1263,14 @@ class PerformanceMonitor:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO performance_reports (
                         report_id, start_time, end_time, metrics_summary,
                             bottlenecks, recommendations, alerts, overall_health_score, trends
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ""","""
                     (
                         report.report_id,
                             report.start_time,
@@ -1118,10 +1285,14 @@ class PerformanceMonitor:
             "recommendation": b["recommendation"],
         except Exception as e:
             pass
-        }
+# BRACKET_SURGEON: disabled
+#         }
                                 for b in report.bottlenecks
-                            ]
-                        ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# BRACKET_SURGEON: disabled
+#                         ),
                             json.dumps(
                             [
                                 {
@@ -1132,10 +1303,14 @@ class PerformanceMonitor:
             "recommended_capacity": r.recommended_capacity,
             "confidence": r.confidence,
             "reasoning": r.reasoning,
-        }
+# BRACKET_SURGEON: disabled
+#         }
                                 for r in report.recommendations
-                            ]
-                        ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# BRACKET_SURGEON: disabled
+#                         ),
                             json.dumps(
                             [
                                 {
@@ -1144,14 +1319,21 @@ class PerformanceMonitor:
             "severity": a.severity.value,
             "message": a.message,
             "timestamp": a.timestamp,
-        }
+# BRACKET_SURGEON: disabled
+#         }
                                 for a in report.alerts
-                            ]
-                        ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# BRACKET_SURGEON: disabled
+#                         ),
                             report.overall_health_score,
                             json.dumps(report.trends),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 conn.commit()
 
@@ -1176,18 +1358,23 @@ def stop_performance_monitoring():
 
 def record_model_generation(:
     generation_time_ms: float, success: bool, model_type: str = "default"
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Record model generation performance"""
     performance_monitor.record_model_generation_metric(
         generation_time_ms, success, model_type
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 def record_api_request(endpoint: str, response_time_ms: float, status_code: int):
     """Record API request performance"""
     performance_monitor.record_api_request_metric(
         endpoint, response_time_ms, status_code
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 def get_current_performance_status() -> Dict[str, Any]:
@@ -1196,14 +1383,18 @@ def get_current_performance_status() -> Dict[str, Any]:
         "active_alerts": len(performance_monitor.get_active_alerts()),
             "cpu_usage": performance_monitor.metrics_collector.get_metric_stats(
             "system.cpu.usage_percent"
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
             "memory_usage": performance_monitor.metrics_collector.get_metric_stats(
             "system.memory.usage_percent"
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
             "generation_latency": performance_monitor.metrics_collector.get_metric_stats(
             "model.generation.latency_ms"
-        ),
-            }
+# BRACKET_SURGEON: disabled
+#         ),
+# BRACKET_SURGEON: disabled
+#             }
 
 if __name__ == "__main__":
     # Example usage

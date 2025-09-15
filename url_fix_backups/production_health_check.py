@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Production Readiness Health Check
 Verifies all systems are ready for 100% automated go - live
-"""
+""""""
 
 import json
 import os
@@ -143,7 +143,8 @@ def main():
         ("Environment Config", config_ok),
         ("CI / CD Pipeline", cicd_ok),
         ("Security Setup", security_ok),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     passed_checks = sum(1 for _, status in all_checks if status)
     total_checks = len(all_checks)

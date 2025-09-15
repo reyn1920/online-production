@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Zero - Cost Monitoring Stack
 
 Implements comprehensive monitoring and analytics using:
@@ -9,7 +9,7 @@ Implements comprehensive monitoring and analytics using:
 - Performance tracking and alerting
 - Resource usage monitoring
 - Health checks and uptime monitoring
-"""
+""""""
 
 import json
 import logging
@@ -36,7 +36,8 @@ try:
         generate_latest,
         push_to_gateway,
         start_http_server,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     PROMETHEUS_AVAILABLE = True
 except ImportError:
@@ -79,7 +80,7 @@ class MetricDefinition:
     name: str
     metric_type: MetricType
     description: str
-    labels: List[str] = field(default_factory=list)
+    labels: List[str] = field(default_factory=list):
     buckets: Optional[List[float]] = None  # For histograms
     unit: Optional[str] = None
 
@@ -94,7 +95,7 @@ class AlertRule:
     severity: AlertSeverity
     description: str
     duration: int = 300  # Seconds
-    labels: Dict[str, str] = field(default_factory=dict)
+    labels: Dict[str, str] = field(default_factory=dict):
 
 
 @dataclass
@@ -107,7 +108,7 @@ class MonitoringConfig:
     retention_days: int = 15
     enable_push_gateway: bool = False
     push_gateway_url: Optional[str] = None
-    grafana_config: Dict[str, Any] = field(default_factory=dict)
+    grafana_config: Dict[str, Any] = field(default_factory=dict):
     alert_rules: List[AlertRule] = field(default_factory=list)
     custom_metrics: List[MetricDefinition] = field(default_factory=list)
     enable_system_metrics: bool = True
@@ -144,32 +145,39 @@ class MetricsCollector:
                         "system_cpu_usage_percent",
                         "System CPU usage percentage",
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "system_memory_usage": Gauge(
                         "system_memory_usage_bytes",
                         "System memory usage in bytes",
                         ["type"],
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "system_disk_usage": Gauge(
                         "system_disk_usage_bytes",
                         "System disk usage in bytes",
                         ["device", "type"],
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "system_network_io": Counter(
                         "system_network_io_bytes_total",
                         "System network I/O in bytes",
                         ["direction"],
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "system_uptime": Gauge(
                         "system_uptime_seconds",
                         "System uptime in seconds",
                         registry=self.registry,
-                    ),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Application metrics
         if self.config.enable_application_metrics:
@@ -180,53 +188,63 @@ class MetricsCollector:
                         "Total number of scraping requests",
                         ["method", "status", "source"],
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "scraping_duration": Histogram(
                         "scraping_duration_seconds",
                         "Time spent on scraping requests",
                         ["method", "source"],
                         buckets=[0.1, 0.5, 1.0, 2.5, 5.0, 10.0, 30.0, 60.0],
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "api_discovery_total": Counter(
                         "api_discovery_total",
                         "Total number of APIs discovered",
                         ["source", "category", "status"],
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "api_validation_duration": Histogram(
                         "api_validation_duration_seconds",
                         "Time spent validating APIs",
                         ["source"],
                         buckets=[0.5, 1.0, 2.0, 5.0, 10.0, 30.0],
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "cache_operations": Counter(
                         "cache_operations_total",
                         "Total cache operations",
                         ["operation", "result"],
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "active_connections": Gauge(
                         "active_connections",
                         "Number of active connections",
                         ["type"],
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "error_rate": Counter(
                         "errors_total",
                         "Total number of errors",
                         ["component", "error_type"],
                         registry=self.registry,
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "queue_size": Gauge(
                         "queue_size",
                         "Size of processing queues",
                         ["queue_name"],
                         registry=self.registry,
-                    ),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
     def _initialize_custom_metrics(self):
         """Initialize custom metrics from configuration"""
@@ -241,14 +259,16 @@ class MetricsCollector:
                         metric_def.description,
                         metric_def.labels,
                         registry=self.registry,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif metric_def.metric_type == MetricType.GAUGE:
                     metric = Gauge(
                         metric_def.name,
                         metric_def.description,
                         metric_def.labels,
                         registry=self.registry,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif metric_def.metric_type == MetricType.HISTOGRAM:
                     metric = Histogram(
                         metric_def.name,
@@ -256,14 +276,16 @@ class MetricsCollector:
                         metric_def.labels,
                         buckets=metric_def.buckets,
                         registry=self.registry,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif metric_def.metric_type == MetricType.SUMMARY:
                     metric = Summary(
                         metric_def.name,
                         metric_def.description,
                         metric_def.labels,
                         registry=self.registry,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 elif metric_def.metric_type == MetricType.INFO:
                     metric = Info(metric_def.name, metric_def.description, registry=self.registry)
                 else:
@@ -373,13 +395,16 @@ class MetricsCollector:
                     device = partition.device.replace("/", "_")
                     self.metrics["system_disk_usage"].labels(device=device, type="used").set(
                         usage.used
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     self.metrics["system_disk_usage"].labels(device=device, type="free").set(
                         usage.free
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     self.metrics["system_disk_usage"].labels(device=device, type="total").set(
                         usage.total
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 except (PermissionError, FileNotFoundError):
                     continue
 
@@ -387,10 +412,12 @@ class MetricsCollector:
             network = psutil.net_io_counters()
             self.metrics["system_network_io"].labels(
                 direction="sent"
-            )._value._value = network.bytes_sent
+# BRACKET_SURGEON: disabled
+#             )._value._value = network.bytes_sent
             self.metrics["system_network_io"].labels(
                 direction="recv"
-            )._value._value = network.bytes_recv
+# BRACKET_SURGEON: disabled
+#             )._value._value = network.bytes_recv
 
             # System uptime
             boot_time = psutil.boot_time()
@@ -430,7 +457,7 @@ class MetricsCollector:
     def get_metrics(self) -> str:
         """Get metrics in Prometheus format"""
         if not PROMETHEUS_AVAILABLE:
-            return "# Prometheus not available\\n"
+            return "# Prometheus not available\\n""
 
         return generate_latest(self.registry)
 
@@ -507,7 +534,8 @@ class AlertManager:
                 "is_firing": False,
                 "started_at": None,
                 "last_evaluation": current_time,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         alert_state = self.alert_states[alert_key]
 
@@ -574,7 +602,8 @@ class AlertManager:
             "timestamp": datetime.now(),
             "labels": rule.labels,
             "status": "firing",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.alert_history.append(alert)
 
@@ -589,7 +618,8 @@ class AlertManager:
         self.logger.log(
             log_level,
             f"ALERT FIRING: {rule.name} - {rule.description} (value: {value}, condition: {rule.condition})",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Send alert notification (implement as needed)
         self._send_alert_notification(alert)
@@ -606,7 +636,8 @@ class AlertManager:
             "timestamp": datetime.now(),
             "labels": rule.labels,
             "status": "resolved",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.alert_history.append(alert)
 
@@ -677,11 +708,14 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "system_cpu_usage_percent",
                                 "legendFormat": "CPU %",
-                            }
-                        ],
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         ],
                         "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100}},
                         "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "id": 2,
                         "title": "Memory Usage",
@@ -690,15 +724,19 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "system_memory_usage_bytes{type='used'}",
                                 "legendFormat": "Used",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                             {
                                 "expr": "system_memory_usage_bytes{type='available'}",
                                 "legendFormat": "Available",
-                            },
-                        ],
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         ],
                         "fieldConfig": {"defaults": {"unit": "bytes"}},
                         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "id": 3,
                         "title": "Network I/O",
@@ -707,16 +745,22 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "rate(system_network_io_bytes_total[5m])",
                                 "legendFormat": "{{direction}}",
-                            }
-                        ],
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         ],
                         "fieldConfig": {"defaults": {"unit": "Bps"}},
                         "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8},
-                    },
-                ],
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ],
                 "time": {"from": "now - 1h", "to": "now"},
                 "refresh": "5s",
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         return dashboard
 
@@ -737,10 +781,13 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "rate(scraping_requests_total[5m])",
                                 "legendFormat": "{{method}} - {{status}}",
-                            }
-                        ],
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         ],
                         "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "id": 2,
                         "title": "Scraping Duration",
@@ -749,15 +796,19 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "histogram_quantile(0.95, rate(scraping_duration_seconds_bucket[5m]))",
                                 "legendFormat": "95th percentile",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                             {
                                 "expr": "histogram_quantile(0.50, rate(scraping_duration_seconds_bucket[5m]))",
                                 "legendFormat": "50th percentile",
-                            },
-                        ],
+# BRACKET_SURGEON: disabled
+#                             },
+# BRACKET_SURGEON: disabled
+#                         ],
                         "fieldConfig": {"defaults": {"unit": "s"}},
                         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "id": 3,
                         "title": "API Discovery Rate",
@@ -766,10 +817,13 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "rate(api_discovery_total[5m])",
                                 "legendFormat": "{{source}} - {{category}}",
-                            }
-                        ],
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         ],
                         "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "id": 4,
                         "title": "Error Rate",
@@ -778,10 +832,13 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "rate(errors_total[5m])",
                                 "legendFormat": "{{component}} - {{error_type}}",
-                            }
-                        ],
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         ],
                         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {
                         "id": 5,
                         "title": "Cache Hit Rate",
@@ -790,16 +847,22 @@ class GrafanaDashboardGenerator:
                             {
                                 "expr": "rate(cache_operations_total{result='hit'}[5m])/rate(cache_operations_total[5m]) * 100",
                                 "legendFormat": "Hit Rate %",
-                            }
-                        ],
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         ],
                         "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100}},
                         "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16},
-                    },
-                ],
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 ],
                 "time": {"from": "now - 1h", "to": "now"},
                 "refresh": "5s",
-            }
-        }
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         }
 
         return dashboard
 
@@ -893,13 +956,15 @@ class ZeroCostMonitoringStack:
             system_dashboard = self.dashboard_generator.generate_system_dashboard()
             self.dashboard_generator.save_dashboard(
                 system_dashboard, "grafana_system_dashboard.json"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Generate application dashboard
             app_dashboard = self.dashboard_generator.generate_application_dashboard()
             self.dashboard_generator.save_dashboard(
                 app_dashboard, "grafana_application_dashboard.json"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.logger.info("Generated Grafana dashboards")
 
@@ -916,7 +981,8 @@ class ZeroCostMonitoringStack:
             "active_alerts": len(self.alert_manager.get_active_alerts()),
             "metrics_port": self.config.prometheus_port,
             "uptime": time.time() - getattr(self, "_start_time", time.time()),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def get_metrics_summary(self) -> Dict[str, Any]:
         """Get summary of collected metrics"""
@@ -926,15 +992,17 @@ class ZeroCostMonitoringStack:
         try:
             metrics_text = self.metrics_collector.get_metrics()
             metric_count = len(
-                [line for line in metrics_text.split("\\n") if line and not line.startswith("#")]
-            )
+                [line for line in metrics_text.split("\\n") if line and not line.startswith("#")]"
+# BRACKET_SURGEON: disabled
+#             )
             return {
                 "total_metrics": metric_count,
                 "system_metrics_enabled": self.config.enable_system_metrics,
                 "application_metrics_enabled": self.config.enable_application_metrics,
                 "custom_metrics_count": len(self.metrics_collector.custom_metrics),
                 "scrape_interval": self.config.scrape_interval,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             return {"error": str(e)}
 
@@ -952,7 +1020,8 @@ def create_default_config() -> MonitoringConfig:
             severity=AlertSeverity.WARNING,
             description="CPU usage is above 80%",
             duration=300,
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         AlertRule(
             name="high_error_rate",
             metric_name="errors_total",
@@ -960,7 +1029,8 @@ def create_default_config() -> MonitoringConfig:
             severity=AlertSeverity.ERROR,
             description="Error rate is too high",
             duration=60,
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         AlertRule(
             name="low_cache_hit_rate",
             metric_name="cache_hit_rate",
@@ -968,8 +1038,10 @@ def create_default_config() -> MonitoringConfig:
             severity=AlertSeverity.WARNING,
             description="Cache hit rate is below 50%",
             duration=600,
-        ),
-    ]
+# BRACKET_SURGEON: disabled
+#         ),
+# BRACKET_SURGEON: disabled
+#     ]
 
     custom_metrics = [
         MetricDefinition(
@@ -978,14 +1050,17 @@ def create_default_config() -> MonitoringConfig:
             description="Business revenue metric",
             labels=["source", "currency"],
             unit="currency",
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         MetricDefinition(
             name="user_activity_events",
             metric_type=MetricType.COUNTER,
             description="User activity events",
             labels=["event_type", "user_segment"],
-        ),
-    ]
+# BRACKET_SURGEON: disabled
+#         ),
+# BRACKET_SURGEON: disabled
+#     ]
 
     return MonitoringConfig(
         prometheus_port=8000,
@@ -995,7 +1070,8 @@ def create_default_config() -> MonitoringConfig:
         custom_metrics=custom_metrics,
         enable_system_metrics=True,
         enable_application_metrics=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def save_config(config: MonitoringConfig, filename: str = "monitoring_config.yaml"):
@@ -1018,9 +1094,11 @@ def save_config(config: MonitoringConfig, filename: str = "monitoring_config.yam
                 "description": rule.description,
                 "duration": rule.duration,
                 "labels": rule.labels,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             for rule in config.alert_rules
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "custom_metrics": [
             {
                 "name": metric.name,
@@ -1029,10 +1107,13 @@ def save_config(config: MonitoringConfig, filename: str = "monitoring_config.yam
                 "labels": metric.labels,
                 "buckets": metric.buckets,
                 "unit": metric.unit,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             for metric in config.custom_metrics
-        ],
-    }
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     }
 
     with open(filename, "w") as f:
         yaml.dump(config_dict, f, default_flow_style=False)
@@ -1054,11 +1135,13 @@ if __name__ == "__main__":
         for i in range(10):
             monitoring_stack.metrics_collector.record_scraping_request(
                 method="requests", status="success", source="publicapis", duration=1.5
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             monitoring_stack.metrics_collector.record_api_discovery(
                 source="publicapis", category="weather", status="validated", count=5
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             time.sleep(2)
 

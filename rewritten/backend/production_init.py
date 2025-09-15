@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Production Initialization Module for TRAE.AI
 Initializes all production services and agents
-"""
+""""""
 
 import asyncio
 import logging
@@ -99,13 +99,15 @@ class ProductionManager:
         try:
             from backend.agents.specialized_agents import (
                 ContentAgent as SpecializedContentAgent,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             from backend.agents.specialized_agents import (
                 FinancialAgent,
                 ResearchAgent,
                 SystemAgent,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Initialize ContentAgent
             if os.getenv("CONTENT_AGENT_ENABLED", "true").lower() == "true":
@@ -155,7 +157,8 @@ class ProductionManager:
                     if os.getenv("TWITTER_ENGAGEMENT_ENABLED", "true").lower() == "true":
                         from backend.agents.twitter_engagement_agent import (
                             TwitterEngagementAgent,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         engagement_agent = TwitterEngagementAgent()
                         self.agents["twitter_engagement"] = engagement_agent
@@ -165,7 +168,8 @@ class ProductionManager:
                     if os.getenv("TWITTER_PROMOTION_ENABLED", "true").lower() == "true":
                         from backend.agents.twitter_promotion_agent import (
                             TwitterPromotionAgent,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         promotion_agent = TwitterPromotionAgent()
                         self.agents["twitter_promotion"] = promotion_agent
@@ -173,7 +177,8 @@ class ProductionManager:
                 else:
                     logger.warning(
                         "⚠️ Twitter Integration connection failed - agents not initialized"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         except Exception as e:
             logger.warning(f"⚠️ Twitter agents initialization failed: {e}")
@@ -266,7 +271,8 @@ class ProductionManager:
             "agents": {name: agent is not None for name, agent in self.agents.items()},
             "environment": os.getenv("ENVIRONMENT", "development"),
             "autonomous_mode": os.getenv("AUTONOMOUS_MODE", "false").lower() == "true",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Global production manager instance

@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Monitoring Orchestrator - Unified Monitoring System Manager
 Coordinates all monitoring components and provides centralized control
-"""
+""""""
 
 import asyncio
 import json
@@ -62,7 +62,8 @@ class MonitoringOrchestrator:
     def __init__(self, config_path: Optional[str] = None):
         self.config_path = config_path or os.path.join(
             os.path.dirname(__file__), "monitoring_config.yaml"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.services: Dict[str, ServiceInfo] = {}
         self.running = False
         self.shutdown_event = threading.Event()
@@ -94,7 +95,8 @@ class MonitoringOrchestrator:
             "total_errors": 0,
             "services_started": 0,
             "last_health_check": None,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _load_config(self) -> Dict[str, Any]:
         """Load monitoring configuration"""
@@ -105,19 +107,22 @@ class MonitoringOrchestrator:
                     "auto_start": True,
                     "health_check": True,
                     "restart_on_failure": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "health_monitor": {
                     "enabled": True,
                     "auto_start": True,
                     "health_check": True,
                     "restart_on_failure": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "compliance_monitor": {
                     "enabled": True,
                     "auto_start": True,
                     "health_check": True,
                     "restart_on_failure": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "dashboard": {
                     "enabled": True,
                     "auto_start": True,
@@ -126,32 +131,38 @@ class MonitoringOrchestrator:
                     "debug": False,
                     "health_check": True,
                     "restart_on_failure": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "timeout_manager": {
                     "enabled": True,
                     "auto_start": True,
                     "health_check": True,
                     "restart_on_failure": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "webhook_security": {
                     "enabled": True,
                     "auto_start": True,
                     "health_check": True,
                     "restart_on_failure": True,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "content_validator": {
                     "enabled": True,
                     "auto_start": True,
                     "health_check": True,
                     "restart_on_failure": True,
-                },
-            },
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             },
             "health_check_interval": 30,
             "auto_restart": True,
             "max_restart_attempts": 3,
             "startup_delay": 2,
             "shutdown_timeout": 30,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             if os.path.exists(self.config_path):
@@ -176,7 +187,8 @@ class MonitoringOrchestrator:
             if service_config.get("enabled", True):
                 self.services[service_name] = ServiceInfo(
                     name=service_name, status=ServiceStatus.STOPPED
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
     def _setup_signal_handlers(self):
         """Setup signal handlers for graceful shutdown"""
@@ -233,8 +245,10 @@ class MonitoringOrchestrator:
                 additional_data={
                     "service_name": service_name,
                     "start_time": service.start_time.isoformat(),
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
 
             self.logger.info(f"Service {service_name} started successfully")
             return True
@@ -251,7 +265,8 @@ class MonitoringOrchestrator:
                 event_type="service_start_failed",
                 severity="error",
                 additional_data={"service_name": service_name, "error": str(e)},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return False
 
@@ -300,7 +315,8 @@ class MonitoringOrchestrator:
                 event_type="service_stopped",
                 severity="info",
                 additional_data={"service_name": service_name},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.logger.info(f"Service {service_name} stopped successfully")
             return True
@@ -383,7 +399,8 @@ class MonitoringOrchestrator:
                     host=dashboard_config.get("host", "0.0.0.0"),
                     port=dashboard_config.get("port", 8080),
                     debug=dashboard_config.get("debug", False),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 self.logger.error(f"Dashboard error: {str(e)}")
                 service.status = ServiceStatus.ERROR
@@ -447,8 +464,10 @@ class MonitoringOrchestrator:
             additional_data={
                 "services": list(self.services.keys()),
                 "start_time": self.performance_metrics["start_time"].isoformat(),
-            },
-        )
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         )
 
         success = True
         service_configs = self.config.get("services", {})
@@ -484,7 +503,8 @@ class MonitoringOrchestrator:
             event_type="monitoring_system_stopped",
             severity="info",
             additional_data={"services": list(self.services.keys())},
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         success = True
 
@@ -534,12 +554,14 @@ class MonitoringOrchestrator:
                         if service.restart_count < self.max_restart_attempts:
                             self.logger.warning(
                                 f"Service {service_name} is unhealthy, attempting restart"
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
                             self.restart_service(service_name)
                         else:
                             self.logger.error(
                                 f"Service {service_name} exceeded max restart attempts"
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                             # Create alert for failed service
 
@@ -547,11 +569,12 @@ class MonitoringOrchestrator:
 
                             create_custom_alert(
                                 title=f"Service {service_name} Failed",
-                                description=f"Service {service_name} has exceeded maximum restart attempts \
-    and is no longer being restarted",
+                                description=f"Service {service_name} has exceeded maximum restart attempts \"
+#     and is no longer being restarted",
                                 severity=AlertSeverity.CRITICAL,
                                 category=AlertCategory.SYSTEM,
-                            )
+# BRACKET_SURGEON: disabled
+#                             )
 
                 except Exception as e:
                     self.logger.error(f"Error checking health of {service_name}: {str(e)}")
@@ -604,11 +627,14 @@ class MonitoringOrchestrator:
                     self.performance_metrics["start_time"].isoformat()
                     if self.performance_metrics["start_time"]
                     else None
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "performance_metrics": self.performance_metrics.copy(),
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "services": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for service_name, service in self.services.items():
             status["services"][service_name] = {
@@ -619,10 +645,12 @@ class MonitoringOrchestrator:
                 "restart_count": service.restart_count,
                 "last_health_check": (
                     service.last_health_check.isoformat() if service.last_health_check else None
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "health_status": service.health_status,
                 "pid": service.pid,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return status
 
@@ -676,7 +704,8 @@ orchestrator = None
 
 def start_monitoring_system(
     config_path: Optional[str] = None,
-) -> MonitoringOrchestrator:
+# BRACKET_SURGEON: disabled
+# ) -> MonitoringOrchestrator:
     """Start the complete monitoring system"""
     global orchestrator
 

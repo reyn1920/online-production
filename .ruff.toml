@@ -1,0 +1,18 @@
+target-version = "py311"
+extend-exclude = [
+  "venv*/",
+  "**/site-packages/",
+  "node_modules/",
+  "dist/",
+  "build/",
+  "frontend/dist/",
+  "rewritten/",
+  "url_fix_backups/",
+  "public/",
+  "static/",
+  "chat",
+]
+
+# Start strict later; for now keep it light
+select = ["E","F"]           # pycodestyle errors + pyflakes
+ignore = ["E501"]            # ignore line-length for now

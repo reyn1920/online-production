@@ -18,7 +18,8 @@ class YouTubeAPI(BaseAPI):
             requests_per_hour=1000,
             requests_per_day=10000,  # Default quota is 10,000 units/day
             burst_limit=10,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         super().__init__(rate_config)
         self.api_key = api_key
         self.base_url = "https://www.googleapis.com/youtube/v3"
@@ -32,7 +33,8 @@ class YouTubeAPI(BaseAPI):
             "playlistItems": 1,
             "commentThreads": 1,
             "comments": 1,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Video categories mapping
         self.categories = {
@@ -50,7 +52,8 @@ class YouTubeAPI(BaseAPI):
             "26": "Howto & Style",
             "27": "Education",
             "28": "Science & Technology",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def health_check(self) -> bool:
         """Check if YouTube API is accessible"""
@@ -77,7 +80,8 @@ class YouTubeAPI(BaseAPI):
             "tokens_available": int(self.rate_limiter.tokens),
             "quota_costs": self.quota_costs,
             "api_key_provided": bool(self.api_key),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def search_videos(
         self,
@@ -103,7 +107,8 @@ class YouTubeAPI(BaseAPI):
             "order": order,
             "regionCode": region_code,
             "key": self.api_key,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if published_after:
             params["publishedAfter"] = published_after.isoformat() + "Z"
@@ -128,7 +133,8 @@ class YouTubeAPI(BaseAPI):
                 "videos": detailed_videos,
                 "next_page_token": response_data.get("nextPageToken"),
                 "search_timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to search YouTube videos: {e}")
@@ -152,7 +158,8 @@ class YouTubeAPI(BaseAPI):
                 "part": "snippet,statistics,contentDetails,status",
                 "id": ",".join(chunk),
                 "key": self.api_key,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             try:
                 endpoint = f"{self.base_url}/videos"
@@ -190,7 +197,8 @@ class YouTubeAPI(BaseAPI):
             "regionCode": region_code,
             "maxResults": min(max_results, 50),
             "key": self.api_key,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if category_id:
             params["videoCategoryId"] = category_id
@@ -220,7 +228,8 @@ class YouTubeAPI(BaseAPI):
             "part": "snippet,statistics,contentDetails,brandingSettings",
             "id": channel_id,
             "key": self.api_key,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             endpoint = f"{self.base_url}/channels"
@@ -255,7 +264,8 @@ class YouTubeAPI(BaseAPI):
                         order="date",
                         published_after=start_date,
                         region_code=region_code,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     videos = search_result.get("videos", [])
 
@@ -267,7 +277,8 @@ class YouTubeAPI(BaseAPI):
                             "avg_views": 0,
                             "trend_score": 0,
                             "top_videos": [],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         continue
 
                     # Calculate metrics
@@ -281,14 +292,17 @@ class YouTubeAPI(BaseAPI):
                             datetime.utcnow()
                             - datetime.fromisoformat(
                                 video.get("published_at", "").replace("Z", "+00:00")
-                            )
-                        ).days
+# BRACKET_SURGEON: disabled
+#                             )
+# BRACKET_SURGEON: disabled
+#                         ).days
 
                         # More recent videos get higher scores
                         recency_factor = max(0, (days_back - days_old) / days_back)
                         engagement = (
                             int(video.get("view_count", 0)) + int(video.get("like_count", 0)) * 10
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         trend_score += engagement * recency_factor
 
@@ -311,10 +325,13 @@ class YouTubeAPI(BaseAPI):
                                 "likes": int(video.get("like_count", 0)),
                                 "published": video.get("published_at", ""),
                                 "url": f"https://youtube.com/watch?v={video.get('video_id', '')}",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             for video in top_videos
-                        ],
-                    }
+# BRACKET_SURGEON: disabled
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Add delay between requests
                     await asyncio.sleep(1)
@@ -326,7 +343,8 @@ class YouTubeAPI(BaseAPI):
             # Rank keywords by trend score
             ranked_trends = sorted(
                 trend_analysis.items(), key=lambda x: x[1]["trend_score"], reverse=True
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "keywords": trend_analysis,
@@ -334,7 +352,8 @@ class YouTubeAPI(BaseAPI):
                 "analysis_period_days": days_back,
                 "region_code": region_code,
                 "analysis_timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to analyze video trends: {e}")
@@ -351,7 +370,8 @@ class YouTubeAPI(BaseAPI):
             # Get trending videos
             trending_videos = await self.get_trending_videos(
                 region_code=region_code, category_id=category_id, max_results=50
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Filter for viral content
             viral_videos = []
@@ -359,12 +379,14 @@ class YouTubeAPI(BaseAPI):
                 view_count = int(video.get("view_count", 0))
                 published_date = datetime.fromisoformat(
                     video.get("published_at", "").replace("Z", "+00:00")
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Check if video is recent and has high views
                 days_old = (
                     datetime.utcnow().replace(tzinfo=published_date.tzinfo) - published_date
-                ).days
+# BRACKET_SURGEON: disabled
+#                 ).days
 
                 if view_count >= min_views and days_old <= days_back:
                     # Calculate viral score
@@ -379,7 +401,8 @@ class YouTubeAPI(BaseAPI):
                         (view_count / 1000)  # Views in thousands
                         + (engagement_rate * 100)  # Engagement boost
                         + ((days_back - days_old + 1) * 10)  # Recency boost
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     video["viral_score"] = int(viral_score)
                     video["engagement_rate"] = round(engagement_rate, 2)
@@ -398,9 +421,11 @@ class YouTubeAPI(BaseAPI):
                     "max_days_old": days_back,
                     "category_id": category_id,
                     "region_code": region_code,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "analysis_timestamp": datetime.utcnow().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             raise APIError(f"Failed to find viral content: {e}")
@@ -416,7 +441,8 @@ class YouTubeAPI(BaseAPI):
                     error_data = await response.json()
                     error_reason = (
                         error_data.get("error", {}).get("errors", [{}])[0].get("reason", "unknown")
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     if error_reason == "quotaExceeded":
                         raise APIError("YouTube API quota exceeded")
@@ -456,7 +482,8 @@ class YouTubeAPI(BaseAPI):
             "like_count": statistics.get("likeCount", "0"),
             "comment_count": statistics.get("commentCount", "0"),
             "favorite_count": statistics.get("favoriteCount", "0"),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _parse_channel_data(self, item: Dict[str, Any]) -> Dict[str, Any]:
         """Parse YouTube channel data into standardized format"""
@@ -478,4 +505,5 @@ class YouTubeAPI(BaseAPI):
             "uploads_playlist_id": content_details.get("relatedPlaylists", {}).get("uploads", ""),
             "keywords": branding.get("channel", {}).get("keywords", ""),
             "banner_image": branding.get("image", {}).get("bannerExternalUrl", ""),
-        }
+# BRACKET_SURGEON: disabled
+#         }

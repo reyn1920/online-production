@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Optimized FastAPI Startup Script for MacBook Air M1 (16GB)
 Implements performance baseline recommendations
-"""
+""""""
 
 import os
 import signal
@@ -32,7 +32,8 @@ class FastAPIOptimizer:
             "keepalive": 5,  # Connection keepalive
             "timeout": 30,
             "graceful_timeout": 30,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def check_dependencies(self):
         """Check if required packages are installed"""
@@ -54,8 +55,10 @@ class FastAPIOptimizer:
                         "install",
                         "uvicorn[standard]",
                         "gunicorn",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
                 print("✅ Dependencies installed")
                 return True
             except subprocess.CalledProcessError:
@@ -91,7 +94,8 @@ class FastAPIOptimizer:
             "--access - log",
             "--loop",
             "auto",  # Let uvicorn choose best event loop for M1
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         print(f"🚀 Starting FastAPI with Uvicorn (MacBook Air M1 optimized)")
         print(f"   Workers: {config['workers']}")
@@ -129,7 +133,8 @@ class FastAPIOptimizer:
             "-",
             "--error - logfile",
             "-",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         print(f"🚀 Starting FastAPI with Gunicorn + Uvicorn (Production - ready)")
         print(f"   Workers: {config['workers']} (Uvicorn workers)")
@@ -186,7 +191,7 @@ class FastAPIOptimizer:
         """Print MacBook Air M1 performance optimization tips"""
         print("\\n💡 MacBook Air M1 Performance Tips:")
         print("=" * 50)
-        print("✅ Using 2 workers (optimal for M1's 8 cores)")
+        print("✅ Using 2 workers (optimal for M1's 8 cores)")'
         print("✅ Connection keepalive enabled")
         print("✅ Worker recycling after 1k requests")
         print("✅ Preloading app for faster startup")
@@ -258,12 +263,14 @@ def main():
         "--gunicorn",
         action="store_true",
         help="Use Gunicorn + Uvicorn workers (production - ready)",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument(
         "--benchmark",
         action="store_true",
         help="Run performance benchmark after startup",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     args = parser.parse_args()
 

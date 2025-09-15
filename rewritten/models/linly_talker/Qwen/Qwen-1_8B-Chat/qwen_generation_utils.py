@@ -35,7 +35,8 @@ def get_ltor_masks_and_position_ids(
     reset_position_ids,
     reset_attention_mask,
     eod_mask_loss,
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Build masks and position id for left to right model."""
 
     # Extract batch size and sequence length.
@@ -100,7 +101,8 @@ def get_batch(context_tokens: torch.LongTensor, eod_id: int):
         reset_position_ids=False,
         reset_attention_mask=False,
         eod_mask_loss=False,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     return tokens, attention_mask, position_ids
 
 
@@ -121,7 +123,8 @@ def make_context(
     system: str = "",
     max_window_size: int = 6144,
     chat_format: str = "chatml",
-):
+# BRACKET_SURGEON: disabled
+# ):
     if history is None:
         history = []
 
@@ -147,17 +150,20 @@ def make_context(
             query_tokens = im_start_tokens + query_tokens_part + im_end_tokens
             response_text, response_tokens_part = _tokenize_str(
                 "assistant", turn_response
-            )
+# BRACKET_SURGEON: disabled
+#             )
             response_tokens = im_start_tokens + response_tokens_part + im_end_tokens
 
             next_context_tokens = nl_tokens + query_tokens + nl_tokens + response_tokens
             prev_chat = (
                 f"\\n{im_start}{query_text}{im_end}\\n{im_start}{response_text}{im_end}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             current_context_size = (
                 len(system_tokens) + len(next_context_tokens) + len(context_tokens)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             if current_context_size < max_window_size:
                 context_tokens = next_context_tokens + context_tokens
                 raw_text = prev_chat + raw_text
@@ -175,7 +181,8 @@ def make_context(
             + im_start_tokens
             + tokenizer.encode("assistant")
             + nl_tokens
-        )
+# BRACKET_SURGEON: disabled
+#         )
         raw_text += f"\\n{im_start}user\\n{query}{im_end}\\n{im_start}assistant\\n"
 
     elif chat_format == "raw":
@@ -197,7 +204,8 @@ def _decode_default(
     verbose: bool = False,
     return_end_reason: bool = False,
     errors: str = "replace",
-):
+# BRACKET_SURGEON: disabled
+# ):
     trim_decode_tokens = tokenizer.decode(tokens, errors=errors)[raw_text_len:]
     if verbose:
         print("\\nRaw Generate: ", trim_decode_tokens)
@@ -231,7 +239,8 @@ def _decode_chatml(
     verbose: bool = False,
     return_end_reason: bool = False,
     errors: str = "replace",
-):
+# BRACKET_SURGEON: disabled
+# ):
     end_reason = f"Gen length {len(tokens)}"
     eod_token_idx = context_length
     for eod_token_idx in range(context_length, len(tokens)):
@@ -241,12 +250,14 @@ def _decode_chatml(
 
     trim_decode_tokens = tokenizer.decode(tokens[:eod_token_idx], errors=errors)[
         raw_text_len:
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     if verbose:
         print(
             "\\nRaw Generate w/o EOD:",
             tokenizer.decode(tokens, errors=errors)[raw_text_len:],
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print("\\nRaw Generate:", trim_decode_tokens)
         print("\\nEnd Reason:", end_reason)
     for stop_word in stop_words:
@@ -270,7 +281,8 @@ def decode_tokens(
     verbose: bool = False,
     return_end_reason: bool = False,
     errors: str = "replace",
-) -> str:
+# BRACKET_SURGEON: disabled
+# ) -> str:
     if torch.is_tensor(tokens):
         tokens = tokens.cpu().numpy().tolist()
 
@@ -285,7 +297,8 @@ def decode_tokens(
             verbose=verbose,
             return_end_reason=return_end_reason,
             errors=errors,
-        )
+# BRACKET_SURGEON: disabled
+#         )
     elif chat_format == "raw":
         return _decode_default(
             tokens,
@@ -296,60 +309,71 @@ def decode_tokens(
             verbose=verbose,
             return_end_reason=return_end_reason,
             errors=errors,
-        )
+# BRACKET_SURGEON: disabled
+#         )
     else:
         raise NotImplementedError(f"Unknown chat format {chat_format!r}")
 
 
 class StopWordsLogitsProcessor(LogitsProcessor):
-    """
+    """"""
     :class:`transformers.LogitsProcessor` that enforces that when specified sequences appear, stop geration.
 
     Args:
         stop_words_ids (:obj:`List[List[int]]`):
             List of list of token ids of stop ids. In order to get the tokens of the words
             that should not appear in the generated text, use :obj:`tokenizer(bad_word,
-                add_prefix_space = True).input_ids`.
+# BRACKET_SURGEON: disabled
+#                 add_prefix_space = True).input_ids`.
         eos_token_id (:obj:`int`):
             The id of the `end - of - sequence` token.
-    """
+    """"""
 
     def __init__(self, stop_words_ids: Iterable[Iterable[int]], eos_token_id: int):
         if not isinstance(stop_words_ids, List) or len(stop_words_ids) == 0:
             raise ValueError(
                 f"`stop_words_ids` has to be a non - emtpy list, but is {stop_words_ids}."
-            )
+# BRACKET_SURGEON: disabled
+#             )
         if any(not isinstance(bad_word_ids, list) for bad_word_ids in stop_words_ids):
             raise ValueError(
                 f"`stop_words_ids` has to be a list of lists, but is {stop_words_ids}."
-            )
+# BRACKET_SURGEON: disabled
+#             )
         if any(
             any(
                 (not isinstance(token_id, (int, np.integer)) or token_id < 0)
                 for token_id in stop_word_ids
-            )
+# BRACKET_SURGEON: disabled
+#             )
             for stop_word_ids in stop_words_ids
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             raise ValueError(
                 f"Each list in `stop_words_ids` has to be a list of positive integers, but is {stop_words_ids}."
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         self.stop_words_ids = list(
             filter(
                 lambda bad_token_seq: bad_token_seq != [eos_token_id], stop_words_ids
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
         self.eos_token_id = eos_token_id
         for stop_token_seq in self.stop_words_ids:
             assert (
                 len(stop_token_seq) > 0
             ), "Stop words token sequences {} cannot have an empty list".format(
                 stop_words_ids
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def __call__(
         self, input_ids: torch.LongTensor, scores: torch.FloatTensor
-    ) -> torch.FloatTensor:
+# BRACKET_SURGEON: disabled
+#     ) -> torch.FloatTensor:
         stopped_samples = self._calc_stopped_samples(input_ids)
         for i, should_stop in enumerate(stopped_samples):
             if should_stop:
@@ -384,10 +408,10 @@ class StopWordsLogitsProcessor(LogitsProcessor):
 
 
 def top_k_logits(logits, top_k=0, top_p=0.0, filter_value=-float("Inf")):
-    """This function has been mostly taken from huggingface conversational
+    """This function has been mostly taken from huggingface conversational"""
     ai code at
         https://medium.com/huggingface/how - to - build - a - state - of - the - art-
-            conversational - ai - with - transfer - learning - 2d818ac26313"""
+            conversational - ai - with - transfer - learning - 2d818ac26313""""""
 
     if top_k > 0:
         # Remove all tokens with a probability less than the

@@ -1,11 +1,11 @@
 #!/usr / bin / env python3
-"""
+""""""
 Paste App - Simple Flask application with automatic port detection
 
 Usage:
     python3 paste_app.py              # Auto - detects port starting from 8000
     PORT = 8001 python3 paste_app.py    # Auto - detects port starting from 8001
-"""
+""""""
 
 import math
 import os
@@ -44,7 +44,8 @@ ALLOWED_EXTENSIONS = {
         "json",
         "xml",
         "zip",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def allowed_file(filename):
@@ -58,14 +59,17 @@ PROVIDER_STATUS = {
             "color": "green",
             "last_error": None,
             "requires_key": False,
-            },
+# BRACKET_SURGEON: disabled
+#             },
         "nominatim": {
         "name": "OpenStreetMap Nominatim",
             "color": "green",
             "last_error": None,
             "requires_key": False,
-            },
-}
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+# }
 
 # Dev - only route that some UIs ping; return 204 instead of 404 noise
 @app.route("/@vite / client")
@@ -86,8 +90,11 @@ def api_status():
             "services": {"places": True, "pets": True},
                 "providers": PROVIDER_STATUS,
                 "time": int(time.time()),
-                }
-    )
+# BRACKET_SURGEON: disabled
+#                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 # Health check endpoint for Docker healthcheck
 @app.get("/health")
@@ -96,7 +103,9 @@ def api_status():
 def health_check():
     return jsonify(
         {"status": "healthy", "timestamp": time.time(), "service": "paste - app"}
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 # Provider statuses (green / purple / red)
 @app.get("/places / providers")
@@ -115,8 +124,11 @@ def places_providers():
                     "name": v["name"],
                     "color": color,
                     "last_error": v["last_error"],
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     return jsonify({"items": items})
 
 # --------- Paste API ----------
@@ -143,7 +155,8 @@ def create_paste():
             "content": content,
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "created_at": time.time(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # In a real app, you'd save to database
         # For now, just return the created paste
@@ -153,10 +166,14 @@ def create_paste():
                     "success": True,
                         "paste": paste,
                         "message": "Paste created successfully",
-                        }
-            ),
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#             ),
                 201,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     except Exception as e:
         return jsonify({"error": f"Failed to create paste: {str(e)}"}), 500
@@ -193,10 +210,14 @@ def upload_file():
                             "filename": filename,
                             "filepath": filepath,
                             "message": "File uploaded successfully",
-                            }
-                ),
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                 ),
                     201,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             return jsonify({"error": "File type not allowed"}), 400
 
@@ -224,8 +245,11 @@ def list_downloads():
                             "size": stat.st_size,
                             "modified": stat.st_mtime,
                             "extension": file_path.suffix.lower(),
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Sort by modification time (newest first)
         files.sort(key = lambda x: x["modified"], reverse = True)
@@ -265,8 +289,11 @@ def process_downloads_file():
                             "filename": filename,
                             "content": content,
                             "action": "read",
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except UnicodeDecodeError:
                 return jsonify(
                     {
@@ -275,8 +302,11 @@ def process_downloads_file():
                             "content": "[Binary file - cannot display content]",
                             "action": "read",
                             "is_binary": True,
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         elif action == "download":
             # Send file for download
@@ -291,8 +321,11 @@ def process_downloads_file():
                         "filename": filename,
                         "action": "delete",
                         "message": "File deleted successfully",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         else:
             return jsonify({"error": f"Unknown action: {action}"}), 400
@@ -318,7 +351,9 @@ def paste_avatar():
         template = data.get("template", "professional_presenter")
 
         # Simulate avatar generation (in real implementation,
-    this would call actual avatar service)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     this would call actual avatar service)
         avatar_result = {
             "id": int(time.time() * 1000),
                 "content": content,
@@ -331,7 +366,8 @@ def paste_avatar():
                 "thumbnail": f"/avatar / thumb_{int(time.time() * 1000)}.jpg",
                 "duration": len(content.split()) * 0.5,  # Rough estimate
             "created_at": time.time(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return (
             jsonify(
@@ -339,10 +375,14 @@ def paste_avatar():
                     "success": True,
                         "avatar": avatar_result,
                         "message": "Avatar generated successfully",
-                        }
-            ),
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#             ),
                 201,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     except Exception as e:
         return jsonify({"error": f"Avatar generation failed: {str(e)}"}), 500
@@ -356,23 +396,27 @@ _OSM_TAGS = {
         "pharmacy": {"amenity": "pharmacy"},
         "pet_store": {"shop": "pet"},
         "dog_park": {"leisure": "dog_park"},
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def _overpass_query(lat, lng, radius_m, tag_key, tag_val, limit):
     # Overpass QL for nodes / ways / relations around a point; include center for ways / relations
-    q = f"""
+    q = f""""""
     [out:json][timeout:25];
     (
         node(around:{radius_m},{lat},{lng})[{tag_key}="{tag_val}"];
       way(around:{radius_m},{lat},{lng})[{tag_key}="{tag_val}"];
       relation(around:{radius_m},{lat},{lng})[{tag_key}="{tag_val}"];
-    );
+# BRACKET_SURGEON: disabled
+#     );
     out center {limit};
-    """
+    """"""
     r = requests.post(
         "https://overpass - api.de / api / interpreter", data={"data": q}, timeout = 30
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     r.raise_for_status()
     return r.json()
 
@@ -403,17 +447,26 @@ def _elements_to_items(js):
                                 tags.get("addr:city"),
                                 tags.get("addr:state"),
                                 tags.get("addr:country"),
-                                ],
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 or None,
                     "phone": tags.get("phone") or tags.get("contact:phone"),
                     "website": tags.get("website") or tags.get("contact:website"),
                     "lat": lat,
                     "lng": lng,
                     "raw_tags": tags,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     return items
 
 @app.get("/places / search")
@@ -450,12 +503,15 @@ def places_search():
                     "lng": lng,
                     "phone": None,
                     "website": None,
-                    }
-        ]
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         return jsonify({"provider": "static_fallback", "items": fallback})
 
 # --------- Locator pages (HTML) ----------
-_LOCATOR_HTML = """
+_LOCATOR_HTML = """"""
 <!doctype html>
 <html lang="en">
 <head>
@@ -518,15 +574,17 @@ _LOCATOR_HTML = """
         if(!x.lat || !x.lng) return;
       const html = `<b>${x.name||'Unnamed'}</b><br/>${x.address||''}`;
       cluster.addLayer(L.marker([x.lat,x.lng]).bindPopup(html));
-    });
+# BRACKET_SURGEON: disabled
+#     });
     badge.textContent = `${(js.items||[]).length} found via ${js.provider}`;
-  }
+# BRACKET_SURGEON: disabled
+#   }
   btn.addEventListener('click', runSearch);
   runSearch();
 </script>
 </body>
 </html>
-"""
+""""""
 
 @app.get("/places / locator")
 @app.get("/api / places / locator")  # alias
@@ -536,7 +594,7 @@ def places_locator():
     return render_template_string(_LOCATOR_HTML)
 
 # Embeddable mini - map
-_LOCATOR_EMBED_HTML = """
+_LOCATOR_EMBED_HTML = """"""
 <!doctype html>
 <html lang="en">
 <head>
@@ -579,14 +637,16 @@ _LOCATOR_EMBED_HTML = """
           if(!x.lat || !x.lng) return;
         const html = `<b>${x.name||'Unnamed'}</b><br/>${x.address||''}`;
         cluster.addLayer(L.marker([x.lat,x.lng]).bindPopup(html));
-      });
+# BRACKET_SURGEON: disabled
+#       });
       badge.textContent = `${(js.items||[]).length} ${cat} — ${js.provider}`;
-    }
+# BRACKET_SURGEON: disabled
+#     }
     load();
   </script>
 </body>
 </html>
-"""
+""""""
 
 @app.get("/places / locator / embed")
 @app.get("/api / places / locator / embed")  # alias
@@ -599,7 +659,7 @@ def places_locator_embed():
 
 
 def providers_ui():
-    html = """
+    html = """"""
     <!doctype html><meta charset="utf - 8">
     <title > Providers</title>
     <style>
@@ -609,18 +669,19 @@ def providers_ui():
     </style>
     <div id="list">Loading…</div>
     <script>
-      const colors = {green:"#20d56b", purple:"#a78bfa", red:"#ef4444"};
+      const colors = {green:"#20d56b", purple:"#a78bfa", red:"#ef4444"};"
       async function load(){
           const r = await fetch('/places / providers'); const js = await r.json();
         const list = document.getElementById('list');
         list.innerHTML = (js.items||[]).map(x=>{
-            const c = colors[x.color] || "#94a3b8";
-          return `<div class="row"><span class="dot" style="background:${c}"></span><b>${x.name}</b><small style="opacity:.7">&nbsp;(${x.key})</small>${x.last_error?`&nbsp;<small style="color:#ef4444">${x.last_error}</small>`:''}}</div>`;
+            const c = colors[x.color] || "#94a3b8";"
+          return `<div class="row"><span class="dot" style="background:${c}"></span><b>${x.name}</b><small style="opacity:.7">&nbsp;(${x.key})</small>${x.last_error?`&nbsp;<small style="color:#ef4444">${x.last_error}</small>`:''}}</div>`;"
         }).join('') || "No providers";
-      }
+# BRACKET_SURGEON: disabled
+#       }
       load(); setInterval(load, 10000);
     </script>
-    """
+    """"""
     return html
 
 # --------- JSON error handler (prevents plain - text 500s) ----------
@@ -647,36 +708,47 @@ def _json_errors(e):
                                 "scientific": "Salmo salar",
                                 "biology": "Atlantic salmon are anadromous fish...",
                                 "habitat": "North Atlantic Ocean...",
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "name": "Pacific Cod",
                                 "scientific": "Gadus macrocephalus",
                                 "biology": "Pacific cod are bottom - dwelling...",
                                 "habitat": "North Pacific Ocean...",
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "name": "Yellowfin Tuna",
                                 "scientific": "Thunnus albacares",
                                 "biology": "Yellowfin tuna are fast - swimming...",
                                 "habitat": "Tropical and subtropical waters...",
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "name": "Red Snapper",
                                 "scientific": "Lutjanus campechanus",
                                 "biology": "Red snapper are long - lived...",
                                 "habitat": "Gulf of Mexico...",
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "name": "Mahi - Mahi",
                                 "scientific": "Coryphaena hippurus",
                                 "biology": "Mahi - mahi are fast - growing...",
                                 "habitat": "Warm tropical / subtropical seas...",
-                                },
-                            ],
-                        }
-            ),
+# BRACKET_SURGEON: disabled
+#                                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#             ),
                 200,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     if p.startswith("/content / pets / birds / nearby"):
         return (
@@ -691,7 +763,8 @@ def _json_errors(e):
                                 "locName": "Central Park, New York",
                                 "obsDt": "2024 - 01 - 15 10:30",
                                 "howMany": 3,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "speciesCode": "norcrd",
                                 "comName": "Northern Cardinal",
@@ -699,7 +772,8 @@ def _json_errors(e):
                                 "locName": "Bryant Park, New York",
                                 "obsDt": "2024 - 01 - 15 09:45",
                                 "howMany": 2,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             {
                             "speciesCode": "blujay",
                                 "comName": "Blue Jay",
@@ -707,12 +781,19 @@ def _json_errors(e):
                                 "locName": "Washington Square Park, New York",
                                 "obsDt": "2024 - 01 - 15 11:15",
                                 "howMany": 1,
-                                },
-                            ],
-                        }
-            ),
+# BRACKET_SURGEON: disabled
+#                                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#             ),
                 200,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     # generic JSON error for everything else
     return jsonify({"error": "internal_error", "status": code, "message": str(e)}), code
@@ -720,7 +801,7 @@ def _json_errors(e):
 # ---------- END PATCH ----------
 
 # Simple HTML template for the paste app
-HTML_TEMPLATE = """
+HTML_TEMPLATE = """"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -754,12 +835,15 @@ HTML_TEMPLATE = """
                     id: Date.now(),
                         content: content,
                         timestamp: new Date().toLocaleString()
-                };
+# BRACKET_SURGEON: disabled
+#                 };
                 pastes.unshift(paste);
                 document.getElementById('content').value = '';
                 renderPastes();
-            }
-        });
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         });
 
         function renderPastes() {
             const container = document.getElementById('pastes');
@@ -769,11 +853,12 @@ HTML_TEMPLATE = """
                     <pre>${paste.content}</pre>
                 </div>
             `).join('');
-        }
+# BRACKET_SURGEON: disabled
+#         }
     </script>
 </body>
 </html>
-"""
+""""""
 
 @app.route("/")
 
@@ -804,7 +889,9 @@ def first_free(start, max_tries = 50):
                 p += 1
     raise RuntimeError(
         f"No free port found after trying {max_tries} ports starting from {start}"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 if __name__ == "__main__":
     port = first_free(8081)

@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Workflow Engine - Advanced Media Processing Pipeline Orchestrator
 
 This module provides a sophisticated workflow engine for orchestrating complex
@@ -17,7 +17,7 @@ Features:
 
 Author: TRAE.AI Media System
 Version: 2.0.0
-"""
+""""""
 
 import asyncio
 import json
@@ -89,7 +89,7 @@ class WorkflowNode:
     node_type: NodeType
     name: str
     processor: str
-    config: Dict[str, Any] = field(default_factory = dict)
+    config: Dict[str, Any] = field(default_factory = dict):
     inputs: List[str] = field(default_factory = list)  # Input node IDs
     outputs: List[str] = field(default_factory = list)  # Output node IDs
     conditions: Dict[str, Any] = field(default_factory = dict)
@@ -115,7 +115,7 @@ class WorkflowDefinition:
     version: str
     nodes: Dict[str, WorkflowNode]
     edges: List[Dict[str, str]]  # {"from": node_id, "to": node_id}
-    global_config: Dict[str, Any] = field(default_factory = dict)
+    global_config: Dict[str, Any] = field(default_factory = dict):
     input_schema: Dict[str, Any] = field(default_factory = dict)
     output_schema: Dict[str, Any] = field(default_factory = dict)
     created_at: datetime = field(default_factory = datetime.now)
@@ -132,7 +132,7 @@ class WorkflowExecution:
     workflow_id: str
     status: WorkflowStatus
     input_data: Dict[str, Any]
-    output_data: Dict[str, Any] = field(default_factory = dict)
+    output_data: Dict[str, Any] = field(default_factory = dict):
     node_states: Dict[str, NodeStatus] = field(default_factory = dict)
     node_results: Dict[str, Any] = field(default_factory = dict)
     execution_graph: Optional[nx.DiGraph] = None
@@ -157,7 +157,9 @@ class WorkflowEngine:
         self.processors: Dict[str, Callable] = {}
         self.executor = ThreadPoolExecutor(
             max_workers = self.config.get("max_workers", 8)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.running_executions: Set[str] = set()
 
         # Initialize built - in processors
@@ -181,7 +183,8 @@ class WorkflowEngine:
                 "enable_metrics": True,
                 "workflow_storage_path": "./workflows",
                 "execution_storage_path": "./executions",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _register_built_in_processors(self):
@@ -200,8 +203,11 @@ class WorkflowEngine:
                     "avatar_animator": self._process_avatar_animator,
                     "video_compositor": self._process_video_compositor,
                     "audio_mixer": self._process_audio_mixer,
-                    }
-        )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def _load_workflow_templates(self):
@@ -212,7 +218,9 @@ class WorkflowEngine:
                 self._create_png_to_blender_workflow(),
                 self._create_batch_avatar_workflow(),
                 self._create_podcast_production_workflow(),
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for template in templates:
             self.workflows[template.workflow_id] = template
@@ -229,7 +237,8 @@ class WorkflowEngine:
                     name="Content Input",
                     processor="input_validator",
                     config={"required_fields": ["script", "avatar_image"]},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "content_analysis": WorkflowNode(
                 node_id="content_analysis",
                     node_type = NodeType.PROCESSOR,
@@ -237,7 +246,8 @@ class WorkflowEngine:
                     processor="content_analyzer",
                     inputs=["input"],
                     config={"analyze_emotions": True, "detect_topics": True},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "voice_synthesis": WorkflowNode(
                 node_id="voice_synthesis",
                     node_type = NodeType.PROCESSOR,
@@ -245,14 +255,16 @@ class WorkflowEngine:
                     processor="media_hub",
                     inputs=["content_analysis"],
                     config={"media_type": "audio", "workflow_type": "voice_synthesis"},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "avatar_animation": WorkflowNode(
                 node_id="avatar_animation",
                     node_type = NodeType.PROCESSOR,
                     name="Avatar Animation",
                     processor="avatar_animator",
                     inputs=["voice_synthesis", "content_analysis"],
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "quality_check": WorkflowNode(
                 node_id="quality_check",
                     node_type = NodeType.VALIDATOR,
@@ -260,7 +272,8 @@ class WorkflowEngine:
                     processor="quality_validator",
                     inputs=["avatar_animation"],
                     config={"min_duration": 10, "max_duration": 120},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "format_variants": WorkflowNode(
                 node_id="format_variants",
                     node_type = NodeType.PARALLEL,
@@ -273,17 +286,23 @@ class WorkflowEngine:
                             {"format": "youtube_short", "aspect_ratio": "9:16"},
                             {"format": "tiktok", "aspect_ratio": "9:16"},
                             {"format": "facebook_post", "aspect_ratio": "1:1"},
-                            ]
-                },
-                    ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#                     ),
                 "output": WorkflowNode(
                 node_id="output",
                     node_type = NodeType.OUTPUT,
                     name="Final Output",
                     processor="output_collector",
                     inputs=["format_variants"],
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         edges = [
             {"from": "input", "to": "content_analysis"},
@@ -293,7 +312,9 @@ class WorkflowEngine:
                 {"from": "avatar_animation", "to": "quality_check"},
                 {"from": "quality_check", "to": "format_variants"},
                 {"from": "format_variants", "to": "output"},
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         return WorkflowDefinition(
             workflow_id="social_media_content",
@@ -306,9 +327,12 @@ class WorkflowEngine:
                 "quality_preset": "standard",
                     "output_formats": ["mp4", "mov"],
                     "enable_analytics": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 tags=["social_media", "avatar", "video"],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def _create_png_to_blender_workflow(self) -> WorkflowDefinition:
@@ -320,7 +344,8 @@ class WorkflowEngine:
                     name="PNG Input",
                     processor="input_validator",
                     config={"required_fields": ["png_file"], "file_types": [".png"]},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "image_analysis": WorkflowNode(
                 node_id="image_analysis",
                     node_type = NodeType.PROCESSOR,
@@ -328,7 +353,8 @@ class WorkflowEngine:
                     processor="content_analyzer",
                     inputs=["input"],
                     config={"analyze_type": "image", "extract_heightmap": True},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "mesh_generation": WorkflowNode(
                 node_id="mesh_generation",
                     node_type = NodeType.PROCESSOR,
@@ -336,7 +362,8 @@ class WorkflowEngine:
                     processor="png_to_blender",
                     inputs=["image_analysis"],
                     config={"mesh_type": "heightmap", "subdivision_level": 3},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "code_optimization": WorkflowNode(
                 node_id="code_optimization",
                     node_type = NodeType.PROCESSOR,
@@ -344,7 +371,8 @@ class WorkflowEngine:
                     processor="file_transformer",
                     inputs=["mesh_generation"],
                     config={"optimize_for": "performance", "add_comments": True},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "validation": WorkflowNode(
                 node_id="validation",
                     node_type = NodeType.VALIDATOR,
@@ -352,15 +380,18 @@ class WorkflowEngine:
                     processor="quality_validator",
                     inputs=["code_optimization"],
                     config={"validate_syntax": True, "check_blender_api": True},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "output": WorkflowNode(
                 node_id="output",
                     node_type = NodeType.OUTPUT,
                     name="Blender Code Output",
                     processor="output_collector",
                     inputs=["validation"],
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         edges = [
             {"from": "input", "to": "image_analysis"},
@@ -368,7 +399,9 @@ class WorkflowEngine:
                 {"from": "mesh_generation", "to": "code_optimization"},
                 {"from": "code_optimization", "to": "validation"},
                 {"from": "validation", "to": "output"},
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         return WorkflowDefinition(
             workflow_id="png_to_blender_conversion",
@@ -381,9 +414,12 @@ class WorkflowEngine:
                 "output_format": "python_script",
                     "include_materials": True,
                     "generate_documentation": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 tags=["png", "blender", "3d", "mesh"],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def _create_batch_avatar_workflow(self) -> WorkflowDefinition:
@@ -395,7 +431,8 @@ class WorkflowEngine:
                     name="Batch Input",
                     processor="input_validator",
                     config={"required_fields": ["scripts", "avatar_images"]},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "batch_splitter": WorkflowNode(
                 node_id="batch_splitter",
                     node_type = NodeType.TRANSFORM,
@@ -403,7 +440,8 @@ class WorkflowEngine:
                     processor="batch_processor",
                     inputs=["input"],
                     config={"split_type": "individual_jobs", "max_parallel": 4},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "parallel_processing": WorkflowNode(
                 node_id="parallel_processing",
                     node_type = NodeType.PARALLEL,
@@ -411,7 +449,8 @@ class WorkflowEngine:
                     processor="avatar_animator",
                     inputs=["batch_splitter"],
                     config={"enable_parallel": True, "max_workers": 4},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "quality_filter": WorkflowNode(
                 node_id="quality_filter",
                     node_type = NodeType.VALIDATOR,
@@ -419,7 +458,8 @@ class WorkflowEngine:
                     processor="quality_validator",
                     inputs=["parallel_processing"],
                     config={"filter_failed": True, "min_quality_score": 0.8},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "batch_merger": WorkflowNode(
                 node_id="batch_merger",
                     node_type = NodeType.MERGE,
@@ -427,15 +467,18 @@ class WorkflowEngine:
                     processor="data_merger",
                     inputs=["quality_filter"],
                     config={"merge_type": "collection", "include_metadata": True},
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "output": WorkflowNode(
                 node_id="output",
                     node_type = NodeType.OUTPUT,
                     name="Batch Output",
                     processor="output_collector",
                     inputs=["batch_merger"],
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         edges = [
             {"from": "input", "to": "batch_splitter"},
@@ -443,7 +486,9 @@ class WorkflowEngine:
                 {"from": "parallel_processing", "to": "quality_filter"},
                 {"from": "quality_filter", "to": "batch_merger"},
                 {"from": "batch_merger", "to": "output"},
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         return WorkflowDefinition(
             workflow_id="batch_avatar_processing",
@@ -456,9 +501,12 @@ class WorkflowEngine:
                 "max_batch_size": 20,
                     "enable_progress_tracking": True,
                     "auto_retry_failed": True,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 tags=["batch", "avatar", "parallel"],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     async def create_workflow_execution(
@@ -466,7 +514,8 @@ class WorkflowEngine:
             workflow_id: str,
             input_data: Dict[str, Any],
             config: Optional[Dict[str, Any]] = None,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         """Create a new workflow execution."""
         if workflow_id not in self.workflows:
             raise ValueError(f"Workflow {workflow_id} not found")
@@ -487,12 +536,16 @@ class WorkflowEngine:
                 input_data = input_data,
                 node_states = node_states,
                 execution_graph = execution_graph,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.executions[execution_id] = execution
         logger.info(
             f"Created workflow execution {execution_id} for workflow {workflow_id}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return execution_id
 
@@ -551,7 +604,9 @@ class WorkflowEngine:
                     1
                     for status in execution.node_states.values()
                     if status in [NodeStatus.COMPLETED, NodeStatus.SKIPPED]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 execution.progress = (completed_nodes / len(workflow.nodes)) * 100
 
             # Determine final status
@@ -560,7 +615,9 @@ class WorkflowEngine:
                     nid
                     for nid, status in execution.node_states.items()
                     if status == NodeStatus.FAILED
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
                 if failed_nodes:
                     execution.status = WorkflowStatus.FAILED
@@ -574,17 +631,23 @@ class WorkflowEngine:
                 node
                 for node in workflow.nodes.values()
                 if node.node_type == NodeType.OUTPUT
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             for output_node in output_nodes:
                 if output_node.node_id in execution.node_results:
                     execution.output_data.update(
                         execution.node_results[output_node.node_id]
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             logger.info(
                 f"Workflow execution {execution_id} completed with status {execution.status.value}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return {
                 "success": execution.status == WorkflowStatus.COMPLETED,
@@ -599,8 +662,11 @@ class WorkflowEngine:
                     nid
                     for nid, status in execution.node_states.items()
                     if status == NodeStatus.FAILED
-                ],
-                    }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             execution.status = WorkflowStatus.FAILED
@@ -610,7 +676,8 @@ class WorkflowEngine:
                 "timestamp": datetime.now().isoformat(),
                     "error": str(e),
                     "node_id": "workflow_engine",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             execution.error_log.append(error_info)
 
             logger.error(f"Workflow execution {execution_id} failed: {e}")
@@ -620,7 +687,8 @@ class WorkflowEngine:
                     "execution_id": execution_id,
                     "status": execution.status.value,
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         finally:
             self.running_executions.discard(execution_id)
@@ -628,7 +696,8 @@ class WorkflowEngine:
 
     def _are_dependencies_satisfied(
         self, execution: WorkflowExecution, node_id: str
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Check if all dependencies for a node are satisfied."""
         workflow = self.workflows[execution.workflow_id]
         node = workflow.nodes[node_id]
@@ -664,11 +733,15 @@ class WorkflowEngine:
             try:
                 result = await asyncio.wait_for(
                     processor_func(input_data, node.config), timeout = timeout
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             except asyncio.TimeoutError:
                 raise Exception(
                     f"Node {node.node_id} timed out after {timeout} seconds"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Store result
             execution.node_results[node.node_id] = result
@@ -691,16 +764,19 @@ class WorkflowEngine:
                 "timestamp": datetime.now().isoformat(),
                     "node_id": node.node_id,
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             execution.error_log.append(error_info)
 
             # Handle retries
             if node.retry_count < node.max_retries:
                 node.retry_count += 1
                 logger.warning(
-                    f"Node {node.node_id} failed,
-    retrying ({node.retry_count}/{node.max_retries})"
-                )
+                    f"Node {node.node_id} failed,"
+    retrying ({node.retry_count}/{node.max_retries})""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Wait before retry
                 await asyncio.sleep(self.config.get("retry_delay", 5))
@@ -731,7 +807,9 @@ class WorkflowEngine:
             if input_node_id in execution.node_results:
                 input_data[f"input_{input_node_id}"] = execution.node_results[
                     input_node_id
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Add node - specific config
         input_data["node_config"] = node.config
@@ -763,7 +841,9 @@ class WorkflowEngine:
                     workflow_type = workflow_type,
                     input_data = input_data,
                     config = config,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             result = await media_hub.process_media_job(job_id)
 
@@ -772,7 +852,8 @@ class WorkflowEngine:
                     "job_id": job_id,
                     "output_files": result.get("output_files", []),
                     "metadata": result.get("metadata", {}),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             logger.error(f"Media hub processing failed: {e}")
@@ -792,11 +873,13 @@ class WorkflowEngine:
             emotions = []
             if any(
                 word in text.lower() for word in ["excited", "amazing", "fantastic"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 emotions.append("excited")
             elif any(
                 word in text.lower() for word in ["serious", "important", "critical"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 emotions.append("serious")
             else:
                 emotions.append("neutral")
@@ -813,7 +896,8 @@ class WorkflowEngine:
                     "topics": topics,
                     "text_length": len(text),
                     "word_count": len(text.split()),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         elif analyze_type == "image":
             # Image analysis for PNG to Blender conversion
@@ -835,7 +919,8 @@ class WorkflowEngine:
                         "pixel_range": (int(img_array.min()), int(img_array.max())),
                         "mean_brightness": float(img_array.mean()),
                         "suitable_for_heightmap": True,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         return {"analysis_complete": True}
 
@@ -856,7 +941,9 @@ class WorkflowEngine:
                     workflow_type = WorkflowType.CUSTOM_WORKFLOW,
                     input_data = input_data,
                     config = config,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             result = await media_hub.process_media_job(job_id)
 
@@ -886,7 +973,9 @@ class WorkflowEngine:
                 validation_results["passed"] = False
                 validation_results["checks"].append(
                     f"Duration {duration}s outside range [{min_duration}, {max_duration}]"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Quality score check
         if "quality_score" in input_data:
@@ -895,12 +984,16 @@ class WorkflowEngine:
                 validation_results["passed"] = False
                 validation_results["checks"].append(
                     f"Quality score {quality_score} below minimum {min_quality_score}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         if not validation_results["passed"]:
             raise Exception(
                 f"Quality validation failed: {validation_results['checks']}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return validation_results
 
@@ -924,14 +1017,18 @@ class WorkflowEngine:
                         "job_id": f"batch_job_{i}",
                             "script": script,
                             "avatar_image": avatar_image,
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return {
                 "batch_jobs": jobs,
                     "total_jobs": len(jobs),
                     "max_parallel": max_parallel,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         return {"batch_processed": True}
 
@@ -952,17 +1049,20 @@ class WorkflowEngine:
                 "progress": execution.progress,
                 "start_time": (
                 execution.start_time.isoformat() if execution.start_time else None
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "end_time": execution.end_time.isoformat() if execution.end_time else None,
                 "current_nodes": list(execution.current_nodes),
                 "completed_nodes": list(execution.completed_nodes),
                 "failed_nodes": list(execution.failed_nodes),
                 "node_states": {
                 nid: status.value for nid, status in execution.node_states.items()
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 "output_data": execution.output_data,
                 "error_log": execution.error_log[-10:],  # Last 10 errors
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     def get_available_workflows(self) -> Dict[str, Dict[str, Any]]:
@@ -976,9 +1076,11 @@ class WorkflowEngine:
                     "node_count": len(workflow.nodes),
                     "input_schema": workflow.input_schema,
                     "output_schema": workflow.output_schema,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             for workflow_id, workflow in self.workflows.items()
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
     async def cancel_execution(self, execution_id: str) -> bool:
@@ -1011,8 +1113,12 @@ class WorkflowEngine:
                 WorkflowStatus.COMPLETED,
                     WorkflowStatus.FAILED,
                     WorkflowStatus.CANCELLED,
-                    ]
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for exec_id in executions_to_remove:
             del self.executions[exec_id]
@@ -1049,8 +1155,11 @@ if __name__ == "__main__":
                 {
                 "script": "Check out our amazing new product features!",
                     "avatar_image": "path / to / avatar.jpg",
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         print(f"Created execution: {execution_id}")
 
@@ -1061,7 +1170,9 @@ if __name__ == "__main__":
         # Example: PNG to Blender workflow
         png_execution_id = await engine.create_workflow_execution(
             "png_to_blender_conversion", {"png_file": "path / to / heightmap.png"}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         png_result = await engine.execute_workflow(png_execution_id)
         print(f"PNG to Blender result: {png_result}")

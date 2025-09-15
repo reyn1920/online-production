@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Monetization Router - Integrates monetization bundle services with main FastAPI app
 Handles ebook generation, newsletter automation, merch design, and revenue tracking
-"""
+""""""
 
 import asyncio
 import json
@@ -25,7 +25,8 @@ try:
         MonetizationBundle,
         MonetizationConfig,
         NewsletterRequest,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     MONETIZATION_AVAILABLE = True
 except ImportError as e:
@@ -113,8 +114,10 @@ async def health_check():
             "newsletter_bot": MONETIZATION_AVAILABLE,
             "merch_bot": MONETIZATION_AVAILABLE,
             "seo_publisher": MONETIZATION_AVAILABLE,
-        },
-    }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.post("/ebook / generate", response_model=MonetizationJobResponse)
@@ -133,7 +136,8 @@ async def generate_ebook(request: EbookGenerationRequest, background_tasks: Back
         "progress": 0,
         "result": None,
         "error": None,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Start background task
     background_tasks.add_task(process_ebook_generation, job_id, request)
@@ -143,7 +147,8 @@ async def generate_ebook(request: EbookGenerationRequest, background_tasks: Back
         status="pending",
         message="Ebook generation started",
         estimated_completion=datetime.now() + timedelta(minutes=5),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.post("/newsletter / create", response_model=MonetizationJobResponse)
@@ -162,7 +167,8 @@ async def create_newsletter(request: NewsletterCreationRequest, background_tasks
         "progress": 0,
         "result": None,
         "error": None,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Start background task
     background_tasks.add_task(process_newsletter_creation, job_id, request)
@@ -172,7 +178,8 @@ async def create_newsletter(request: NewsletterCreationRequest, background_tasks
         status="pending",
         message="Newsletter creation started",
         estimated_completion=datetime.now() + timedelta(minutes=3),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.post("/merch / design", response_model=MonetizationJobResponse)
@@ -191,7 +198,8 @@ async def create_merch_design(request: MerchDesignRequest, background_tasks: Bac
         "progress": 0,
         "result": None,
         "error": None,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Start background task
     background_tasks.add_task(process_merch_design, job_id, request)
@@ -201,7 +209,8 @@ async def create_merch_design(request: MerchDesignRequest, background_tasks: Bac
         status="pending",
         message="Merch design creation started",
         estimated_completion=datetime.now() + timedelta(minutes=10),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.post("/blog / publish", response_model=MonetizationJobResponse)
@@ -220,7 +229,8 @@ async def publish_blog_post(request: BlogPostCreationRequest, background_tasks: 
         "progress": 0,
         "result": None,
         "error": None,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
     # Start background task
     background_tasks.add_task(process_blog_publishing, job_id, request)
@@ -230,7 +240,8 @@ async def publish_blog_post(request: BlogPostCreationRequest, background_tasks: 
         status="pending",
         message="Blog post publishing started",
         estimated_completion=datetime.now() + timedelta(minutes=2),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @router.get("/job/{job_id}")
@@ -248,7 +259,8 @@ async def get_job_status(job_id: str):
         "created_at": job["created_at"].isoformat(),
         "result": job["result"],
         "error": job["error"],
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @router.get("/revenue / stats", response_model=RevenueStatsResponse)
@@ -265,7 +277,8 @@ async def get_revenue_stats():
             products_sold=0,
             active_campaigns=0,
             last_updated=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     try:
         # Get real stats from monetization bundle
@@ -280,7 +293,8 @@ async def get_revenue_stats():
             products_sold=stats.get("products_sold", 0),
             active_campaigns=stats.get("active_campaigns", 0),
             last_updated=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
     except Exception as e:
         logging.getLogger(__name__).error(f"Error getting revenue stats: {e}")
         # Return fallback data on error
@@ -293,7 +307,8 @@ async def get_revenue_stats():
             products_sold=0,
             active_campaigns=0,
             last_updated=datetime.now(),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 @router.get("/products")
@@ -311,7 +326,8 @@ async def list_products():
             "products": products,
             "total": len(products),
             "last_updated": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
     except Exception as e:
         logging.getLogger(__name__).error(f"Error getting products: {e}")
         # Return empty list on error
@@ -335,7 +351,8 @@ async def list_campaigns():
             "open_rate": 0.24,
             "click_rate": 0.08,
             "revenue": 1250.75,
-        },
+# BRACKET_SURGEON: disabled
+#         },
         {
             "id": "camp_002",
             "name": "Merch Launch Campaign",
@@ -345,8 +362,10 @@ async def list_campaigns():
             "engagement_rate": 0.12,
             "conversions": 34,
             "revenue": 849.66,
-        },
-    ]
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     ]
 
     return {"campaigns": campaigns, "total": len(campaigns)}
 
@@ -367,7 +386,8 @@ async def process_ebook_generation(job_id: str, request: EbookGenerationRequest)
                 content=request.content,
                 author=request.author,
                 format=request.format,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             jobs[job_id]["progress"] = 75
 
@@ -377,7 +397,8 @@ async def process_ebook_generation(job_id: str, request: EbookGenerationRequest)
                 price=request.price,
                 file_path=file_path,
                 description=f"Ebook by {request.author}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             jobs[job_id]["status"] = "completed"
             jobs[job_id]["progress"] = 100
@@ -385,7 +406,8 @@ async def process_ebook_generation(job_id: str, request: EbookGenerationRequest)
                 "file_path": file_path,
                 "publish_result": publish_result,
                 "download_url": f"/monetization / download/{job_id}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
         else:
             # Mock completion
             await asyncio.sleep(2)
@@ -395,7 +417,8 @@ async def process_ebook_generation(job_id: str, request: EbookGenerationRequest)
                 "file_path": f"mock_ebook_{job_id}.pdf",
                 "publish_result": {"success": True, "product_id": f"mock_{job_id}"},
                 "download_url": f"/monetization / download/{job_id}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     except Exception as e:
         logging.getLogger(__name__).error(f"Ebook generation failed: {e}")
@@ -416,7 +439,8 @@ async def process_newsletter_creation(job_id: str, request: NewsletterCreationRe
                 content=request.content,
                 subscribers=request.subscriber_list,
                 include_affiliate_links=request.include_affiliate_links,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             jobs[job_id]["status"] = "completed"
             jobs[job_id]["progress"] = 100
@@ -430,7 +454,8 @@ async def process_newsletter_creation(job_id: str, request: NewsletterCreationRe
                 "success": True,
                 "sent_count": len(request.subscriber_list),
                 "campaign_id": f"mock_campaign_{job_id}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     except Exception as e:
         logging.getLogger(__name__).error(f"Newsletter creation failed: {e}")
@@ -450,7 +475,8 @@ async def process_merch_design(job_id: str, request: MerchDesignRequest):
                 design_name=request.design_name,
                 product_type=request.product_type,
                 design_prompt=request.design_prompt,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             jobs[job_id]["progress"] = 70
 
@@ -459,14 +485,16 @@ async def process_merch_design(job_id: str, request: MerchDesignRequest):
                 design_path=design_path,
                 product_type=request.product_type,
                 price=request.price,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             jobs[job_id]["status"] = "completed"
             jobs[job_id]["progress"] = 100
             jobs[job_id]["result"] = {
                 "design_path": design_path,
                 "publish_result": publish_result,
-            }
+# BRACKET_SURGEON: disabled
+#             }
         else:
             # Mock completion
             await asyncio.sleep(3)
@@ -477,8 +505,10 @@ async def process_merch_design(job_id: str, request: MerchDesignRequest):
                 "publish_result": {
                     "success": True,
                     "product_id": f"mock_merch_{job_id}",
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
     except Exception as e:
         logging.getLogger(__name__).error(f"Merch design creation failed: {e}")
@@ -500,7 +530,8 @@ async def process_blog_publishing(job_id: str, request: BlogPostCreationRequest)
                 platform=request.platform,
                 seo_keywords=request.seo_keywords,
                 include_affiliate_links=request.include_affiliate_links,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             jobs[job_id]["status"] = "completed"
             jobs[job_id]["progress"] = 100
@@ -514,7 +545,8 @@ async def process_blog_publishing(job_id: str, request: BlogPostCreationRequest)
                 "success": True,
                 "post_url": f"https://mock - blog.com / posts/{job_id}",
                 "post_id": f"mock_post_{job_id}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     except Exception as e:
         logging.getLogger(__name__).error(f"Blog publishing failed: {e}")

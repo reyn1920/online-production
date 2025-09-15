@@ -14,10 +14,22 @@ TIMEOUT_S = 15
 
 
 def get_active_news_provider() -> Dict:
-    """Get the currently active news provider from the registry."""
+    """
+Get the currently active news provider from the registry.
+
+    
+"""
     try:
+    """
         r = requests.get(f"{BASE}/integrations/active/news", timeout=10)
         r.raise_for_status()
+    """
+
+    try:
+    
+
+   
+""""""
         return r.json()["active"]
     except Exception as e:
         logger.error(f"Failed to get active news provider: {e}")
@@ -25,9 +37,27 @@ def get_active_news_provider() -> Dict:
 
 
 def _get_credentials(provider_key: str) -> Dict[str, str]:
-    """Get credentials for a provider from environment or secret store."""
+    """
+Get credentials for a provider from environment or secret store.
+
+   
+""""""
+
     # Try environment variables first
+   
+
+    
+   
+"""
     creds = {}
+   """
+
+    
+   
+
+    # Try environment variables first
+   
+""""""
     if provider_key == "newsapi":
         api_key = os.getenv("NEWSAPI_KEY")
         if api_key:
@@ -72,10 +102,22 @@ def _report_usage(
     error: Optional[str] = None,
     took_ms: Optional[int] = None,
     quota_remaining: Optional[int] = None,
-):
-    """Report usage metrics to the integrations registry."""
+# ):
+    """
+Report usage metrics to the integrations registry.
+
+    
+"""
     try:
+    """
         payload = {"key": provider_key, "success": success, "took_ms": took_ms}
+    """
+
+    try:
+    
+
+   
+""""""
         if error:
             payload["error"] = str(error)[:300]  # Truncate long errors
         if quota_remaining is not None:
@@ -100,7 +142,7 @@ def _fetch_newsapi_articles(
             "pageSize": min(limit, 100),  # NewsAPI max is 100
             "sortBy": "publishedAt",
             "language": "en",
-        }
+         }
     else:
         url = "https://newsapi.org/v2/top - headlines"
         params = {"pageSize": min(limit, 100), "country": "us", "language": "en"}
@@ -130,20 +172,20 @@ def _fetch_newsapi_articles(
                     "source": article["source"]["name"],
                     "author": article.get("author"),
                     "provider": "newsapi",
-                }
-            )
+                 }
+             )
 
         return {
             "success": True,
             "articles": articles,
             "total": data.get("totalResults", len(articles)),
             "quota_remaining": None,  # NewsAPI doesn't provide quota in response
-        }
+         }
     else:
         return {
             "success": False,
             "error": f"NewsAPI error: {resp.status_code} - {resp.text[:200]}",
-        }
+         }
 
 
 def _fetch_guardian_articles(query: str, limit: int, api_key: str) -> Dict[str, Any]:
@@ -153,14 +195,14 @@ def _fetch_guardian_articles(query: str, limit: int, api_key: str) -> Dict[str, 
         "page - size": min(limit, 50),  # Guardian max is 50
         "show - fields": "thumbnail,trailText,body",
         "order - by": "newest",
-    }
+     }
 
     if query:
         params["q"] = query
 
     resp = http_get_with_backoff(
         "https://content.guardianapis.com/search", params=params, timeout=TIMEOUT_S
-    )
+     )
 
     if resp.status_code == 200:
         data = resp.json()
@@ -180,20 +222,20 @@ def _fetch_guardian_articles(query: str, limit: int, api_key: str) -> Dict[str, 
                     "source": "The Guardian",
                     "author": None,  # Guardian doesn't always provide author in this endpoint
                     "provider": "guardian",
-                }
-            )
+                 }
+             )
 
         return {
             "success": True,
             "articles": articles,
             "total": data["response"].get("total", len(articles)),
             "quota_remaining": None,
-        }
+         }
     else:
         return {
             "success": False,
             "error": f"Guardian API error: {resp.status_code} - {resp.text[:200]}",
-        }
+         }
 
 
 def _fetch_nytimes_articles(query: str, limit: int, api_key: str) -> Dict[str, Any]:
@@ -237,8 +279,8 @@ def _fetch_nytimes_articles(query: str, limit: int, api_key: str) -> Dict[str, A
                         "source": "The New York Times",
                         "author": doc.get("byline", {}).get("original"),
                         "provider": "nytimes",
-                    }
-                )
+                     }
+                 )
         else:
             # Top stories response format
             results = data.get("results", [])
@@ -263,20 +305,20 @@ def _fetch_nytimes_articles(query: str, limit: int, api_key: str) -> Dict[str, A
                         "source": "The New York Times",
                         "author": article.get("byline"),
                         "provider": "nytimes",
-                    }
-                )
+                     }
+                 )
 
         return {
             "success": True,
             "articles": articles,
             "total": len(articles),  # NYT doesn't always provide total count
             "quota_remaining": None,
-        }
+         }
     else:
         return {
             "success": False,
             "error": f"NY Times API error: {resp.status_code} - {resp.text[:200]}",
-        }
+         }
 
 
 def fetch_news(
@@ -285,12 +327,29 @@ def fetch_news(
     category: Optional[str] = None,
     max_retries: int = 1,
 ) -> Dict[str, Any]:
-    """Fetch news articles using the active provider with automatic failover."""
-    start_time = time.time()
+    """
+Fetch news articles using the active provider with automatic failover.
 
+   
+""""""
+
+    start_time = time.time()
+   
+
+    
+   
+"""
     for attempt in range(max_retries + 1):
         try:
             # Get active provider
+   """
+
+    
+   
+
+    start_time = time.time()
+   
+""""""
             active = get_active_news_provider()
             provider_key = active["key"]
 
@@ -305,7 +364,7 @@ def fetch_news(
                     False,
                     error_msg,
                     int((time.time() - start_time) * 1000),
-                )
+                 )
                 return {"provider": provider_key, "ok": False, "error": error_msg}
 
             # Call appropriate provider
@@ -320,7 +379,7 @@ def fetch_news(
                 result = {
                     "success": False,
                     "error": f"No adapter implementation for {provider_key}",
-                }
+                 }
 
             took_ms = int((time.time() - start_time) * 1000)
 
@@ -333,7 +392,7 @@ def fetch_news(
                     "data": result["articles"],
                     "total": result.get("total", len(result["articles"])),
                     "took_ms": took_ms,
-                }
+                 }
             else:
                 # Failure - report and potentially rotate
                 error_msg = result.get("error", "Unknown error")
@@ -345,7 +404,7 @@ def fetch_news(
                         logger.info(f"Rotating from failed provider {provider_key}")
                         rotate_resp = requests.post(
                             f"{BASE}/integrations/rotate?category = news", timeout=10
-                        )
+                         )
                         if rotate_resp.status_code == 200:
                             rotation_data = rotate_resp.json()
                             logger.info(f"Rotated to {rotation_data.get('rotated_to', 'unknown')}")
@@ -361,7 +420,7 @@ def fetch_news(
                     "ok": False,
                     "error": error_msg,
                     "took_ms": took_ms,
-                }
+                 }
 
         except Exception as e:
             took_ms = int((time.time() - start_time) * 1000)
@@ -380,7 +439,7 @@ def fetch_news(
                 "ok": False,
                 "error": error_msg,
                 "took_ms": took_ms,
-            }
+             }
 
     # Should not reach here
     return {
@@ -388,7 +447,7 @@ def fetch_news(
         "ok": False,
         "error": "Max retries exceeded",
         "took_ms": int((time.time() - start_time) * 1000),
-    }
+     }
 
 
 # Convenience functions for backward compatibility

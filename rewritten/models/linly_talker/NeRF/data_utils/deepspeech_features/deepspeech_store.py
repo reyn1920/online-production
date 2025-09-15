@@ -1,6 +1,6 @@
-"""
+""""""
 Routines for loading DeepSpeech model.
-"""
+""""""
 
 __all__ = ["get_deepspeech_model_file"]
 
@@ -14,11 +14,12 @@ deepspeech_features_repo_url = "https://github.com/osmr/deepspeech_features"
 
 def get_deepspeech_model_file(
     local_model_store_dir_path=os.path.join("~", ".tensorflow", "models")
-):
-    """
+# BRACKET_SURGEON: disabled
+# ):
+    """"""
     Return location for the pretrained on local file system. This function will download from online model zoo when
     model cannot be found \
-    or has mismatch. The root directory will be created if it doesn't exist.
+#     or has mismatch. The root directory will be created if it doesn't exist.
 
     Parameters
     ----------
@@ -29,7 +30,7 @@ def get_deepspeech_model_file(
     -------
         file_path
         Path to the requested pretrained model file.
-    """
+    """"""
     sha1_hash = "b90017e816572ddce84f5843f1fa21e6a377975e"
     file_name = "deepspeech - 0_1_0 - b90017e8.pb"
     local_model_store_dir_path = os.path.expanduser(local_model_store_dir_path)
@@ -51,10 +52,12 @@ def get_deepspeech_model_file(
             repo_url=deepspeech_features_repo_url,
             repo_release_tag="v0.0.1",
             file_name=file_name,
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
         path=zip_file_path,
         overwrite=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     with zipfile.ZipFile(zip_file_path) as zf:
         zf.extractall(local_model_store_dir_path)
     os.remove(zip_file_path)
@@ -66,7 +69,7 @@ def get_deepspeech_model_file(
 
 
 def _download(url, path=None, overwrite=False, sha1_hash=None, retries=5, verify_ssl=True):
-    """
+    """"""
     Download an given URL
 
     Parameters
@@ -80,10 +83,10 @@ def _download(url, path=None, overwrite=False, sha1_hash=None, retries=5, verify
         Whether to overwrite destination file if already exists.
     sha1_hash : str, optional
         Expected sha1 hash in hexadecimal digits. Will ignore existing file when hash is specified
-        but doesn't match.
+        but doesn't match.'
     retries : integer, default 5
         The number of times to attempt the download in case of failure \
-    or non 200 return codes
+#     or non 200 return codes
     verify_ssl : bool, default True
         Verify SSL certificates.
 
@@ -91,7 +94,7 @@ def _download(url, path=None, overwrite=False, sha1_hash=None, retries=5, verify
     -------
         str
         The file path of the downloaded file.
-    """
+    """"""
 
     import warnings
 
@@ -110,7 +113,8 @@ def _download(url, path=None, overwrite=False, sha1_hash=None, retries=5, verify
         # Empty filenames are invalid
         assert (
             fname
-        ), "Can't construct file - name from this URL. Please set the `path` option manually."
+# BRACKET_SURGEON: disabled
+#         ), "Can't construct file - name from this URL. Please set the `path` option manually."'
     else:
         path = os.path.expanduser(path)
         if os.path.isdir(path):
@@ -123,7 +127,8 @@ def _download(url, path=None, overwrite=False, sha1_hash=None, retries=5, verify
         warnings.warn(
             "Unverified HTTPS request is being made (verify_ssl = False). "
             "Adding certificate verification is strongly advised."
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     if overwrite or not os.path.exists(fname) or (sha1_hash and not _check_sha1(fname, sha1_hash)):
         dirname = os.path.dirname(os.path.abspath(os.path.expanduser(fname)))
@@ -147,7 +152,8 @@ def _download(url, path=None, overwrite=False, sha1_hash=None, retries=5, verify
                         " The repo may be outdated or download may be incomplete. "
                         "If the `repo_url` is overridden, consider switching to "
                         "the default repo.".format(fname)
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 break
             except Exception as e:
                 retries -= 1
@@ -157,14 +163,16 @@ def _download(url, path=None, overwrite=False, sha1_hash=None, retries=5, verify
                     print(
                         "download failed, retrying, {} attempt{} left".format(
                             retries, "s" if retries > 1 else ""
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
 
     return fname
 
 
 def _check_sha1(filename, sha1_hash):
-    """
+    """"""
     Check whether the sha1 hash of the file content matches the expected hash.
 
     Parameters
@@ -178,7 +186,7 @@ def _check_sha1(filename, sha1_hash):
     -------
         bool
         Whether the file content matches the expected hash.
-    """
+    """"""
     sha1 = hashlib.sha1()
     with open(filename, "rb") as f:
         while True:

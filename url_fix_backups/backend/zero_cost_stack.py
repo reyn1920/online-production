@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Zero - Cost Stack Implementation
 Ensures 100% Free, No - Trial Software Stack Compliance
 
@@ -8,7 +8,7 @@ System Constitution Adherence:
 - Zero - Cost Stack: Exclusively uses free, open - source software
 - Additive Evolution: Builds upon existing free alternatives
 - Secure Design: Implements robust security without paid services
-"""
+""""""
 
 import hashlib
 import json
@@ -32,8 +32,12 @@ logging.basicConfig(
     level = logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[logging.FileHandler("logs / zero_cost_stack.log"),
-    logging.StreamHandler()],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     logging.StreamHandler()],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -128,7 +132,7 @@ class ZeroCostStackManager:
 
         with sqlite3.connect(self.db_path) as conn:
             conn.executescript(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS services (
                     name TEXT PRIMARY KEY,
                         category TEXT NOT NULL,
@@ -144,7 +148,8 @@ class ZeroCostStackManager:
                         compliance_notes TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS validation_results (
                     id TEXT PRIMARY KEY,
@@ -155,7 +160,8 @@ class ZeroCostStackManager:
                         recommendations TEXT,
                         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (service_name) REFERENCES services (name)
-                );
+# BRACKET_SURGEON: disabled
+#                 );
 
                 CREATE TABLE IF NOT EXISTS stack_audits (
                     id TEXT PRIMARY KEY,
@@ -165,9 +171,12 @@ class ZeroCostStackManager:
                         compliance_percentage REAL,
                         critical_issues TEXT,
                         recommendations TEXT
-                );
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 );
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _load_zero_cost_services(self):
@@ -186,11 +195,14 @@ class ZeroCostStackManager:
                     "Install Ollama: curl -fsSL https://ollama.ai / install.sh | sh",
                         "Pull model: ollama pull llama2",
                         "Start server: ollama serve",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     docker_image="ollama / ollama",
                     local_installation = True,
                     compliance_notes="100% free, runs locally, no API keys required",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "huggingface_transformers": ServiceConfig(
                 name="Hugging Face Transformers",
                     category = ServiceCategory.AI_LLM,
@@ -200,10 +212,13 @@ class ZeroCostStackManager:
                     setup_instructions=[
                     "pip install transformers torch",
                         "Download models locally for offline use",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Open - source, runs locally, no API costs",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 # Text - to - Speech
             "espeak": ServiceConfig(
                 name="eSpeak NG",
@@ -215,10 +230,13 @@ class ZeroCostStackManager:
                     "Ubuntu / Debian: sudo apt - get install espeak - ng",
                         "macOS: brew install espeak",
                         "Usage: espeak 'Hello World'",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Completely free, open - source TTS engine",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "festival": ServiceConfig(
                 name="Festival Speech Synthesis",
                     category = ServiceCategory.TEXT_TO_SPEECH,
@@ -229,10 +247,13 @@ class ZeroCostStackManager:
                     "Ubuntu / Debian: sudo apt - get install festival",
                         "macOS: brew install festival",
                         "Usage: echo 'Hello World' | festival --tts",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Free, open - source speech synthesis",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 # Image Generation
             "stable_diffusion_local": ServiceConfig(
                 name="Stable Diffusion (Local)",
@@ -244,10 +265,13 @@ class ZeroCostStackManager:
                     "pip install diffusers transformers accelerate",
                         "Download model locally",
                         "Run inference without API calls",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Open - source, runs locally, no API costs",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 # Video Processing
             "ffmpeg": ServiceConfig(
                 name="FFmpeg",
@@ -259,10 +283,13 @@ class ZeroCostStackManager:
                     "Ubuntu / Debian: sudo apt - get install ffmpeg",
                         "macOS: brew install ffmpeg",
                         "Windows: Download from ffmpeg.org",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Industry - standard, completely free video processing",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "opencv": ServiceConfig(
                 name="OpenCV",
                     category = ServiceCategory.VIDEO_PROCESSING,
@@ -272,10 +299,13 @@ class ZeroCostStackManager:
                     setup_instructions=[
                     "pip install opencv - python",
                         "pip install opencv - contrib - python",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Open - source computer vision library",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 # Database
             "sqlite": ServiceConfig(
                 name="SQLite",
@@ -286,10 +316,13 @@ class ZeroCostStackManager:
                     setup_instructions=[
                     "Built into Python standard library",
                         "No installation required",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Public domain, serverless database",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "postgresql": ServiceConfig(
                 name="PostgreSQL",
                     category = ServiceCategory.DATABASE,
@@ -300,11 +333,14 @@ class ZeroCostStackManager:
                     "Ubuntu / Debian: sudo apt - get install postgresql",
                         "macOS: brew install postgresql",
                         "Docker: docker run -d postgres",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     docker_image="postgres:latest",
                     local_installation = True,
                     compliance_notes="Open - source relational database",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 # Hosting
             "netlify_free": ServiceConfig(
                 name="Netlify (Free Tier)",
@@ -315,14 +351,18 @@ class ZeroCostStackManager:
                     "bandwidth": "100GB / month",
                         "build_minutes": "300 / month",
                         "sites": "unlimited",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     setup_instructions=[
                     "Sign up at netlify.com",
                         "Connect GitHub repository",
                         "Configure build settings",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     compliance_notes="Free tier sufficient for most projects",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "github_pages": ServiceConfig(
                 name="GitHub Pages",
                     category = ServiceCategory.HOSTING,
@@ -332,14 +372,18 @@ class ZeroCostStackManager:
                     "bandwidth": "100GB / month",
                         "storage": "1GB",
                         "builds": "10 / hour",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     setup_instructions=[
                     "Enable Pages in repository settings",
                         "Configure source branch",
                         "Add custom domain (optional)",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     compliance_notes="Completely free static site hosting",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 # Email
             "smtp_gmail_free": ServiceConfig(
                 name="Gmail SMTP (Free)",
@@ -350,20 +394,25 @@ class ZeroCostStackManager:
                     free_tier_limits={
                     "daily_limit": "500 emails",
                         "rate_limit": "100 emails / hour",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     environment_variables={
                     "SMTP_HOST": "smtp.gmail.com",
                         "SMTP_PORT": "587",
                         "SMTP_USERNAME": "your_email@gmail.com",
                         "SMTP_PASSWORD": "app_password",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     setup_instructions=[
                     "Enable 2FA on Gmail account",
                         "Generate app - specific password",
                         "Use app password for SMTP authentication",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     compliance_notes="Free tier sufficient for most applications",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 # Analytics
             "plausible_ce": ServiceConfig(
                 name="Plausible Analytics CE",
@@ -376,10 +425,13 @@ class ZeroCostStackManager:
                     "Deploy with Docker Compose",
                         "Configure environment variables",
                         "Add tracking script to website",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Self - hosted, privacy - focused analytics",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 # Monitoring
             "prometheus": ServiceConfig(
                 name="Prometheus",
@@ -392,10 +444,13 @@ class ZeroCostStackManager:
                     "Deploy with Docker",
                         "Configure prometheus.yml",
                         "Set up targets for monitoring",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Open - source monitoring and alerting",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 "grafana": ServiceConfig(
                 name="Grafana",
                     category = ServiceCategory.MONITORING,
@@ -407,10 +462,13 @@ class ZeroCostStackManager:
                     "Deploy with Docker",
                         "Connect to Prometheus data source",
                         "Import dashboards",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Open - source visualization and dashboards",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 # Storage
             "minio": ServiceConfig(
                 name="MinIO",
@@ -423,10 +481,13 @@ class ZeroCostStackManager:
                     "Deploy with Docker",
                         "Configure access keys",
                         "Create buckets",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="S3 - compatible object storage, self - hosted",
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                 # Search
             "elasticsearch_oss": ServiceConfig(
                 name="Elasticsearch OSS",
@@ -439,11 +500,15 @@ class ZeroCostStackManager:
                     "Deploy with Docker",
                         "Configure cluster settings",
                         "Index documents",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     local_installation = True,
                     compliance_notes="Open - source search and analytics engine",
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Store configurations
         for service_name, config in zero_cost_configs.items():
@@ -458,7 +523,7 @@ class ZeroCostStackManager:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    "INSERT OR REPLACE INTO services (name,
+                    "INSERT OR REPLACE INTO services (name,"
     category,
     cost_status,
     api_endpoint,
@@ -470,7 +535,7 @@ class ZeroCostStackManager:
     docker_image,
     local_installation,
     compliance_notes,
-    updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)","
                         (
                         config.name,
                             config.category.value,
@@ -485,8 +550,11 @@ class ZeroCostStackManager:
                             config.local_installation,
                             config.compliance_notes,
                             datetime.now(),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
         except Exception as e:
             logger.error(f"Error storing service config for {config.name}: {e}")
 
@@ -509,12 +577,15 @@ class ZeroCostStackManager:
 
         logger.info(
             f"Stack validation completed. {len([r for r in validation_results if r.is_compliant])}/{len(validation_results)} services compliant"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def _validate_service_compliance(
         self, config: ServiceConfig
-    ) -> StackValidationResult:
+# BRACKET_SURGEON: disabled
+#     ) -> StackValidationResult:
         """Validate individual service compliance"""
         issues = []
         recommendations = []
@@ -526,7 +597,9 @@ class ZeroCostStackManager:
             is_compliant = False
             recommendations.append(
                 f"Replace with free alternative from: {config.alternative_services}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         elif config.cost_status == CostStatus.TRIAL_ONLY:
             issues.append("Service only offers trial - not sustainable for production")
@@ -537,7 +610,9 @@ class ZeroCostStackManager:
             if not config.free_tier_limits:
                 issues.append(
                     "Freemium service without defined limits - risk of unexpected charges"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 recommendations.append("Define and monitor usage limits")
             else:
                 recommendations.append("Monitor usage to stay within free tier limits")
@@ -546,16 +621,22 @@ class ZeroCostStackManager:
         if config.api_key_required and not config.local_installation:
             recommendations.append(
                 "Consider local installation to avoid API dependencies"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Check for local alternatives
         if not config.local_installation and config.category in [
             ServiceCategory.AI_LLM,
                 ServiceCategory.IMAGE_GENERATION,
-                ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]:
             recommendations.append(
                 "Consider local installation for better cost control and privacy"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return StackValidationResult(
             service_name = config.name,
@@ -564,7 +645,9 @@ class ZeroCostStackManager:
                 issues = issues,
                 recommendations = recommendations,
                 timestamp = datetime.now(),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def _store_validation_result(self, result: StackValidationResult):
@@ -572,13 +655,13 @@ class ZeroCostStackManager:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    "INSERT INTO validation_results (id,
+                    "INSERT INTO validation_results (id,"
     service_name,
     is_compliant,
     cost_status,
     issues,
     recommendations,
-    timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)","
                         (
                         str(uuid.uuid4()),
                             result.service_name,
@@ -587,12 +670,17 @@ class ZeroCostStackManager:
                             json.dumps(result.issues),
                             json.dumps(result.recommendations),
                             result.timestamp,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
         except Exception as e:
             logger.error(
                 f"Error storing validation result for {result.service_name}: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def _generate_audit_report(self):
@@ -601,10 +689,14 @@ class ZeroCostStackManager:
             total_services = len(self.validation_results)
             compliant_services = len(
                 [r for r in self.validation_results if r.is_compliant]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             compliance_percentage = (
                 (compliant_services / total_services) * 100 if total_services > 0 else 0
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             critical_issues = []
             all_recommendations = []
@@ -617,12 +709,12 @@ class ZeroCostStackManager:
             # Store audit in database
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
-                    "INSERT INTO stack_audits (id,
+                    "INSERT INTO stack_audits (id,"
     total_services,
     compliant_services,
     compliance_percentage,
     critical_issues,
-    recommendations) VALUES (?, ?, ?, ?, ?, ?)",
+    recommendations) VALUES (?, ?, ?, ?, ?, ?)","
                         (
                         str(uuid.uuid4()),
                             total_services,
@@ -630,12 +722,17 @@ class ZeroCostStackManager:
                             compliance_percentage,
                             json.dumps(critical_issues),
                             json.dumps(list(set(all_recommendations))),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             logger.info(
                 f"Audit report generated: {compliance_percentage:.1f}% compliance"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             logger.error(f"Error generating audit report: {e}")
@@ -650,7 +747,9 @@ class ZeroCostStackManager:
             for config in self.services.values()
             if config.category == category
             and config.cost_status in [CostStatus.FREE, CostStatus.FREEMIUM]
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
 
     def generate_docker_compose(self) -> str:
@@ -664,7 +763,8 @@ class ZeroCostStackManager:
                 service_config = {
                     "image": config.docker_image,
                         "restart": "unless - stopped",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 # Add environment variables if specified
                 if config.environment_variables:
@@ -674,7 +774,9 @@ class ZeroCostStackManager:
                 if config.category == ServiceCategory.DATABASE:
                     service_config["volumes"] = [
                         f"./{service_name}_data:/var / lib / postgresql / data"
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
                     service_config["ports"] = ["5432:5432"]
 
                 elif config.category == ServiceCategory.MONITORING:
@@ -682,7 +784,9 @@ class ZeroCostStackManager:
                         service_config["ports"] = ["9090:9090"]
                         service_config["volumes"] = [
                             "./prometheus.yml:/etc / prometheus / prometheus.yml"
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
                     elif "grafana" in service_name:
                         service_config["ports"] = ["3000:3000"]
                         service_config["volumes"] = ["grafana_data:/var / lib / grafana"]
@@ -699,7 +803,8 @@ class ZeroCostStackManager:
             "version": "3.8",
                 "services": services,
                 "volumes": {"grafana_data": {}, "minio_data": {}},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return yaml.dump(compose_config, default_flow_style = False)
 
@@ -707,15 +812,17 @@ class ZeroCostStackManager:
     def generate_setup_script(self) -> str:
         """Generate setup script for zero - cost stack"""
         script_lines = [
-            "#!/bin / bash",
-                "# Zero - Cost Stack Setup Script",
-                "# Generated by TRAE.AI Zero - Cost Stack Manager",
+            "#!/bin / bash","
+                "# Zero - Cost Stack Setup Script","
+                "# Generated by TRAE.AI Zero - Cost Stack Manager","
                 "",
                 "set -e",
                 "",
                 "echo 'Setting up zero - cost software stack...'",
                 "",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Group services by installation method
         apt_packages = []
@@ -743,55 +850,75 @@ class ZeroCostStackManager:
         if apt_packages:
             script_lines.extend(
                 [
-                    "# Install system packages (Ubuntu / Debian)",
+                    "# Install system packages (Ubuntu / Debian)","
                         "if command -v apt - get &> /dev / null; then",
                         f"    sudo apt - get update && sudo apt - get install -y {' '.join(set(apt_packages))}",
                         "fi",
                         "",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if brew_packages:
             script_lines.extend(
                 [
-                    "# Install packages (macOS)",
+                    "# Install packages (macOS)","
                         "if command -v brew &> /dev / null; then",
                         f"    brew install {' '.join(set(brew_packages))}",
                         "fi",
                         "",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if pip_packages:
             script_lines.extend(
                 [
-                    "# Install Python packages",
+                    "# Install Python packages","
                         f"pip install {' '.join(set(pip_packages))}",
                         "",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if docker_services:
             script_lines.extend(
                 [
-                    "# Start Docker services",
+                    "# Start Docker services","
                         "if command -v docker - compose &> /dev / null; then",
                         "    docker - compose up -d",
                         "    echo 'Docker services started'",
                         "else",
                         "    echo 'Docker Compose not found. Please install Docker \
-    and Docker Compose.'",
+#     and Docker Compose.'",
                         "fi",
                         "",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         script_lines.extend(
             [
                 "echo 'Zero - cost stack setup completed!'",
                     "echo 'All services are now running with zero ongoing costs.'",
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return "\\n".join(script_lines)
 
@@ -806,7 +933,8 @@ class ZeroCostStackManager:
                 "violations": [],
                 "recommendations": [],
                 "cost_savings": {"estimated_monthly_savings": 0, "avoided_services": []},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Check each service
         for config in self.services.values():
@@ -819,14 +947,18 @@ class ZeroCostStackManager:
                         "service": config.name,
                             "issue": f"Service requires payment ({config.cost_status.value})",
                             "category": config.category.value,
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Calculate compliance percentage
         compliance_percentage = (
             compliance_report["compliant_services"]
             / compliance_report["services_checked"]
-        ) * 100
+# BRACKET_SURGEON: disabled
+#         ) * 100
         compliance_report["compliance_percentage"] = compliance_percentage
 
         # Add recommendations
@@ -837,8 +969,12 @@ class ZeroCostStackManager:
                         "Consider self - hosting solutions where possible",
                         "Use local installations to avoid API costs",
                         "Monitor free tier usage limits",
-                        ]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return compliance_report
 
@@ -851,25 +987,30 @@ class ZeroCostStackManager:
                 ServiceCategory.TEXT_TO_SPEECH: {
                 "service": "Amazon Polly",
                     "monthly_cost": 15,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 ServiceCategory.IMAGE_GENERATION: {
                 "service": "DALL - E 2",
                     "monthly_cost": 25,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 ServiceCategory.VIDEO_PROCESSING: {
                 "service": "AWS Elemental",
                     "monthly_cost": 50,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 ServiceCategory.DATABASE: {"service": "AWS RDS", "monthly_cost": 30},
                 ServiceCategory.HOSTING: {"service": "AWS EC2", "monthly_cost": 40},
                 ServiceCategory.EMAIL: {"service": "SendGrid", "monthly_cost": 20},
                 ServiceCategory.ANALYTICS: {
                 "service": "Google Analytics 360",
                     "monthly_cost": 150,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 ServiceCategory.MONITORING: {"service": "DataDog", "monthly_cost": 45},
                 ServiceCategory.STORAGE: {"service": "AWS S3", "monthly_cost": 25},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         total_savings = 0
         category_savings = {}
@@ -884,7 +1025,8 @@ class ZeroCostStackManager:
                         "monthly_cost": monthly_cost,
                         "zero_cost_alternatives": [s.name for s in zero_cost_services],
                         "savings": monthly_cost,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         return {
             "total_monthly_savings": total_savings,
@@ -896,9 +1038,12 @@ class ZeroCostStackManager:
                     "setup_cost": 400,
                     "payback_period_months": (
                     400 / total_savings if total_savings > 0 else 0
-                ),
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def export_configuration(self, format_type: str = "json") -> str:
@@ -909,11 +1054,14 @@ class ZeroCostStackManager:
                     "generated_at": datetime.now().isoformat(),
                     "services": {
                     name: asdict(config) for name, config in self.services.items()
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                     "compliance_report": self.validate_environment_compliance(),
                     "cost_comparison": self.generate_cost_comparison_report(),
-                    }
-        }
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#         }
 
         if format_type == "json":
             return json.dumps(config_data, indent = 2, default = str)
@@ -934,19 +1082,25 @@ class ZeroCostStackManager:
                 "services_by_category": {
                 category.value: len(self.get_zero_cost_alternatives(category))
                 for category in ServiceCategory
-            },
+# BRACKET_SURGEON: disabled
+#             },
                 "setup_status": {
                 "docker_services": len(
                     [s for s in self.services.values() if s.docker_image]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "local_services": len(
                     [s for s in self.services.values() if s.local_installation]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "api_services": len(
                     [s for s in self.services.values() if s.api_endpoint]
-                ),
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 # Main execution
 if __name__ == "__main__":

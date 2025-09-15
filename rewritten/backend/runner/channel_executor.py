@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Channel Executor - Reads roadmap CSV and generates MP4 + PDF outputs
 Integrates with Hollywood pipeline for complete content generation
-"""
+""""""
 
 import asyncio
 import csv
@@ -45,7 +45,8 @@ class ChannelExecutor:
             self.videos_dir,
             self.pdfs_dir,
             self.audio_dir,
-        ]:
+# BRACKET_SURGEON: disabled
+#         ]:
             dir_path.mkdir(exist_ok=True)
 
     def load_roadmap(self, roadmap_path: str = "channel_roadmaps_10.csv") -> List[Dict[str, Any]]:
@@ -72,7 +73,8 @@ class ChannelExecutor:
                         "pdf_product_type": row.get("pdf_product_type", "ebook").strip(),
                         "keywords": row.get("keywords", "").strip().split(","),
                         "description_template": row.get("description_template", "").strip(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
                     if channel_data["channel_id"]:
                         roadmap.append(channel_data)
@@ -98,7 +100,8 @@ class ChannelExecutor:
             "timestamp": datetime.now().isoformat(),
             "outputs": {},
             "errors": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # Generate content script based on channel data
@@ -142,30 +145,30 @@ class ChannelExecutor:
             target_words = int((video_length / 60) * 150)
 
             # Generate script using AI (placeholder for actual implementation)
-            script_prompt = f"""
+            script_prompt = f""""""
             Create a {content_type} video script for a {niche} channel.
             Target audience: {audience}
             Video length: {video_length} seconds
             Target word count: {target_words} words
 
             The script should be engaging, informative, \
-    and suitable for text - to - speech.
+#     and suitable for text - to - speech.
             Include clear sections for introduction, main content, and conclusion.
-            """
+            """"""
 
             # For now, return a template script
-            script_content = f"""
-            Welcome to our {niche} channel! Today we're exploring an exciting topic that will help {audience}.
+            script_content = f""""""
+            Welcome to our {niche} channel! Today we're exploring an exciting topic that will help {audience}.'
 
             [INTRODUCTION - 30 seconds]
-            In this video, we'll cover the essential aspects of {niche} that every {audience} should know.
+            In this video, we'll cover the essential aspects of {niche} that every {audience} should know.'
 
             [MAIN CONTENT - {video_length - 60} seconds]
-            Let's dive into the key points that will make a real difference in your understanding of {niche}.
+            Let's dive into the key points that will make a real difference in your understanding of {niche}.'
 
             [CONCLUSION - 30 seconds]
-            Thank you for watching! Don't forget to subscribe for more {content_type} content about {niche}.
-            """
+            Thank you for watching! Don't forget to subscribe for more {content_type} content about {niche}.'
+            """"""
 
             return script_content.strip()
 
@@ -187,8 +190,10 @@ class ChannelExecutor:
             "output_path": str(
                 self.videos_dir
                 / f"{channel_id}_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.mp4"
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
         # Generate video using Hollywood pipeline
         video_result = await self.hollywood_pipeline.generate_video(video_params)
@@ -210,12 +215,14 @@ class ChannelExecutor:
             "niche": channel_data["niche"],
             "target_audience": channel_data["target_audience"],
             "keywords": channel_data["keywords"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         output_path = (
             self.pdfs_dir
             / f"{channel_id}_{product_type}_{datetime.now().strftime('%Y % m%d_ % H%M % S')}.pdf"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Generate PDF
         pdf_result = await self.pdf_generator.generate_product_pdf(pdf_content, str(output_path))
@@ -247,7 +254,8 @@ class ChannelExecutor:
                 "1",
                 "-y",  # Overwrite output
                 thumbnail_path,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
 
@@ -256,7 +264,8 @@ class ChannelExecutor:
                     "success": True,
                     "thumbnail_path": thumbnail_path,
                     "size": Path(thumbnail_path).stat().st_size,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             else:
                 return {"success": False, "error": f"FFmpeg failed: {result.stderr}"}
 
@@ -276,7 +285,8 @@ class ChannelExecutor:
                 "success": False,
                 "error": "No channels loaded from roadmap",
                 "results": [],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Filter channels if specified
         if channel_filter:
@@ -287,7 +297,8 @@ class ChannelExecutor:
                 "success": False,
                 "error": f"No channels match filter: {channel_filter}",
                 "results": [],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         logger.info(f"Executing {len(roadmap)} channels")
 
@@ -307,7 +318,8 @@ class ChannelExecutor:
                     "status": "failed",
                     "error": str(e),
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 results.append(error_result)
 
         # Summary
@@ -321,7 +333,8 @@ class ChannelExecutor:
             "failed": failed,
             "results": results,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def run_channel_once(self, channel_data: Dict[str, Any]) -> Dict[str, Any]:
         """Synchronous wrapper for executing a single channel"""
@@ -343,7 +356,8 @@ class ChannelExecutor:
                         key=lambda x: x.stat().st_mtime,
                         reverse=True,
                     )[:5]
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "pdfs": [
                     f.name
                     for f in sorted(
@@ -351,9 +365,12 @@ class ChannelExecutor:
                         key=lambda x: x.stat().st_mtime,
                         reverse=True,
                     )[:5]
-                ],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         return status
 
@@ -371,7 +388,8 @@ def run_channel_once(
                 "status": "error",
                 "error": "No channels found in roadmap",
                 "csv_path": csv_path,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Execute first channel from roadmap
         channel_data = roadmap[0]
@@ -383,7 +401,8 @@ def run_channel_once(
             "video_dir": video_dir,
             "pdf_dir": pdf_dir,
             "result": result,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         return {"status": "error", "error": str(e), "csv_path": csv_path}
@@ -408,7 +427,8 @@ if __name__ == "__main__":
             "background_music": "ambient",
             "pdf_product_type": "ebook",
             "keywords": ["technology", "innovation", "future"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         result = await executor.execute_channel(test_channel)
         print(f"Execution result: {json.dumps(result, indent = 2)}")
@@ -433,7 +453,8 @@ def capability_reel():
         "Hollywood Pipeline Integration",
         "Compliance & Security Scanning",
         "Operational Excellence",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     out_dir = os.path.join("assets", "releases", f"CapabilityReel_{int(time.time())}")
     reel = make_slideshow_with_audio(lines, out_dir, total_minutes=cap_reel_minutes(20))

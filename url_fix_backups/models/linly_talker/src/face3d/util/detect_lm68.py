@@ -29,10 +29,12 @@ def draw_landmarks(img, landmark, save_name):
                     and img.shape[0] - 1 - landmark[i, 1] + j < img.shape[0]
                     and landmark[i, 0] + k > 0
                     and landmark[i, 0] + k < img.shape[1]
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     lm_img[img.shape[0] - 1 - landmark[i, 1] + j, landmark[i, 0] + k, :] = np.array(
                         [0, 0, 255]
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
     lm_img = lm_img.astype(np.uint8)
 
     cv2.imwrite(save_name, lm_img)
@@ -68,7 +70,8 @@ def detect_68p(img_path, sess, input_op, output_op):
         i
         for i in sorted(os.listdir(img_path))
         if "jpg" in i or "png" in i or "jpeg" in i or "PNG" in i
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     vis_path = os.path.join(img_path, "vis")
     remove_path = os.path.join(img_path, "remove")
     save_path = os.path.join(img_path, "landmarks")
@@ -86,7 +89,8 @@ def detect_68p(img_path, sess, input_op, output_op):
         txt_name = ".".join(name.split(".")[:-1]) + ".txt"
         full_txt_name = os.path.join(
             img_path, "detections", txt_name
-        )  # 5 facial landmark path for each image
+# BRACKET_SURGEON: disabled
+#         )  # 5 facial landmark path for each image
 
         # if an image does not have detected 5 facial landmarks, remove it from the training list
         if not os.path.isfile(full_txt_name):

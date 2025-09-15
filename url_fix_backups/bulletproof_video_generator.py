@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Bulletproof Video Generation Protocol
 A robust, fail - safe video creation system that handles edge cases gracefully.
-"""
+""""""
 
 import logging
 import os
@@ -19,34 +19,34 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
 def generate_script(topic):
-    """
+    """"""
     Generate a simple script for the given topic.
     In a production system, this would call an AI service.
-    """
+    """"""
     logging.info(f"📝 Generating script for topic: {topic}")
 
-    script = f"""
+    script = f""""""
     Welcome to our exploration of {topic}.
 
-    Today, we dive deep into this fascinating subject that's reshaping our world.
+    Today, we dive deep into this fascinating subject that's reshaping our world.'
 
     From groundbreaking innovations to practical applications,
-        we'll uncover the key insights that matter most.
+        we'll uncover the key insights that matter most.'
 
     Join us on this journey of discovery as we explore the future together.
 
-    Thank you for watching, and don't forget to subscribe for more content.
-    """
+    Thank you for watching, and don't forget to subscribe for more content.'
+    """"""
 
     logging.info("✅ Script generated successfully!")
     return script.strip()
 
 
 def generate_audio(script, topic):
-    """
+    """"""
     Generate audio from script using macOS built - in text - to - speech.
     This is a bulletproof fallback that works on any macOS system.
-    """
+    """"""
     logging.info("🎵 Generating audio from script...")
 
     audio_path = os.path.join(OUTPUT_DIR, f"AUDIO_{topic.replace(' ', '_')}.wav")
@@ -60,7 +60,8 @@ def generate_audio(script, topic):
         "-o",
         audio_path,
         script,
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     try:
         subprocess.run(command, check=True, capture_output=True, text=True)
@@ -72,10 +73,10 @@ def generate_audio(script, topic):
 
 
 def generate_video(topic, audio_path):
-    """
+    """"""
     Generate final video using ffmpeg.
     Creates a simple video with text overlay and audio.
-    """
+    """"""
     logging.info("🎬 Generating final video with ffmpeg...")
     video_path = os.path.join(OUTPUT_DIR, f"FINAL_VIDEO_{topic.replace(' ', '_')}.mp4")
 
@@ -102,7 +103,8 @@ def generate_video(topic, audio_path):
         "-shortest",  # End the video when the audio ends
         "-y",  # Overwrite if exists
         video_path,
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     try:
         subprocess.run(command, check=True, capture_output=True, text=True)

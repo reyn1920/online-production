@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Production Deployment Configuration
 Handles environment setup, security, and deployment validation
-"""
+""""""
 
 import json
 import logging
@@ -76,7 +76,9 @@ class ProductionValidator:
                 "STRIPE_SECRET_KEY",
                 "STRIPE_PUBLIC_KEY",
                 "STRIPE_WEBHOOK_SECRET",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         missing_vars = []
         for var in required_vars:
@@ -86,7 +88,9 @@ class ProductionValidator:
         if missing_vars:
             self.errors.append(
                 f"Missing required environment variables: {', '.join(missing_vars)}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         return False
 
         return True
@@ -112,7 +116,9 @@ class ProductionValidator:
         if "localhost" in allowed_hosts or "127.0.0.1" in allowed_hosts:
             self.warnings.append(
                 "localhost / 127.0.0.1 should not be in ALLOWED_HOSTS for production"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return valid
 
@@ -156,7 +162,9 @@ class ProductionValidator:
             if database_url.startswith("sqlite:"):
                 db_path = database_url.replace("sqlite:///", "").replace(
                     "sqlite://", ""
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 db_dir = os.path.dirname(db_path)
 
                 if not os.path.exists(db_dir):
@@ -183,7 +191,9 @@ class ProductionValidator:
         if "http://" in cors_origins:
             self.warnings.append(
                 "HTTP origins detected in CORS_ORIGINS, consider HTTPS only"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return True
 
@@ -198,7 +208,8 @@ class ProductionValidator:
             "payment_providers": self.validate_payment_providers(),
             "database_connection": self.validate_database_connection(),
             "ssl_certificates": self.validate_ssl_certificates(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         all_passed = all(validations.values())
 
@@ -208,7 +219,8 @@ class ProductionValidator:
             "errors": self.errors,
             "warnings": self.warnings,
             "timestamp": datetime.utcnow().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 class DeploymentManager:
@@ -252,7 +264,9 @@ class DeploymentManager:
                 smtp_port = int(os.getenv("SMTP_PORT", "587")),
                 smtp_username = os.getenv("SMTP_USERNAME"),
                 smtp_password = os.getenv("SMTP_PASSWORD"),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def setup_logging(self, config: DeploymentConfig):
@@ -266,9 +280,14 @@ class DeploymentManager:
                     logging.FileHandler("/var / log / revenue_systems.log")
                     if os.path.exists("/var / log")
                     else logging.StreamHandler()
-                ),
-                    ],
-                )
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Configure Sentry if available
         if config.sentry_dsn:
@@ -282,7 +301,9 @@ class DeploymentManager:
                         integrations=[FlaskIntegration()],
                         traces_sample_rate = 0.1,
                         environment = config.environment,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 self.logger.info("Sentry monitoring initialized")
             except ImportError:
@@ -302,7 +323,9 @@ class DeploymentManager:
             # Initialize with production database
             db_path = config.database_url.replace("sqlite:///", "").replace(
                 "sqlite://", ""
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             revenue_api = RevenueStreamsAPI(db_path = db_path)
             api_mon = APIMonetization(db_path = db_path)
@@ -324,7 +347,8 @@ class DeploymentManager:
             "timestamp": datetime.utcnow().isoformat(),
             "status": "healthy",
             "checks": {},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Database connectivity
         try:
@@ -335,7 +359,9 @@ class DeploymentManager:
             if database_url:
                 db_path = database_url.replace("sqlite:///", "").replace(
                     "sqlite://", ""
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 conn = sqlite3.connect(db_path)
                 conn.execute("SELECT 1")
                 conn.close()
@@ -418,7 +444,7 @@ class DeploymentManager:
 
 def create_environment_template():
     """Create a template .env file for production"""
-    template = """
+    template = """"""
 # Production Environment Configuration
 # Copy this file to .env and fill in the actual values
 
@@ -463,7 +489,7 @@ SMTP_HOST = smtp.gmail.com
 SMTP_PORT = 587
 SMTP_USERNAME = your_email@gmail.com
 SMTP_PASSWORD = your_app_password
-"""
+""""""
 
     env_file = os.path.join(os.path.dirname(__file__), "..", ".env.production.template")
     with open(env_file, "w") as f:
@@ -480,16 +506,24 @@ def main():
 
     parser = argparse.ArgumentParser(
         description="Revenue Systems Production Deployment"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--validate - only", action="store_true", help="Only run validation checks"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--health - check",
     action="store_true",
-    help="Run health checks")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     help="Run health checks")
     parser.add_argument(
         "--create - template", action="store_true", help="Create environment template"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument("--deploy", action="store_true", help="Run full deployment")
 
     args = parser.parse_args()

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Simple Startup Runner - Alternative to complex startup_system.py
 Provides basic server startup with monitoring integration
-"""
+""""""
 
 import logging
 import os
@@ -77,7 +77,8 @@ class SimpleRunner:
             "HOST": "0.0.0.0",
             "PORT": "8000",
             "SECRET_KEY": "dev - secret - key - change - in - production",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for key, value in defaults.items():
             if key not in os.environ:
@@ -106,8 +107,10 @@ class SimpleRunner:
                     sys.executable,
                     "-c",
                     f"import uvicorn; from main import app; uvicorn.run(app, host='{host}', port={port}, reload=False, log_level='info')",
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
 
             self.processes["main_server"] = server_process
 
@@ -158,7 +161,8 @@ class SimpleRunner:
                             else:
                                 logger.warning(
                                     f"⚠️ Main server health check failed: {response.status_code}"
-                                )
+# BRACKET_SURGEON: disabled
+#                                 )
                         except requests.exceptions.RequestException as e:
                             logger.warning(f"⚠️ Main server health check failed: {e}")
 

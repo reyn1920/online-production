@@ -1,11 +1,11 @@
 #!/usr / bin / env python3
-"""
+""""""
 rule1_rewrite_suggester.py - Rule - 1 Compliance Analysis and Suggestion Tool
 Part of the Trae AI Cleanup Framework
 
 This tool analyzes code for Rule - 1 compliance issues and suggests improvements.
 Rule - 1 focuses on security, maintainability, and best practices.
-"""
+""""""
 
 import argparse
 import json
@@ -25,8 +25,12 @@ logging.basicConfig(
         handlers=[
         logging.FileHandler("tools / cleanup / rule1_suggester.log"),
             logging.StreamHandler(),
-            ],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -61,7 +65,8 @@ class Rule1Analyzer:
                 "medium_issues": 0,
                 "low_issues": 0,
                 "auto_fixable": 0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Load rule patterns
         self.security_patterns = self._load_security_patterns()
@@ -74,43 +79,54 @@ class Rule1Analyzer:
         return {
             "hardcoded_secrets": {
                 "patterns": [
-                    r'(?i)(api_key|password|secret|token)\\s*=\\s*[\\'"][^\\'"]+[\\'"]',
-                        r'(?i)(aws_access_key|aws_secret)\\s*=\\s*[\\'"][^\\'"]+[\\'"]',
-                        r'(?i)(database_url|db_password)\\s*=\\s*[\\'"][^\\'"]+[\\'"]',
-                        ],
+                    r'(?i)(api_key|password|secret|token)\\s*=\\s*[\\'"][^\\'"]+[\\'"]',"
+                        r'(?i)(aws_access_key|aws_secret)\\s*=\\s*[\\'"][^\\'"]+[\\'"]',"
+                        r'(?i)(database_url|db_password)\\s*=\\s*[\\'"][^\\'"]+[\\'"]',"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "severity": "critical",
                     "description": "Hardcoded secrets detected",
-                    "suggestion": "Move secrets to environment variables \
-    or secure vault",
-                    },
+                    "suggestion": "Move secrets to environment variables \"
+#     or secure vault",
+# BRACKET_SURGEON: disabled
+#                     },
                 "sql_injection": {
                 "patterns": [
                     r'execute\\s*\\(\\s*[\\'"].*%s.*[\\'"]\\s*%',
                         r'query\\s*\\(\\s*[\\'"].*\\+.*[\\'"]\\s*\\)',
                         r'cursor\\.execute\\s*\\(\\s*[\\'"].*%.*[\\'"]',
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "severity": "critical",
                     "description": "Potential SQL injection vulnerability",
                     "suggestion": "Use parameterized queries or ORM methods",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "xss_vulnerability": {
                 "patterns": [
                     r"innerHTML\\s*=\\s*.*\\+",
                         r"document\\.write\\s*\\(",
                         r"eval\\s*\\(",
                         r"dangerouslySetInnerHTML",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "severity": "high",
                     "description": "Potential XSS vulnerability",
                     "suggestion": "Use safe DOM manipulation methods or sanitize input",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "insecure_random": {
                 "patterns": [r"Math\\.random\\s*\\(\\)", r"random\\.random\\s*\\(\\)"],
                     "severity": "medium",
                     "description": "Insecure random number generation",
                     "suggestion": "Use cryptographically secure random generators",
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _load_maintainability_patterns(self) -> Dict:
@@ -121,31 +137,42 @@ class Rule1Analyzer:
                 "severity": "medium",
                     "description": "Function too long (>50 lines)",
                     "suggestion": "Break down into smaller, focused functions",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "deep_nesting": {
                 "patterns": [],  # Handled by indentation analysis
                 "severity": "medium",
                     "description": "Excessive nesting depth (>4 levels)",
                     "suggestion": "Refactor to reduce nesting complexity",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "magic_numbers": {
                 "patterns": [
-                    r"\\b(?<!\\.)\\d{2,}(?!\\.\\d)\\b(?!\\s*[\\)\\]])",  # Numbers with 2+ digits
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     r"\\b(?<!\\.)\\d{2,}(?!\\.\\d)\\b(?!\\s*[\\)\\]])",  # Numbers with 2+ digits
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "severity": "low",
                     "description": "Magic numbers detected",
                     "suggestion": "Replace with named constants",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "todo_comments": {
                 "patterns": [
-                    r"(?i)#\\s*(todo|fixme|hack|xxx)\\b",
+                    r"(?i)#\\s*(todo|fixme|hack|xxx)\\b","
                         r"(?i)//\\s*(todo|fixme|hack|xxx)\\b",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "severity": "low",
                     "description": "TODO / FIXME comments found",
                     "suggestion": "Address pending tasks or create proper tickets",
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def _load_performance_patterns(self) -> Dict:
@@ -155,20 +182,27 @@ class Rule1Analyzer:
                 "patterns": [
                     r"for\\s+\\w+\\s + in\\s + range\\s*\\(\\s * len\\s*\\(",
                         r"while\\s+.*\\.length\\s*>\\s * 0",
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     "severity": "medium",
                     "description": "Inefficient loop pattern",
                     "suggestion": "Use more efficient iteration methods",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 "repeated_calculations": {
                 "patterns": [
                     r"(\\w+\\.\\w+\\(\\)).*\\1",  # Same method call repeated
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "severity": "low",
                     "description": "Repeated calculations detected",
                     "suggestion": "Cache calculation results",
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def analyze_file(self, file_path: Path) -> None:
@@ -186,7 +220,9 @@ class Rule1Analyzer:
             # Analyze maintainability patterns
             self._analyze_patterns(
                 file_path, content, lines, self.maintainability_patterns
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Analyze performance patterns
             self._analyze_patterns(file_path, content, lines, self.performance_patterns)
@@ -201,7 +237,8 @@ class Rule1Analyzer:
 
     def _analyze_patterns(
         self, file_path: Path, content: str, lines: List[str], patterns: Dict
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Analyze file content against pattern rules"""
         for rule_name, rule_config in patterns.items():
             for pattern in rule_config.get("patterns", []):
@@ -218,7 +255,9 @@ class Rule1Analyzer:
                                 suggested_fix = rule_config["suggestion"],
                                 rule_reference = f"Rule - 1.{rule_name}",
                                 auto_fixable = rule_config.get("auto_fixable", False),
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         self._add_issue(issue)
 
 
@@ -243,7 +282,9 @@ class Rule1Analyzer:
                             current_code = f"Function starting at line {function_start}",
                             suggested_fix="Break down into smaller, focused functions",
                             rule_reference="Rule - 1.maintainability.function_length",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     self._add_issue(issue)
 
                 current_function = stripped
@@ -268,7 +309,9 @@ class Rule1Analyzer:
                         current_code = line.strip(),
                         suggested_fix="Refactor to reduce nesting complexity",
                         rule_reference="Rule - 1.maintainability.nesting_depth",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 self._add_issue(issue)
 
 
@@ -299,8 +342,11 @@ class Rule1Analyzer:
                             "__pycache__",
                             ".pytest_cache",
                             "coverage",
-                            ]
-                ):
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
+# BRACKET_SURGEON: disabled
+#                 ):
                     continue
 
                 self.analyze_file(file_path)
@@ -367,10 +413,14 @@ class Rule1Analyzer:
                         "suggested_fix": issue.suggested_fix,
                         "rule_reference": issue.rule_reference,
                         "auto_fixable": issue.auto_fixable,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for issue in self.issues
-            ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# BRACKET_SURGEON: disabled
+#                 }
         return json.dumps(report_data, indent = 2)
 
 
@@ -394,13 +444,17 @@ class Rule1Analyzer:
             if dry_run:
                 logger.info(
                     f"[DRY RUN] Would fix {issue.issue_type} in {issue.file_path}:{issue.line_number}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return True
 
             # Implementation would depend on the specific fix type
             logger.info(
                 f"Applied fix for {issue.issue_type} in {issue.file_path}:{issue.line_number}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return True
 
         except Exception as e:
@@ -412,41 +466,57 @@ def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
         description="Rule - 1 Compliance Analysis and Suggestion Tool"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--target - dir",
             default=".",
             help="Target directory to analyze (default: current directory)",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--extensions",
             default="py,js,ts,jsx,tsx,php,html",
             help="File extensions to analyze (comma - separated)",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--output - format",
             choices=["text", "json"],
             default="text",
             help="Output format for report",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--output - file", help="Output file for report (default: stdout)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--auto - fix",
             action="store_true",
             help="Apply automatic fixes for auto - fixable issues",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--dry - run",
             action="store_true",
             help="Show what would be fixed without making changes",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--severity - filter",
             choices=["critical", "high", "medium", "low"],
             help="Only show issues of specified severity or higher",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     args = parser.parse_args()
 

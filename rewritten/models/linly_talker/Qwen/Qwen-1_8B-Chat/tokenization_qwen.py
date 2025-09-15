@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 VOCAB_FILES_NAMES = {"vocab_file": "qwen.tiktoken"}
 
-PAT_STR = r"""(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\\r\\n\\p{L}\\p{N}]?\\p{L}+|\\p{N}| ?[^\\s\\p{L}\\p{N}]+[\\r\\n]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+"""
+PAT_STR = r"""(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\\r\\n\\p{L}\\p{N}]?\\p{L}+|\\p{N}| ?[^\\s\\p{L}\\p{N}]+[\\r\\n]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+"""'
 ENDOFTEXT = "<|endoftext|>"
 IMSTART = "<|im_start|>"
 IMEND = "<|im_end|>"
@@ -35,12 +35,19 @@ SPECIAL_TOKENS = tuple(
                 ENDOFTEXT,
                     IMSTART,
                     IMEND,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             + EXTRAS
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
             start = SPECIAL_START_ID,
-            )
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 SPECIAL_TOKENS_SET = set(t for i, t in SPECIAL_TOKENS)
 
 
@@ -50,7 +57,8 @@ def _load_tiktoken_bpe(tiktoken_bpe_file: str) -> Dict[bytes, int]:
     return {
         base64.b64decode(token): int(rank)
         for token, rank in (line.split() for line in contents.splitlines() if line)
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 class QWenTokenizer(PreTrainedTokenizer):
@@ -65,7 +73,8 @@ class QWenTokenizer(PreTrainedTokenizer):
             errors="replace",
             extra_vocab_file = None,
             **kwargs,
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         super().__init__(**kwargs)
 
         # how to handle errors in decoding UTF - 8 byte sequences
@@ -76,7 +85,8 @@ class QWenTokenizer(PreTrainedTokenizer):
         self.special_tokens = {
             token: index
             for index, token in SPECIAL_TOKENS
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # try load extra vocab from file
         if extra_vocab_file is not None:
@@ -87,8 +97,10 @@ class QWenTokenizer(PreTrainedTokenizer):
                     logger.info(f"extra token {token} exists, skipping")
                     continue
                 if index in used_ids:
-                    logger.info(f'the index {index} for extra token {token} exists,
-    skipping')
+                    logger.info(f'the index {index} for extra token {token} exists,'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     skipping')
                     continue
                 self.mergeable_ranks[token] = index
             # the index may be sparse after this, but don't worry tiktoken.Encoding will handle this
@@ -98,10 +110,13 @@ class QWenTokenizer(PreTrainedTokenizer):
                 pat_str = PAT_STR,
                 mergeable_ranks = self.mergeable_ranks,
                 special_tokens = self.special_tokens,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         assert (
             len(self.mergeable_ranks) + len(self.special_tokens) == enc.n_vocab
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
     f"{len(self.mergeable_ranks) + len(self.special_tokens)} != {enc.n_vocab} in encoding"
 
         self.decoder = {
@@ -131,7 +146,9 @@ class QWenTokenizer(PreTrainedTokenizer):
                 pat_str = PAT_STR,
                 mergeable_ranks = self.mergeable_ranks,
                 special_tokens = self.special_tokens,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.tokenizer = enc
 
 
@@ -164,7 +181,8 @@ class QWenTokenizer(PreTrainedTokenizer):
         self,
             new_tokens: Union[List[str], List[AddedToken]],
             special_tokens: bool = False,
-            ) -> int:
+# BRACKET_SURGEON: disabled
+#             ) -> int:
         if not special_tokens and new_tokens:
             raise ValueError("Adding regular tokens is not supported")
         for token in new_tokens:
@@ -175,12 +193,12 @@ class QWenTokenizer(PreTrainedTokenizer):
 
 
     def save_vocabulary(self, save_directory: str, **kwargs) -> Tuple[str]:
-        """
+        """"""
         Save only the vocabulary of the tokenizer (vocabulary).
 
         Returns:
             `Tuple(str)`: Paths to the files saved.
-        """
+        """"""
         file_path = os.path.join(save_directory, "qwen.tiktoken")
         with open(file_path, "w", encoding="utf8") as w:
             for k, v in self.mergeable_ranks.items():
@@ -196,7 +214,7 @@ class QWenTokenizer(PreTrainedTokenizer):
             disallowed_special: Union[Collection, str] = (),
             **kwargs,
             ) -> List[Union[bytes, str]]:
-        """
+        """"""
         Converts a string in a sequence of tokens.
 
         Args:
@@ -207,7 +225,7 @@ class QWenTokenizer(PreTrainedTokenizer):
                 Default to "all".
             disallowed_special (`Literal["all"]` or `Collection`):
                 The surface forms of the tokens that should not be in regular texts \
-    and trigger errors.
+#     and trigger errors.
                 Default to an empty tuple.
 
             kwargs (additional keyword arguments, *optional*):
@@ -215,22 +233,23 @@ class QWenTokenizer(PreTrainedTokenizer):
 
         Returns:
             `List[bytes|str]`: The list of tokens.
-        """
+        """"""
         tokens = []
         text = unicodedata.normalize("NFC", text)
 
         # this implementation takes a detour: text -> token id -> token surface forms
         for t in self.tokenizer.encode(
             text, allowed_special = allowed_special, disallowed_special = disallowed_special
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             tokens.append(self.decoder[t])
         return tokens
 
 
     def convert_tokens_to_string(self, tokens: List[Union[bytes, str]]) -> str:
-        """
+        """"""
         Converts a sequence of tokens in a single string.
-        """
+        """"""
         text = ""
         temp = b""
         for t in tokens:
@@ -271,14 +290,14 @@ class QWenTokenizer(PreTrainedTokenizer):
 
 
     def _tokenize(self, text: str, **kwargs):
-        """
+        """"""
         Converts a string in a sequence of tokens (string),
     using the tokenizer. Split in words for word - based
         vocabulary \
-    or sub - words for sub - word - based vocabularies (BPE/SentencePieces/WordPieces).
+#     or sub - words for sub - word - based vocabularies (BPE/SentencePieces/WordPieces).
 
         Do NOT take care of added tokens.
-        """
+        """"""
         raise NotImplementedError
 
 
@@ -288,7 +307,8 @@ class QWenTokenizer(PreTrainedTokenizer):
             skip_special_tokens: bool = False,
             errors: str = None,
             **kwargs,
-            ) -> str:
+# BRACKET_SURGEON: disabled
+#             ) -> str:
         if isinstance(token_ids, int):
             token_ids = [token_ids]
         if skip_special_tokens:

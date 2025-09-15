@@ -37,7 +37,7 @@ def filter_state_dict(state_dict, remove_name="fc"):
 
 
 def get_scheduler(optimizer, opt):
-    """Return a learning rate scheduler
+    """Return a learning rate scheduler"""
 
     Parameters:
         optimizer          -- the optimizer of the network
@@ -45,9 +45,9 @@ def get_scheduler(optimizer, opt):
                               opt.lr_policy is the name of learning rate policy: linear | step | plateau | cosine
 
     For other schedulers (step, plateau, \
-    and cosine), we use the default PyTorch schedulers.
+#     and cosine), we use the default PyTorch schedulers.
     See https://pytorch.org/docs/stable/optim.html for more details.
-    """
+    """"""
     if opt.lr_policy == "linear":
 
         def lambda_rule(epoch):
@@ -60,7 +60,8 @@ def get_scheduler(optimizer, opt):
     elif opt.lr_policy == "plateau":
         scheduler = lr_scheduler.ReduceLROnPlateau(
             optimizer, mode="min", factor=0.2, threshold=0.01, patience=5
-        )
+# BRACKET_SURGEON: disabled
+#         )
     elif opt.lr_policy == "cosine":
         scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=opt.n_epochs, eta_min=0)
     elif opt.lr_policy == "exponential":
@@ -110,8 +111,10 @@ class ReconNetWrapper(nn.Module):
                     conv1x1(last_dim, 27, bias=True),  # gamma layer
                     conv1x1(last_dim, 2, bias=True),  # tx, ty
                     conv1x1(last_dim, 1, bias=True),  # tz
-                ]
-            )
+# BRACKET_SURGEON: disabled
+#                 ]
+# BRACKET_SURGEON: disabled
+#             )
             for m in self.final_layers:
                 nn.init.constant_(m.weight, 0.0)
                 nn.init.constant_(m.bias, 0.0)
@@ -158,7 +161,8 @@ __all__ = [
     "resnext101_32x8d",
     "wide_resnet50_2",
     "wide_resnet101_2",
-]
+# BRACKET_SURGEON: disabled
+# ]
 
 model_urls = {
     "resnet18": "https://download.pytorch.org/models/resnet18 - f37072fd.pth",
@@ -170,12 +174,14 @@ model_urls = {
     "resnext101_32x8d": "https://download.pytorch.org/models/resnext101_32x8d - 8ba56ff5.pth",
     "wide_resnet50_2": "https://download.pytorch.org/models/wide_resnet50_2 - 95faca4d.pth",
     "wide_resnet101_2": "https://download.pytorch.org/models/wide_resnet101_2 - 32ee1156.pth",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def conv3x3(
     in_planes: int, out_planes: int, stride: int = 1, groups: int = 1, dilation: int = 1
-) -> nn.Conv2d:
+# BRACKET_SURGEON: disabled
+# ) -> nn.Conv2d:
     """3x3 convolution with padding"""
     return nn.Conv2d(
         in_planes,
@@ -186,7 +192,8 @@ def conv3x3(
         groups=groups,
         bias=False,
         dilation=dilation,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 def conv1x1(in_planes: int, out_planes: int, stride: int = 1, bias: bool = False) -> nn.Conv2d:
@@ -207,7 +214,8 @@ class BasicBlock(nn.Module):
         base_width: int = 64,
         dilation: int = 1,
         norm_layer: Optional[Callable[..., nn.Module]] = None,
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         super(BasicBlock, self).__init__()
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
@@ -262,7 +270,8 @@ class Bottleneck(nn.Module):
         base_width: int = 64,
         dilation: int = 1,
         norm_layer: Optional[Callable[..., nn.Module]] = None,
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         super(Bottleneck, self).__init__()
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
@@ -313,7 +322,8 @@ class ResNet(nn.Module):
         width_per_group: int = 64,
         replace_stride_with_dilation: Optional[List[bool]] = None,
         norm_layer: Optional[Callable[..., nn.Module]] = None,
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         super(ResNet, self).__init__()
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
@@ -329,7 +339,8 @@ class ResNet(nn.Module):
             raise ValueError(
                 "replace_stride_with_dilation should be None "
                 "or a 3 - element tuple, got {}".format(replace_stride_with_dilation)
-            )
+# BRACKET_SURGEON: disabled
+#             )
         self.use_last_fc = use_last_fc
         self.groups = groups
         self.base_width = width_per_group
@@ -340,13 +351,16 @@ class ResNet(nn.Module):
         self.layer1 = self._make_layer(block, 64, layers[0])
         self.layer2 = self._make_layer(
             block, 128, layers[1], stride=2, dilate=replace_stride_with_dilation[0]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.layer3 = self._make_layer(
             block, 256, layers[2], stride=2, dilate=replace_stride_with_dilation[1]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.layer4 = self._make_layer(
             block, 512, layers[3], stride=2, dilate=replace_stride_with_dilation[2]
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
 
         if self.use_last_fc:
@@ -376,7 +390,8 @@ class ResNet(nn.Module):
         blocks: int,
         stride: int = 1,
         dilate: bool = False,
-    ) -> nn.Sequential:
+# BRACKET_SURGEON: disabled
+#     ) -> nn.Sequential:
         norm_layer = self._norm_layer
         downsample = None
         previous_dilation = self.dilation
@@ -387,7 +402,8 @@ class ResNet(nn.Module):
             downsample = nn.Sequential(
                 conv1x1(self.inplanes, planes * block.expansion, stride),
                 norm_layer(planes * block.expansion),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         layers = []
         layers.append(
@@ -400,8 +416,10 @@ class ResNet(nn.Module):
                 self.base_width,
                 previous_dilation,
                 norm_layer,
-            )
-        )
+# BRACKET_SURGEON: disabled
+#             )
+# BRACKET_SURGEON: disabled
+#         )
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
             layers.append(
@@ -412,8 +430,10 @@ class ResNet(nn.Module):
                     base_width=self.base_width,
                     dilation=self.dilation,
                     norm_layer=norm_layer,
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
         return nn.Sequential(*layers)
 
@@ -446,7 +466,8 @@ def _resnet(
     pretrained: bool,
     progress: bool,
     **kwargs: Any
-) -> ResNet:
+# BRACKET_SURGEON: disabled
+# ) -> ResNet:
     model = ResNet(block, layers, **kwargs)
     if pretrained:
         state_dict = load_state_dict_from_url(model_urls[arch], progress=progress)
@@ -455,88 +476,88 @@ def _resnet(
 
 
 def resnet18(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> ResNet:
-    r"""ResNet - 18 model from
+    r"""ResNet - 18 model from"""
     `"Deep Residual Learning for Image Recognition" <https://arxiv.org/pdf/1512.03385.pdf>`_.
 
     Args:
         pretrained (bool): If True, returns a model pre - trained on ImageNet
         progress (bool): If True, displays a progress bar of the download to stderr
-    """
+    """"""
     return _resnet("resnet18", BasicBlock, [2, 2, 2, 2], pretrained, progress, **kwargs)
 
 
 def resnet34(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> ResNet:
-    r"""ResNet - 34 model from
+    r"""ResNet - 34 model from"""
     `"Deep Residual Learning for Image Recognition" <https://arxiv.org/pdf/1512.03385.pdf>`_.
 
     Args:
         pretrained (bool): If True, returns a model pre - trained on ImageNet
         progress (bool): If True, displays a progress bar of the download to stderr
-    """
+    """"""
     return _resnet("resnet34", BasicBlock, [3, 4, 6, 3], pretrained, progress, **kwargs)
 
 
 def resnet50(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> ResNet:
-    r"""ResNet - 50 model from
+    r"""ResNet - 50 model from"""
     `"Deep Residual Learning for Image Recognition" <https://arxiv.org/pdf/1512.03385.pdf>`_.
 
     Args:
         pretrained (bool): If True, returns a model pre - trained on ImageNet
         progress (bool): If True, displays a progress bar of the download to stderr
-    """
+    """"""
     return _resnet("resnet50", Bottleneck, [3, 4, 6, 3], pretrained, progress, **kwargs)
 
 
 def resnet101(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> ResNet:
-    r"""ResNet - 101 model from
+    r"""ResNet - 101 model from"""
     `"Deep Residual Learning for Image Recognition" <https://arxiv.org/pdf/1512.03385.pdf>`_.
 
     Args:
         pretrained (bool): If True, returns a model pre - trained on ImageNet
         progress (bool): If True, displays a progress bar of the download to stderr
-    """
+    """"""
     return _resnet("resnet101", Bottleneck, [3, 4, 23, 3], pretrained, progress, **kwargs)
 
 
 def resnet152(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> ResNet:
-    r"""ResNet - 152 model from
+    r"""ResNet - 152 model from"""
     `"Deep Residual Learning for Image Recognition" <https://arxiv.org/pdf/1512.03385.pdf>`_.
 
     Args:
         pretrained (bool): If True, returns a model pre - trained on ImageNet
         progress (bool): If True, displays a progress bar of the download to stderr
-    """
+    """"""
     return _resnet("resnet152", Bottleneck, [3, 8, 36, 3], pretrained, progress, **kwargs)
 
 
 def resnext50_32x4d(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> ResNet:
-    r"""ResNeXt - 50 32x4d model from
+    r"""ResNeXt - 50 32x4d model from"""
     `"Aggregated Residual Transformation for Deep Neural Networks" <https://arxiv.org/pdf/1611.05431.pdf>`_.
 
     Args:
         pretrained (bool): If True, returns a model pre - trained on ImageNet
         progress (bool): If True, displays a progress bar of the download to stderr
-    """
+    """"""
     kwargs["groups"] = 32
     kwargs["width_per_group"] = 4
     return _resnet("resnext50_32x4d", Bottleneck, [3, 4, 6, 3], pretrained, progress, **kwargs)
 
 
 def resnext101_32x8d(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> ResNet:
-    r"""ResNeXt - 101 32x8d model from
+    r"""ResNeXt - 101 32x8d model from"""
     `"Aggregated Residual Transformation for Deep Neural Networks" <https://arxiv.org/pdf/1611.05431.pdf>`_.
 
     Args:
         pretrained (bool): If True, returns a model pre - trained on ImageNet
         progress (bool): If True, displays a progress bar of the download to stderr
-    """
+    """"""
     kwargs["groups"] = 32
     kwargs["width_per_group"] = 8
     return _resnet("resnext101_32x8d", Bottleneck, [3, 4, 23, 3], pretrained, progress, **kwargs)
 
 
 def wide_resnet50_2(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> ResNet:
-    r"""Wide ResNet - 50 - 2 model from
+    r"""Wide ResNet - 50 - 2 model from"""
     `"Wide Residual Networks" <https://arxiv.org/pdf/1605.07146.pdf>`_.
 
     The model is the same as ResNet except for the bottleneck number of channels
@@ -547,13 +568,13 @@ def wide_resnet50_2(pretrained: bool = False, progress: bool = True, **kwargs: A
     Args:
         pretrained (bool): If True, returns a model pre - trained on ImageNet
         progress (bool): If True, displays a progress bar of the download to stderr
-    """
+    """"""
     kwargs["width_per_group"] = 64 * 2
     return _resnet("wide_resnet50_2", Bottleneck, [3, 4, 6, 3], pretrained, progress, **kwargs)
 
 
 def wide_resnet101_2(pretrained: bool = False, progress: bool = True, **kwargs: Any) -> ResNet:
-    r"""Wide ResNet - 101 - 2 model from
+    r"""Wide ResNet - 101 - 2 model from"""
     `"Wide Residual Networks" <https://arxiv.org/pdf/1605.07146.pdf>`_.
 
     The model is the same as ResNet except for the bottleneck number of channels
@@ -564,7 +585,7 @@ def wide_resnet101_2(pretrained: bool = False, progress: bool = True, **kwargs: 
     Args:
         pretrained (bool): If True, returns a model pre - trained on ImageNet
         progress (bool): If True, displays a progress bar of the download to stderr
-    """
+    """"""
     kwargs["width_per_group"] = 64 * 2
     return _resnet("wide_resnet101_2", Bottleneck, [3, 4, 23, 3], pretrained, progress, **kwargs)
 
@@ -579,4 +600,5 @@ func_dict = {
     "resnext101_32x8d": (resnext101_32x8d, 2048),
     "wide_resnet50_2": (wide_resnet50_2, 2048),
     "wide_resnet101_2": (wide_resnet101_2, 2048),
-}
+# BRACKET_SURGEON: disabled
+# }

@@ -75,7 +75,8 @@ class APIEndpoint:
         if (
             self.rate_limit_per_day
             and self.current_usage_day >= self.rate_limit_per_day
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return False
         if self.health_status == APIHealthStatus.UNHEALTHY.value:
             return False
@@ -127,11 +128,11 @@ class EnhancedAPIOrchestrator:
 
 
     def _init_database(self):
-        """Initialize database tables if they don't exist"""
+        """Initialize database tables if they don't exist"""'
         with sqlite3.connect(self.db_path) as conn:
             # Create orchestration log table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS api_orchestration_log (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         request_id TEXT NOT NULL,
@@ -142,13 +143,15 @@ class EnhancedAPIOrchestrator:
                         total_response_time_ms INTEGER NOT NULL,
                         error_message TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create API usage tracking table
             conn.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS api_usage_tracking (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         api_id INTEGER NOT NULL,
@@ -159,9 +162,11 @@ class EnhancedAPIOrchestrator:
                         error_message TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         date_only TEXT NOT NULL
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -172,7 +177,7 @@ class EnhancedAPIOrchestrator:
         """Get available APIs for a capability, sorted by priority and load"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
-                """
+                """"""
                 SELECT id, api_name, base_url, api_version, capability, authentication_type,
                     rate_limit_per_minute, rate_limit_per_hour, rate_limit_per_day,
                            current_usage_minute, current_usage_hour, current_usage_day,
@@ -184,9 +189,10 @@ class EnhancedAPIOrchestrator:
                 FROM api_registry
                 WHERE capability = ? AND status = 'active'
                 ORDER BY priority ASC, current_usage_day ASC
-            """,
+            ""","""
                 (capability,),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             apis = []
             for row in cursor.fetchall():
@@ -222,19 +228,23 @@ class EnhancedAPIOrchestrator:
                         created_at = row[27],
                         updated_at = row[28],
                         created_by = row[29],
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 if api.is_available():
                     apis.append(api)
 
             # Sort by preference (free first if preferred) and load factor
                 if prefer_free:
+                    pass
                 apis.sort(
                     key = lambda x: (
                         x.rate_limit_per_day is not None,
                             x.get_load_factor(),
                             x.priority,
-                            )
-                )
+# BRACKET_SURGEON: disabled
+#                             )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 apis.sort(key = lambda x: (x.get_load_factor(), x.priority))
 
@@ -272,10 +282,12 @@ class EnhancedAPIOrchestrator:
             # Make the request
             async with aiohttp.ClientSession(
                 timeout = aiohttp.ClientTimeout(total = timeout)
-            ) as session:
+# BRACKET_SURGEON: disabled
+#             ) as session:
                 async with session.post(
                     api.base_url, json = payload, headers = headers
-                ) as response:
+# BRACKET_SURGEON: disabled
+#                 ) as response:
                     if response.status == 200:
                         result = await response.json()
                         return True, result, None
@@ -320,7 +332,8 @@ class EnhancedAPIOrchestrator:
                     voice_settings = payload.get("voice_settings", {}),
                     video_settings = payload.get("video_settings", {}),
                     source_image = payload.get("source_image"),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Generate avatar using the engine
             response = await engine.generate_avatar(avatar_request)
@@ -334,7 +347,8 @@ class EnhancedAPIOrchestrator:
                         "processing_time": response.processing_time,
                         "quality": config.get("quality", "medium"),
                         "message": f"Avatar generated successfully using {api.api_name}",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 return True, result, None
             else:
                 return (
@@ -342,7 +356,8 @@ class EnhancedAPIOrchestrator:
                         None,
                         response.error_message
                     or f"Avatar generation failed using {api.api_name}",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
         except Exception as e:
             return False, None, f"Avatar generation failed: {str(e)}"
@@ -358,7 +373,8 @@ class EnhancedAPIOrchestrator:
 
     async def orchestrate_request(
         self, request: OrchestrationRequest
-    ) -> OrchestrationResult:
+# BRACKET_SURGEON: disabled
+#     ) -> OrchestrationResult:
         """Main orchestration method with intelligent API selection and failover"""
         start_time = time.time()
         failed_apis = []
@@ -366,7 +382,8 @@ class EnhancedAPIOrchestrator:
         # Get available APIs for this capability, sorted by priority
         available_apis = await self.get_available_apis(
             request.capability, request.prefer_free
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if not available_apis:
             return OrchestrationResult(
@@ -378,14 +395,16 @@ class EnhancedAPIOrchestrator:
                     total_time_ms = int((time.time() - start_time) * 1000),
                     error_message = f"No available APIs for capability: {request.capability}",
                     fallback_apis_tried=[],
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         failover_triggered = False
 
         # Log the orchestration attempt
         logger.info(
             f"Starting orchestration for capability '{request.capability}' with {len(available_apis)} available APIs"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Try each API in order of priority (automatic failover)
         for attempt, api in enumerate(available_apis[: request.max_retries], 1):
@@ -394,15 +413,18 @@ class EnhancedAPIOrchestrator:
                 failover_triggered = True
                 logger.info(
                     f"Failover triggered: Attempting API '{api.api_name}' (priority {api.priority}) - Attempt {attempt}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 logger.info(
                     f"Primary attempt: Using API '{api.api_name}' (priority {api.priority})"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             success, response_data, error_message = await self.make_api_request(
                 api, request.payload, request.timeout_seconds
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Log the attempt
             await self._log_api_usage(
@@ -412,7 +434,8 @@ class EnhancedAPIOrchestrator:
                     int((time.time() - start_time) * 1000),
                     success,
                     error_message,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             if success:
                 # Success! Log and return
@@ -425,7 +448,8 @@ class EnhancedAPIOrchestrator:
                         attempt,
                         total_time_ms,
                         None,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                 # Add orchestration metadata to response
                 if isinstance(response_data, dict):
@@ -435,11 +459,13 @@ class EnhancedAPIOrchestrator:
                             "attempts_made": attempt,
                             "failover_triggered": failover_triggered,
                             "response_time_ms": round(total_time_ms, 2),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                 logger.info(
                     f"Request {request.request_id} completed successfully using {api.api_name} after {attempt} attempts"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return OrchestrationResult(
                     request_id = request.request_id,
@@ -450,7 +476,8 @@ class EnhancedAPIOrchestrator:
                         total_time_ms = total_time_ms,
                         error_message = None,
                         fallback_apis_tried = failed_apis,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
             else:
                 # Failed, add to failed list and continue
                 failed_apis.append(api.api_name)
@@ -465,18 +492,21 @@ class EnhancedAPIOrchestrator:
                 if request.capability == "avatar - generation" and api.priority == 1:
                     logger.warning(
                         f"Primary avatar engine {api.api_name} failed, triggering immediate failover"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     continue
 
         # All APIs failed
         total_time_ms = int((time.time() - start_time) * 1000)
         final_error = (
             f"All {len(failed_apis)} APIs failed for capability {request.capability}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         logger.error(
             f"All APIs failed for request {request.request_id}. Last error: {final_error}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         await self._log_orchestration_result(
             request.request_id,
@@ -486,7 +516,8 @@ class EnhancedAPIOrchestrator:
                 len(failed_apis),
                 total_time_ms,
                 final_error,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         return OrchestrationResult(
             request_id = request.request_id,
@@ -497,7 +528,8 @@ class EnhancedAPIOrchestrator:
                 total_time_ms = total_time_ms,
                 error_message = final_error,
                 fallback_apis_tried = failed_apis,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
 
     async def _log_api_usage(
@@ -508,23 +540,27 @@ class EnhancedAPIOrchestrator:
             response_time_ms: int,
             success: bool,
             error_message: Optional[str],
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Log individual API usage"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO api_usage_tracking
                 (api_name, usage_count, last_used, response_time_avg)
                 VALUES (
                     ?,
                         COALESCE((SELECT usage_count FROM api_usage_tracking WHERE api_name = ?),
-    0) + 1,
+# BRACKET_SURGEON: disabled
+#     0) + 1,
                         CURRENT_TIMESTAMP,
                         ?
-                )
-            """,
+# BRACKET_SURGEON: disabled
+#                 )
+            ""","""
                 (api_name, api_name, response_time_ms),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
             conn.commit()
 
 
@@ -537,16 +573,18 @@ class EnhancedAPIOrchestrator:
             total_attempts: int,
             total_time_ms: int,
             error_message: Optional[str],
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         """Log orchestration result"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
-                """
+                """"""
                 INSERT INTO api_orchestration_log
                 (request_id, capability_requested, successful_api_id, failed_api_ids,
-                    total_attempts, total_response_time_ms, error_message)
+# BRACKET_SURGEON: disabled
+#                     total_attempts, total_response_time_ms, error_message)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     request_id,
                         capability,
@@ -555,35 +593,41 @@ class EnhancedAPIOrchestrator:
                         total_attempts,
                         total_time_ms,
                         error_message,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
             conn.commit()
 
 
     async def _update_api_usage(
         self, api_name: str, response_time: float, success: bool
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Update API usage statistics"""
         with sqlite3.connect(self.db_path) as conn:
             # Update usage tracking table
             conn.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO api_usage_tracking
                 (api_name, usage_count, last_used, response_time_avg)
                 VALUES (
                     ?,
                         COALESCE((SELECT usage_count FROM api_usage_tracking WHERE api_name = ?),
-    0) + 1,
+# BRACKET_SURGEON: disabled
+#     0) + 1,
                         CURRENT_TIMESTAMP,
                         ?
-                )
-            """,
+# BRACKET_SURGEON: disabled
+#                 )
+            ""","""
                 (api_name, api_name, response_time),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             # Update current usage count in api_registry
             conn.execute(
-                """
+                """"""
                 UPDATE api_registry
                 SET current_usage_day = COALESCE(current_usage_day, 0) + 1,
                     total_requests = COALESCE(total_requests, 0) + 1,
@@ -597,9 +641,10 @@ class EnhancedAPIOrchestrator:
                         ELSE 100.0
                     END
                 WHERE api_name = ?
-            """,
+            ""","""
                 (0 if success else 1, response_time, response_time, api_name),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             conn.commit()
 
@@ -611,24 +656,26 @@ class EnhancedAPIOrchestrator:
 
             # Get today's usage count
             cursor = conn.execute(
-                """
+                """"""
                 SELECT COUNT(*) as count FROM api_usage_tracking
                 WHERE api_id = ? AND date_only = ?
-            """,
+            ""","""
                 (api_id, today),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             daily_count = cursor.fetchone()[0]
 
             # Update the API registry
             conn.execute(
-                """
+                """"""
                 UPDATE api_registry
                 SET current_usage_day = ?, total_requests = total_requests + 1
                 WHERE id = ?
-            """,
+            ""","""
                 (daily_count, api_id),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             conn.commit()
 
@@ -640,16 +687,18 @@ class EnhancedAPIOrchestrator:
                 APIHealthStatus.HEALTHY.value
                 if is_healthy
                 else APIHealthStatus.DEGRADED.value
-            )
+# BRACKET_SURGEON: disabled
+#             )
             conn.execute(
-                """
+                """"""
                 UPDATE api_registry
                 SET health_status = ?,
                     last_health_check = ?
                 WHERE id = ?
-            """,
+            ""","""
                 (health_status, datetime.now().isoformat(), api_id),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
             conn.commit()
 
 
@@ -657,7 +706,7 @@ class EnhancedAPIOrchestrator:
         """Get APIs filtered by capability, ordered by priority and usage"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
-                """
+                """"""
                 SELECT api_name, base_url, api_version, status, capability, priority,
                     rate_limit_per_day, current_usage_day, health_status,
                            authentication_type, configuration,
@@ -666,9 +715,10 @@ class EnhancedAPIOrchestrator:
                 FROM api_registry
                 WHERE capability = ? AND status = 'active'
                 ORDER BY priority ASC, current_usage_day ASC
-            """,
+            ""","""
                 (capability,),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             apis = []
             for row in cursor.fetchall():
@@ -705,7 +755,8 @@ class EnhancedAPIOrchestrator:
                         created_at = row[16],
                         updated_at = row[17],
                         created_by = None,
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                 apis.append(api)
 
             return apis
@@ -718,7 +769,7 @@ class EnhancedAPIOrchestrator:
 
             # Get request statistics
             cursor = conn.execute(
-                """
+                """"""
                 SELECT
                     capability_requested,
                         COUNT(*) as total_requests,
@@ -728,10 +779,12 @@ class EnhancedAPIOrchestrator:
                 FROM api_orchestration_log
                 WHERE created_at >= datetime('now', '-{} days')
                 GROUP BY capability_requested
-            """.format(
+            """.format("""
                 days
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             capability_stats = {}
             for row in cursor.fetchall():
@@ -740,12 +793,13 @@ class EnhancedAPIOrchestrator:
                     stats["successful_requests"] / stats["total_requests"]
                     if stats["total_requests"] > 0
                     else 0
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 capability_stats[row["capability_requested"]] = stats
 
             # Get API performance
             cursor = conn.execute(
-                """
+                """"""
                 SELECT
                     ar.api_name,
                         ar.capability,
@@ -758,10 +812,12 @@ class EnhancedAPIOrchestrator:
                 WHERE aol.created_at >= datetime('now', '-{} days') OR aol.created_at IS NULL
                 GROUP BY ar.id
                 ORDER BY requests_handled DESC
-            """.format(
+            """.format("""
                 days
-                )
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+# BRACKET_SURGEON: disabled
+#             )
 
             api_performance = [dict(row) for row in cursor.fetchall()]
 
@@ -769,7 +825,8 @@ class EnhancedAPIOrchestrator:
                 "capability_stats": capability_stats,
                     "api_performance": api_performance,
                     "analysis_period_days": days,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def request_avatar_generation(
@@ -777,7 +834,8 @@ class EnhancedAPIOrchestrator:
             text: str,
             voice_settings: Optional[Dict] = None,
             video_settings: Optional[Dict] = None,
-            ) -> OrchestrationResult:
+# BRACKET_SURGEON: disabled
+#             ) -> OrchestrationResult:
         """Convenience method for avatar generation requests with intelligent engine selection"""
         payload = {
             "text": text,
@@ -787,7 +845,8 @@ class EnhancedAPIOrchestrator:
             or {"resolution": "1080p", "fps": 30, "duration": "auto"},
                 "timestamp": datetime.now().isoformat(),
                 "request_type": "avatar_generation",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         request = OrchestrationRequest(
             request_id = f"avatar_{uuid.uuid4().hex[:8]}",
@@ -795,7 +854,8 @@ class EnhancedAPIOrchestrator:
                 payload = payload,
                 timeout_seconds = 120,  # Avatar generation can take longer
             max_retries = 2,  # Try both engines if needed
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         logger.info(f"Initiating avatar generation request: {request.request_id}")
         return await self.orchestrate_request(request)
@@ -812,7 +872,8 @@ async def example_usage():
         text="Hello! Welcome to our AI - powered avatar system.",
             voice_settings={"voice_type": "professional", "speed": 1.1},
             video_settings={"resolution": "1080p", "fps": 30},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     print(f"Avatar Generation - Status: {result.status}")
     if result.api_used:
@@ -837,11 +898,13 @@ async def example_usage():
             "prompt": "Write a short story about AI",
                 "max_tokens": 500,
                 "temperature": 0.7,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             timeout_seconds = 30,
             max_retries = 3,
             prefer_free = True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     # Execute the request
     result = await orchestrator.orchestrate_request(request)
@@ -849,7 +912,8 @@ async def example_usage():
     if result.status == RequestStatus.SUCCESS:
         print(
             f"Success! Used {result.api_used.api_name} in {result.total_attempts} attempts"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print(f"Response time: {result.total_time_ms}ms")
         print(f"Response: {result.response_data}")
     else:

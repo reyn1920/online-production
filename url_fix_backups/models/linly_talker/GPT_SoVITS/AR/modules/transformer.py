@@ -27,7 +27,8 @@ class LayerNorm(nn.Module):
         elementwise_affine: bool = True,
         device=None,
         dtype=None,
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         factory_kwargs = {"device": device, "dtype": dtype}
         super(LayerNorm, self).__init__()
         if isinstance(normalized_shape, numbers.Integral):
@@ -60,9 +61,11 @@ class LayerNorm(nn.Module):
                     self.weight,
                     self.bias,
                     self.eps,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 embedding,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         assert embedding is None
         return F.layer_norm(input, self.normalized_shape, self.weight, self.bias, self.eps)
@@ -70,7 +73,8 @@ class LayerNorm(nn.Module):
     def extra_repr(self) -> str:
         return "{normalized_shape}, eps={eps}, " "elementwise_affine={elementwise_affine}".format(
             **self.__dict__
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
 
 class IdentityNorm(nn.Module):
@@ -80,7 +84,8 @@ class IdentityNorm(nn.Module):
         eps: float = 1e-5,
         device=None,
         dtype=None,
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         super(IdentityNorm, self).__init__()
 
     def forward(self, input: Tensor, embedding: Any = None) -> Tensor:
@@ -92,7 +97,7 @@ class IdentityNorm(nn.Module):
 
 
 class TransformerEncoder(nn.Module):
-    r"""TransformerEncoder is a stack of N encoder layers. Users can build the
+    r"""TransformerEncoder is a stack of N encoder layers. Users can build the"""
     BERT(https://arxiv.org / abs / 1810.04805) model with corresponding parameters.
 
     Args:
@@ -108,7 +113,7 @@ class TransformerEncoder(nn.Module):
         >>> transformer_encoder = TransformerEncoder(encoder_layer, num_layers = 6)
         >>> src = torch.rand(10, 32, 512)
         >>> out = transformer_encoder(src)
-    """
+    """"""
 
     __constants__ = ["norm"]
 
@@ -125,18 +130,19 @@ class TransformerEncoder(nn.Module):
         src_key_padding_mask: Optional[Tensor] = None,
         return_layer_states: bool = False,
         cache=None,
-    ) -> Tensor:
-        r"""Pass the input through the encoder layers in turn.
+# BRACKET_SURGEON: disabled
+#     ) -> Tensor:
+        r"""Pass the input through the encoder layers in turn."""
 
         Args:
             src: the sequence to the encoder (required).
             mask: the mask for the src sequence (optional).
             src_key_padding_mask: the mask for the src keys per batch (optional).
-            return_layer_states: return layers' state (optional).
+            return_layer_states: return layers' state (optional).'
 
         Shape:
             see the docs in Transformer class.
-        """
+        """"""
         if return_layer_states:
             layer_states = []  # layers' output
             output = src
@@ -146,7 +152,8 @@ class TransformerEncoder(nn.Module):
                     src_mask=mask,
                     src_key_padding_mask=src_key_padding_mask,
                     cache=cache,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 layer_states.append(output[0])
 
             if self.norm is not None:
@@ -161,7 +168,8 @@ class TransformerEncoder(nn.Module):
                 src_mask=mask,
                 src_key_padding_mask=src_key_padding_mask,
                 cache=cache,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         if self.norm is not None:
             output = self.norm(output)
@@ -190,7 +198,8 @@ class TransformerEncoderLayer(nn.Module):
         layer_norm_cls: nn.Module = LayerNorm,
         layer_norm_eps: float = 1e-5,
         adaptive_layer_norm=False,
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         factory_kwargs = {"device": device, "dtype": dtype}
         super(TransformerEncoderLayer, self).__init__()
         # print(233333333333,d_model,nhead)
@@ -204,7 +213,8 @@ class TransformerEncoderLayer(nn.Module):
             linear1_cls=linear1_self_attention_cls,
             linear2_cls=linear2_self_attention_cls,
             **factory_kwargs,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Implementation of Feedforward model
         self.linear1 = linear1_feedforward_cls(d_model, dim_feedforward, **factory_kwargs)
@@ -257,8 +267,9 @@ class TransformerEncoderLayer(nn.Module):
         src_mask: Optional[Tensor] = None,
         src_key_padding_mask: Optional[Tensor] = None,
         cache=None,
-    ) -> Tensor:
-        r"""Pass the input through the encoder layer.
+# BRACKET_SURGEON: disabled
+#     ) -> Tensor:
+        r"""Pass the input through the encoder layer."""
 
         Args:
             src: the sequence to the encoder layer (required).
@@ -267,7 +278,7 @@ class TransformerEncoderLayer(nn.Module):
 
         Shape:
             see the docs in Transformer class.
-        """
+        """"""
         x, stage_embedding = src, None
         is_src_tuple = False
         if isinstance(src, tuple):
@@ -279,7 +290,8 @@ class TransformerEncoderLayer(nn.Module):
             if _skpm_dtype != torch.bool and not torch.is_floating_point(src_key_padding_mask):
                 raise AssertionError(
                     "only bool and floating types of key_padding_mask are supported"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         if self.norm_first:
             x = x + self._sa_block(
@@ -287,13 +299,15 @@ class TransformerEncoderLayer(nn.Module):
                 src_mask,
                 src_key_padding_mask,
                 cache=cache,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             x = x + self._ff_block(self.norm2(x, stage_embedding))
         else:
             x = self.norm1(
                 x + self._sa_block(x, src_mask, src_key_padding_mask, cache=cache),
                 stage_embedding,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             x = self.norm2(x + self._ff_block(x), stage_embedding)
 
         if is_src_tuple:
@@ -308,7 +322,8 @@ class TransformerEncoderLayer(nn.Module):
         attn_mask: Optional[Tensor],
         key_padding_mask: Optional[Tensor],
         cache=None,
-    ) -> Tensor:
+# BRACKET_SURGEON: disabled
+#     ) -> Tensor:
         # print(x.shape,attn_mask.shape,key_padding_mask)
         # torch.Size([1, 188, 512]) torch.Size([188, 188]) None
         # import os
@@ -348,14 +363,16 @@ class AdaptiveLayerNorm(nn.Module):
                 self.project_layer(embedding),
                 split_size_or_sections=self.d_model,
                 dim=-1,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return (weight * self.norm(input) + bias, embedding)
 
         weight, bias = torch.split(
             self.project_layer(embedding),
             split_size_or_sections=self.d_model,
             dim=-1,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return weight * self.norm(input) + bias
 
 

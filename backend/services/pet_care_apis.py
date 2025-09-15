@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 Pet Care API Services
-
+""""""
 Secure API service manager for pet care and veterinary services.
 Follows go - live security practices:
 - No hardcoded secrets
 - Proper error handling
 - Rate limiting awareness
 - Secure credential management
+""""""
+Pet Care API Services
 """
+
 
 import asyncio
 import logging
@@ -31,17 +34,27 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class APIResponse:
-    """Standardized API response wrapper"""
+    
+Standardized API response wrapper
+"""
 
     success: bool
     data: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
     status_code: Optional[int] = None
-    rate_limit_remaining: Optional[int] = None
+   """
 
+    
+   
+
+    rate_limit_remaining: Optional[int] = None
+   
+""""""
 
 class PetCareAPIManager:
-    """Secure manager for pet care API services"""
+    
+Secure manager for pet care API services
+"""
 
     def __init__(self):
         self.session: Optional[aiohttp.ClientSession] = None
@@ -64,23 +77,68 @@ class PetCareAPIManager:
             logger.warning("Configuration not loaded - API services disabled")
 
     async def __aenter__(self):
-        """Async context manager entry"""
+        """
+Async context manager entry
+
+        
+"""
         self.session = aiohttp.ClientSession(
+        """
+
             timeout=aiohttp.ClientTimeout(total=30),
+        
+
+        self.session = aiohttp.ClientSession(
+        
+"""
             headers={"User - Agent": "PetCare - App/1.0"},
-        )
+         )
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Async context manager exit"""
+        """
+Async context manager exit
+
         if self.session:
+           
+""""""
+
             await self.session.close()
+           
+
+            
+           
+""""""
+
+
+            
+
+           
+
+            await self.session.close()
+           
+""""""
 
     def _check_rate_limit(self, service: str) -> bool:
-        """Check if service is rate limited"""
+        
+Check if service is rate limited
+"""
         if service not in self._rate_limits:
+            """
+
+            return True
+            
+
+           
+""""""
+
+            
+
+
             return True
 
+            
+"""
         limit_info = self._rate_limits[service]
         if datetime.now() > limit_info["reset_time"]:
             # Rate limit has reset
@@ -95,7 +153,7 @@ class PetCareAPIManager:
 
     async def _make_request(
         self, url: str, headers: Dict[str, str], params: Optional[Dict[str, Any]] = None
-    ) -> APIResponse:
+#     ) -> APIResponse:
         """Make secure HTTP request with error handling"""
         if not self.session:
             return APIResponse(success=False, error="Session not initialized")
@@ -106,7 +164,7 @@ class PetCareAPIManager:
                     await response.json()
                     if response.content_type == "application/json"
                     else await response.text()
-                )
+                 )
 
                 # Extract rate limit info if available
                 rate_limit_remaining = None
@@ -119,7 +177,7 @@ class PetCareAPIManager:
                     error=(f"HTTP {response.status}: {data}" if response.status != 200 else None),
                     status_code=response.status,
                     rate_limit_remaining=rate_limit_remaining,
-                )
+                 )
 
         except asyncio.TimeoutError:
             return APIResponse(success=False, error="Request timeout")
@@ -131,7 +189,7 @@ class PetCareAPIManager:
 
     async def get_bird_observations(
         self, region_code: str = "US", days_back: int = 7
-    ) -> APIResponse:
+#     ) -> APIResponse:
         """Get recent bird observations from eBird API"""
         if not self.ebird_token:
             return APIResponse(success=False, error="eBird API token not configured")
@@ -196,7 +254,7 @@ class PetCareAPIManager:
 
     async def search_adoptable_pets(
         self, animal_type: str = "dog", location: str = "10001", limit: int = 20
-    ) -> APIResponse:
+#     ) -> APIResponse:
         """Search for adoptable pets using Petfinder API"""
         if not self.petfinder_key or not self.petfinder_secret:
             return APIResponse(success=False, error="Petfinder API credentials not configured")
@@ -213,7 +271,7 @@ class PetCareAPIManager:
                 "grant_type": "client_credentials",
                 "client_id": self.petfinder_key,
                 "client_secret": self.petfinder_secret,
-            }
+             }
 
             async with self.session.post(token_url, data=token_data) as token_response:
                 if token_response.status != 200:
@@ -225,7 +283,7 @@ class PetCareAPIManager:
                 if not access_token:
                     return APIResponse(
                         success=False, error="No access token received from Petfinder"
-                    )
+                     )
 
             # Now search for pets
             search_url = "https://api.petfinder.com/v2/animals"
@@ -235,7 +293,7 @@ class PetCareAPIManager:
                 "location": location,
                 "limit": limit,
                 "status": "adoptable",
-            }
+             }
 
             response = await self._make_request(search_url, headers, params)
 
@@ -257,33 +315,33 @@ class PetCareAPIManager:
                 "configured": bool(self.ebird_token),
                 "rate_limited": (
                     not self._check_rate_limit("ebird") if "ebird" in self._rate_limits else False
-                ),
-            },
+                 ),
+             },
             "dog_api": {
                 "configured": bool(self.dog_api_key),
                 "rate_limited": (
                     not self._check_rate_limit("dog_api")
                     if "dog_api" in self._rate_limits
                     else False
-                ),
-            },
+                 ),
+             },
             "cat_api": {
                 "configured": bool(self.cat_api_key),
                 "rate_limited": (
                     not self._check_rate_limit("cat_api")
                     if "cat_api" in self._rate_limits
                     else False
-                ),
-            },
+                 ),
+             },
             "petfinder": {
                 "configured": bool(self.petfinder_key and self.petfinder_secret),
                 "rate_limited": (
                     not self._check_rate_limit("petfinder")
                     if "petfinder" in self._rate_limits
                     else False
-                ),
-            },
-        }
+                 ),
+             },
+         }
 
 
 class VetServicesManager:
@@ -308,31 +366,48 @@ class VetServicesManager:
             "vetster": {
                 "configured": bool(self.vetster_key),
                 "description": "Online veterinary consultations",
-            },
+             },
             "pawp": {
                 "configured": bool(self.pawp_key),
                 "description": "Emergency vet chat service",
-            },
+             },
             "airvet": {
                 "configured": bool(self.airvet_key),
                 "description": "Virtual veterinary care",
-            },
+             },
             "calendly": {
                 "configured": bool(self.calendly_token),
                 "description": "Appointment scheduling",
-            },
-        }
+             },
+         }
 
     async def check_availability(self, service: str) -> APIResponse:
-        """Check availability for veterinary services (stub implementation)"""
+        """
+Check availability for veterinary services (stub implementation)
+
+       
+""""""
+
         # This is a stub implementation - actual services would have specific APIs
+       
+
+        
+       
+"""
         services = {
             "vetster": self.vetster_key,
             "pawp": self.pawp_key,
             "airvet": self.airvet_key,
             "calendly": self.calendly_token,
-        }
+         }
+       """
 
+        
+       
+
+        # This is a stub implementation - actual services would have specific APIs
+       
+""""""
         if service not in services:
             return APIResponse(success=False, error=f"Unknown service: {service}")
 
@@ -347,8 +422,8 @@ class VetServicesManager:
                 "available": True,
                 "next_available": datetime.now().isoformat(),
                 "message": f"{service} service is available (stub response)",
-            },
-        )
+             },
+         )
 
 
 # Export classes

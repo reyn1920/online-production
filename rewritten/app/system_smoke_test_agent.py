@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 System Smoke Test Agent for TRAE.AI
 
 This agent implements the complete "Go - Live" smoke test protocol as specified:
@@ -8,7 +8,7 @@ This agent implements the complete "Go - Live" smoke test protocol as specified:
 3. Real - time status reporting via WebSocket
 
 The agent provides a one - click verification system that ensures 100% system readiness.
-"""
+""""""
 
 import asyncio
 import json
@@ -97,7 +97,9 @@ class SystemSmokeTestAgent:
             started_at=datetime.now().isoformat(),
             triggered_by=triggered_by,
             status="running",
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         self.is_running = True
         self._emit_log("INFO", f"Starting system - wide smoke test (ID: {test_id})")
@@ -125,7 +127,9 @@ class SystemSmokeTestAgent:
             # Phase 1: Pre - Flight Checks
             self._emit_progress(
                 "Pre - Flight Checks", "Running infrastructure validation..."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             preflight_success = await self._run_preflight_checks()
 
             if not preflight_success:
@@ -135,7 +139,9 @@ class SystemSmokeTestAgent:
             # Phase 2: Live Smoke Test
             self._emit_progress(
                 "Live Smoke Test", "Running end - to - end workflow verification..."
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             smoke_test_success = await self._run_live_smoke_test()
 
             # Complete the test
@@ -144,7 +150,9 @@ class SystemSmokeTestAgent:
                 "All tests passed successfully"
                 if overall_success
                 else "Some tests failed"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             self._complete_test(overall_success, summary_message)
 
         except Exception as e:
@@ -165,16 +173,20 @@ class SystemSmokeTestAgent:
             ("FFmpeg Installation", self._check_ffmpeg),
             ("Directory Permissions", self._check_directory_permissions),
             ("Python Dependencies", self._check_python_dependencies),
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         all_passed = True
 
         for check_name, check_func in checks:
             self._emit_progress(
                 "Pre - Flight Checks",
-                f"Checking {
-                    check_name.lower()}...",
-            )
+                f"Checking {"
+                    check_name.lower()}...","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             start_time = time.time()
             try:
@@ -187,7 +199,9 @@ class SystemSmokeTestAgent:
                     message=message,
                     details=details,
                     duration_ms=duration_ms,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 self.current_session.results.append(result)
 
@@ -206,13 +220,17 @@ class SystemSmokeTestAgent:
                     success=False,
                     message=f"Check failed with error: {str(e)}",
                     duration_ms=duration_ms,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.current_session.results.append(result)
                 self._emit_log(
                     "ERROR",
-                    f"❌ {check_name}: Check failed with error: {
-                        str(e)}",
-                )
+                    f"❌ {check_name}: Check failed with error: {"
+                        str(e)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 all_passed = False
 
         return all_passed
@@ -231,13 +249,17 @@ class SystemSmokeTestAgent:
                     False,
                     f"Dashboard port {actual_port} is outside valid range (1024 - 65535)",
                     "Set DASHBOARD_PORT to a valid port number",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except ValueError:
             return (
                 False,
                 f"Dashboard port '{actual_port}' is not a valid number",
                 "Set DASHBOARD_PORT to a valid port number",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def _check_port_availability(self) -> Tuple[bool, str, Optional[str]]:
         """Check that required services are running on their configured ports."""
@@ -260,22 +282,28 @@ class SystemSmokeTestAgent:
         if len(running_ports) == len(ports_to_check):
             return (
                 True,
-                f"All required services are running on ports: {
+                f"All required services are running on ports: {"
                     ', '.join(
                     map(
-                        str, running_ports))}",
+# BRACKET_SURGEON: disabled
+#                         str, running_ports))}","
                 None,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             missing_ports = [p for p in ports_to_check if p not in running_ports]
             return (
                 False,
-                f"Services not running on ports: {
+                f"Services not running on ports: {"
                     ', '.join(
                     map(
-                        str, missing_ports))}",
+# BRACKET_SURGEON: disabled
+#                         str, missing_ports))}","
                 "Ensure all required services are started",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def _check_system_resources(self) -> Tuple[bool, str, Optional[str]]:
         """Check system CPU and memory resources."""
@@ -294,11 +322,14 @@ class SystemSmokeTestAgent:
             if not issues:
                 return (
                     True,
-                    f"System resources OK (CPU: {
+                    f"System resources OK (CPU: {"
                         cpu_percent:.1f}%, Memory: {
-                        memory_percent:.1f}%)",
+# BRACKET_SURGEON: disabled
+#                         memory_percent:.1f}%)","
                     None,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 return False, "System resources under stress", "; ".join(issues)
 
@@ -310,7 +341,9 @@ class SystemSmokeTestAgent:
         test_urls = [
             ("localhost:8080", "http://localhost:8080/api/health"),
             ("External DNS", "https://8.8.8.8"),
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         connectivity_issues = []
 
@@ -320,7 +353,9 @@ class SystemSmokeTestAgent:
                 if response.status_code not in [
                     200,
                     404,
-                ]:  # 404 is OK for health check if service not running
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]:  # 404 is OK for health check if service not running
                     connectivity_issues.append(f"{name}: HTTP {response.status_code}")
             except requests.exceptions.Timeout:
                 connectivity_issues.append(f"{name}: Timeout")
@@ -338,7 +373,8 @@ class SystemSmokeTestAgent:
                 True,
                 "Network connectivity checked (some services may not be running yet)",
                 "; ".join(connectivity_issues),
-            )  # Non - blocking for now
+# BRACKET_SURGEON: disabled
+#             )  # Non - blocking for now
 
     async def _check_secrets(self) -> Tuple[bool, str, Optional[str]]:
         """Check that required secrets are loaded and accessible."""
@@ -352,16 +388,20 @@ class SystemSmokeTestAgent:
         if not missing_secrets:
             return (
                 True,
-                f"All {
-                    len(required_secrets)} required secrets are present",
+                f"All {"
+                    len(required_secrets)} required secrets are present","
                 None,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             return (
                 False,
                 f"Missing {len(missing_secrets)} required secrets",
                 f"Missing secrets: {', '.join(missing_secrets)}",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def _check_disk_space(self) -> Tuple[bool, str, Optional[str]]:
         """Check for at least 5GB of free disk space."""
@@ -374,11 +414,14 @@ class SystemSmokeTestAgent:
             else:
                 return (
                     False,
-                    f"Insufficient disk space: {
+                    f"Insufficient disk space: {"
                         free_gb:.1f}GB available, {
-                        self.required_disk_space_gb}GB required",
+# BRACKET_SURGEON: disabled
+#                         self.required_disk_space_gb}GB required","
                     "Free up disk space before proceeding",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except Exception as e:
             return False, "Could not check disk space", str(e)
 
@@ -387,7 +430,9 @@ class SystemSmokeTestAgent:
         try:
             result = subprocess.run(
                 ["ffmpeg", "-version"], capture_output=True, text=True, timeout=10
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if result.returncode == 0:
                 # Extract version from output
                 version_line = result.stdout.split("\\n")[0]
@@ -400,8 +445,10 @@ class SystemSmokeTestAgent:
             return (
                 False,
                 "FFmpeg not found in PATH",
-                "Install FFmpeg and ensure it's in your system PATH",
-            )
+                "Install FFmpeg and ensure it's in your system PATH",'
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except Exception as e:
             return False, "FFmpeg check failed", str(e)
 
@@ -436,7 +483,9 @@ class SystemSmokeTestAgent:
             ("requests", "HTTP client library"),
             ("psutil", "System monitoring"),
             ("waitress", "WSGI server"),
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         missing_modules = []
 
@@ -449,16 +498,20 @@ class SystemSmokeTestAgent:
         if not missing_modules:
             return (
                 True,
-                f"All {
-                    len(critical_modules)} critical Python dependencies are available",
+                f"All {"
+                    len(critical_modules)} critical Python dependencies are available","
                 None,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             return (
                 False,
                 f"Missing {len(missing_modules)} critical dependencies",
                 f"Missing: {'; '.join(missing_modules)}",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def _run_live_smoke_test(self) -> bool:
         """Run the comprehensive live smoke test with enhanced validation."""
@@ -471,7 +524,9 @@ class SystemSmokeTestAgent:
             ("Monitor Task Completion", self._test_monitor_task),
             ("Verify Video Output", self._test_verify_video_output),
             ("Cleanup Test Artifacts", self._test_cleanup_artifacts),
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         all_passed = True
         self.task_id = None  # Will be set by create_video_task
@@ -493,7 +548,9 @@ class SystemSmokeTestAgent:
                     message=message,
                     details=details,
                     duration_ms=duration_ms,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 self.current_session.results.append(result)
 
@@ -513,13 +570,17 @@ class SystemSmokeTestAgent:
                     success=False,
                     message=f"Test failed with error: {str(e)}",
                     duration_ms=duration_ms,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self.current_session.results.append(result)
                 self._emit_log(
                     "ERROR",
-                    f"❌ {test_name}: Test failed with error: {
-                        str(e)}",
-                )
+                    f"❌ {test_name}: Test failed with error: {"
+                        str(e)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 all_passed = False
                 break
 
@@ -533,16 +594,22 @@ class SystemSmokeTestAgent:
                 return (
                     True,
                     "Dashboard health check passed",
-                    f"Response: {
-                        response.text}",
-                )
+                    f"Response: {"
+# BRACKET_SURGEON: disabled
+#                         response.text}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 return (
                     False,
-                    f"Dashboard health check failed (HTTP {
-                        response.status_code})",
+                    f"Dashboard health check failed (HTTP {"
+# BRACKET_SURGEON: disabled
+#                         response.status_code})","
                     response.text,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except requests.exceptions.RequestException as e:
             return False, "Dashboard health check failed", str(e)
 
@@ -556,22 +623,29 @@ class SystemSmokeTestAgent:
                 return (
                     True,
                     "Orchestrator service is running and healthy",
-                    f"Response: {
-                        response.text}",
-                )
+                    f"Response: {"
+# BRACKET_SURGEON: disabled
+#                         response.text}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 return (
                     True,
                     "Orchestrator service not available (optional)",
                     "System can operate without orchestrator service",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except requests.exceptions.RequestException:
             # Orchestrator is optional - system can run without it
             return (
                 True,
                 "Orchestrator service not running (optional)",
                 "System is operational without orchestrator service",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def _test_create_video_task(self) -> Tuple[bool, str, Optional[str]]:
         """Test creating a video generation task with comprehensive validation."""
@@ -586,8 +660,10 @@ class SystemSmokeTestAgent:
                 "test_type": "smoke_test",
                 "created_by": "system_smoke_test_agent",
                 "timestamp": datetime.now().isoformat(),
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         try:
             # First, verify the endpoint exists
@@ -596,9 +672,12 @@ class SystemSmokeTestAgent:
                 return (
                     False,
                     "Dashboard not responding before task creation",
-                    f"Health check failed: {
-                        health_response.status_code}",
-                )
+                    f"Health check failed: {"
+# BRACKET_SURGEON: disabled
+#                         health_response.status_code}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Create the video task
             response = requests.post(
@@ -606,7 +685,9 @@ class SystemSmokeTestAgent:
                 json=test_payload,
                 headers={"Content - Type": "application/json"},
                 timeout=30,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if response.status_code == 201:
                 result = response.json()
@@ -617,9 +698,12 @@ class SystemSmokeTestAgent:
                         return (
                             False,
                             "Invalid task_id format received",
-                            f"Task ID: {
-                                self.task_id}",
-                        )
+                            f"Task ID: {"
+# BRACKET_SURGEON: disabled
+#                                 self.task_id}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                     # Verify task was actually queued
                     await asyncio.sleep(1)  # Brief pause to allow task queuing
@@ -627,69 +711,89 @@ class SystemSmokeTestAgent:
                         f"{self.base_url}/api/tasks",
                         params={"task_id": self.task_id},
                         timeout=10,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     if status_response.status_code == 200:
                         task_data = status_response.json()
                         initial_status = task_data.get("status", "unknown")
                         return (
                             True,
-                            f"Video task created and queued (ID: {
-                                self.task_id}, Status: {initial_status})",
+                            f"Video task created and queued (ID: {"
+                                self.task_id}, Status: {initial_status})","
                             json.dumps(result, indent=2),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     else:
                         return (
                             False,
-                            f"Task created but status check failed (HTTP {
-                                status_response.status_code})",
+                            f"Task created but status check failed (HTTP {"
+# BRACKET_SURGEON: disabled
+#                                 status_response.status_code})","
                             response.text,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 else:
                     return (
                         False,
                         "Video task creation response missing task_id",
                         response.text,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             elif response.status_code == 400:
                 return (
                     False,
                     "Invalid request payload for video task creation",
                     response.text,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             elif response.status_code == 503:
                 return False, "Video service unavailable", response.text
             else:
                 return (
                     False,
-                    f"Video task creation failed (HTTP {
-                        response.status_code})",
+                    f"Video task creation failed (HTTP {"
+# BRACKET_SURGEON: disabled
+#                         response.status_code})","
                     response.text,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         except requests.exceptions.Timeout:
             return (
                 False,
                 "Video task creation timed out",
                 "Request exceeded 30 second timeout",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except requests.exceptions.ConnectionError:
             return (
                 False,
                 "Cannot connect to video service",
                 "Connection refused or network error",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         except requests.exceptions.RequestException as e:
             return False, "Video task creation failed", str(e)
 
     async def _test_monitor_task(self) -> Tuple[bool, str, Optional[str]]:
-        """Monitor task completion with comprehensive status tracking \
-    and progress validation."""
+        """Monitor task completion with comprehensive status tracking \"""
+#     and progress validation.""""""
         if not self.task_id:
             return (
                 False,
                 "No task ID available for monitoring",
                 "Task creation must succeed first",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         start_time = time.time()
         last_status = None
@@ -709,7 +813,9 @@ class SystemSmokeTestAgent:
                     f"{self.base_url}/api/tasks",
                     params={"task_id": self.task_id},
                     timeout=10,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if response.status_code == 200:
                     consecutive_failures = 0  # Reset failure counter
@@ -721,8 +827,8 @@ class SystemSmokeTestAgent:
                     # Track status changes
                     if status != last_status:
                         elapsed = int(time.time() - start_time)
-                        status_change = f"{elapsed}s: {
-                            last_status or 'initial'} -> {status}"
+                        status_change = f"{elapsed}s: {"
+                            last_status or 'initial'} -> {status}""
                         status_changes.append(status_change)
                         self._emit_log("INFO", f"Task status change: {status_change}")
                         last_status = status
@@ -733,19 +839,25 @@ class SystemSmokeTestAgent:
                             {
                                 "time": int(time.time() - start_time),
                                 "progress": progress,
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         if len(progress_history) > 1:
                             # Check for progress stagnation
                             recent_progress = progress_history[-5:]  # Last 5 readings
                             if len(recent_progress) >= 3 and all(
                                 p["progress"] == recent_progress[0]["progress"]
                                 for p in recent_progress
-                            ):
+# BRACKET_SURGEON: disabled
+#                             ):
                                 self._emit_log(
                                     "WARN",
                                     f"Progress stagnant at {progress}% for multiple checks",
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
 
                     # Handle different status states
                     if status == "completed":
@@ -759,13 +871,16 @@ class SystemSmokeTestAgent:
                             "output_file": output_file,
                             "status_changes": status_changes,
                             "task_data": task_data,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                         return (
                             True,
                             f"Task completed successfully in {elapsed}s (Progress: {final_progress}%, Output: {output_file})",
                             json.dumps(details, indent=2),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                     elif status in ["failed", "error", "cancelled"]:
                         elapsed = int(time.time() - start_time)
@@ -777,13 +892,16 @@ class SystemSmokeTestAgent:
                             "final_progress": progress,
                             "status_changes": status_changes,
                             "task_data": task_data,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                         return (
                             False,
                             f"Task {status} after {elapsed}s: {error_details}",
                             json.dumps(details, indent=2),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                     elif status in ["queued", "pending", "running", "processing"]:
                         # Valid intermediate states - continue monitoring
@@ -791,7 +909,9 @@ class SystemSmokeTestAgent:
                             self._emit_progress(
                                 "Task Monitoring",
                                 f"Status: {status}, Progress: {progress}%",
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                         else:
                             self._emit_progress("Task Monitoring", f"Status: {status}")
 
@@ -799,7 +919,9 @@ class SystemSmokeTestAgent:
                         self._emit_log(
                             "WARN",
                             "Task status is unknown - this may indicate a system issue",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                     # Continue polling
                     await asyncio.sleep(self.poll_interval_seconds)
@@ -808,31 +930,42 @@ class SystemSmokeTestAgent:
                     return (
                         False,
                         "Task not found - may have been deleted or expired",
-                        f"Task ID: {
-                            self.task_id}",
-                    )
+                        f"Task ID: {"
+# BRACKET_SURGEON: disabled
+#                             self.task_id}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 elif response.status_code >= 500:
                     consecutive_failures += 1
                     if consecutive_failures >= max_consecutive_failures:
                         return (
                             False,
                             f"Server errors exceeded threshold ({consecutive_failures} consecutive failures)",
-                            f"Last HTTP status: {
-                                response.status_code}",
-                        )
+                            f"Last HTTP status: {"
+# BRACKET_SURGEON: disabled
+#                                 response.status_code}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     self._emit_log(
                         "WARN",
                         f"Server error {response.status_code}, retrying... ({consecutive_failures}/{max_consecutive_failures})",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     # Longer wait on server errors
                     await asyncio.sleep(self.poll_interval_seconds * 2)
                 else:
                     return (
                         False,
-                        f"Task status check failed (HTTP {
-                            response.status_code})",
+                        f"Task status check failed (HTTP {"
+# BRACKET_SURGEON: disabled
+#                             response.status_code})","
                         response.text,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             except requests.exceptions.Timeout:
                 consecutive_failures += 1
@@ -841,11 +974,15 @@ class SystemSmokeTestAgent:
                         False,
                         f"Request timeouts exceeded threshold ({consecutive_failures} consecutive failures)",
                         "Multiple timeout errors",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 self._emit_log(
                     "WARN",
                     f"Request timeout, retrying... ({consecutive_failures}/{max_consecutive_failures})",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 await asyncio.sleep(self.poll_interval_seconds)
             except requests.exceptions.RequestException as e:
                 consecutive_failures += 1
@@ -854,11 +991,15 @@ class SystemSmokeTestAgent:
                         False,
                         f"Network errors exceeded threshold ({consecutive_failures} consecutive failures)",
                         str(e),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 self._emit_log(
                     "WARN",
                     f"Network error, retrying... ({consecutive_failures}/{max_consecutive_failures}): {str(e)}",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 await asyncio.sleep(self.poll_interval_seconds)
 
         # Timeout reached
@@ -868,23 +1009,28 @@ class SystemSmokeTestAgent:
             "last_status": last_status,
             "status_changes": status_changes,
             "progress_history": progress_history[-10:],  # Last 10 progress readings
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return (
             False,
             f"Task monitoring timed out after {elapsed}s (Last status: {last_status})",
             json.dumps(timeout_details, indent=2),
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     async def _test_verify_video_output(self) -> Tuple[bool, str, Optional[str]]:
-        """Verify video file creation with comprehensive validation including metadata \
-    and integrity checks."""
+        """Verify video file creation with comprehensive validation including metadata \"""
+#     and integrity checks.""""""
         if not self.task_id:
             return (
                 False,
                 "No task ID available for output verification",
                 "Task creation must succeed first",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         try:
             # Wait a moment for file system to sync
@@ -906,9 +1052,11 @@ class SystemSmokeTestAgent:
                     return (
                         False,
                         "No video files found in outputs directory",
-                        f"Searched in: {
-                            self.outputs_dir}\\nFound files: {file_list}",
-                    )
+                        f"Searched in: {"
+                            self.outputs_dir}\\nFound files: {file_list}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     video_files = all_video_files
 
@@ -922,37 +1070,50 @@ class SystemSmokeTestAgent:
             if file_age_seconds > 600:  # 10 minutes
                 self._emit_log(
                     "WARN",
-                    f"Video file is older than expected: {
-                        file_age_seconds:.1f}s old",
-                )
+                    f"Video file is older than expected: {"
+# BRACKET_SURGEON: disabled
+#                         file_age_seconds:.1f}s old","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Check file size (should be > 0 and reasonable for a short video)
             file_size = file_stats.st_size
             if file_size == 0:
                 return (
                     False,
-                    f"Video file is empty: {
-                        latest_video.name}",
+                    f"Video file is empty: {"
+# BRACKET_SURGEON: disabled
+#                         latest_video.name}","
                     f"File size: {file_size} bytes",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Check minimum file size (should be at least 1KB for a valid video)
             if file_size < 1024:
                 return (
                     False,
-                    f"Video file too small to be valid: {
-                        latest_video.name}",
+                    f"Video file too small to be valid: {"
+# BRACKET_SURGEON: disabled
+#                         latest_video.name}","
                     f"File size: {file_size} bytes (< 1KB)",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Check maximum reasonable file size (shouldn't exceed 100MB for a
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
             # 3 - second test video)
             max_size = 100 * 1024 * 1024  # 100MB
             if file_size > max_size:
                 self._emit_log(
                     "WARN",
                     f"Video file unexpectedly large: {file_size/(1024 * 1024):.1f}MB",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Try to get basic video information using ffmpeg if available
             video_info = {}
@@ -968,28 +1129,38 @@ class SystemSmokeTestAgent:
                         "-show_format",
                         "-show_streams",
                         str(latest_video),
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
                     capture_output=True,
                     text=True,
                     timeout=10,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if result.returncode == 0:
                     probe_data = json.loads(result.stdout)
                     if "format" in probe_data:
                         video_info["duration"] = float(
                             probe_data["format"].get("duration", 0)
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         video_info["format_name"] = probe_data["format"].get(
                             "format_name", "unknown"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                     if "streams" in probe_data:
                         video_streams = [
                             s
                             for s in probe_data["streams"]
                             if s.get("codec_type") == "video"
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
                         if video_streams:
                             stream = video_streams[0]
                             video_info["codec"] = stream.get("codec_name", "unknown")
@@ -1002,49 +1173,65 @@ class SystemSmokeTestAgent:
                     if video_info.get("duration", 0) < 1:
                         self._emit_log(
                             "WARN",
-                            f"Video duration seems too short: {
+                            f"Video duration seems too short: {"
                                 video_info.get(
-                                    'duration', 0)}s",
-                        )
+# BRACKET_SURGEON: disabled
+#                                     'duration', 0)}s","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                     elif video_info.get("duration", 0) > 10:
                         self._emit_log(
                             "WARN",
-                            f"Video duration longer than expected: {
+                            f"Video duration longer than expected: {"
                                 video_info.get(
-                                    'duration', 0)}s",
-                        )
+# BRACKET_SURGEON: disabled
+#                                     'duration', 0)}s","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                     if (
                         video_info.get("width", 0) < 100
                         or video_info.get("height", 0) < 100
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         self._emit_log(
                             "WARN",
-                            f"Video resolution seems low: {
+                            f"Video resolution seems low: {"
                                 video_info.get(
                                     'width', 0)}x{
                                         video_info.get(
-                                    'height', 0)}",
-                        )
+# BRACKET_SURGEON: disabled
+#                                     'height', 0)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 else:
                     self._emit_log(
                         "WARN",
-                        f"Could not probe video file: {
-                            result.stderr}",
-                    )
+                        f"Could not probe video file: {"
+# BRACKET_SURGEON: disabled
+#                             result.stderr}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             except (
                 subprocess.TimeoutExpired,
                 subprocess.CalledProcessError,
                 json.JSONDecodeError,
                 FileNotFoundError,
-            ) as e:
+# BRACKET_SURGEON: disabled
+#             ) as e:
                 self._emit_log(
                     "WARN",
-                    f"Video probing failed (ffprobe not available or error): {
-                        str(e)}",
-                )
+                    f"Video probing failed (ffprobe not available or error): {"
+                        str(e)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Prepare detailed results
             file_size_mb = file_size / (1024 * 1024)
@@ -1063,18 +1250,20 @@ class SystemSmokeTestAgent:
                 ).isoformat(),
                 "video_info": video_info,
                 "task_id": self.task_id,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Create success message with key information
-            success_msg = f"Video file verified: {
+            success_msg = f"Video file verified: {"
                 latest_video.name} ({
-                    file_size_mb:.1f}MB)"
+# BRACKET_SURGEON: disabled
+#                     file_size_mb:.1f}MB)""
             if video_info.get("duration"):
                 success_msg += f", Duration: {video_info['duration']:.1f}s"
             if video_info.get("width") and video_info.get("height"):
-                success_msg += f", Resolution: {
+                success_msg += f", Resolution: {"
                     video_info['width']}x{
-                        video_info['height']}"
+                        video_info['height']}""
 
             return True, success_msg, json.dumps(details, indent=2)
 
@@ -1082,11 +1271,14 @@ class SystemSmokeTestAgent:
             return (
                 False,
                 "Video output verification failed",
-                f"Error: {
+                f"Error: {"
                     str(e)}\\nTask ID: {
                     self.task_id}\\nOutputs directory: {
-                    self.outputs_dir}",
-            )
+# BRACKET_SURGEON: disabled
+#                     self.outputs_dir}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def _test_api_endpoints(self) -> Tuple[bool, str, Optional[str]]:
         """Test critical API endpoints for availability and proper responses."""
@@ -1095,7 +1287,9 @@ class SystemSmokeTestAgent:
             ("/api/tasks", "GET", 200, "Tasks listing endpoint"),
             ("/api/workflows", "GET", 200, "Workflows endpoint"),
             ("/api/system/status", "GET", 200, "System status endpoint"),
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         results = []
         all_passed = True
@@ -1128,24 +1322,34 @@ class SystemSmokeTestAgent:
                         "description": description,
                         "response_time_ms": int(
                             response.elapsed.total_seconds() * 1000
-                        ),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if success:
                     self._emit_log(
                         "INFO",
-                        f"✅ {description}: {
+                        f"✅ {description}: {"
                             response.status_code} ({
                                 response.elapsed.total_seconds()
-                            * 1000:.0f}ms)",
-                    )
+# BRACKET_SURGEON: disabled
+#                             * 1000:.0f}ms)","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 else:
                     self._emit_log(
                         "ERROR",
-                        f"❌ {description}: Expected {expected_status}, got {
-                            response.status_code}",
-                    )
+                        f"❌ {description}: Expected {expected_status}, got {"
+# BRACKET_SURGEON: disabled
+#                             response.status_code}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             except requests.exceptions.RequestException as e:
                 all_passed = False
@@ -1158,8 +1362,11 @@ class SystemSmokeTestAgent:
                         "success": False,
                         "description": description,
                         "error": str(e),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 self._emit_log("ERROR", f"❌ {description}: Request failed - {str(e)}")
 
         passed_count = sum(1 for r in results if r["success"])
@@ -1170,13 +1377,17 @@ class SystemSmokeTestAgent:
                 True,
                 f"All {total_count} API endpoints responding correctly",
                 json.dumps(results, indent=2),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             return (
                 False,
                 f"API endpoint failures: {passed_count}/{total_count} passed",
                 json.dumps(results, indent=2),
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     async def _test_system_resources_live(self) -> Tuple[bool, str, Optional[str]]:
         """Test system resources during live operation."""
@@ -1190,7 +1401,9 @@ class SystemSmokeTestAgent:
             connections = psutil.net_connections(kind="inet")
             listening_ports = [
                 conn.laddr.port for conn in connections if conn.status == "LISTEN"
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             # Get process information
             current_process = psutil.Process()
@@ -1207,7 +1420,8 @@ class SystemSmokeTestAgent:
                 "listening_ports": sorted(listening_ports),
                 "process_memory_mb": round(process_memory.rss / (1024**2), 1),
                 "process_cpu_percent": current_process.cpu_percent(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Check for resource constraints
             warnings = []
@@ -1222,25 +1436,31 @@ class SystemSmokeTestAgent:
             expected_ports = [8080, 8081]  # Dashboard ports
             missing_ports = [
                 port for port in expected_ports if port not in listening_ports
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             if missing_ports:
                 warnings.append(f"Expected ports not listening: {missing_ports}")
 
             if warnings:
                 return (
                     False,
-                    f"System resource warnings detected: {
-                        '; '.join(warnings)}",
+                    f"System resource warnings detected: {"
+                        '; '.join(warnings)}","
                     json.dumps(metrics, indent=2),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 return (
                     True,
-                    f"System resources healthy (CPU: {cpu_percent}%, Memory: {
+                    f"System resources healthy (CPU: {cpu_percent}%, Memory: {"
                         memory.percent}%, Disk: {
-                        metrics['disk_percent']}%)",
+                        metrics['disk_percent']}%)","
                     json.dumps(metrics, indent=2),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             return False, "System resource check failed", str(e)
@@ -1253,7 +1473,8 @@ class SystemSmokeTestAgent:
                 "files_failed": [],
                 "directories_checked": [],
                 "total_space_freed_mb": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Find test files created during this smoke test
             test_files = []
@@ -1264,10 +1485,13 @@ class SystemSmokeTestAgent:
                 file_age = time.time() - file_stats.st_mtime
 
                 # If file was created in the last 30 minutes and is small (likely a test
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
                 # file)
                 if (
                     file_age < 1800 and file_stats.st_size < 50 * 1024 * 1024
-                ):  # 50MB threshold
+# BRACKET_SURGEON: disabled
+#                 ):  # 50MB threshold
                     test_files.append(video_file)
 
             # Also look for any files with "test" or "smoke" in the name
@@ -1288,27 +1512,38 @@ class SystemSmokeTestAgent:
                             {
                                 "name": file_path.name,
                                 "size_mb": round(file_size / (1024**2), 2),
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         total_size_freed += file_size
                         self._emit_log(
                             "INFO",
                             f"Removed test file: {file_path.name} ({file_size/(1024**2):.1f}MB)",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 except Exception as e:
                     cleanup_results["files_failed"].append(
                         {"name": file_path.name, "error": str(e)}
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     self._emit_log(
                         "WARN",
-                        f"Failed to remove {
+                        f"Failed to remove {"
                             file_path.name}: {
-                                str(e)}",
-                    )
+                                str(e)}","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             cleanup_results["total_space_freed_mb"] = round(
                 total_size_freed / (1024**2), 2
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             cleanup_results["directories_checked"] = [str(self.outputs_dir)]
 
             # Verify cleanup
@@ -1324,20 +1559,26 @@ class SystemSmokeTestAgent:
                     False,
                     f"Cleanup partially failed: {files_removed_count} removed, {files_failed_count} failed",
                     json.dumps(cleanup_results, indent=2),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             elif files_removed_count > 0:
                 return (
                     True,
-                    f"Cleanup successful: {files_removed_count} test files removed ({
-                        cleanup_results['total_space_freed_mb']}MB freed)",
+                    f"Cleanup successful: {files_removed_count} test files removed ({"
+                        cleanup_results['total_space_freed_mb']}MB freed)","
                     json.dumps(cleanup_results, indent=2),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             else:
                 return (
                     True,
                     "No test artifacts found to clean up",
                     json.dumps(cleanup_results, indent=2),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             return False, "Cleanup test failed", str(e)
@@ -1365,9 +1606,11 @@ class SystemSmokeTestAgent:
             "total_duration_ms": total_duration,
             "success_rate": (
                 (passed_tests / total_tests * 100) if total_tests > 0 else 0
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "details": summary_message,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.is_running = False
 
@@ -1379,9 +1622,12 @@ class SystemSmokeTestAgent:
                     "success": success,
                     "summary": self.current_session.summary,
                     "session": asdict(self.current_session),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 namespace="/smoke - test",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     def _emit_log(self, level: str, message: str):
         """Emit a log message via WebSocket."""
@@ -1392,9 +1638,12 @@ class SystemSmokeTestAgent:
                     "level": level,
                     "message": message,
                     "timestamp": datetime.now().isoformat(),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 namespace="/smoke - test",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     def _emit_progress(self, current_step: str, message: str):
         """Emit a progress update via WebSocket."""
@@ -1408,9 +1657,12 @@ class SystemSmokeTestAgent:
                     "current_step": current_step,
                     "message": message,
                     "timestamp": datetime.now().isoformat(),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 namespace="/smoke - test",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     def get_session_status(self) -> Optional[Dict[str, Any]]:
         """Get the current session status."""
@@ -1428,8 +1680,10 @@ class SystemSmokeTestAgent:
                     "error": "Smoke test is already running",
                     "test_id": (
                         self.current_session.test_id if self.current_session else None
-                    ),
-                }
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
 
             test_id = self.start_smoke_test("dashboard")
 
@@ -1453,7 +1707,8 @@ class SystemSmokeTestAgent:
                 "message": "Smoke test started successfully",
                 "test_id": test_id,
                 "test_type": test_type,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -1470,8 +1725,10 @@ class SystemSmokeTestAgent:
                 "success": success,
                 "message": (
                     "Smoke test stopped" if success else "Failed to stop smoke test"
-                ),
-            }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -1486,7 +1743,8 @@ class SystemSmokeTestAgent:
                 "is_running": self.is_running,
                 "session": session_status,
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {
@@ -1494,4 +1752,5 @@ class SystemSmokeTestAgent:
                 "error": str(e),
                 "is_running": False,
                 "session": None,
-            }
+# BRACKET_SURGEON: disabled
+#             }

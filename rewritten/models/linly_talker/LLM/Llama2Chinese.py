@@ -11,13 +11,13 @@ class Llama2Chinese:
 
 
     def __init__(self, model_path, mode="offline"):
-        """
+        """"""
         初始化LLM模板
 
         Args:
             model_name_or_path (str): 模型名称或路径
             mode (str, optional): 模式，'offline'表示离线模式，'api'表示使用API模式。默认为'offline'。
-        """
+        """"""
         self.mode = mode
         self.load_in_8bit = True
         self.prefix_prompt = """请用少于25个字回答以下问题 """
@@ -27,7 +27,7 @@ class Llama2Chinese:
 
 
     def init_model(self, model_path):
-        """
+        """"""
         初始化语言模型
 
         Args:
@@ -36,7 +36,7 @@ class Llama2Chinese:
         Returns:
             model: 加载的语言模型
             tokenizer: 加载的tokenizer
-        """
+        """"""
         tokenizer = LlamaTokenizer.from_pretrained(model_path)
 
         base_model = LlamaForCausalLM.from_pretrained(
@@ -45,7 +45,9 @@ class Llama2Chinese:
                 torch_dtype = torch.float16,
                 low_cpu_mem_usage = True,
                 device_map="cuda:0",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         model_vocab_size = base_model.get_input_embeddings().weight.size(0)
         tokenzier_vocab_size = len(tokenizer)
         print(f"Vocab of the base model: {model_vocab_size}")
@@ -61,8 +63,9 @@ class Llama2Chinese:
         self,
             prompt,
             system_prompt="Below is an instruction that describes a task. Write a response that appropriately completes the request.",
-            ):
-        """
+# BRACKET_SURGEON: disabled
+#             ):
+        """"""
         生成对话响应
 
         Args:
@@ -71,7 +74,7 @@ class Llama2Chinese:
 
         Returns:
             str: 对话响应
-        """
+        """"""
         device = torch.device(0)
         # TODO: 模型预测
         # 这一块需要尤其注意，这里的模板是借鉴了HuggingFace上的一些推理模板，需要根据自己的模型进行调整
@@ -93,26 +96,34 @@ class Llama2Chinese:
                         num_beams = 1,
                         repetition_penalty = 1.1,
                         max_new_tokens = 512,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 generate_ids = self.model.generate(
                     input_ids = inputs["input_ids"].to(device),
                         attention_mask = inputs["attention_mask"].to(device),
                         eos_token_id = self.tokenizer.eos_token_id,
                         pad_token_id = self.tokenizer.pad_token_id,
                         **generation_config,
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 response = self.tokenizer.batch_decode(
                     generate_ids,
                         skip_special_tokens = True,
                         clean_up_tokenization_spaces = False,
-                        )[0]
-                response = response.split("### Response:")[-1].strip()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )[0]
+                response = response.split("### Response:")[-1].strip()"
 
                 # response,
     self.history = self.model.chat(self.tokenizer,
     prompt,
     history = self.history,
-    system = system_prompt)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     system = system_prompt)
                 return response
             except Exception as e:
                 print(e)
@@ -126,16 +137,20 @@ class Llama2Chinese:
         for interaction in self.history:
             user_prompt, bot_prompt = str(interaction[0]).strip(" "), str(
                 interaction[1]
-            ).strip(" ")
-            system_prompt = f"{system_prompt} ### Instruction:\\n{user_prompt}\\n\\n### Response: {bot_prompt}\\n\\n"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ).strip(" ")
+            system_prompt = f"{system_prompt} ### Instruction:\\n{user_prompt}\\n\\n### Response: {bot_prompt}\\n\\n""
         prompt = (
-            f"{system_prompt} ### Instruction:\\n{message.strip()}\\n\\n### Response: "
-        )
+            f"{system_prompt} ### Instruction:\\n{message.strip()}\\n\\n### Response: ""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         return prompt
 
 
     def predict_api(self, prompt):
-        """
+        """"""
         使用API预测对话响应
 
         Args:
@@ -143,7 +158,7 @@ class Llama2Chinese:
 
         Returns:
             str: 对话响应
-        """
+        """"""
         """暂时不写api版本,与Linly - api相类似,感兴趣可以实现一下"""
         pass
 

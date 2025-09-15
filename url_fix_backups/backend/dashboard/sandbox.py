@@ -12,7 +12,8 @@ from flask import (
     render_template,
     request,
     send_from_directory,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 sandbox_bp = Blueprint("sandbox", __name__, template_folder="templates", static_folder="static")
 
@@ -42,7 +43,8 @@ def ensure_assets_layout():
         "generated",
         "avatars",
         "audio",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
     for sd in subdirs:
         os.makedirs(os.path.join(ASSETS_DIR, sd), exist_ok=True)
 
@@ -56,7 +58,8 @@ def ensure_roadmap_seed():
             ["DEMO_CAPABILITY_REEL"],
             ["TEST_CHANNEL"],
             ["QUICK_START"],
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         with open(ROADMAP_PATH, "w", newline="") as f:
             csv.writer(f).writerows(rows)
 
@@ -81,7 +84,8 @@ def go_capability_reel():
         "avatars": request.args.get("avatars", "Linly - Talker,TalkingHeads"),
         "fresh": request.args.get("fresh", "1"),
         "produce_examples": request.args.get("produce_examples", "1"),
-    }
+# BRACKET_SURGEON: disabled
+#     }
     return redirect(f"/sandbox?{urlencode(q)}", code=302)
 
 
@@ -101,7 +105,8 @@ def sandbox_capability_reel():
             f"{DASH_URL}/api / action / maxout / Run % 20one % 20channel",
             json=payload,
             timeout=300,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         r.raise_for_status()
         data = r.json()
     except Exception as e:
@@ -143,7 +148,8 @@ def sandbox_capability_reel():
         "pdf_url": to_sandbox_url(pick(body, "pdf", "ebook", "artifacts.pdf", "outputs.pdf")),
         "out_dir": to_sandbox_url(pick(body, "out_dir", "artifacts_dir", "outputs.dir")),
         "roadmap_csv": f"/sandbox / assets / incoming/{os.path.basename(ROADMAP_PATH)}",
-    }
+# BRACKET_SURGEON: disabled
+#     }
     return jsonify(resp), 200
 
 

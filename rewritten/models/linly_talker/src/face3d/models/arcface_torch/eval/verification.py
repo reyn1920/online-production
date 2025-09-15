@@ -54,7 +54,8 @@ class LFold:
 
 def calculate_roc(
     thresholds, embeddings1, embeddings2, actual_issame, nrof_folds = 10, pca = 0
-):
+# BRACKET_SURGEON: disabled
+# ):
     assert embeddings1.shape[0] == embeddings2.shape[0]
     assert embeddings1.shape[1] == embeddings2.shape[1]
     nrof_pairs = min(len(actual_issame), embeddings1.shape[0])
@@ -90,15 +91,21 @@ def calculate_roc(
         for threshold_idx, threshold in enumerate(thresholds):
             _, _, acc_train[threshold_idx] = calculate_accuracy(
                 threshold, dist[train_set], actual_issame[train_set]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         best_threshold_index = np.argmax(acc_train)
         for threshold_idx, threshold in enumerate(thresholds):
             tprs[fold_idx, threshold_idx], fprs[fold_idx, threshold_idx], _ = (
                 calculate_accuracy(threshold, dist[test_set], actual_issame[test_set])
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         _, _, accuracy[fold_idx] = calculate_accuracy(
             thresholds[best_threshold_index], dist[test_set], actual_issame[test_set]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     tpr = np.mean(tprs, 0)
     fpr = np.mean(fprs, 0)
@@ -111,7 +118,9 @@ def calculate_accuracy(threshold, dist, actual_issame):
     fp = np.sum(np.logical_and(predict_issame, np.logical_not(actual_issame)))
     tn = np.sum(
         np.logical_and(np.logical_not(predict_issame), np.logical_not(actual_issame))
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     fn = np.sum(np.logical_and(np.logical_not(predict_issame), actual_issame))
 
     tpr = 0 if (tp + fn == 0) else float(tp)/float(tp + fn)
@@ -122,7 +131,8 @@ def calculate_accuracy(threshold, dist, actual_issame):
 
 def calculate_val(
     thresholds, embeddings1, embeddings2, actual_issame, far_target, nrof_folds = 10
-):
+# BRACKET_SURGEON: disabled
+# ):
     assert embeddings1.shape[0] == embeddings2.shape[0]
     assert embeddings1.shape[1] == embeddings2.shape[1]
     nrof_pairs = min(len(actual_issame), embeddings1.shape[0])
@@ -143,7 +153,9 @@ def calculate_val(
         for threshold_idx, threshold in enumerate(thresholds):
             _, far_train[threshold_idx] = calculate_val_far(
                 threshold, dist[train_set], actual_issame[train_set]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         if np.max(far_train) >= far_target:
             f = interpolate.interp1d(far_train, thresholds, kind="slinear")
             threshold = f(far_target)
@@ -152,7 +164,9 @@ def calculate_val(
 
         val[fold_idx], far[fold_idx] = calculate_val_far(
             threshold, dist[test_set], actual_issame[test_set]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
     val_mean = np.mean(val)
     far_mean = np.mean(far)
@@ -185,7 +199,9 @@ def evaluate(embeddings, actual_issame, nrof_folds = 10, pca = 0):
             np.asarray(actual_issame),
             nrof_folds = nrof_folds,
             pca = pca,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     thresholds = np.arange(0, 4, 0.001)
     val, val_std, far = calculate_val(
         thresholds,
@@ -194,7 +210,9 @@ def evaluate(embeddings, actual_issame, nrof_folds = 10, pca = 0):
             np.asarray(actual_issame),
             1e-3,
             nrof_folds = nrof_folds,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     return tpr, fpr, accuracy, val, val_std, far
 
 @torch.no_grad()
@@ -274,7 +292,9 @@ def test(data_set, backbone, batch_size, nfolds = 10):
     print("infer time", time_consumed)
     _, _, accuracy, val, val_std, far = evaluate(
         embeddings, issame_list, nrof_folds = nfolds
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     acc2, std2 = np.mean(accuracy), np.std(accuracy)
     return acc1, std1, acc2, std2, _xnorm, embeddings_list
 
@@ -284,7 +304,8 @@ def dumpR(data_set,
     batch_size,
     name="",
     data_extra = None,
-    label_shape = None):
+# BRACKET_SURGEON: disabled
+#     label_shape = None):
     print("dump verification embedding..")
     data_list = data_set[0]
     issame_list = data_set[1]
@@ -329,9 +350,13 @@ def dumpR(data_set,
 #     parser.add_argument('--data - dir', default='', help='')
 #     parser.add_argument('--model',
 #                         default='../model/softmax,50',
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
 #                         help='path to load model.')
 #     parser.add_argument('--target',
 #                         default='lfw,cfp_ff,cfp_fp,agedb_30',
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
 #                         help='test targets.')
 #     parser.add_argument('--gpu', default = 0, type = int, help='gpu id')
 #     parser.add_argument('--batch - size', default = 32, type = int, help='')
@@ -376,9 +401,15 @@ def dumpR(data_set,
 #         # model.bind(data_shapes=[('data', (args.batch_size,
     3,
     image_size[0],
-    image_size[1]))],
-    label_shapes=[('softmax_label', (args.batch_size,))])
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     image_size[1]))],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     label_shapes=[('softmax_label', (args.batch_size,))])
 #         model.bind(data_shapes=[('data', (args.batch_size, 3, image_size[0],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
 #                                           image_size[1]))])
 #         model.set_params(arg_params, aux_params)
 #         nets.append(model)
@@ -401,12 +432,16 @@ def dumpR(data_set,
 #             results = []
 #             for model in nets:
 #                 acc1, std1, acc2, std2, xnorm, embeddings_list = test(
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
 #                     ver_list[i], model, args.batch_size, args.nfolds)
 #                 print('[%s]XNorm: %f' % (ver_name_list[i], xnorm))
 #                 print('[%s]Accuracy: %1.5f+-%1.5f' % (ver_name_list[i], acc1, std1))
 #                 print('[%s]Accuracy - Flip: %1.5f+-%1.5f' % (ver_name_list[i],
     acc2,
-    std2))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     std2))
 #                 results.append(acc2)
 #             print('Max of [%s] is %1.5f' % (ver_name_list[i], np.max(results)))
 #     elif args.mode == 1:

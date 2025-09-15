@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Web AI Platform Client
 Integrates with web versions of AI platforms using Puppeteer for browser automation
-"""
+""""""
 
 import asyncio
 import json
@@ -55,9 +55,11 @@ class WebAIClient:
                     "send_button": 'button[data - testid="send - button"]',
                     "response": '[data - message - author - role="assistant"] .markdown',
                     "new_chat": 'a[href="/"]',
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "wait_for_response": 3000,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             WebAIPlatform.GEMINI: {
                 "url": "https://gemini.google.com",
                 "selectors": {
@@ -65,9 +67,11 @@ class WebAIClient:
                     "send_button": 'button[aria - label="Send message"]',
                     "response": "[data - response - index] .markdown",
                     "new_chat": 'button[aria - label="New chat"]',
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "wait_for_response": 4000,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             WebAIPlatform.CLAUDE: {
                 "url": "https://claude.ai",
                 "selectors": {
@@ -75,9 +79,11 @@ class WebAIClient:
                     "send_button": 'button[aria - label="Send Message"]',
                     "response": '[data - testid="conversation"] .font - claude - message',
                     "new_chat": 'button[title="Start new conversation"]',
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "wait_for_response": 3500,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             WebAIPlatform.ABACUS: {
                 "url": "https://apps.abacus.ai / chatllm/?appId = 1024a18ebe",
                 "selectors": {
@@ -85,10 +91,13 @@ class WebAIClient:
                     "send_button": "button[type='submit'], .send - button, .submit - btn",
                     "response": ".message - content, .response - text, .assistant - message",
                     "new_chat": ".new - chat - btn, button[aria - label*='New']",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "wait_for_response": 5000,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _load_config(self, config_path: str) -> Dict:
         """Load configuration from file"""
@@ -97,11 +106,13 @@ class WebAIClient:
                 "headless": True,
                 "timeout": 30000,
                 "viewport": {"width": 1280, "height": 720},
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "retry_settings": {"max_retries": 3, "retry_delay": 2},
             "rate_limits": {"requests_per_minute": 10, "concurrent_sessions": 3},
             "logging": {"level": "INFO", "file": "web_ai_client.log"},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if config_path:
             try:
@@ -128,7 +139,8 @@ class WebAIClient:
 
     async def chat_completion(
         self, messages: List[Dict], platform: WebAIPlatform, model: str = None, **kwargs
-    ) -> WebAIResponse:
+# BRACKET_SURGEON: disabled
+#     ) -> WebAIResponse:
         """Send chat completion request to web AI platform"""
         start_time = time.time()
 
@@ -155,7 +167,8 @@ class WebAIClient:
                 response_time=response_time,
                 timestamp=datetime.now(),
                 session_id=session_id,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Chat completion failed: {e}")
@@ -169,7 +182,8 @@ class WebAIClient:
                 model=model or "default",
                 response_time=response_time,
                 timestamp=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _get_session(self, platform: WebAIPlatform) -> str:
         """Get or create browser session for platform"""
@@ -182,7 +196,8 @@ class WebAIClient:
                 "session_id": session_id,
                 "created_at": datetime.now(),
                 "request_count": 0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return self.active_sessions[platform]["session_id"]
 
@@ -240,7 +255,8 @@ class WebAIClient:
             "active_sessions": len(self.active_sessions),
             "supported_platforms": await self.get_available_platforms(),
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def cleanup_sessions(self):
         """Cleanup old or inactive sessions"""

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""
+""""""
 unused_scan.py - Unused Code Detection Script
 Part of the Trae AI Cleanup Framework
 
 This tool scans for unused code, imports, variables, functions, and dependencies
 to help maintain a clean and efficient codebase.
-"""
+""""""
 
 import argparse
 import ast
@@ -27,8 +27,12 @@ logging.basicConfig(
         handlers=[
         logging.FileHandler("tools/cleanup/unused_scan.log"),
             logging.StreamHandler(),
-            ],
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -80,7 +84,8 @@ class PythonAnalyzer(ast.NodeVisitor):
             "line": node.lineno,
                 "node": node,
                 "used": False,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.generic_visit(node)
 
 
@@ -89,7 +94,8 @@ class PythonAnalyzer(ast.NodeVisitor):
             "line": node.lineno,
                 "node": node,
                 "used": False,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.generic_visit(node)
 
 
@@ -98,7 +104,8 @@ class PythonAnalyzer(ast.NodeVisitor):
             "line": node.lineno,
                 "node": node,
                 "used": False,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.generic_visit(node)
 
 
@@ -109,7 +116,8 @@ class PythonAnalyzer(ast.NodeVisitor):
                     "line": node.lineno,
                         "node": node,
                         "used": False,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
         self.generic_visit(node)
 
 
@@ -143,8 +151,12 @@ class PythonAnalyzer(ast.NodeVisitor):
                             confidence = 0.9,
                             safe_to_remove = True,
                             reason="Import not used in file",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Check unused functions
         for func_name, func_info in self.defined_functions.items():
@@ -159,8 +171,12 @@ class PythonAnalyzer(ast.NodeVisitor):
                             confidence = 0.8,
                             safe_to_remove = False,  # Might be called from other files
                         reason="Function not called within file",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Check unused classes
         for class_name, class_info in self.defined_classes.items():
@@ -175,8 +191,12 @@ class PythonAnalyzer(ast.NodeVisitor):
                             confidence = 0.8,
                             safe_to_remove = False,  # Might be used from other files
                         reason="Class not instantiated within file",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Check unused variables
         for var_name, var_info in self.defined_variables.items():
@@ -191,8 +211,12 @@ class PythonAnalyzer(ast.NodeVisitor):
                             confidence = 0.9,
                             safe_to_remove = True,
                             reason="Variable assigned but never used",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return unused_items
 
@@ -228,8 +252,12 @@ class JavaScriptAnalyzer:
                             confidence = 0.9,
                             safe_to_remove = True,
                             reason="Import not used in file",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Find unused variables
         variables = self._find_variables(lines)
@@ -245,8 +273,12 @@ class JavaScriptAnalyzer:
                             confidence = 0.8,
                             safe_to_remove = True,
                             reason="Variable declared but never used",
-                            )
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return unused_items
 
@@ -260,7 +292,9 @@ class JavaScriptAnalyzer:
             r"import\\s+\\*\\s + as\\s+(\\w+)",  # Namespace imports
             r"const\\s+{([^}]+)}\\s*=\\s * require",  # CommonJS named
             r"const\\s+(\\w+)\\s*=\\s * require",  # CommonJS default
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for line_num, line in enumerate(lines, 1):
             for pattern in import_patterns:
@@ -270,7 +304,9 @@ class JavaScriptAnalyzer:
                         match.group(1).split(",")
                         if "{" in pattern
                         else [match.group(1)]
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     for name in names:
                         name = name.strip()
                         if name:
@@ -279,8 +315,11 @@ class JavaScriptAnalyzer:
                                     "name": name,
                                         "line": line_num,
                                         "context": line.strip(),
-                                        }
-                            )
+# BRACKET_SURGEON: disabled
+#                                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
         return imports
 
@@ -292,7 +331,9 @@ class JavaScriptAnalyzer:
             r"(?:let|const|var)\\s+(\\w+)\\s*=",
                 r"function\\s+(\\w+)\\s*\\(",
                 r"const\\s+(\\w+)\\s*=\\s*\\(",  # Arrow functions
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for line_num, line in enumerate(lines, 1):
             for pattern in var_patterns:
@@ -301,7 +342,9 @@ class JavaScriptAnalyzer:
                     name = match.group(1)
                     variables.append(
                         {"name": name, "line": line_num, "context": line.strip()}
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         return variables
 
@@ -346,7 +389,7 @@ class DependencyAnalyzer:
             # Get installed packages
             installed_packages = set()
             for line in requirements:
-                if line.strip() and not line.startswith("#"):
+                if line.strip() and not line.startswith("#"):"
                     package = line.split("==")[0].split(">=")[0].split("<=")[0].strip()
                     installed_packages.add(package.lower())
 
@@ -359,7 +402,9 @@ class DependencyAnalyzer:
                     "pip",
                         "setuptools",
                         "wheel",
-                        ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]:
                     unused_items.append(
                         UnusedItem(
                             item_type="dependency",
@@ -370,8 +415,12 @@ class DependencyAnalyzer:
                                 confidence = 0.7,  # Lower confidence for dependencies
                             safe_to_remove = False,  # Might be runtime dependency
                             reason="Package not imported in any Python file",
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             logger.error(f"Error analyzing Python dependencies: {e}")
@@ -411,8 +460,12 @@ class DependencyAnalyzer:
                                 confidence = 0.7,
                                 safe_to_remove = False,
                                 reason="Package not imported in any JS/TS file",
-                                )
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             logger.error(f"Error analyzing npm dependencies: {e}")
@@ -462,7 +515,9 @@ class DependencyAnalyzer:
                 patterns = [
                     r'import.*from\\s+[\\'"]([^/\\'"][^\\'"]*)[\\'"]',
                         r'require\\s*\\(\\s*[\\'"]([^/\\'"][^\\'"]*)[\\'"]\\s*\\)',
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
 
                 for pattern in patterns:
                     matches = re.finditer(pattern, content)
@@ -472,7 +527,9 @@ class DependencyAnalyzer:
                         if package.startswith("@"):
                             package = (
                                 package.split("/")[0] + "/" + package.split("/")[1]
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                         else:
                             package = package.split("/")[0]
                         used_packages.add(package)
@@ -498,7 +555,8 @@ class UnusedCodeScanner:
                 "unused_classes": 0,
                 "unused_dependencies": 0,
                 "safe_to_remove": 0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def scan(self, file_extensions: List[str]) -> None:
@@ -512,7 +570,9 @@ class UnusedCodeScanner:
         # Scan JavaScript/TypeScript files
         js_extensions = [
             ext for ext in file_extensions if ext in ["js", "ts", "jsx", "tsx"]
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
         if js_extensions:
             self._scan_javascript_files(js_extensions)
 
@@ -559,7 +619,9 @@ class UnusedCodeScanner:
 
                     analyzer = JavaScriptAnalyzer(
                         str(js_file.relative_to(self.project_root))
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     unused_items = analyzer.analyze(content)
                     self.unused_items.extend(unused_items)
                     self.stats["files_scanned"] += 1
@@ -641,7 +703,9 @@ class UnusedCodeScanner:
                     report.append(f"Confidence: {item.confidence:.1%}")
                     report.append(
                         f"Safe to remove: {'Yes' if item.safe_to_remove else 'No'}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     report.append(f"Reason: {item.reason}")
                     report.append("")
 
@@ -664,10 +728,14 @@ class UnusedCodeScanner:
                         "confidence": item.confidence,
                         "safe_to_remove": item.safe_to_remove,
                         "reason": item.reason,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for item in self.unused_items
-            ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
+# BRACKET_SURGEON: disabled
+#                 }
         return json.dumps(report_data, indent = 2)
 
 
@@ -689,14 +757,18 @@ class UnusedCodeScanner:
             if dry_run:
                 logger.info(
                     f"[DRY RUN] Would remove {item.item_type} '{item.name}' from {item.file_path}:{item.line_number}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return True
 
             # Implementation would depend on the item type
             # This is a simplified example
             logger.info(
                 f"Removed {item.item_type} '{item.name}' from {item.file_path}:{item.line_number}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return True
 
         except Exception as e:
@@ -711,37 +783,51 @@ def main():
         "--target - dir",
             default=".",
             help="Target directory to scan (default: current directory)",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--extensions",
             default="py,js,ts,jsx,tsx",
             help="File extensions to scan (comma - separated)",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--output - format",
             choices=["text", "json"],
             default="text",
             help="Output format for report",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--output - file", help="Output file for report (default: stdout)"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     parser.add_argument(
         "--remove - safe",
             action="store_true",
             help="Remove items marked as safe to remove",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--dry - run",
             action="store_true",
             help="Show what would be removed without making changes",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     parser.add_argument(
         "--min - confidence",
             type = float,
             default = 0.8,
             help="Minimum confidence threshold (0.0 - 1.0)",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     args = parser.parse_args()
 
@@ -758,7 +844,9 @@ def main():
     # Filter by confidence
     scanner.unused_items = [
         item for item in scanner.unused_items if item.confidence >= args.min_confidence
-    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ]
 
     # Remove safe items if requested
     if args.remove_safe:

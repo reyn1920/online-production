@@ -16,7 +16,9 @@ class PinterestClient:
     def from_env(cls) -> "PinterestClient":
         return cls(
             access_token = os.getenv("PINTEREST_ACCESS_TOKEN"),
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def ready(self) -> bool:
@@ -37,7 +39,8 @@ class PinterestClient:
                 "title": title[:80],
                 "media": media_url,
                 "board": board_id,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def create_board(self, name: str, description: str = "") -> Dict[str, Any]:
@@ -48,7 +51,8 @@ class PinterestClient:
                 "id": "board_stub",
                 "name": name,
                 "description": description,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 
     def insights(self) -> Dict[str, Any]:

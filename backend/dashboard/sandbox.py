@@ -5,6 +5,7 @@ from urllib.parse import urlencode
 
 import requests
 from flask import (
+"""
     Blueprint,
     current_app,
     jsonify,
@@ -12,7 +13,8 @@ from flask import (
     render_template,
     request,
     send_from_directory,
-)
+ )
+"""
 
 sandbox_bp = Blueprint("sandbox", __name__, template_folder="templates", static_folder="static")
 
@@ -42,21 +44,39 @@ def ensure_assets_layout():
         "generated",
         "avatars",
         "audio",
-    ]
+     ]
     for sd in subdirs:
         os.makedirs(os.path.join(ASSETS_DIR, sd), exist_ok=True)
 
 
 def ensure_roadmap_seed():
-    """Seed assets/incoming/channel_roadmaps_10.csv with demo channels if missing/empty"""
+    """
+Seed assets/incoming/channel_roadmaps_10.csv with demo channels if missing/empty
+
+   
+""""""
+
     ensure_assets_layout()
+   
+
+    
+   
+"""
     if not os.path.exists(ROADMAP_PATH) or os.path.getsize(ROADMAP_PATH) == 0:
+   """
+
+    
+   
+
+    ensure_assets_layout()
+   
+""""""
         rows = [
             ["channel"],
             ["DEMO_CAPABILITY_REEL"],
             ["TEST_CHANNEL"],
             ["QUICK_START"],
-        ]
+         ]
         with open(ROADMAP_PATH, "w", newline="") as f:
             csv.writer(f).writerows(rows)
 
@@ -81,7 +101,7 @@ def go_capability_reel():
         "avatars": request.args.get("avatars", "Linly - Talker,TalkingHeads"),
         "fresh": request.args.get("fresh", "1"),
         "produce_examples": request.args.get("produce_examples", "1"),
-    }
+     }
     return redirect(f"/sandbox?{urlencode(q)}", code=302)
 
 
@@ -101,7 +121,7 @@ def sandbox_capability_reel():
             f"{DASH_URL}/api/action/maxout/Run % 20one % 20channel",
             json=payload,
             timeout=300,
-        )
+         )
         r.raise_for_status()
         data = r.json()
     except Exception as e:
@@ -110,10 +130,23 @@ def sandbox_capability_reel():
     body = data.get("result", data)
 
     def pick(d, *paths):
-        """Extract nested values from response data"""
+        """
+Extract nested values from response data
+
+        
+"""
         for p in paths:
+        """
             cur = d
             for k in p.split("."):
+        """
+
+        for p in paths:
+        
+
+       
+""""""
+
                 if isinstance(cur, dict) and k in cur:
                     cur = cur[k]
                 else:
@@ -124,7 +157,9 @@ def sandbox_capability_reel():
         return None
 
     def to_sandbox_url(path):
-        """Convert filesystem paths to sandbox - accessible URLs"""
+        """
+        Convert filesystem paths to sandbox - accessible URLs
+        """
         if not path:
             return None
         path = str(path)
@@ -143,7 +178,7 @@ def sandbox_capability_reel():
         "pdf_url": to_sandbox_url(pick(body, "pdf", "ebook", "artifacts.pdf", "outputs.pdf")),
         "out_dir": to_sandbox_url(pick(body, "out_dir", "artifacts_dir", "outputs.dir")),
         "roadmap_csv": f"/sandbox/assets/incoming/{os.path.basename(ROADMAP_PATH)}",
-    }
+     }
     return jsonify(resp), 200
 
 

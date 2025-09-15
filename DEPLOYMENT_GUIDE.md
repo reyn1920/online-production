@@ -1,58 +1,521 @@
-# AI CEO Automation System - Production Deployment Guide
+# FastAPI Production Deployment Guide
 
-## Table of Contents
+## 🚀 Go-Live Framework for Trae AI Generated Applications
+
+### Table of Contents
 
 1. [Overview](#overview)
-2. [Pre-Deployment Checklist](#pre-deployment-checklist)
-3. [Environment Setup](#environment-setup)
-4. [Security Configuration](#security-configuration)
-5. [Production Installation](#production-installation)
-6. [Monitoring & Logging](#monitoring--logging)
-7. [Performance Optimization](#performance-optimization)
-8. [Backup & Recovery](#backup--recovery)
-9. [Scaling Considerations](#scaling-considerations)
-10. [Troubleshooting](#troubleshooting)
-11. [Maintenance](#maintenance)
+2. [Security Configuration](#security-configuration)
+3. [Environment Separation](#environment-separation)
+4. [CI/CD Pipeline](#cicd-pipeline)
+5. [Secrets Management](#secrets-management)
+6. [Deployment Process](#deployment-process)
+7. [Monitoring & Health Checks](#monitoring--health-checks)
+8. [Incident Response](#incident-response)
+9. [Maintenance](#maintenance)
 
 ## Overview
 
-This guide provides comprehensive instructions for deploying the AI CEO Automation System in production environments. The system is designed for autonomous business operations with high availability, security, and scalability requirements.
+This guide provides a comprehensive framework for transitioning your Trae AI-generated FastAPI application to production following enterprise-grade security and reliability standards. The deployment process is built on three core principles: **Automation**, **Security**, and **Reliability**.
 
-### System Architecture
+### Production Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    AI CEO Master Controller                 │
+│                   Production Environment                    │
 ├─────────────────────────────────────────────────────────────┤
-│  Decision Engine  │  Pipeline  │  Healing  │  Monitoring   │
+│  GitHub Actions  │  Security   │  Quality   │  Deployment  │
+│     CI/CD        │   Scans     │   Gates    │   Pipeline   │
 ├─────────────────────────────────────────────────────────────┤
-│     Marketing     │ Financial  │ Content   │ Monetization  │
-│       Agent       │   Agent    │  Agent    │    Agent      │
+│   FastAPI App   │  Security   │  Rate      │  Monitoring  │
+│   + Middleware  │  Headers    │ Limiting   │  & Logging   │
 ├─────────────────────────────────────────────────────────────┤
-│   API Manager     │  Database  │  Logging  │   Security    │
+│   Netlify CDN   │  SSL/TLS    │  Domain    │   Health     │
+│   + Functions   │   Certs     │  Security  │   Checks     │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-🚀 **Complete guide for deploying your enhanced Trae AI system to production**
+🎯 **Complete framework for deploying your FastAPI application with production-grade security**
 
-This guide provides step-by-step instructions for taking your Trae AI project from development to a live, production-ready environment with enterprise-grade monitoring, web scraping capabilities, and API discovery features.
+This guide covers the transition from Trae AI development to live production deployment with automated CI/CD, comprehensive security, and enterprise monitoring capabilities.
 
-## 📋 Pre-Deployment Checklist
+## 🛡️ Security Configuration
 
-### Infrastructure Requirements
+### Production Security Implementation ✅
 
-- [ ] **Server Specifications**
-  - Minimum: 4 CPU cores, 8GB RAM, 50GB SSD
-  - Recommended: 8 CPU cores, 16GB RAM, 100GB SSD
-  - Network: Stable internet connection (100+ Mbps)
+Your application now includes enterprise-grade security configurations:
 
-- [ ] **Operating System**
-  - Ubuntu 20.04+ LTS (recommended)
-  - CentOS 8+/RHEL 8+
-  - macOS 11+ (development only)
-  - Windows Server 2019+ (limited support)
+#### CORS Protection
+- **Development**: Allows localhost origins for testing
+- **Production**: Strict domain allowlist (no wildcards)
+- **Configuration**: Environment-based origin control
 
-- [ ] **Software Dependencies**
+#### Rate Limiting
+- **Default**: 120 requests per minute per IP
+- **Configurable**: Via `RATE_LIMIT_RPM` environment variable
+- **Protection**: Prevents abuse and DDoS attacks
+
+#### Security Headers
+- **X-Content-Type-Options**: Prevents MIME sniffing
+- **X-Frame-Options**: Prevents clickjacking
+- **X-XSS-Protection**: XSS attack prevention
+- **Strict-Transport-Security**: Forces HTTPS
+- **Content-Security-Policy**: Prevents code injection
+
+#### Request Tracking
+- **Request IDs**: Unique identifier for each request
+- **Processing Time**: Response time monitoring
+- **Logging**: Comprehensive request/response logging
+
+### Security Validation Commands
+
+```bash
+# Scan for hardcoded secrets
+npx gitleaks detect --source . --verbose
+
+# Security audit dependencies
+npm audit --audit-level=moderate
+
+# Validate CORS configuration
+curl -H "Origin: https://malicious-site.com" \
+     -H "Access-Control-Request-Method: POST" \
+     -X OPTIONS https://your-domain.com/health
+```
+  ## 🌍 Environment Separation
+
+### Multi-Stage Architecture
+
+Production deployment requires strict environment separation:
+
+#### Development Environment
+- **Location**: Local Trae AI workspace
+- **Purpose**: Code generation and initial testing
+- **Security**: Relaxed CORS, debug logging enabled
+- **Configuration**: `.env.local` files (git-ignored)
+
+#### Staging Environment
+- **Location**: Netlify deploy previews
+- **Purpose**: Pre-production testing and validation
+- **Security**: Production-like security settings
+- **Configuration**: GitHub secrets with staging prefix
+
+#### Production Environment
+- **Location**: Netlify production deployment
+- **Purpose**: Live application serving end users
+- **Security**: Maximum security, strict CORS, rate limiting
+- **Configuration**: GitHub secrets, Netlify environment variables
+
+### Environment Configuration
+
+```bash
+# Development (.env.local - NOT committed)
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+TRUSTED_HOSTS=localhost
+RATE_LIMIT_RPM=1000
+LOG_LEVEL=debug
+
+# Staging (GitHub Secrets)
+STAGING_ALLOWED_ORIGINS=https://staging-branch--your-site.netlify.app
+STAGING_TRUSTED_HOSTS=staging-branch--your-site.netlify.app
+STAGING_RATE_LIMIT_RPM=300
+
+# Production (GitHub Secrets)
+ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
+TRUSTED_HOSTS=yourdomain.com,www.yourdomain.com
+RATE_LIMIT_RPM=120
+```
+  ## 🔄 CI/CD Pipeline
+
+### GitHub Actions Workflow
+
+The deployment pipeline automates the entire go-live process:
+
+#### Pipeline Stages
+
+1. **Code Quality Gates**
+   - ESLint/Prettier code formatting
+   - TypeScript type checking
+   - Import/export validation
+
+2. **Security Scanning**
+   - Gitleaks secret detection
+   - CodeQL vulnerability analysis
+   - npm audit dependency scanning
+
+3. **Automated Testing**
+   - Unit tests with Jest
+   - Integration tests
+   - End-to-end tests with Playwright
+
+4. **Build & Deploy**
+   - Production build generation
+   - Asset optimization
+   - Netlify deployment
+
+#### Workflow Configuration
+
+```yaml
+# .github/workflows/deploy.yml
+name: Production Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan for secrets
+        uses: gitleaks/gitleaks-action@v2
+      
+  deploy:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: './dist'
+          production-deploy: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+```
+
+## 🔐 Secrets Management
+
+### GitHub Secrets Configuration
+
+Critical secrets must be stored in GitHub repository settings:
+
+#### Required Secrets
+
+```bash
+# Netlify Configuration
+NETLIFY_AUTH_TOKEN=your_netlify_personal_access_token
+NETLIFY_SITE_ID=your_netlify_site_id
+
+# Production Security (CRITICAL - NO WILDCARDS)
+ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
+TRUSTED_HOSTS=yourdomain.com,www.yourdomain.com,*.yourdomain.com
+RATE_LIMIT_RPM=120
+
+# Application Secrets
+JWT_SECRET=your_cryptographically_secure_jwt_secret
+SECRET_KEY=your_application_secret_key
+
+# API Keys (as needed)
+OPENAI_API_KEY=sk-your_openai_api_key
+ANTHROPIC_API_KEY=sk-ant-your_anthropic_key
+
+# Database Configuration (if applicable)
+DATABASE_URL=postgresql://user:pass@host:port/db
+REDIS_URL=redis://user:pass@host:port
+```
+
+#### Security Best Practices
+
+1. **Never commit secrets to repository**
+2. **Use fine-grained Personal Access Tokens**
+3. **Rotate secrets regularly (monthly)**
+4. **Apply principle of least privilege**
+5. **Monitor secret usage and access**
+
+### Netlify Secrets Controller
+
+Netlify provides additional secret protection:
+
+- **Write-only secrets**: Cannot be viewed after creation
+- **Automatic secret scanning**: Prevents accidental exposure
+- **Environment-specific secrets**: Separate staging/production
+
+## 🚀 Deployment Process
+
+### Pre-Deployment Checklist
+
+- [ ] **Domain & SSL**
+  - [ ] Domain purchased and DNS configured
+  - [ ] SSL certificate provisioned (automatic with Netlify)
+  - [ ] Custom domain connected to Netlify site
+
+- [ ] **Security Configuration**
+  - [ ] All secrets stored in GitHub/Netlify (no hardcoded values)
+  - [ ] CORS origins configured for production domain
+  - [ ] Rate limiting configured appropriately
+  - [ ] Security headers validated
+
+- [ ] **CI/CD Pipeline**
+  - [ ] GitHub Actions workflow tested
+  - [ ] Security scans passing
+  - [ ] All tests passing
+  - [ ] Build process successful
+
+### Step-by-Step Deployment
+
+#### 1. Initial Setup
+
+```bash
+# Clone and setup repository
+git clone https://github.com/yourusername/your-repo.git
+cd your-repo
+npm install
+
+# Verify local development
+npm run dev
+```
+
+#### 2. Configure Netlify
+
+1. **Create Netlify Account**: Sign up at [netlify.com](https://netlify.com)
+2. **Generate Access Token**:
+   - Go to User Settings → Applications
+   - Create new Personal Access Token
+   - Copy token for GitHub Secrets
+
+3. **Create New Site**:
+   - Connect to GitHub repository
+   - Configure build settings:
+     - Build command: `npm run build`
+     - Publish directory: `dist`
+   - Note the Site ID
+
+#### 3. Configure GitHub Secrets
+
+In GitHub repository settings → Secrets and variables → Actions:
+
+```bash
+# Add each secret individually
+NETLIFY_AUTH_TOKEN=your_token_here
+NETLIFY_SITE_ID=your_site_id_here
+ALLOWED_ORIGINS=https://yourdomain.com
+# ... (add all required secrets)
+```
+
+#### 4. Deploy to Production
+
+1. **Manual Deployment** (recommended for first deploy):
+   - Go to GitHub Actions tab
+   - Select "Production Deployment" workflow
+   - Click "Run workflow"
+   - Select "production" environment
+   - Monitor deployment progress
+
+2. **Verify Deployment**:
+   ```bash
+   # Test health endpoint
+   curl https://yourdomain.com/health
+   
+   # Verify security headers
+   curl -I https://yourdomain.com/
+   
+   # Test CORS protection
+   curl -H "Origin: https://malicious-site.com" \
+        -X OPTIONS https://yourdomain.com/health
+   ```
+
+## 📊 Monitoring & Health Checks
+
+### Built-in Health Endpoints
+
+- **`/health`**: Basic application health check
+- **`/metrics`**: Prometheus metrics (if enabled)
+- **`/api/system/status`**: Detailed system information
+
+### Key Metrics to Monitor
+
+#### Performance Metrics
+- **Response Time**: P95 latency < 200ms
+- **Throughput**: Requests per second
+- **Error Rate**: < 1% error rate
+- **Availability**: > 99.9% uptime
+
+#### Security Metrics
+- **Rate Limit Violations**: Blocked requests
+- **CORS Violations**: Unauthorized origin attempts
+- **Failed Authentication**: Invalid token attempts
+- **Security Header Compliance**: CSP violations
+
+### Monitoring Setup
+
+```javascript
+// Example monitoring configuration
+const monitoring = {
+  healthCheck: {
+    endpoint: '/health',
+    interval: '30s',
+    timeout: '5s'
+  },
+  alerts: {
+    errorRate: { threshold: '1%', window: '5m' },
+    responseTime: { threshold: '500ms', window: '1m' },
+    availability: { threshold: '99.9%', window: '1h' }
+  }
+};
+```
+
+### Recommended Monitoring Tools
+
+- **Uptime Monitoring**: Pingdom, UptimeRobot
+- **Error Tracking**: Sentry, Rollbar
+- **Performance**: DataDog, New Relic
+- **Security**: Cloudflare Security Analytics
+
+## 🆘 Incident Response
+
+### Emergency Procedures
+
+#### Immediate Response (< 5 minutes)
+
+1. **Assess Impact**:
+   ```bash
+   # Check application status
+   curl https://yourdomain.com/health
+   
+   # Check error rates
+   curl https://yourdomain.com/metrics | grep error
+   ```
+
+2. **Quick Rollback**:
+   ```bash
+   # Revert to previous version
+   git revert HEAD
+   git push origin main
+   # Deployment will auto-trigger
+   ```
+
+#### Security Incident Response
+
+1. **Credential Compromise**:
+   - Immediately rotate affected secrets in GitHub/Netlify
+   - Force redeploy with new credentials
+   - Monitor for unauthorized access
+
+2. **DDoS/Rate Limiting**:
+   - Lower rate limits temporarily
+   - Enable Cloudflare DDoS protection
+   - Monitor attack patterns
+
+### Escalation Contacts
+
+- **Technical Lead**: [Your contact]
+- **Security Team**: [Security contact]
+- **On-Call Engineer**: [Emergency contact]
+
+## 🔧 Maintenance
+
+### Regular Maintenance Schedule
+
+#### Weekly Tasks
+- [ ] Review security logs and alerts
+- [ ] Check for dependency updates
+- [ ] Monitor performance metrics
+- [ ] Verify backup integrity
+
+#### Monthly Tasks
+- [ ] Rotate API keys and secrets
+- [ ] Update dependencies (security patches)
+- [ ] Review access logs
+- [ ] Performance optimization review
+
+#### Quarterly Tasks
+- [ ] Comprehensive security audit
+- [ ] Disaster recovery testing
+- [ ] Performance benchmarking
+- [ ] Documentation updates
+
+### Update Process
+
+1. **Development**: Create feature branch
+2. **Testing**: Open pull request, run CI checks
+3. **Staging**: Deploy to staging environment
+4. **Validation**: Test in staging
+5. **Production**: Merge to main, auto-deploy
+
+### Backup and Recovery
+
+```bash
+# Backup configuration
+git tag -a v1.0.0 -m "Production release v1.0.0"
+git push origin v1.0.0
+
+# Recovery process
+git checkout v1.0.0
+git push origin main --force
+```
+
+---
+
+## ✅ Go-Live Checklist
+
+### Pre-Launch Validation
+
+- [ ] **Security**
+  - [ ] No hardcoded secrets in codebase
+  - [ ] CORS configured for production domains only
+  - [ ] Rate limiting active and tested
+  - [ ] Security headers implemented
+  - [ ] SSL/TLS certificate active
+
+- [ ] **Performance**
+  - [ ] Load testing completed
+  - [ ] Response times < 200ms P95
+  - [ ] Error rate < 1%
+  - [ ] CDN configured and active
+
+- [ ] **Monitoring**
+  - [ ] Health checks configured
+  - [ ] Error tracking active
+  - [ ] Performance monitoring setup
+  - [ ] Alert notifications configured
+
+- [ ] **Operations**
+  - [ ] CI/CD pipeline tested
+  - [ ] Rollback procedure tested
+  - [ ] Incident response plan ready
+  - [ ] Team trained on procedures
+
+### Launch Day
+
+- [ ] **Final Deployment**
+  - [ ] Deploy to production
+  - [ ] Verify all endpoints
+  - [ ] Test critical user flows
+  - [ ] Monitor for 2 hours post-launch
+
+- [ ] **Post-Launch**
+  - [ ] Send launch announcement
+  - [ ] Monitor metrics closely
+  - [ ] Document any issues
+  - [ ] Schedule post-launch review
+
+---
+
+## 🎉 Success Criteria
+
+**Your FastAPI application is production-ready when:**
+
+✅ **Security**: No secrets in code, CORS properly configured, rate limiting active
+✅ **Reliability**: < 1% error rate, > 99.9% uptime, automated rollback capability
+✅ **Performance**: < 200ms response times, optimized for production load
+✅ **Monitoring**: Comprehensive health checks, error tracking, performance metrics
+✅ **Operations**: Automated CI/CD, incident response plan, maintenance schedule
+
+**🚀 Ready for Production Launch!**
+
+---
+
+*This deployment guide follows enterprise-grade security and reliability standards for production FastAPI applications. Always test thoroughly in staging before production deployment.*
   - Python 3.8+ with pip
   - Git 2.20+
   - SQLite 3.31+ or PostgreSQL 12+

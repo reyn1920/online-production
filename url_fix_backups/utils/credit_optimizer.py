@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Credit Optimizer - Intelligent credit usage optimization
 Optimizes API calls to minimize credit consumption while maintaining quality
-"""
+""""""
 
 import asyncio
 import json
@@ -57,7 +57,8 @@ class CreditOptimizer:
                 "speed_weight": 0.3,
                 "pattern_decay_hours": 24,
                 "confidence_threshold": 0.7,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Model cost estimates (credits per 1k tokens)
         self.model_costs = {
@@ -69,7 +70,8 @@ class CreditOptimizer:
                 "gemini - pro": 0.001,
                 "llama - 2 - 70b": 0.0007,
                 "mixtral - 8x7b": 0.0006,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Quality scores (subjective, 0 - 1)
         self.model_quality = {
@@ -81,7 +83,8 @@ class CreditOptimizer:
                 "mixtral - 8x7b": 0.80,
                 "llama - 2 - 70b": 0.78,
                 "claude - 3 - haiku": 0.75,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Speed estimates (requests per minute)
         self.model_speed = {
@@ -93,7 +96,8 @@ class CreditOptimizer:
                 "claude - 3 - sonnet": 30,
                 "gpt - 4": 20,
                 "claude - 3 - opus": 15,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         self.logger.info("Credit optimizer initialized")
 
@@ -120,7 +124,9 @@ class CreditOptimizer:
             (quality * config["quality_weight"])
             + (normalized_speed * config["speed_weight"])
             + ((1 - min(cost, 0.05) / 0.05) * config["cost_weight"])
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return efficiency
 
@@ -131,8 +137,9 @@ class CreditOptimizer:
             task_type: str = "general",
             budget_limit: float = None,
             speed_priority: bool = False,
-            ) -> OptimizationRecommendation:
-        """
+# BRACKET_SURGEON: disabled
+#             ) -> OptimizationRecommendation:
+        """"""
         Get optimized model recommendation
 
         Args:
@@ -143,7 +150,7 @@ class CreditOptimizer:
 
         Returns:
             Optimization recommendation
-        """
+        """"""
         estimated_tokens = self.estimate_token_count(messages)
 
         # Task - specific model preferences
@@ -153,7 +160,8 @@ class CreditOptimizer:
                 "coding": ["gpt - 4", "claude - 3 - sonnet", "gpt - 3.5 - turbo"],
                 "general": ["gpt - 3.5 - turbo", "claude - 3 - sonnet", "gemini - pro"],
                 "fast": ["claude - 3 - haiku", "gpt - 3.5 - turbo", "gemini - pro"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         if speed_priority:
             task_type = "fast"
@@ -186,8 +194,11 @@ class CreditOptimizer:
                         "efficiency": efficiency,
                         "estimated_cost": estimated_cost,
                         "estimated_tokens": estimated_tokens,
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Sort by efficiency score
         model_scores.sort(key = lambda x: x["efficiency"], reverse = True)
@@ -197,7 +208,9 @@ class CreditOptimizer:
             fallback_model = "claude - 3 - haiku"
             estimated_cost = (estimated_tokens / 1000) * self.model_costs[
                 fallback_model
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             return OptimizationRecommendation(
                 recommended_model = fallback_model,
@@ -205,7 +218,9 @@ class CreditOptimizer:
                     confidence_score = 0.3,
                     reasoning="Fallback to most cost - effective model",
                     fallback_options=["gpt - 3.5 - turbo", "gemini - pro"],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         best_model = model_scores[0]
         fallback_options = [score["model"] for score in model_scores[1:3]]
@@ -226,7 +241,9 @@ class CreditOptimizer:
 
         reasoning = (
             "; ".join(reasoning_parts) if reasoning_parts else "General optimization"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return OptimizationRecommendation(
             recommended_model = best_model["model"],
@@ -234,7 +251,9 @@ class CreditOptimizer:
                 confidence_score = confidence,
                 reasoning = reasoning,
                 fallback_options = fallback_options,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     def record_usage(
@@ -244,8 +263,9 @@ class CreditOptimizer:
             success: bool,
             response_time: float,
             quality_score: float = None,
-            ):
-        """
+# BRACKET_SURGEON: disabled
+#             ):
+        """"""
         Record actual usage for pattern learning
 
         Args:
@@ -254,7 +274,7 @@ class CreditOptimizer:
             success: Whether the request was successful
             response_time: Response time in seconds
             quality_score: Optional quality assessment (0 - 1)
-        """
+        """"""
         now = datetime.now()
 
         if model not in self.usage_patterns:
@@ -265,9 +285,11 @@ class CreditOptimizer:
                     success_rate = 1.0 if success else 0.0,
                     avg_response_time = response_time,
                     cost_efficiency = quality_score \
-    or self.model_quality.get(model, 0.5),
+#     or self.model_quality.get(model, 0.5),
                     last_updated = now,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         else:
             # Update existing pattern with exponential moving average
             pattern = self.usage_patterns[model]
@@ -275,26 +297,36 @@ class CreditOptimizer:
 
             pattern.avg_credits_per_request = (
                 alpha * actual_credits + (1 - alpha) * pattern.avg_credits_per_request
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             pattern.success_rate = (
                 alpha * (1.0 if success else 0.0) + (1 - alpha) * pattern.success_rate
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             pattern.avg_response_time = (
                 alpha * response_time + (1 - alpha) * pattern.avg_response_time
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if quality_score:
                 pattern.cost_efficiency = (
                     alpha * quality_score + (1 - alpha) * pattern.cost_efficiency
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             pattern.last_updated = now
 
         self.logger.debug(
             f"Recorded usage for {model}: {actual_credits:.4f} credits, success: {success}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def get_budget_recommendation(
@@ -302,8 +334,9 @@ class CreditOptimizer:
             available_credits: float,
             expected_requests: int,
             task_distribution: Dict[str, float] = None,
-            ) -> Dict:
-        """
+# BRACKET_SURGEON: disabled
+#             ) -> Dict:
+        """"""
         Get budget allocation recommendations
 
         Args:
@@ -313,7 +346,7 @@ class CreditOptimizer:
 
         Returns:
             Budget allocation recommendations
-        """
+        """"""
         if not task_distribution:
             task_distribution = {"general": 1.0}
 
@@ -323,7 +356,9 @@ class CreditOptimizer:
             # Get typical model for this task type
             typical_messages = [
                 {"role": "user", "content": "Sample message for estimation"}
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             recommendation = self.get_model_recommendation(typical_messages, task_type)
             task_costs[task_type] = recommendation.estimated_credits
 
@@ -331,7 +366,9 @@ class CreditOptimizer:
         avg_cost_per_request = sum(
             task_costs[task_type] * proportion
             for task_type, proportion in task_distribution.items()
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         total_estimated_cost = avg_cost_per_request * expected_requests
 
@@ -340,7 +377,8 @@ class CreditOptimizer:
             "estimated_total_cost": total_estimated_cost,
                 "avg_cost_per_request": avg_cost_per_request,
                 "budget_utilization": min(total_estimated_cost / available_credits,
-    1.0),
+# BRACKET_SURGEON: disabled
+#     1.0),
                 "recommended_requests": int(available_credits / avg_cost_per_request),
                 "cost_breakdown": {
                 task_type: {
@@ -350,19 +388,26 @@ class CreditOptimizer:
                         "total_cost": task_costs[task_type]
                     * expected_requests
                     * proportion,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for task_type, proportion in task_distribution.items()
-            },
-                }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Add warnings
         if total_estimated_cost > available_credits:
             recommendations["warning"] = (
                 f"Estimated cost ({total_estimated_cost:.4f}) exceeds available credits ({available_credits:.4f})"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             recommendations["suggested_reduction"] = (
                 total_estimated_cost - available_credits
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return recommendations
 
@@ -373,11 +418,13 @@ class CreditOptimizer:
             "tracked_models": len(self.usage_patterns),
                 "total_requests_tracked": sum(
                 1 for pattern in self.usage_patterns.values()
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
                 "model_performance": {},
                 "cost_insights": {},
                 "recommendations": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Analyze model performance
         for model, pattern in self.usage_patterns.items():
@@ -387,22 +434,29 @@ class CreditOptimizer:
                     "avg_response_time": pattern.avg_response_time,
                     "cost_efficiency": pattern.cost_efficiency,
                     "last_used": pattern.last_updated.isoformat(),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Cost insights
         if self.usage_patterns:
             total_credits = sum(
                 p.avg_credits_per_request for p in self.usage_patterns.values()
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             avg_credits = total_credits / len(self.usage_patterns)
 
             most_efficient = max(
                 self.usage_patterns.items(), key = lambda x: x[1].cost_efficiency
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             least_efficient = min(
                 self.usage_patterns.items(), key = lambda x: x[1].cost_efficiency
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             analytics["cost_insights"] = {
                 "avg_credits_per_request": avg_credits,
@@ -410,7 +464,8 @@ class CreditOptimizer:
                     "least_efficient_model": least_efficient[0],
                     "efficiency_gap": most_efficient[1].cost_efficiency
                 - least_efficient[1].cost_efficiency,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Generate recommendations
         recommendations = []
@@ -420,26 +475,34 @@ class CreditOptimizer:
             if pattern.success_rate < 0.8:
                 recommendations.append(
                     f"Consider avoiding {model} due to low success rate ({pattern.success_rate:.1%})"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             if pattern.cost_efficiency < 0.5:
                 recommendations.append(
                     f"Review usage of {model} - low cost efficiency ({pattern.cost_efficiency:.2f})"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Check for optimization opportunities
         if len(self.usage_patterns) > 1:
             efficiency_scores = [
                 (model, pattern.cost_efficiency)
                 for model, pattern in self.usage_patterns.items()
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             efficiency_scores.sort(key = lambda x: x[1], reverse = True)
 
             if len(efficiency_scores) >= 2:
                 best_model = efficiency_scores[0][0]
                 recommendations.append(
                     f"Consider using {best_model} more frequently for better efficiency"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         analytics["recommendations"] = recommendations
 
@@ -451,21 +514,27 @@ class CreditOptimizer:
         # Clean up old patterns
         cutoff_time = datetime.now() - timedelta(
             hours = self.optimization_config["pattern_decay_hours"]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         expired_models = [
             model
             for model, pattern in self.usage_patterns.items()
             if pattern.last_updated < cutoff_time
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         for model in expired_models:
             del self.usage_patterns[model]
 
         self.logger.info(
-            f"Credit optimizer cleanup completed,
-    removed {len(expired_models)} expired patterns"
-        )
+            f"Credit optimizer cleanup completed,"
+    removed {len(expired_models)} expired patterns""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 # Example usage and testing
 if __name__ == "__main__":
@@ -482,12 +551,17 @@ if __name__ == "__main__":
             {
                 "role": "user",
                     "content": "Write a creative story about a robot learning to paint",
-                    }
-        ]
+# BRACKET_SURGEON: disabled
+#                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         recommendation = optimizer.get_model_recommendation(
             messages, task_type="creative"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(f"\\n📊 Creative Task Recommendation:")
         print(f"   Model: {recommendation.recommended_model}")
         print(f"   Estimated credits: {recommendation.estimated_credits:.4f}")
@@ -498,7 +572,9 @@ if __name__ == "__main__":
         # Test 2: Budget - constrained recommendation
         budget_rec = optimizer.get_model_recommendation(
             messages, task_type="general", budget_limit = 0.005
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(f"\\n💰 Budget - Constrained Recommendation:")
         print(f"   Model: {budget_rec.recommended_model}")
         print(f"   Estimated credits: {budget_rec.estimated_credits:.4f}")
@@ -520,7 +596,9 @@ if __name__ == "__main__":
             available_credits = 1.0,
                 expected_requests = 100,
                 task_distribution={"general": 0.6, "creative": 0.3, "analytical": 0.1},
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         print(f"\\n📈 Budget Analysis:")
         print(f"   Estimated total cost: {budget_analysis['estimated_total_cost']:.4f}")
@@ -538,7 +616,9 @@ if __name__ == "__main__":
         for model, perf in analytics["model_performance"].items():
             print(
                 f"   {model}: {perf['success_rate']:.1%} success, {perf['avg_credits']:.4f} credits"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if analytics["recommendations"]:
             print(f"\\n💡 Recommendations:")

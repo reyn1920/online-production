@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 Autonomous Content Format Evolution Agent
 
 Monitors emerging media trends and automatically adapts content formats
@@ -7,7 +7,7 @@ to stay ahead of platform algorithm changes and audience preferences.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -89,7 +89,8 @@ class ContentFormatEvolutionAgent(BaseAgent):
         self.db_path = config.get("db_path", "right_perspective.db")
         self.ollama_client = OllamaIntegration(
             config.get("ollama_config", {"endpoint": "http://localhost:11434"})
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.content_generator = AutomatedAuthor(config)
 
         # Evolution parameters
@@ -101,7 +102,8 @@ class ContentFormatEvolutionAgent(BaseAgent):
         # Platform monitoring
         self.monitored_platforms = config.get(
             "platforms", ["youtube", "tiktok", "instagram", "twitter", "linkedin"]
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         self.logger = logging.getLogger(__name__)
         self._init_database()
@@ -114,7 +116,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
                 # Format trends table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS format_trends (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             format_type TEXT NOT NULL,
@@ -129,13 +131,15 @@ class ContentFormatEvolutionAgent(BaseAgent):
                             confidence_score REAL,
                             detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             status TEXT DEFAULT 'active'
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Content adaptations table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS content_adaptations (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             original_format TEXT NOT NULL,
@@ -150,13 +154,15 @@ class ContentFormatEvolutionAgent(BaseAgent):
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             implemented_at TIMESTAMP,
                             evaluated_at TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Format performance table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS format_performance (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             format_type TEXT NOT NULL,
@@ -169,13 +175,15 @@ class ContentFormatEvolutionAgent(BaseAgent):
                             production_cost REAL DEFAULT 0,
                             roi REAL DEFAULT 0,
                             recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Evolution experiments table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS evolution_experiments (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             experiment_name TEXT NOT NULL,
@@ -190,20 +198,25 @@ class ContentFormatEvolutionAgent(BaseAgent):
                             status TEXT DEFAULT 'running',
                             started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             completed_at TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Create indexes
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_trends_platform_format ON format_trends(platform, format_type)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_performance_format_platform ON format_performance(format_type, platform)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 cursor.execute(
                     "CREATE INDEX IF NOT EXISTS idx_experiments_status ON evolution_experiments(status)"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
         except Exception as e:
@@ -270,7 +283,8 @@ class ContentFormatEvolutionAgent(BaseAgent):
                         content_adaptations=analysis["content_adaptations"],
                         predicted_lifespan=analysis["predicted_lifespan"],
                         confidence_score=analysis["confidence_score"],
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     trends.append(trend)
 
         except Exception as e:
@@ -323,8 +337,10 @@ class ContentFormatEvolutionAgent(BaseAgent):
                         "regionCode": "US",
                         "maxResults": 50,
                         "key": api_key,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if trending_response.status_code == 200:
                     trending_data = trending_response.json()
@@ -356,14 +372,16 @@ class ContentFormatEvolutionAgent(BaseAgent):
                 headers = {
                     "Authorization": f"Bearer {access_token}",
                     "Content - Type": "application/json",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 # Get trending hashtags and analyze performance
                 trending_response = requests.post(
                     "https://open.tiktokapis.com/v2/research/trending/hashtag/",
                     headers=headers,
                     json={"region_code": "US", "period": 7},
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if trending_response.status_code == 200:
                     trending_data = trending_response.json()
@@ -400,8 +418,10 @@ class ContentFormatEvolutionAgent(BaseAgent):
                         "metric": "reach,impressions,profile_views",
                         "period": "day",
                         "access_token": access_token,
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if insights_response.status_code == 200:
                     insights_data = insights_response.json()
@@ -422,10 +442,11 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
             # Search for trending topics and analyze engagement
             trending_results = twitter.search_tweets(
-                query="#trending OR #viral",
+                query="#trending OR #viral","
                 max_results=100,
                 tweet_fields=["public_metrics", "created_at"],
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return self._analyze_twitter_trends(trending_results)
 
@@ -442,27 +463,32 @@ class ContentFormatEvolutionAgent(BaseAgent):
                 "live_stream_performance": {"growth": 0.4, "engagement": 1.0},
                 "algorithm_updates": ["unknown"],
                 "trending_formats": ["general_content"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "tiktok": {
                 "short_video_performance": {"growth": 0.6, "engagement": 1.2},
                 "live_performance": {"growth": 0.4, "engagement": 1.0},
                 "algorithm_updates": ["unknown"],
                 "trending_formats": ["general_content"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "instagram": {
                 "reels_performance": {"growth": 0.5, "engagement": 1.1},
                 "carousel_performance": {"growth": 0.3, "engagement": 0.9},
                 "stories_performance": {"growth": 0.2, "engagement": 0.7},
                 "algorithm_updates": ["unknown"],
                 "trending_formats": ["general_content"],
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "twitter": {
                 "tweet_performance": {"growth": 0.4, "engagement": 0.9},
                 "thread_performance": {"growth": 0.6, "engagement": 1.2},
                 "algorithm_updates": ["unknown"],
                 "trending_formats": ["general_content"],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         return fallback_data.get(platform, {})
 
@@ -493,21 +519,26 @@ class ContentFormatEvolutionAgent(BaseAgent):
                 "shorts_performance": {
                     "growth": (
                         sum(shorts_metrics) / len(shorts_metrics) if shorts_metrics else 0.5
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "engagement": max(shorts_metrics) if shorts_metrics else 1.0,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "long_form_performance": {
                     "growth": (
                         sum(long_form_metrics) / len(long_form_metrics)
                         if long_form_metrics
                         else 0.3
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                     "engagement": max(long_form_metrics) if long_form_metrics else 0.8,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "live_stream_performance": {"growth": 0.4, "engagement": 1.0},
                 "algorithm_updates": ["trending_analysis"],
                 "trending_formats": self._extract_trending_formats(videos),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"YouTube trend analysis failed: {e}")
             return self._get_fallback_data("youtube")
@@ -527,17 +558,20 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
             avg_performance = (
                 sum(performance_scores) / len(performance_scores) if performance_scores else 0.6
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "short_video_performance": {
                     "growth": avg_performance,
                     "engagement": min(avg_performance * 1.5, 2.0),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "live_performance": {"growth": 0.4, "engagement": 1.0},
                 "algorithm_updates": ["hashtag_trending"],
                 "trending_formats": trending_formats[:5],  # Top 5
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"TikTok trend analysis failed: {e}")
             return self._get_fallback_data("tiktok")
@@ -556,12 +590,14 @@ class ContentFormatEvolutionAgent(BaseAgent):
                 elif data_point.get("name") == "impressions":
                     impression_values.extend(
                         [v.get("value", 0) for v in data_point.get("values", [])]
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             avg_reach = sum(reach_values) / len(reach_values) if reach_values else 1000
             avg_impressions = (
                 sum(impression_values) / len(impression_values) if impression_values else 1500
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             engagement_rate = avg_reach / avg_impressions if avg_impressions > 0 else 0.5
 
@@ -569,18 +605,22 @@ class ContentFormatEvolutionAgent(BaseAgent):
                 "reels_performance": {
                     "growth": min(engagement_rate * 1.2, 1.5),
                     "engagement": min(engagement_rate * 1.8, 2.0),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "carousel_performance": {
                     "growth": min(engagement_rate * 0.8, 1.0),
                     "engagement": min(engagement_rate * 1.2, 1.5),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "stories_performance": {
                     "growth": min(engagement_rate * 0.6, 0.8),
                     "engagement": min(engagement_rate * 1.0, 1.2),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "algorithm_updates": ["insights_analysis"],
                 "trending_formats": ["reels", "carousel", "stories"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Instagram trend analysis failed: {e}")
             return self._get_fallback_data("instagram")
@@ -611,20 +651,24 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
             avg_engagement = (
                 sum(engagement_scores) / len(engagement_scores) if engagement_scores else 0.4
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return {
                 "tweet_performance": {
                     "growth": avg_engagement,
                     "engagement": min(avg_engagement * 1.5, 1.5),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "thread_performance": {
                     "growth": min(avg_engagement * 1.3, 1.2),
                     "engagement": min(avg_engagement * 1.8, 2.0),
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "algorithm_updates": ["trending_analysis"],
                 "trending_formats": list(set(trending_formats))[:3],
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception as e:
             self.logger.error(f"Twitter trend analysis failed: {e}")
             return self._get_fallback_data("twitter")
@@ -673,7 +717,7 @@ class ContentFormatEvolutionAgent(BaseAgent):
                 formats.append("review")
             elif "reaction" in title:
                 formats.append("reaction")
-            elif "shorts" in title or "#shorts" in snippet.get("description", ""):
+            elif "shorts" in title or "#shorts" in snippet.get("description", ""):"
                 formats.append("shorts")
             else:
                 formats.append("general")
@@ -694,17 +738,21 @@ class ContentFormatEvolutionAgent(BaseAgent):
                 "shorts_performance": ContentFormat.SHORT_VIDEO,
                 "long_form_performance": ContentFormat.LONG_VIDEO,
                 "live_stream_performance": ContentFormat.LIVE_STREAM,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "tiktok": {
                 "short_video_performance": ContentFormat.SHORT_VIDEO,
                 "live_performance": ContentFormat.LIVE_STREAM,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "instagram": {
                 "reels_performance": ContentFormat.SHORT_VIDEO,
                 "carousel_performance": ContentFormat.CAROUSEL_POST,
                 "stories_performance": ContentFormat.STORY,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         platform_mapping = format_mapping.get(platform, {})
 
@@ -721,7 +769,8 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     "content_adaptations": self._get_content_adaptations(format_type),
                     "predicted_lifespan": self._predict_trend_lifespan(perf_data),
                     "confidence_score": min(perf_data.get("growth", 0) + 0.2, 1.0),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return analysis
 
@@ -737,7 +786,8 @@ class ContentFormatEvolutionAgent(BaseAgent):
                 "change": update,
                 "impact_score": 0.8,  # High impact assumed for algorithm changes
                 "detected_at": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
             algorithm_signals.append(signal)
 
         return algorithm_signals
@@ -770,7 +820,8 @@ class ContentFormatEvolutionAgent(BaseAgent):
                         content_adaptations=trend_data["adaptations"],
                         predicted_lifespan=trend_data["lifespan"],
                         confidence_score=trend_data["confidence"],
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     cross_trends.append(trend)
 
         except Exception as e:
@@ -803,7 +854,8 @@ class ContentFormatEvolutionAgent(BaseAgent):
             if (
                 trend.format_type == existing_trend.format_type
                 and trend.platform == existing_trend.platform
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 return True
         return False
 
@@ -822,12 +874,14 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     if current_format != trend.format_type:
                         adaptation = self._create_format_adaptation(
                             current_format, trend.format_type, trend
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         if (
                             adaptation
                             and adaptation.expected_performance_lift >= self.adaptation_threshold
-                        ):
+# BRACKET_SURGEON: disabled
+#                         ):
                             adaptations.append(adaptation)
                             self._store_adaptation(adaptation)
 
@@ -843,13 +897,14 @@ class ContentFormatEvolutionAgent(BaseAgent):
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT DISTINCT format_type
                     FROM format_performance
                     WHERE platform = ? AND recorded_at > datetime('now', '-30 days')
-                """,
+                ""","""
                     (platform,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 formats = [ContentFormat(row[0]) for row in cursor.fetchall()]
                 return formats if formats else [ContentFormat.BLOG_POST]  # Default fallback
@@ -877,7 +932,8 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     implementation_difficulty=adaptation_data["difficulty"],
                     resource_requirements=adaptation_data["resources"],
                     expected_performance_lift=adaptation_data["performance_lift"],
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return adaptation
 
@@ -895,7 +951,8 @@ class ContentFormatEvolutionAgent(BaseAgent):
             "failed": 0,
             "experiments_started": 0,
             "details": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for adaptation in adaptations:
             try:
@@ -925,8 +982,10 @@ class ContentFormatEvolutionAgent(BaseAgent):
                         "adaptation": f"{adaptation.original_format.value} -> {adaptation.target_format.value}",
                         "strategy": strategy.value,
                         "success": success,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             except Exception as e:
                 self.logger.error(f"Failed to implement adaptation: {e}")
@@ -936,26 +995,30 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
     def _determine_implementation_strategy(
         self, adaptation: ContentAdaptation
-    ) -> AdaptationStrategy:
+# BRACKET_SURGEON: disabled
+#     ) -> AdaptationStrategy:
         """Determine the best implementation strategy for an adaptation."""
         # High - impact, low - difficulty adaptations get immediate implementation
         if (
             adaptation.expected_performance_lift > 0.8
             and adaptation.implementation_difficulty < 0.3
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return AdaptationStrategy.IMMEDIATE
 
         # Medium - impact adaptations get gradual rollout
         elif (
             adaptation.expected_performance_lift > 0.5
             and adaptation.implementation_difficulty < 0.6
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return AdaptationStrategy.GRADUAL
 
         # Uncertain or high - risk adaptations get experimental treatment
         elif (
             adaptation.expected_performance_lift > 0.3 or adaptation.implementation_difficulty > 0.7
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return AdaptationStrategy.EXPERIMENTAL
 
         # Low - impact adaptations get seasonal timing
@@ -1036,12 +1099,13 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
                 # Get implemented adaptations
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM content_adaptations
                     WHERE status = 'implemented'
                     AND implemented_at > datetime('now', '-30 days')
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 adaptations = [dict(row) for row in cursor.fetchall()]
 
@@ -1052,7 +1116,8 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     "average_performance_lift": 0,
                     "top_performing_adaptations": [],
                     "recommendations": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 performance_lifts = []
 
@@ -1063,13 +1128,14 @@ class ContentFormatEvolutionAgent(BaseAgent):
                     if actual_lift is not None:
                         # Update database with actual performance
                         cursor.execute(
-                            """
+                            """"""
                             UPDATE content_adaptations
                             SET actual_performance_lift = ?, evaluated_at = CURRENT_TIMESTAMP
                             WHERE id = ?
-                        """,
+                        ""","""
                             (actual_lift, adaptation["id"]),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         performance_lifts.append(actual_lift)
 
@@ -1085,18 +1151,22 @@ class ContentFormatEvolutionAgent(BaseAgent):
                                     "adaptation": f"{adaptation['original_format']} -> {adaptation['target_format']}",
                                     "performance_lift": actual_lift,
                                     "expected_lift": adaptation["expected_performance_lift"],
-                                }
-                            )
+# BRACKET_SURGEON: disabled
+#                                 }
+# BRACKET_SURGEON: disabled
+#                             )
 
                 if performance_lifts:
                     evaluation_results["average_performance_lift"] = statistics.mean(
                         performance_lifts
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # Generate recommendations
                 evaluation_results["recommendations"] = self._generate_adaptation_recommendations(
                     adaptations, performance_lifts
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 return evaluation_results
@@ -1107,11 +1177,11 @@ class ContentFormatEvolutionAgent(BaseAgent):
 
     def _generate_cross_platform_analysis_prompt(self, platform: str) -> str:
         """Generate prompt for cross - platform trend analysis."""
-        return f"""
+        return f""""""
 Analyze current content format trends across social media platforms, focusing on {platform}.
 
 Identify emerging content formats that are gaining traction \
-    and provide analysis including:
+#     and provide analysis including:
 1. Format type (short_video,
     long_video,
     carousel_post,
@@ -1121,7 +1191,8 @@ Identify emerging content formats that are gaining traction \
     newsletter,
     interactive,
     story,
-    blog_post)
+# BRACKET_SURGEON: disabled
+#     blog_post)
 2. Trend strength (0.0 - 1.0)
 3. Growth velocity (rate of adoption)
 4. Engagement multiplier vs baseline
@@ -1132,10 +1203,10 @@ Identify emerging content formats that are gaining traction \
 9. Confidence score (0.0 - 1.0)
 
 Focus on formats that show strong cross - platform adoption \
-    and have sustainable growth potential.
+#     and have sustainable growth potential.
 
 Format response as JSON array with these fields.
-"""
+""""""
 
     def _parse_cross_platform_trends(self, ai_response: str) -> List[Dict]:
         """Parse AI response for cross - platform trends."""
@@ -1149,9 +1220,10 @@ Format response as JSON array with these fields.
 
     def _generate_adaptation_prompt(
         self, from_format: ContentFormat, to_format: ContentFormat, trend: FormatTrend
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate prompt for content format adaptation."""
-        return f"""
+        return f""""""
 Create a content adaptation strategy to convert {from_format.value} content to {to_format.value} format for {trend.platform}.
 
 The trend shows:
@@ -1167,7 +1239,7 @@ Provide adaptation strategy including:
 5. Expected performance lift (0.0 - 1.0)
 
 Format as JSON with fields: rules, metrics, difficulty, resources, performance_lift
-"""
+""""""
 
     def _parse_adaptation_response(self, ai_response: str) -> Dict:
         """Parse AI response for adaptation strategy."""
@@ -1185,7 +1257,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             "difficulty": 0.5,
             "resources": ["content_editor", "design_tools"],
             "performance_lift": 0.3,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def _identify_audience_segments(self, platform: str, format_type: ContentFormat) -> List[str]:
         """Identify target audience segments for format on platform using analytics data."""
@@ -1194,7 +1267,7 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     SELECT audience_segments,
     AVG(engagement_multiplier) as avg_engagement
                     FROM format_trends
@@ -1202,9 +1275,10 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                     GROUP BY audience_segments
                     ORDER BY avg_engagement DESC
                     LIMIT 5
-                """,
+                ""","""
                     (platform, format_type.value),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 results = cursor.fetchall()
                 if results:
@@ -1229,10 +1303,12 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                     "visual_content_lovers",
                     "lifestyle_enthusiasts",
                     "brand_followers",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "linkedin": ["professionals", "business_leaders", "industry_experts"],
                 "twitter": ["news_consumers", "opinion_leaders", "real_time_engagers"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return platform_defaults.get(platform.lower(), ["general_audience"])
 
@@ -1250,7 +1326,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "trending_audio_library",
                 "quick_export_functionality",
                 "mobile_optimization",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.LONG_VIDEO: [
                 "professional_video_editing",
                 "multi_camera_support",
@@ -1258,7 +1335,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "chapter_marker_support",
                 "thumbnail_creation_tools",
                 "4k_recording_capability",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.CAROUSEL_POST: [
                 "graphic_design_software",
                 "template_library",
@@ -1266,7 +1344,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "multi_slide_creation",
                 "text_overlay_capability",
                 "export_optimization",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.THREAD: [
                 "content_planning_tools",
                 "scheduling_automation",
@@ -1274,7 +1353,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "hashtag_research_tools",
                 "cross_platform_posting",
                 "analytics_integration",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.LIVE_STREAM: [
                 "streaming_software",
                 "high_speed_internet",
@@ -1282,7 +1362,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "multi_camera_switching",
                 "audience_interaction_tools",
                 "stream_recording",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.PODCAST: [
                 "audio_recording_software",
                 "noise_cancellation",
@@ -1290,7 +1371,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "podcast_hosting_platform",
                 "rss_feed_management",
                 "episode_scheduling",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.NEWSLETTER: [
                 "email_marketing_platform",
                 "template_design_tools",
@@ -1298,7 +1380,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "analytics_tracking",
                 "automation_workflows",
                 "a_b_testing_capability",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.INTERACTIVE: [
                 "poll_creation_tools",
                 "quiz_building_software",
@@ -1306,7 +1389,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "engagement_analytics",
                 "real_time_interaction",
                 "gamification_elements",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.STORY: [
                 "story_editing_tools",
                 "sticker_and_filter_access",
@@ -1314,7 +1398,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "story_analytics",
                 "quick_publishing",
                 "cross_platform_adaptation",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.BLOG_POST: [
                 "content_management_system",
                 "seo_optimization_tools",
@@ -1322,15 +1407,18 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "keyword_research_tools",
                 "readability_analysis",
                 "social_sharing_integration",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add universal requirements
         universal_requirements = [
             "content_calendar_management",
             "performance_analytics",
             "brand_asset_library",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         format_requirements = base_requirements.get(format_type, ["basic_content_tools"])
         return format_requirements + universal_requirements
@@ -1347,7 +1435,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "call_to_action_in_description",
                 "hashtag_optimization",
                 "cross_platform_sizing",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.LONG_VIDEO: [
                 "compelling_thumbnail_design",
                 "detailed_chapter_breakdown",
@@ -1357,7 +1446,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "end_screen_optimization",
                 "seo_optimized_title_and_description",
                 "audience_retention_techniques",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.CAROUSEL_POST: [
                 "visual_storytelling_flow",
                 "swipe_worthy_design_elements",
@@ -1367,7 +1457,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "clear_conclusion_slide",
                 "text_readability_optimization",
                 "mobile_first_design",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.THREAD: [
                 "numbered_tweet_structure",
                 "engaging_hook_tweet",
@@ -1377,7 +1468,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "retweet_worthy_insights",
                 "call_to_action_in_final_tweet",
                 "cross_promotion_opportunities",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.LIVE_STREAM: [
                 "interactive_audience_engagement",
                 "real_time_q_and_a_sessions",
@@ -1387,7 +1479,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "chat_moderation_strategy",
                 "highlight_reel_creation",
                 "community_building_focus",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.PODCAST: [
                 "compelling_episode_titles",
                 "consistent_release_schedule",
@@ -1397,7 +1490,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "cross_platform_promotion",
                 "listener_engagement_techniques",
                 "series_and_season_planning",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.NEWSLETTER: [
                 "subject_line_optimization",
                 "personalized_content_curation",
@@ -1407,7 +1501,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "call_to_action_placement",
                 "social_sharing_integration",
                 "subscriber_retention_strategies",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.INTERACTIVE: [
                 "gamification_elements",
                 "user_generated_content_encouragement",
@@ -1417,7 +1512,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "reward_system_integration",
                 "community_challenge_creation",
                 "data_driven_personalization",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.STORY: [
                 "ephemeral_content_urgency",
                 "behind_the_scenes_authenticity",
@@ -1427,7 +1523,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "cross_story_narrative",
                 "user_generated_content_resharing",
                 "brand_personality_showcase",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             ContentFormat.BLOG_POST: [
                 "seo_keyword_optimization",
                 "scannable_content_structure",
@@ -1437,8 +1534,10 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "social_media_optimization",
                 "email_list_building_integration",
                 "evergreen_content_focus",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         return adaptations_map.get(
             format_type,
@@ -1446,8 +1545,10 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                 "audience_focused_content",
                 "platform_native_approach",
                 "engagement_optimization",
-            ],
-        )
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         )
 
     def _predict_trend_lifespan(self, performance_data: Dict) -> int:
         """Predict how long a trend will last in days."""
@@ -1469,13 +1570,13 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO format_trends (
                         format_type, platform, trend_strength, growth_velocity,
                             engagement_multiplier, audience_segments, technical_requirements,
                             content_adaptations, predicted_lifespan, confidence_score
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         trend.format_type.value,
                         trend.platform,
@@ -1487,8 +1588,10 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                         json.dumps(trend.content_adaptations),
                         trend.predicted_lifespan,
                         trend.confidence_score,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to store trend: {e}")
@@ -1499,12 +1602,12 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO content_adaptations (
                         original_format, target_format, adaptation_rules, success_metrics,
                             implementation_difficulty, resource_requirements, expected_performance_lift
                     ) VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         adaptation.original_format.value,
                         adaptation.target_format.value,
@@ -1513,8 +1616,10 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                         adaptation.implementation_difficulty,
                         json.dumps(adaptation.resource_requirements),
                         adaptation.expected_performance_lift,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to store adaptation: {e}")
@@ -1536,7 +1641,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             sample_content = self.content_generator.generate_content(
                 topic=f"Sample {adaptation.target_format.value} content",
                 content_type=adaptation.target_format.value,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return sample_content is not None
         except Exception as e:
             self.logger.error(f"Sample content generation failed: {e}")
@@ -1548,17 +1654,19 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE content_adaptations
                     SET status = ?, implemented_at = CURRENT_TIMESTAMP
                     WHERE original_format = ? AND target_format = ?
-                """,
+                ""","""
                     (
                         status,
                         adaptation.original_format.value,
                         adaptation.target_format.value,
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
         except Exception as e:
             self.logger.error(f"Failed to update adaptation status: {e}")
@@ -1571,34 +1679,38 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
 
                 # Get performance before and after adaptation
                 cursor.execute(
-                    """
+                    """"""
                     SELECT AVG(roi) as avg_roi
                     FROM format_performance
                     WHERE format_type = ?
                     AND recorded_at BETWEEN datetime(?, '-7 days') AND ?
-                """,
+                ""","""
                     (
                         adaptation["target_format"],
                         adaptation["implemented_at"],
                         adaptation["implemented_at"],
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 after_performance = cursor.fetchone()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT AVG(roi) as avg_roi
                     FROM format_performance
                     WHERE format_type = ?
                     AND recorded_at BETWEEN datetime(?, '-14 days') AND datetime(?, '-7 days')
-                """,
+                ""","""
                     (
                         adaptation["original_format"],
                         adaptation["implemented_at"],
                         adaptation["implemented_at"],
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
 
                 before_performance = cursor.fetchone()
 
@@ -1625,23 +1737,27 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
             elif avg_lift > 0.1:
                 recommendations.append(
                     "Maintain current adaptation pace with selective improvements"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             else:
                 recommendations.append("Review adaptation criteria and implementation quality")
 
         # Add specific recommendations based on successful adaptations
         successful_adaptations = [
             a for a, lift in zip(adaptations, performance_lifts) if lift > 0.15
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         if successful_adaptations:
             top_adaptation = max(
                 successful_adaptations,
                 key=lambda x: x.get("actual_performance_lift", 0),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             recommendations.append(
                 f"Prioritize {top_adaptation['original_format']} -> {top_adaptation['target_format']} adaptations"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return recommendations
 
@@ -1654,32 +1770,34 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
 
                 # Get trend summary
                 cursor.execute(
-                    """
+                    """"""
                     SELECT format_type, platform, AVG(trend_strength) as avg_strength,
                         COUNT(*) as trend_count
                     FROM format_trends
                     WHERE detected_at > datetime('now', '-30 days')
                     GROUP BY format_type, platform
                     ORDER BY avg_strength DESC
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 trend_summary = [dict(row) for row in cursor.fetchall()]
 
                 # Get adaptation summary
                 cursor.execute(
-                    """
+                    """"""
                     SELECT status, COUNT(*) as count,
                         AVG(expected_performance_lift) as avg_expected_lift,
                                AVG(actual_performance_lift) as avg_actual_lift
                     FROM content_adaptations
                     GROUP BY status
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 adaptation_summary = {row["status"]: dict(row) for row in cursor.fetchall()}
 
                 # Get top performing formats
                 cursor.execute(
-                    """
+                    """"""
                     SELECT format_type, platform, AVG(roi) as avg_roi,
                         COUNT(*) as content_count
                     FROM format_performance
@@ -1687,8 +1805,9 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                     GROUP BY format_type, platform
                     ORDER BY avg_roi DESC
                     LIMIT 10
-                """
-                )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
                 top_formats = [dict(row) for row in cursor.fetchall()]
 
                 return {
@@ -1697,7 +1816,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                     "adaptation_summary": adaptation_summary,
                     "top_performing_formats": top_formats,
                     "evolution_status": "active",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception as e:
             self.logger.error(f"Failed to generate evolution report: {e}")
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
@@ -1722,14 +1842,17 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
                     "result": {
                         "trends_detected": len(trends),
                         "trends": [t.__dict__ for t in trends],
-                    },
-                }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                 }
             elif task_type == "adapt_content":
                 adaptations = self.adapt_content_formats()
                 return {
                     "success": True,
                     "result": {"adaptations_created": len(adaptations)},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             elif task_type == "get_report":
                 report = self.get_evolution_report()
                 return {"success": True, "result": report}
@@ -1747,7 +1870,8 @@ Format as JSON with fields: rules, metrics, difficulty, resources, performance_l
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrase accuracy - required abstract method implementation"""
         # For now, always return True as basic validation
         return True

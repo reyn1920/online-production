@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
+"""""""""
+API Orchestrator Usage Example
+""""""
+This file demonstrates how to use the APIOrchestrator for intelligent API management
 """
+
+with automatic failover, health monitoring, and request routing.
+
+
+
+""""""
+
 API Orchestrator Usage Example
 
-This file demonstrates how to use the APIOrchestrator for intelligent API management
-with automatic failover, health monitoring, and request routing.
+
+
 """
 
 import asyncio
@@ -21,7 +32,7 @@ class ExampleService:
             db_path=db_path,
             health_check_interval=300,  # 5 minutes
             failover_strategy=FailoverStrategy.PRIORITY_BASED,
-        )
+         )
 
     async def initialize(self):
         """Initialize the service and start health monitoring"""
@@ -40,10 +51,10 @@ class ExampleService:
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 150,
-            },
+             },
             headers={"Content - Type": "application/json"},
             timeout=30,
-        )
+         )
 
         try:
             response = await self.api_orchestrator.make_request(request)
@@ -65,7 +76,7 @@ class ExampleService:
             method="GET",
             params={"q": query, "limit": 10},
             timeout=15,
-        )
+         )
 
         try:
             response = await self.api_orchestrator.make_request(request)
@@ -80,14 +91,32 @@ class ExampleService:
             return {"error": str(e)}
 
     async def get_api_health_status(self) -> Dict[str, Any]:
-        """Get current health status of all APIs"""
-        endpoints = await self.api_orchestrator.get_healthy_endpoints()
+        """
+Get current health status of all APIs
 
+       
+""""""
+
+        endpoints = await self.api_orchestrator.get_healthy_endpoints()
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        endpoints = await self.api_orchestrator.get_healthy_endpoints()
+       
+""""""
         status = {
             "total_endpoints": len(self.api_orchestrator.endpoints),
             "healthy_endpoints": len(endpoints),
             "endpoints_by_service": {},
-        }
+         }
 
         # Group by service type
         for endpoint in self.api_orchestrator.endpoints.values():
@@ -97,7 +126,7 @@ class ExampleService:
                     "total": 0,
                     "healthy": 0,
                     "endpoints": [],
-                }
+                 }
 
             status["endpoints_by_service"][service]["total"] += 1
 
@@ -110,8 +139,8 @@ class ExampleService:
                     "url": endpoint.base_url,
                     "status": endpoint.status.value,
                     "priority": endpoint.failover_priority,
-                }
-            )
+                 }
+             )
 
         return status
 
@@ -140,7 +169,7 @@ async def main():
         print("\\n🤖 Making LLM Request:")
         llm_response = await service.make_llm_request(
             "Explain the benefits of API failover in one sentence."
-        )
+         )
         print(f"Response: {llm_response}")
 
         # Example 3: Make search request with failover

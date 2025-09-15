@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 Comprehensive System Health Check
 Verifies all components are working correctly
-"""
+""""""
 
 import json
 import os
@@ -60,7 +60,8 @@ def check_backend_services():
         print("🔧 Checking backend services...")
         print(
             f"   Avatar engines available: {len(engine_manager.engines) if hasattr(engine_manager, 'engines') else 0}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         print("✅ Backend services are accessible")
         return True
 
@@ -75,7 +76,8 @@ def check_file_structure():
         "models/linly_talker/demo_app.py",
         "services/avatar_generation_service.py",
         "backend/services/avatar_engines.py",
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     print("📁 Checking file structure...")
     all_good = True
@@ -103,7 +105,8 @@ def main():
         ("Web Interface", check_web_interface),
         ("Avatar Generation", check_avatar_generation),
         ("Backend Services", check_backend_services),
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     results = []
 

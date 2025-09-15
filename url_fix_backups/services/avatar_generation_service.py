@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Avatar Generation Service
 Provides comprehensive avatar generation capabilities using web AI platforms
-"""
+""""""
 
 import asyncio
 import json
@@ -109,7 +109,8 @@ class AvatarGenerationService:
             "quality_usage": {},
             "average_generation_time": 0.0,
             "service_start_time": datetime.now(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Quality modifiers for different quality levels
         self.quality_modifiers = {
@@ -120,7 +121,8 @@ class AvatarGenerationService:
                 "detailed",
                 "professional",
                 "sharp focus",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             AvatarQuality.PREMIUM: [
                 "ultra high quality",
                 "8k resolution",
@@ -130,8 +132,10 @@ class AvatarGenerationService:
                 "sharp focus",
                 "highly detailed",
                 "photorealistic",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
         # Style - specific modifiers
         self.style_modifiers = {
@@ -139,7 +143,8 @@ class AvatarGenerationService:
                 "photorealistic",
                 "natural lighting",
                 "human features",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             AvatarStyle.CARTOON: ["cartoon style", "animated", "colorful", "stylized"],
             AvatarStyle.ANIME: ["anime style", "manga", "cel shading", "large eyes"],
             AvatarStyle.ARTISTIC: ["artistic", "painterly", "expressive", "creative"],
@@ -148,36 +153,42 @@ class AvatarGenerationService:
                 "simple",
                 "clean lines",
                 "geometric",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             AvatarStyle.CYBERPUNK: [
                 "cyberpunk",
                 "neon",
                 "futuristic",
                 "tech",
                 "digital",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             AvatarStyle.FANTASY: ["fantasy", "magical", "ethereal", "mystical"],
             AvatarStyle.PROFESSIONAL: [
                 "professional",
                 "business",
                 "formal",
                 "corporate",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             AvatarStyle.CASUAL: ["casual", "relaxed", "friendly", "approachable"],
             AvatarStyle.FUTURISTIC: [
                 "futuristic",
                 "sci - fi",
                 "advanced",
                 "technological",
-            ],
-        }
+# BRACKET_SURGEON: disabled
+#             ],
+# BRACKET_SURGEON: disabled
+#         }
 
     def _setup_logging(self):
         """Setup logging configuration"""
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _load_config(self, config_path: str = None) -> Dict:
         """Load service configuration"""
@@ -189,7 +200,8 @@ class AvatarGenerationService:
             "prompt_optimization_enabled": True,
             "cache_enabled": True,
             "cache_duration_minutes": 60,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         if config_path and os.path.exists(config_path):
             try:
@@ -203,7 +215,7 @@ class AvatarGenerationService:
         return default_config
 
     async def generate_avatar(self, request: AvatarRequest) -> AvatarResult:
-        """
+        """"""
         Generate avatar based on request
 
         Args:
@@ -211,7 +223,7 @@ class AvatarGenerationService:
 
         Returns:
             Avatar generation result
-        """
+        """"""
         start_time = time.time()
         self.stats["total_requests"] += 1
 
@@ -248,7 +260,8 @@ class AvatarGenerationService:
                 request=request,
                 error=str(e),
                 generation_time=time.time() - start_time,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _generate_single_platform_avatar(self, request: AvatarRequest) -> AvatarResult:
         """Generate avatar using single platform"""
@@ -262,13 +275,16 @@ class AvatarGenerationService:
             {
                 "role": "system",
                 "content": "You are an expert at creating detailed prompts for AI image generation. Create optimized prompts that produce high - quality avatar images.",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             {
                 "role": "user",
-                "content": f"Create a detailed prompt for generating an avatar with these specifications: {optimized_prompt}. Make it suitable for AI image generators like DALL - E, Midjourney, \
-    or Stable Diffusion.",
-            },
-        ]
+                "content": f"Create a detailed prompt for generating an avatar with these specifications: {optimized_prompt}. Make it suitable for AI image generators like DALL - E, Midjourney, \"
+#     or Stable Diffusion.",
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Generate using web AI
         response = await self.web_ai_client.chat_completion(messages=messages, platform=platform)
@@ -277,7 +293,8 @@ class AvatarGenerationService:
             # Validate and optimize the generated prompt
             final_prompt = self._validate_and_optimize_prompt(
                 response.content, request.max_prompt_length
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return AvatarResult(
                 success=True,
@@ -287,15 +304,18 @@ class AvatarGenerationService:
                 metadata={
                     "original_response": response.content,
                     "response_time": response.response_time,
-                },
-            )
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             )
         else:
             return AvatarResult(
                 success=False,
                 request=request,
                 error=response.error,
                 platform_used=platform.value,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     async def _generate_multi_platform_avatar(self, request: AvatarRequest) -> AvatarResult:
         """Generate avatar using multiple platforms for comparison"""
@@ -312,7 +332,8 @@ class AvatarGenerationService:
                     platform=platform,
                     custom_modifiers=request.custom_modifiers,
                     max_prompt_length=request.max_prompt_length,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 result = await self._generate_single_platform_avatar(platform_request)
                 results[platform.value] = result
@@ -327,7 +348,8 @@ class AvatarGenerationService:
                     request=platform_request,
                     error=str(e),
                     platform_used=platform.value,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         # Select best result and compile alternatives
         best_result = self._select_best_result(results)
@@ -335,7 +357,8 @@ class AvatarGenerationService:
             result.optimized_prompt
             for result in results.values()
             if result.success and result != best_result
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         if best_result:
             best_result.alternative_prompts = alternative_prompts
@@ -343,14 +366,16 @@ class AvatarGenerationService:
             best_result.metadata["multi_platform_results"] = {
                 platform: {"success": result.success, "error": result.error}
                 for platform, result in results.items()
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         return best_result or AvatarResult(
             success=False,
             request=request,
             error="All platforms failed",
             platforms_compared=list(results.keys()),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def _build_optimized_prompt(self, request: AvatarRequest) -> str:
         """Build optimized prompt from request"""
@@ -423,7 +448,8 @@ class AvatarGenerationService:
         else:
             self.stats["average_generation_time"] = (
                 current_avg * (successful_count - 1) + generation_time
-            ) / successful_count
+# BRACKET_SURGEON: disabled
+#             ) / successful_count
 
     async def get_service_analytics(self) -> Dict:
         """Get comprehensive service analytics"""
@@ -436,14 +462,16 @@ class AvatarGenerationService:
             "failed_generations": self.stats["failed_generations"],
             "success_rate": (
                 self.stats["successful_generations"] / max(self.stats["total_requests"], 1)
-            )
+# BRACKET_SURGEON: disabled
+#             )
             * 100,
             "average_generation_time": self.stats["average_generation_time"],
             "requests_per_hour": (self.stats["total_requests"] / max(service_uptime / 3600, 1)),
             "style_usage": self.stats["style_usage"],
             "quality_usage": self.stats["quality_usage"],
             "platform_usage": self.stats["platform_usage"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Add platform health status
         platform_health = {}
@@ -484,7 +512,8 @@ async def main():
             description="A friendly software developer with glasses",
             style=AvatarStyle.PROFESSIONAL,
             quality=AvatarQuality.HIGH,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         result = await service.generate_avatar(request)
         print(f"Success: {result.success}")
@@ -500,7 +529,8 @@ async def main():
             style=AvatarStyle.CYBERPUNK,
             quality=AvatarQuality.PREMIUM,
             use_multi_platform=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         multi_result = await service.generate_avatar(multi_request)
         print(f"Success: {multi_result.success}")

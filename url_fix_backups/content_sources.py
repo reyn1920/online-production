@@ -13,65 +13,83 @@ PROVIDERS = {
     "news": [
         Provider(
             "newsapi", "NewsAPI", "https://newsapi.org", "General news aggregation"
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
             Provider(
             "guardian",
                 "The Guardian",
                 "https://open - platform.theguardian.com",
                 "UK news and opinion",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "nytimes",
                 "New York Times",
                 "https://developer.nytimes.com",
                 "US news of record",
-                ),
-            ],
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "ai": [
         Provider(
             "arxiv", "arXiv", "https://arxiv.org", "Academic papers and preprints"
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
             Provider(
             "semanticscholar",
                 "Semantic Scholar",
                 "https://www.semanticscholar.org",
                 "AI research papers",
-                ),
-            ],
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "wellness": [
         Provider(
             "usda",
                 "USDA FoodData",
                 "https://fdc.nal.usda.gov",
                 "Nutritional information",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "edamam",
                 "Edamam",
                 "https://developer.edamam.com",
                 "Recipe and nutrition API",
-                ),
-            ],
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "sports": [
         Provider(
             "balldontlie",
-                "Ball Don't Lie",
+                "Ball Don't Lie",'
                 "https://www.balldontlie.io",
                 "NBA games and stats",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "thesportsdb",
                 "TheSportsDB",
                 "https://www.thesportsdb.com",
                 "Sports data and schedules",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "football_data",
                 "Football - Data.org",
                 "https://www.football - data.org",
                 "Soccer / football data",
-                ),
-            ],
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "finance": [
         Provider("finnhub", "Finnhub", "https://finnhub.io", "Stock market data"),
             Provider(
@@ -79,173 +97,227 @@ PROVIDERS = {
                 "Alpha Vantage",
                 "https://www.alphavantage.co",
                 "Financial data and forex",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "coingecko", "CoinGecko", "https://www.coingecko.com", "Cryptocurrency data"
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
             Provider("coincap", "CoinCap", "https://coincap.io", "Crypto market data"),
-            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "weather": [
         Provider(
             "openmeteo", "Open - Meteo", "https://open - meteo.com", "Weather forecasts"
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
             Provider(
             "meteostat", "Meteostat", "https://meteostat.net", "Historical weather data"
-        ),
+# BRACKET_SURGEON: disabled
+#         ),
             Provider(
             "weather_gov", "Weather.gov", "https://www.weather.gov", "US weather alerts"
-        ),
-            ],
+# BRACKET_SURGEON: disabled
+#         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "geocoding": [
         Provider(
             "openmeteo_geo",
                 "Open - Meteo Geocoding",
                 "https://open - meteo.com",
                 "Location geocoding",
-                )
-    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ],
         "pets": [
         Provider(
             "thedogapi",
                 "TheDogAPI",
                 "https://api.thedogapi.com",
                 "Dog breeds and images",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "thecatapi",
                 "TheCatAPI",
                 "https://api.thecatapi.com",
                 "Cat breeds and images",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "petfinder",
                 "Petfinder",
                 "https://api.petfinder.com",
                 "Pet adoption listings",
-                ),
-            ],
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "pets_affiliates": [
         Provider(
             "chewy",
                 "Chewy",
                 "https://www.chewy.com / affiliates",
                 "Pet supplies affiliate program",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "petco",
                 "Petco",
                 "https://www.petco.com / shop / en / petcostore / content / affiliate - program",
                 "Pet retailer affiliate program",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "petsmart",
                 "PetSmart",
                 "https://www.petsmart.com / help / affiliate - program/",
                 "Pet store affiliate program",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "rover",
                 "Rover",
                 "https://join.rover.com / affiliates/",
                 "Pet sitting / walking affiliate program",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "embark",
                 "Embark Dog DNA",
                 "https://www.embarkvet.com / affiliates/",
                 "Dog DNA testing affiliate program",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "barkbox",
                 "BarkBox",
                 "https://www.barkbox.com / affiliates",
                 "Pet subscription box affiliate program",
-                ),
-            ],
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "pets_birds_data": {
         "members": ["ebird", "zoo_animal_api"],
             "strategy": "priority_round_robin",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         "pets_exotics_info": {
         "members": ["fishwatch", "zoo_animal_api"],
             "strategy": "priority_round_robin",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         "pets_dog_images": {
         "members": ["thedogapi", "dog_ceo"],
             "strategy": "priority_round_robin",
-            },
+# BRACKET_SURGEON: disabled
+#             },
         "pets_birds": [
         Provider(
             "ebird",
                 "eBird (Bird Sightings)",
                 "https://api.ebird.org / v2",
                 "Bird observation and sighting data",
-                )
-    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ],
         "pets_misc": [
         Provider(
             "zoo_animal_api",
                 "Zoo Animal API (Random Animal)",
                 "https://zoo - animal - api.vercel.app",
                 "Random animal facts and information",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "dog_ceo",
                 "Dog CEO (Images / Breeds)",
                 "https://dog.ceo",
                 "Dog breed images and information",
-                ),
-            ],
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "pets_fish": [
         Provider(
             "fishwatch",
                 "NOAA FishWatch (Species Info)",
                 "https://www.fishwatch.gov",
                 "Fish species and sustainability information",
-                )
-    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ],
         "pets_care": [
         Provider(
             "vetster",
                 "Vetster (Tele - vet)",
                 "https://api.vetster.com",
                 "Veterinary telemedicine services",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "pawp",
                 "Pawp (Tele - vet)",
                 "https://api.pawp.com",
                 "Online veterinary consultations",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "airvet",
                 "Airvet (Tele - vet)",
                 "https://api.airvet.com",
                 "Virtual veterinary care platform",
-                ),
-            ],
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "scheduling": [
         Provider(
             "calendly",
                 "Calendly (Scheduling)",
                 "https://api.calendly.com",
                 "Appointment scheduling and calendar management",
-                )
-    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ],
         "gambling": [
         Provider(
             "theoddsapi",
                 "The Odds API",
                 "https://the - odds - api.com",
                 "Sports betting odds",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
             Provider(
             "apisports_odds",
                 "API - Sports",
                 "https://rapidapi.com / api - sports",
                 "Sports odds via RapidAPI",
-                ),
-            ],
+# BRACKET_SURGEON: disabled
+#                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ],
         "birds_exotics_affiliates": {
         "members": [
             {
@@ -254,32 +326,40 @@ PROVIDERS = {
                     "url": "https://www.tractorsupply.com / tsc / cms / affiliate - program",
                     "enabled": False,
                     "status_light": "purple",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "id": "only_natural_pet",
                     "name": "Only Natural Pet",
                     "url": "https://www.onlynaturalpet.com / pages / affiliate - program",
                     "enabled": False,
                     "status_light": "purple",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "id": "zooplus",
                     "name": "Zooplus (EU)",
                     "url": "https://www.zooplus.com / info / about / affiliate",
                     "enabled": False,
                     "status_light": "purple",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "id": "petsuppliesplus",
                     "name": "Pet Supplies Plus",
                     "url": "https://www.petsuppliesplus.com / our - company / affiliate - program",
                     "enabled": False,
                     "status_light": "purple",
-                    },
-                ],
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
             "strategy": "priority_round_robin",
-            },
-}
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+# }
 
 # --- Politics / General news
 @router.get("/news / politics")
@@ -299,14 +379,19 @@ async def politics_news(topic: str = Query("election")):
                         "order - by": "newest",
                         "page - size": 10,
                         "show - fields": "trailText,thumbnail",
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
                 {"title": x["webTitle"], "url": x["webUrl"], "source": "Guardian"}
                 for x in js["response"]["results"]
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         if p.id == "newsapi":
             key = get_secret("NEWSAPI_KEY")
             r = await client.get(
@@ -317,8 +402,11 @@ async def politics_news(topic: str = Query("election")):
                         "sortBy": "publishedAt",
                         "pageSize": 10,
                         "language": "en",
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -326,9 +414,12 @@ async def politics_news(topic: str = Query("election")):
                     "title": a["title"],
                         "url": a["url"],
                         "source": a.get("source", {}).get("name", "NewsAPI"),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for a in js.get("articles", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         if p.id == "gdelt":
             # GDELT query: recent English articles with keyword
             r = await client.get(
@@ -339,20 +430,27 @@ async def politics_news(topic: str = Query("election")):
                         "timespan": "1d",
                         "format": "json",
                         "maxrecords": 50,
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
                 {"title": a["title"], "url": a["url"], "source": "GDELT"}
                 for a in js.get("articles", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         if p.id == "hackernews":
             # HN Search by Algolia (no key)
             r = await client.get(
                 "https://hn.algolia.com / api / v1 / search",
                     params={"query": topic, "tags": "story"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -361,26 +459,35 @@ async def politics_news(topic: str = Query("election")):
                         "url": h["url"]
                     or f"https://news.ycombinator.com / item?id={h['objectID']}",
                         "source": "HN",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for h in js.get("hits", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         if p.id == "gnews":
             key = get_secret("GNEWS_KEY")
             r = await client.get(
                 "https://gnews.io / api / v4 / search",
                     params={"q": topic, "lang": "en", "max": 10, "token": key},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
                 {"title": a["title"], "url": a["url"], "source": "GNews"}
                 for a in js.get("articles", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown news provider")
 
     results = await http_with_fallback(
         "news", do, prefer=["guardian", "newsapi", "gdelt", "gnews", "hackernews"]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return {"topic": topic, "items": results}
 
 # --- Tech news / launches
@@ -395,18 +502,22 @@ async def tech_news(topic: str = Query("gpu")):
             token = get_secret("PRODUCTHUNT_TOKEN")
             # PH v2 GraphQL simple search
             q = {
-                "query": f'query {{ posts(order: RANKING,
+                "query": f'query {{ posts(order: RANKING,'
     first: 10,
-    query: "{topic}") {{ edges {{ node {{ name url tagline }} }} }} }}'
-            }
+    query: "{topic}") {{ edges {{ node {{ name url tagline }} }} }} }}''
+# BRACKET_SURGEON: disabled
+#             }
             r = await client.post(
                 "https://api.producthunt.com / v2 / api / graphql",
                     headers={
                     "Authorization": f"Bearer {token}",
                         "Content - Type": "application / json",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     json = q,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             edges = js.get("data", {}).get("posts", {}).get("edges", [])
@@ -415,15 +526,20 @@ async def tech_news(topic: str = Query("gpu")):
                     "title": e["node"]["name"],
                         "url": e["node"]["url"],
                         "source": "ProductHunt",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for e in edges
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         if p.id == "github":
             r = await client.get(
                 "https://api.github.com / search / repositories",
                     params={"q": topic, "sort": "stars", "order": "desc", "per_page": 10},
                     headers={"Accept": "application / vnd.github + json"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -431,14 +547,19 @@ async def tech_news(topic: str = Query("gpu")):
                     "title": repo["full_name"],
                         "url": repo["html_url"],
                         "source": "GitHub",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for repo in js.get("items", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         if p.id == "hackernews":
             r = await client.get(
                 "https://hn.algolia.com / api / v1 / search",
                     params={"query": topic, "tags": "story"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -447,14 +568,19 @@ async def tech_news(topic: str = Query("gpu")):
                         "url": h["url"]
                     or f"https://news.ycombinator.com / item?id={h['objectID']}",
                         "source": "HN",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for h in js.get("hits", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown tech provider")
 
     results = await http_with_fallback(
         "tech", do, prefer=["producthunt", "github", "hackernews"]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return {"topic": topic, "items": results}
 
 # --- AI papers (arXiv → PapersWithCode)
@@ -469,7 +595,9 @@ async def ai_papers(q: str = Query("large language models")):
             r = await client.get(
                 "https://export.arxiv.org / api / query",
                     params={"search_query": f"all:{q}", "start": 0, "max_results": 10},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             txt = r.text
             # super - light parse (title + link)
@@ -487,14 +615,19 @@ async def ai_papers(q: str = Query("large language models")):
                             "title": t.group(1).strip(),
                                 "url": l.group(1).strip(),
                                 "source": "arXiv",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             return out
         if p.id == "paperswithcode":
             r = await client.get(
                 "https://paperswithcode.com / api / v1 / search/",
                     params={"q": q, "format": "json"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -502,14 +635,19 @@ async def ai_papers(q: str = Query("large language models")):
                     "title": it["paper_title"],
                         "url": it["paper_url"],
                         "source": "PapersWithCode",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for it in js.get("results", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown knowledge provider")
 
     results = await http_with_fallback(
         "knowledge", do, prefer=["arxiv", "paperswithcode", "wikimedia"]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return {"query": q, "items": results}
 
 # --- Wellness: nutrition lookup
@@ -525,7 +663,9 @@ async def wellness_nutrition(food: str = Query("oatmeal")):
             r = await client.get(
                 "https://api.nal.usda.gov / fdc / v1 / foods / search",
                     params={"api_key": key, "query": food, "pageSize": 5},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             out = []
@@ -539,18 +679,25 @@ async def wellness_nutrition(food: str = Query("oatmeal")):
                                 n["value"]
                                 for n in item.get("foodNutrients", [])
                                 if n.get("nutrientName") == "Energy"
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                                 None,
-                                ),
+# BRACKET_SURGEON: disabled
+#                                 ),
                             "source": "USDA",
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             return out
         if p.id == "openfda":
             r = await client.get(
                 "https://api.fda.gov / food / enforcement.json",
                     params={"search": food, "limit": 5},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             # openFDA returns 404 when no results; treat as empty
             if r.status_code == 404:
                 return []
@@ -562,9 +709,12 @@ async def wellness_nutrition(food: str = Query("oatmeal")):
                         "brand": rec.get("product_description"),
                         "calories": None,
                         "source": "openFDA",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for rec in js.get("results", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown wellness provider")
 
     results = await http_with_fallback("wellness", do, prefer=["usda_fdc", "openfda"])
@@ -582,7 +732,9 @@ async def sports_data(sport: str = Query("basketball")):
             r = await client.get(
                 "https://www.balldontlie.io / api / v1 / games",
                     params={"seasons[]": "2023", "per_page": 10},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -590,15 +742,20 @@ async def sports_data(sport: str = Query("basketball")):
                     "title": f"{g['home_team']['full_name']} vs {g['visitor_team']['full_name']}",
                         "score": f"{g['home_team_score']}-{g['visitor_team_score']}",
                         "source": "BallDontLie",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for g in js.get("data", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         if p.id == "thesportsdb":
             key = get_secret("THESPORTSDB_KEY")
             r = await client.get(
                 f"https://www.thesportsdb.com / api / v1 / json/{key}/searchteams.php",
                     params={"t": sport},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -606,15 +763,20 @@ async def sports_data(sport: str = Query("basketball")):
                     "title": t["strTeam"],
                         "league": t.get("strLeague"),
                         "source": "TheSportsDB",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for t in js.get("teams", []) or []
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         if p.id == "football_data":
             key = get_secret("FOOTBALL_DATA_KEY")
             r = await client.get(
                 "https://api.football - data.org / v4 / competitions",
                     headers={"X - Auth - Token": key},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -622,14 +784,19 @@ async def sports_data(sport: str = Query("basketball")):
                     "title": c["name"],
                         "area": c.get("area", {}).get("name"),
                         "source": "Football - Data",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for c in js.get("competitions", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown sports provider")
 
     results = await http_with_fallback(
         "sports", do, prefer=["balldontlie", "thesportsdb", "football_data"]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return {"sport": sport, "items": results}
 
 # --- Finance data
@@ -645,7 +812,9 @@ async def finance_data(symbol: str = Query("AAPL")):
             r = await client.get(
                 "https://www.alphavantage.co / query",
                     params={"function": "GLOBAL_QUOTE", "symbol": symbol, "apikey": key},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             quote = js.get("Global Quote", {})
@@ -656,17 +825,24 @@ async def finance_data(symbol: str = Query("AAPL")):
                             "price": quote.get("05. price"),
                             "change": quote.get("09. change"),
                             "source": "AlphaVantage",
-                            }
-                ]
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
                 if quote
                 else []
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         if p.id == "finnhub":
             key = get_secret("FINNHUB_KEY")
             r = await client.get(
                 "https://finnhub.io / api / v1 / quote",
                     params={"symbol": symbol, "token": key},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -675,8 +851,11 @@ async def finance_data(symbol: str = Query("AAPL")):
                         "price": js.get("c"),
                         "change": js.get("d"),
                         "source": "Finnhub",
-                        }
-            ]
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         if p.id == "coingecko":
             r = await client.get(
                 "https://api.coingecko.com / api / v3 / simple / price",
@@ -684,8 +863,11 @@ async def finance_data(symbol: str = Query("AAPL")):
                     "ids": symbol.lower(),
                         "vs_currencies": "usd",
                         "include_24hr_change": "true",
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             data = js.get(symbol.lower(), {})
@@ -696,11 +878,16 @@ async def finance_data(symbol: str = Query("AAPL")):
                             "price": data.get("usd"),
                             "change": data.get("usd_24h_change"),
                             "source": "CoinGecko",
-                            }
-                ]
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
                 if data
                 else []
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         if p.id == "coincap":
             r = await client.get(f"https://api.coincap.io / v2 / assets/{symbol.lower()}")
             r.raise_for_status()
@@ -713,16 +900,23 @@ async def finance_data(symbol: str = Query("AAPL")):
                             "price": asset.get("priceUsd"),
                             "change": asset.get("changePercent24Hr"),
                             "source": "CoinCap",
-                            }
-                ]
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
                 if asset
                 else []
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         raise RuntimeError("unknown finance provider")
 
     results = await http_with_fallback(
         "finance", do, prefer=["alphavantage", "finnhub", "coingecko", "coincap"]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return {"symbol": symbol, "items": results}
 
 # --- Weather data
@@ -740,8 +934,11 @@ async def weather_data(location: str = Query("New York")):
                     "latitude": "40.7128",
                         "longitude": "-74.0060",
                         "current_weather": "true",
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             current = js.get("current_weather", {})
@@ -751,8 +948,11 @@ async def weather_data(location: str = Query("New York")):
                         "temperature": current.get("temperature"),
                         "windspeed": current.get("windspeed"),
                         "source": "OpenMeteo",
-                        }
-            ]
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         if p.id == "weather_gov":
             r = await client.get("https://api.weather.gov / points / 40.7128,-74.0060")
             r.raise_for_status()
@@ -769,15 +969,20 @@ async def weather_data(location: str = Query("New York")):
                             "forecast": p.get("detailedForecast"),
                             "temperature": p.get("temperature"),
                             "source": "Weather.gov",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                     for p in periods[:3]
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
             return []
         raise RuntimeError("unknown weather provider")
 
     results = await http_with_fallback(
         "weather", do, prefer=["openmeteo", "weather_gov"]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return {"location": location, "items": results}
 
 # --- SPORTS: scores by league / date
@@ -793,7 +998,9 @@ async def sports_scores(league: str = Query("nba"), date: str = Query(None)):
             if date:
                 params["dates[]"] = date
             r = await client.get("https://api.balldontlie.io / v1 / games",
-    params = params)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     params = params)
             r.raise_for_status()
             js = r.json()
             out = []
@@ -807,8 +1014,11 @@ async def sports_scores(league: str = Query("nba"), date: str = Query(None)):
                             "away_score": g["visitor_team_score"],
                             "status": g["status"],
                             "tipoff": g["date"],
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             return out
         if p.id == "thesportsdb":
             key = get_secret("THESPORTSDB_KEY")
@@ -821,7 +1031,9 @@ async def sports_scores(league: str = Query("nba"), date: str = Query(None)):
                 r = await client.get(
                     f"https://www.thesportsdb.com / api / v1 / json/{key}/eventsday.php",
                         params={"d": d, "s": league.upper()},
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 r.raise_for_status()
                 js = r.json()
                 out = []
@@ -835,8 +1047,11 @@ async def sports_scores(league: str = Query("nba"), date: str = Query(None)):
                                 "away_score": e.get("intAwayScore"),
                                 "status": e.get("strStatus"),
                                 "tipoff": e.get("dateEvent"),
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 return out
             raise RuntimeError("league not supported by TheSportsDB handler")
         raise RuntimeError("unknown sports provider")
@@ -846,7 +1061,8 @@ async def sports_scores(league: str = Query("nba"), date: str = Query(None)):
         "league": league,
             "date": date,
             "games": await http_with_fallback("sports", do, prefer = pref),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 # --- SPORTS: soccer standings (EPL / LaLiga / Serie A etc.)
 @router.get("/sports / standings")
@@ -861,7 +1077,9 @@ async def sports_standings(comp: str = Query("PL")):
             r = await client.get(
                 f"https://api.football - data.org / v4 / competitions/{comp}/standings",
                     headers={"X - Auth - Token": key},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             table = []
@@ -875,15 +1093,20 @@ async def sports_standings(comp: str = Query("PL")):
                                     "played": t.get("playedGames"),
                                     "gd": t.get("goalDifference"),
                                     "points": t.get("points"),
-                                    }
-                        )
+# BRACKET_SURGEON: disabled
+#                                     }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             return table
         if p.id == "thesportsdb":
             key = get_secret("THESPORTSDB_KEY")
             # minimal: EPL season table (harder generally via TSDB; demo: last events)
             r = await client.get(
                 f"https://www.thesportsdb.com / api / v1 / json/{key}/latestepl.php"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if r.status_code == 404:
                 return []
             r.raise_for_status()
@@ -894,9 +1117,12 @@ async def sports_standings(comp: str = Query("PL")):
                     "recent_match": f"{m.get('strHomeTeam')} vs {m.get('strAwayTeam')}",
                         "score": m.get("intHomeScore"),
                         "score2": m.get("intAwayScore"),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for m in (js.get("teams") or [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
             return out
         raise RuntimeError("unknown sports provider")
 
@@ -904,8 +1130,10 @@ async def sports_standings(comp: str = Query("PL")):
         "competition": comp,
             "table": await http_with_fallback(
             "sports", do, prefer=["football_data", "thesportsdb"]
-        ),
-            }
+# BRACKET_SURGEON: disabled
+#         ),
+# BRACKET_SURGEON: disabled
+#             }
 
 # --- FINANCE: quotes (stocks + crypto)
 @router.get("/finance / quotes")
@@ -923,7 +1151,9 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                 r = await client.get(
                     "https://finnhub.io / api / v1 / quote",
                         params={"symbol": s, "token": key},
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 if r.status_code == 429:
                     r.raise_for_status()
                 if r.status_code == 200:
@@ -935,8 +1165,11 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                                 "high": q.get("h"),
                                 "low": q.get("l"),
                                 "source": "Finnhub",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             return out
         if p.id == "alphavantage":
             key = get_secret("ALPHAVANTAGE_KEY")
@@ -946,7 +1179,9 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                     "GLOBAL_QUOTE"
                     if "-" not in s and not s.endswith("USD")
                     else "CURRENCY_EXCHANGE_RATE"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 params = {"apikey": key}
                 if func == "GLOBAL_QUOTE":
                     params.update({"function": func, "symbol": s})
@@ -955,16 +1190,23 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                         (s.split("-")[0], s.split("-")[1])
                         if "-" in s
                         else (s.replace("USD", ""), "USD")
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     params.update(
                         {
                             "function": "CURRENCY_EXCHANGE_RATE",
                                 "from_currency": base,
                                 "to_currency": quote,
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 r = await client.get("https://www.alphavantage.co / query",
-    params = params)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     params = params)
                 r.raise_for_status()
                 js = r.json()
                 if func == "GLOBAL_QUOTE":
@@ -978,8 +1220,11 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                         "symbol": s,
                             "price": float(price) if price else None,
                             "source": "AlphaVantage",
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             return out
         if p.id == "coingecko":
             # map crypto symbols to ids: quick fetch by symbol → id
@@ -987,7 +1232,9 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
             for s in syms:
                 r = await client.get(
                     "https://api.coingecko.com / api / v3 / search", params={"query": s}
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if r.status_code == 200:
                     js = r.json()
                     cid = next(
@@ -995,9 +1242,12 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                             c["id"]
                             for c in js.get("coins", [])
                             if c.get("symbol", "").upper() == s.upper()
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             None,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     if cid:
                         ids.append(cid)
             if not ids:
@@ -1005,7 +1255,9 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
             r = await client.get(
                 "https://api.coingecko.com / api / v3 / simple / price",
                     params={"ids": ",".join(ids), "vs_currencies": "usd"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             out = []
@@ -1018,7 +1270,9 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
             for s in syms:
                 r = await client.get(
                     f"https://api.coincap.io / v2 / assets", params={"search": s}
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 r.raise_for_status()
                 js = r.json()
                 if js.get("data"):
@@ -1028,8 +1282,11 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
                             "symbol": a["symbol"],
                                 "price": float(a["priceUsd"]),
                                 "source": "CoinCap",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             return out
         raise RuntimeError("unknown finance provider")
 
@@ -1037,7 +1294,8 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
     return {
         "symbols": syms,
             "quotes": await http_with_fallback("finance", do, prefer = prefer),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 # --- WEATHER: geocode + forecast + US alerts
 @router.get("/weather / forecast")
@@ -1045,7 +1303,8 @@ async def finance_quotes(symbols: str = Query("AAPL,BTC")):
 
 async def weather_forecast(
     city: str = Query(None), lat: float = Query(None), lon: float = Query(None)
-):
+# BRACKET_SURGEON: disabled
+# ):
 
 
     async def do_geo(client, p):
@@ -1053,7 +1312,9 @@ async def weather_forecast(
             r = await client.get(
                 "https://geocoding - api.open - meteo.com / v1 / search",
                     params={"name": city, "count": 1},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             if not js.get("results"):
@@ -1080,14 +1341,19 @@ async def weather_forecast(
                         "daily": "weathercode,temperature_2m_max,temperature_2m_min",
                         "forecast_days": 7,
                         "timezone": "auto",
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             return r.json()
         if p.id == "meteostat":
             r = await client.get(
                 "https://meteostat.net / api / point / daily", params={"lat": lat, "lon": lon}
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if r.status_code == 404:
                 return {}
             r.raise_for_status()
@@ -1096,7 +1362,9 @@ async def weather_forecast(
 
     fc = await http_with_fallback(
         "weather", do_weather, prefer=["openmeteo", "meteostat"]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     # alerts (US only)
     alerts = []
@@ -1107,7 +1375,9 @@ async def weather_forecast(
             r = await client.get(
                 "https://api.weather.gov / alerts / active",
                     params={"point": f"{lat},{lon}"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             if r.status_code in (404, 204):
                 return []
             r.raise_for_status()
@@ -1117,9 +1387,12 @@ async def weather_forecast(
                     "event": f["properties"]["event"],
                         "severity": f["properties"].get("severity"),
                         "headline": f["properties"].get("headline"),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for f in js.get("features", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown alerts provider")
 
     try:
@@ -1137,12 +1410,15 @@ async def odds_lines(
     sport: str = Query("americanfootball_nfl"),
         regions: str = Query("us,us2"),
         markets: str = Query("h2h,spreads,totals"),
-):
+# BRACKET_SURGEON: disabled
+# ):
     if not gambling_enabled():
         raise HTTPException(
             status_code = 403,
                 detail="Gambling features are disabled. Enable with GAMBLING_FEATURES_ENABLED = true.",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 
     async def do(client, p):
@@ -1155,8 +1431,11 @@ async def odds_lines(
                         "regions": regions,
                         "markets": markets,
                         "oddsFormat": "american",
-                        },
-                    )
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             out = []
@@ -1174,30 +1453,42 @@ async def odds_lines(
                                         m["outcomes"]
                                         for m in b.get("markets", [])
                                         if m["key"] == "h2h"
-                                    ),
+# BRACKET_SURGEON: disabled
+#                                     ),
                                         None,
-                                        ),
+# BRACKET_SURGEON: disabled
+#                                         ),
                                     "spreads": next(
                                     (
                                         m["outcomes"]
                                         for m in b.get("markets", [])
                                         if m["key"] == "spreads"
-                                    ),
+# BRACKET_SURGEON: disabled
+#                                     ),
                                         None,
-                                        ),
+# BRACKET_SURGEON: disabled
+#                                         ),
                                     "totals": next(
                                     (
                                         m["outcomes"]
                                         for m in b.get("markets", [])
                                         if m["key"] == "totals"
-                                    ),
+# BRACKET_SURGEON: disabled
+#                                     ),
                                         None,
-                                        ),
-                                    }
+# BRACKET_SURGEON: disabled
+#                                         ),
+# BRACKET_SURGEON: disabled
+#                                     }
                             for b in game.get("bookmakers", [])
-                        ],
-                            }
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             return out
         if p.id == "apisports_odds":
             key = get_secret("RAPIDAPI_KEY")
@@ -1207,9 +1498,11 @@ async def odds_lines(
                     headers={
                     "X - RapidAPI - Key": key,
                         "X - RapidAPI - Host": "api - football - v1.p.rapidapi.com",
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     params={"date": "2024 - 08 - 01"},
-                    )  # adjust as needed
+# BRACKET_SURGEON: disabled
+#                     )  # adjust as needed
             r.raise_for_status()
             js = r.json()
             # normalize minimally
@@ -1226,11 +1519,17 @@ async def odds_lines(
                             {
                                 "book": b.get("name"),
                                     "bets": [bet.get("name") for bet in b.get("bets", [])],
-                                    }
+# BRACKET_SURGEON: disabled
+#                                     }
                             for b in bks
-                        ],
-                            }
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
             return out
         raise RuntimeError("unknown odds provider")
 
@@ -1240,8 +1539,10 @@ async def odds_lines(
             "markets": markets,
             "lines": await http_with_fallback(
             "gambling", do, prefer=["theoddsapi", "apisports_odds"]
-        ),
-            }
+# BRACKET_SURGEON: disabled
+#         ),
+# BRACKET_SURGEON: disabled
+#             }
 
 # --- Gambling odds
 @router.get("/gambling / odds")
@@ -1252,7 +1553,9 @@ async def gambling_odds(sport: str = Query("americanfootball_nfl")):
     if not gambling_enabled():
         raise HTTPException(
             status_code = 403, detail="Gambling features are not enabled on this instance"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     async def do(client: httpx.AsyncClient, p):
@@ -1261,7 +1564,9 @@ async def gambling_odds(sport: str = Query("americanfootball_nfl")):
             r = await client.get(
                 "https://api.the - odds - api.com / v4 / sports / americanfootball_nfl / odds",
                     params={"apiKey": key, "regions": "us", "markets": "h2h"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -1270,9 +1575,12 @@ async def gambling_odds(sport: str = Query("americanfootball_nfl")):
                         "commence_time": g.get("commence_time"),
                         "bookmakers": len(g.get("bookmakers", [])),
                         "source": "TheOddsAPI",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for g in js[:5]
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown gambling provider")
 
     results = await http_with_fallback("gambling", do, prefer=["theoddsapi"])
@@ -1280,7 +1588,8 @@ async def gambling_odds(sport: str = Query("americanfootball_nfl")):
         "sport": sport,
             "items": results,
             "disclaimer": "Gambling odds are for informational purposes only. Please gamble responsibly.",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 # --- Pets endpoints
 @router.get("/pets / dogs / breeds")
@@ -1298,7 +1607,9 @@ async def get_dog_breeds(limit: int = Query(10)):
                 headers["x - api - key"] = key
             r = await client.get(
                 f"https://api.thedogapi.com / v1 / breeds?limit={limit}", headers = headers
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             r.raise_for_status()
             js = r.json()
             return [
@@ -1308,9 +1619,12 @@ async def get_dog_breeds(limit: int = Query(10)):
                         "temperament": breed.get("temperament"),
                         "life_span": breed.get("life_span"),
                         "source": "TheDogAPI",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for breed in js
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown pets provider")
 
     results = await http_with_fallback("pets", do, prefer=["thedogapi"])
@@ -1336,7 +1650,9 @@ async def get_dog_images(breed_id: str = Query(None), limit: int = Query(1)):
                 "https://api.thedogapi.com / v1 / images / search",
                     params = params,
                     headers = headers,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -1346,9 +1662,12 @@ async def get_dog_images(breed_id: str = Query(None), limit: int = Query(1)):
                         "width": img.get("width"),
                         "height": img.get("height"),
                         "source": "TheDogAPI",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for img in js
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown pets provider")
 
     results = await http_with_fallback("pets", do, prefer=["thedogapi"])
@@ -1369,7 +1688,9 @@ async def get_cat_breeds(limit: int = Query(10)):
                 headers["x - api - key"] = key
             r = await client.get(
                 f"https://api.thecatapi.com / v1 / breeds?limit={limit}", headers = headers
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             r.raise_for_status()
             js = r.json()
             return [
@@ -1379,9 +1700,12 @@ async def get_cat_breeds(limit: int = Query(10)):
                         "temperament": breed.get("temperament"),
                         "life_span": breed.get("life_span"),
                         "source": "TheCatAPI",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for breed in js
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown pets provider")
 
     results = await http_with_fallback("pets", do, prefer=["thecatapi"])
@@ -1407,7 +1731,9 @@ async def get_cat_images(breed_id: str = Query(None), limit: int = Query(1)):
                 "https://api.thecatapi.com / v1 / images / search",
                     params = params,
                     headers = headers,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -1417,9 +1743,12 @@ async def get_cat_images(breed_id: str = Query(None), limit: int = Query(1)):
                         "width": img.get("width"),
                         "height": img.get("height"),
                         "source": "TheCatAPI",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for img in js
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown pets provider")
 
     results = await http_with_fallback("pets", do, prefer=["thecatapi"])
@@ -1432,7 +1761,8 @@ async def get_pet_adoptions(
     animal_type: str = Query("dog"),
         location: str = Query("10001"),
         limit: int = Query(20),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get pet adoption listings from Petfinder (requires OAuth)"""
 
 
@@ -1445,7 +1775,9 @@ async def get_pet_adoptions(
             params = {"type": animal_type, "location": location, "limit": limit}
             r = await client.get(
                 "https://api.petfinder.com / v2 / animals", params = params, headers = headers
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             r.raise_for_status()
             js = r.json()
             return [
@@ -1458,9 +1790,12 @@ async def get_pet_adoptions(
                         "gender": animal.get("gender"),
                         "url": animal.get("url"),
                         "source": "Petfinder",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for animal in js.get("animals", [])
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown pets provider")
 
     results = await http_with_fallback("pets", do, prefer=["petfinder"])
@@ -1469,14 +1804,16 @@ async def get_pet_adoptions(
             "location": location,
             "limit": limit,
             "adoptions": results,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 @router.get("/pets / affiliates")
 
 
 async def get_pets_affiliates(
     category: str = Query(None), enabled_only: bool = Query(False)
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get pets affiliate program information"""
     try:
         providers = PROVIDERS["pets_affiliates"]
@@ -1493,7 +1830,8 @@ async def get_pets_affiliates(
                     "supplies": ["chewy", "petco", "petsmart", "barkbox"],
                         "services": ["rover"],
                         "health": ["embark"],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 if provider.id not in provider_categories.get(category, []):
                     continue
 
@@ -1511,8 +1849,10 @@ async def get_pets_affiliates(
                     "supplies"
                     if provider.id in ["chewy", "petco", "petsmart", "barkbox"]
                     else "services" if provider.id == "rover" else "health"
-                ),
-                    }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#                     }
             affiliate_programs.append(program_info)
 
         return {
@@ -1521,14 +1861,16 @@ async def get_pets_affiliates(
                 "count": len(affiliate_programs),
                 "filters": {"category": category, "enabled_only": enabled_only},
                 "categories": ["supplies", "services", "health"],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
     except Exception as e:
         return {
             "status": "error",
                 "message": "Failed to fetch pets affiliate programs",
                 "error": str(e),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 # --- Birds endpoints
 @router.get("/pets / birds / nearby")
@@ -1538,7 +1880,8 @@ async def birds_nearby(
     lat: float = Query(..., ge=-90, le = 90),
         lng: float = Query(..., ge=-180, le = 180),
         radius_km: int = Query(25, ge = 1, le = 50),
-):
+# BRACKET_SURGEON: disabled
+# ):
     # eBird if token present
     token = get_secret("EBIRD_API_TOKEN")
     if token:
@@ -1547,7 +1890,9 @@ async def birds_nearby(
                 "https://api.ebird.org / v2 / data / obs / geo / recent",
                     params={"lat": lat, "lng": lng, "dist": radius_km},
                     headers={"X - eBirdApiToken": token},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             if r.status_code < 400:
                 return {"provider": "ebird", "data": r.json()}
     # Fallback static bird data
@@ -1561,7 +1906,8 @@ async def birds_nearby(
                     "locName": "Central Park, New York",
                     "obsDt": "2024 - 01 - 15 10:30",
                     "howMany": 3,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "speciesCode": "norcrd",
                     "comName": "Northern Cardinal",
@@ -1569,7 +1915,8 @@ async def birds_nearby(
                     "locName": "Bryant Park, New York",
                     "obsDt": "2024 - 01 - 15 09:45",
                     "howMany": 2,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "speciesCode": "blujay",
                     "comName": "Blue Jay",
@@ -1577,9 +1924,13 @@ async def birds_nearby(
                     "locName": "Washington Square Park, New York",
                     "obsDt": "2024 - 01 - 15 11:15",
                     "howMany": 1,
-                    },
-                ],
-            }
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
+# BRACKET_SURGEON: disabled
+#             }
 
 @router.get("/pets / birds / sightings")
 
@@ -1599,7 +1950,9 @@ async def get_bird_sightings(region: str = Query("US"), limit: int = Query(10)):
             r = await client.get(
                 f"https://api.ebird.org / v2 / data / obs/{region}/recent?back = 7&maxResults={limit}",
                     headers = headers,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             r.raise_for_status()
             js = r.json()
             return [
@@ -1610,9 +1963,12 @@ async def get_bird_sightings(region: str = Query("US"), limit: int = Query(10)):
                         "date": obs.get("obsDt"),
                         "count": obs.get("howMany"),
                         "source": "eBird",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                 for obs in js
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
         raise RuntimeError("unknown birds provider")
 
     results = await http_with_fallback("pets_birds", do, prefer=["ebird"])
@@ -1628,48 +1984,55 @@ async def fish_species(limit: int = Query(50, ge = 1, le = 500)):
         {
             "name": "Atlantic Salmon",
                 "scientific": "Salmo salar",
-                "biology": "Atlantic salmon are anadromous fish, meaning they are born in fresh water, migrate to the ocean, \
-    and return to fresh water to reproduce. They can live up to 8 years \
-    and grow to 30 inches long.",
-                "habitat": "North Atlantic Ocean \
-    and rivers that flow into it. Prefer cold, clean water with high oxygen levels.",
-                },
+                "biology": "Atlantic salmon are anadromous fish, meaning they are born in fresh water, migrate to the ocean, \"
+#     and return to fresh water to reproduce. They can live up to 8 years \
+#     and grow to 30 inches long.",
+                "habitat": "North Atlantic Ocean \"
+#     and rivers that flow into it. Prefer cold, clean water with high oxygen levels.",
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "name": "Pacific Cod",
                 "scientific": "Gadus macrocephalus",
-                "biology": "Pacific cod are bottom - dwelling fish that can live up to 18 years. They feed on invertebrates \
-    and smaller fish, \
-    and can grow up to 3 feet in length.",
+                "biology": "Pacific cod are bottom - dwelling fish that can live up to 18 years. They feed on invertebrates \"
+#     and smaller fish, \
+#     and can grow up to 3 feet in length.",
                 "habitat": "North Pacific Ocean, from the Bering Sea to California. Found in depths from 30 to 1,200 feet.",
-                },
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "name": "Yellowfin Tuna",
                 "scientific": "Thunnus albacares",
-                "biology": "Yellowfin tuna are fast - swimming pelagic fish that can reach speeds of 50 mph. They can live up to 7 years \
-    and grow to over 6 feet long.",
-                "habitat": "Tropical \
-    and subtropical waters worldwide. Prefer open ocean environments with temperatures above 15°C.",
-                },
+                "biology": "Yellowfin tuna are fast - swimming pelagic fish that can reach speeds of 50 mph. They can live up to 7 years \"
+#     and grow to over 6 feet long.",
+                "habitat": "Tropical \"
+#     and subtropical waters worldwide. Prefer open ocean environments with temperatures above 15°C.",
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "name": "Red Snapper",
                 "scientific": "Lutjanus campechanus",
-                "biology": "Red snapper are long - lived fish that can live over 50 years. They are opportunistic feeders \
-    and important both commercially \
-    and recreationally.",
-                "habitat": "Gulf of Mexico \
-    and southeastern Atlantic coast. Found near reefs \
-    and rocky bottoms in depths of 30 - 620 feet.",
-                },
+                "biology": "Red snapper are long - lived fish that can live over 50 years. They are opportunistic feeders \"
+#     and important both commercially \
+#     and recreationally.",
+                "habitat": "Gulf of Mexico \"
+#     and southeastern Atlantic coast. Found near reefs \
+#     and rocky bottoms in depths of 30 - 620 feet.",
+# BRACKET_SURGEON: disabled
+#                 },
             {
             "name": "Mahi - Mahi",
                 "scientific": "Coryphaena hippurus",
-                "biology": "Mahi - mahi are fast - growing fish with a lifespan of 4 - 5 years. They are excellent swimmers \
-    and known for their acrobatic abilities when caught.",
-                "habitat": "Warm waters of tropical \
-    and subtropical seas worldwide. Prefer surface waters \
-    and often found near floating debris.",
-                },
-            ]
+                "biology": "Mahi - mahi are fast - growing fish with a lifespan of 4 - 5 years. They are excellent swimmers \"
+#     and known for their acrobatic abilities when caught.",
+                "habitat": "Warm waters of tropical \"
+#     and subtropical seas worldwide. Prefer surface waters \
+#     and often found near floating debris.",
+# BRACKET_SURGEON: disabled
+#                 },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
     # Apply limit to the static data
     limited_data = static_fish_data[: min(limit, len(static_fish_data))]
@@ -1678,7 +2041,8 @@ async def fish_species(limit: int = Query(50, ge = 1, le = 500)):
         "provider": "static_fallback",
             "count": len(limited_data),
             "species": limited_data,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 # --- Random animal facts endpoint
 @router.get("/pets / random")
@@ -1695,7 +2059,9 @@ async def get_random_animal(limit: int = Query(1)):
                 try:
                     r = await client.get(
                         "https://zoo - animal - api.vercel.app / api / animals / rand"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     r.raise_for_status()
                     js = r.json()
                     animals.append(
@@ -1705,8 +2071,11 @@ async def get_random_animal(limit: int = Query(1)):
                                 "habitat": js.get("habitat"),
                                 "diet": js.get("diet"),
                                 "source": "Zoo Animal API",
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                 except Exception:
                     break
             return animals
@@ -1721,13 +2090,17 @@ async def get_random_animal(limit: int = Query(1)):
                 return [
                     {"type": "dog", "image_url": img, "source": "Dog CEO"}
                     for img in images
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
             return []
         raise RuntimeError("unknown random animal provider")
 
     results = await http_with_fallback(
         "pets_misc", do, prefer=["zoo_animal_api", "dog_ceo"]
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     return {"limit": limit, "animals": results}
 
 # --- Veterinary care endpoints
@@ -1746,20 +2119,23 @@ async def get_vet_providers():
                     "url": provider.base_url,
                     "description": provider.description,
                     "type": "telemedicine",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
             care_providers.append(provider_info)
 
         return {
             "status": "success",
                 "providers": care_providers,
                 "count": len(care_providers),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except Exception as e:
         return {
             "status": "error",
                 "message": "Failed to fetch veterinary care providers",
                 "error": str(e),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 # --- Scheduling endpoint
 @router.get("/scheduling / availability")
@@ -1780,21 +2156,26 @@ async def get_scheduling_info():
                     "appointment_booking",
                         "calendar_integration",
                         "automated_reminders",
-                        ],
-                    }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     }
             scheduling_services.append(service_info)
 
         return {
             "status": "success",
                 "services": scheduling_services,
                 "count": len(scheduling_services),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
     except Exception as e:
         return {
             "status": "error",
                 "message": "Failed to fetch scheduling services",
                 "error": str(e),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
 @router.get("/pets / affiliates/{affiliate_id}")
 
@@ -1816,7 +2197,8 @@ async def get_pets_affiliate_details(affiliate_id: str):
                 "status": "error",
                     "message": f"Affiliate program '{affiliate_id}' not found",
                     "available_programs": [p.id for p in providers],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         # Enhanced program details
         program_details = {
@@ -1824,7 +2206,8 @@ async def get_pets_affiliate_details(affiliate_id: str):
                 "name": provider.name,
                 "url": provider.base_url,
                 "description": provider.description,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Add specific program information
         if affiliate_id == "chewy":
@@ -1833,8 +2216,11 @@ async def get_pets_affiliate_details(affiliate_id: str):
                     "network": "Impact / Commission Junction",
                         "commission_varies_by_region": True,
                         "products": ["pet food", "supplies", "medications", "toys"],
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         elif affiliate_id == "barkbox":
             program_details.update(
                 {
@@ -1842,19 +2228,26 @@ async def get_pets_affiliate_details(affiliate_id: str):
                         "BarkBox": "$20 per sign - up",
                             "Super Chewer": "$25 per sign - up",
                             "Other products": "$18 per item",
-                            },
+# BRACKET_SURGEON: disabled
+#                             },
                         "application_review_time": "3 - 5 business days",
                         "contact": "affiliate@barkbox.com",
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         elif affiliate_id == "embark":
             program_details.update(
                 {
                     "commission_rate": "Up to 10% commission",
                         "programs": ["Content & creator", "Shelter / rescue", "Breeder"],
                         "products": ["DNA tests", "health screenings", "supplements"],
-                        }
-            )
+# BRACKET_SURGEON: disabled
+#                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         return {"status": "success", "data": program_details}
 
@@ -1863,4 +2256,5 @@ async def get_pets_affiliate_details(affiliate_id: str):
             "status": "error",
                 "message": f"Failed to fetch details for affiliate program '{affiliate_id}'",
                 "error": str(e),
-                }
+# BRACKET_SURGEON: disabled
+#                 }

@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Simple Startup Runner - Alternative to complex startup_system.py
 Provides basic server startup with monitoring integration
-"""
+""""""
 
 import logging
 import os
@@ -17,7 +17,9 @@ from pathlib import Path
 # Configure logging
 logging.basicConfig(
     level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 logger = logging.getLogger(__name__)
 
 
@@ -85,7 +87,8 @@ class SimpleRunner:
                 "HOST": "0.0.0.0",
                 "PORT": "8000",
                 "SECRET_KEY": "dev - secret - key - change - in - production",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         for key, value in defaults.items():
             if key not in os.environ:
@@ -118,13 +121,18 @@ class SimpleRunner:
                 [
                     sys.executable,
                         "-c",
-                        f"import uvicorn; from main import app; uvicorn.run(app,
+                        f"import uvicorn; from main import app; uvicorn.run(app,"
     host='{host}',
     port={port},
     reload = False,
-    log_level='info')",
-                        ]
-            )
+# BRACKET_SURGEON: disabled
+#     log_level='info')","
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self.processes["main_server"] = server_process
 
@@ -150,7 +158,9 @@ class SimpleRunner:
 
         self.monitoring_thread = threading.Thread(
             target = self._monitor_processes, daemon = True
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.monitoring_thread.start()
         logger.info("✅ Monitoring started")
 
@@ -170,20 +180,26 @@ class SimpleRunner:
                     if process.poll() is not None:
                         logger.error(
                             "❌ Main server process died, attempting restart..."
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                         self.start_main_server()
                     else:
                         # Check if server is responding
                         try:
                             response = requests.get(
                                 "http://localhost:8000 / health", timeout = 5
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             if response.status_code == 200:
                                 logger.debug("✅ Main server health check passed")
                             else:
                                 logger.warning(
                                     f"⚠️ Main server health check failed: {response.status_code}"
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                         except requests.exceptions.RequestException as e:
                             logger.warning(f"⚠️ Main server health check failed: {e}")
 

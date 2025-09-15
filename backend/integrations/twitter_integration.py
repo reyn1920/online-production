@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI Twitter Integration Module
-
+""""""
 Provides secure Twitter API integration with authentication, rate limiting,
 and comprehensive error handling for automated promotion and community engagement.
+"""
+
+TRAE.AI Twitter Integration Module
+
+
+
+""""""
+
 
 Features:
+
+
+
 - OAuth 1.0a authentication with secure credential management
 - Intelligent rate limiting with exponential backoff
 - Tweet posting with media attachments
@@ -14,6 +25,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import base64
@@ -41,11 +53,13 @@ from backend.secret_store import SecretStore
 
 
 class TwitterAPIError(Exception):
-    """Custom exception for Twitter API errors."""
+    """
+Custom exception for Twitter API errors.
+
 
     def __init__(
         self, message: str, status_code: int = None, response_data: dict = None
-    ):
+#     ):
         super().__init__(message)
         self.status_code = status_code
         self.response_data = response_data or {}
@@ -53,15 +67,17 @@ class TwitterAPIError(Exception):
 
 
 class RateLimitError(TwitterAPIError):
-    """Exception raised when rate limits are exceeded."""
-
+    """
+    Exception raised when rate limits are exceeded.
+    """
+    
     def __init__(
         self,
         message: str,
         reset_time: datetime = None,
         limit: int = None,
         remaining: int = None,
-    ):
+#     ):
         super().__init__(message, status_code=429)
         self.reset_time = reset_time
         self.limit = limit
@@ -69,7 +85,9 @@ class RateLimitError(TwitterAPIError):
 
 
 class AuthenticationError(TwitterAPIError):
-    """Exception raised for authentication failures."""
+    
+Exception raised for authentication failures.
+"""
 
     def __init__(self, message: str, credential_type: str = None):
         super().__init__(message, status_code=401)
@@ -96,27 +114,45 @@ class EngagementLevel(Enum):
 
 @dataclass
 class TwitterCredentials:
-    """Container for Twitter API credentials."""
+    """
+Container for Twitter API credentials.
+
 
     api_key: str
     api_secret: str
     access_token: str
+   
+""""""
+
     access_token_secret: str
+   
 
-
+    
+   
+"""
 @dataclass
 class RateLimitInfo:
-    """Information about API rate limits."""
+    """
+Information about API rate limits.
+
 
     limit: int
     remaining: int
     reset_time: datetime
+   
+""""""
+
     endpoint: str
+   
 
-
+    
+   
+"""
 @dataclass
 class TweetData:
-    """Data structure for tweet information."""
+    """
+Data structure for tweet information.
+
 
     text: str
     tweet_type: TweetType
@@ -124,27 +160,54 @@ class TweetData:
     reply_to_id: Optional[str] = None
     hashtags: Optional[List[str]] = None
     mentions: Optional[List[str]] = None
+   
+""""""
+
     scheduled_time: Optional[datetime] = None
+   
 
-
+    
+   
+"""
 @dataclass
 class SearchResult:
-    """Result from Twitter search operations."""
+    """
+Result from Twitter search operations.
+
 
     tweet_id: str
     author_username: str
     text: str
     created_at: datetime
     engagement_metrics: Dict[str, int]
+   
+""""""
+
     relevance_score: float
+   
 
-
+    
+   
+"""
 class TwitterIntegration:
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
     Comprehensive Twitter API integration with secure authentication,
         rate limiting, and advanced engagement capabilities.
-    """
+   
 
+    
+   
+""""""
+    
+   """
     def __init__(self, secrets_db_path: str = "data/secrets.sqlite"):
         self.logger = setup_logger("twitter_integration")
         self.secret_store = SecretStore(secrets_db_path)
@@ -166,7 +229,9 @@ class TwitterIntegration:
         self.session = requests.Session()
         retry_strategy = Retry(
             total=3, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self.session.mount("http://", adapter)
         self.session.mount("https://", adapter)
@@ -177,96 +242,203 @@ class TwitterIntegration:
 
         self.logger.info(
             "Twitter integration initialized and authenticated successfully"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
     def _load_credentials(self) -> TwitterCredentials:
-        """
+       """
+
+        
+       
+
+    TODO: Add documentation
+   
+""""""
+
+       
+
+        
+       
+"""
         Load Twitter API credentials from secure secret store.
+       """"""
+        
+       """
 
         Returns:
             TwitterCredentials: Loaded credentials
 
         Raises:
             AuthenticationError: If credentials are missing or invalid
+       
+
+        
+       
+""""""
+        try:
+        """
+            api_key = self.secret_store.get_secret("TWITTER_API_KEY")
         """
         try:
-            api_key = self.secret_store.get_secret("TWITTER_API_KEY")
+        """
             api_secret = self.secret_store.get_secret("TWITTER_API_SECRET")
             access_token = self.secret_store.get_secret("TWITTER_ACCESS_TOKEN")
             access_token_secret = self.secret_store.get_secret(
                 "TWITTER_ACCESS_TOKEN_SECRET"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             if not all([api_key, api_secret, access_token, access_token_secret]):
                 raise AuthenticationError(
                     "Missing Twitter API credentials in secret store"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
             return TwitterCredentials(
                 api_key=api_key,
                 api_secret=api_secret,
                 access_token=access_token,
                 access_token_secret=access_token_secret,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
         except Exception as e:
             self.logger.error(f"Failed to load Twitter credentials: {e}")
             raise AuthenticationError(f"Credential loading failed: {e}")
 
     def _generate_oauth_signature(
         self, method: str, url: str, params: Dict[str, str]
-    ) -> str:
-        """
+#     ) -> str:
+        """"""
+
+       
+
+        
+       
+"""
         Generate OAuth 1.0a signature for Twitter API requests.
+       """
+
+        
+       
 
         Args:
             method (str): HTTP method (GET, POST, etc.)
             url (str): Request URL
             params (Dict[str, str]): Request parameters
+       
+""""""
 
+        Generate OAuth 1.0a signature for Twitter API requests.
+       
+
+        
+       
+"""
         Returns:
             str: OAuth signature
-        """
+       """"""
+        
+       """
+
         # Create parameter string
+       
+
+        
+       
+"""
         sorted_params = sorted(params.items())
+       """
+
+        
+       
+
+        # Create parameter string
+       
+""""""
         param_string = "&".join(
             [f"{k}={urllib.parse.quote(str(v), safe='')}" for k, v in sorted_params]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         # Create signature base string
-        base_string = f"{method.upper()}&{urllib.parse.quote(url,
+        base_string = f"{method.upper()}&{urllib.parse.quote(url,"
     safe='')}&{urllib.parse.quote(param_string,
-    safe='')}"
+#     safe='')}""
 
         # Create signing key
-        signing_key = f"{urllib.parse.quote(self.credentials.api_secret,
+        signing_key = f"{urllib.parse.quote(self.credentials.api_secret,"
     safe='')}&{urllib.parse.quote(self.credentials.access_token_secret,
-    safe='')}"
+#     safe='')}""
 
         # Generate signature
         signature = base64.b64encode(
             hmac.new(signing_key.encode(), base_string.encode(), hashlib.sha1).digest()
-        ).decode()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ).decode()
 
         return signature
 
     def _create_oauth_header(
         self, method: str, url: str, params: Dict[str, str] = None
-    ) -> str:
-        """
+#     ) -> str:
+        """"""
+
+       
+
+        
+       
+"""
         Create OAuth authorization header for Twitter API requests.
+       """
+
+        
+       
 
         Args:
             method (str): HTTP method
             url (str): Request URL
             params (Dict[str, str], optional): Additional parameters
+       
+""""""
 
+        Create OAuth authorization header for Twitter API requests.
+       
+
+        
+       
+"""
         Returns:
             str: OAuth authorization header
-        """
-        if params is None:
-            params = {}
+       """
 
+        
+       
+
+        if params is None:
+           
+""""""
+
+            params = {}
+           
+
+            
+           
+"""
         # OAuth parameters
+           """
+
+            
+           
+
+            params = {}
+           
+""""""
         oauth_params = {
             "oauth_consumer_key": self.credentials.api_key,
             "oauth_token": self.credentials.access_token,
@@ -274,7 +446,7 @@ class TwitterIntegration:
             "oauth_timestamp": str(int(time.time())),
             "oauth_nonce": hashlib.md5(str(time.time()).encode()).hexdigest(),
             "oauth_version": "1.0",
-        }
+         }
 
         # Combine all parameters for signature
         all_params = {**params, **oauth_params}
@@ -282,31 +454,70 @@ class TwitterIntegration:
         # Generate signature
         oauth_params["oauth_signature"] = self._generate_oauth_signature(
             method, url, all_params
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         # Create authorization header
         auth_header = "OAuth " + ", ".join(
             [
                 f'{k}="{urllib.parse.quote(str(v), safe="")}"'
                 for k, v in sorted(oauth_params.items())
-            ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         return auth_header
 
     def _check_rate_limit(self, endpoint: str) -> None:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Check and enforce rate limits for API endpoints.
+       """
+
+        
+       
 
         Args:
             endpoint (str): API endpoint being accessed
+       
+""""""
 
+        Check and enforce rate limits for API endpoints.
+       
+
+        
+       
+"""
         Raises:
             RateLimitError: If rate limit would be exceeded
-        """
-        current_time = time.time()
+       """"""
+        
+       """
 
+        current_time = time.time()
+       
+
+        
+       
+"""
         # Enforce minimum interval between requests
+       """
+
+        
+       
+
+        current_time = time.time()
+       
+""""""
         time_since_last = current_time - self.last_request_time
         if time_since_last < self.min_request_interval:
             sleep_time = self.min_request_interval - time_since_last
@@ -320,22 +531,59 @@ class TwitterIntegration:
                 wait_time = (rate_limit.reset_time - datetime.now()).total_seconds()
                 raise RateLimitError(
                     f"Rate limit exceeded for {endpoint}. Reset in {wait_time:.0f}s"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
         self.last_request_time = current_time
 
     def _update_rate_limit_info(
         self, response: requests.Response, endpoint: str
-    ) -> None:
-        """
+#     ) -> None:
+        """"""
+
+       
+
+        
+       
+"""
         Update rate limit information from API response headers.
+       """
+
+        
+       
 
         Args:
             response (requests.Response): API response
             endpoint (str): API endpoint
-        """
-        headers = response.headers
+       
+""""""
 
+       
+
+        
+       
+"""
+        Update rate limit information from API response headers.
+       """"""
+        
+       """
+
+        headers = response.headers
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        headers = response.headers
+       
+""""""
         if "x - rate - limit - limit" in headers:
             limit = int(headers["x - rate - limit - limit"])
             remaining = int(headers.get("x - rate - limit - remaining", 0))
@@ -347,11 +595,15 @@ class TwitterIntegration:
                 remaining=remaining,
                 reset_time=reset_time,
                 endpoint=endpoint,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             self.logger.debug(
                 f"Rate limit updated for {endpoint}: {remaining}/{limit} remaining"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
     def _make_request(
         self,
@@ -360,9 +612,19 @@ class TwitterIntegration:
         params: Dict = None,
         data: Dict = None,
         files: Dict = None,
-    ) -> requests.Response:
-        """
+#     ) -> requests.Response:
+        """"""
+
+       
+
+        
+       
+"""
         Make authenticated request to Twitter API with rate limiting.
+       """
+
+        
+       
 
         Args:
             method (str): HTTP method
@@ -370,22 +632,48 @@ class TwitterIntegration:
             params (Dict, optional): Query parameters
             data (Dict, optional): Request body data
             files (Dict, optional): File uploads
+       
+""""""
 
+        Make authenticated request to Twitter API with rate limiting.
+       
+
+        
+       
+"""
         Returns:
             requests.Response: API response
 
         Raises:
             TwitterAPIError: For API errors
             RateLimitError: For rate limit violations
-        """
+       """
+
+        
+       
+
         if params is None:
             params = {}
         if data is None:
-            data = {}
+           
+""""""
 
+            data = {}
+           
+
+            
+           
+"""
         # Check rate limits
         self._check_rate_limit(endpoint)
+           """
 
+            
+           
+
+            data = {}
+           
+""""""
         # Construct URL
         if endpoint.startswith("http"):
             url = endpoint
@@ -395,7 +683,9 @@ class TwitterIntegration:
         # Create OAuth header
         auth_header = self._create_oauth_header(
             method, url, params if method == "GET" else data
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         headers = {"Authorization": auth_header, "User - Agent": "TRAE.AI/1.0"}
 
@@ -407,16 +697,22 @@ class TwitterIntegration:
             if method.upper() == "GET":
                 response = self.session.get(
                     url, params=params, headers=headers, timeout=30
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
             elif method.upper() == "POST":
                 if files:
                     response = self.session.post(
                         url, data=data, files=files, headers=headers, timeout=60
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
                 else:
                     response = self.session.post(
                         url, json=data, headers=headers, timeout=30
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
             else:
                 raise TwitterAPIError(f"Unsupported HTTP method: {method}")
 
@@ -439,21 +735,59 @@ class TwitterIntegration:
             raise TwitterAPIError(f"Request failed: {e}")
 
     def post_tweet(self, tweet_data: TweetData) -> Dict[str, Any]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Post a tweet to Twitter.
+       """
+
+        
+       
 
         Args:
             tweet_data (TweetData): Tweet content and metadata
+       
+""""""
 
+        Post a tweet to Twitter.
+       
+
+        
+       
+"""
         Returns:
             Dict[str, Any]: Tweet creation response
 
         Raises:
             TwitterAPIError: For posting failures
-        """
+       """
+
+        
+       
+
         try:
+           
+""""""
+
             # Validate tweet data
+           
+
+            
+           
+"""
             if not tweet_data.text or not tweet_data.text.strip():
+           """
+
+            
+           
+
+            # Validate tweet data
+           
+""""""
                 raise TwitterAPIError("Tweet text cannot be empty")
 
             # Prepare tweet text
@@ -463,11 +797,15 @@ class TwitterIntegration:
             if tweet_data.hashtags:
                 hashtags = " ".join(
                     [
-                        f"#{tag.lstrip('#')}"
+                        f"#{tag.lstrip('#')}""
                         for tag in tweet_data.hashtags
                         if tag.strip()
-                    ]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
                 if hashtags:
                     text = f"{text} {hashtags}"
 
@@ -513,12 +851,29 @@ class TwitterIntegration:
             raise TwitterAPIError(f"Tweet posting failed: {str(e)}")
 
     def _upload_media(self, media_urls: List[str]) -> List[str]:
-        """Upload media files to Twitter and return media IDs."""
-        media_ids = []
+        """
+Upload media files to Twitter and return media IDs.
 
+       
+""""""
+
+        media_ids = []
+       
+
+        
+       
+"""
         for media_url in media_urls:
             try:
                 # Download media file
+       """
+
+        
+       
+
+        media_ids = []
+       
+""""""
                 media_response = requests.get(media_url, timeout=30)
                 if media_response.status_code != 200:
                     self.logger.error(f"Failed to download media from {media_url}")
@@ -547,7 +902,9 @@ class TwitterIntegration:
 
                 upload_response = self.session.post(
                     upload_url, files=files, data=data, headers=headers, timeout=60
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
                 if upload_response.status_code == 200:
                     upload_data = upload_response.json()
@@ -560,7 +917,9 @@ class TwitterIntegration:
                 else:
                     self.logger.error(
                         f"Media upload failed: {upload_response.status_code} - {upload_response.text}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
 
             except Exception as e:
                 self.logger.error(f"Failed to upload media {media_url}: {e}")
@@ -571,19 +930,53 @@ class TwitterIntegration:
     def search_tweets(
         self, query: str, max_results: int = 10, tweet_fields: List[str] = None
     ) -> List[SearchResult]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Search for tweets matching a query.
+       """
+
+        
+       
 
         Args:
             query (str): Search query
             max_results (int): Maximum number of results
             tweet_fields (List[str], optional): Additional tweet fields to retrieve
+       
+""""""
 
+        Search for tweets matching a query.
+       
+
+        
+       
+"""
         Returns:
             List[SearchResult]: Search results
-        """
+       """"""
+        
+       """
+
         # Validate search parameters
+       
+
+        
+       
+"""
         if not query or not query.strip():
+       """
+
+        
+       
+
+        # Validate search parameters
+       
+""""""
             raise TwitterAPIError("Search query cannot be empty")
 
         if max_results <= 0 or max_results > 100:
@@ -601,7 +994,7 @@ class TwitterIntegration:
                 "max_results": min(max_results, 100),  # API limit
                 "tweet.fields": ",".join(tweet_fields),
                 "expansions": "author_id",
-            }
+             }
 
             response = self._make_request("GET", "tweets/search/recent", params=params)
 
@@ -620,7 +1013,7 @@ class TwitterIntegration:
             tweets = data.get("data", [])
             users = {
                 user["id"]: user for user in data.get("includes", {}).get("users", [])
-            }
+             }
 
             for tweet in tweets:
                 try:
@@ -628,7 +1021,9 @@ class TwitterIntegration:
                     if not all(key in tweet for key in ["id", "text", "author_id"]):
                         self.logger.warning(
                             f"Skipping tweet with missing required fields: {tweet.get('id', 'unknown')}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
                         continue
 
                     author = users.get(tweet["author_id"], {})
@@ -639,11 +1034,15 @@ class TwitterIntegration:
                         try:
                             created_at = datetime.fromisoformat(
                                 tweet["created_at"].replace("Z", "+00:00")
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                             )
                         except ValueError as e:
                             self.logger.warning(
                                 f"Invalid date format in tweet {tweet['id']}: {e}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                             )
 
                     result = SearchResult(
                         tweet_id=tweet["id"],
@@ -653,19 +1052,25 @@ class TwitterIntegration:
                         engagement_metrics=tweet.get("public_metrics", {}),
                         relevance_score=self._calculate_relevance_score(
                             tweet, sanitized_query
-                        ),
-                    )
+                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
                     results.append(result)
 
                 except Exception as tweet_error:
                     self.logger.warning(
                         f"Error processing tweet {tweet.get('id', 'unknown')}: {tweet_error}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     )
                     continue
 
             self.logger.info(
                 f"Successfully found {len(results)} tweets for query: {sanitized_query}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             return results
 
         except TwitterAPIError:
@@ -675,16 +1080,34 @@ class TwitterIntegration:
             raise TwitterAPIError(f"Search failed: {e}")
 
     def _calculate_relevance_score(self, tweet: Dict, query: str) -> float:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Calculate relevance score for a tweet based on the search query.
+       """
+
+        
+       
 
         Args:
             tweet (Dict): Tweet data
             query (str): Search query
+       
+""""""
 
+        Calculate relevance score for a tweet based on the search query.
+       
+
+        
+       
+"""
         Returns:
             float: Relevance score (0.0 to 1.0)
-        """
+       """"""
         text = tweet.get("text", "").lower()
         query_terms = query.lower().split()
 
@@ -698,7 +1121,7 @@ class TwitterIntegration:
             metrics.get("like_count", 0) * 0.3
             + metrics.get("retweet_count", 0) * 0.4
             + metrics.get("reply_count", 0) * 0.3
-        ) / 100  # Normalize
+#         ) / 100  # Normalize
 
         # Combine scores
         relevance_score = (term_score * 0.7) + (min(engagement_score, 1.0) * 0.3)
@@ -706,24 +1129,88 @@ class TwitterIntegration:
         return min(relevance_score, 1.0)
 
     def get_rate_limit_status(self) -> Dict[str, RateLimitInfo]:
-        """
+       """
+
+        
+       
+
+    TODO: Add documentation
+   
+""""""
+
+       
+
+        
+       
+"""
         Get current rate limit status for all tracked endpoints.
+       """"""
+        
+       """
 
         Returns:
             Dict[str, RateLimitInfo]: Rate limit information by endpoint
-        """
+       
+
+        
+       
+""""""
+
+        return self.rate_limits.copy()
+        
+
+       
+""""""
+
+        
+
+
         return self.rate_limits.copy()
 
-    def test_connection(self) -> bool:
-        """
-        Test Twitter API connection and authentication.
+        
+""""""
 
+        
+       
+
+    def test_connection(self) -> bool:
+       
+"""
+    TODO: Add documentation
+    """
+
+    TODO: Add documentation
+   
+
+    
+   
+""""""
+
+        
+       
+
+        Test Twitter API connection and authentication.
+       
+""""""
+
+       
+
+        
+       
+"""
         Returns:
             bool: True if connection successful
-        """
+       """"""
         try:
+        """
             response = self._make_request("GET", "users/me")
+        """
 
+        try:
+        
+
+       
+""""""
             if response.status_code != 200:
                 self.logger.error(f"Twitter API returned status {response.status_code}")
                 return False
@@ -744,7 +1231,9 @@ class TwitterIntegration:
 
             self.logger.info(
                 f"Twitter connection test successful for @{username} (ID: {user_id})"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
             return True
 
         except AuthenticationError as e:
@@ -772,7 +1261,9 @@ if __name__ == "__main__":
             text="Testing TRAE.AI Twitter integration! 🚀",
             tweet_type=TweetType.ANNOUNCEMENT,
             hashtags=["TRAEAI", "automation", "AI"],
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         try:
             result = twitter.post_tweet(tweet_data)

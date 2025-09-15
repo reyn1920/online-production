@@ -1,15 +1,15 @@
 #!/usr / bin / env python3
-"""
+""""""
 Animate Avatar - Talking Head Video Generation System
 
 This module implements avatar animation using Linly - Talker \
-    or similar open - source models
+#     or similar open - source models
 to generate talking head videos from a source image and audio file. It supports
 batch processing, quality settings, and integration with the content pipeline.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -67,7 +67,7 @@ class AnimationConfig:
     model: AnimationModel = AnimationModel.LINLY_TALKER
     quality: AnimationQuality = AnimationQuality.MEDIUM
     fps: int = 25
-    resolution: Tuple[int, int] = (1280, 720)
+    resolution: Tuple[int, int] = (1280, 720):
     enhance_face: bool = True
     stabilize_video: bool = True
     audio_sync_threshold: float = 0.1
@@ -152,7 +152,8 @@ class LinlyTalkerEngine:
             audio_file: str,
             output_path: str,
             config: AnimationConfig,
-            ) -> bool:
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
         """Generate talking head video using Linly - Talker."""
         if not self.is_initialized:
             if not self.initialize():
@@ -162,14 +163,18 @@ class LinlyTalkerEngine:
             # Prepare command for Linly - Talker
             cmd = self._build_linly_command(
                 source_image, audio_file, output_path, config
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             self.logger.info(f"Running Linly - Talker: {' '.join(cmd)}")
 
             # Run the command
                 process = subprocess.Popen(
                 cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             stdout, stderr = process.communicate()
 
@@ -206,7 +211,9 @@ class LinlyTalkerEngine:
                 Path(output_path).stem,
                 "--device",
                 self.device,
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Add quality settings
         if config.quality == AnimationQuality.HIGH:
@@ -235,7 +242,8 @@ class FallbackEngine:
             audio_file: str,
             output_path: str,
             config: AnimationConfig,
-            ) -> bool:
+# BRACKET_SURGEON: disabled
+#             ) -> bool:
         """Generate basic video with static image and audio."""
         try:
             # Get audio duration
@@ -268,7 +276,9 @@ class FallbackEngine:
                     "-s",
                     f"{config.resolution[0]}x{config.resolution[1]}",
                     output_path,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             self.logger.info(f"Creating fallback video: {' '.join(cmd)}")
 
@@ -298,7 +308,9 @@ class FallbackEngine:
                     "-of",
                     "csv = p = 0",
                     audio_file,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             result = subprocess.run(cmd, capture_output = True, text = True)
             return float(result.stdout.strip())
         except Exception:
@@ -317,7 +329,9 @@ class AnimateAvatar:
         self.linly_engine = LinlyTalkerEngine(
             model_path = self.config.model_path,
                 device="cuda" if self.config.use_gpu else "cpu",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.fallback_engine = FallbackEngine()
 
         # Job tracking
@@ -326,7 +340,9 @@ class AnimateAvatar:
         # Setup temp directory
         self.temp_dir = (
             Path(self.config.temp_dir or tempfile.gettempdir())/"animate_avatar"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.temp_dir.mkdir(parents = True, exist_ok = True)
 
 
@@ -337,7 +353,8 @@ class AnimateAvatar:
             output_path: str,
             job_id: Optional[str] = None,
             config: Optional[AnimationConfig] = None,
-            ) -> AnimationJob:
+# BRACKET_SURGEON: disabled
+#             ) -> AnimationJob:
         """Create a new animation job."""
         if job_id is None:
             job_id = f"anim_{int(time.time())}_{len(self.active_jobs)}"
@@ -362,8 +379,11 @@ class AnimateAvatar:
                 "created_at": datetime.now().isoformat(),
                     "source_image_size": self._get_image_info(source_image),
                     "audio_duration": self._get_audio_info(audio_file),
-                    },
-                )
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         self.active_jobs[job_id] = job
         self.logger.info(f"Animation job created: {job_id}")
@@ -395,17 +415,23 @@ class AnimateAvatar:
             if job.config.model == AnimationModel.LINLY_TALKER:
                 success = self.linly_engine.generate_video(
                     processed_image, processed_audio, job.output_path, job.config
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 job.progress = 80.0
 
             # Fallback to basic video generation if primary fails
             if not success:
                 self.logger.warning(
                     f"Primary engine failed, using fallback for job {job_id}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 success = self.fallback_engine.generate_video(
                     processed_image, processed_audio, job.output_path, job.config
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 job.progress = 80.0
 
             if success:
@@ -479,7 +505,9 @@ class AnimateAvatar:
                 "-c:a",
                     "pcm_s16le",
                     str(processed_path),
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             result = subprocess.run(cmd, capture_output = True, text = True)
 
@@ -548,7 +576,9 @@ class AnimateAvatar:
                     "-f",
                     "null",
                     "-",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             subprocess.run(cmd, capture_output = True)
 
@@ -560,7 +590,9 @@ class AnimateAvatar:
                     "-vf",
                     "vidstabtransform = input = transforms.trf:zoom = 0:smoothing = 10",
                     temp_path,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             result = subprocess.run(cmd, capture_output = True)
 
@@ -596,7 +628,9 @@ class AnimateAvatar:
                     "-movflags",
                     "+faststart",
                     temp_path,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             result = subprocess.run(cmd, capture_output = True)
 
@@ -616,7 +650,8 @@ class AnimateAvatar:
                         "height": img.height,
                         "format": img.format,
                         "mode": img.mode,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
         except Exception:
             return {}
 
@@ -633,7 +668,9 @@ class AnimateAvatar:
                     "-show_format",
                     "-show_streams",
                     audio_path,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             result = subprocess.run(cmd, capture_output = True, text = True)
 
             if result.returncode == 0:
@@ -642,7 +679,8 @@ class AnimateAvatar:
                     "duration": float(info.get("format", {}).get("duration", 0)),
                         "bit_rate": info.get("format", {}).get("bit_rate"),
                         "format_name": info.get("format", {}).get("format_name"),
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
         except Exception:
             pass
         return {}
@@ -702,7 +740,9 @@ if __name__ == "__main__":
             resolution=(1280, 720),
             enhance_face = True,
             stabilize_video = True,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
     animator = AnimateAvatar(config)
 
@@ -713,7 +753,9 @@ if __name__ == "__main__":
             source_image="./assets / avatar.jpg",
                 audio_file="./assets / speech.wav",
                 output_path="./output / animated_avatar.mp4",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         print(f"Animation job created: {job.job_id}")
 

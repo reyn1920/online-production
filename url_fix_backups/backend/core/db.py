@@ -49,14 +49,16 @@ def ensure_schema() -> None:
     """Ensure basic schema exists"""
     with get_conn("trae_ai.db") as cx:
         cx.execute(
-            """
+            """"""
         CREATE TABLE IF NOT EXISTS affiliates(
             name TEXT PRIMARY KEY,
                 url TEXT NOT NULL,
                 tag TEXT,
                 enabled INTEGER NOT NULL DEFAULT 1,
                 mtime REAL NOT NULL
-        )
-        """
-        )
+# BRACKET_SURGEON: disabled
+#         )
+        """"""
+# BRACKET_SURGEON: disabled
+#         )
         cx.commit()

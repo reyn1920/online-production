@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""
+""""""
+
+
+
 YouTube Scraper for The Right Perspective
 Scrapes conservative YouTube channels and content for analysis
-"""
+
+""""""
 
 import json
 import logging
@@ -18,7 +22,9 @@ import requests
 # Configure logging
 logging.basicConfig(
     level = logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+ )
 logger = logging.getLogger(__name__)
 
 
@@ -30,10 +36,12 @@ class YouTubeScraperForRightPerspective:
         self.session = requests.Session()
         self.session.headers.update(
             {
-                "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
-    like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-            }
-        )
+                "User - Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,"
+#     like Gecko) Chrome/91.0.4472.124 Safari/537.36""
+             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
 
         # Conservative YouTube channels for The Right Perspective research
         self.conservative_channels = {
@@ -45,8 +53,10 @@ class YouTubeScraperForRightPerspective:
                     "political humor",
                         "liberal hypocrisy",
                         "cultural commentary",
-                        ],
-                    },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         ],
+                     },
                 "jesse_watters": {
                 "channel_id": "UCXIJgqnII2ZOINSWNOGFThA",
                     "channel_name": "Fox News - Jesse Watters",
@@ -55,14 +65,16 @@ class YouTubeScraperForRightPerspective:
                     "political analysis",
                         "media criticism",
                         "cultural issues",
-                        ],
-                    },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         ],
+                     },
                 "dan_bongino": {
                 "channel_id": "UCx0xRNdYjWqiO6fLEpLOqhQ",
                     "channel_name": "Dan Bongino",
                     "style_notes": "Radio - style commentary, passionate delivery, breaking news analysis",
                     "content_focus": ["deep state", "media lies", "political corruption"],
-                    },
+                     },
                 "steven_crowder": {
                 "channel_id": "UCIveFvW - ARp_B_RckhweNJw",
                     "channel_name": "StevenCrowder",
@@ -71,8 +83,10 @@ class YouTubeScraperForRightPerspective:
                     "campus activism",
                         "liberal policies",
                         "cultural debates",
-                        ],
-                    },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         ],
+                     },
                 "ben_shapiro": {
                 "channel_id": "UCnQC_G5Xsjhp9fEJKuIcrSw",
                     "channel_name": "Ben Shapiro",
@@ -81,8 +95,10 @@ class YouTubeScraperForRightPerspective:
                     "political analysis",
                         "media bias",
                         "cultural issues",
-                        ],
-                    },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         ],
+                     },
                 "charlie_kirk": {
                 "channel_id": "UCu6oW2LdGCwEBgxN8XsUVaA",
                     "channel_name": "Charlie Kirk",
@@ -91,8 +107,10 @@ class YouTubeScraperForRightPerspective:
                     "campus politics",
                         "conservative activism",
                         "youth engagement",
-                        ],
-                    },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         ],
+                     },
                 "tucker_carlson": {
                 "channel_id": "UCwWhs_6x42TyRM4Wstoq8HA",
                     "channel_name": "Tucker Carlson Network",
@@ -101,8 +119,10 @@ class YouTubeScraperForRightPerspective:
                     "deep investigations",
                         "establishment criticism",
                         "foreign policy",
-                        ],
-                    },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         ],
+                     },
                 "the_right_perspective_existing": {
                 "channel_id": "UC9xnKz8VQqOGvhzF8R8oF8w",
                     "channel_name": "The Right Perspective",
@@ -111,9 +131,11 @@ class YouTubeScraperForRightPerspective:
                     "gaming politics",
                         "conservative commentary",
                         "cultural criticism",
-                        ],
-                    },
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         ],
+                     },
+                 }
 
         # Keywords for content analysis
         self.content_keywords = {
@@ -125,7 +147,9 @@ class YouTubeScraperForRightPerspective:
                     "said before",
                     "used to support",
                     "now opposes",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ],
                 "humor_styles": [
                 "satire",
                     "parody",
@@ -137,7 +161,9 @@ class YouTubeScraperForRightPerspective:
                     "ridiculous",
                     "absurd",
                     "clown world",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ],
                 "political_targets": [
                 "biden",
                     "harris",
@@ -149,7 +175,9 @@ class YouTubeScraperForRightPerspective:
                     "progressive",
                     "mainstream media",
                     "fake news",
-                    ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ],
                 "conservative_themes": [
                 "america first",
                     "traditional values",
@@ -159,19 +187,34 @@ class YouTubeScraperForRightPerspective:
                     "patriot",
                     "maga",
                     "trump",
-                    ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ],
+                 }
 
         self.init_database()
 
 
     def init_database(self):
-        """Initialize database tables for YouTube content"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Initialize database tables for YouTube content
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS youtube_videos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     video_id TEXT UNIQUE NOT NULL,
@@ -191,12 +234,36 @@ class YouTubeScraperForRightPerspective:
                     humor_score REAL DEFAULT 0.0,
                     relevance_score REAL DEFAULT 0.0,
                     right_perspective_potential BOOLEAN DEFAULT FALSE
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
+        
+""""""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+        
+
+         
+        
+"""
+         )
+        """"""
+        
+       """
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS youtube_comments (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                     video_id TEXT NOT NULL,
@@ -207,21 +274,43 @@ class YouTubeScraperForRightPerspective:
                     published_at TIMESTAMP,
                     scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (video_id) REFERENCES youtube_videos (video_id)
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
+        
+""""""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+        
+
+         
+        
+"""
+         )
+        """"""
         conn.commit()
         conn.close()
         logger.info("YouTube database tables initialized")
+        """
 
+         
+        
+
+         )
+        
+""""""
 
     def extract_video_id(self, url: str) -> Optional[str]:
-        """Extract YouTube video ID from URL"""
+        
+Extract YouTube video ID from URL
+"""
         patterns = [
             r"(?:youtube\\.com/watch\\?v=|youtu\\.be/)([a - zA - Z0 - 9_-]{11})",
                 r"youtube\\.com/embed/([a - zA - Z0 - 9_-]{11})",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 ]
 
         for pattern in patterns:
             match = re.search(pattern, url)
@@ -232,7 +321,7 @@ class YouTubeScraperForRightPerspective:
 
     def analyze_content_style(
         self, title: str, description: str, channel_name: str
-    ) -> Dict:
+#     ) -> Dict:
         """Analyze video content for style and humor elements"""
         text = f"{title} {description}".lower()
 
@@ -243,7 +332,7 @@ class YouTubeScraperForRightPerspective:
                 "hypocrisy_indicators": [],
                 "humor_score": 0.0,
                 "relevance_score": 0.0,
-                }
+                 }
 
         # Check for humor elements
         for keyword in self.content_keywords["humor_styles"]:
@@ -297,7 +386,9 @@ class YouTubeScraperForRightPerspective:
                 # Analyze content style
                 style_analysis = self.analyze_content_style(
                     video_data["title"], video_data["description"], channel_name
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                 )
 
                 video_info = {
                     "video_id": video_data["video_id"],
@@ -309,14 +400,14 @@ class YouTubeScraperForRightPerspective:
                         "like_count": video_data.get("like_count", 0),
                         "published_at": video_data.get(
                         "published_at", datetime.now().isoformat()
-                    ),
+                     ),
                         "video_url": f"https://youtube.com/watch?v={video_data['video_id']}",
                         "style_analysis": json.dumps(style_analysis),
                         "humor_score": style_analysis["humor_score"],
                         "relevance_score": style_analysis["relevance_score"],
                         "right_perspective_potential": style_analysis["relevance_score"]
                     >= 3.0,
-                        }
+                         }
 
                 videos.append(video_info)
 
@@ -339,115 +430,150 @@ class YouTubeScraperForRightPerspective:
                 {
                     "video_id": "gut001",
                         "title": "Gutfeld!: Democrats flip - flop on border security AGAIN",
-                        "description": "Greg Gutfeld breaks down the latest Democratic hypocrisy on immigration policy with his signature humor \
-    and panel discussion.",
+                        "description": "Greg Gutfeld breaks down the latest Democratic hypocrisy on immigration policy with his signature humor \"
+#     and panel discussion.",
                         "view_count": 850000,
                         "like_count": 45000,
-                        },
+                         },
                     {
                     "video_id": "gut002",
                         "title": "The Five: Biden contradicts his own campaign promises",
                         "description": "Panel discusses how Biden has reversed course on multiple campaign promises, showing classic political flip - flopping.",
                         "view_count": 720000,
                         "like_count": 38000,
-                        },
-                    ]
+                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
 
         elif "watters" in channel_name.lower():
             sample_videos = [
                 {
                     "video_id": "wat001",
                         "title": "Jesse Watters: Pelosi said the OPPOSITE just 5 years ago",
-                        "description": "Jesse exposes Nancy Pelosi's complete reversal on border wall funding with video evidence from her past statements.",
+                        "description": "Jesse exposes Nancy Pelosi's complete reversal on border wall funding with video evidence from her past statements.",'
                         "view_count": 920000,
                         "like_count": 52000,
-                        },
+                         },
                     {
                     "video_id": "wat002",
                         "title": "Watters World: Democrats used to LOVE tariffs",
                         "description": "Man - on - the - street interviews reveal how Democrats have completely flipped on trade policy since Trump.",
                         "view_count": 680000,
                         "like_count": 41000,
-                        },
-                    ]
+                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
 
         elif "bongino" in channel_name.lower():
             sample_videos = [
                 {
                     "video_id": "bon001",
-                        "title": "The Dan Bongino Show: Schumer's MASSIVE hypocrisy exposed",
+                        "title": "The Dan Bongino Show: Schumer's MASSIVE hypocrisy exposed",'
                         "description": "Dan breaks down Chuck Schumer's complete 180 on immigration enforcement with receipts \
-    and documentation.",
+#     and documentation.",
                         "view_count": 450000,
                         "like_count": 28000,
-                        },
+                         },
                     {
                     "video_id": "bon002",
                         "title": "BREAKING: Media lies about Trump policies BACKFIRE",
                         "description": "Explosive analysis of how mainstream media predictions about Trump policies were completely wrong.",
                         "view_count": 380000,
                         "like_count": 25000,
-                        },
-                    ]
+                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
 
         elif "crowder" in channel_name.lower():
             sample_videos = [
                 {
                     "video_id": "cro001",
                         "title": "Change My Mind: Democrats Are Hypocrites on Immigration",
-                        "description": "Steven sits down with college students to discuss Democratic flip - flops on border security with humor \
-    and facts.",
+                        "description": "Steven sits down with college students to discuss Democratic flip - flops on border security with humor \"
+#     and facts.",
                         "view_count": 1200000,
                         "like_count": 75000,
-                        },
+                         },
                     {
                     "video_id": "cro002",
                         "title": "AOC Contradicts Herself in 30 Seconds (HILARIOUS)",
-                        "description": "Comedy sketch highlighting Alexandria Ocasio - Cortez's contradictory statements on economic policy.",
+                        "description": "Comedy sketch highlighting Alexandria Ocasio - Cortez's contradictory statements on economic policy.",'
                         "view_count": 980000,
                         "like_count": 62000,
-                        },
-                    ]
+                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
 
         elif "right perspective" in channel_name.lower():
             sample_videos = [
                 {
                     "video_id": "trp001",
                         "title": "Gaming Industry Goes Woke, Goes Broke",
-                        "description": "Conservative gamer perspective on how political correctness is ruining video games \
-    and entertainment.",
+                        "description": "Conservative gamer perspective on how political correctness is ruining video games \"
+#     and entertainment.",
                         "view_count": 15000,
                         "like_count": 1200,
-                        },
+                         },
                     {
                     "video_id": "trp002",
                         "title": "Why Conservatives Need to Fight Back in Gaming",
-                        "description": "Non - commie perspective on standing up to liberal bias in gaming culture \
-    and media.",
+                        "description": "Non - commie perspective on standing up to liberal bias in gaming culture \"
+#     and media.",
                         "view_count": 12000,
                         "like_count": 980,
-                        },
-                    ]
+                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ]
 
         return sample_videos
 
 
     def save_videos(self, videos: List[Dict]) -> int:
-        """Save scraped videos to database"""
+        """
+Save scraped videos to database
+
         conn = sqlite3.connect(self.db_path)
+       
+""""""
+
         cursor = conn.cursor()
+       
+
+        
+       
+""""""
+
+
+        
+
+       
+
+        cursor = conn.cursor()
+       
+""""""
 
         saved_count = 0
         for video in videos:
             try:
                 cursor.execute(
-                    """
+                   
+
+                    
+                   
+"""
                     INSERT OR IGNORE INTO youtube_videos
                     (video_id, title, channel_name, channel_id, description,
                         view_count, like_count, published_at, video_url,
-                         style_analysis, humor_score, relevance_score, right_perspective_potential)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                          style_analysis, humor_score, relevance_score, right_perspective_potential)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         video["video_id"],
                             video["title"],
@@ -462,8 +588,10 @@ class YouTubeScraperForRightPerspective:
                             video["humor_score"],
                             video["relevance_score"],
                             video["right_perspective_potential"],
-                            ),
-                        )
+                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                         )
 
                 if cursor.rowcount > 0:
                     saved_count += 1
@@ -495,7 +623,9 @@ class YouTubeScraperForRightPerspective:
 
             logger.info(
                 f"Scraped {saved} videos from {channel_config['channel_name']} ({high_potential} high - potential)"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
             # Rate limiting
             time.sleep(2)
@@ -504,22 +634,53 @@ class YouTubeScraperForRightPerspective:
 
 
     def get_style_inspiration(self, limit: int = 20) -> List[Dict]:
-        """Get videos that can inspire The Right Perspective style"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Get videos that can inspire The Right Perspective style
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         cursor.execute(
-            """
+           """
+
+            
+           
+
             SELECT title, channel_name, description, humor_score, relevance_score,
                 video_url, style_analysis
             FROM youtube_videos
             WHERE humor_score >= 2.0 OR relevance_score >= 3.0
             ORDER BY (humor_score + relevance_score) DESC
             LIMIT ?
-        """,
-            (limit,),
-                )
+        
+""","""
 
+            (limit,),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                
+
+                 
+                
+"""
+                 )
+                """"""
+        
+       """
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         videos = []
         for row in cursor.fetchall():
             style_data = json.loads(row[6]) if row[6] else {}
@@ -529,43 +690,89 @@ class YouTubeScraperForRightPerspective:
                         "channel_name": row[1],
                         "description": (
                         row[2][:200] + "..." if len(row[2]) > 200 else row[2]
-                    ),
+                     ),
                         "humor_score": row[3],
                         "relevance_score": row[4],
                         "video_url": row[5],
                         "style_elements": style_data,
-                        }
-            )
+                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+             )
 
         conn.close()
         return videos
 
 
     def generate_content_recommendations(self) -> Dict:
-        """Generate content recommendations for The Right Perspective"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        """
+Generate content recommendations for The Right Perspective
 
+        conn = sqlite3.connect(self.db_path)
+       
+""""""
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         # Get top performing content themes
         cursor.execute(
-            """
+           """
+
+            
+           
+
             SELECT channel_name, AVG(humor_score), AVG(relevance_score), COUNT(*)
             FROM youtube_videos
             GROUP BY channel_name
             ORDER BY AVG(humor_score + relevance_score) DESC
-        """
-        )
+        
+""""""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+        
+
+         
+        
+"""
+         )
+        """"""
+        
+       """
+
+        cursor = conn.cursor()
+       
+
+        
+       
+"""
         channel_performance = cursor.fetchall()
 
         # Get most common successful elements
         cursor.execute(
-            """
+           """
+
+            
+           
+
             SELECT style_analysis FROM youtube_videos
             WHERE right_perspective_potential = TRUE
-        """
-        )
+        
+""""""
 
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+        
+
+         
+        
+"""
+         )
+        """"""
         successful_elements = []
         for row in cursor.fetchall():
             if row[0]:
@@ -582,7 +789,9 @@ class YouTubeScraperForRightPerspective:
     key = lambda x: x[1],
     reverse = True)[
             :10
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         ]
 
         conn.close()
 
@@ -596,16 +805,34 @@ class YouTubeScraperForRightPerspective:
                     "Incorporate gaming analogies for younger audience",
                     "Focus on visual comparisons (then vs now)",
                     "Add comedic commentary to serious political topics",
-                    ],
-                }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+                     ],
+                 }
 
 
 def main():
-    """Main function for YouTube scraping and analysis"""
+    """
+Main function for YouTube scraping and analysis
+
+   
+""""""
+
     scraper = YouTubeScraperForRightPerspective()
+   
 
+    
+   
+"""
     print("🎥 Starting YouTube analysis for The Right Perspective...")
+   """
 
+    
+   
+
+    scraper = YouTubeScraperForRightPerspective()
+   
+""""""
     # Scrape all channels
     results = scraper.scrape_all_channels()
 
@@ -621,7 +848,9 @@ def main():
         print(f"{i}. [{video['channel_name']}] {video['title']}")
         print(
             f"   Humor Score: {video['humor_score']}, Relevance: {video['relevance_score']}"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+         )
         print(f"   URL: {video['video_url']}")
         print(f"   Elements: {video['style_elements']}\\n")
 

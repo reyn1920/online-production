@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
-"""
+"""""""""
 TRAE.AI Twitter Community Engagement Agent
-
+""""""
 Intelligently searches for relevant conversations on Twitter and generates
 appropriate, contextual replies using AI to build community engagement.
+"""
+
+TRAE.AI Twitter Community Engagement Agent
+
+
+
+""""""
+
 
 Features:
+
+
+
 - Smart conversation discovery based on keywords and trends
 - AI - powered reply generation with context awareness
 - Engagement scoring and prioritization
@@ -16,6 +27,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
+
 """
 
 import json
@@ -40,7 +52,7 @@ from backend.integrations.twitter_integration import (
     TweetData,
     TweetType,
     TwitterIntegration,
-)
+ )
 
 from backend.secret_store import SecretStore
 
@@ -85,7 +97,9 @@ class EngagementStatus(Enum):
 
 @dataclass
 class ConversationContext:
-    """Context information for a conversation."""
+    """
+Context information for a conversation.
+
 
     tweet_id: str
     author_username: str
@@ -97,12 +111,20 @@ class ConversationContext:
     hashtags: List[str]
     sentiment: SentimentType
     topic_keywords: List[str]
+   
+""""""
+
     relevance_score: float
+   
 
-
+    
+   
+"""
 @dataclass
 class EngagementOpportunity:
-    """An opportunity for community engagement."""
+    """
+An opportunity for community engagement.
+
 
     opportunity_id: str
     conversation: ConversationContext
@@ -113,12 +135,20 @@ class EngagementOpportunity:
     reasoning: str
     keywords_matched: List[str]
     created_at: datetime
+   
+""""""
+
     expires_at: datetime
+   
 
-
+    
+   
+"""
 @dataclass
 class EngagementResult:
-    """Result of an engagement attempt."""
+    """
+Result of an engagement attempt.
+
 
     opportunity_id: str
     status: EngagementStatus
@@ -126,12 +156,20 @@ class EngagementResult:
     tweet_id: Optional[str]
     engagement_metrics: Dict[str, int]
     posted_at: Optional[datetime]
+   
+""""""
+
     error_message: Optional[str]
+   
 
-
+    
+   
+"""
 @dataclass
 class TopicProfile:
-    """Profile for tracking engagement topics."""
+    """
+Profile for tracking engagement topics.
+
 
     topic: str
     keywords: List[str]
@@ -139,15 +177,34 @@ class TopicProfile:
     engagement_style: str
     max_daily_engagements: int
     current_daily_count: int
+   
+""""""
+
     last_reset_date: datetime
+   
 
-
+    
+   
+"""
 class TwitterEngagementAgent:
-    """
+   """
+
+    
+   
+
+    TODO: Add documentation
+   
+""""""
+
     Intelligent Twitter engagement agent that discovers relevant conversations
     and generates contextual, valuable replies to build community presence.
-    """
+   
 
+    
+   
+""""""
+    
+   """
     def __init__(self, db_path: str = "data/engagement_tracking.sqlite"):
         self.logger = setup_logger("twitter_engagement")
         self.db_path = db_path
@@ -162,7 +219,7 @@ class TwitterEngagementAgent:
             "max_concurrent_requests": 3,
             "cache_enabled": True,
             "cache_ttl": 3600,
-        }
+         }
         self.ollama = OllamaIntegration(ollama_config)
         self.secret_store = SecretStore()
 
@@ -181,17 +238,44 @@ class TwitterEngagementAgent:
         self.logger.info("Twitter Engagement Agent initialized")
 
     def _init_database(self) -> None:
-        """
-        Initialize the engagement tracking database.
-        """
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+       """
 
+        
+       
+
+    TODO: Add documentation
+   
+""""""
+
+        Initialize the engagement tracking database.
+       
+
+        
+       
+""""""
+
+        
+       
+
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+       
+""""""
+
+       
+
+        
+       
+"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
         # Engagement opportunities table
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS engagement_opportunities (
                 opportunity_id TEXT PRIMARY KEY,
                     tweet_id TEXT NOT NULL,
@@ -206,13 +290,25 @@ class TwitterEngagementAgent:
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     expires_at TIMESTAMP,
                     status TEXT DEFAULT 'pending'
-            )
+             )
+        
+""""""
+
+        
+
+         
+        
+"""
+         )
         """
-        )
+
+         
+        
 
         # Engagement results table
         cursor.execute(
-            """
+           
+""""""
             CREATE TABLE IF NOT EXISTS engagement_results (
                 opportunity_id TEXT PRIMARY KEY,
                     status TEXT NOT NULL,
@@ -222,13 +318,32 @@ class TwitterEngagementAgent:
                     posted_at TIMESTAMP,
                     error_message TEXT,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """
-        )
+             )
+        """"""
 
+        
+
+         
+        
+"""
+         )
+        """"""
+         
+        """
+
+         )
+        
+
+         
+        
+"""
         # User interaction history
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS user_interactions (
                 username TEXT,
                     interaction_type TEXT,
@@ -236,26 +351,57 @@ class TwitterEngagementAgent:
                     tweet_id TEXT,
                     success BOOLEAN,
                     PRIMARY KEY (username, interaction_date)
-            )
+             )
+        
+""""""
+
+        
+
+         
+        
+"""
+         )
         """
-        )
+
+         
+        
 
         # Topic engagement tracking
         cursor.execute(
-            """
+           
+""""""
             CREATE TABLE IF NOT EXISTS topic_engagement (
                 topic TEXT,
                     date DATE,
                     engagement_count INTEGER DEFAULT 0,
                     success_count INTEGER DEFAULT 0,
                     PRIMARY KEY (topic, date)
-            )
-        """
-        )
+             )
+        """"""
 
+        
+
+         
+        
+"""
+         )
+        """"""
+         
+        """
+
+         )
+        
+
+         
+        
+"""
         # Conversation context cache
         cursor.execute(
-            """
+           """
+
+            
+           
+
             CREATE TABLE IF NOT EXISTS conversation_cache (
                 tweet_id TEXT PRIMARY KEY,
                     context_data TEXT,
@@ -263,22 +409,61 @@ class TwitterEngagementAgent:
                     relevance_score REAL,
                     cached_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     expires_at TIMESTAMP
-            )
+             )
+        
+""""""
+
+        
+
+         
+        
+"""
+         )
         """
-        )
+
+         
+        
 
         conn.commit()
         conn.close()
+        
+""""""
 
+         )
+        
+
+         
+        
+"""
         self.logger.info("Engagement database initialized")
 
     def _load_topic_profiles(self) -> List[TopicProfile]:
-        """
+       """
+
+        
+       
+
+    TODO: Add documentation
+   
+""""""
+
+       
+
+        
+       
+"""
         Load topic profiles for targeted engagement.
+       """"""
+        
+       """
 
         Returns:
             List[TopicProfile]: Configured topic profiles
-        """
+       
+
+        
+       
+"""
         return [
             TopicProfile(
                 topic="AI & Machine Learning",
@@ -291,13 +476,13 @@ class TwitterEngagementAgent:
                     "ML",
                     "algorithm",
                     "data science",
-                ],
+                 ],
                 priority_weight=1.0,
                 engagement_style="educational_helpful",
                 max_daily_engagements=15,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
+             ),
             TopicProfile(
                 topic="Programming & Development",
                 keywords=[
@@ -311,13 +496,13 @@ class TwitterEngagementAgent:
                     "nodejs",
                     "github",
                     "opensource",
-                ],
+                 ],
                 priority_weight=0.9,
                 engagement_style="technical_supportive",
                 max_daily_engagements=12,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
+             ),
             TopicProfile(
                 topic="YouTube & Content Creation",
                 keywords=[
@@ -330,13 +515,13 @@ class TwitterEngagementAgent:
                     "content",
                     "channel",
                     "subscriber",
-                ],
+                 ],
                 priority_weight=0.8,
                 engagement_style="encouraging_collaborative",
                 max_daily_engagements=10,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
+             ),
             TopicProfile(
                 topic="Technology & Innovation",
                 keywords=[
@@ -349,32 +534,65 @@ class TwitterEngagementAgent:
                     "future",
                     "trends",
                     "disruption",
-                ],
+                 ],
                 priority_weight=0.7,
                 engagement_style="insightful_forward_thinking",
                 max_daily_engagements=8,
                 current_daily_count=0,
                 last_reset_date=datetime.now().date(),
-            ),
-        ]
+             ),
+         ]
 
     async def discover_engagement_opportunities(
         self, max_opportunities: int = 20
     ) -> List[EngagementOpportunity]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Discover new engagement opportunities by searching for relevant conversations.
+       """
+
+        
+       
 
         Args:
             max_opportunities (int): Maximum opportunities to discover
+       
+""""""
 
+        Discover new engagement opportunities by searching for relevant conversations.
+       
+
+        
+       
+"""
         Returns:
             List[EngagementOpportunity]: Discovered opportunities
-        """
-        opportunities = []
+       """"""
+        
+       """
 
+        opportunities = []
+       
+
+        
+       
+"""
         try:
             # Search for conversations based on topic profiles
             for profile in self.topic_profiles:
+       """
+
+        
+       
+
+        opportunities = []
+       
+""""""
                 if profile.current_daily_count >= profile.max_daily_engagements:
                     continue
 
@@ -396,8 +614,8 @@ class TwitterEngagementAgent:
                                 "author_id",
                                 "public_metrics",
                                 "context_annotations",
-                            ],
-                        )
+                             ],
+                         )
 
                         for result in results:
                             if len(opportunities) >= max_opportunities:
@@ -409,7 +627,7 @@ class TwitterEngagementAgent:
                             if (
                                 opportunity
                                 and opportunity.confidence_score >= self.min_confidence_score
-                            ):
+#                             ):
                                 opportunities.append(opportunity)
 
                         # Rate limiting between searches
@@ -434,21 +652,53 @@ class TwitterEngagementAgent:
             return []
 
     def _generate_search_queries(self, profile: TopicProfile) -> List[str]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Generate search queries for a topic profile.
+       """
+
+        
+       
 
         Args:
             profile (TopicProfile): Topic profile
+       
+""""""
 
+        Generate search queries for a topic profile.
+       
+
+        
+       
+"""
         Returns:
             List[str]: Search queries
-        """
-        queries = []
+       """"""
+        
+       """
 
+        queries = []
+       
+
+        
+       
+"""
         # Direct keyword searches
         for keyword in profile.keywords[:5]:  # Limit to avoid too many queries
             queries.append(f"{keyword} -is:retweet lang:en")
+       """
 
+        
+       
+
+        queries = []
+       
+""""""
         # Question - based searches (high engagement potential)
         question_starters = ["how to", "what is", "why does", "help with"]
         for starter in question_starters[:2]:
@@ -460,22 +710,72 @@ class TwitterEngagementAgent:
     async def _analyze_engagement_potential(
         self, search_result: SearchResult, profile: TopicProfile
     ) -> Optional[EngagementOpportunity]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Analyze a search result for engagement potential.
+       """
+
+        
+       
 
         Args:
             search_result (SearchResult): Tweet search result
             profile (TopicProfile): Relevant topic profile
+       
+""""""
 
+        Analyze a search result for engagement potential.
+       
+
+        
+       
+"""
         Returns:
             Optional[EngagementOpportunity]: Engagement opportunity if viable
-        """
+       """
+
+        
+       
+
         try:
+           
+""""""
+
             # Check if we've recently engaged with this user
+           
+
+            
+           
+"""
             if self._recently_engaged_with_user(search_result.author_username):
+           """
+
+            
+           
+
+            # Check if we've recently engaged with this user
+           
+""""""
+
+                
+
                 return None
+                
+""""""
+
+                
+               
 
             # Check if tweet is too old (engagement window passed)
+                
+"""
+                return None
+                """"""
             if (datetime.now() - search_result.created_at).hours > 6:
                 return None
 
@@ -513,7 +813,7 @@ class TwitterEngagementAgent:
                 keywords_matched=self._find_matched_keywords(search_result.text, profile.keywords),
                 created_at=datetime.now(),
                 expires_at=datetime.now() + timedelta(hours=4),  # Engagement window
-            )
+             )
 
             return opportunity
 
@@ -522,25 +822,65 @@ class TwitterEngagementAgent:
             return None
 
     def _recently_engaged_with_user(self, username: str) -> bool:
-        """
-        Check if we've recently engaged with a user.
+        """"""
+
+       
+
+        
+       
+"""
+        Check if we've recently engaged with a user.'
+       """
+
+        
+       
 
         Args:
             username (str): Username to check
+       
+""""""
 
+        Check if we've recently engaged with a user.'
+       
+
+        
+       
+"""
         Returns:
             bool: True if recently engaged
-        """
+       """"""
         try:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
+        """
 
+            conn = sqlite3.connect(self.db_path)
+        
+
+        try:
+        
+""""""
+
+            
+           
+
+            cursor = conn.cursor()
+           
+""""""
+
+           
+
+
+            
+
+           
+"""
+            cursor = conn.cursor()
+           """"""
             cutoff_time = datetime.now() - timedelta(hours=self.engagement_cooldown_hours)
 
             cursor.execute(
                 "SELECT COUNT(*) FROM user_interactions WHERE username = ? AND interaction_date > ?",
                 (username, cutoff_time),
-            )
+             )
 
             count = cursor.fetchone()[0]
             conn.close()
@@ -554,23 +894,66 @@ class TwitterEngagementAgent:
     def _build_conversation_context(
         self, search_result: SearchResult, profile: TopicProfile
     ) -> Optional[ConversationContext]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Build comprehensive context for a conversation.
+       """
+
+        
+       
 
         Args:
             search_result (SearchResult): Tweet search result
             profile (TopicProfile): Topic profile
+       
+""""""
 
+        Build comprehensive context for a conversation.
+       
+
+        
+       
+"""
         Returns:
             Optional[ConversationContext]: Conversation context
-        """
-        try:
-            # Analyze sentiment
-            sentiment = self._analyze_sentiment(search_result.text)
+       """
 
+        
+       
+
+        try:
+           
+""""""
+
+            # Analyze sentiment
+           
+
+            
+           
+""""""
+
+            
+           
+
+            sentiment = self._analyze_sentiment(search_result.text)
+           
+""""""
+
+           
+
+            
+           
+"""
+            # Analyze sentiment
+           """"""
             # Extract mentions and hashtags
             mentions = re.findall(r"@(\\w+)", search_result.text)
-            hashtags = re.findall(r"#(\\w+)", search_result.text)
+            hashtags = re.findall(r"#(\\w+)", search_result.text)"
 
             # Calculate relevance score
             relevance_score = self._calculate_relevance_score(search_result.text, profile.keywords)
@@ -590,7 +973,7 @@ class TwitterEngagementAgent:
                 sentiment=sentiment,
                 topic_keywords=topic_keywords,
                 relevance_score=relevance_score,
-            )
+             )
 
             return context
 
@@ -599,27 +982,60 @@ class TwitterEngagementAgent:
             return None
 
     def _analyze_sentiment(self, text: str) -> SentimentType:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Analyze sentiment of tweet text using AI.
+       """
+
+        
+       
 
         Args:
             text (str): Tweet text
+       
+""""""
 
+        Analyze sentiment of tweet text using AI.
+       
+
+        
+       
+"""
         Returns:
             SentimentType: Detected sentiment
-        """
+       """"""
         try:
-            prompt = f"""
-            Analyze the sentiment of this tweet and respond with only one word:
+        """"""
+            prompt = f
+           """"""
+            
+           """
 
+            Analyze the sentiment of this tweet and respond with only one word:
+           
+
+            
+           
+""""""
+
+        try:
+        
+
+       
+""""""
             Tweet: "{text}"
 
             Respond with exactly one of these words: positive, negative, neutral, mixed
-            """
+            """"""
 
             response = self.ollama.generate_response(
                 prompt=prompt, model="llama3.2:3b", max_tokens=10, temperature=0.1
-            )
+             )
 
             sentiment_text = response.strip().lower()
 
@@ -633,52 +1049,164 @@ class TwitterEngagementAgent:
             return SentimentType.NEUTRAL
 
     def _calculate_relevance_score(self, text: str, keywords: List[str]) -> float:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Calculate relevance score based on keyword matches.
+       """
+
+        
+       
 
         Args:
             text (str): Tweet text
             keywords (List[str]): Topic keywords
+       
+""""""
 
+        Calculate relevance score based on keyword matches.
+       
+
+        
+       
+"""
         Returns:
             float: Relevance score (0.0 to 1.0)
-        """
+       """
+
+        
+       
+
         text_lower = text.lower()
         matches = sum(1 for keyword in keywords if keyword.lower() in text_lower)
+        
+"""
+        return min(matches / len(keywords), 1.0) if keywords else 0.0
+        """"""
+        """
+
+
         return min(matches / len(keywords), 1.0) if keywords else 0.0
 
+        
+
+       
+""""""
+
     def _extract_topic_keywords(self, text: str, keywords: List[str]) -> List[str]:
-        """
+       
+
+        
+       
+""""""
+
+        
+       
+
         Extract topic keywords found in the text.
+       
+""""""
 
         Args:
             text (str): Tweet text
             keywords (List[str]): Topic keywords
+       
+
+        
+       
+"""
+        Extract topic keywords found in the text.
+       """
+
+        
+       
 
         Returns:
             List[str]: Found keywords
-        """
+       
+""""""
+
         text_lower = text.lower()
+        
+
+        return [keyword for keyword in keywords if keyword.lower() in text_lower]
+        
+""""""
+
+        
+       
+
+        
+"""
+
         return [keyword for keyword in keywords if keyword.lower() in text_lower]
 
+        """"""
     def _find_matched_keywords(self, text: str, keywords: List[str]) -> List[str]:
-        """
-        Find keywords that match in the text.
+       """"""
+        
+       """
 
+        Find keywords that match in the text.
+       
+
+        
+       
+"""
         Args:
             text (str): Text to search
             keywords (List[str]): Keywords to find
+       """
+
+        
+       
+
+        Find keywords that match in the text.
+       
+""""""
 
         Returns:
             List[str]: Matched keywords
-        """
+       
+
+        
+       
+""""""
+
         return self._extract_topic_keywords(text, keywords)
+        
+
+       
+""""""
 
     async def _generate_contextual_reply(
         self, context: ConversationContext, profile: TopicProfile
     ) -> Tuple[str, float, str]:
-        """
+       
+
+        
+       
+""""""
+
+        
+       
+
         Generate a contextual reply using AI.
+       
+""""""
+
+        
+
+        return self._extract_topic_keywords(text, keywords)
+        
+""""""
+
+        
+       
 
         Args:
             context (ConversationContext): Conversation context
@@ -686,19 +1214,65 @@ class TwitterEngagementAgent:
 
         Returns:
             Tuple[str, float, str]: (reply_text, confidence_score, reasoning)
-        """
+       
+""""""
+
         try:
+           
+
+            
+           
+"""
             # Determine engagement style based on profile and sentiment
+           """"""
+            
+           """
+
             style_guidance = self._get_style_guidance(profile.engagement_style, context.sentiment)
+           
 
-            prompt = f"""
+            
+           
+""""""
+
+            
+           
+
+            # Determine engagement style based on profile and sentiment
+           
+""""""
+
+           
+
+
+            
+
+           
+"""
+            prompt = f
+           """"""
+            
+           """
+
             Generate a helpful, engaging reply to this Twitter conversation:
+           
 
+            
+           
+"""
             Original Tweet: "{context.tweet_text}"
             Author: @{context.author_username}
             Sentiment: {context.sentiment.value}
             Topic: {profile.topic}
             Matched Keywords: {', '.join(context.topic_keywords)}
+           """
+
+            
+           
+
+            Generate a helpful, engaging reply to this Twitter conversation:
+           
+""""""
 
             Style Guidelines: {style_guidance}
 
@@ -706,14 +1280,17 @@ class TwitterEngagementAgent:
             - Maximum 250 characters (leaving room for mentions)
             - Be genuinely helpful and add value
             - Match the conversation tone
-            - Don't be promotional or salesy
+            - Don't be promotional or salesy'
             - Be authentic and conversational
             - Include relevant emojis if appropriate
-            - Don't repeat information already in the original tweet
+            - Don't repeat information already in the original tweet'
 
             Generate only the reply text, nothing else.
-            """
+           
 
+            
+           
+"""
             response = await self.ollama.query_llm(prompt=prompt, model_name="llama3.2:3b")
 
             reply_text = response.response_text.strip()
@@ -732,26 +1309,44 @@ class TwitterEngagementAgent:
             return "", 0.0, f"Generation failed: {e}"
 
     def _get_style_guidance(self, engagement_style: str, sentiment: SentimentType) -> str:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Get style guidance based on engagement style and sentiment.
+       """
+
+        
+       
 
         Args:
             engagement_style (str): Engagement style
             sentiment (SentimentType): Conversation sentiment
+       
+""""""
 
+        Get style guidance based on engagement style and sentiment.
+       
+
+        
+       
+"""
         Returns:
             str: Style guidance
-        """
+       """"""
         style_map = {
-            "educational_helpful": "Be informative \
-    and educational. Share knowledge or resources.",
-            "technical_supportive": "Offer technical insights or solutions. Be precise \
-    and helpful.",
-            "encouraging_collaborative": "Be supportive \
-    and encouraging. Suggest collaboration.",
-            "insightful_forward_thinking": "Share insights about trends \
-    and future implications.",
-        }
+            "educational_helpful": "Be informative \"
+#     and educational. Share knowledge or resources.",
+            "technical_supportive": "Offer technical insights or solutions. Be precise \"
+#     and helpful.",
+            "encouraging_collaborative": "Be supportive \"
+#     and encouraging. Suggest collaboration.",
+            "insightful_forward_thinking": "Share insights about trends \"
+#     and future implications.",
+         }
 
         base_guidance = style_map.get(engagement_style, "Be helpful and authentic.")
 
@@ -766,21 +1361,58 @@ class TwitterEngagementAgent:
     def _evaluate_reply_quality(
         self, reply_text: str, context: ConversationContext, profile: TopicProfile
     ) -> Tuple[float, str]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Evaluate the quality of a generated reply.
+       """
+
+        
+       
 
         Args:
             reply_text (str): Generated reply
             context (ConversationContext): Conversation context
             profile (TopicProfile): Topic profile
+       
+""""""
 
+        Evaluate the quality of a generated reply.
+       
+
+        
+       
+"""
         Returns:
             Tuple[float, str]: (confidence_score, reasoning)
-        """
-        confidence = 0.5  # Base confidence
-        reasoning_parts = []
+       """
 
+        
+       
+
+        confidence = 0.5  # Base confidence
+       
+""""""
+
+        reasoning_parts = []
+       
+
+        
+       
+"""
         # Check length appropriateness
+       """
+
+        
+       
+
+        reasoning_parts = []
+       
+""""""
         if 20 <= len(reply_text) <= 250:
             confidence += 0.1
             reasoning_parts.append("appropriate length")
@@ -788,7 +1420,7 @@ class TwitterEngagementAgent:
         # Check for topic relevance
         topic_matches = sum(
             1 for keyword in profile.keywords if keyword.lower() in reply_text.lower()
-        )
+         )
         if topic_matches > 0:
             confidence += 0.2
             reasoning_parts.append(f"mentions {topic_matches} topic keywords")
@@ -796,7 +1428,7 @@ class TwitterEngagementAgent:
         # Check for question responsiveness
         if "?" in context.tweet_text and any(
             word in reply_text.lower() for word in ["yes", "no", "try", "use", "check"]
-        ):
+#         ):
             confidence += 0.15
             reasoning_parts.append("responds to question")
 
@@ -809,7 +1441,7 @@ class TwitterEngagementAgent:
             "suggest",
             "recommend",
             "tip",
-        ]
+         ]
         if any(word in reply_text.lower() for word in value_words):
             confidence += 0.1
             reasoning_parts.append("offers helpful suggestions")
@@ -826,22 +1458,54 @@ class TwitterEngagementAgent:
 
     def _calculate_priority(
         self, context: ConversationContext, profile: TopicProfile
-    ) -> ConversationPriority:
-        """
+#     ) -> ConversationPriority:
+        """"""
+
+       
+
+        
+       
+"""
         Calculate priority for an engagement opportunity.
+       """
+
+        
+       
 
         Args:
             context (ConversationContext): Conversation context
             profile (TopicProfile): Topic profile
+       
+""""""
 
+        Calculate priority for an engagement opportunity.
+       
+
+        
+       
+"""
         Returns:
             ConversationPriority: Calculated priority
-        """
-        score = 0.0
+       """"""
+        
+       """
 
+        score = 0.0
+       
+
+        
+       
+"""
         # Factor in topic priority weight
         score += profile.priority_weight * 0.3
+       """
 
+        
+       
+
+        score = 0.0
+       
+""""""
         # Factor in relevance score
         score += context.relevance_score * 0.3
 
@@ -851,7 +1515,7 @@ class TwitterEngagementAgent:
             metrics.get("like_count", 0) * 0.1
             + metrics.get("retweet_count", 0) * 0.2
             + metrics.get("reply_count", 0) * 0.3
-        ) / 10  # Normalize
+#         ) / 10  # Normalize
         score += min(engagement_score, 0.3)
 
         # Factor in recency (newer tweets get higher priority)
@@ -870,24 +1534,61 @@ class TwitterEngagementAgent:
             return ConversationPriority.LOW
 
     def _save_opportunity(self, opportunity: EngagementOpportunity) -> None:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Save engagement opportunity to database.
+       """
+
+        
+       
 
         Args:
             opportunity (EngagementOpportunity): Opportunity to save
-        """
+       
+""""""
+
+        
+
         try:
+        
+""""""
+
+        
+       
+
+        Save engagement opportunity to database.
+       
+""""""
+
             conn = sqlite3.connect(self.db_path)
+           
+
+            
+           
+"""
             cursor = conn.cursor()
+           """
+
+            
+           
 
             cursor.execute(
-                """
+               
+""""""
+
                 INSERT OR REPLACE INTO engagement_opportunities (
                     opportunity_id, tweet_id, author_username, tweet_text,
                         engagement_type, priority, suggested_reply, confidence_score,
                         reasoning, keywords_matched, created_at, expires_at
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            
+,
+"""
                 (
                     opportunity.opportunity_id,
                     opportunity.conversation.tweet_id,
@@ -901,9 +1602,23 @@ class TwitterEngagementAgent:
                     json.dumps(opportunity.keywords_matched),
                     opportunity.created_at,
                     opportunity.expires_at,
-                ),
-            )
+                 ),
+            """
 
+             
+            
+
+             )
+            
+""""""
+
+           
+
+            
+           
+"""
+            cursor = conn.cursor()
+           """"""
             conn.commit()
             conn.close()
 
@@ -911,18 +1626,56 @@ class TwitterEngagementAgent:
             self.logger.error(f"Failed to save opportunity: {e}")
 
     def execute_engagement(self, opportunity_id: str) -> EngagementResult:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Execute an engagement opportunity.
+       """
+
+        
+       
 
         Args:
             opportunity_id (str): Opportunity ID to execute
+       
+""""""
 
+        Execute an engagement opportunity.
+       
+
+        
+       
+"""
         Returns:
             EngagementResult: Result of engagement attempt
-        """
+       """
+
+        
+       
+
         try:
+           
+""""""
+
             # Load opportunity
+           
+
+            
+           
+"""
             opportunity = self._load_opportunity(opportunity_id)
+           """
+
+            
+           
+
+            # Load opportunity
+           
+""""""
             if not opportunity:
                 return EngagementResult(
                     opportunity_id=opportunity_id,
@@ -932,7 +1685,7 @@ class TwitterEngagementAgent:
                     engagement_metrics={},
                     posted_at=None,
                     error_message="Opportunity not found",
-                )
+                 )
 
             # Check if opportunity has expired
             if datetime.now() > opportunity.expires_at:
@@ -944,18 +1697,18 @@ class TwitterEngagementAgent:
                     engagement_metrics={},
                     posted_at=None,
                     error_message="Opportunity expired",
-                )
+                 )
 
             # Prepare reply tweet
             reply_text = (
                 f"@{opportunity.conversation.author_username} {opportunity.suggested_reply}"
-            )
+             )
 
             tweet_data = TweetData(
                 text=reply_text,
                 tweet_type=TweetType.ENGAGEMENT,
                 reply_to_id=opportunity.conversation.tweet_id,
-            )
+             )
 
             # Post reply
             result = self.twitter.post_tweet(tweet_data)
@@ -968,7 +1721,7 @@ class TwitterEngagementAgent:
                     EngagementType.REPLY,
                     tweet_id,
                     True,
-                )
+                 )
 
                 engagement_result = EngagementResult(
                     opportunity_id=opportunity_id,
@@ -978,7 +1731,7 @@ class TwitterEngagementAgent:
                     engagement_metrics={},
                     posted_at=datetime.now(),
                     error_message=None,
-                )
+                 )
             else:
                 engagement_result = EngagementResult(
                     opportunity_id=opportunity_id,
@@ -988,7 +1741,7 @@ class TwitterEngagementAgent:
                     engagement_metrics={},
                     posted_at=None,
                     error_message="Tweet posting failed",
-                )
+                 )
 
             # Save result
             self._save_engagement_result(engagement_result)
@@ -1005,26 +1758,64 @@ class TwitterEngagementAgent:
                 engagement_metrics={},
                 posted_at=None,
                 error_message=str(e),
-            )
+             )
 
     def _load_opportunity(self, opportunity_id: str) -> Optional[EngagementOpportunity]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Load engagement opportunity from database.
+       """
+
+        
+       
 
         Args:
             opportunity_id (str): Opportunity ID
+       
+""""""
 
+        Load engagement opportunity from database.
+       
+
+        
+       
+"""
         Returns:
             Optional[EngagementOpportunity]: Loaded opportunity
-        """
+       """"""
         try:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
+        """
 
+            conn = sqlite3.connect(self.db_path)
+        
+
+        try:
+        
+""""""
+
+            
+           
+
+            cursor = conn.cursor()
+           
+""""""
             cursor.execute(
                 "SELECT * FROM engagement_opportunities WHERE opportunity_id = ?",
                 (opportunity_id,),
-            )
+             )
+           """
+
+            
+           
+
+            cursor = conn.cursor()
+           
+""""""
             result = cursor.fetchone()
             conn.close()
 
@@ -1044,7 +1835,7 @@ class TwitterEngagementAgent:
                 sentiment=SentimentType.NEUTRAL,
                 topic_keywords=json.loads(result[9]) if result[9] else [],
                 relevance_score=0.5,
-            )
+             )
 
             opportunity = EngagementOpportunity(
                 opportunity_id=result[0],
@@ -1057,7 +1848,7 @@ class TwitterEngagementAgent:
                 keywords_matched=json.loads(result[9]) if result[9] else [],
                 created_at=datetime.fromisoformat(result[10]),
                 expires_at=datetime.fromisoformat(result[11]),
-            )
+             )
 
             return opportunity
 
@@ -1071,29 +1862,80 @@ class TwitterEngagementAgent:
         interaction_type: EngagementType,
         tweet_id: str,
         success: bool,
-    ) -> None:
-        """
+#     ) -> None:
+        """"""
+
+       
+
+        
+       
+"""
         Record user interaction in database.
+       """
+
+        
+       
 
         Args:
             username (str): Username
             interaction_type (EngagementType): Type of interaction
             tweet_id (str): Tweet ID
             success (bool): Whether interaction was successful
-        """
+       
+""""""
+
+        
+
         try:
+        
+""""""
+
+        
+       
+
+        Record user interaction in database.
+       
+""""""
+
             conn = sqlite3.connect(self.db_path)
+           
+
+            
+           
+"""
             cursor = conn.cursor()
+           """
+
+            
+           
 
             cursor.execute(
-                """
+               
+""""""
+
                 INSERT INTO user_interactions (
                     username, interaction_type, interaction_date, tweet_id, success
                 ) VALUES (?, ?, ?, ?, ?)
-            """,
+            
+,
+"""
                 (username, interaction_type.value, datetime.now(), tweet_id, success),
-            )
+            """
 
+             
+            
+
+             )
+            
+""""""
+
+           
+
+            
+           
+"""
+            cursor = conn.cursor()
+           """"""
             conn.commit()
             conn.close()
 
@@ -1101,23 +1943,60 @@ class TwitterEngagementAgent:
             self.logger.error(f"Failed to record user interaction: {e}")
 
     def _save_engagement_result(self, result: EngagementResult) -> None:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Save engagement result to database.
+       """
+
+        
+       
 
         Args:
             result (EngagementResult): Result to save
-        """
+       
+""""""
+
+        
+
         try:
+        
+""""""
+
+        
+       
+
+        Save engagement result to database.
+       
+""""""
+
             conn = sqlite3.connect(self.db_path)
+           
+
+            
+           
+"""
             cursor = conn.cursor()
+           """
+
+            
+           
 
             cursor.execute(
-                """
+               
+""""""
+
                 INSERT OR REPLACE INTO engagement_results (
                     opportunity_id, status, posted_content, tweet_id,
                         engagement_metrics, posted_at, error_message
                 ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+            
+,
+"""
                 (
                     result.opportunity_id,
                     result.status.value,
@@ -1126,9 +2005,23 @@ class TwitterEngagementAgent:
                     json.dumps(result.engagement_metrics),
                     result.posted_at,
                     result.error_message,
-                ),
-            )
+                 ),
+            """
 
+             
+            
+
+             )
+            
+""""""
+
+           
+
+            
+           
+"""
+            cursor = conn.cursor()
+           """"""
             conn.commit()
             conn.close()
 
@@ -1136,22 +2029,57 @@ class TwitterEngagementAgent:
             self.logger.error(f"Failed to save engagement result: {e}")
 
     def process_pending_engagements(self, max_engagements: int = 10) -> int:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Process pending engagement opportunities.
+       """
+
+        
+       
 
         Args:
             max_engagements (int): Maximum engagements to process
+       
+""""""
 
+        Process pending engagement opportunities.
+       
+
+        
+       
+"""
         Returns:
             int: Number of engagements processed
-        """
+       """"""
         try:
+        """
+
             conn = sqlite3.connect(self.db_path)
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             cursor = conn.cursor()
+           
+""""""
 
             # Get pending opportunities, prioritized
             cursor.execute(
-                """
+               
+
+                
+               
+"""
                 SELECT opportunity_id FROM engagement_opportunities
                 WHERE status = 'pending' AND expires_at > ?
                 ORDER BY
@@ -1164,10 +2092,26 @@ class TwitterEngagementAgent:
                         confidence_score DESC,
                         created_at ASC
                 LIMIT ?
-            """,
-                (datetime.now(), max_engagements),
-            )
+            """
+,
 
+                (datetime.now(), max_engagements),
+            
+""""""
+
+             )
+            
+
+             
+            
+""""""
+
+            
+           
+
+            cursor = conn.cursor()
+           
+""""""
             opportunity_ids = [row[0] for row in cursor.fetchall()]
             conn.close()
 
@@ -1190,24 +2134,70 @@ class TwitterEngagementAgent:
             return 0
 
     def get_engagement_analytics(self, days: int = 7) -> Dict[str, Any]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Get engagement analytics.
+       """
+
+        
+       
 
         Args:
             days (int): Number of days to analyze
+       
+""""""
 
+        Get engagement analytics.
+       
+
+        
+       
+"""
         Returns:
             Dict[str, Any]: Analytics data
-        """
+       """"""
         try:
+        """
+
             conn = sqlite3.connect(self.db_path)
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             cursor = conn.cursor()
+           
+""""""
+
+           
+
+
+            
+
+           
+"""
+            cursor = conn.cursor()
+           """
+
+            
+           
 
             cutoff_date = datetime.now() - timedelta(days=days)
 
             # Get engagement statistics
             cursor.execute(
-                """
+               
+""""""
+
                 SELECT
                     COUNT(*) as total_opportunities,
                         SUM(CASE WHEN status = 'posted' THEN 1 ELSE 0 END) as successful_engagements,
@@ -1216,25 +2206,42 @@ class TwitterEngagementAgent:
                 FROM engagement_opportunities eo
                 LEFT JOIN engagement_results er ON eo.opportunity_id = er.opportunity_id
                 WHERE eo.created_at >= ?
-            """,
+            
+,
+"""
                 (cutoff_date,),
-            )
+            """
 
+             
+            
+
+             )
+            
+""""""
             stats = cursor.fetchone()
 
             # Get top topics
             cursor.execute(
-                """
+                """"""
+
                 SELECT keywords_matched, COUNT(*) as count
                 FROM engagement_opportunities
                 WHERE created_at >= ? AND keywords_matched IS NOT NULL
                 GROUP BY keywords_matched
                 ORDER BY count DESC
                 LIMIT 5
-            """,
+            
+,
+"""
                 (cutoff_date,),
-            )
+            """
 
+             
+            
+
+             )
+            
+""""""
             top_topics = cursor.fetchall()
 
             conn.close()
@@ -1249,8 +2256,8 @@ class TwitterEngagementAgent:
                 "top_topics": [
                     {"keywords": json.loads(row[0]) if row[0] else [], "count": row[1]}
                     for row in top_topics
-                ],
-            }
+                 ],
+             }
 
         except Exception as e:
             self.logger.error(f"Failed to get engagement analytics: {e}")
@@ -1259,28 +2266,85 @@ class TwitterEngagementAgent:
     async def search_and_engage(
         self, keywords: List[str], max_engagements: int = 5
     ) -> Dict[str, Any]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Search for conversations based on keywords and engage with them.
+       """
+
+        
+       
 
         Args:
             keywords (List[str]): Keywords to search for
                 max_engagements (int): Maximum number of engagements to perform
+       
+""""""
 
+        Search for conversations based on keywords and engage with them.
+       
+
+        
+       
+"""
         Returns:
             Dict[str, Any]: Results of the engagement process
-        """
+       """
+
+        
+       
+
         try:
+           
+""""""
+
             # Discover opportunities based on keywords
+           
+
+            
+           
+"""
             opportunities = await self.discover_engagement_opportunities(
+           """
+
+            
+           
+
+            # Discover opportunities based on keywords
+           
+""""""
+
                 max_opportunities=max_engagements * 2
-            )
+            
+
+             
+            
+"""
+             )
+            """
+
+             
+            
 
             # Filter opportunities by keywords
+            
+""""""
+
+             )
+            
+
+             
+            
+"""
             filtered_opportunities = []
             for opportunity in opportunities:
                 matched_keywords = self._find_matched_keywords(
                     opportunity.conversation.tweet_text, keywords
-                )
+                 )
                 if matched_keywords:
                     opportunity.keywords_matched = matched_keywords
                     filtered_opportunities.append(opportunity)
@@ -1307,33 +2371,71 @@ class TwitterEngagementAgent:
                 "successful_engagements": successful_engagements,
                 "failed_engagements": failed_engagements,
                 "keywords_used": keywords,
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Failed to search and engage: {e}")
             return {"success": False, "error": str(e), "keywords_used": keywords}
 
     async def monitor_topics(self, topics: List[str]) -> Dict[str, Any]:
-        """
+        """"""
+
+       
+
+        
+       
+"""
         Monitor specified topics for engagement opportunities.
+       """
+
+        
+       
 
         Args:
             topics (List[str]): Topics to monitor
+       
+""""""
 
+        Monitor specified topics for engagement opportunities.
+       
+
+        
+       
+"""
         Returns:
             Dict[str, Any]: Results of the monitoring process
-        """
+       """"""
         try:
+        """
+
             total_opportunities = 0
+        
+
+        try:
+        
+""""""
+
+            
+           
+
             topic_results = {}
+           
+""""""
 
             for topic in topics:
                 # Find matching topic profile
+           
+
+            
+           
+"""
+            topic_results = {}
+           """"""
                 matching_profile = None
                 for profile in self.topic_profiles:
                     if topic.lower() in profile.topic.lower() or any(
                         keyword.lower() in topic.lower() for keyword in profile.keywords
-                    ):
+#                     ):
                         matching_profile = profile
                         break
 
@@ -1347,7 +2449,7 @@ class TwitterEngagementAgent:
                         max_daily_engagements=5,
                         current_daily_count=0,
                         last_reset_date=datetime.now().date(),
-                    )
+                     )
 
                 # Search for opportunities for this topic
                 search_queries = self._generate_search_queries(matching_profile)
@@ -1363,18 +2465,18 @@ class TwitterEngagementAgent:
                                 "author_id",
                                 "public_metrics",
                                 "context_annotations",
-                            ],
-                        )
+                             ],
+                         )
 
                         for result in results:
                             opportunity = await self._analyze_engagement_potential(
                                 result, matching_profile
-                            )
+                             )
 
                             if (
                                 opportunity
                                 and opportunity.confidence_score >= self.min_confidence_score
-                            ):
+#                             ):
                                 self._save_opportunity(opportunity)
                                 topic_opportunities += 1
 
@@ -1388,7 +2490,7 @@ class TwitterEngagementAgent:
                 topic_results[topic] = {
                     "opportunities_found": topic_opportunities,
                     "profile_used": matching_profile.topic,
-                }
+                 }
                 total_opportunities += topic_opportunities
 
             return {
@@ -1396,7 +2498,7 @@ class TwitterEngagementAgent:
                 "total_opportunities": total_opportunities,
                 "topics_monitored": len(topics),
                 "topic_results": topic_results,
-            }
+             }
 
         except Exception as e:
             self.logger.error(f"Failed to monitor topics: {e}")

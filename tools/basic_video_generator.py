@@ -1,38 +1,41 @@
 #!/usr/bin/env python3
-"""
+""""""
 Basic Video Generator - Simple MP4 Creation Tool
 
 This tool creates MP4 videos from static background images and audio files
-using ffmpeg. It's designed to be a reliable fallback for video generation
+using ffmpeg. It's designed to be a reliable fallback for video generation'
 that bypasses complex avatar processing.
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import os
 import subprocess
 from pathlib import Path
+from typing import Optional
 
 from utils.logger import setup_logger
 
 
 def create_basic_video(
     background_image_path: str, audio_path: str, output_path: str
-) -> bool:
-    """
+# BRACKET_SURGEON: disabled
+# ) -> bool:
+    """"""
     Generates a simple MP4 video from a static image and an audio file using ffmpeg.
 
     Args:
         background_image_path (str): Path to the background image (jpg, png, etc.)
         audio_path (str): Path to the audio file (mp3,
     wav,
-    etc.) - can be None for silent video
+# BRACKET_SURGEON: disabled
+#     etc.) - can be None for silent video
         output_path (str): Path where the output MP4 video will be saved
 
     Returns:
         bool: True on success, False on failure
-    """
+    """"""
     logger = setup_logger()
 
     # Validate background image exists
@@ -73,7 +76,8 @@ def create_basic_video(
                 "-shortest",  # End video when audio ends
             "-y",  # Overwrite output file if it exists
             output_path,
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
     else:
         # Command for silent video (10 seconds duration)
         command = [
@@ -92,7 +96,8 @@ def create_basic_video(
                 "10",  # 10 seconds duration for silent video
             "-y",  # Overwrite output file if it exists
             output_path,
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
     try:
         logger.info(f"Generating basic video at: {output_path}")
@@ -105,7 +110,8 @@ def create_basic_video(
         result = subprocess.run(command,
     check = True,
     capture_output = True,
-    text = True)
+# BRACKET_SURGEON: disabled
+#     text = True)
 
         # Verify output file was created
         if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
@@ -127,9 +133,9 @@ def create_basic_video(
 
 
 def create_basic_video_with_defaults(
-    audio_path: str, title: str = "Video", output_dir: str = None
-) -> str:
-    """
+    audio_path: str, title: str = "Video", output_dir: Optional[str] = None
+) -> Optional[str]:
+    """"""
     Creates a basic video using default background and naming conventions.
 
     Args:
@@ -139,16 +145,16 @@ def create_basic_video_with_defaults(
 
     Returns:
         str: Path to the generated video file, or None if failed
-    """
+    """"""
     logger = setup_logger()
 
     # Set default output directory
     if output_dir is None:
-        output_dir = Path("./output/basic_videos")
+        output_dir_path = Path("./output/basic_videos")
     else:
-        output_dir = Path(output_dir)
+        output_dir_path = Path(output_dir)
 
-    output_dir.mkdir(parents = True, exist_ok = True)
+    output_dir_path.mkdir(parents = True, exist_ok = True)
 
     # Create default background if it doesn't exist
     background_path = Path("./assets/backgrounds/default_background.jpg")
@@ -167,7 +173,7 @@ def create_basic_video_with_defaults(
 
     timestamp = datetime.now().strftime("%Y % m%d_ % H%M % S")
     output_filename = f"basic_video_{safe_title}_{timestamp}.mp4"
-    output_path = output_dir/output_filename
+    output_path = output_dir_path / output_filename
 
     # Generate the video
     success = create_basic_video(str(background_path), audio_path, str(output_path))
@@ -181,7 +187,7 @@ def create_basic_video_with_defaults(
 
 
 def create_default_background(output_path: str) -> bool:
-    """
+    """"""
     Creates a default background image using ffmpeg.
 
     Args:
@@ -189,7 +195,7 @@ def create_default_background(output_path: str) -> bool:
 
     Returns:
         bool: True on success, False on failure
-    """
+    """"""
     logger = setup_logger()
 
     # Create a gradient background with TRAE.AI branding
@@ -198,19 +204,21 @@ def create_default_background(output_path: str) -> bool:
             "-f",
             "lavfi",
             "-i",
-            "color = c=#1e3c72:size = 1920x1080:duration = 1",
+            "color = c=#1e3c72:size = 1920x1080:duration = 1","
             "-vf",
             (
             "drawtext = text='TRAE.AI':"
             "fontcolor = white:fontsize = 120:x=(w - text_w)/2:y=(h - text_h)/2 - 100,"
             "drawtext = text='Production System':"
-            "fontcolor=#FFD700:fontsize = 60:x=(w - text_w)/2:y=(h - text_h)/2 + 50"
-        ),
+            "fontcolor=#FFD700:fontsize = 60:x=(w - text_w)/2:y=(h - text_h)/2 + 50""
+# BRACKET_SURGEON: disabled
+#         ),
             "-frames:v",
             "1",
             "-y",
             output_path,
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
     try:
         logger.info(f"Creating default background: {output_path}")
@@ -224,12 +232,13 @@ def create_default_background(output_path: str) -> bool:
 if __name__ == "__main__":
     # Test the basic video generator
 
-        import sys
+    import sys
 
     if len(sys.argv) < 3:
         print(
             "Usage: python basic_video_generator.py <background_image> <audio_file> [output_file]"
-        )
+# BRACKET_SURGEON: disabled
+#         )
         sys.exit(1)
 
     background = sys.argv[1]

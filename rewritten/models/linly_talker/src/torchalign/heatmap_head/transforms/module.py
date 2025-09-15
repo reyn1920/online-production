@@ -20,5 +20,6 @@ class BinaryHeatmap2Coordinate(nn.Module):
         format_string = self.__class__.__name__ + "("
         format_string += "topk={}, ".format(self.topk)
         format_string += "stride={}".format(self.stride)
-        format_string += ")"
+# BRACKET_SURGEON: disabled
+#         format_string += ")"
         return format_string

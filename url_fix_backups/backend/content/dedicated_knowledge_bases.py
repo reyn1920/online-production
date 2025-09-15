@@ -1,11 +1,11 @@
 #!/usr / bin / env python3
-"""
+""""""
 Dedicated Knowledge Bases System
 
 Creates \
-    and manages channel - specific database tables for evidence - based content creation.
+#     and manages channel - specific database tables for evidence - based content creation.
 Each channel gets its own set of specialized tables based on its topic area.
-"""
+""""""
 
 import json
 import logging
@@ -61,9 +61,9 @@ class KnowledgeEntry:
 
 
 class DedicatedKnowledgeBases:
-    """
+    """"""
     Manages channel - specific knowledge base tables and content
-    """
+    """"""
 
     def __init__(self, db_path: str = "data / right_perspective.db"):
         self.db_path = db_path
@@ -76,7 +76,7 @@ class DedicatedKnowledgeBases:
         """Initialize table schemas for different channel types"""
         return {
             ChannelType.TECH: {
-                "tech_specs": """
+                "tech_specs": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_tech_specs (
                         spec_id TEXT PRIMARY KEY,
                             product_name TEXT NOT NULL,
@@ -90,9 +90,10 @@ class DedicatedKnowledgeBases:
                             source_url TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "product_reviews": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "product_reviews": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_product_reviews (
                         review_id TEXT PRIMARY KEY,
                             product_name TEXT NOT NULL,
@@ -107,9 +108,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "tech_trends": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "tech_trends": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_tech_trends (
                         trend_id TEXT PRIMARY KEY,
                             trend_name TEXT NOT NULL,
@@ -123,11 +125,13 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-            },
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.WELLNESS: {
-                "health_studies": """
+                "health_studies": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_health_studies (
                         study_id TEXT PRIMARY KEY,
                             study_title TEXT NOT NULL,
@@ -145,9 +149,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "expert_quotes": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "expert_quotes": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_expert_quotes (
                         quote_id TEXT PRIMARY KEY,
                             expert_name TEXT NOT NULL,
@@ -161,9 +166,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "wellness_tips": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "wellness_tips": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_wellness_tips (
                         tip_id TEXT PRIMARY KEY,
                             category TEXT NOT NULL,
@@ -178,11 +184,13 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-            },
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.FINANCE: {
-                "market_data": """
+                "market_data": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_market_data (
                         data_id TEXT PRIMARY KEY,
                             asset_type TEXT NOT NULL,
@@ -199,9 +207,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "economic_indicators": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "economic_indicators": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_economic_indicators (
                         indicator_id TEXT PRIMARY KEY,
                             indicator_name TEXT NOT NULL,
@@ -216,9 +225,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "investment_strategies": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "investment_strategies": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_investment_strategies (
                         strategy_id TEXT PRIMARY KEY,
                             strategy_name TEXT NOT NULL,
@@ -234,11 +244,13 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-            },
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.POLITICAL: {
-                "political_facts": """
+                "political_facts": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_political_facts (
                         fact_id TEXT PRIMARY KEY,
                             claim TEXT NOT NULL,
@@ -252,9 +264,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "policy_analysis": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "policy_analysis": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_policy_analysis (
                         analysis_id TEXT PRIMARY KEY,
                             policy_name TEXT NOT NULL,
@@ -269,9 +282,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "voting_records": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "voting_records": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_voting_records (
                         record_id TEXT PRIMARY KEY,
                             politician_name TEXT NOT NULL,
@@ -286,11 +300,13 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-            },
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.BUSINESS: {
-                "company_profiles": """
+                "company_profiles": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_company_profiles (
                         profile_id TEXT PRIMARY KEY,
                             company_name TEXT NOT NULL,
@@ -308,9 +324,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "business_strategies": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "business_strategies": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_business_strategies (
                         strategy_id TEXT PRIMARY KEY,
                             strategy_name TEXT NOT NULL,
@@ -325,9 +342,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "market_insights": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "market_insights": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_market_insights (
                         insight_id TEXT PRIMARY KEY,
                             market_segment TEXT NOT NULL,
@@ -343,11 +361,13 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-            },
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.SCIENCE: {
-                "research_papers": """
+                "research_papers": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_research_papers (
                         paper_id TEXT PRIMARY KEY,
                             title TEXT NOT NULL,
@@ -365,9 +385,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "scientific_discoveries": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "scientific_discoveries": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_scientific_discoveries (
                         discovery_id TEXT PRIMARY KEY,
                             discovery_name TEXT NOT NULL,
@@ -383,9 +404,10 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-                "expert_profiles": """
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+                "expert_profiles": """"""
                     CREATE TABLE IF NOT EXISTS {channel_id}_expert_profiles (
                         expert_id TEXT PRIMARY KEY,
                             name TEXT NOT NULL,
@@ -400,10 +422,13 @@ class DedicatedKnowledgeBases:
                             credibility_score REAL DEFAULT 0.0,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                     )
+                ""","""
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     def _ensure_base_tables(self):
         """Ensure base knowledge management tables exist"""
@@ -412,7 +437,7 @@ class DedicatedKnowledgeBases:
 
             # Knowledge entries master table
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS knowledge_entries (
                     entry_id TEXT PRIMARY KEY,
                         channel_id TEXT NOT NULL,
@@ -428,13 +453,15 @@ class DedicatedKnowledgeBases:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (channel_id) REFERENCES channels (channel_id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Knowledge usage tracking
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS knowledge_usage (
                     usage_id TEXT PRIMARY KEY,
                         entry_id TEXT NOT NULL,
@@ -445,13 +472,15 @@ class DedicatedKnowledgeBases:
                         used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (entry_id) REFERENCES knowledge_entries (entry_id),
                         FOREIGN KEY (channel_id) REFERENCES channels (channel_id)
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             # Knowledge source tracking
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS knowledge_sources (
                     source_id TEXT PRIMARY KEY,
                         source_name TEXT NOT NULL,
@@ -462,9 +491,11 @@ class DedicatedKnowledgeBases:
                         access_frequency INTEGER DEFAULT 0,
                         quality_metrics TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# BRACKET_SURGEON: disabled
+#                 )
+            """"""
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -503,8 +534,9 @@ class DedicatedKnowledgeBases:
 
     def add_knowledge_entry(
         self, channel_id: str, table_name: str, entry_data: Dict[str, Any]
-    ) -> str:
-        """Add a knowledge entry to a channel's specific table"""
+# BRACKET_SURGEON: disabled
+#     ) -> str:
+        """Add a knowledge entry to a channel's specific table"""'
         config = self.protocol.get_channel_config(channel_id)
         if not config:
             raise ValueError(f"Channel {channel_id} not found")
@@ -520,12 +552,13 @@ class DedicatedKnowledgeBases:
 
             # Check if table exists
             cursor.execute(
-                """
+                """"""
                 SELECT name FROM sqlite_master
                 WHERE type='table' AND name=?
-            """,
+            ""","""
                 (full_table_name,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not cursor.fetchone():
                 # Create tables if they don't exist
@@ -553,12 +586,13 @@ class DedicatedKnowledgeBases:
 
             # Also add to master knowledge_entries table
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO knowledge_entries
                 (entry_id, channel_id, table_name, entry_type, title, content, source,
-                    credibility_score, relevance_score, tags, metadata, created_at, updated_at)
+# BRACKET_SURGEON: disabled
+#                     credibility_score, relevance_score, tags, metadata, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     entry_id,
                     channel_id,
@@ -575,12 +609,16 @@ class DedicatedKnowledgeBases:
                             k: v
                             for k, v in entry_data.items()
                             if k not in ["title", "content", "source"]
-                        }
-                    ),
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     ),
                     entry_data["created_at"],
                     entry_data["updated_at"],
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
 
             conn.commit()
 
@@ -607,7 +645,8 @@ class DedicatedKnowledgeBases:
             "research_papers": "paper_id",
             "scientific_discoveries": "discovery_id",
             "expert_profiles": "expert_id",
-        }
+# BRACKET_SURGEON: disabled
+#         }
         return primary_key_map.get(table_name, "entry_id")
 
     def get_knowledge_entries(
@@ -660,19 +699,20 @@ class DedicatedKnowledgeBases:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
 
-            query = """
+            query = """"""
                 SELECT *,
                     (CASE
                         WHEN title LIKE ? THEN 3
                         WHEN content LIKE ? THEN 2
                         WHEN tags LIKE ? THEN 1
                         ELSE 0
-                       END) as search_relevance
+# BRACKET_SURGEON: disabled
+#                        END) as search_relevance
                 FROM knowledge_entries
                 WHERE channel_id = ?
                   AND credibility_score >= ?
                   AND (title LIKE ? OR content LIKE ? OR tags LIKE ?)
-            """
+            """"""
 
             params = [
                 f"%{search_term}%",
@@ -683,7 +723,8 @@ class DedicatedKnowledgeBases:
                 f"%{search_term}%",
                 f"%{search_term}%",
                 f"%{search_term}%",  # For filtering
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             if table_name:
                 query += " AND table_name = ?"
@@ -715,14 +756,16 @@ class DedicatedKnowledgeBases:
         for evidence_type in evidence_types:
             entries = self.search_knowledge_base(
                 channel_id=channel_id, search_term=topic, min_credibility=0.6
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Filter by evidence type
             filtered_entries = [
                 entry
                 for entry in entries
                 if entry.get("entry_type", "").lower() == evidence_type.lower()
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             evidence[evidence_type] = filtered_entries[:5]  # Top 5 for each type
 
@@ -735,22 +778,24 @@ class DedicatedKnowledgeBases:
 
             # Update in master table
             cursor.execute(
-                """
+                """"""
                 UPDATE knowledge_entries
                 SET credibility_score = ?, updated_at = ?
                 WHERE entry_id = ?
-            """,
+            ""","""
                 (new_score, datetime.now().isoformat(), entry_id),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Get table info to update specific table
             cursor.execute(
-                """
+                """"""
                 SELECT channel_id, table_name FROM knowledge_entries
                 WHERE entry_id = ?
-            """,
+            ""","""
                 (entry_id,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             result = cursor.fetchone()
             if result:
@@ -759,11 +804,11 @@ class DedicatedKnowledgeBases:
                 primary_key = self._get_primary_key_field(table_name)
 
                 # Update in specific table
-                update_query = f"""
+                update_query = f""""""
                     UPDATE {full_table_name}
                     SET credibility_score = ?, updated_at = ?
                     WHERE {primary_key} = ?
-                """
+                """"""
                 cursor.execute(update_query, (new_score, datetime.now().isoformat(), entry_id))
 
             conn.commit()
@@ -775,16 +820,18 @@ class DedicatedKnowledgeBases:
         content_id: str = None,
         usage_context: str = None,
         effectiveness_score: float = None,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Track usage of knowledge entries for optimization"""
         usage_id = (
             f"usage_{datetime.now().strftime('%Y % m%d_ % H%M % S')}_{hash(entry_id) % 10000}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 INSERT INTO knowledge_usage
                 (usage_id,
     entry_id,
@@ -792,9 +839,10 @@ class DedicatedKnowledgeBases:
     content_id,
     usage_context,
     effectiveness_score,
-    used_at)
+# BRACKET_SURGEON: disabled
+#     used_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     usage_id,
                     entry_id,
@@ -803,8 +851,10 @@ class DedicatedKnowledgeBases:
                     usage_context,
                     effectiveness_score,
                     datetime.now().isoformat(),
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     def get_channel_knowledge_stats(self, channel_id: str) -> Dict[str, Any]:
@@ -814,41 +864,45 @@ class DedicatedKnowledgeBases:
 
             # Total entries
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*) FROM knowledge_entries WHERE channel_id = ?
-            """,
+            ""","""
                 (channel_id,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             total_entries = cursor.fetchone()[0]
 
             # Entries by type
             cursor.execute(
-                """
+                """"""
                 SELECT entry_type, COUNT(*) FROM knowledge_entries
                 WHERE channel_id = ? GROUP BY entry_type
-            """,
+            ""","""
                 (channel_id,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             entries_by_type = dict(cursor.fetchall())
 
             # Average credibility
             cursor.execute(
-                """
+                """"""
                 SELECT AVG(credibility_score) FROM knowledge_entries
                 WHERE channel_id = ?
-            """,
+            ""","""
                 (channel_id,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             avg_credibility = cursor.fetchone()[0] or 0.0
 
             # Usage statistics
             cursor.execute(
-                """
+                """"""
                 SELECT COUNT(*), AVG(effectiveness_score) FROM knowledge_usage
                 WHERE channel_id = ?
-            """,
+            ""","""
                 (channel_id,),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             usage_stats = cursor.fetchone()
             total_usage = usage_stats[0] if usage_stats else 0
             avg_effectiveness = usage_stats[1] if usage_stats and usage_stats[1] else 0.0
@@ -860,7 +914,8 @@ class DedicatedKnowledgeBases:
                 "total_usage": total_usage,
                 "average_effectiveness": round(avg_effectiveness, 2),
                 "knowledge_density": round(total_entries / max(1, total_usage), 2),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def get_recommended_evidence(
         self, channel_id: str, content_topic: str, content_type: str = "video"
@@ -879,7 +934,8 @@ class DedicatedKnowledgeBases:
             "statistics": [],
             "case_studies": [],
             "credibility_notes": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Categorize evidence by type and quality
         for evidence_type, entries in evidence.items():
@@ -893,8 +949,10 @@ class DedicatedKnowledgeBases:
                             "content": entry.get("content", ""),
                             "source": entry.get("source", ""),
                             "credibility": credibility,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
                 elif credibility >= 0.6:
                     if evidence_type == "quote":
                         recommendations["expert_quotes"].append(entry)
@@ -909,7 +967,8 @@ class DedicatedKnowledgeBases:
                 if credibility < 0.7:
                     recommendations["credibility_notes"].append(
                         f"Note: {entry.get('title', 'Entry')} has moderate credibility ({credibility:.1f}). Verify before use."
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
         return recommendations
 

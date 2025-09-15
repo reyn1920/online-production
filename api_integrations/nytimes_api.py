@@ -13,12 +13,12 @@ class NYTimesAPI(BaseAPI):
     """New York Times API integration for news content"""
 
     def __init__(self, api_key: Optional[str] = None):
-        """
+        """"""
         Initialize NY Times API client
 
         Args:
             api_key: NY Times API key. If not provided, will try to get from environment
-        """
+        """"""
         super().__init__()
         self.api_key = api_key or os.getenv("NYTIMES_API_KEY")
         self.base_url = "https://api.nytimes.com/svc"
@@ -37,7 +37,7 @@ class NYTimesAPI(BaseAPI):
     def search_articles(
         self, query: str, page: int = 0, sort: str = "newest", **kwargs
     ) -> Dict[str, Any]:
-        """
+        """"""
         Search for articles using Article Search API
 
         Args:
@@ -48,7 +48,7 @@ class NYTimesAPI(BaseAPI):
 
         Returns:
             Dict containing search results
-        """
+        """"""
         if not self.api_key:
             raise APIError("NY Times API key not configured")
 
@@ -72,7 +72,7 @@ class NYTimesAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_top_stories(self, section: str = "home") -> Dict[str, Any]:
-        """
+        """"""
         Get top stories from a specific section
 
         Args:
@@ -80,7 +80,7 @@ class NYTimesAPI(BaseAPI):
 
         Returns:
             Dict containing top stories
-        """
+        """"""
         if not self.api_key:
             raise APIError("NY Times API key not configured")
 
@@ -104,7 +104,7 @@ class NYTimesAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_most_popular(self, period: int = 1, share_type: str = "viewed") -> Dict[str, Any]:
-        """
+        """"""
         Get most popular articles
 
         Args:
@@ -113,7 +113,7 @@ class NYTimesAPI(BaseAPI):
 
         Returns:
             Dict containing most popular articles
-        """
+        """"""
         if not self.api_key:
             raise APIError("NY Times API key not configured")
 
@@ -143,7 +143,7 @@ class NYTimesAPI(BaseAPI):
     def get_book_reviews(
         self, author: str = None, isbn: str = None, title: str = None
     ) -> Dict[str, Any]:
-        """
+        """"""
         Get book reviews
 
         Args:
@@ -153,7 +153,7 @@ class NYTimesAPI(BaseAPI):
 
         Returns:
             Dict containing book reviews
-        """
+        """"""
         if not self.api_key:
             raise APIError("NY Times API key not configured")
 
@@ -188,17 +188,17 @@ class NYTimesAPI(BaseAPI):
     def get_movie_reviews(
         self, query: str = None, critics_pick: bool = None, offset: int = 0
     ) -> Dict[str, Any]:
-        """
+        """"""
         Get movie reviews
 
         Args:
             query: Search query for movie title or reviewer
-            critics_pick: Filter for critics' picks (True/False)
+            critics_pick: Filter for critics' picks (True/False)'
             offset: Offset for pagination
 
         Returns:
             Dict containing movie reviews
-        """
+        """"""
         if not self.api_key:
             raise APIError("NY Times API key not configured")
 
@@ -226,12 +226,12 @@ class NYTimesAPI(BaseAPI):
             raise APIError(f"Request failed: {str(e)}")
 
     def get_status(self) -> Dict[str, Any]:
-        """
+        """"""
         Get API status and configuration
 
         Returns:
             Dict containing status information
-        """
+        """"""
         return {
             "name": self.name,
             "category": self.category,
@@ -243,7 +243,8 @@ class NYTimesAPI(BaseAPI):
                 "Most popular articles",
                 "Book reviews",
                 "Movie reviews",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "available_sections": [
                 "home",
                 "world",
@@ -264,25 +265,28 @@ class NYTimesAPI(BaseAPI):
                 "magazine",
                 "realestate",
                 "automobiles",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "rate_limits": "4,000 requests per day, 10 per minute",
             "last_checked": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def test_connection(self) -> Dict[str, Any]:
-        """
+        """"""
         Test the API connection
 
         Returns:
             Dict containing test results
-        """
+        """"""
         try:
             if not self.api_key:
                 return {
                     "success": False,
                     "error": "API key not configured",
                     "timestamp": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Test with a simple top stories request
             result = self.get_top_stories("home")
@@ -292,11 +296,13 @@ class NYTimesAPI(BaseAPI):
                 "message": "Connection successful",
                 "stories_available": len(result.get("results", [])),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {
                 "success": False,
                 "error": str(e),
                 "timestamp": datetime.now().isoformat(),
-            }
+# BRACKET_SURGEON: disabled
+#             }

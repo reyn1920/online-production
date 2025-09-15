@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Places API Router
 
 FastAPI router for places and location - based services.
@@ -8,7 +8,7 @@ Follows go - live security practices:
 - Rate limiting
 - Error handling
 - Secure response formatting
-"""
+""""""
 
 import asyncio
 import json
@@ -50,7 +50,9 @@ class LocationRequest(BaseModel):
 
     query: str = Field(
         ..., min_length = 1, max_length = 200, description="Location search query"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     limit: int = Field(10, ge = 1, le = 50, description="Maximum number of results")
 
     @validator("query")
@@ -70,7 +72,9 @@ class PlaceSearchRequest(BaseModel):
     radius: int = Field(1000,
     ge = 100,
     le = 50000,
-    description="Search radius in meters")
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     description="Search radius in meters")
 
 
 class PlaceResponse(BaseModel):
@@ -96,7 +100,9 @@ def rate_limit_dependency(request: Request):
     if not check_rate_limit(request):
         raise HTTPException(
             status_code = 429, detail="Rate limit exceeded. Please try again later."
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
     return True
 
 # Endpoints
@@ -109,10 +115,12 @@ async def search_places(
         query: str = Query(...,
     min_length = 1,
     max_length = 200,
-    description="Search query"),
+# BRACKET_SURGEON: disabled
+#     description="Search query"),
         limit: int = Query(10, ge = 1, le = 50, description="Maximum results"),
         _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Search for places by query"""
     try:
         # Validate input
@@ -134,7 +142,9 @@ async def search_places(
                         provider["id"],
                         "search_places",
                         {"query": location_request.query, "limit": location_request.limit},
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 places = places_data.get("places", [])
 
         return PlaceResponse(
@@ -145,15 +155,21 @@ async def search_places(
             "total_results": len(places),
             "provider_used": (
                         geo_providers[0]["name"] if geo_providers else None
-                    ),
-        },
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#         },
                     message="Places retrieved successfully",
                     timestamp = datetime.now(),
                     count = len(places),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as provider_error:
-            logging.getLogger(__name__).warning(f"Provider error: {provider_error},
-    using fallback")
+            logging.getLogger(__name__).warning(f"Provider error: {provider_error},"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     using fallback")
             # Fallback to empty results on provider error
         return PlaceResponse(
                 success = True,
@@ -161,11 +177,14 @@ async def search_places(
             "places": [],
             "query": location_request.query,
             "total_results": 0,
-        },
+# BRACKET_SURGEON: disabled
+#         },
                     message="No places found",
                     timestamp = datetime.now(),
                     count = 0,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
     except ValueError as e:
         raise HTTPException(status_code = 400, detail = str(e))
@@ -173,7 +192,9 @@ async def search_places(
         logging.getLogger(__name__).error(f"Error searching places: {str(e)}")
         raise HTTPException(
             status_code = 500, detail="Internal server error while searching places"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 @router.get("/nearby", response_model = PlaceResponse)
 
@@ -186,9 +207,11 @@ async def get_nearby_places(
         radius: int = Query(1000,
     ge = 100,
     le = 50000,
-    description="Search radius in meters"),
+# BRACKET_SURGEON: disabled
+#     description="Search radius in meters"),
         _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Get nearby places by coordinates"""
     try:
         # Use integration registry to find nearby places
@@ -211,8 +234,11 @@ async def get_nearby_places(
             "lng": lng,
             "place_type": place_type,
             "radius": radius,
-        },
-                        )
+# BRACKET_SURGEON: disabled
+#         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 nearby_places = places_data.get("places", [])
 
         return PlaceResponse(
@@ -224,15 +250,21 @@ async def get_nearby_places(
             "place_type": place_type,
             "provider_used": (
                         geo_providers[0]["name"] if geo_providers else None
-                    ),
-        },
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#         },
                     message="Nearby places retrieved successfully",
                     timestamp = datetime.now(),
                     count = len(nearby_places),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         except Exception as provider_error:
-            logging.getLogger(__name__).warning(f"Provider error: {provider_error},
-    using fallback")
+            logging.getLogger(__name__).warning(f"Provider error: {provider_error},"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     using fallback")
             # Fallback to empty results on provider error
         return PlaceResponse(
                 success = True,
@@ -241,18 +273,23 @@ async def get_nearby_places(
             "center": {"lat": lat, "lng": lng},
             "radius": radius,
             "place_type": place_type,
-        },
+# BRACKET_SURGEON: disabled
+#         },
                     message="No nearby places found",
                     timestamp = datetime.now(),
                     count = 0,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
     except Exception as e:
         logging.getLogger(__name__).error(f"Error getting nearby places: {str(e)}")
         raise HTTPException(
             status_code = 500,
                 detail="Internal server error while retrieving nearby places",
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
 @router.get("/geocode", response_model = PlaceResponse)
 
@@ -261,9 +298,11 @@ async def geocode_address(
     request: Request,
         address: str = Query(
         ..., min_length = 1, max_length = 300, description="Address to geocode"
-    ),
+# BRACKET_SURGEON: disabled
+#     ),
         _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Geocode an address to coordinates"""
     try:
         # Mock geocoding response - in production, integrate with geocoding APIs
@@ -280,8 +319,10 @@ async def geocode_address(
             "state": "NY",
             "country": "US",
             "postal_code": "10001",
-        },
-        }
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#         }
 
         return PlaceResponse(
             success = True,
@@ -289,13 +330,17 @@ async def geocode_address(
                 message="Address geocoded successfully",
                 timestamp = datetime.now(),
                 count = 1,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     except Exception as e:
         logging.getLogger(__name__).error(f"Error geocoding address: {str(e)}")
         raise HTTPException(
             status_code = 500, detail="Internal server error while geocoding address"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 @router.get("/reverse - geocode", response_model = PlaceResponse)
 
@@ -305,7 +350,8 @@ async def reverse_geocode(
         lat: float = Query(..., ge=-90, le = 90, description="Latitude"),
         lng: float = Query(..., ge=-180, le = 180, description="Longitude"),
         _: bool = Depends(rate_limit_dependency),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Reverse geocode coordinates to address"""
     try:
         # Mock reverse geocoding response
@@ -319,9 +365,11 @@ async def reverse_geocode(
             "state": "SC",
             "country": "US",
             "postal_code": "12345",
-        },
+# BRACKET_SURGEON: disabled
+#         },
             "accuracy": "high",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return PlaceResponse(
             success = True,
@@ -329,13 +377,17 @@ async def reverse_geocode(
                 message="Coordinates reverse geocoded successfully",
                 timestamp = datetime.now(),
                 count = 1,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
     except Exception as e:
         logging.getLogger(__name__).error(f"Error reverse geocoding: {str(e)}")
         raise HTTPException(
             status_code = 500, detail="Internal server error while reverse geocoding"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 # --- NEW: lightweight provider status for the UI ---
 
@@ -353,7 +405,9 @@ async def provider_status():
             "foursquare",
             "google_places",
             "yelp",
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
     out = {}
     for pid in interesting:
         p = _registry.providers.get(pid)
@@ -366,7 +420,8 @@ async def provider_status():
             "name": p.name,
             "docs_url": p.docs_url,
             "kind": p.kind,
-        }
+# BRACKET_SURGEON: disabled
+#         }
     return out
 
 # --- NEW: page route for the map UI ---
@@ -392,7 +447,8 @@ async def health_check():
         "status": "healthy",
             "timestamp": datetime.now().isoformat(),
             "service": "places - api",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 @router.get("/dashboard")
 
@@ -418,51 +474,61 @@ async def get_providers_status():
             "name": "OpenCage Geocoding",
             "status": "green",
             "type": "geocoding",
-        },
+# BRACKET_SURGEON: disabled
+#         },
             {
             "id": "nominatim_osm",
             "name": "Nominatim OSM",
             "status": "green",
             "type": "geocoding",
-        },
+# BRACKET_SURGEON: disabled
+#         },
             {
             "id": "overpass_main",
             "name": "Overpass API Main",
             "status": "green",
             "type": "places",
-        },
+# BRACKET_SURGEON: disabled
+#         },
             {
             "id": "overpass_kumi",
             "name": "Overpass API Kumi",
             "status": "purple",
             "type": "places",
-        },
+# BRACKET_SURGEON: disabled
+#         },
             {
             "id": "overpass_fr",
             "name": "Overpass API France",
             "status": "green",
             "type": "places",
-        },
+# BRACKET_SURGEON: disabled
+#         },
             {
             "id": "foursquare",
             "name": "Foursquare Places",
             "status": "purple",
             "type": "places",
-        },
+# BRACKET_SURGEON: disabled
+#         },
             {
             "id": "google_places",
             "name": "Google Places API",
             "status": "red",
             "type": "places",
-        },
+# BRACKET_SURGEON: disabled
+#         },
             {"id": "yelp", "name": "Yelp Fusion API", "status": "purple", "type": "places"},
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
     return {
         "providers": providers,
             "last_updated": datetime.now().isoformat(),
             "total_count": len(providers),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
 # Export router
 __all__ = ["router"]

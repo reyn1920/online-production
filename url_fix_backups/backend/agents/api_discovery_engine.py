@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 API Discovery Engine
 
 Automated API discovery and integration system that:
@@ -8,7 +8,7 @@ Automated API discovery and integration system that:
 - Generates integration code automatically
 - Manages API credentials and rate limits
 - Provides unified interface for discovered APIs
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -42,7 +42,8 @@ try:
         ScrapingConfig,
         ScrapingMethod,
         ScrapingResult,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 except ImportError:
     logging.warning("Enhanced web scraping tools not available")
     EnhancedWebScraper = None
@@ -103,7 +104,7 @@ class APIEndpoint:
     path: str
     method: str = "GET"
     description: Optional[str] = None
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: Dict[str, Any] = field(default_factory=dict):
     response_format: str = "json"
     rate_limit: Optional[str] = None
     example_response: Optional[Dict] = None
@@ -120,7 +121,7 @@ class APICredentials:
     token: Optional[str] = None
     header_name: Optional[str] = None
     param_name: Optional[str] = None
-    additional_headers: Dict[str, str] = field(default_factory=dict)
+    additional_headers: Dict[str, str] = field(default_factory=dict):
 
 
 @dataclass
@@ -135,7 +136,7 @@ class APIInfo:
     is_free: bool = True
     rate_limit: Optional[str] = None
     documentation_url: Optional[str] = None
-    endpoints: List[APIEndpoint] = field(default_factory=list)
+    endpoints: List[APIEndpoint] = field(default_factory=list):
     credentials: Optional[APICredentials] = None
     status: APIStatus = APIStatus.DISCOVERED
     last_validated: Optional[datetime] = None
@@ -179,7 +180,8 @@ class APIDiscoveryEngine:
             timeout=self.config.timeout,
             cache_responses=True,
             rate_limit=1.0,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if EnhancedWebScraper:
             self.scraper = EnhancedWebScraper(scraping_config)
@@ -192,20 +194,25 @@ class APIDiscoveryEngine:
             "publicapis": {
                 "url": "https://api.publicapis.org / entries",
                 "method": "api_endpoint",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "rapidapi_hub": {
                 "url": "https://rapidapi.com / hub",
                 "method": "web_scraping",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "github_awesome_apis": {
                 "url": "https://raw.githubusercontent.com / public - apis / public - apis / master / README.md",
                 "method": "markdown_parsing",
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "programmableweb": {
                 "url": "https://www.programmableweb.com / apis / directory",
                 "method": "web_scraping",
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def discover_apis_from_all_sources(self) -> Dict[str, List[APIInfo]]:
         """Discover APIs from all configured sources"""
@@ -260,7 +267,8 @@ class APIDiscoveryEngine:
                     if (
                         self.config.categories_filter
                         and category not in self.config.categories_filter
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         continue
 
                     # Parse authentication
@@ -271,7 +279,8 @@ class APIDiscoveryEngine:
                     is_free = (
                         auth_str in ["", "no", "none"]
                         or "free" in entry.get("Description", "").lower()
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     if self.config.free_only and not is_free:
                         continue
 
@@ -284,7 +293,8 @@ class APIDiscoveryEngine:
                         is_free=is_free,
                         documentation_url=entry.get("Link", ""),
                         tags={category_str, "publicapis"},
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     apis.append(api_info)
 
@@ -312,8 +322,10 @@ class APIDiscoveryEngine:
                         selector=".api - card, [data - testid='api - card']",
                         is_list=True,
                         required=False,
-                    )
-                ]
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ]
             elif source_name == "programmableweb":
                 extraction_rules = [
                     ExtractionRule(
@@ -321,8 +333,10 @@ class APIDiscoveryEngine:
                         selector=".api - listing, .directory - listing",
                         is_list=True,
                         required=False,
-                    )
-                ]
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ]
             else:
                 extraction_rules = [
                     ExtractionRule(
@@ -330,8 +344,10 @@ class APIDiscoveryEngine:
                         selector="a[href*='api'], a[href*='API']",
                         is_list=True,
                         required=False,
-                    )
-                ]
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 ]
 
             result = await self.scraper.scrape_url(url, extraction_rules)
 
@@ -394,7 +410,8 @@ class APIDiscoveryEngine:
             "business": APICategory.BUSINESS,
             "government": APICategory.GOVERNMENT,
             "utilities": APICategory.UTILITIES,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for key, category in category_mapping.items():
             if key in category_str.lower():
@@ -470,7 +487,8 @@ class APIDiscoveryEngine:
                 is_free=True,  # Assume free for awesome lists
                 documentation_url=url.strip(),
                 tags={"github", "awesome - list"},
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             apis.append(api_info)
 
@@ -491,7 +509,8 @@ class APIDiscoveryEngine:
             APICategory.HEALTH: ["health", "medical", "drug", "disease"],
             APICategory.TRAVEL: ["travel", "flight", "hotel", "booking"],
             APICategory.FOOD: ["food", "recipe", "restaurant", "nutrition"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         for category, keywords in category_keywords.items():
             if any(keyword in description_lower for keyword in keywords):
@@ -519,7 +538,8 @@ class APIDiscoveryEngine:
             if (
                 isinstance(result, APIInfo)
                 and result.validation_score >= self.config.min_validation_score
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 successful_apis.append(result)
 
         return successful_apis
@@ -585,13 +605,13 @@ class APIDiscoveryEngine:
         auth_setup = self._generate_auth_setup(api.auth_type)
 
         # Generate basic client code
-        code = f'''
+        code = f''''''
 #!/usr / bin / env python3
-"""
+""""""
 Auto - generated client for {api.name} API
 Generated on: {datetime.now().isoformat()}
 API Documentation: {api.documentation_url or 'N / A'}
-"""
+""""""
 
 import requests
 from typing import Dict, Any, Optional
@@ -599,12 +619,12 @@ import json
 
 
 class {class_name}:
-    """Client for {api.name} API
+    """Client for {api.name} API"""
 
     Description: {api.description}
     Category: {api.category.value}
     Authentication: {api.auth_type.value}
-    """
+    """"""
 
 
     def __init__(self{auth_setup['init_params']}):
@@ -634,7 +654,8 @@ class {class_name}:
     endpoint: str,
     data: Optional[Dict] = None,
     json_data: Optional[Dict] = None) -> Dict[str,
-    Any]:
+# BRACKET_SURGEON: disabled
+#     Any]:
         """Make POST request to API endpoint"""
         return self._make_request('POST', endpoint, data = data, json = json_data)
 
@@ -651,7 +672,7 @@ if __name__ == "__main__":
         print(json.dumps(result, indent = 2))
     except Exception as e:
         print(f"Error: {{e}}")
-'''
+''''''
 
         return code
 
@@ -662,47 +683,52 @@ if __name__ == "__main__":
                 "init_params": ", api_key: str",
                 "init_code": '        self.session.headers["X - API - Key"] = api_key',
                 "example_params": '"your_api_key_here"',
-            }
+# BRACKET_SURGEON: disabled
+#             }
         elif auth_type == AuthType.BEARER_TOKEN:
             return {
                 "init_params": ", token: str",
                 "init_code": '        self.session.headers["Authorization"] = f"Bearer {token}"',
                 "example_params": '"your_token_here"',
-            }
+# BRACKET_SURGEON: disabled
+#             }
         elif auth_type == AuthType.BASIC_AUTH:
             return {
                 "init_params": ", username: str, password: str",
                 "init_code": "        self.session.auth = (username, password)",
                 "example_params": '"username", "password"',
-            }
+# BRACKET_SURGEON: disabled
+#             }
         else:
             return {
                 "init_params": "",
-                "init_code": "        # No authentication required",
+                "init_code": "        # No authentication required","
                 "example_params": "",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     def _generate_endpoint_methods(self, api: APIInfo) -> str:
         """Generate methods for known endpoints"""
         if not api.endpoints:
-            return "    # No specific endpoints discovered"
+            return "    # No specific endpoints discovered""
 
         methods = []
         for endpoint in api.endpoints:
             method_name = endpoint.path.strip("/").replace("/", "_").replace("-", "_")
             method_name = re.sub(r"[^a - zA - Z0 - 9_]", "", method_name) or "root"
 
-            method_code = f'''
+            method_code = f''''''
 
 
     def {method_name}(self, **params) -> Dict[str, Any]:
-        """Call {endpoint.path} endpoint
+        """Call {endpoint.path} endpoint"""
 
         Description: {endpoint.description or 'No description available'}
         Method: {endpoint.method}
-        """
+        """"""
         return self._make_request("{endpoint.method}", "{endpoint.path}",
-    params = params)'''
+# BRACKET_SURGEON: disabled
+#     params = params)''''''
 
             methods.append(method_code)
 
@@ -710,7 +736,8 @@ if __name__ == "__main__":
 
     def save_discovered_apis(
         self, apis: List[APIInfo], filename: str = "discovered_apis.json"
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Save discovered APIs to file"""
         api_data = []
         for api in apis:
@@ -728,7 +755,8 @@ if __name__ == "__main__":
                 "last_validated": (api.last_validated.isoformat() if api.last_validated else None),
                 "tags": list(api.tags),
                 "metadata": api.metadata,
-            }
+# BRACKET_SURGEON: disabled
+#             }
             api_data.append(api_dict)
 
         with open(filename, "w", encoding="utf - 8") as f:
@@ -757,7 +785,8 @@ if __name__ == "__main__":
                     validation_score=data.get("validation_score", 0.0),
                     tags=set(data.get("tags", [])),
                     metadata=data.get("metadata", {}),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if data.get("last_validated"):
                     api.last_validated = datetime.fromisoformat(data["last_validated"])
@@ -793,7 +822,8 @@ if __name__ == "__main__":
                 query_lower in api.name.lower()
                 or query_lower in api.description.lower()
                 or any(query_lower in tag for tag in api.tags)
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 results.append(api)
 
         return results
@@ -847,10 +877,12 @@ if __name__ == "__main__":
             "execution_time": end_time - start_time,
             "categories": {
                 category.value: len(self.get_apis_by_category(category)) for category in APICategory
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "free_apis": len(self.get_free_apis()),
             "validated_count": len(self.get_validated_apis()),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     def cleanup(self) -> None:
         """Clean up resources"""
@@ -873,9 +905,11 @@ if __name__ == "__main__":
                 APICategory.WEATHER,
                 APICategory.NEWS,
                 APICategory.FINANCE,
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             free_only=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Initialize discovery engine
         engine = APIDiscoveryEngine(config)

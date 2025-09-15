@@ -11,7 +11,8 @@ class StripContentLengthMiddleware:
                 headers = [
                     (k, v) for (k, v) in message["headers"]
                     if k.lower() != b"content-length"
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
                 message = {**message, "headers": headers}
             await send(message)
         await self.app(scope, receive, send_wrapper)

@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 Collaboration & Partnership Outreach Agent
 
 This agent implements automated collaboration and partnership outreach functionality,
 including creator discovery, partnership matching, outreach automation, \
-    and relationship management.
+#     and relationship management.
 
 Features:
 - Creator discovery across multiple platforms
@@ -16,7 +16,7 @@ Features:
 
 Author: TRAE.AI System
 Version: 1.0.0
-"""
+""""""
 
 import json
 import logging
@@ -194,7 +194,8 @@ class CollaborationOutreachAgent(BaseAgent):
                 "max_retries": 3,
                 "cache_enabled": True,
                 "performance_monitoring": True,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         self.ollama = OllamaIntegration(ollama_config)
         self._init_database()
 
@@ -230,12 +231,15 @@ class CollaborationOutreachAgent(BaseAgent):
                     niche = criteria.get("niche", ""),
                         platform = criteria.get("platform", "youtube"),
                         min_followers = criteria.get("min_followers", 1000),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 return {
                     "success": True,
                         "task_id": task_id,
                         "result": {"creators_found": len(creators), "creators": creators},
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             elif task_type == "create_campaign":
                 # Create outreach campaign
@@ -247,7 +251,8 @@ class CollaborationOutreachAgent(BaseAgent):
                         "success": False,
                             "task_id": task_id,
                             "error": "Creator ID is required for campaign creation",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                 campaign = self.create_outreach_campaign(creator_id, collaboration_type)
                 return {
@@ -255,8 +260,10 @@ class CollaborationOutreachAgent(BaseAgent):
                         "task_id": task_id,
                         "result": {
                         "campaign_id": campaign.campaign_id if campaign else None
-                    },
-                        }
+# BRACKET_SURGEON: disabled
+#                     },
+# BRACKET_SURGEON: disabled
+#                         }
 
             elif task_type == "send_campaign":
                 # Send outreach campaign
@@ -266,14 +273,16 @@ class CollaborationOutreachAgent(BaseAgent):
                         "success": False,
                             "task_id": task_id,
                             "error": "Campaign ID is required for sending",
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                 sent = self.send_outreach_campaign(campaign_id)
                 return {
                     "success": sent,
                         "task_id": task_id,
                         "result": {"campaign_sent": sent},
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             elif task_type == "get_metrics":
                 # Get outreach metrics
@@ -285,7 +294,8 @@ class CollaborationOutreachAgent(BaseAgent):
                     "success": False,
                         "task_id": task_id,
                         "error": f"Unknown task type: {task_type}",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
         except Exception as e:
             self.logger.error(f"Error processing task {task_id}: {str(e)}")
@@ -300,7 +310,7 @@ class CollaborationOutreachAgent(BaseAgent):
 
                 # Creator profiles table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS creator_profiles (
                         creator_id TEXT PRIMARY KEY,
                             name TEXT NOT NULL,
@@ -319,13 +329,17 @@ class CollaborationOutreachAgent(BaseAgent):
                             preferred_collaboration_types TEXT,
                             location TEXT DEFAULT '',
                             languages TEXT
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Outreach campaigns table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS outreach_campaigns (
                         campaign_id TEXT PRIMARY KEY,
                             creator_id TEXT NOT NULL,
@@ -343,13 +357,17 @@ class CollaborationOutreachAgent(BaseAgent):
                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             metadata TEXT,
                             FOREIGN KEY (creator_id) REFERENCES creator_profiles (creator_id)
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Collaboration opportunities table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS collaboration_opportunities (
                         opportunity_id TEXT PRIMARY KEY,
                             creator_id TEXT NOT NULL,
@@ -365,13 +383,17 @@ class CollaborationOutreachAgent(BaseAgent):
                             key_talking_points TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (creator_id) REFERENCES creator_profiles (creator_id)
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Outreach metrics table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS outreach_metrics (
                         metric_id INTEGER PRIMARY KEY AUTOINCREMENT,
                             date DATE NOT NULL,
@@ -383,14 +405,20 @@ class CollaborationOutreachAgent(BaseAgent):
                             platform_data TEXT,
                             collaboration_data TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 conn.commit()
                 self.logger.info(
                     "Collaboration outreach database initialized successfully"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.logger.error(f"Failed to initialize database: {e}")
@@ -405,7 +433,9 @@ class CollaborationOutreachAgent(BaseAgent):
             discovered_creators = []
 
             # Simulate creator discovery (in real implementation,
-    this would use platform APIs)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     this would use platform APIs)
             sample_creators = [
                 {
                     "name": "TechReviewer Pro",
@@ -417,7 +447,8 @@ class CollaborationOutreachAgent(BaseAgent):
                         "content_type": "reviews",
                         "contact_info": {"email": "collab@techreviewerpro.com"},
                         "verified": True,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "name": "Creative Coding",
                         "platform": "youtube",
@@ -428,7 +459,8 @@ class CollaborationOutreachAgent(BaseAgent):
                         "content_type": "tutorials",
                         "contact_info": {"email": "hello@creativecoding.dev"},
                         "verified": False,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     {
                     "name": "AI Insights Daily",
                         "platform": "tiktok",
@@ -439,8 +471,11 @@ class CollaborationOutreachAgent(BaseAgent):
                         "content_type": "educational",
                         "contact_info": {"email": "partnerships@aiinsights.com"},
                         "verified": True,
-                        },
-                    ]
+# BRACKET_SURGEON: disabled
+#                         },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             for creator_data in sample_creators:
                 if platform and creator_data["platform"] != platform:
@@ -452,7 +487,9 @@ class CollaborationOutreachAgent(BaseAgent):
                 # Calculate compatibility score
                 compatibility_score = self._calculate_compatibility_score(
                     creator_data["niche"], niche, creator_data["engagement_rate"]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if compatibility_score >= self.min_compatibility_score:
                     creator_id = f"{creator_data['platform']}_{creator_data['handle'].replace('@', '')}"
@@ -471,14 +508,18 @@ class CollaborationOutreachAgent(BaseAgent):
                             compatibility_score = compatibility_score,
                             last_updated = datetime.now(),
                             verified = creator_data.get("verified", False),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     discovered_creators.append(creator_profile)
                     self._save_creator_profile(creator_profile)
 
             self.logger.info(
                 f"Discovered {len(discovered_creators)} potential collaboration partners"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return discovered_creators
 
         except Exception as e:
@@ -488,7 +529,8 @@ class CollaborationOutreachAgent(BaseAgent):
 
     def _calculate_compatibility_score(
         self, creator_niche: str, target_niche: str, engagement_rate: float
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate compatibility score between creators"""
         try:
             # Niche similarity (simplified)
@@ -497,7 +539,9 @@ class CollaborationOutreachAgent(BaseAgent):
                 if creator_niche.lower() in target_niche.lower()
                 or target_niche.lower() in creator_niche.lower()
                 else 0.3
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Engagement quality score
             engagement_score = min(engagement_rate * 10, 1.0)  # Normalize to 0 - 1
@@ -519,14 +563,16 @@ class CollaborationOutreachAgent(BaseAgent):
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO creator_profiles (
                         creator_id, name, platform, handle, follower_count, engagement_rate,
                             niche, content_type, contact_info, collaboration_history,
                             compatibility_score, last_updated, verified, active_status,
                             preferred_collaboration_types, location, languages
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ""","""
                     (
                         creator_profile.creator_id,
                             creator_profile.name,
@@ -543,11 +589,14 @@ class CollaborationOutreachAgent(BaseAgent):
                             creator_profile.verified,
                             creator_profile.active_status,
                             json.dumps(creator_profile.preferred_collaboration_types \
-    or []),
+#     or []),
                             creator_profile.location,
                             json.dumps(creator_profile.languages or []),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 conn.commit()
 
@@ -573,12 +622,16 @@ class CollaborationOutreachAgent(BaseAgent):
                     CollaborationType.JOINT_CONTENT,
                     CollaborationType.CROSS_PROMOTION,
                     CollaborationType.CONTENT_EXCHANGE,
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
             for collab_type in collaboration_types:
                 opportunity = self._analyze_specific_opportunity(
                     creator_profile, collab_type.value
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 if opportunity:
                     opportunities.append(opportunity)
                     self._save_collaboration_opportunity(opportunity)
@@ -597,11 +650,13 @@ class CollaborationOutreachAgent(BaseAgent):
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM creator_profiles WHERE creator_id = ?
-                """,
+                ""","""
                     (creator_id,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 row = cursor.fetchone()
                 if row:
@@ -622,10 +677,13 @@ class CollaborationOutreachAgent(BaseAgent):
                             active_status = bool(row[13]),
                             preferred_collaboration_types=(
                             json.loads(row[14]) if row[14] else []
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             location = row[15] or "",
                             languages = json.loads(row[16]) if row[16] else [],
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 return None
 
@@ -642,15 +700,20 @@ class CollaborationOutreachAgent(BaseAgent):
             # Calculate opportunity metrics
             potential_reach = int(
                 creator_profile.follower_count * 0.1
-            )  # Estimated reach
+# BRACKET_SURGEON: disabled
+#             )  # Estimated reach
             estimated_engagement = int(
                 potential_reach * creator_profile.engagement_rate
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Calculate mutual benefit score
             mutual_benefit_score = self._calculate_mutual_benefit_score(
                 creator_profile, collaboration_type
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Determine effort and timeline
             effort_timeline = self._get_effort_timeline(collaboration_type)
@@ -658,16 +721,22 @@ class CollaborationOutreachAgent(BaseAgent):
             # Calculate success probability
             success_probability = self._calculate_success_probability(
                 creator_profile, collaboration_type, mutual_benefit_score
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Generate recommended approach and talking points
             approach_data = self._generate_approach_strategy(
                 creator_profile, collaboration_type
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             opportunity_id = (
                 f"{creator_profile.creator_id}_{collaboration_type}_{int(time.time())}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             opportunity = CollaborationOpportunity(
                 opportunity_id = opportunity_id,
@@ -683,7 +752,9 @@ class CollaborationOutreachAgent(BaseAgent):
                     recommended_approach = approach_data["approach"],
                     key_talking_points = approach_data["talking_points"],
                     created_at = datetime.now(),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return opportunity
 
@@ -694,7 +765,8 @@ class CollaborationOutreachAgent(BaseAgent):
 
     def _calculate_mutual_benefit_score(
         self, creator_profile: CreatorProfile, collaboration_type: str
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate mutual benefit score for collaboration"""
         try:
             base_score = creator_profile.compatibility_score
@@ -705,7 +777,8 @@ class CollaborationOutreachAgent(BaseAgent):
                     "joint_content": 0.9,
                     "cross_promotion": 0.7,
                     "content_exchange": 0.85,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             multiplier = type_multipliers.get(collaboration_type, 0.75)
 
@@ -728,11 +801,14 @@ class CollaborationOutreachAgent(BaseAgent):
                 "joint_content": {"effort": "high", "timeline": "3 - 4 weeks"},
                 "cross_promotion": {"effort": "low", "timeline": "1 week"},
                 "content_exchange": {"effort": "medium", "timeline": "2 - 3 weeks"},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         return effort_timelines.get(
             collaboration_type, {"effort": "medium", "timeline": "2 - 3 weeks"}
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
 
     def _calculate_success_probability(
@@ -740,7 +816,8 @@ class CollaborationOutreachAgent(BaseAgent):
             creator_profile: CreatorProfile,
             collaboration_type: str,
             mutual_benefit_score: float,
-            ) -> float:
+# BRACKET_SURGEON: disabled
+#             ) -> float:
         """Calculate success probability for collaboration"""
         try:
             base_probability = mutual_benefit_score * 0.6
@@ -761,7 +838,8 @@ class CollaborationOutreachAgent(BaseAgent):
                     "guest_appearance": 0.05,
                     "content_exchange": 0.08,
                     "joint_content": -0.05,  # More complex, lower initial success rate
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             adjustment = type_adjustments.get(collaboration_type, 0)
             base_probability += adjustment
@@ -779,7 +857,7 @@ class CollaborationOutreachAgent(BaseAgent):
         """Generate recommended approach and talking points"""
         try:
             # Use AI to generate personalized approach
-            prompt = f"""
+            prompt = f""""""
             Generate a collaboration outreach strategy for:
 
             Creator: {creator_profile.name}
@@ -794,7 +872,7 @@ class CollaborationOutreachAgent(BaseAgent):
             2. 3 - 5 key talking points
 
             Format as JSON with 'approach' and 'talking_points' keys.
-            """
+            """"""
 
             response = self.ollama.generate_response(prompt, model="llama3.2")
 
@@ -803,28 +881,36 @@ class CollaborationOutreachAgent(BaseAgent):
                 return {
                     "approach": strategy_data.get(
                         "approach", "Personalized outreach focusing on mutual benefits"
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "talking_points": strategy_data.get(
                         "talking_points",
                             [
                             "Shared audience interests",
                                 "Mutual growth opportunities",
                                 "Content quality alignment",
-                                ],
-                            ),
-                        }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ],
+# BRACKET_SURGEON: disabled
+#                             ),
+# BRACKET_SURGEON: disabled
+#                         }
             except json.JSONDecodeError:
                 # Fallback strategy
                 return {
-                    "approach": f"Reach out with a personalized message highlighting shared interests in {creator_profile.niche} \
-    and propose {collaboration_type} for mutual audience growth.",
+                    "approach": f"Reach out with a personalized message highlighting shared interests in {creator_profile.niche} \"
+#     and propose {collaboration_type} for mutual audience growth.",
                         "talking_points": [
                         f"Shared focus on {creator_profile.niche} content",
                             "Mutual audience growth opportunity",
                             "High - quality content collaboration",
                             "Cross - platform exposure benefits",
-                            ],
-                        }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
+# BRACKET_SURGEON: disabled
+#                         }
 
         except Exception as e:
             self.logger.error(f"Error generating approach strategy: {e}")
@@ -834,8 +920,11 @@ class CollaborationOutreachAgent(BaseAgent):
                     "Audience alignment",
                         "Growth opportunity",
                         "Quality collaboration",
-                        ],
-                    }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def _save_collaboration_opportunity(self, opportunity: CollaborationOpportunity):
@@ -845,14 +934,16 @@ class CollaborationOutreachAgent(BaseAgent):
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO collaboration_opportunities (
                         opportunity_id, creator_id, collaboration_type, compatibility_score,
                             potential_reach, estimated_engagement, mutual_benefit_score,
                             effort_required, timeline, success_probability, recommended_approach,
                             key_talking_points, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ""","""
                     (
                         opportunity.opportunity_id,
                             opportunity.creator_id,
@@ -867,8 +958,11 @@ class CollaborationOutreachAgent(BaseAgent):
                             opportunity.recommended_approach,
                             json.dumps(opportunity.key_talking_points),
                             opportunity.created_at,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 conn.commit()
 
@@ -898,7 +992,9 @@ class CollaborationOutreachAgent(BaseAgent):
             else:
                 message_data = self._generate_outreach_message(
                     creator_profile, opportunity
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 message = message_data["message"]
                 subject = message_data["subject"]
 
@@ -921,14 +1017,18 @@ class CollaborationOutreachAgent(BaseAgent):
                     created_at = datetime.now(),
                     updated_at = datetime.now(),
                     metadata={"opportunity_id": opportunity_id},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Save campaign
             self._save_outreach_campaign(campaign)
 
             self.logger.info(
                 f"Created outreach campaign {campaign_id} for {creator_profile.name}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return campaign
 
         except Exception as e:
@@ -945,11 +1045,13 @@ class CollaborationOutreachAgent(BaseAgent):
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM collaboration_opportunities WHERE opportunity_id = ?
-                """,
+                ""","""
                     (opportunity_id,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 row = cursor.fetchone()
                 if row:
@@ -967,7 +1069,9 @@ class CollaborationOutreachAgent(BaseAgent):
                             recommended_approach = row[10],
                             key_talking_points = json.loads(row[11]) if row[11] else [],
                             created_at = datetime.fromisoformat(row[12]),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 return None
 
@@ -982,7 +1086,7 @@ class CollaborationOutreachAgent(BaseAgent):
         """Generate personalized outreach message"""
         try:
             # Use AI to generate personalized message
-            prompt = f"""
+            prompt = f""""""
             Write a professional collaboration outreach email for:
 
             To: {creator_profile.name} ({creator_profile.handle})
@@ -1005,7 +1109,7 @@ class CollaborationOutreachAgent(BaseAgent):
 
             Provide both subject line and email body.
             Format as JSON with 'subject' and 'message' keys.
-            """
+            """"""
 
             response = self.ollama.generate_response(prompt, model="llama3.2")
 
@@ -1015,58 +1119,68 @@ class CollaborationOutreachAgent(BaseAgent):
                     "subject": message_data.get(
                         "subject",
                             f"Collaboration Opportunity - {opportunity.collaboration_type.replace('_', ' ').title()}",
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                         "message": message_data.get(
                         "message",
                             self._get_fallback_message(creator_profile, opportunity),
-                            ),
-                        }
+# BRACKET_SURGEON: disabled
+#                             ),
+# BRACKET_SURGEON: disabled
+#                         }
             except json.JSONDecodeError:
                 return {
                     "subject": f"Collaboration Opportunity - {opportunity.collaboration_type.replace('_', ' ').title()}",
                         "message": self._get_fallback_message(creator_profile,
-    opportunity),
-                        }
+# BRACKET_SURGEON: disabled
+#     opportunity),
+# BRACKET_SURGEON: disabled
+#                         }
 
         except Exception as e:
             self.logger.error(f"Error generating outreach message: {e}")
             return {
                 "subject": f"Collaboration Opportunity - {opportunity.collaboration_type.replace('_', ' ').title()}",
                     "message": self._get_fallback_message(creator_profile, opportunity),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def _get_fallback_message(
         self, creator_profile: CreatorProfile, opportunity: CollaborationOpportunity
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Get fallback outreach message template"""
-        return f"""Hi {creator_profile.name},
+        return f"""Hi {creator_profile.name},"""
 
-I hope this message finds you well! I've been following your {creator_profile.niche} content on {creator_profile.platform} \
-    and really appreciate your approach to {creator_profile.content_type}.
+I hope this message finds you well! I've been following your {creator_profile.niche} content on {creator_profile.platform} \'
+#     and really appreciate your approach to {creator_profile.content_type}.
 
-I'd love to explore a {opportunity.collaboration_type.replace('_', ' ')} opportunity that could benefit both our audiences. Given our shared focus on {creator_profile.niche},
-    I believe there's great potential for mutual growth.
+I'd love to explore a {opportunity.collaboration_type.replace('_', ' ')} opportunity that could benefit both our audiences. Given our shared focus on {creator_profile.niche},'
+    I believe there's great potential for mutual growth.'
 
 Key benefits:
 {chr(10).join(f"• {point}" for point in opportunity.key_talking_points[:3])}
 
-Would you be interested in discussing this further? I'm happy to share more details about what I have in mind.
+Would you be interested in discussing this further? I'm happy to share more details about what I have in mind.'
 
 Best regards,
-[Your Name]"""
+[Your Name]""""""
 
 
     def _determine_campaign_priority(
         self, opportunity: CollaborationOpportunity
-    ) -> OutreachPriority:
+# BRACKET_SURGEON: disabled
+#     ) -> OutreachPriority:
         """Determine campaign priority based on opportunity metrics"""
         try:
             score = (
                 opportunity.success_probability * 0.4
                 + opportunity.mutual_benefit_score * 0.3
                 + opportunity.compatibility_score * 0.3
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if score >= 0.8:
                 return OutreachPriority.HIGH
@@ -1087,13 +1201,15 @@ Best regards,
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO outreach_campaigns (
                         campaign_id, creator_id, collaboration_type, status, priority,
                             subject, message, sent_date, response_date, follow_up_date,
                             response_message, success_probability, created_at, updated_at, metadata
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ""","""
                     (
                         campaign.campaign_id,
                             campaign.creator_id,
@@ -1110,8 +1226,11 @@ Best regards,
                             campaign.created_at,
                             campaign.updated_at,
                             json.dumps(campaign.metadata or {}),
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 conn.commit()
 
@@ -1133,7 +1252,9 @@ Best regards,
                 return False
 
             # Simulate sending (in real implementation,
-    this would use email / messaging APIs)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     this would use email / messaging APIs)
             self.logger.info(f"Sending outreach campaign {campaign_id}")
 
             # Update campaign status
@@ -1144,7 +1265,9 @@ Best regards,
             # Schedule follow - up
             campaign.follow_up_date = datetime.now() + timedelta(
                 days = self.follow_up_delay_days
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Save updated campaign
             self._save_outreach_campaign(campaign)
@@ -1167,11 +1290,13 @@ Best regards,
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM outreach_campaigns WHERE campaign_id = ?
-                """,
+                ""","""
                     (campaign_id,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 row = cursor.fetchone()
                 if row:
@@ -1186,16 +1311,20 @@ Best regards,
                             sent_date = datetime.fromisoformat(row[7]) if row[7] else None,
                             response_date=(
                             datetime.fromisoformat(row[8]) if row[8] else None
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             follow_up_date=(
                             datetime.fromisoformat(row[9]) if row[9] else None
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             response_message = row[10],
                             success_probability = row[11],
                             created_at = datetime.fromisoformat(row[12]),
                             updated_at = datetime.fromisoformat(row[13]),
                             metadata = json.loads(row[14]) if row[14] else {},
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 return None
 
@@ -1213,12 +1342,14 @@ Best regards,
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT COUNT(*) FROM outreach_campaigns
                     WHERE DATE(sent_date) = ? AND status = 'sent'
-                """,
+                ""","""
                     (today,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 count = cursor.fetchone()[0]
                 return count < self.max_daily_outreach
@@ -1248,7 +1379,8 @@ Best regards,
                     "success": True,
                         "message": f"Campaign {campaign_id} sent successfully",
                         "campaign_id": campaign_id,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
             else:
                 return {"success": False, "error": "Failed to send campaign"}
 
@@ -1267,11 +1399,13 @@ Best regards,
 
                 # Get or create today's metrics
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM outreach_metrics WHERE date = ?
-                """,
+                ""","""
                     (today,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 row = cursor.fetchone()
 
@@ -1279,49 +1413,60 @@ Best regards,
                     # Update existing metrics
                     if action == "sent":
                         cursor.execute(
-                            """
+                            """"""
                             UPDATE outreach_metrics
                             SET total_outreach = total_outreach + 1
                             WHERE date = ?
-                        """,
+                        ""","""
                             (today,),
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                     elif action == "response":
                         cursor.execute(
-                            """
+                            """"""
                             UPDATE outreach_metrics
                             SET responses_received = responses_received + 1
                             WHERE date = ?
-                        """,
+                        ""","""
                             (today,),
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                     elif action == "acceptance":
                         cursor.execute(
-                            """
+                            """"""
                             UPDATE outreach_metrics
                             SET acceptances = acceptances + 1
                             WHERE date = ?
-                        """,
+                        ""","""
                             (today,),
-                                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
                 else:
                     # Create new metrics entry
                     initial_values = {
                         "sent": (1, 0, 0, 0),
                             "response": (0, 1, 0, 0),
                             "acceptance": (0, 0, 1, 0),
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
 
                     values = initial_values.get(action, (0, 0, 0, 0))
 
                     cursor.execute(
-                        """
+                        """"""
                         INSERT INTO outreach_metrics (
                             date, total_outreach, responses_received, acceptances, successful_collaborations
-                        ) VALUES (?, ?, ?, ?, ?)
-                    """,
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ) VALUES (?, ?, ?, ?, ?)
+                    ""","""
                         (today, *values),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                 conn.commit()
 
@@ -1340,7 +1485,7 @@ Best regards,
 
                 # Get aggregate metrics
                 cursor.execute(
-                    """
+                    """"""
                     SELECT
                         SUM(total_outreach) as total,
                             SUM(responses_received) as responses,
@@ -1349,9 +1494,11 @@ Best regards,
                             AVG(average_response_time) as avg_response_time
                     FROM outreach_metrics
                     WHERE date BETWEEN ? AND ?
-                """,
+                ""","""
                     (start_date, end_date),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 row = cursor.fetchone()
 
@@ -1364,7 +1511,9 @@ Best regards,
                 # Calculate rates
                 response_rate = (
                     (responses / total_outreach) if total_outreach > 0 else 0.0
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 acceptance_rate = (acceptances / responses) if responses > 0 else 0.0
 
                 # Get platform performance (simplified)
@@ -1373,7 +1522,8 @@ Best regards,
                         "tiktok": 0.45,
                         "instagram": 0.55,
                         "twitter": 0.35,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 # Get collaboration type success rates (simplified)
                 collaboration_type_success = {
@@ -1381,7 +1531,8 @@ Best regards,
                         "guest_appearance": 0.6,
                         "content_exchange": 0.65,
                         "joint_content": 0.4,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                 return OutreachMetrics(
                     total_outreach = total_outreach,
@@ -1393,12 +1544,16 @@ Best regards,
                         "Personalized niche - specific outreach",
                             "Mutual benefit highlighting",
                             "Social proof inclusion",
-                            ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ],
                         platform_performance = platform_performance,
                         collaboration_type_success = collaboration_type_success,
                         monthly_growth = 0.15,  # 15% growth
                     roi_estimate = 2.3,  # 2.3x ROI
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         except Exception as e:
             self.logger.error(f"Error getting outreach metrics: {e}")
@@ -1413,7 +1568,9 @@ Best regards,
                     collaboration_type_success={},
                     monthly_growth = 0.0,
                     roi_estimate = 0.0,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     def get_dashboard_data(self) -> Dict[str, Any]:
@@ -1437,15 +1594,19 @@ Best regards,
                     "top_opportunities": [asdict(opp) for opp in top_opportunities],
                     "recent_discoveries": [
                     asdict(creator) for creator in recent_discoveries
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     "summary": {
                     "total_creators_discovered": len(recent_discoveries),
                         "active_outreach_campaigns": len(active_campaigns),
                         "pending_opportunities": len(top_opportunities),
                         "success_rate": metrics.acceptance_rate,
                         "monthly_growth": metrics.monthly_growth,
-                        },
-                    }
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Error getting dashboard data: {e}")
@@ -1459,13 +1620,15 @@ Best regards,
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM outreach_campaigns
                     WHERE status IN ('pending', 'sent', 'follow_up')
                     ORDER BY created_at DESC
                     LIMIT 10
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 campaigns = []
                 for row in cursor.fetchall():
@@ -1480,16 +1643,20 @@ Best regards,
                             sent_date = datetime.fromisoformat(row[7]) if row[7] else None,
                             response_date=(
                             datetime.fromisoformat(row[8]) if row[8] else None
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             follow_up_date=(
                             datetime.fromisoformat(row[9]) if row[9] else None
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             response_message = row[10],
                             success_probability = row[11],
                             created_at = datetime.fromisoformat(row[12]),
                             updated_at = datetime.fromisoformat(row[13]),
                             metadata = json.loads(row[14]) if row[14] else {},
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     campaigns.append(campaign)
 
                 return campaigns
@@ -1506,13 +1673,15 @@ Best regards,
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM collaboration_opportunities
                     ORDER BY success_probability DESC, mutual_benefit_score DESC
                     LIMIT ?
-                """,
+                ""","""
                     (limit,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 opportunities = []
                 for row in cursor.fetchall():
@@ -1530,7 +1699,9 @@ Best regards,
                             recommended_approach = row[10],
                             key_talking_points = json.loads(row[11]) if row[11] else [],
                             created_at = datetime.fromisoformat(row[12]),
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     opportunities.append(opportunity)
 
                 return opportunities
@@ -1547,14 +1718,16 @@ Best regards,
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT * FROM creator_profiles
                     WHERE active_status = TRUE
                     ORDER BY last_updated DESC
                     LIMIT ?
-                """,
+                ""","""
                     (limit,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 creators = []
                 for row in cursor.fetchall():
@@ -1575,10 +1748,13 @@ Best regards,
                             active_status = bool(row[13]),
                             preferred_collaboration_types=(
                             json.loads(row[14]) if row[14] else []
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             location = row[15] or "",
                             languages = json.loads(row[16]) if row[16] else [],
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     creators.append(creator)
 
                 return creators
@@ -1602,7 +1778,8 @@ Best regards,
                 "success": False,
                     "error": str(e),
                     "task_id": task.get("id", "unknown"),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
@@ -1615,7 +1792,8 @@ Best regards,
 
     async def _validate_rephrase_accuracy(
         self, original_task: Dict[str, Any], rephrased: str, context
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Validate rephrase accuracy - required abstract method implementation"""
         # For now, always return True as basic validation
         return True
@@ -1638,7 +1816,9 @@ if __name__ == "__main__":
         print(f"\\n2. Analyzing collaboration opportunities for {creators[0].name}...")
         opportunities = agent.analyze_collaboration_opportunities(
             creators[0].creator_id
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(f"   Found {len(opportunities)} collaboration opportunities")
 
         if opportunities:

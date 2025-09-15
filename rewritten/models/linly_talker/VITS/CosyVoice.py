@@ -32,7 +32,8 @@ class CosyVoiceTTS:
         prompt_speech,
         save_path="zero_shot.wav",
         speed_factor=1.0,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         prompt_speech_16k = self.postprocess(load_wav(prompt_speech, 16000))
         output = self.model.inference_zero_shot(text, prompt_text, prompt_speech_16k)
         if speed_factor != 1.0:
@@ -46,7 +47,8 @@ class CosyVoiceTTS:
         prompt_speech,
         save_path="cross_lingual.wav",
         speed_factor=1.0,
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         prompt_speech_16k = self.postprocess(load_wav(prompt_speech, 16000))
         output = self.model.inference_cross_lingual(prompt_text, prompt_speech_16k)
         if speed_factor != 1.0:
@@ -61,7 +63,8 @@ class CosyVoiceTTS:
         max_val = 0.8
         speech, _ = librosa.effects.trim(
             speech, top_db=top_db, frame_length=win_length, hop_length=hop_length
-        )
+# BRACKET_SURGEON: disabled
+#         )
         if speech.abs().max() > max_val:
             speech = speech / speech.abs().max() * max_val
         speech = torch.concat([speech, torch.zeros(1, int(target_sr * 0.2))], dim=1)
@@ -76,7 +79,8 @@ if __name__ == "__main__":
         "你好，我是通义生成式语音大模型，请问有什么可以帮您的吗？",
         "中文女",
         save_path="sft_output.wav",
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     # Zero - shot model example
     cosyvoice_zero_shot = CosyVoiceTTS("checkpoints/CosyVoice_ckpt/CosyVoice - 300M")
@@ -86,4 +90,5 @@ if __name__ == "__main__":
         "希望你以后能够做的比我还好呦。",
         prompt_speech,
         save_path="zero_shot_output.wav",
-    )
+# BRACKET_SURGEON: disabled
+#     )

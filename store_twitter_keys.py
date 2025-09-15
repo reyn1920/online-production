@@ -20,8 +20,8 @@ def store_twitter_credentials():
 
         print("✅ Twitter keys stored successfully")
         print(
-            "Note: Replace 'your - real - api - key - here' \
-    and 'your - real - api - secret' with actual credentials"
+            "Note: Replace 'your-real-api-key-here' "
+            "and 'your-real-api-secret' with actual credentials"
         )
 
     except Exception as e:

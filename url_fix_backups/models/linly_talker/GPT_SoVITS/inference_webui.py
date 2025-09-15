@@ -1,11 +1,11 @@
-"""
+""""""
 按中英混合识别
 按日英混合识别
 多语种启动切分识别语种
 全部按中文识别
 全部按英文识别
 全部按日文识别
-"""
+""""""
 
 import logging
 import os
@@ -31,7 +31,9 @@ else:
     gpt_path = os.environ.get(
         "gpt_path",
             "GPT_SoVITS / pretrained_models / s1bert25hz - 2kh - longer - epoch = 68e - step = 50232.ckpt",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 if os.path.exists("./sweight.txt"):
     with open("./sweight.txt", "r", encoding="utf - 8") as file:
@@ -40,17 +42,25 @@ if os.path.exists("./sweight.txt"):
 else:
     sovits_path = os.environ.get(
         "sovits_path", "GPT_SoVITS / pretrained_models / s2G488k.pth"
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 # gpt_path = os.environ.get(
 #     "gpt_path", "pretrained_models / s1bert25hz - 2kh - longer - epoch = 68e - step = 50232.ckpt"
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
 # )
 # sovits_path = os.environ.get("sovits_path", "pretrained_models / s2G488k.pth")
 cnhubert_base_path = os.environ.get(
     "cnhubert_base_path", "GPT_SoVITS / pretrained_models / chinese - hubert - base"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 bert_path = os.environ.get(
     "bert_path", "GPT_SoVITS / pretrained_models / chinese - roberta - wwm - ext - large"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 infer_ttswebui = os.environ.get("infer_ttswebui", 9872)
 infer_ttswebui = int(infer_ttswebui)
 is_share = os.environ.get("is_share", "False")
@@ -199,7 +209,9 @@ def change_sovits_weights(sovits_path):
             hps.train.segment_size // hps.data.hop_length,
             n_speakers = hps.data.n_speakers,
             **hps.model,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     if "pretrained" not in sovits_path:
         del vq_model.enc_q
     if is_half is True:
@@ -247,7 +259,9 @@ def get_spepc(hps, filename):
             hps.data.hop_length,
             hps.data.win_length,
             center = False,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     return spec
 
 dict_language = {
@@ -257,7 +271,8 @@ dict_language = {
     i18n("中英混合"): "zh",  # 按中英混合识别####不变
     i18n("日英混合"): "ja",  # 按日英混合识别####不变
     i18n("多语种混合"): "auto",  # 多语种启动切分识别语种
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def splite_en_inf(sentence, language):
@@ -311,7 +326,9 @@ def get_bert_inf(phones, word2ph, norm_text, language):
         bert = torch.zeros(
             (1024, len(phones)),
                 dtype = torch.float16 if is_half is True else torch.float32,
-                ).to(device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ).to(device)
 
     return bert
 
@@ -381,7 +398,8 @@ splits = {
         "：",
         "—",
         "…",
-}
+# BRACKET_SURGEON: disabled
+# }
 
 
 def get_first(text):
@@ -417,7 +435,8 @@ def get_tts_wav(
         text,
         text_language,
         how_to_cut = i18n("不切"),
-):
+# BRACKET_SURGEON: disabled
+# ):
     t0 = ttime()
     prompt_text = prompt_text.strip("\\n")
     if prompt_text[-1] not in splits:
@@ -430,7 +449,9 @@ def get_tts_wav(
     zero_wav = np.zeros(
         int(hps.data.sampling_rate * 0.3),
             dtype = np.float16 if is_half is True else np.float32,
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
     with torch.no_grad():
         wav16k, sr = librosa.load(ref_wav_path, sr = 16000)
         if wav16k.shape[0] > 160000 or wav16k.shape[0] < 48000:
@@ -446,9 +467,13 @@ def get_tts_wav(
         wav16k = torch.cat([wav16k, zero_wav_torch])
         ssl_content = ssl_model.model(wav16k.unsqueeze(0))[
             "last_hidden_state"
-        ].transpose(
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ].transpose(
             1, 2
-        )  # .float()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )  # .float()
         codes = vq_model.extract_latent(ssl_content)
         prompt_semantic = codes[0, 0]
     t1 = ttime()
@@ -473,7 +498,9 @@ def get_tts_wav(
     audio_opt = []
     bert1 = get_bert_final(phones1, word2ph1, norm_text1, prompt_language, device).to(
         dtype
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
     for text in texts:
         # 解决输入目标文本的空行导致报错的问题
@@ -485,7 +512,9 @@ def get_tts_wav(
         phones2, word2ph2, norm_text2 = get_cleaned_text_fianl(text, text_language)
         bert2 = get_bert_final(phones2, word2ph2, norm_text2, text_language, device).to(
             dtype
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         bert = torch.cat([bert1, bert2], 1)
 
@@ -504,7 +533,9 @@ def get_tts_wav(
                     # prompt_phone_len = ph_offset,
                     top_k = config["inference"]["top_k"],
                     early_stop_num = hz * max_sec,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
         t3 = ttime()
         # print(pred_semantic.shape,idx)
         pred_semantic = pred_semantic[:, -idx:].unsqueeze(
@@ -518,15 +549,20 @@ def get_tts_wav(
         # audio = vq_model.decode(pred_semantic,
     all_phoneme_ids,
     refer).detach().cpu().numpy()[0,
-    0]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     0]
         audio = (
             vq_model.decode(
                 pred_semantic, torch.LongTensor(phones2).to(device).unsqueeze(0), refer
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             .detach()
             .cpu()
             .numpy()[0, 0]
-        )  ###试试重建不带上prompt部分
+# BRACKET_SURGEON: disabled
+#         )  ###试试重建不带上prompt部分
         max_audio = np.abs(audio).max()  # 简单防止16bit爆音
         if max_audio > 1:
             audio /= max_audio
@@ -536,7 +572,9 @@ def get_tts_wav(
     print("%.3f\\t%.3f\\t%.3f\\t%.3f" % (t1 - t0, t2 - t1, t3 - t2, t4 - t3))
     yield hps.data.sampling_rate, (np.concatenate(audio_opt, 0) * 32768).astype(
         np.int16
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 
 def split(todo_text):
@@ -633,12 +671,15 @@ def change_choices():
         "choices": sorted(SoVITS_names, key = custom_sort_key),
             "__type__": "update",
             }, {"choices": sorted(GPT_names,
-    key = custom_sort_key), "__type__": "update"}
+# BRACKET_SURGEON: disabled
+#     key = custom_sort_key), "__type__": "update"}
 
 pretrained_sovits_name = "GPT_SoVITS / pretrained_models / s2G488k.pth"
 pretrained_gpt_name = (
     "GPT_SoVITS / pretrained_models / s1bert25hz - 2kh - longer - epoch = 68e - step = 50232.ckpt"
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )
 SoVITS_weight_root = "SoVITS_weights"
 GPT_weight_root = "GPT_weights"
 os.makedirs(SoVITS_weight_root, exist_ok = True)
@@ -724,8 +765,12 @@ with gr.Blocks(title="GPT - SoVITS WebUI") as app:
     gr.Markdown(
         value = i18n(
             "本软件以MIT协议开源, 作者不对软件具备任何控制力, 使用软件者、传播软件导出的声音者自负全责. <br > 如不认可该条款, 则不能使用或引用软件包内任何代码和文件. 详见根目录 < b > LICENSE</b>."
-        )
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
     with gr.Group():
         gr.Markdown(value = i18n("模型切换"))
         with gr.Row():
@@ -734,45 +779,63 @@ with gr.Blocks(title="GPT - SoVITS WebUI") as app:
                     choices = sorted(GPT_names, key = custom_sort_key),
                     value = gpt_path,
                     interactive = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             SoVITS_dropdown = gr.Dropdown(
                 label = i18n("SoVITS模型列表"),
                     choices = sorted(SoVITS_names, key = custom_sort_key),
                     value = sovits_path,
                     interactive = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             wavs_dropdown = gr.Dropdown(
                 label = i18n("参考音频列表"),
                     choices = reference_wavs,
                     value="请选择参考音频",
                     interactive = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             refresh_button = gr.Button(i18n("刷新模型路径"), variant="primary")
             refresh_button.click(
                 fn = change_choices, inputs=[], outputs=[SoVITS_dropdown, GPT_dropdown]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             # SoVITS_dropdown.change(change_sovits_weights, [SoVITS_dropdown], [])
             SoVITS_dropdown.change(
                 change_sovits_weights, [SoVITS_dropdown], [wavs_dropdown]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             GPT_dropdown.change(change_gpt_weights, [GPT_dropdown], [])
         gr.Markdown(value = i18n("*请上传并填写参考信息"))
         with gr.Row():
             inp_ref = gr.Audio(
                 label = i18n("请上传3~10秒内参考音频，超过会报错！"), type="filepath"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             prompt_text = gr.Textbox(label = i18n("参考音频的文本"), value="")
             prompt_language = gr.Dropdown(
                 label = i18n("参考音频的语种"),
                     choices=[i18n("中文"), i18n("英文"), i18n("日文")],
                     value = i18n("中文"),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             wavs_dropdown.change(change_wav, [wavs_dropdown], [inp_ref])
         gr.Markdown(
             value = i18n(
                 "*请填写需要合成的目标文本。中英混合选中文，日英混合选日文，中日混合暂不支持，非目标语言文本自动遗弃。"
-            )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         with gr.Row():
             text = gr.Textbox(label = i18n("需要合成的文本"), value="")
             text_language = gr.Dropdown(
@@ -784,9 +847,13 @@ with gr.Blocks(title="GPT - SoVITS WebUI") as app:
                         i18n("中英混合"),
                         i18n("日英混合"),
                         i18n("多语种混合"),
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     value = i18n("中文"),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             how_to_cut = gr.Radio(
                 label = i18n("怎么切"),
                     choices=[
@@ -796,10 +863,14 @@ with gr.Blocks(title="GPT - SoVITS WebUI") as app:
                         i18n("按中文句号。切"),
                         i18n("按英文句号.切"),
                         i18n("按标点符号切"),
-                        ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],
                     value = i18n("凑四句一切"),
                     interactive = True,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             inference_button = gr.Button(i18n("合成语音"), variant="primary")
             output = gr.Audio(label = i18n("输出的语音"))
 
@@ -807,7 +878,9 @@ with gr.Blocks(title="GPT - SoVITS WebUI") as app:
             get_tts_wav,
                 [inp_ref, prompt_text, prompt_language, text, text_language, how_to_cut],
                 [output],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         history_audio = []
         history_checkbox = []
         with gr.Accordion("生成历史"):
@@ -819,7 +892,9 @@ with gr.Blocks(title="GPT - SoVITS WebUI") as app:
                         step = 1,
                         interactive = True,
                         label="记录显示数量",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 add_history_button = gr.Button("添加当前音频记录", variant="primary")
                 delete_select_history_button = gr.Button("删除选择的记录")
                 clear_history_button = gr.Button("清空记录")
@@ -832,32 +907,48 @@ with gr.Blocks(title="GPT - SoVITS WebUI") as app:
                             history_checkbox.append(
                                 gr.Checkbox(
                                     interactive = True, show_label = False, label=""
-                                )
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             history_audio.append(gr.Audio(label=""))
 
             shown_audio_num.change(
                 shown_audio_num_change,
                     [shown_audio_num],
                     [*history_checkbox, *history_audio],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             add_history_button.click(
                 add_to_history, [output, text], [*history_checkbox, *history_audio]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             delete_select_history_button.click(
                 delete_selected_history,
                     [*history_checkbox],
                     [*history_checkbox, *history_audio],
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             clear_history_button.click(
                 clear_history, outputs=[*history_checkbox, *history_audio]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         gr.Markdown(
             value = i18n(
                 "文本切分工具。太长的文本合成出来效果不一定好，所以太长建议先切。合成会根据文本的换行分开合成再拼起来。"
-            )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         with gr.Row():
             text_inp = gr.Textbox(label = i18n("需要合成的切分前文本"), value="")
             button1 = gr.Button(i18n("凑四句一切"), variant="primary")
@@ -879,4 +970,6 @@ app.queue(concurrency_count = 511, max_size = 1022).launch(
         share = is_share,
         server_port = infer_ttswebui,
         quiet = True,
-)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+# )

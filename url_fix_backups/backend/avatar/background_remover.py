@@ -16,14 +16,14 @@ class BackgroundRemover:
         self.logger = logging.getLogger(__name__)
 
     def remove_background_ai(self, image_data: Union[bytes, str, Image.Image]) -> Image.Image:
-        """Remove background using AI - based segmentation techniques.
+        """Remove background using AI - based segmentation techniques."""
 
         Args:
             image_data: Input image as bytes, base64 string, or PIL Image
 
         Returns:
             PIL Image with transparent background
-        """
+        """"""
         try:
             # Convert input to PIL Image
             if isinstance(image_data, str):
@@ -65,7 +65,8 @@ class BackgroundRemover:
             int(height * 0.1),
             int(width * 0.8),
             int(height * 0.8),
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Initialize foreground and background models
         bgd_model = np.zeros((1, 65), np.float64)
@@ -96,7 +97,8 @@ class BackgroundRemover:
 
     def _fallback_background_removal(
         self, image_data: Union[bytes, str, Image.Image]
-    ) -> Image.Image:
+# BRACKET_SURGEON: disabled
+#     ) -> Image.Image:
         """Fallback method using color - based segmentation."""
         try:
             # Convert input to PIL Image
@@ -122,13 +124,15 @@ class BackgroundRemover:
                 data[0, -1],  # top - right
                 data[-1, 0],  # bottom - left
                 data[-1, -1],  # bottom - right
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             # Use most common corner color as background
             bg_color = max(
                 set(tuple(c[:3]) for c in corners),
                 key=lambda x: sum(1 for c in corners if tuple(c[:3]) == x),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Create mask based on color similarity
             tolerance = 30
@@ -144,7 +148,8 @@ class BackgroundRemover:
             # Return original image if all else fails
             return (
                 image if isinstance(image_data, Image.Image) else Image.open(io.BytesIO(image_data))
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def enhance_transparency(self, image: Image.Image) -> Image.Image:
         """Enhance transparency and smooth edges."""
@@ -164,7 +169,7 @@ class BackgroundRemover:
     def process_avatar_upload(
         self, image_data: Union[bytes, str, Image.Image], enhance: bool = True
     ) -> Tuple[Image.Image, str]:
-        """Complete avatar processing pipeline.
+        """Complete avatar processing pipeline."""
 
         Args:
             image_data: Input image data
@@ -172,7 +177,7 @@ class BackgroundRemover:
 
         Returns:
             Tuple of (processed_image, base64_encoded_result)
-        """
+        """"""
         try:
             # Remove background
             processed_image = self.remove_background_ai(image_data)
@@ -195,14 +200,14 @@ class BackgroundRemover:
             raise
 
     def batch_process_avatars(self, image_list: list) -> list:
-        """Process multiple avatar images in batch.
+        """Process multiple avatar images in batch."""
 
         Args:
             image_list: List of image data (various formats supported)
 
         Returns:
             List of processed images with transparent backgrounds
-        """
+        """"""
         results = []
 
         for i, image_data in enumerate(image_list):
@@ -214,8 +219,10 @@ class BackgroundRemover:
                         "image": processed_image,
                         "base64": base64_data,
                         "status": "success",
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 self.logger.error(f"Error processing image {i}: {e}")
                 results.append(
@@ -225,20 +232,22 @@ class BackgroundRemover:
                         "base64": None,
                         "status": "error",
                         "error": str(e),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return results
 
     def validate_image_format(self, image_data: Union[bytes, str]) -> bool:
-        """Validate if the input is a valid image format.
+        """Validate if the input is a valid image format."""
 
         Args:
             image_data: Image data to validate
 
         Returns:
             True if valid image format, False otherwise
-        """
+        """"""
         try:
             if isinstance(image_data, str):
                 if image_data.startswith("data:image"):
@@ -255,14 +264,14 @@ class BackgroundRemover:
             return False
 
     def get_image_info(self, image_data: Union[bytes, str, Image.Image]) -> dict:
-        """Get information about the input image.
+        """Get information about the input image."""
 
         Args:
             image_data: Input image data
 
         Returns:
             Dictionary with image information
-        """
+        """"""
         try:
             if isinstance(image_data, str):
                 if image_data.startswith("data:image"):
@@ -281,7 +290,8 @@ class BackgroundRemover:
                 "format": image.format,
                 "has_transparency": image.mode in ("RGBA", "LA") or "transparency" in image.info,
                 "size_bytes": (len(image_data) if isinstance(image_data, bytes) else None),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             return {"error": str(e)}
@@ -291,28 +301,28 @@ class BackgroundRemover:
 
 
 def remove_background_from_upload(image_data: Union[bytes, str]) -> str:
-    """Quick function to remove background from uploaded image.
+    """Quick function to remove background from uploaded image."""
 
     Args:
         image_data: Image data (bytes or base64 string)
 
     Returns:
         Base64 encoded image with transparent background
-    """
+    """"""
     remover = BackgroundRemover()
     _, base64_result = remover.process_avatar_upload(image_data)
     return base64_result
 
 
 def validate_and_process_avatar(image_data: Union[bytes, str]) -> dict:
-    """Validate and process avatar image with comprehensive error handling.
+    """Validate and process avatar image with comprehensive error handling."""
 
     Args:
         image_data: Input image data
 
     Returns:
         Dictionary with processing results and status
-    """
+    """"""
     remover = BackgroundRemover()
 
     # Validate format
@@ -321,7 +331,8 @@ def validate_and_process_avatar(image_data: Union[bytes, str]) -> dict:
             "success": False,
             "error": "Invalid image format",
             "processed_image": None,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     try:
         # Get image info
@@ -335,7 +346,8 @@ def validate_and_process_avatar(image_data: Union[bytes, str]) -> dict:
             "processed_image": base64_result,
             "original_info": info,
             "processed_info": remover.get_image_info(processed_image),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         return {"success": False, "error": str(e), "processed_image": None}

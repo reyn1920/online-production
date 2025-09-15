@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI Content Agent - Production Implementation
 AI - powered content creation and management service
 
@@ -11,7 +11,7 @@ This service handles:
 - SEO optimization and keyword research
 - Content scheduling and publishing
 - Performance analytics and optimization
-"""
+""""""
 
 import asyncio
 import json
@@ -48,7 +48,8 @@ from sqlalchemy import (
     String,
     Text,
     create_engine,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
@@ -131,7 +132,8 @@ logger.add(
     sys.stdout,
     format="{time:YYYY - MM - DD HH:mm:ss} | {level} | {name}:{function}:{line} | {message}",
     level="INFO",
-)
+# BRACKET_SURGEON: disabled
+# )
 logger.add("logs / content_agent.log", rotation="100 MB", retention="30 days", level="DEBUG")
 
 # Configuration
@@ -139,7 +141,7 @@ logger.add("logs / content_agent.log", rotation="100 MB", retention="30 days", l
 
 class Config:
     # Database
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./content_agent.db")
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./content_agent.db"):
 
     # Redis
     REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379 / 0")
@@ -288,16 +290,19 @@ class ContentAnalytics(BaseModel):
 # Metrics
 content_generation_counter = Counter(
     "content_generation_total", "Total content generated", ["content_type", "ai_model"]
-)
+# BRACKET_SURGEON: disabled
+# )
 content_generation_duration = Histogram(
     "content_generation_duration_seconds",
     "Content generation duration",
     ["content_type"],
-)
+# BRACKET_SURGEON: disabled
+# )
 api_request_counter = Counter("api_requests_total", "Total API requests", ["endpoint", "method"])
 api_request_duration = Histogram(
     "api_request_duration_seconds", "API request duration", ["endpoint"]
-)
+# BRACKET_SURGEON: disabled
+# )
 error_counter = Counter("errors_total", "Total errors", ["error_type"])
 active_tasks_gauge = Gauge("active_tasks", "Number of active tasks")
 cache_hit_counter = Counter("cache_hits_total", "Cache hits")
@@ -333,7 +338,8 @@ if config.STABILITY_API_KEY:
         host="grpc.stability.ai:443",
         key=config.STABILITY_API_KEY,
         verbose=True,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 else:
     stability_api = None
 
@@ -387,7 +393,8 @@ class ContentGenerator:
             f"Target audience: {request.target_audience}",
             f"Tone: {request.tone}",
             f"Length: {request.length}",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         if request.keywords:
             prompt_parts.append(f"Include these keywords naturally: {', '.join(request.keywords)}")
@@ -421,15 +428,18 @@ class ContentGenerator:
                     {
                         "role": "system",
                         "content": "You are an expert content creator specializing in engaging, SEO - optimized content.",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     {"role": "user", "content": prompt},
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 max_tokens=self._get_max_tokens(request.length),
                 temperature=0.7,
                 top_p=0.9,
                 frequency_penalty=0.1,
                 presence_penalty=0.1,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return response.choices[0].message.content
         except Exception as e:
             logger.error(f"OpenAI API error: {e}")
@@ -444,7 +454,8 @@ class ContentGenerator:
                 max_tokens=self._get_max_tokens(request.length),
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return response.content[0].text
         except Exception as e:
             logger.error(f"Anthropic API error: {e}")
@@ -461,8 +472,10 @@ class ContentGenerator:
                     temperature=0.7,
                     top_p=0.9,
                     top_k=40,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             return response.text
         except Exception as e:
             logger.error(f"Gemini API error: {e}")
@@ -475,15 +488,15 @@ class ContentGenerator:
 
     def _generate_mock_content(self, request: ContentRequest) -> str:
         """Generate mock content for testing"""
-        mock_content = f"""
+        mock_content = f""""""
 # {request.title}
 
 This is a comprehensive {request.content_type} about {request.topic}, created for {request.target_audience} with a {request.tone} tone.
 
 ## Introduction
 
-In today's digital landscape, understanding {request.topic} is crucial for success. This content provides valuable insights \
-    and actionable strategies.
+In today's digital landscape, understanding {request.topic} is crucial for success. This content provides valuable insights \'
+#     and actionable strategies.
 
 ## Key Points
 
@@ -495,13 +508,13 @@ In today's digital landscape, understanding {request.topic} is crucial for succe
 
 ## Conclusion
 
-By implementing these strategies around {request.topic}, you'll be well - positioned for success. Remember to stay updated with the latest trends \
-    and continuously optimize your approach.
+By implementing these strategies around {request.topic}, you'll be well - positioned for success. Remember to stay updated with the latest trends \'
+#     and continuously optimize your approach.
 
 ---
 
 *This content was generated by TRAE.AI Content Agent for demonstration purposes.*
-    """
+    """"""
 
         if request.keywords:
             mock_content += f"\\n\\n**Keywords**: {', '.join(request.keywords)}"
@@ -518,7 +531,8 @@ class ImageGenerator:
 
     async def generate_image(
         self, prompt: str, style: str = "realistic", size: str = "1024x1024"
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate image using AI models"""
         try:
             cache_key = f"img_{hash(prompt)}_{style}_{size}"
@@ -557,7 +571,8 @@ class ImageGenerator:
                 height=height,
                 samples=1,
                 sampler=generation.SAMPLER_K_DPMPP_2M,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             for resp in answers:
                 for artifact in resp.artifacts:
@@ -586,7 +601,8 @@ class ImageGenerator:
                 size=size,
                 quality="standard",
                 n=1,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             image_url = response.data[0].url
 
@@ -618,7 +634,8 @@ class ImageGenerator:
             try:
                 font = ImageFont.truetype(
                     "/usr / share / fonts / truetype / dejavu / DejaVuSans.ttf", 24
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception:
                 font = ImageFont.load_default()
 
@@ -651,7 +668,8 @@ class VideoGenerator:
 
     async def generate_video(
         self, script: str, images: List[str], audio_path: Optional[str] = None
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate video from script, images, and audio"""
         try:
             # Create video clips from images
@@ -682,7 +700,8 @@ class VideoGenerator:
                 audio_codec="aac",
                 temp_audiofile=str(self.temp_dir / "temp_audio.m4a"),
                 remove_temp=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Clean up
             video.close()
@@ -726,7 +745,8 @@ class AudioGenerator:
                 text=text,
                 voice=Voice(voice_id=voice),
                 api_key=config.ELEVENLABS_API_KEY,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             filename = f"output / elevenlabs_audio_{uuid4().hex}.mp3"
             with open(filename, "wb") as f:
@@ -747,7 +767,8 @@ class AudioGenerator:
                 voice=voice,
                 input=text,
                 speed=speed,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             filename = f"output / openai_tts_{uuid4().hex}.mp3"
             response.stream_to_file(filename)
@@ -792,7 +813,8 @@ class SEOAnalyzer:
                 "character_count": len(content),
                 "estimated_reading_time": len(content.split()) / 200,  # Average reading speed
                 "seo_score": 0.0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Calculate overall SEO score
             analysis["seo_score"] = self._calculate_seo_score(analysis)
@@ -809,7 +831,8 @@ class SEOAnalyzer:
             return {
                 "flesch_reading_ease": flesch_reading_ease(content),
                 "flesch_kincaid_grade": flesch_kincaid_grade(content),
-            }
+# BRACKET_SURGEON: disabled
+#             }
         except Exception:
             return {"flesch_reading_ease": 0.0, "flesch_kincaid_grade": 0.0}
 
@@ -831,15 +854,18 @@ class SEOAnalyzer:
         lines = content.split("\\n")
 
         return {
-            "has_headings": any(line.startswith("#") for line in lines),
+            "has_headings": any(line.startswith("#") for line in lines),"
             "paragraph_count": len(
-                [line for line in lines if line.strip() and not line.startswith("#")]
-            ),
-            "heading_count": len([line for line in lines if line.startswith("#")]),
+                [line for line in lines if line.strip() and not line.startswith("#")]"
+# BRACKET_SURGEON: disabled
+#             ),
+            "heading_count": len([line for line in lines if line.startswith("#")]),"
             "list_count": len(
                 [line for line in lines if line.strip().startswith(("-", "*", "1."))]
-            ),
-        }
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         }
 
     def _analyze_sentiment(self, content: str) -> Dict[str, float]:
         """Analyze content sentiment"""
@@ -855,7 +881,8 @@ class SEOAnalyzer:
                     "pos": max(0, blob.sentiment.polarity),
                     "neu": 1 - abs(blob.sentiment.polarity),
                     "neg": max(0, -blob.sentiment.polarity),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         except Exception:
             return {"compound": 0.0, "pos": 0.0, "neu": 1.0, "neg": 0.0}
 
@@ -921,13 +948,16 @@ class ContentPublisher:
                 config.TWITTER_API_SECRET,
                 config.TWITTER_ACCESS_TOKEN,
                 config.TWITTER_ACCESS_TOKEN_SECRET,
-            ]
-        ):
+# BRACKET_SURGEON: disabled
+#             ]
+# BRACKET_SURGEON: disabled
+#         ):
             try:
                 auth = tweepy.OAuthHandler(config.TWITTER_API_KEY, config.TWITTER_API_SECRET)
                 auth.set_access_token(
                     config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_TOKEN_SECRET
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 clients["twitter"] = tweepy.API(auth)
             except Exception as e:
                 logger.error(f"Twitter client initialization failed: {e}")
@@ -959,7 +989,8 @@ class ContentPublisher:
                     config.WORDPRESS_URL,
                     config.WORDPRESS_USERNAME,
                     config.WORDPRESS_PASSWORD,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
             except Exception as e:
                 logger.error(f"WordPress client initialization failed: {e}")
 
@@ -986,7 +1017,8 @@ class ContentPublisher:
                         result = {
                             "success": False,
                             "error": f"Unknown channel: {channel}",
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
                     results[channel] = result
 
@@ -1019,7 +1051,8 @@ class ContentPublisher:
                     "success": True,
                     "post_id": status.id,
                     "url": f"https://twitter.com / user / status/{status.id}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             elif channel == "facebook":
                 response = await asyncio.to_thread(
@@ -1027,7 +1060,8 @@ class ContentPublisher:
                     parent_object="me",
                     connection_name="feed",
                     message=content_item.content,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return {"success": True, "post_id": response["id"]}
 
             elif channel == "linkedin":
@@ -1035,7 +1069,8 @@ class ContentPublisher:
                 return {
                     "success": False,
                     "error": "LinkedIn publishing not fully implemented",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             logger.error(f"Social media publishing error: {e}")
@@ -1116,7 +1151,8 @@ class TraeAIContentAgent:
                 try:
                     video_path = await self.video_generator.generate_video(
                         content, [file_paths["featured_image"]], file_paths.get("audio")
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     file_paths["video"] = video_path
                 except Exception as e:
                     logger.error(f"Video generation failed: {e}")
@@ -1136,7 +1172,8 @@ class TraeAIContentAgent:
                         "length": request.length,
                         "keywords": request.keywords,
                         "custom_instructions": request.custom_instructions,
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                     status="draft",
                     author="TRAE.AI",
                     tags=request.keywords,
@@ -1145,7 +1182,8 @@ class TraeAIContentAgent:
                     generation_params=request.dict(),
                     file_paths=file_paths,
                     publishing_channels=request.publishing_channels,
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 db.add(content_item)
                 db.commit()
@@ -1154,7 +1192,8 @@ class TraeAIContentAgent:
                 if request.schedule_time and request.publishing_channels:
                     await self._schedule_publishing(
                         content_id, request.publishing_channels, request.schedule_time
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             finally:
                 db.close()
@@ -1181,7 +1220,8 @@ class TraeAIContentAgent:
                 file_paths=file_paths,
                 seo_score=seo_analysis["seo_score"],
                 estimated_engagement=estimated_engagement,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             logger.error(f"Content creation failed: {e}")
@@ -1193,14 +1233,16 @@ class TraeAIContentAgent:
 
     async def _schedule_publishing(
         self, content_id: str, channels: List[str], schedule_time: datetime
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Schedule content publishing"""
         db = SessionLocal()
         try:
             for channel in channels:
                 schedule_item = ContentSchedule(
                     content_id=content_id, channel=channel, scheduled_time=schedule_time
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 db.add(schedule_item)
 
             db.commit()
@@ -1212,7 +1254,8 @@ class TraeAIContentAgent:
                 run_date=schedule_time,
                 args=[content_id, channels],
                 id=f"publish_{content_id}_{int(schedule_time.timestamp())}",
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         finally:
             db.close()
@@ -1234,7 +1277,8 @@ class TraeAIContentAgent:
             "social_post": {"likes": 100, "shares": 20, "comments": 5},
             "video": {"views": 500, "likes": 25, "comments": 8},
             "podcast": {"listens": 200, "shares": 15, "comments": 3},
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         base = base_engagement.get(content_type, {"engagement": 100})
 
@@ -1263,9 +1307,11 @@ class TraeAIContentAgent:
                 / max(total_content, 1),
                 "published_content": len(
                     [item for item in content_items if item.status == "published"]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "draft_content": len([item for item in content_items if item.status == "draft"]),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Top performing content
             top_performing = sorted(content_items, key=lambda x: x.seo_score or 0, reverse=True)[:5]
@@ -1277,20 +1323,25 @@ class TraeAIContentAgent:
                     "content_type": item.content_type,
                     "seo_score": item.seo_score,
                     "created_at": item.created_at.isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for item in top_performing
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             # SEO performance
             seo_performance = {
                 "average_score": engagement_metrics["average_seo_score"],
                 "high_quality_content": len(
                     [item for item in content_items if (item.seo_score or 0) >= 80]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 "needs_improvement": len(
                     [item for item in content_items if (item.seo_score or 0) < 60]
-                ),
-            }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             }
 
             # AI model performance
             ai_model_performance = {}
@@ -1300,7 +1351,8 @@ class TraeAIContentAgent:
                         ai_model_performance[item.ai_model_used] = {
                             "count": 0,
                             "avg_score": 0,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                     ai_model_performance[item.ai_model_used]["count"] += 1
 
             for model in ai_model_performance:
@@ -1312,7 +1364,8 @@ class TraeAIContentAgent:
             publishing_success_rate = {
                 "overall": len([item for item in content_items if item.status == "published"])
                 / max(total_content, 1)
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             return ContentAnalytics(
                 total_content=total_content,
@@ -1322,7 +1375,8 @@ class TraeAIContentAgent:
                 seo_performance=seo_performance,
                 ai_model_performance=ai_model_performance,
                 publishing_success_rate=publishing_success_rate,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         finally:
             db.close()
@@ -1359,7 +1413,8 @@ app = FastAPI(
     description="AI - powered content creation and management service",
     version="1.0.0",
     lifespan=lifespan,
-)
+# BRACKET_SURGEON: disabled
+# )
 
 # CORS middleware
 app.add_middleware(
@@ -1368,7 +1423,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+# BRACKET_SURGEON: disabled
+# )
 
 
 # Routes
@@ -1380,7 +1436,8 @@ async def health_check():
         "timestamp": datetime.utcnow().isoformat(),
         "service": "content - agent",
         "version": "1.0.0",
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @app.get("/metrics")
@@ -1437,7 +1494,8 @@ async def list_content(
     limit: int = 50,
     offset: int = 0,
     db: Session = Depends(get_db),
-):
+# BRACKET_SURGEON: disabled
+# ):
     """List content with filters"""
     api_request_counter.labels(endpoint="list_content", method="GET").inc()
 
@@ -1469,7 +1527,8 @@ async def schedule_content(
     channels: List[str],
     schedule_time: datetime,
     background_tasks: BackgroundTasks,
-):
+# BRACKET_SURGEON: disabled
+# ):
     """Schedule content publishing"""
     api_request_counter.labels(endpoint="schedule_content", method="POST").inc()
 
@@ -1478,7 +1537,8 @@ async def schedule_content(
         "content_id": content_id,
         "scheduled_time": schedule_time,
         "channels": channels,
-    }
+# BRACKET_SURGEON: disabled
+#     }
 
 
 @app.get("/api / content/{content_id}/files/{file_type}")
@@ -1563,7 +1623,8 @@ async def create_template(template_data: dict, db: Session = Depends(get_db)):
         content_type=template_data["content_type"],
         template=template_data["template"],
         variables=template_data.get("variables", []),
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     db.add(template)
     db.commit()
@@ -1582,7 +1643,8 @@ async def get_schedule(db: Session = Depends(get_db)):
         .filter(ContentSchedule.status == "pending")
         .order_by(ContentSchedule.scheduled_time)
         .all()
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     return schedule_items
 
@@ -1599,15 +1661,18 @@ async def process_scheduled_content():
             .filter(
                 ContentSchedule.status == "pending",
                 ContentSchedule.scheduled_time <= now,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             .all()
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         for item in due_items:
             try:
                 results = await agent.content_publisher.publish_content(
                     item.content_id, [item.channel]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if results.get(item.channel, {}).get("success"):
                     item.status = "published"
@@ -1669,14 +1734,16 @@ async def update_content_metrics():
                     "likes": 0,
                     "shares": 0,
                     "comments": 0,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
             # Simulate metric growth
             growth_factor = 1.1 if content.seo_score > 70 else 1.05
             for metric in content.engagement_metrics:
                 content.engagement_metrics[metric] = int(
                     content.engagement_metrics[metric] * growth_factor
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
         db.commit()
 
@@ -1694,7 +1761,8 @@ async def http_exception_handler(request, exc):
     return JSONResponse(
         status_code=exc.status_code,
         content={"detail": exc.detail, "timestamp": datetime.utcnow().isoformat()},
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
 
 @app.exception_handler(Exception)
@@ -1706,8 +1774,10 @@ async def general_exception_handler(request, exc):
         content={
             "detail": "Internal server error",
             "timestamp": datetime.utcnow().isoformat(),
-        },
-    )
+# BRACKET_SURGEON: disabled
+#         },
+# BRACKET_SURGEON: disabled
+#     )
 
 
 if __name__ == "__main__":
@@ -1728,4 +1798,5 @@ if __name__ == "__main__":
         port=8001,
         reload=config.ENVIRONMENT == "development",
         log_level=config.LOG_LEVEL.lower(),
-    )
+# BRACKET_SURGEON: disabled
+#     )

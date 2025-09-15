@@ -49,7 +49,8 @@ async def http_with_fallback(
     func: Callable[[httpx.AsyncClient, Provider], Any],
     prefer: List[str] = None,
     timeout: float = 10.0,
-) -> Any:
+# BRACKET_SURGEON: disabled
+# ) -> Any:
     """Execute HTTP requests with provider fallback logic"""
     # For now, just use a simple mock provider system
     # In a real implementation, this would load from the providers config
@@ -57,19 +58,23 @@ async def http_with_fallback(
         "news": [
             Provider(id=p, name=p.title(), category="news", docs_url="")
             for p in (prefer or ["guardian", "newsapi"])
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "tech": [
             Provider(id=p, name=p.title(), category="tech", docs_url="")
             for p in (prefer or ["github", "hackernews"])
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "knowledge": [
             Provider(id=p, name=p.title(), category="knowledge", docs_url="")
             for p in (prefer or ["arxiv", "paperswithcode"])
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "wellness": [
             Provider(id=p, name=p.title(), category="wellness", docs_url="")
             for p in (prefer or ["usda_fdc", "openfda"])
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "pets": [
             Provider(
                 id=p,
@@ -78,9 +83,11 @@ async def http_with_fallback(
                 docs_url="",
                 needs_key=False,
                 enabled=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             for p in (prefer or ["thedogapi", "thecatapi", "dog_ceo"])
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "pets_misc": [
             Provider(
                 id=p,
@@ -89,9 +96,11 @@ async def http_with_fallback(
                 docs_url="",
                 needs_key=False,
                 enabled=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             for p in (prefer or ["zoo_animal_api", "dog_ceo"])
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "pets_birds": [
             Provider(
                 id=p,
@@ -100,9 +109,11 @@ async def http_with_fallback(
                 docs_url="",
                 needs_key=True,
                 enabled=False,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             for p in (prefer or ["ebird"])
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "pets_fish": [
             Provider(
                 id=p,
@@ -111,9 +122,11 @@ async def http_with_fallback(
                 docs_url="",
                 needs_key=False,
                 enabled=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             for p in (prefer or ["fishwatch"])
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "pets_care": [
             Provider(
                 id=p,
@@ -122,9 +135,11 @@ async def http_with_fallback(
                 docs_url="",
                 needs_key=True,
                 enabled=False,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             for p in (prefer or ["vetster", "pawp", "airvet"])
-        ],
+# BRACKET_SURGEON: disabled
+#         ],
         "scheduling": [
             Provider(
                 id=p,
@@ -133,10 +148,13 @@ async def http_with_fallback(
                 docs_url="",
                 needs_key=True,
                 enabled=False,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             for p in (prefer or ["calendly"])
-        ],
-    }
+# BRACKET_SURGEON: disabled
+#         ],
+# BRACKET_SURGEON: disabled
+#     }
 
     providers = mock_providers.get(category, [])
     if prefer:

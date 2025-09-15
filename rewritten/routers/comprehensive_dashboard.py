@@ -114,7 +114,8 @@ async def websocket_endpoint(websocket: WebSocket):
             await manager.send_personal_message(
                 json.dumps({"type": "dashboard_update", "data": dashboard_data}),
                 websocket,
-            )
+# BRACKET_SURGEON: disabled
+#             )
     except WebSocketDisconnect:
         manager.disconnect(websocket)
     except Exception as e:
@@ -147,7 +148,8 @@ async def get_system_metrics():
                     "network_bytes_sent": getattr(system_metrics, "network_bytes_sent", 0),
                     "network_bytes_recv": getattr(system_metrics, "network_bytes_recv", 0),
                     "timestamp": system_metrics.timestamp,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 # Cache the metrics
 
@@ -208,7 +210,8 @@ async def get_system_metrics():
             "network_bytes_sent": network_bytes_sent,
             "network_bytes_recv": network_bytes_recv,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Cache the metrics
         system_metrics_cache = metrics
@@ -248,30 +251,35 @@ async def get_revenue_dashboard():
                     "current": 2500.0,
                     "target": 3000.0,
                     "progress": 83.3,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "affiliate_marketing": {
                     "current": 1800.0,
                     "target": 2000.0,
                     "progress": 90.0,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "consulting": {"current": 1500.0, "target": 2000.0, "progress": 75.0},
                 "courses": {"current": 1200.0, "target": 1500.0, "progress": 80.0},
                 "subscriptions": {"current": 500.0, "target": 1500.0, "progress": 33.3},
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "recent_revenue": {
                 "digital_products": 450.0,
                 "affiliate_marketing": 320.0,
                 "consulting": 280.0,
                 "courses": 180.0,
                 "subscriptions": 75.0,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "active_campaigns": 8,
             "conversion_rate": 3.2,
             "avg_order_value": 127.50,
             "customer_ltv": 450.0,
             "churn_rate": 2.1,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Cache the mock data
         revenue_cache = mock_revenue_data
@@ -331,19 +339,23 @@ async def get_services_status():
                         "postgres",
                         "mysql",
                         "mongodb",
-                    ]
-                ):
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 ):
                     # Determine service status
                     status = (
                         "running" if proc_info["status"] == psutil.STATUS_RUNNING else "stopped"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Get memory usage in MB
                     memory_mb = (
                         proc_info["memory_info"].rss / (1024 * 1024)
                         if proc_info["memory_info"]
                         else 0
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
                     # Simulate response time based on CPU usage
                     cpu_percent = proc_info["cpu_percent"] or 0
@@ -356,7 +368,8 @@ async def get_services_status():
                         "response_time_ms": response_time_ms,
                         "pid": proc_info["pid"],
                         "health_score": 100 if status == "running" else 0,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 continue
@@ -371,7 +384,8 @@ async def get_services_status():
                     "response_time_ms": 85,
                     "pid": 1234,
                     "health_score": 95,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "api_server": {
                     "status": "running",
                     "cpu_percent": 8.7,
@@ -379,7 +393,8 @@ async def get_services_status():
                     "response_time_ms": 45,
                     "pid": 1235,
                     "health_score": 98,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "database": {
                     "status": "running",
                     "cpu_percent": 5.3,
@@ -387,7 +402,8 @@ async def get_services_status():
                     "response_time_ms": 12,
                     "pid": 1236,
                     "health_score": 100,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "payment_processor": {
                     "status": "running",
                     "cpu_percent": 2.1,
@@ -395,7 +411,8 @@ async def get_services_status():
                     "response_time_ms": 120,
                     "pid": 1237,
                     "health_score": 92,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "analytics_service": {
                     "status": "running",
                     "cpu_percent": 12.8,
@@ -403,8 +420,10 @@ async def get_services_status():
                     "response_time_ms": 95,
                     "pid": 1238,
                     "health_score": 88,
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
 
         # Cache the services data
         services_cache = services
@@ -428,62 +447,73 @@ async def get_integrations_status():
                 "last_sync": (datetime.now() - timedelta(minutes=5)).isoformat(),
                 "health_score": 98,
                 "transactions_today": 47,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "PayPal": {
                 "status": "connected",
                 "last_sync": (datetime.now() - timedelta(minutes=8)).isoformat(),
                 "health_score": 95,
                 "transactions_today": 23,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "Shopify": {
                 "status": "connected",
                 "last_sync": (datetime.now() - timedelta(minutes=2)).isoformat(),
                 "health_score": 100,
                 "orders_today": 15,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "WooCommerce": {
                 "status": "warning",
                 "last_sync": (datetime.now() - timedelta(hours=2)).isoformat(),
                 "health_score": 75,
                 "orders_today": 8,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "Mailchimp": {
                 "status": "connected",
                 "last_sync": (datetime.now() - timedelta(minutes=15)).isoformat(),
                 "health_score": 92,
                 "emails_sent_today": 1250,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "Google Analytics": {
                 "status": "connected",
                 "last_sync": (datetime.now() - timedelta(minutes=1)).isoformat(),
                 "health_score": 100,
                 "sessions_today": 2847,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "Facebook Ads": {
                 "status": "connected",
                 "last_sync": (datetime.now() - timedelta(minutes=10)).isoformat(),
                 "health_score": 88,
                 "spend_today": 156.78,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "Affiliate Network": {
                 "status": "connected",
                 "last_sync": (datetime.now() - timedelta(minutes=30)).isoformat(),
                 "health_score": 85,
                 "commissions_today": 89.45,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "Zapier": {
                 "status": "error",
                 "last_sync": (datetime.now() - timedelta(hours=6)).isoformat(),
                 "health_score": 0,
                 "automations_failed": 3,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "Slack": {
                 "status": "connected",
                 "last_sync": (datetime.now() - timedelta(seconds=30)).isoformat(),
                 "health_score": 100,
                 "notifications_sent": 12,
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
         # Cache the integrations data
 
@@ -512,7 +542,8 @@ async def get_all_dashboard_data():
             "services": services_data,
             "integrations": integrations_data,
             "timestamp": datetime.now().isoformat(),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         logger.error(f"Error getting all dashboard data: {e}")
@@ -550,7 +581,8 @@ async def dashboard_health_check():
                     "active_agents": system_health.active_agents,
                     "queue_size": system_health.queue_size,
                     "health_score": system_bridge._get_system_health_score(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as e:
                 logger.warning(f"System bridge health check failed, falling back: {e}")
 
@@ -566,7 +598,8 @@ async def dashboard_health_check():
                     "system_metrics": health_status.get("system_metrics", {}),
                     "application_metrics": health_status.get("application_metrics", {}),
                     "alerts": health_status.get("alerts", []),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
             except Exception as e:
                 logger.warning(f"Performance monitor health check failed, falling back: {e}")
 
@@ -588,8 +621,10 @@ async def dashboard_health_check():
                         "type": "high_memory",
                         "severity": "warning",
                         "value": memory_percent,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         if cpu_percent > 95 or memory_percent > 95:
             health_status = "critical"
@@ -600,16 +635,20 @@ async def dashboard_health_check():
                         "type": "critical_cpu",
                         "severity": "critical",
                         "value": cpu_percent,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
             if memory_percent > 95:
                 alerts.append(
                     {
                         "type": "critical_memory",
                         "severity": "critical",
                         "value": memory_percent,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
         return {
             "status": health_status,
@@ -619,10 +658,12 @@ async def dashboard_health_check():
             "system_metrics": {
                 "cpu_percent": cpu_percent,
                 "memory_percent": memory_percent,
-            },
+# BRACKET_SURGEON: disabled
+#             },
             "alerts": alerts,
             "health_score": max(0, 100 - (cpu_percent * 0.5) - (memory_percent * 0.5)),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     except Exception as e:
         logger.error(f"Error in dashboard health check: {e}")
@@ -631,7 +672,8 @@ async def dashboard_health_check():
             "error": str(e),
             "timestamp": datetime.now().isoformat(),
             "health_score": 0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
 
 # Background task to send periodic updates

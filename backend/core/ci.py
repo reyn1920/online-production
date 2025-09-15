@@ -2,12 +2,16 @@ import os
 
 
 def ci() -> bool:
+"""
     return os.environ.get("TRAE_CI", "0") == "1"
+"""
 
 
 def fast() -> bool:
     # default fast in CI; explicit FAST_MODE = 0 disables
+"""
     return os.environ.get("FAST_MODE", "1") != "0"
+"""
 
 
 def pick_timeout(default: float, ci_default: float = 5.0) -> float:

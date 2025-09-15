@@ -4,9 +4,9 @@ from logging.handlers import RotatingFileHandler
 
 
 def setup_logger(log_dir="logs", file_name="trae_ai.log", level=logging.INFO):
-    """
+    """"""
     Configures and returns a centralized, rotating logger.
-    """
+    """"""
     os.makedirs(log_dir, exist_ok=True)
     log_file_path = os.path.join(log_dir, file_name)
 

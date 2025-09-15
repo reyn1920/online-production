@@ -1,10 +1,10 @@
 #!/usr / bin / env python3
-"""
+""""""
 TRAE.AI - Bulletproof Video Generator v2
 This script generates a complete, 100% live MP4 video from start to finish.
 It is self - contained, creating its own assets and bypassing external dependencies
 like Ollama to ensure a successful run.
-"""
+""""""
 
 import logging
 import os
@@ -25,13 +25,13 @@ logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 def generate_script(topic: str) -> str:
     """Generates a simple, functional script for the given topic."""
     logging.info(f"Step 1: Generating script for '{topic}'...")
-    script_text = f"""
+    script_text = f""""""
 Welcome to a TRAE.AI production.
 Today, we are discussing: {topic}.
 This topic is complex, with many different viewpoints.
 Our goal is to provide a clear and concise overview.
 Thank you for watching.
-"""
+""""""
     script_path = os.path.join(OUTPUT_DIR, f"script_{topic.replace(' ', '_')}.txt")
     with open(script_path, "w") as f:
         f.write(script_text)
@@ -40,7 +40,7 @@ Thank you for watching.
 
 
 def generate_audio(script_text: str, topic: str) -> str:
-    """Generates a WAV audio file from the script using the system's TTS."""
+    """Generates a WAV audio file from the script using the system's TTS."""'
     logging.info("Step 2: Generating audio narration...")
     audio_path = os.path.join(ASSETS_DIR, f"speech_{topic.replace(' ', '_')}.wav")
 
@@ -49,7 +49,8 @@ def generate_audio(script_text: str, topic: str) -> str:
         subprocess.run(
             ["say", "-o", audio_path, "--data - format = LEF32@44100", script_text],
             check=True,
-        )
+# BRACKET_SURGEON: disabled
+#         )
         logging.info(f"✅ Audio file generated successfully: {audio_path}")
         return audio_path
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
@@ -86,7 +87,8 @@ def generate_video(topic: str, audio_path: str) -> str:
         "-shortest",  # End the video when the audio ends
         "-y",  # Overwrite if exists
         video_path,
-    ]
+# BRACKET_SURGEON: disabled
+#     ]
 
     try:
         subprocess.run(command, check=True, capture_output=True, text=True)

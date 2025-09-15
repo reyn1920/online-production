@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Marketing Agent Tools Module
 
 Implements comprehensive marketing capabilities including:
@@ -7,7 +7,7 @@ Implements comprehensive marketing capabilities including:
 - Relentless Optimization Loop for continuous improvement
 - Intelligent context - aware affiliate link selection
 - Cross - promotion manager with "The Right Perspective" exception handling
-"""
+""""""
 
 import asyncio
 import json
@@ -102,7 +102,7 @@ class MarketingCampaign:
     budget: float
     start_date: datetime
     end_date: datetime
-    objectives: List[str] = field(default_factory=list)
+    objectives: List[str] = field(default_factory=list):
     content_assets: List[str] = field(default_factory=list)
     metrics: Dict[OptimizationMetric, float] = field(default_factory=dict)
     status: str = "draft"
@@ -118,7 +118,7 @@ class AffiliateLink:
     network: AffiliateNetwork
     commission_rate: float
     product_category: str
-    target_keywords: List[str] = field(default_factory=list)
+    target_keywords: List[str] = field(default_factory=list):
     context_relevance: float = 0.0
     conversion_rate: float = 0.0
     earnings_per_click: float = 0.0
@@ -139,7 +139,7 @@ class OptimizationTest:
     end_date: Optional[datetime] = None
     sample_size: int = 0
     confidence_level: float = 0.95
-    results: Dict[str, Any] = field(default_factory=dict)
+    results: Dict[str, Any] = field(default_factory=dict):
     status: str = "running"
     winner: Optional[str] = None
 
@@ -153,7 +153,7 @@ class CrossPromotionRule:
     relevance_score: float
     promotion_type: str  # "mention", "link", "embed", "recommendation"
     context: str
-    exceptions: List[str] = field(default_factory=list)
+    exceptions: List[str] = field(default_factory=list):
     is_active: bool = True
 
 
@@ -171,7 +171,8 @@ class DayOneBlitzStrategy:
         target_audience: str,
         budget: float,
         duration_hours: int = 24,
-    ) -> MarketingCampaign:
+# BRACKET_SURGEON: disabled
+#     ) -> MarketingCampaign:
         """Launch a Day One Blitz campaign"""
         try:
             campaign_id = f"blitz_{int(time.time())}"
@@ -191,8 +192,10 @@ class DayOneBlitzStrategy:
                     "Generate early momentum",
                     "Capture early adopters",
                     "Create social proof",
-                ],
-            )
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             )
 
             # Generate content assets for each channel
             campaign.content_assets = await self._generate_blitz_content(campaign)
@@ -221,7 +224,8 @@ class DayOneBlitzStrategy:
         channels = [
             MarketingChannel.EMAIL,
             MarketingChannel.BLOG,
-        ]  # Always include these
+# BRACKET_SURGEON: disabled
+#         ]  # Always include these
 
         if any(term in audience_lower for term in ["business", "professional", "b2b"]):
             channels.extend([MarketingChannel.LINKEDIN, MarketingChannel.TWITTER])
@@ -252,8 +256,10 @@ class DayOneBlitzStrategy:
                         "Product announcement video",
                         "Behind - the - scenes launch video",
                         "Quick demo / tutorial video",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
             elif channel == MarketingChannel.FACEBOOK:
                 content_assets.extend(
@@ -262,8 +268,10 @@ class DayOneBlitzStrategy:
                         "Product showcase carousel",
                         "Live Q&A session",
                         "User testimonial posts",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
             elif channel == MarketingChannel.INSTAGRAM:
                 content_assets.extend(
@@ -272,8 +280,10 @@ class DayOneBlitzStrategy:
                         "Launch countdown posts",
                         "Behind - the - scenes reels",
                         "User - generated content campaign",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
             elif channel == MarketingChannel.TWITTER:
                 content_assets.extend(
@@ -282,8 +292,10 @@ class DayOneBlitzStrategy:
                         "Product feature highlights",
                         "Real - time launch updates",
                         "Community engagement tweets",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
             elif channel == MarketingChannel.EMAIL:
                 content_assets.extend(
@@ -291,8 +303,10 @@ class DayOneBlitzStrategy:
                         "Launch announcement email",
                         "Exclusive early access email",
                         "Product walkthrough email series",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
             elif channel == MarketingChannel.BLOG:
                 content_assets.extend(
@@ -300,8 +314,10 @@ class DayOneBlitzStrategy:
                         "Comprehensive launch blog post",
                         "Product development story",
                         "Use case examples post",
-                    ]
-                )
+# BRACKET_SURGEON: disabled
+#                     ]
+# BRACKET_SURGEON: disabled
+#                 )
 
         return content_assets
 
@@ -326,7 +342,8 @@ class DayOneBlitzStrategy:
 
     async def _launch_on_channel(
         self, campaign: MarketingCampaign, channel: MarketingChannel
-    ) -> bool:
+# BRACKET_SURGEON: disabled
+#     ) -> bool:
         """Launch campaign on a specific channel"""
         try:
             # Simulate channel - specific launch logic
@@ -351,7 +368,8 @@ class DayOneBlitzStrategy:
             OptimizationMetric.ENGAGEMENT_RATE: 0.0,
             OptimizationMetric.CLICK_THROUGH_RATE: 0.0,
             OptimizationMetric.CONVERSION_RATE: 0.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Start monitoring task
         asyncio.create_task(self._monitor_campaign_performance(campaign))
@@ -384,7 +402,8 @@ class DayOneBlitzStrategy:
 
         campaign.metrics[OptimizationMetric.IMPRESSIONS] += (
             random.randint(100, 1000) * growth_factor
-        )
+# BRACKET_SURGEON: disabled
+#         )
         campaign.metrics[OptimizationMetric.REACH] += random.randint(50, 500) * growth_factor
         campaign.metrics[OptimizationMetric.ENGAGEMENT_RATE] = random.uniform(0.02, 0.08)
         campaign.metrics[OptimizationMetric.CLICK_THROUGH_RATE] = random.uniform(0.01, 0.05)
@@ -432,7 +451,8 @@ class RelentlessOptimizationLoop:
                 cycle_count += 1
                 self.logger.info(
                     f"Starting optimization cycle {cycle_count} for {campaign.campaign_id}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Analyze current performance
                 performance_analysis = await self._analyze_performance(campaign)
@@ -465,7 +485,8 @@ class RelentlessOptimizationLoop:
             "underperforming_channels": [],
             "key_insights": [],
             "bottlenecks": [],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Analyze channel performance
         for channel in campaign.channels:
@@ -482,12 +503,14 @@ class RelentlessOptimizationLoop:
         if analysis["top_performing_channels"]:
             analysis["key_insights"].append(
                 f"Strong performance on {', '.join(analysis['top_performing_channels'])}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         if analysis["underperforming_channels"]:
             analysis["key_insights"].append(
                 f"Optimization needed for {', '.join(analysis['underperforming_channels'])}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return analysis
 
@@ -496,7 +519,8 @@ class RelentlessOptimizationLoop:
         content_context: str,
         candidate_links: List[AffiliateLink],
         test_duration_days: int = 7,
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Create A / B test for affiliate link selection"""
         test_id = f"affiliate_test_{datetime.now().strftime('%Y % m%d_ % H%M % S')}"
 
@@ -511,14 +535,17 @@ class RelentlessOptimizationLoop:
                     "variant_id": f"variant_{i}",
                     "link": link,
                     "traffic_split": 1.0 / len(test_links),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 for i, link in enumerate(test_links)
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "start_date": datetime.now(),
             "end_date": datetime.now() + timedelta(days=test_duration_days),
             "metrics": {"clicks": {}, "conversions": {}, "revenue": {}},
             "status": "active",
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Store test configuration (in production, use proper database)
         if not hasattr(self, "ab_tests"):
@@ -529,7 +556,8 @@ class RelentlessOptimizationLoop:
         self.logger.info(
             f"Created A / B test {test_id} with {len(test_links)} variants "
             f"for {test_duration_days} days"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return test_id
 
@@ -580,7 +608,8 @@ class RelentlessOptimizationLoop:
             r"shareasale\\.com/[^\\s]*",
             r"cj\\.com/[^\\s]*",
             r"impact\\.com/[^\\s]*",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         found_links = []
         for pattern in affiliate_patterns:
@@ -592,7 +621,8 @@ class RelentlessOptimizationLoop:
                 "links": [],
                 "last_updated": datetime.now(),
                 "content_samples": [],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         competitor_data = self.competitor_intelligence[competitor_id]
         competitor_data["links"].extend(found_links)
@@ -601,8 +631,10 @@ class RelentlessOptimizationLoop:
                 "content": competitor_content[:500],  # First 500 chars
                 "timestamp": datetime.now(),
                 "links_found": len(found_links),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         # Keep only recent data
         competitor_data["content_samples"] = competitor_data["content_samples"][-10:]
@@ -611,7 +643,8 @@ class RelentlessOptimizationLoop:
         self.logger.info(
             f"Updated competitor intelligence for {competitor_id}: "
             f"found {len(found_links)} affiliate links"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def get_competitor_insights(self, days: int = 30) -> Dict[str, Any]:
         """Get insights from competitor affiliate link analysis"""
@@ -627,7 +660,8 @@ class RelentlessOptimizationLoop:
                     sample
                     for sample in data["content_samples"]
                     if sample["timestamp"] > cutoff_date
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
                 if recent_samples:
                     avg_links_per_content = sum(
@@ -641,14 +675,17 @@ class RelentlessOptimizationLoop:
                             "avg_links_per_content": avg_links_per_content,
                             "total_unique_links": len(set(data["links"])),
                             "last_activity": data["last_updated"].isoformat(),
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
         return {
             "competitors": len(insights),
             "insights": insights,
             "analysis_period_days": days,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def predict_link_performance(
         self, link: AffiliateLink, content_context: str, target_keywords: List[str]
@@ -658,7 +695,8 @@ class RelentlessOptimizationLoop:
             # Feature extraction
             features = await self._extract_prediction_features(
                 link, content_context, target_keywords
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Simple prediction model (in production, use actual ML model)
             predicted_ctr = self._predict_click_through_rate(features)
@@ -675,8 +713,10 @@ class RelentlessOptimizationLoop:
                 "confidence_score": confidence,
                 "recommendation": self._generate_performance_recommendation(
                     predicted_ctr, predicted_cr, predicted_epc
-                ),
-            }
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             }
 
         except Exception as e:
             self.logger.error(f"Error predicting link performance: {e}")
@@ -686,7 +726,8 @@ class RelentlessOptimizationLoop:
                 "predicted_epc": 0.0,
                 "confidence_score": 0.0,
                 "recommendation": "insufficient_data",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
     async def _extract_prediction_features(
         self, link: AffiliateLink, content_context: str, target_keywords: List[str]
@@ -713,7 +754,8 @@ class RelentlessOptimizationLoop:
             recent_performance = history[-5:] if len(history) >= 5 else history
             features["historical_cr"] = sum(r["conversion_rate"] for r in recent_performance) / len(
                 recent_performance
-            )
+# BRACKET_SURGEON: disabled
+#             )
             features["historical_epc"] = sum(
                 r["earnings_per_click"] for r in recent_performance
             ) / len(recent_performance)
@@ -772,7 +814,8 @@ class RelentlessOptimizationLoop:
                 "health": 1.1,
                 "finance": 0.9,
                 "lifestyle": 1.0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             for category, multiplier in category_multipliers.items():
                 if category in features.get("product_category", "").lower():
@@ -803,7 +846,8 @@ class RelentlessOptimizationLoop:
                 "health": 50,
                 "finance": 500,
                 "lifestyle": 75,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             estimated_order_value = 100  # Default
             for category, value in typical_order_values.items():
@@ -831,7 +875,8 @@ class RelentlessOptimizationLoop:
 
     def _generate_performance_recommendation(
         self, predicted_ctr: float, predicted_cr: float, predicted_epc: float
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate performance recommendation based on predictions"""
         if predicted_epc > 1.0 and predicted_cr > 0.05:
             return "high_potential"
@@ -853,7 +898,8 @@ class RelentlessOptimizationLoop:
             "finance": 0.6,
             "lifestyle": 0.6,
             "technology": 0.9,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         category_lower = category.lower()
         for cat, score in popularity_scores.items():
@@ -879,9 +925,12 @@ class RelentlessOptimizationLoop:
                         "video_content",
                         "carousel_content",
                         "interactive_content",
-                    ],
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Timing optimization
         if campaign.metrics.get(OptimizationMetric.CLICK_THROUGH_RATE, 0) < 0.025:
@@ -894,9 +943,12 @@ class RelentlessOptimizationLoop:
                         "morning_posts",
                         "afternoon_posts",
                         "evening_posts",
-                    ],
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Audience targeting optimization
         if campaign.metrics.get(OptimizationMetric.CONVERSION_RATE, 0) < 0.015:
@@ -909,9 +961,12 @@ class RelentlessOptimizationLoop:
                         "lookalike_audience",
                         "interest_based",
                         "behavioral_targeting",
-                    ],
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                     ],
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         # Creative optimization
         opportunities.append(
@@ -920,14 +975,17 @@ class RelentlessOptimizationLoop:
                 "focus": "ad_creative",
                 "hypothesis": "New creative variations will improve performance",
                 "test_variants": ["headline_a", "headline_b", "headline_c"],
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
         return opportunities
 
     async def _create_optimization_tests(
         self, campaign: MarketingCampaign, opportunities: List[Dict[str, Any]]
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Create A / B tests for optimization opportunities"""
         for opportunity in opportunities:
             test_id = f"test_{campaign.campaign_id}_{int(time.time())}"
@@ -940,8 +998,10 @@ class RelentlessOptimizationLoop:
                         "name": variant_name,
                         "traffic_split": 1.0 / len(opportunity["test_variants"]),
                         "config": self._generate_variant_config(variant_name, opportunity),
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Create optimization test
             test = OptimizationTest(
@@ -952,7 +1012,8 @@ class RelentlessOptimizationLoop:
                 metric=OptimizationMetric.CONVERSION_RATE,  # Default metric
                 start_date=datetime.now(),
                 sample_size=1000,  # Minimum sample size
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             self.active_tests[test_id] = test
 
@@ -975,16 +1036,20 @@ class RelentlessOptimizationLoop:
                         ["cta_button", "interactive_poll"]
                         if "interactive" in variant_name
                         else ["standard_cta"]
-                    ),
-                }
-            )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 }
+# BRACKET_SURGEON: disabled
+#             )
 
         elif opportunity["type"] == "timing_optimization":
             time_configs = {
                 "morning_posts": {"post_times": ["08:00", "09:00", "10:00"]},
                 "afternoon_posts": {"post_times": ["12:00", "13:00", "14:00"]},
                 "evening_posts": {"post_times": ["18:00", "19:00", "20:00"]},
-            }
+# BRACKET_SURGEON: disabled
+#             }
             config.update(time_configs.get(variant_name, {}))
 
         elif opportunity["type"] == "audience_optimization":
@@ -992,16 +1057,20 @@ class RelentlessOptimizationLoop:
                 "lookalike_audience": {
                     "audience_type": "lookalike",
                     "similarity": 0.95,
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "interest_based": {
                     "audience_type": "interests",
                     "interests": ["marketing", "business"],
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "behavioral_targeting": {
                     "audience_type": "behavioral",
                     "behaviors": ["online_shoppers"],
-                },
-            }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#             }
             config.update(audience_configs.get(variant_name, {}))
 
         return config
@@ -1014,10 +1083,12 @@ class RelentlessOptimizationLoop:
                 "variant_performance": {
                     variant["name"]: {"conversions": 0, "impressions": 0}
                     for variant in test.variants
-                },
+# BRACKET_SURGEON: disabled
+#                 },
                 "statistical_significance": False,
                 "confidence_level": 0.0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Start test monitoring
             asyncio.create_task(self._monitor_test(test))
@@ -1062,7 +1133,8 @@ class RelentlessOptimizationLoop:
         # Update sample size
         test.sample_size = sum(
             data["impressions"] for data in test.results["variant_performance"].values()
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     async def _check_statistical_significance(self, test: OptimizationTest) -> None:
         """Check if test results are statistically significant"""
@@ -1096,7 +1168,8 @@ class RelentlessOptimizationLoop:
             test.results.get("statistical_significance", False)
             and runtime_hours >= 24
             and test.sample_size >= 1000
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return True
 
         # End test if maximum runtime reached
@@ -1134,8 +1207,10 @@ class RelentlessOptimizationLoop:
                 "winner": best_variant,
                 "improvement": best_conversion_rate,
                 "completed_at": datetime.now().isoformat(),
-            }
-        )
+# BRACKET_SURGEON: disabled
+#             }
+# BRACKET_SURGEON: disabled
+#         )
 
     async def _check_test_results(self, campaign: MarketingCampaign) -> None:
         """Check results of completed tests"""
@@ -1143,7 +1218,8 @@ class RelentlessOptimizationLoop:
             test
             for test in self.active_tests.values()
             if test.status == "completed" and test.winner
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for test in completed_tests:
             self.logger.info(f"Test {test.test_id} winner: {test.winner}")
@@ -1160,18 +1236,21 @@ class RelentlessOptimizationLoop:
 
     async def _implement_winning_variation(
         self, campaign: MarketingCampaign, test: OptimizationTest
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Implement a winning test variation"""
         try:
             winning_variant = next(
                 variant for variant in test.variants if variant["name"] == test.winner
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Apply the winning configuration
             # This would integrate with actual marketing platforms
             self.logger.info(
                 f"Implementing winning variation '{test.winner}' for campaign {campaign.campaign_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Error implementing winning variation: {e}")
@@ -1208,7 +1287,8 @@ class AffiliateManager:
 
                 relevance_score = await self._calculate_relevance_score(
                     link, content_context, target_keywords
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 link.context_relevance = relevance_score
                 scored_links.append(link)
@@ -1230,7 +1310,8 @@ class AffiliateManager:
 
     async def _calculate_relevance_score(
         self, link: AffiliateLink, content_context: str, target_keywords: List[str]
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate advanced relevance score using multiple AI techniques"""
         score = 0.0
         content_lower = content_context.lower()
@@ -1254,7 +1335,8 @@ class AffiliateManager:
             1
             for word in product_words
             if any(word in content_word for content_word in content_lower.split())
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         product_score = (exact_matches * 0.8 + partial_matches * 0.2) / max(len(product_words), 1)
         score += product_score * 0.25
@@ -1347,13 +1429,15 @@ class AffiliateManager:
             + commission_score * commission_weight
             + seasonal_boost * 0.1
             - competition_penalty * 0.1
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return max(min(combined_score, 1.0), 0.0)
 
     async def track_link_performance(
         self, link_id: str, clicks: int, conversions: int, revenue: float
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Track performance metrics for an affiliate link"""
         if link_id not in self.affiliate_links:
             return
@@ -1373,7 +1457,8 @@ class AffiliateManager:
             "revenue": revenue,
             "conversion_rate": link.conversion_rate,
             "earnings_per_click": link.earnings_per_click,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         self.performance_history[link_id].append(performance_record)
 
@@ -1385,7 +1470,8 @@ class AffiliateManager:
 
         self.logger.info(
             f"Updated performance for {link.product_name}: {conversions}/{clicks} conversions"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Trigger automatic optimization if performance drops
         await self._check_performance_alerts(link_id, link)
@@ -1409,14 +1495,16 @@ class AffiliateManager:
                 "branding",
                 "seo",
                 "social media",
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             "education": ["learning", "training", "course", "tutorial", "teaching"],
             "health": ["wellness", "fitness", "medical", "healthcare", "nutrition"],
             "business": ["entrepreneurship", "startup", "corporate", "professional"],
             "technology": ["tech", "digital", "online", "internet", "web"],
             "finance": ["money", "investment", "trading", "banking", "cryptocurrency"],
             "lifestyle": ["living", "personal", "home", "family", "relationships"],
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         category_lower = category.lower()
         for key, synonyms in synonym_map.items():
@@ -1427,7 +1515,8 @@ class AffiliateManager:
 
     async def _calculate_temporal_relevance(
         self, link: AffiliateLink, content_context: str
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate temporal relevance based on trends and seasonality"""
         try:
             current_month = datetime.now().month
@@ -1443,7 +1532,8 @@ class AffiliateManager:
                 "fitness": [1, 2, 6],  # Jan, Feb, Jun (New Year, Summer prep)
                 "tax": [3, 4],  # Mar - Apr
                 "graduation": [5, 6],  # May - Jun
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             content_lower = content_context.lower()
             temporal_score = 0.0
@@ -1469,7 +1559,8 @@ class AffiliateManager:
 
     async def _predict_user_engagement(
         self, link: AffiliateLink, content_context: str, target_keywords: List[str]
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Predict user engagement likelihood using behavioral patterns"""
         try:
             engagement_score = 0.0
@@ -1527,7 +1618,8 @@ class AffiliateManager:
             recent_avg_cr = sum(r["conversion_rate"] for r in recent_records) / len(recent_records)
             recent_avg_epc = sum(r["earnings_per_click"] for r in recent_records) / len(
                 recent_records
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             older_avg_cr = sum(r["conversion_rate"] for r in older_records) / len(older_records)
             older_avg_epc = sum(r["earnings_per_click"] for r in older_records) / len(older_records)
@@ -1560,7 +1652,8 @@ class AffiliateManager:
             AffiliateNetwork.RAKUTEN: 0.85,
             AffiliateNetwork.PARTNERSTACK: 0.75,
             AffiliateNetwork.CUSTOM: 0.6,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         reliability_factor = network_reliability.get(link.network, 0.6)
 
@@ -1578,7 +1671,8 @@ class AffiliateManager:
             l
             for l in self.affiliate_links.values()
             if l.product_category == link.product_category and l.is_active
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         if len(same_category_links) <= 3:
             return 0.0
@@ -1598,7 +1692,8 @@ class AffiliateManager:
             "tax": [3, 4],  # Tax season
             "travel": [5, 6, 7, 8],  # Summer travel
             "fashion": [3, 4, 9, 10],  # Spring / Fall fashion
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         product_lower = link.product_name.lower()
         category_lower = link.product_category.lower()
@@ -1641,7 +1736,8 @@ class AffiliateManager:
                 self.logger.warning(
                     f"Performance decline detected for {link.product_name}: "
                     f"CR decline: {cr_decline:.2%}, EPC decline: {epc_decline:.2%}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Trigger optimization actions
                 await self._trigger_link_optimization(link_id, link)
@@ -1650,7 +1746,8 @@ class AffiliateManager:
             if recent_cr < 0.01 and len(history) > 10:  # Less than 1% conversion
                 self.logger.info(
                     f"Low performance detected for {link.product_name}, considering deactivation"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 await self._consider_link_deactivation(link_id, link)
 
         except Exception as e:
@@ -1664,12 +1761,14 @@ class AffiliateManager:
             "Test different placement strategies",
             "Review competitor offerings",
             "Update promotional messaging",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         self.logger.info(
             f"Triggering optimization for {link.product_name}. "
             f"Suggested actions: {', '.join(optimization_actions[:3])}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Could integrate with external optimization systems here
 
@@ -1680,7 +1779,8 @@ class AffiliateManager:
         self.logger.info(
             f"Consider deactivating {link.product_name} due to consistently low performance. "
             f"Current CR: {link.conversion_rate:.3%}, EPC: ${link.earnings_per_click:.3f}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     def analyze_link_performance(self, days: int = 30) -> Dict[str, Any]:
         """Analyze affiliate link performance over specified period"""
@@ -1693,7 +1793,8 @@ class AffiliateManager:
             "underperformers": [],
             "total_revenue": 0.0,
             "average_conversion_rate": 0.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         conversion_rates = []
         total_revenue = 0.0
@@ -1707,7 +1808,8 @@ class AffiliateManager:
                 record
                 for record in self.performance_history.get(link_id, [])
                 if datetime.fromisoformat(record["timestamp"]) > cutoff_date
-            ]
+# BRACKET_SURGEON: disabled
+#             ]
 
             if recent_records:
                 recent_revenue = sum(record["revenue"] for record in recent_records)
@@ -1726,21 +1828,26 @@ class AffiliateManager:
                                 "product": link.product_name,
                                 "conversion_rate": recent_cr,
                                 "revenue": recent_revenue,
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
                     elif recent_cr < 0.01:  # 1% conversion rate threshold
                         analysis["underperformers"].append(
                             {
                                 "product": link.product_name,
                                 "conversion_rate": recent_cr,
                                 "revenue": recent_revenue,
-                            }
-                        )
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                         )
 
         analysis["total_revenue"] = total_revenue
         analysis["average_conversion_rate"] = (
             sum(conversion_rates) / len(conversion_rates) if conversion_rates else 0.0
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         return analysis
 
@@ -1771,7 +1878,8 @@ class CrossPromotionManager:
         reason: str,
         temporary: bool = False,
         expires_at: Optional[datetime] = None,
-    ) -> None:
+# BRACKET_SURGEON: disabled
+#     ) -> None:
         """Add content to 'The Right Perspective' exception list with advanced handling"""
         self.right_perspective_exceptions.add(content_id)
         self.exception_reasons[content_id] = reason
@@ -1783,7 +1891,8 @@ class CrossPromotionManager:
         exception_type = "temporary" if temporary else "permanent"
         self.logger.info(
             f"Added {exception_type} Right Perspective exception for {content_id}: {reason}"
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Trigger cascade exception check for related content
         self._check_cascade_exceptions(content_id, reason)
@@ -1799,12 +1908,14 @@ class CrossPromotionManager:
             # Multi - layer Right Perspective validation
             perspective_check = await self._comprehensive_perspective_check(
                 source_content_id, content_metadata
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not perspective_check["allowed"]:
                 self.logger.info(
                     f"Blocking cross - promotion for {source_content_id}: {perspective_check['reason']}"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 return []
 
             promotions = []
@@ -1812,28 +1923,33 @@ class CrossPromotionManager:
             # Find applicable promotion rules with context sensitivity
             applicable_rules = await self._get_context_aware_rules(
                 source_content_id, content_metadata
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             for rule in applicable_rules:
                 # Advanced target validation
                 target_validation = await self._validate_promotion_target(
                     rule, content_metadata, source_content_id
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if not target_validation["valid"]:
                     self.logger.debug(
                         f"Skipping promotion to {rule.target_content}: {target_validation['reason']}"
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                     continue
 
                 # Generate promotion with perspective scoring
                 promotion = await self._generate_perspective_aware_promotion(
                     rule, content_metadata, perspective_check["score"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 if promotion and promotion.get("perspective_score", 0) >= self.config.get(
                     "min_perspective_score", 0.6
-                ):
+# BRACKET_SURGEON: disabled
+#                 ):
                     promotions.append(promotion)
 
             # Advanced sorting with multiple factors
@@ -1841,7 +1957,8 @@ class CrossPromotionManager:
 
             self.logger.info(
                 f"Generated {len(promotions)} perspective - validated cross - promotions for {source_content_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             return promotions
 
         except Exception as e:
@@ -1874,7 +1991,8 @@ class CrossPromotionManager:
                 "relevance_score": rule.relevance_score,
                 "placement_suggestions": [],
                 "content_snippet": "",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Generate placement suggestions based on promotion type
             if rule.promotion_type == "mention":
@@ -1882,7 +2000,8 @@ class CrossPromotionManager:
                     "In the introduction",
                     "As a related topic reference",
                     "In the conclusion",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
                 promotion[
                     "content_snippet"
                 ] = f"For more insights on this topic, check out our content on {rule.target_content}."
@@ -1892,7 +2011,8 @@ class CrossPromotionManager:
                     "As a call - to - action button",
                     "In a related resources section",
                     "As an inline text link",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
                 promotion["content_snippet"] = f"Learn more: {rule.target_content}"
 
             elif rule.promotion_type == "embed":
@@ -1900,7 +2020,8 @@ class CrossPromotionManager:
                     "As a sidebar widget",
                     "Between content sections",
                     "At the end of the content",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
                 promotion["content_snippet"] = f"[EMBED: {rule.target_content}]"
 
             elif rule.promotion_type == "recommendation":
@@ -1908,7 +2029,8 @@ class CrossPromotionManager:
                     'In a "You might also like" section',
                     "As a popup recommendation",
                     "In an email follow - up",
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
                 promotion["content_snippet"] = f"Recommended: {rule.target_content}"
 
             return promotion
@@ -1929,7 +2051,8 @@ class CrossPromotionManager:
             "top_performing_rules": [],
             "underperforming_rules": [],
             "average_click_through_rate": 0.0,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         # Simulate performance data
         for rule in self.promotion_rules:
@@ -1943,8 +2066,10 @@ class CrossPromotionManager:
                             "target": rule.target_content,
                             "ctr": simulated_ctr,
                             "type": rule.promotion_type,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
                 elif simulated_ctr < 0.02:
                     analysis["underperforming_rules"].append(
                         {
@@ -1952,8 +2077,10 @@ class CrossPromotionManager:
                             "target": rule.target_content,
                             "ctr": simulated_ctr,
                             "type": rule.promotion_type,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
         return analysis
 
@@ -1968,13 +2095,15 @@ class CrossPromotionManager:
         for rule_data in performance["underperforming_rules"]:
             recommendations.append(
                 f"Consider disabling promotion from '{rule_data['source']}' to '{rule_data['target']}' (CTR: {rule_data['ctr']:.3f})"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         # Recommend scaling up top performers
         for rule_data in performance["top_performing_rules"]:
             recommendations.append(
                 f"Consider expanding promotion from '{rule_data['source']}' to '{rule_data['target']}' (CTR: {rule_data['ctr']:.3f})"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         return recommendations
 
@@ -1989,7 +2118,8 @@ class CrossPromotionManager:
                 "brand_conflict": "Brand alignment conflict",
                 "audience_mismatch": "Audience demographic mismatch",
                 "quality_concern": "Quality standards violation",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             if any(cascade_reason in reason.lower() for cascade_reason in cascade_reasons.keys()):
                 for related_id in related_content:
@@ -1999,15 +2129,18 @@ class CrossPromotionManager:
                                 cascade_reasons[key]
                                 for key in cascade_reasons.keys()
                                 if key in reason.lower()
-                            ),
+# BRACKET_SURGEON: disabled
+#                             ),
                             "Cascade from related content",
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
                         self.add_right_perspective_exception(
                             related_id,
                             f"{cascade_reason}: {content_id}",
                             temporary=True,
                             expires_at=datetime.now() + timedelta(hours=24),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
     def _clean_expired_exceptions(self) -> None:
         """Remove expired temporal exceptions"""
@@ -2016,7 +2149,8 @@ class CrossPromotionManager:
             content_id
             for content_id, expires_at in self.temporal_exceptions.items()
             if expires_at <= current_time
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         for content_id in expired_exceptions:
             self.right_perspective_exceptions.discard(content_id)
@@ -2035,7 +2169,8 @@ class CrossPromotionManager:
                 "allowed": False,
                 "reason": f"Direct exception: {self.exception_reasons.get(content_id, 'Unknown')}",
                 "score": 0.0,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Content analysis for perspective alignment
         perspective_score = await self._calculate_perspective_score(content_metadata)
@@ -2055,7 +2190,8 @@ class CrossPromotionManager:
             + context_filters["score"] * 0.3
             + brand_safety["score"] * 0.2
             + audience_alignment["score"] * 0.1
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         min_threshold = self.config.get("perspective_threshold", 0.7)
 
@@ -2068,19 +2204,24 @@ class CrossPromotionManager:
                         "context": context_filters,
                         "brand_safety": brand_safety,
                         "audience": audience_alignment,
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
                 if composite_score < min_threshold
                 else "Approved"
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             "score": composite_score,
             "breakdown": {
                 "perspective_score": perspective_score,
                 "context_score": context_filters["score"],
                 "brand_safety_score": brand_safety["score"],
                 "audience_alignment_score": audience_alignment["score"],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _calculate_perspective_score(self, content_metadata: Dict[str, Any]) -> float:
         """Calculate perspective alignment score"""
@@ -2092,7 +2233,8 @@ class CrossPromotionManager:
                 + content_metadata.get("description", "")
                 + " "
                 + " ".join(content_metadata.get("tags", []))
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             if not content_text.strip():
                 return 0.5  # Neutral score for empty content
@@ -2132,7 +2274,8 @@ class CrossPromotionManager:
             "controversial": 0.2,
             "political": 0.3,
             "adult": 0.1,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         content_text = (
             content_metadata.get("title", "")
@@ -2162,7 +2305,8 @@ class CrossPromotionManager:
             "title_length": min(0.2, len(content_metadata.get("title", "")) / 100),
             "engagement_metrics": min(0.2, content_metadata.get("engagement_score", 0) / 100),
             "production_value": content_metadata.get("production_score", 0.2),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         return sum(quality_indicators.values())
 
@@ -2204,7 +2348,8 @@ class CrossPromotionManager:
             "passed": filters_passed,
             "total": total_filters,
             "reasons": reasons,
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
     async def _check_brand_safety(self, content_metadata: Dict[str, Any]) -> Dict[str, Any]:
         """Check brand safety compliance"""
@@ -2215,7 +2360,8 @@ class CrossPromotionManager:
         unsafe_keywords = self.config.get(
             "unsafe_keywords",
             ["controversy", "scandal", "illegal", "harmful", "offensive"],
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         content_text = (
             content_metadata.get("title", "") + " " + content_metadata.get("description", "")
@@ -2250,7 +2396,8 @@ class CrossPromotionManager:
             factors_checked += 1
             if self._check_age_overlap(
                 target_demographics["age_range"], content_demographics["age_range"]
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 alignment_score += 0.4
 
         # Interest alignment
@@ -2258,7 +2405,8 @@ class CrossPromotionManager:
             factors_checked += 1
             overlap = self._calculate_interest_overlap(
                 target_demographics["interests"], content_demographics["interests"]
-            )
+# BRACKET_SURGEON: disabled
+#             )
             alignment_score += overlap * 0.6
 
         final_score = alignment_score if factors_checked > 0 else 0.8
@@ -2291,7 +2439,8 @@ class CrossPromotionManager:
             rule
             for rule in self.promotion_rules
             if rule.is_active and self._matches_content(rule.source_content, content_metadata)
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
 
         # Apply context - sensitive rule modifications
         context_aware_rules = []
@@ -2317,7 +2466,8 @@ class CrossPromotionManager:
             context=rule.context,
             exceptions=rule.exceptions.copy(),
             is_active=rule.is_active,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         # Apply time - based modifications
         current_hour = datetime.now().hour
@@ -2347,7 +2497,8 @@ class CrossPromotionManager:
             return {
                 "valid": False,
                 "reason": f"Target has Right Perspective exception: {self.exception_reasons.get(rule.target_content, 'Unknown')}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Circular promotion check
         if self._creates_circular_promotion(source_content_id, rule.target_content):
@@ -2356,13 +2507,15 @@ class CrossPromotionManager:
         # Content compatibility check
         compatibility_score = await self._check_content_compatibility(
             content_metadata, rule.target_content
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if compatibility_score < self.config.get("min_compatibility_score", 0.6):
             return {
                 "valid": False,
                 "reason": f"Low content compatibility score: {compatibility_score:.2f}",
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
         # Frequency capping check
         if self._exceeds_frequency_cap(rule.target_content, source_content_id):
@@ -2389,7 +2542,8 @@ class CrossPromotionManager:
                 "audience_fit": await self._calculate_audience_fit(rule, content_metadata),
                 "timing_appropriateness": self._calculate_timing_score(content_metadata),
                 "brand_safety": await self._calculate_brand_safety_score(rule.target_content),
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             # Adjust promotion based on perspective score
             if perspective_score < 0.7:
@@ -2398,12 +2552,14 @@ class CrossPromotionManager:
                     suggestion
                     for suggestion in base_promotion["placement_suggestions"]
                     if "prominent" not in suggestion.lower()
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
             # Add perspective - based content modifications
             base_promotion["content_snippet"] = self._adjust_content_for_perspective(
                 base_promotion["content_snippet"], perspective_score
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return base_promotion
 
@@ -2461,8 +2617,10 @@ class CrossPromotionManager:
                     and rule.relevance_score > 0.8
                     and rule.target_content not in self.right_perspective_exceptions
                     and rule.promotion_type in ["link", "mention"]
-                )  # Safest promotion types
-            ]
+# BRACKET_SURGEON: disabled
+#                 )  # Safest promotion types
+# BRACKET_SURGEON: disabled
+#             ]
 
             for rule in safe_rules[:3]:  # Limit to top 3 safest
                 promotion = {
@@ -2473,7 +2631,8 @@ class CrossPromotionManager:
                     "perspective_score": 0.6,  # Conservative score
                     "placement_suggestions": ["At the end of content"],
                     "content_snippet": f"You might also find this helpful: {rule.target_content}",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
                 safe_promotions.append(promotion)
 
             return safe_promotions
@@ -2516,7 +2675,8 @@ class CrossPromotionManager:
 
         if platform_restrictions.get("requires_age_verification", False) and not self.config.get(
             "age_verified", False
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return False
 
         return True
@@ -2531,7 +2691,8 @@ class CrossPromotionManager:
             "35 - 44": (35, 44),
             "45 - 54": (45, 54),
             "55+": (55, 100),
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         target_min, target_max = age_mappings.get(target_range, (0, 100))
         content_min, content_max = age_mappings.get(content_range, (0, 100))
@@ -2540,7 +2701,8 @@ class CrossPromotionManager:
 
     def _calculate_interest_overlap(
         self, target_interests: List[str], content_interests: List[str]
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate interest overlap percentage"""
         if not target_interests or not content_interests:
             return 0.5
@@ -2568,7 +2730,8 @@ class CrossPromotionManager:
 
     async def _check_content_compatibility(
         self, source_metadata: Dict[str, Any], target_content: str
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Check compatibility between source and target content"""
         # Simplified compatibility scoring
         compatibility_score = 0.5  # Base score
@@ -2599,7 +2762,8 @@ class CrossPromotionManager:
 
     async def _calculate_audience_fit(
         self, rule: CrossPromotionRule, content_metadata: Dict[str, Any]
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate how well the promotion fits the audience"""
         # Simplified audience fit calculation
         return 0.8  # Default good fit
@@ -2632,7 +2796,8 @@ class CrossPromotionManager:
 
     def _adjust_content_for_perspective(
         self, content_snippet: str, perspective_score: float
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Adjust content snippet based on perspective score"""
         if perspective_score < 0.6:
             # Make content more conservative for lower scores
@@ -2681,7 +2846,8 @@ if __name__ == "__main__":
                 target_audience="Content creators and digital marketers",
                 budget=5000.0,
                 duration_hours=24,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             print(f"Launched campaign: {campaign.name}")
             print(f"Channels: {[c.value for c in campaign.channels]}")
@@ -2710,14 +2876,16 @@ if __name__ == "__main__":
                 budget=2000.0,
                 start_date=datetime.now(),
                 end_date=datetime.now() + timedelta(days=7),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Initialize some metrics
             sample_campaign.metrics = {
                 OptimizationMetric.CLICK_THROUGH_RATE: 0.015,
                 OptimizationMetric.CONVERSION_RATE: 0.008,
                 OptimizationMetric.ENGAGEMENT_RATE: 0.025,
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             await optimizer.start_optimization_loop(sample_campaign)
 
@@ -2746,7 +2914,8 @@ if __name__ == "__main__":
                     target_keywords=["email", "marketing", "automation"],
                     conversion_rate=0.045,
                     earnings_per_click=0.85,
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 AffiliateLink(
                     product_name="Canva Pro Design Tool",
                     affiliate_url="https://canva.com / pro?ref = affiliate456",
@@ -2756,8 +2925,10 @@ if __name__ == "__main__":
                     target_keywords=["design", "graphics", "templates"],
                     conversion_rate=0.032,
                     earnings_per_click=0.65,
-                ),
-            ]
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ]
 
             for link in sample_links:
                 affiliate_mgr.add_affiliate_link(link)
@@ -2768,7 +2939,8 @@ if __name__ == "__main__":
 
             selected_links = await affiliate_mgr.select_optimal_links(
                 content_context, target_keywords, max_links=2
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             print(f"Selected {len(selected_links)} affiliate links:")
             for link in selected_links:
@@ -2780,7 +2952,8 @@ if __name__ == "__main__":
                 clicks=100,
                 conversions=4,
                 revenue=340.0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Get performance analysis
             analysis = affiliate_mgr.analyze_link_performance()
@@ -2803,15 +2976,18 @@ if __name__ == "__main__":
                     relevance_score=0.9,
                     promotion_type="recommendation",
                     context="Related educational content",
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                 CrossPromotionRule(
                     source_content="design",
                     target_content="Graphic Design Masterclass",
                     relevance_score=0.85,
                     promotion_type="link",
                     context="Skill development",
-                ),
-            ]
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             ]
 
             for rule in rules:
                 cross_promo.add_promotion_rule(rule)
@@ -2819,24 +2995,28 @@ if __name__ == "__main__":
             # Add a Right Perspective exception
             cross_promo.add_right_perspective_exception(
                 "controversial_topic_123", "Content contains sensitive political views"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Test promotion generation
             content_metadata = {
                 "title": "How to Master Email Marketing in 2024",
                 "description": "Complete guide to email marketing strategies",
                 "tags": ["email", "marketing", "automation"],
-            }
+# BRACKET_SURGEON: disabled
+#             }
 
             promotions = await cross_promo.generate_cross_promotions(
                 "email_marketing_guide_2024", content_metadata
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             print(f"Generated {len(promotions)} cross - promotions:")
             for promo in promotions:
                 print(
                     f"  - {promo['type']}: {promo['target_content']} (score: {promo['relevance_score']})"
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Test performance analysis
             performance = cross_promo.analyze_promotion_performance()

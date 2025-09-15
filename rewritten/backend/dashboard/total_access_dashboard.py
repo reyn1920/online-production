@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE.AI Total Access Dashboard - Explainable AI Telemetry & System Transparency
 
 A comprehensive, real - time dashboard providing complete visibility into the
@@ -15,7 +15,7 @@ Key Features:
 - Autonomous system controls
 - Alert and notification system
 - Historical trend analysis
-"""
+""""""
 
 import json
 import logging
@@ -98,7 +98,8 @@ class TotalAccessDashboard:
         self.app = Flask(__name__, template_folder="templates", static_folder="static")
         self.app.config["SECRET_KEY"] = os.environ.get(
             "TOTAL_ACCESS_SECRET_KEY", os.urandom(24).hex()
-        )
+# BRACKET_SURGEON: disabled
+#         )
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
 
         # Database connection
@@ -263,7 +264,8 @@ class TotalAccessDashboard:
                 port=self.port,
                 debug=self.debug,
                 allow_unsafe_werkzeug=True,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Failed to start dashboard: {e}")
@@ -308,7 +310,8 @@ class TotalAccessDashboard:
                     "system_health": asdict(system_health),
                     "agent_metrics": [asdict(agent) for agent in agent_metrics],
                     "last_updated": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
                 # Broadcast to connected clients
                 if self.connected_clients:
@@ -353,7 +356,8 @@ class TotalAccessDashboard:
                 agent_count = len(agent_status)
                 active_agents = sum(
                     1 for status in agent_status.values() if status["status"] in ["active", "busy"]
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Determine overall status
             overall_status = "healthy"
@@ -372,7 +376,8 @@ class TotalAccessDashboard:
                 agent_count=agent_count,
                 active_agents=active_agents,
                 last_updated=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Error getting system health: {e}")
@@ -386,7 +391,8 @@ class TotalAccessDashboard:
                 agent_count=0,
                 active_agents=0,
                 last_updated=datetime.now(),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
     def get_agent_metrics(self) -> List[AgentMetrics]:
         """Get metrics for all agents"""
@@ -421,8 +427,10 @@ class TotalAccessDashboard:
                         last_heartbeat=datetime.fromisoformat(status["last_heartbeat"]),
                         capabilities=status["capabilities"],
                         recent_decisions=recent_decisions,
-                    )
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+# BRACKET_SURGEON: disabled
+#                 )
 
         except Exception as e:
             self.logger.error(f"Error getting agent metrics: {e}")
@@ -434,15 +442,16 @@ class TotalAccessDashboard:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT task_id, task_type, agent_type, status, priority,
                         created_at, started_at, completed_at, error_message
                     FROM tasks
                     ORDER BY created_at DESC
                     LIMIT ?
-                """,
+                ""","""
                     (limit,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 columns = [description[0] for description in cursor.description]
                 return [dict(zip(columns, row)) for row in cursor.fetchall()]
@@ -458,13 +467,14 @@ class TotalAccessDashboard:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT * FROM decision_explanations
                     ORDER BY timestamp DESC
                     LIMIT ?
-                """,
+                ""","""
                     (limit,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 for row in cursor.fetchall():
                     explanations.append(
@@ -478,8 +488,10 @@ class TotalAccessDashboard:
                             alternative_options=json.loads(row[6]),
                             outcome=row[7],
                             timestamp=datetime.fromisoformat(row[8]),
-                        )
-                    )
+# BRACKET_SURGEON: disabled
+#                         )
+# BRACKET_SURGEON: disabled
+#                     )
 
         except Exception as e:
             self.logger.error(f"Error getting decision explanations: {e}")
@@ -494,29 +506,31 @@ class TotalAccessDashboard:
             with sqlite3.connect(self.db_path) as conn:
                 # Task completion trends
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT DATE(completed_at) as date, COUNT(*) as completed_tasks
                     FROM tasks
                     WHERE completed_at >= ? AND status = 'completed'
                     GROUP BY DATE(completed_at)
                     ORDER BY date
-                """,
+                ""","""
                     (start_date.isoformat(),),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 completion_trends = [{"date": row[0], "count": row[1]} for row in cursor.fetchall()]
 
                 # Agent performance
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT agent_type, COUNT(*) as total_tasks,
                         SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_tasks
                     FROM tasks
                     WHERE created_at >= ?
                     GROUP BY agent_type
-                """,
+                ""","""
                     (start_date.isoformat(),),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 agent_performance = []
                 for row in cursor.fetchall():
@@ -528,21 +542,24 @@ class TotalAccessDashboard:
                             "total_tasks": total,
                             "completed_tasks": completed,
                             "success_rate": success_rate,
-                        }
-                    )
+# BRACKET_SURGEON: disabled
+#                         }
+# BRACKET_SURGEON: disabled
+#                     )
 
                 # System health trends
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT DATE(timestamp) as date,
                         AVG(CAST(details AS REAL)) as avg_cpu_usage
                     FROM system_metrics
                     WHERE timestamp >= ? AND metric_name = 'cpu_usage'
                     GROUP BY DATE(timestamp)
                     ORDER BY date
-                """,
+                ""","""
                     (start_date.isoformat(),),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 health_trends = [{"date": row[0], "cpu_usage": row[1]} for row in cursor.fetchall()]
 
@@ -552,7 +569,8 @@ class TotalAccessDashboard:
                     "health_trends": health_trends,
                     "period_days": days,
                     "generated_at": datetime.now().isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             self.logger.error(f"Error getting performance analytics: {e}")
@@ -563,14 +581,15 @@ class TotalAccessDashboard:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT COUNT(*) as total,
                         SUM(CASE WHEN action = 'completed' THEN 1 ELSE 0 END) as completed
                     FROM task_execution_log
                     WHERE worker_id = ? AND timestamp >= ?
-                """,
+                ""","""
                     (worker_id, (datetime.now() - timedelta(days=7)).isoformat()),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 row = cursor.fetchone()
                 if row and row[0] > 0:
@@ -586,14 +605,15 @@ class TotalAccessDashboard:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT AVG(CAST(JSON_EXTRACT(details, '$.execution_time') AS REAL))
                     FROM task_execution_log
                     WHERE worker_id = ? AND action = 'completed'
                       AND timestamp >= ?
-                """,
+                ""","""
                     (worker_id, (datetime.now() - timedelta(days=7)).isoformat()),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 row = cursor.fetchone()
                 return row[0] if row and row[0] else 0.0
@@ -608,15 +628,16 @@ class TotalAccessDashboard:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.execute(
-                    """
+                    """"""
                     SELECT decision_type, confidence_score, outcome, timestamp
                     FROM decision_explanations
                     WHERE agent_type = (SELECT agent_type FROM agent_workers WHERE worker_id = ?)
                     ORDER BY timestamp DESC
                     LIMIT 5
-                """,
+                ""","""
                     (worker_id,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 return [
                     {
@@ -624,9 +645,11 @@ class TotalAccessDashboard:
                         "confidence_score": row[1],
                         "outcome": row[2],
                         "timestamp": row[3],
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
                     for row in cursor.fetchall()
-                ]
+# BRACKET_SURGEON: disabled
+#                 ]
 
         except Exception as e:
             self.logger.error(f"Error getting recent decisions for {worker_id}: {e}")
@@ -678,7 +701,7 @@ def create_dashboard_templates():
     templates_dir.mkdir(parents=True, exist_ok=True)
 
     # Main dashboard template
-    dashboard_html = """
+    dashboard_html = """"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -701,7 +724,7 @@ def create_dashboard_templates():
         <header class="mb - 8">
             <h1 class="text - 4xl font - bold text - gray - 800 mb - 2">TRAE.AI Total Access Dashboard</h1>
             <p class="text - gray - 600">Real - time system monitoring \
-    and explainable AI telemetry</p>
+#     and explainable AI telemetry</p>
         </header>
 
         <!-- System Health Overview -->
@@ -785,10 +808,12 @@ def create_dashboard_templates():
         const socket = io();//Handle system health updates
         socket.on('system_health', function(data) {
             updateSystemHealth(data);
-        });//Handle agent metrics updates
+# BRACKET_SURGEON: disabled
+#         });//Handle agent metrics updates
         socket.on('agent_metrics', function(data) {
             updateAgentMetrics(data);
-        });
+# BRACKET_SURGEON: disabled
+#         });
 
         function updateSystemHealth(health) {
             const statusElement = document.getElementById('system - status');
@@ -798,7 +823,8 @@ def create_dashboard_templates():
             document.getElementById('cpu - usage').textContent = `${health.cpu_usage.toFixed(1)}%`;
             document.getElementById('memory - usage').textContent = `${health.memory_usage.toFixed(1)}%`;
             document.getElementById('active - agents').textContent = health.active_agents;
-        }
+# BRACKET_SURGEON: disabled
+#         }
 
         function updateAgentMetrics(agents) {
             const grid = document.getElementById('agents - grid');
@@ -822,8 +848,10 @@ def create_dashboard_templates():
                     </div>
                 `;
                 grid.appendChild(card);
-            });
-        }//Load initial data
+# BRACKET_SURGEON: disabled
+#             });
+# BRACKET_SURGEON: disabled
+#         }//Load initial data
         fetch("/api/system/health')
             .then(response => response.json())
             .then(data => updateSystemHealth(data));
@@ -838,7 +866,8 @@ def create_dashboard_templates():
                 document.getElementById('running - tasks').textContent = data.running_tasks;
                 document.getElementById('completed - tasks').textContent = data.completed_tasks;
                 document.getElementById('success - rate').textContent = `${data.success_rate.toFixed(1)}%`;
-            });//Load performance analytics
+# BRACKET_SURGEON: disabled
+#             });//Load performance analytics
         fetch("/api/analytics/performance')
             .then(response => response.json())
             .then(data => {//Create completion trends chart
@@ -848,26 +877,31 @@ def create_dashboard_templates():
                         type: 'scatter',
                         mode: 'lines + markers',
                         name: 'Completed Tasks'
-                }];
+# BRACKET_SURGEON: disabled
+#                 }];
 
                 Plotly.newPlot('completion - chart', completionData, {
                     title: 'Daily Task Completions',
                         xaxis: { title: 'Date' },
                         yaxis: { title: 'Tasks Completed' }
-                });//Create agent performance chart
+# BRACKET_SURGEON: disabled
+#                 });//Create agent performance chart
                 const performanceData = [{
                     x: data.agent_performance.map(d => d.agent_type),
                         y: data.agent_performance.map(d => d.success_rate),
                         type: 'bar',
                         name: 'Success Rate %'
-                }];
+# BRACKET_SURGEON: disabled
+#                 }];
 
                 Plotly.newPlot('performance - chart', performanceData, {
                     title: 'Agent Success Rates',
                         xaxis: { title: 'Agent Type' },
                         yaxis: { title: 'Success Rate (%)' }
-                });
-            });//Load recent decisions
+# BRACKET_SURGEON: disabled
+#                 });
+# BRACKET_SURGEON: disabled
+#             });//Load recent decisions
         fetch("/api/decisions/explanations')
             .then(response => response.json())
             .then(data => {
@@ -887,12 +921,14 @@ def create_dashboard_templates():
                         <p class="text - sm text - gray - 700">Outcome: ${decision.outcome}</p>
                     `;
                     list.appendChild(item);
-                });
-            });
+# BRACKET_SURGEON: disabled
+#                 });
+# BRACKET_SURGEON: disabled
+#             });
     </script>
 </body>
 </html>
-    """
+    """"""
 
     with open(templates_dir / "dashboard.html", "w") as f:
         f.write(dashboard_html)

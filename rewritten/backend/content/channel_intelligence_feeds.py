@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+""""""
 Channel Intelligence Feeds System
 
 Automatically monitors and processes RSS feeds for each channel,
 extracting relevant content and storing it in channel - specific knowledge bases.
-"""
+""""""
 
 import asyncio
 import hashlib
@@ -55,9 +55,9 @@ class FeedItem:
 
 
 class ChannelIntelligenceFeeds:
-    """
+    """"""
     Manages RSS feed monitoring and content extraction for all channels
-    """
+    """"""
 
     def __init__(self, db_path: str = "data/right_perspective.db"):
         self.db_path = db_path
@@ -88,21 +88,25 @@ class ChannelIntelligenceFeeds:
                     "development",
                     "innovation",
                     "startup",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "relevance_boost": [
                     "breakthrough",
                     "revolutionary",
                     "cutting - edge",
                     "beta",
                     "launch",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "credibility_sources": [
                     "techcrunch.com",
                     "arstechnica.com",
                     "wired.com",
                     "theverge.com",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.WELLNESS: {
                 "keywords": [
                     "health",
@@ -115,21 +119,25 @@ class ChannelIntelligenceFeeds:
                     "meditation",
                     "yoga",
                     "supplements",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "relevance_boost": [
                     "study shows",
                     "research",
                     "clinical trial",
                     "proven",
                     "effective",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "credibility_sources": [
                     "healthline.com",
                     "webmd.com",
                     "mayoclinic.org",
                     "nih.gov",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.FINANCE: {
                 "keywords": [
                     "finance",
@@ -142,21 +150,25 @@ class ChannelIntelligenceFeeds:
                     "bitcoin",
                     "portfolio",
                     "retirement",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "relevance_boost": [
                     "earnings",
                     "profit",
                     "loss",
                     "bull market",
                     "bear market",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "credibility_sources": [
                     "bloomberg.com",
                     "reuters.com",
                     "wsj.com",
                     "marketwatch.com",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.POLITICAL: {
                 "keywords": [
                     "politics",
@@ -170,21 +182,25 @@ class ChannelIntelligenceFeeds:
                     "liberal",
                     "democrat",
                     "republican",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "relevance_boost": [
                     "breaking",
                     "scandal",
                     "investigation",
                     "vote",
                     "bill passed",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "credibility_sources": [
                     "breitbart.com",
                     "dailywire.com",
                     "townhall.com",
                     "foxnews.com",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.BUSINESS: {
                 "keywords": [
                     "business",
@@ -197,20 +213,24 @@ class ChannelIntelligenceFeeds:
                     "strategy",
                     "marketing",
                     "sales",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "relevance_boost": [
                     "acquisition",
                     "merger",
                     "IPO",
                     "funding",
                     "expansion",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "credibility_sources": [
                     "forbes.com",
                     "businessinsider.com",
                     "entrepreneur.com",
-                ],
-            },
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
             ChannelType.SCIENCE: {
                 "keywords": [
                     "science",
@@ -223,27 +243,33 @@ class ChannelIntelligenceFeeds:
                     "chemistry",
                     "biology",
                     "space",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "relevance_boost": [
                     "breakthrough",
                     "discovery",
                     "published",
                     "peer - reviewed",
-                ],
+# BRACKET_SURGEON: disabled
+#                 ],
                 "credibility_sources": [
                     "nature.com",
                     "sciencemag.org",
                     "newscientist.com",
-                ],
-            },
-        }
+# BRACKET_SURGEON: disabled
+#                 ],
+# BRACKET_SURGEON: disabled
+#             },
+# BRACKET_SURGEON: disabled
+#         }
 
     async def __aenter__(self):
         """Async context manager entry"""
         self.session = aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(total=30),
             headers={"User - Agent": "TRAE.AI Channel Intelligence Bot 1.0"},
-        )
+# BRACKET_SURGEON: disabled
+#         )
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -308,7 +334,8 @@ class ChannelIntelligenceFeeds:
 
             self.logger.info(
                 f"Processed {processed_count} entries from {feed_url} for {channel_id}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
         except Exception as e:
             self.logger.error(f"Error processing feed {feed_url}: {e}")
@@ -332,12 +359,13 @@ class ChannelIntelligenceFeeds:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT last_checked FROM channel_rss_feeds
                 WHERE channel_id = ? AND feed_url = ?
-            """,
+            ""","""
                 (channel_id, feed_url),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             row = cursor.fetchone()
             if row and row[0]:
@@ -353,12 +381,12 @@ class ChannelIntelligenceFeeds:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 UPDATE channel_rss_feeds
                 SET feed_title = ?, feed_description = ?, last_checked = ?,
                     last_updated = ?, status = 'active', error_count = 0
                 WHERE channel_id = ? AND feed_url = ?
-            """,
+            ""","""
                 (
                     getattr(feed.feed, "title", ""),
                     getattr(feed.feed, "description", ""),
@@ -366,8 +394,10 @@ class ChannelIntelligenceFeeds:
                     datetime.now().isoformat(),
                     channel_id,
                     feed_url,
-                ),
-            )
+# BRACKET_SURGEON: disabled
+#                 ),
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     async def _process_feed_entry(self, channel_id: str, feed_url: str, entry) -> bool:
@@ -403,17 +433,20 @@ class ChannelIntelligenceFeeds:
                 published=published or datetime.now(),
                 author=getattr(entry, "author", ""),
                 summary=summary,
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # Calculate relevance and credibility scores
             config = self.protocol.get_channel_config(channel_id)
             if config:
                 feed_item.relevance_score = self._calculate_relevance_score(
                     feed_item, config.channel_type
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 feed_item.credibility_score = self._calculate_credibility_score(
                     feed_item, feed_url, config.channel_type
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
             # Only store if relevance score is above threshold
             if feed_item.relevance_score >= 0.3:
@@ -452,12 +485,13 @@ class ChannelIntelligenceFeeds:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT id FROM channel_knowledge_base
                 WHERE channel_id = ? AND source_url = ?
-            """,
+            ""","""
                 (channel_id, url),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             return cursor.fetchone() is not None
 
@@ -488,7 +522,8 @@ class ChannelIntelligenceFeeds:
 
     def _calculate_credibility_score(
         self, item: FeedItem, feed_url: str, channel_type: ChannelType
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate credibility score for a feed item"""
         base_score = 0.5
 
@@ -537,7 +572,8 @@ class ChannelIntelligenceFeeds:
             table_name = next(
                 (t for t in config.knowledge_base_tables if "research" in t or "study" in t),
                 table_name,
-            )
+# BRACKET_SURGEON: disabled
+#             )
         elif entry_type == "news" and "news" in str(config.knowledge_base_tables):
             table_name = next((t for t in config.knowledge_base_tables if "news" in t), table_name)
 
@@ -555,7 +591,8 @@ class ChannelIntelligenceFeeds:
             credibility=item.credibility_score,
             relevance=item.relevance_score,
             tags=tags,
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
         if success:
             self.logger.debug(f"Stored feed item: {item.title[:50]}... for {channel_id}")
@@ -605,14 +642,15 @@ class ChannelIntelligenceFeeds:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 UPDATE channel_rss_feeds
                 SET error_count = error_count + 1, last_error = ?,
                     status = CASE WHEN error_count >= 5 THEN 'error' ELSE 'active' END
                 WHERE channel_id = ? AND feed_url = ?
-            """,
+            ""","""
                 (error_msg, channel_id, feed_url),
-            )
+# BRACKET_SURGEON: disabled
+#             )
             conn.commit()
 
     async def get_latest_intelligence(
@@ -628,16 +666,18 @@ class ChannelIntelligenceFeeds:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
+                """"""
                 SELECT * FROM channel_knowledge_base
                 WHERE channel_id = ? AND (
                     title LIKE ? OR content LIKE ? OR tags LIKE ?
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 ORDER BY relevance_score DESC, created_at DESC
                 LIMIT ?
-            """,
+            ""","""
                 (channel_id, f"%{query}%", f"%{query}%", f"%{query}%", limit),
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             results = []
             for row in cursor.fetchall():
@@ -655,8 +695,10 @@ class ChannelIntelligenceFeeds:
                         "tags": json.loads(row[9]) if row[9] else [],
                         "created_at": row[10],
                         "updated_at": row[11],
-                    }
-                )
+# BRACKET_SURGEON: disabled
+#                     }
+# BRACKET_SURGEON: disabled
+#                 )
 
             return results
 

@@ -50,7 +50,7 @@ class WebEnhancedDebuggerAgent:
         print(f"\\n🌐 Top Web References Found:\\n" + "\\n".join(results))
 
         # Build prompt
-        context = f"""
+        context = f""""""
 Error:
 {error_msg}
 
@@ -59,8 +59,8 @@ Web Results:
 
 Task:
 Provide a FIX for this error, with clear code \
-    or SQL patches that can be applied directly.
-"""
+#     or SQL patches that can be applied directly.
+""""""
         # Generate fix
         fix = self.ask_ollama(context)
         return f"\\n💡 Suggested Fix:\\n{fix}"
@@ -99,7 +99,7 @@ Provide a FIX for this error, with clear code \
         print(f"\\n🌐 Top Web References Found:\\n" + "\\n".join(results))
 
         # Build enhanced prompt with error categorization
-        context = f"""
+        context = f""""""
 Error Type: {error_type}
 Error Message: {error_msg}
 
@@ -115,7 +115,7 @@ Instructions:
    - Root Cause Analysis
    - Exact Fix (with code / SQL)
    - Prevention Tips
-"""
+""""""
 
         # Generate enhanced fix
         fix = self.ask_ollama(context)

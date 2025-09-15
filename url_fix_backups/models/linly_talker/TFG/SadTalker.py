@@ -30,7 +30,8 @@ class SadTalker:
 
     def __init__(
         self, checkpoint_path="checkpoints", config_path="src / config", lazy_load = False
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
 
         import platform
 
@@ -49,7 +50,9 @@ class SadTalker:
         self.config_path = config_path
         self.sadtalker_paths = init_path(
             checkpoint_path, self.config_path, 256, False, "crop"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.animate_from_coeff = AnimateFromCoeff(self.sadtalker_paths, self.device)
         self.audio_to_coeff = Audio2Coeff(self.sadtalker_paths, self.device)
 
@@ -78,7 +81,8 @@ class SadTalker:
             use_blink = True,
             fps = 20,
             result_dir="./results/",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
 
         # print(self.sadtalker_paths)
 
@@ -86,10 +90,14 @@ class SadTalker:
 
         # if facerender == 'facevid2vid' and self.device != 'mps':
         #     self.animate_from_coeff = AnimateFromCoeff(self.sadtalker_paths,
-    self.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     self.device)
         # elif facerender == 'pirender' or self.device == 'mps':
         #     self.animate_from_coeff = AnimateFromCoeff_PIRender(self.sadtalker_paths,
-    self.device)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     self.device)
         #     facerender = 'pirender'
         # else:
         #     raise(RuntimeError('Unknown model: {}'.format(facerender)))
@@ -131,7 +139,9 @@ class SadTalker:
         #     print('new audiopath:',audio_path)
         #     # if ref_video contains audio, set the audio from ref_video.
         #     cmd = r"ffmpeg -y -hide_banner -loglevel error -i %s %s"%(ref_video,
-    audio_path)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     audio_path)
         #     os.system(cmd)
 
         # os.makedirs(save_dir, exist_ok = True)
@@ -145,7 +155,9 @@ class SadTalker:
     first_frame_dir,
     preprocess,
     True,
-    size)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     size)
 
         # if first_coeff_path is None:
         #     raise AttributeError("No face is detected")
@@ -161,7 +173,9 @@ class SadTalker:
     _ =  self.preprocess_model.generate(ref_video,
     ref_video_frame_dir,
     preprocess,
-    source_image_flag = False)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     source_image_flag = False)
         # else:
         #     ref_video_coeff_path = None
 
@@ -193,7 +207,9 @@ class SadTalker:
         #     coeff_path = ref_video_coeff_path # self.audio_to_coeff.generate(batch,
     save_dir,
     pose_style,
-    ref_pose_coeff_path)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ref_pose_coeff_path)
         # else:
         batch = get_data(
             first_coeff_path,
@@ -205,10 +221,13 @@ class SadTalker:
                 length_of_audio = length_of_audio,
                 use_blink = use_blink,
                 fps = fps,
-                )  # longer audio?
+# BRACKET_SURGEON: disabled
+#                 )  # longer audio?
         coeff = self.audio_to_coeff.generate(
             batch, save_dir, pose_style, ref_pose_coeff_path
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # coeff2video
         data = get_facerender_data(
@@ -222,7 +241,9 @@ class SadTalker:
                 size = size,
                 expression_scale = exp_scale,
                 facemodel = facerender,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         return_path = self.animate_from_coeff.generate(
             data,
                 save_dir,
@@ -232,7 +253,9 @@ class SadTalker:
                 preprocess = preprocess,
                 img_size = size,
                 fps = fps,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         # video_name = data['video_name']
         # print(f'The generated video is named {video_name} in {save_dir}')
 
@@ -271,11 +294,14 @@ class SadTalker:
             use_blink = True,
             fps = 20,
             result_dir="./results/",
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
         os.makedirs(result_dir, exist_ok = True)
         self.sadtalker_paths = init_path(
             self.checkpoint_path, self.config_path, size, False, preprocess
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(self.sadtalker_paths)
 
         self.audio_to_coeff = Audio2Coeff(self.sadtalker_paths, self.device)
@@ -301,13 +327,15 @@ class SadTalker:
         elif use_idle_mode:
             audio_path = os.path.join(
                 input_dir, "idlemode_" + str(length_of_audio) + ".wav"
-            )  ## generate audio from this new audio_path
+# BRACKET_SURGEON: disabled
+#             )  ## generate audio from this new audio_path
 
             from pydub import AudioSegment
 
             one_sec_segment = AudioSegment.silent(
                 duration = 1000 * length_of_audio
-            )  # duration in milliseconds
+# BRACKET_SURGEON: disabled
+#             )  # duration in milliseconds
             one_sec_segment.export(audio_path, format="wav")
         else:
             assert driven_audio is not None, "No audio is given"
@@ -322,7 +350,9 @@ class SadTalker:
             cmd = r"ffmpeg -y -hide_banner -loglevel error -i %s %s" % (
                 ref_video,
                     audio_path,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             os.system(cmd)
 
         os.makedirs(save_dir, exist_ok = True)
@@ -332,7 +362,9 @@ class SadTalker:
         os.makedirs(first_frame_dir, exist_ok = True)
         first_coeff_path, crop_pic_path, crop_info = self.preprocess_model.generate(
             pic_path, first_frame_dir, preprocess, True, size
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         print(first_coeff_path, crop_info)
         if first_coeff_path is None:
             raise AttributeError("No face is detected")
@@ -345,7 +377,9 @@ class SadTalker:
             print("3DMM Extraction for the reference video providing pose")
             ref_video_coeff_path, _, _ = self.preprocess_model.generate(
                 ref_video, ref_video_frame_dir, preprocess, source_image_flag = False
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
         else:
             ref_video_coeff_path = None
 
@@ -373,7 +407,9 @@ class SadTalker:
             coeff_path = ref_video_coeff_path  # self.audio_to_coeff.generate(batch,
     save_dir,
     pose_style,
-    ref_pose_coeff_path)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     ref_pose_coeff_path)
         else:
             batch = get_data(
                 first_coeff_path,
@@ -385,10 +421,13 @@ class SadTalker:
                     length_of_audio = length_of_audio,
                     use_blink = use_blink,
                     fps = fps,
-                    )  # longer audio?
+# BRACKET_SURGEON: disabled
+#                     )  # longer audio?
             coeff_path = self.audio_to_coeff.generate(
                 batch, save_dir, pose_style, ref_pose_coeff_path
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # coeff2video
         data = get_facerender_data(
@@ -402,7 +441,9 @@ class SadTalker:
                 size = size,
                 expression_scale = exp_scale,
                 facemodel = facerender,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         return_path = self.animate_from_coeff.generate(
             data,
                 save_dir,
@@ -412,7 +453,9 @@ class SadTalker:
                 preprocess = preprocess,
                 img_size = size,
                 fps = fps,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         # video_name = data['video_name']
         print(f"The generated video is saved in {return_path}")
 
@@ -440,4 +483,6 @@ if __name__ == "__main__":
             use_idle_mode = True,
             length_of_audio = 5,
             result_dir="results/",
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )

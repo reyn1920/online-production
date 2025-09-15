@@ -23,7 +23,8 @@ def generateAudio(text, am="fastspeech2", voc="PWGan", lang="zh", male=False, sp
         male,
         "spk_id:",
         spk_id,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     audio_file = tts.predict(text, am, voc, spk_id, lang, male)
     audio, sr = librosa.load(path=audio_file)
     return gr.make_waveform(
@@ -52,8 +53,9 @@ def main():
             generateAudio,
             inputs=[text, am, voc, lang, male],
             outputs=[video, audio],
-        )
-        gr.Markdown("## Text Examples")
+# BRACKET_SURGEON: disabled
+#         )
+        gr.Markdown("## Text Examples")"
         gr.Examples(
             examples=[
                 ["Hello World", "FastSpeech2", "PWGan", "en", False],
@@ -62,11 +64,13 @@ def main():
                 ["你好世界", "FastSpeech2", "PWGan", "zh", False],
                 ["你好世界Hello World", "FastSpeech2", "PWGan", "mix", False],
                 ["你好世界", "FastSpeech2", "PWGan", "canton", False],
-            ],
+# BRACKET_SURGEON: disabled
+#             ],
             fn=generateAudio,
             inputs=[text, am, voc, lang, male],
             outputs=[video, audio],
-        )
+# BRACKET_SURGEON: disabled
+#         )
     return demo
 
 

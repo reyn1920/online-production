@@ -1,9 +1,9 @@
-"""
+""""""
 Add - only actions that make the dashboard 'Total Access':
 - synthesize_bundles_v3
 - run_one_channel (reads the roadmap, produces MP4 + PDF)
 - get_release_manifest (optional: peek the latest synthesis manifest)
-"""
+""""""
 
 import json
 import traceback
@@ -50,7 +50,8 @@ def run_one_channel(payload: Dict[str, Any] | None = None) -> Dict[str, Any]:
 
 @dashboard_action(
     name="Get release manifest", doc="Returns latest synthesis manifest", method="POST"
-)
+# BRACKET_SURGEON: disabled
+# )
 def get_release_manifest(payload: Dict[str, Any] | None = None) -> Dict[str, Any]:
     try:
         out = (payload or {}).get("out", "assets")

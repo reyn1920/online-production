@@ -6,14 +6,14 @@ This script handles:
 1. System requirements validation
 2. Dependency installation and verification
 3. Application startup with proper order
-4. Process monitoring and auto - restart
+4. Process monitoring and auto-restart
 5. Resource optimization (closing unnecessary apps)
 6. Health monitoring and alerting
 
 Usage:
     python3 startup_system.py --mode production
     python3 startup_system.py --mode development
-    python3 startup_system.py --monitor - only
+    python3 startup_system.py --monitor-only
 """
 
 import argparse
@@ -43,7 +43,7 @@ except ImportError:
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("startup_system.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler("startup_system.log"), logging.StreamHandler()]
 )
 logger = logging.getLogger(__name__)
 
@@ -67,7 +67,7 @@ class SystemManager:
             "python": "3.8+",
             "node": "16+",
             "memory_gb": 4,
-            "disk_space_gb": 2,
+            "disk_space_gb": 2
         }
 
         # Applications to close for optimization
@@ -94,7 +94,7 @@ class SystemManager:
             "VLC",
             "QuickTime Player",
             "iTunes",
-            "Music",
+            "Music"
         ]
 
         # Essential apps to keep running
@@ -110,7 +110,7 @@ class SystemManager:
             "Node",
             "uvicorn",
             "Ollama",
-            "Chrome",
+            "Chrome"
         ]
 
     def _init_monitoring_components(self):
@@ -118,9 +118,9 @@ class SystemManager:
         try:
             if SelfHealingMonitor:
                 self.self_healing_monitor = SelfHealingMonitor()
-                logger.info("✅ Self - healing monitor initialized")
+                logger.info("✅ Self-healing monitor initialized")
             else:
-                logger.warning("⚠️ Self - healing monitor not available")
+                logger.warning("⚠️ Self-healing monitor not available")
 
             if ProcessWatchdog:
                 self.process_watchdog = ProcessWatchdog()
@@ -679,7 +679,7 @@ def main():
         help="Run mode",
     )
     parser.add_argument(
-        "--monitor - only", action="store_true", help="Only monitor existing processes"
+        "--monitor-only", action="store_true", help="Only monitor existing processes"
     )
 
     args = parser.parse_args()
@@ -687,7 +687,7 @@ def main():
     manager = SystemManager(mode=args.mode)
 
     if args.monitor_only:
-        logger.info("👁️ Monitor - only mode")
+        logger.info("👁️ Monitor-only mode")
         manager.monitor_processes()
     else:
         manager.run()

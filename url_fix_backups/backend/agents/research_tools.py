@@ -1,5 +1,5 @@
 #!/usr / bin / env python3
-"""
+""""""
 Research Agent Tools Module
 
 Implements comprehensive research capabilities including:
@@ -7,7 +7,7 @@ Implements comprehensive research capabilities including:
 - Competitor analysis (TubeBuddy / VidIQ emulation)
 - Market validation for digital products
 - YouTube channel analysis and niche opportunity detection
-"""
+""""""
 
 import asyncio
 import json
@@ -27,13 +27,17 @@ try:
 
     from backend.database.hypocrisy_db_manager import (HypocrisyDatabaseManager,
 
-        HypocrisyFinding)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         HypocrisyFinding)
 except ImportError:
     HypocrisyDatabaseManager = None
     HypocrisyFinding = None
     logging.warning(
         "HypocrisyDatabaseManager not available. Hypocrisy tracking will be limited."
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 # Import performance analytics agent
 try:
@@ -44,7 +48,9 @@ except ImportError:
     PerformanceAnalyticsAgent = None
     logging.warning(
         "PerformanceAnalyticsAgent not available. Performance analytics will be limited."
-    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     )
 
 try:
 
@@ -66,7 +72,9 @@ try:
     from reportlab.lib.units import inch
     from reportlab.platypus import (Image, Paragraph, SimpleDocTemplate, Spacer, Table,
 
-        TableStyle)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         TableStyle)
 
     from textblob import TextBlob
 
@@ -134,7 +142,7 @@ class NewsItem:
     source: str
     category: NewsCategory = NewsCategory.GENERAL
     sentiment_score: float = 0.0
-    keywords: List[str] = field(default_factory = list)
+    keywords: List[str] = field(default_factory = list):
     trend_strength: TrendStrength = TrendStrength.WEAK
     relevance_score: float = 0.0
 
@@ -152,7 +160,7 @@ class CompetitorChannel:
     upload_frequency: float  # videos per week
     average_views: float
     engagement_rate: float
-    niche_keywords: List[str] = field(default_factory = list)
+    niche_keywords: List[str] = field(default_factory = list):
     content_themes: List[str] = field(default_factory = list)
     opportunity_score: float = 0.0
     last_analyzed: datetime = field(default_factory = datetime.now)
@@ -170,7 +178,7 @@ class MarketOpportunity:
     trend_direction: str  # rising, stable, declining
     monetization_potential: float  # 0 - 1 score
     target_audience: str
-    content_gaps: List[str] = field(default_factory = list)
+    content_gaps: List[str] = field(default_factory = list):
     recommended_products: List[str] = field(default_factory = list)
     confidence_score: float = 0.0
 
@@ -202,7 +210,7 @@ class SEOAuditRequest:
     email: str
     company_name: Optional[str] = None
     industry: Optional[str] = None
-    target_keywords: List[str] = field(default_factory = list)
+    target_keywords: List[str] = field(default_factory = list):
     request_id: str = field(default_factory = lambda: f"audit_{int(time.time())}")
     status: str = "pending"  # pending, processing, completed, failed
     created_at: datetime = field(default_factory = datetime.now)
@@ -232,17 +240,26 @@ class BreakingNewsWatcher:
                     "online business",
                     "SaaS",
                     "startup",
-                    ],
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         self.intelligence_db_path = self.config.get(
             "intelligence_db", "data / intelligence.db"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.intelligence_db = (
             self.intelligence_db_path
-        )  # Add missing intelligence_db attribute
+# BRACKET_SURGEON: disabled
+#         )  # Add missing intelligence_db attribute
         self.evidence_db_path = self.config.get(
             "evidence_db", "data / right_perspective.db"
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         self.trend_analysis_cache = {}
 
         # Get singleton hypocrisy database manager
@@ -268,7 +285,9 @@ class BreakingNewsWatcher:
         except ImportError:
             self.logger.warning(
                 "RSS singleton manager not available, falling back to direct loading"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return self._load_rss_feeds_direct()
 
 
@@ -278,7 +297,9 @@ class BreakingNewsWatcher:
             rss_config_path = os.path.join(
                 os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
                     "rss_feeds_example.json",
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if os.path.exists(rss_config_path):
                 with open(rss_config_path, "r") as f:
@@ -291,13 +312,19 @@ class BreakingNewsWatcher:
                                     "url": feed["url"],
                                         "category": self._map_category(
                                         feed.get("category", "general")
-                                    ),
+# BRACKET_SURGEON: disabled
+#                                     ),
                                         "name": feed.get("name", "Unknown"),
-                                        }
-                            )
+# BRACKET_SURGEON: disabled
+#                                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     self.logger.info(
                         f"Loaded {len(feeds)} RSS feeds from configuration (direct)"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     return feeds
             else:
                 self.logger.warning("RSS config file not found, using default feeds")
@@ -321,7 +348,8 @@ class BreakingNewsWatcher:
                 "health": NewsCategory.HEALTH,
                 "entertainment": NewsCategory.ENTERTAINMENT,
                 "general": NewsCategory.GENERAL,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
         return category_map.get(category_str.lower(), NewsCategory.GENERAL)
 
 
@@ -332,38 +360,47 @@ class BreakingNewsWatcher:
                 "url": "https://feeds.feedburner.com / TechCrunch",
                     "category": NewsCategory.TECHNOLOGY,
                     "name": "TechCrunch",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://rss.cnn.com / rss / edition.rss",
                     "category": NewsCategory.GENERAL,
                     "name": "CNN",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.reuters.com / reuters / businessNews",
                     "category": NewsCategory.BUSINESS,
                     "name": "Reuters Business",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com / venturebeat / SZYF",
                     "category": NewsCategory.TECHNOLOGY,
                     "name": "VentureBeat",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com / Mashable",
                     "category": NewsCategory.TECHNOLOGY,
                     "name": "Mashable",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com / socialmediaexaminer",
                     "category": NewsCategory.SOCIAL_MEDIA,
                     "name": "Social Media Examiner",
-                    },
+# BRACKET_SURGEON: disabled
+#                     },
                 {
                 "url": "https://feeds.feedburner.com / MarketingLand",
                     "category": NewsCategory.MARKETING,
                     "name": "Marketing Land",
-                    },
-                ]
+# BRACKET_SURGEON: disabled
+#                     },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
 
     def _initialize_intelligence_db(self):
@@ -377,7 +414,7 @@ class BreakingNewsWatcher:
 
             # Create tables for intelligence data
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS news_articles (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         title TEXT NOT NULL,
@@ -391,12 +428,16 @@ class BreakingNewsWatcher:
                         relevance_score REAL,
                         trend_strength TEXT,
                         processed_date DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS trend_analysis (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         keyword TEXT NOT NULL,
@@ -407,12 +448,16 @@ class BreakingNewsWatcher:
                         last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
                         analysis_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                         time_window TEXT
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             cursor.execute(
-                """
+                """"""
                 CREATE TABLE IF NOT EXISTS intelligence_briefings (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                         topic TEXT NOT NULL,
@@ -424,9 +469,13 @@ class BreakingNewsWatcher:
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                         briefing_type TEXT
-                )
-            """
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+            """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             conn.commit()
             conn.close()
@@ -442,7 +491,9 @@ class BreakingNewsWatcher:
         if not feedparser:
             self.logger.error(
                 "feedparser not available. Install with: pip install feedparser"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return []
 
         end_time = datetime.now() + timedelta(hours = duration_hours)
@@ -506,7 +557,9 @@ class BreakingNewsWatcher:
                         published = pub_date,
                         source = feed.feed.get("title", feed_config["url"]),
                         category = feed_config.get("category", NewsCategory.GENERAL),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 news_items.append(news_item)
 
@@ -531,8 +584,8 @@ class BreakingNewsWatcher:
 
 
     async def _process_news_items(self, news_items: List[NewsItem]) -> List[NewsItem]:
-        """Process news items for sentiment, keywords, relevance, \
-    and continuous knowledge base enrichment"""
+        """Process news items for sentiment, keywords, relevance, \"""
+#     and continuous knowledge base enrichment""""""
         processed_items = []
 
         for item in news_items:
@@ -540,7 +593,9 @@ class BreakingNewsWatcher:
                 # Extract keywords
                 item.keywords = self._extract_keywords(
                     item.title + " " + item.description
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Calculate sentiment
                 if TextBlob:
@@ -596,13 +651,15 @@ class BreakingNewsWatcher:
                 trend_score = min(count * 0.1, 1.0)  # Cap at 1.0
 
                 cursor.execute(
-                    """
+                    """"""
                     INSERT OR REPLACE INTO trend_analysis
                     (keyword, frequency, trend_score, last_updated, time_window)
                     VALUES (?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (keyword, count, trend_score, current_time, "hourly"),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             # Store intelligence briefing for Planner Agent
             trending_keywords = [kw for kw, count in keyword_counts.most_common(10)]
@@ -611,44 +668,57 @@ class BreakingNewsWatcher:
                     "total_articles_processed": len(news_items),
                     "high_relevance_count": len(
                     [item for item in news_items if item.relevance_score > 0.7]
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     "sentiment_summary": {
                     "positive": len(
                         [item for item in news_items if item.sentiment_score > 0.1]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "negative": len(
                         [item for item in news_items if item.sentiment_score < -0.1]
-                    ),
+# BRACKET_SURGEON: disabled
+#                     ),
                         "neutral": len(
                         [
                             item
                             for item in news_items
                             if -0.1 <= item.sentiment_score <= 0.1
-                        ]
-                    ),
-                        },
-                    }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                         },
+# BRACKET_SURGEON: disabled
+#                     }
 
             cursor.execute(
-                """
+                """"""
                 INSERT INTO intelligence_briefings
                 (briefing_type, content, created_at, priority)
                 VALUES (?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     "trend_analysis",
                         json.dumps(briefing_content),
                         current_time,
                         "high" if len(trending_keywords) > 5 else "medium",
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
             conn.close()
 
             self.logger.info(
                 f"Updated trend analysis with {len(keyword_counts)} keywords"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             self.logger.error(f"Error updating trend analysis: {e}")
@@ -664,7 +734,7 @@ class BreakingNewsWatcher:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO news_articles
                 (title,
     description,
@@ -675,9 +745,11 @@ class BreakingNewsWatcher:
     sentiment_score,
     keywords,
     relevance_score,
-    trend_strength)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     trend_strength)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     item.title,
                         item.description,
@@ -689,8 +761,11 @@ class BreakingNewsWatcher:
                         ",".join(item.keywords),
                         item.relevance_score,
                         item.trend_strength.value,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
             conn.close()
@@ -700,9 +775,9 @@ class BreakingNewsWatcher:
 
 
     async def _extract_and_store_evidence(self, item: NewsItem):
-        """Extract facts, statistics, \
-    and quotes from news item \
-    and store in evidence database"""
+        """Extract facts, statistics, \"""
+#     and quotes from news item \
+#     and store in evidence database""""""
         try:
 
             import re
@@ -719,68 +794,83 @@ class BreakingNewsWatcher:
             statistics = re.findall(stats_pattern, full_text, re.IGNORECASE)
 
             # Extract quotes (text in quotation marks)
-            quotes_pattern = r'["\\u201c]([^"\\u201d]+)["\\u201d]'
+            quotes_pattern = r'["\\u201c]([^"\\u201d]+)["\\u201d]'"
             quotes = re.findall(quotes_pattern, full_text)
 
             # Store extracted evidence
             for stat in statistics:
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO evidence (claim,
     source,
     date_added,
     category,
-    credibility_score)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     credibility_score)
                     VALUES (?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         f"Statistical data: {stat}",
                             f"{item.source} - {item.link}",
                             datetime.now().isoformat(),
                             "statistics",
                             item.relevance_score,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             for quote in quotes:
                 if len(quote.strip()) > 10:  # Filter out short quotes
                     cursor.execute(
-                        """
+                        """"""
                         INSERT INTO evidence (claim,
     source,
     date_added,
     category,
-    credibility_score)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     credibility_score)
                         VALUES (?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             f"Quote: {quote.strip()}",
                                 f"{item.source} - {item.link}",
                                 datetime.now().isoformat(),
                                 "quote",
                                 item.relevance_score,
-                                ),
-                            )
+# BRACKET_SURGEON: disabled
+#                                 ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
             # Store key facts from title and description
             if item.relevance_score > 0.7:  # Only store high - relevance facts
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO evidence (claim,
     source,
     date_added,
     category,
-    credibility_score)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     credibility_score)
                     VALUES (?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         item.title,
                             f"{item.source} - {item.link}",
                             datetime.now().isoformat(),
                             "fact",
                             item.relevance_score,
-                            ),
-                        )
+# BRACKET_SURGEON: disabled
+#                             ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
             conn.commit()
             conn.close()
@@ -813,15 +903,17 @@ class BreakingNewsWatcher:
             cursor = conn.cursor()
 
             cursor.execute(
-                """
+                """"""
                 SELECT keyword, frequency, trend_score, last_updated
                 FROM trend_analysis
                 WHERE datetime(last_updated) > datetime('now', '-24 hours')
                 ORDER BY trend_score DESC, frequency DESC
                 LIMIT ?
-            """,
+            ""","""
                 (limit,),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             results = cursor.fetchall()
             conn.close()
@@ -834,8 +926,11 @@ class BreakingNewsWatcher:
                             "frequency": row[1],
                             "trend_score": row[2],
                             "last_updated": row[3],
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return trending_topics
 
@@ -857,24 +952,28 @@ class BreakingNewsWatcher:
 
             if briefing_type:
                 cursor.execute(
-                    """
+                    """"""
                     SELECT briefing_type, content, created_at, priority
                     FROM intelligence_briefings
                     WHERE briefing_type = ?
                     ORDER BY created_at DESC
                     LIMIT 1
-                """,
+                ""","""
                     (briefing_type,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 cursor.execute(
-                    """
+                    """"""
                     SELECT briefing_type, content, created_at, priority
                     FROM intelligence_briefings
                     ORDER BY created_at DESC
                     LIMIT 1
-                """
-                )
+                """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             result = cursor.fetchone()
             conn.close()
@@ -885,7 +984,8 @@ class BreakingNewsWatcher:
                         "content": json.loads(result[1]),
                         "created_at": result[2],
                         "priority": result[3],
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
 
             return {}
 
@@ -904,18 +1004,20 @@ class BreakingNewsWatcher:
             cursor = conn.cursor()
 
             # Search for articles containing the topic in title, description, \
-    or keywords
+#     or keywords
             cursor.execute(
-                """
+                """"""
                 SELECT title, description, source, url, published_date
                 FROM news_articles
                 WHERE (title LIKE ? OR description LIKE ? OR keywords LIKE ?)
                 AND datetime(published) > datetime('now', '-48 hours')
                 ORDER BY relevance_score DESC, published DESC
                 LIMIT ?
-            """,
+            ""","""
                 (f"%{topic}%", f"%{topic}%", f"%{topic}%", limit),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             results = cursor.fetchall()
             conn.close()
@@ -927,12 +1029,16 @@ class BreakingNewsWatcher:
                         "title": row[0],
                             "description": (
                             row[1][:200] + "..." if len(row[1]) > 200 else row[1]
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             "source": row[2],
                             "link": row[3],
                             "published": row[4],
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return headlines
 
@@ -953,7 +1059,8 @@ class BreakingNewsWatcher:
                 NewsCategory.SOCIAL_MEDIA: 0.9,
                 NewsCategory.AI_ML: 1.0,
                 NewsCategory.GENERAL: 0.3,
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         score += category_scores.get(item.category, 0.3)
 
@@ -991,7 +1098,9 @@ class BreakingNewsWatcher:
         cutoff_time = datetime.now() - timedelta(hours = hours)
         recent_items = [
             item for item in self.news_cache.values() if item.published > cutoff_time
-        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         ]
 
         # Count keyword occurrences
         keyword_counts = {}
@@ -1002,7 +1111,9 @@ class BreakingNewsWatcher:
         # Sort by frequency
         return dict(sorted(keyword_counts.items(),
     key = lambda x: x[1],
-    reverse = True))
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     reverse = True))
 
 
     async def scan_for_hypocrisy(self, hours_back: int = 48) -> List[Dict[str, Any]]:
@@ -1017,8 +1128,12 @@ class BreakingNewsWatcher:
                 and (
                     "politic" in item.title.lower()
                     or "politic" in item.description.lower()
-                )
-            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]
 
             hypocrisy_findings = []
 
@@ -1029,7 +1144,9 @@ class BreakingNewsWatcher:
                 # Find contradictory statements for this figure
                 contradictions = await self._find_contradictory_statements(
                     figure, political_items
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 for contradiction in contradictions:
                     # Calculate contradiction score
@@ -1048,9 +1165,11 @@ class BreakingNewsWatcher:
                                 "date_2": contradiction["date_2"],
                                 "time_gap_days": (
                                 contradiction["date_2"] - contradiction["date_1"]
-                            ).days,
+# BRACKET_SURGEON: disabled
+#                             ).days,
                                 "discovered_at": datetime.now().isoformat(),
-                                }
+# BRACKET_SURGEON: disabled
+#                                 }
 
                         # Store in hypocrisy database
                         await self._store_hypocrisy_finding(hypocrisy_finding)
@@ -1058,7 +1177,9 @@ class BreakingNewsWatcher:
 
             self.logger.info(
                 f"Discovered {len(hypocrisy_findings)} hypocrisy opportunities"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return hypocrisy_findings
 
         except Exception as e:
@@ -1081,7 +1202,9 @@ class BreakingNewsWatcher:
                 "secretary",
                 "representative",
                 "candidate",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         for item in news_items:
             text = f"{item.title} {item.description}".lower()
@@ -1117,7 +1240,8 @@ class BreakingNewsWatcher:
             if (
                 figure.lower() in item.title.lower()
                 or figure.lower() in item.description.lower()
-            ):
+# BRACKET_SURGEON: disabled
+#             ):
                 figure_statements.append(
                     {
                         "text": item.description,
@@ -1125,8 +1249,11 @@ class BreakingNewsWatcher:
                             "date": item.published,
                             "link": item.link,
                             "title": item.title,
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         # Compare statements for contradictions
         for i, stmt1 in enumerate(figure_statements):
@@ -1134,7 +1261,9 @@ class BreakingNewsWatcher:
                 # Check if statements are about the same topic but contradictory
                 common_words = self._find_common_important_words(
                     stmt1["text"], stmt2["text"]
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 if len(common_words) >= 2:  # Same topic
                     # Simple contradiction detection (can be enhanced with NLP)
@@ -1145,7 +1274,9 @@ class BreakingNewsWatcher:
                             ("will", "will not"),
                             ("should", "should not"),
                             ("favor", "against"),
-                            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
 
                     text1_lower = stmt1["text"].lower()
                     text2_lower = stmt2["text"].lower()
@@ -1153,7 +1284,8 @@ class BreakingNewsWatcher:
                     for pos, neg in contradiction_indicators:
                         if (pos in text1_lower and neg in text2_lower) or (
                             neg in text1_lower and pos in text2_lower
-                        ):
+# BRACKET_SURGEON: disabled
+#                         ):
                             contradictions.append(
                                 {
                                     "statement_1": stmt1["text"][:200],
@@ -1165,8 +1297,11 @@ class BreakingNewsWatcher:
                                         "link_1": stmt1["link"],
                                         "link_2": stmt2["link"],
                                         "common_topic": common_words,
-                                        }
-                            )
+# BRACKET_SURGEON: disabled
+#                                         }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             break
 
         return contradictions
@@ -1218,18 +1353,23 @@ class BreakingNewsWatcher:
                 "are",
                 "was",
                 "were",
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         words1 = set(
-            word.lower().strip('.,!?"')
+            word.lower().strip('.,!?"')"
             for word in text1.split()
             if len(word) > 3 and word.lower() not in stop_words
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         words2 = set(
-            word.lower().strip('.,!?"')
+            word.lower().strip('.,!?"')"
             for word in text2.split()
             if len(word) > 3 and word.lower() not in stop_words
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return list(words1.intersection(words2))
 
@@ -1264,25 +1404,33 @@ class BreakingNewsWatcher:
                     contradiction_type="temporal",  # Policy changes over time - valid constraint value
                 severity_score = max(
                     1, min(10, int(finding["contradiction_score"] * 10) or 1)
-                ),  # Convert to 1 - 10 scale, ensure >= 1
+# BRACKET_SURGEON: disabled
+#                 ),  # Convert to 1 - 10 scale, ensure >= 1
                 confidence_score = finding[
                     "contradiction_score"
-                ],  # Keep as 0.0 - 1.0 range
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],  # Keep as 0.0 - 1.0 range
                 verification_status="pending",
                     evidence_links=[
                     link
                     for link in [finding.get("link_1", ""), finding.get("link_2", "")]
                     if link
-                ],
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ],
                     tags=[finding["topic"]] if finding.get("topic") else [],
                     analysis_notes = f"Time gap: {finding['time_gap_days']} days",
                     public_impact_score = max(
                     1, min(10, int(finding["contradiction_score"] * 10) or 1)
-                ),
+# BRACKET_SURGEON: disabled
+#                 ),
                     media_coverage_count = 1,  # At least one source
                 social_media_mentions = 0,  # Default
                 fact_check_results={"status": "pending"},
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Store using the database manager
             finding_id = self.hypocrisy_db.store_finding(hypocrisy_finding)
@@ -1303,7 +1451,9 @@ class BreakingNewsWatcher:
             if not self.hypocrisy_db:
                 self.logger.warning(
                     "Hypocrisy database manager not available, falling back to direct SQLite"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 # Fallback to direct SQLite access
 
                 import sqlite3
@@ -1312,16 +1462,18 @@ class BreakingNewsWatcher:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     SELECT id, figure, topic, contradiction_score, statement_1, statement_2,
                         source_1, source_2, date_1, date_2, time_gap_days, discovered_at
                     FROM hypocrisy_findings
                     WHERE content_used = FALSE
                     ORDER BY contradiction_score DESC, discovered_at DESC
                     LIMIT ?
-                """,
+                ""","""
                     (limit,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 results = cursor.fetchall()
                 conn.close()
@@ -1342,8 +1494,11 @@ class BreakingNewsWatcher:
                                 "date_2": row[9],
                                 "time_gap_days": row[10],
                                 "discovered_at": row[11],
-                                }
-                    )
+# BRACKET_SURGEON: disabled
+#                                 }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                 return opportunities
 
@@ -1370,10 +1525,14 @@ class BreakingNewsWatcher:
                             (opp["date_2"] - opp["date_1"]).days
                             if opp["date_2"] and opp["date_1"]
                             else 0
-                        ),
+# BRACKET_SURGEON: disabled
+#                         ),
                             "discovered_at": opp["created_at"],
-                            }
-                )
+# BRACKET_SURGEON: disabled
+#                             }
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             return opportunities
 
@@ -1388,7 +1547,9 @@ class BreakingNewsWatcher:
             if not self.hypocrisy_db:
                 self.logger.warning(
                     "Hypocrisy database manager not available, falling back to direct SQLite"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 # Fallback to direct SQLite access
 
                 import sqlite3
@@ -1397,13 +1558,15 @@ class BreakingNewsWatcher:
                 cursor = conn.cursor()
 
                 cursor.execute(
-                    """
+                    """"""
                     UPDATE hypocrisy_findings
                     SET content_used = TRUE
                     WHERE id = ?
-                """,
+                ""","""
                     (finding_id,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 conn.commit()
                 conn.close()
@@ -1435,23 +1598,23 @@ class BreakingNewsWatcher:
 
             # Build query based on category filter
             if category:
-                query = """
+                query = """"""
                     SELECT title, description, url, published_date, source, category,
                         sentiment_score, keywords, trend_strength, relevance_score
                     FROM news_articles
                     WHERE category = ?
                     ORDER BY published_date DESC
                     LIMIT ?
-                """
+                """"""
                 cursor.execute(query, (category.value, limit))
             else:
-                query = """
+                query = """"""
                     SELECT title, description, url, published_date, source, category,
                         sentiment_score, keywords, trend_strength, relevance_score
                     FROM news_articles
                     ORDER BY published_date DESC
                     LIMIT ?
-                """
+                """"""
                 cursor.execute(query, (limit,))
 
             results = cursor.fetchall()
@@ -1467,17 +1630,23 @@ class BreakingNewsWatcher:
                     # Parse published date
                     published = (
                         datetime.fromisoformat(row[3]) if row[3] else datetime.now()
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Map category string to enum
                     category_enum = (
                         self._map_category(row[5]) if row[5] else NewsCategory.GENERAL
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     # Map trend strength string to enum
                     trend_strength = (
                         TrendStrength(row[8]) if row[8] else TrendStrength.WEAK
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
                     news_item = NewsItem(
                         title = row[0] or "",
@@ -1490,7 +1659,9 @@ class BreakingNewsWatcher:
                             keywords = keywords,
                             trend_strength = trend_strength,
                             relevance_score = float(row[9]) if row[9] else 0.0,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                     news_items.append(news_item)
 
                 except Exception as e:
@@ -1527,7 +1698,9 @@ class CompetitorAnalyzer:
             # Search for channels in the niche
             channel_ids = await self._search_channels_by_keywords(
                 niche_keywords, max_channels
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Analyze each channel
             analyzed_channels = []
@@ -1541,7 +1714,9 @@ class CompetitorAnalyzer:
 
             return sorted(
                 analyzed_channels, key = lambda x: x.opportunity_score, reverse = True
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         except Exception as e:
             self.logger.error(f"Error analyzing niche: {e}")
@@ -1559,7 +1734,8 @@ class CompetitorAnalyzer:
             # Get YouTube API key from secure storage
             with SecretStore(
                 self.config.get("secrets_db", "data / secrets.sqlite")
-            ) as store:
+# BRACKET_SURGEON: disabled
+#             ) as store:
                 api_key = store.get_secret("YOUTUBE_API_KEY")
                 if not api_key:
                     self.logger.error("YouTube API key not configured in secret store")
@@ -1575,7 +1751,9 @@ class CompetitorAnalyzer:
             # Search for channels using each keyword
             for keyword in keywords[
                 :3
-            ]:  # Limit to first 3 keywords to avoid quota exhaustion
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             ]:  # Limit to first 3 keywords to avoid quota exhaustion
                 try:
                     # Search for channels
                     search_response = requests.get(
@@ -1587,9 +1765,12 @@ class CompetitorAnalyzer:
                                 "maxResults": min(20, max_results),
                                 "order": "relevance",
                                 "key": api_key,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             timeout = 10,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if search_response.status_code == 200:
                         search_data = search_response.json()
@@ -1606,7 +1787,9 @@ class CompetitorAnalyzer:
                     else:
                         self.logger.warning(
                             f"YouTube search API error for keyword '{keyword}': {search_response.status_code}"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 except Exception as e:
                     self.logger.warning(f"Error searching for keyword '{keyword}': {e}")
@@ -1620,7 +1803,9 @@ class CompetitorAnalyzer:
             if not channel_ids:
                 self.logger.warning(
                     "No channels found through search, using fallback popular channels"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 fallback_channels = [
                     "UCBJycsmduvYEL83R_U4JriQ",  # Marques Brownlee (Tech)
                     "UCJ0 - OtVpF0wOKEqT2Z1HEtA",  # ElectroBOOM (Engineering)
@@ -1632,7 +1817,9 @@ class CompetitorAnalyzer:
                     "UCHnyfMqiRRG1u - 2MsSQLbXA",  # Veritasium (Science)
                     "UCsXVk37bltHxD1rDPwtNM8Q",  # Kurzgesagt (Science)
                     "UCR1IuLEqb6UEA_zQ81kwXfg",  # Real Engineering (Engineering)
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
                 return fallback_channels[: min(max_results, len(fallback_channels))]
 
             return list(channel_ids)[:max_results]
@@ -1667,7 +1854,9 @@ class CompetitorAnalyzer:
                         engagement_rate = channel_data["engagement_rate"],
                         niche_keywords = channel_data["keywords"],
                         content_themes = channel_data["themes"],
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
 
                 # Cache the result
                 self.channels_cache[channel_id] = competitor_channel
@@ -1688,7 +1877,8 @@ class CompetitorAnalyzer:
             # Get YouTube API key from secure storage
             with SecretStore(
                 self.config.get("secrets_db", "data / secrets.sqlite")
-            ) as store:
+# BRACKET_SURGEON: disabled
+#             ) as store:
                 api_key = store.get_secret("YOUTUBE_API_KEY")
                 if not api_key:
                     self.logger.error("YouTube API key not configured in secret store")
@@ -1708,14 +1898,19 @@ class CompetitorAnalyzer:
                     "part": "snippet,statistics,brandingSettings",
                         "id": channel_id,
                         "key": api_key,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     timeout = 10,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if channel_response.status_code != 200:
                 self.logger.error(
                     f"YouTube API error for channel {channel_id}: {channel_response.status_code}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return None
 
             channel_data = channel_response.json()
@@ -1737,9 +1932,12 @@ class CompetitorAnalyzer:
                         "order": "date",
                         "maxResults": 50,
                         "key": api_key,
-                        },
+# BRACKET_SURGEON: disabled
+#                         },
                     timeout = 10,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             upload_frequency = 0.0
             average_views = 0
@@ -1762,9 +1960,12 @@ class CompetitorAnalyzer:
                             "part": "statistics,snippet",
                                 "id": ",".join(video_ids),
                                 "key": api_key,
-                                },
+# BRACKET_SURGEON: disabled
+#                                 },
                             timeout = 10,
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     if video_stats_response.status_code == 200:
                         video_stats = video_stats_response.json()
@@ -1790,7 +1991,9 @@ class CompetitorAnalyzer:
                                 title = video_snippet.get("title", "").lower()
                                 description = video_snippet.get(
                                     "description", ""
-                                ).lower()
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 ).lower()
 
                                 # Simple keyword extraction
                                 for word in title.split():
@@ -1801,12 +2004,16 @@ class CompetitorAnalyzer:
                                 total_views // len(video_details)
                                 if video_details
                                 else 0
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             engagement_rate = (
                                 total_engagement / len(video_details)
                                 if video_details
                                 else 0.0
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
 
                     # Calculate upload frequency based on recent videos
                     if len(video_items) >= 2:
@@ -1817,22 +2024,33 @@ class CompetitorAnalyzer:
                             latest_date = datetime.fromisoformat(
                                 video_items[0]["snippet"]["publishedAt"].replace(
                                     "Z", "+00:00"
-                                )
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             oldest_date = datetime.fromisoformat(
                                 video_items[-1]["snippet"]["publishedAt"].replace(
                                     "Z", "+00:00"
-                                )
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             days_diff = (latest_date - oldest_date).days
                             if days_diff > 0:
                                 upload_frequency = (
                                     len(video_items) * 7
-                                ) / days_diff  # videos per week
+# BRACKET_SURGEON: disabled
+#                                 ) / days_diff  # videos per week
                         except Exception as e:
                             self.logger.warning(
                                 f"Error calculating upload frequency: {e}"
-                            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             )
                             upload_frequency = 1.0
 
                     # Extract themes from channel description and video categories
@@ -1840,14 +2058,16 @@ class CompetitorAnalyzer:
                     if (
                         "tech" in channel_description
                         or "technology" in channel_description
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         themes.append("Technology")
                     if "review" in channel_description:
                         themes.append("Reviews")
                     if (
                         "education" in channel_description
                         or "tutorial" in channel_description
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         themes.append("Education")
                     if "gaming" in channel_description or "game" in channel_description:
                         themes.append("Gaming")
@@ -1869,17 +2089,21 @@ class CompetitorAnalyzer:
                     "video_count": int(statistics.get("videoCount", 0)),
                     "upload_frequency": max(
                     upload_frequency, 0.1
-                ),  # Minimum 0.1 videos per week
+# BRACKET_SURGEON: disabled
+#                 ),  # Minimum 0.1 videos per week
                 "average_views": average_views,
                     "engagement_rate": min(engagement_rate, 1.0),  # Cap at 100%
                 "keywords": keywords,
                     "themes": themes,
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(
                 f"Error fetching YouTube data for channel {channel_id}: {e}"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             return None
 
 
@@ -1910,7 +2134,9 @@ class CompetitorAnalyzer:
             # Combine scores
             channel.opportunity_score = (
                 sub_score * 0.4 + engagement_score * 0.4 + frequency_score * 0.2
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
 
     def find_content_gaps(self, channels: List[CompetitorChannel]) -> List[str]:
@@ -1933,7 +2159,9 @@ class CompetitorAnalyzer:
                 "Educational Series",
                 "Case Studies",
                 "Interviews",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
 
         # Find gaps
         content_gaps = [theme for theme in potential_themes if theme not in all_themes]
@@ -1951,7 +2179,8 @@ class MarketValidator:
 
     async def validate_product_idea(
         self, product_concept: str, target_keywords: List[str]
-    ) -> MarketOpportunity:
+# BRACKET_SURGEON: disabled
+#     ) -> MarketOpportunity:
         """Validate a digital product idea"""
         try:
             # Analyze search volume and competition
@@ -1960,17 +2189,23 @@ class MarketValidator:
             # Assess market trends
             trend_data = await self._analyze_market_trends(
                 product_concept, target_keywords
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Evaluate monetization potential
             monetization_score = self._assess_monetization_potential(
                 product_concept, search_data
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Identify target audience
             target_audience = self._identify_target_audience(
                 product_concept, target_keywords
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Find content gaps
             content_gaps = await self._identify_content_gaps(target_keywords)
@@ -1978,12 +2213,16 @@ class MarketValidator:
             # Generate product recommendations
             recommended_products = self._generate_product_recommendations(
                 product_concept, search_data
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Calculate confidence score
             confidence_score = self._calculate_confidence_score(
                 search_data, trend_data, monetization_score
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             opportunity = MarketOpportunity(
                 niche = product_concept,
@@ -1996,7 +2235,9 @@ class MarketValidator:
                     content_gaps = content_gaps,
                     recommended_products = recommended_products,
                     confidence_score = confidence_score,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             return opportunity
 
@@ -2012,7 +2253,9 @@ class MarketValidator:
                     monetization_potential = 0.0,
                     target_audience="unknown",
                     confidence_score = 0.0,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
 
     async def _analyze_search_metrics(self, keywords: List[str]) -> Dict[str, Any]:
@@ -2024,7 +2267,8 @@ class MarketValidator:
             # Get Google Ads API credentials from secure storage
             with SecretStore(
                 self.config.get("secrets_db", "data / secrets.sqlite")
-            ) as store:
+# BRACKET_SURGEON: disabled
+#             ) as store:
                 api_key = store.get_secret("GOOGLE_ADS_API_KEY")
                 customer_id = store.get_secret("GOOGLE_ADS_CUSTOMER_ID")
                 developer_token = store.get_secret("GOOGLE_ADS_DEVELOPER_TOKEN")
@@ -2032,7 +2276,9 @@ class MarketValidator:
                 if not all([api_key, customer_id, developer_token]):
                     self.logger.error(
                         "Google Ads API credentials not configured in secret store"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     raise ValueError("Missing Google Ads API credentials")
 
             if not requests:
@@ -2044,7 +2290,8 @@ class MarketValidator:
                 "Authorization": f"Bearer {api_key}",
                     "developer - token": developer_token,
                     "Content - Type": "application / json",
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Prepare keyword ideas request
             keyword_ideas_request = {
@@ -2054,16 +2301,24 @@ class MarketValidator:
                         "keywordSeed": {
                             "keywords": keywords[
                                 :10
-                            ]  # Limit to 10 keywords per request
-                        },
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]  # Limit to 10 keywords per request
+# BRACKET_SURGEON: disabled
+#                         },
                             "geoTargetConstants": [
                             "geoTargetConstants / 2840"
-                        ],  # United States
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ],  # United States
                         "language": "languageConstants / 1000",  # English
                         "keywordPlanNetwork": "GOOGLE_SEARCH",
-                            }
-                },
-                    }
+# BRACKET_SURGEON: disabled
+#                             }
+# BRACKET_SURGEON: disabled
+#                 },
+# BRACKET_SURGEON: disabled
+#                     }
 
             # Make API request to Google Ads
             response = requests.post(
@@ -2071,15 +2326,21 @@ class MarketValidator:
                     headers = headers,
                     json = keyword_ideas_request,
                     timeout = 30,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             if response.status_code != 200:
                 self.logger.error(
                     f"Google Ads API error: {response.status_code} - {response.text}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 raise ValueError(
                     f"API request failed with status {response.status_code}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             data = response.json()
             results = data.get("results", [])
@@ -2110,7 +2371,9 @@ class MarketValidator:
                 sum(competition_scores) / len(competition_scores)
                 if competition_scores
                 else 0.5
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             if avg_competition < 0.3:
                 competition_level = "low"
@@ -2121,14 +2384,17 @@ class MarketValidator:
 
             self.logger.info(
                 f"Retrieved search metrics for {len(keywords)} keywords: {total_volume} total volume"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return {
                 "total_volume": total_volume,
                     "competition_level": competition_level,
                     "avg_competition_score": avg_competition,
                     "keyword_count": len(results),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Error analyzing search metrics: {e}")
@@ -2152,10 +2418,14 @@ class MarketValidator:
             except ImportError:
                 self.logger.error(
                     "pytrends library not available. Install with: pip install pytrends"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 raise ImportError(
                     "pytrends library required for Google Trends analysis"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
             # Initialize pytrends
             pytrends = TrendReq(hl="en - US", tz = 360)
@@ -2170,7 +2440,9 @@ class MarketValidator:
             # Build payload for Google Trends
             pytrends.build_payload(
                 trend_keywords, cat = 0, timeframe="today 12 - m", geo="US", gprop=""
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Get interest over time data
             interest_over_time = pytrends.interest_over_time()
@@ -2178,7 +2450,9 @@ class MarketValidator:
             if interest_over_time.empty:
                 self.logger.warning(
                     f"No trend data available for keywords: {trend_keywords}"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return {"direction": "stable", "confidence": "low"}
 
             # Calculate trend direction based on recent vs older data
@@ -2193,7 +2467,8 @@ class MarketValidator:
 
             recent_avg = (
                 recent_period.mean().mean()
-            )  # Average across all keywords and time
+# BRACKET_SURGEON: disabled
+#             )  # Average across all keywords and time
             older_avg = older_period.mean().mean()
 
             # Determine trend direction
@@ -2219,7 +2494,9 @@ class MarketValidator:
                 related_count = sum(
                     len(queries.get("top", [])) if queries.get("top") is not None else 0
                     for queries in related_queries.values()
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
                 # Adjust confidence based on related query volume
                 if related_count > 50:
@@ -2234,7 +2511,9 @@ class MarketValidator:
 
             self.logger.info(
                 f"Trend analysis complete: {direction} trend with {confidence} confidence"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return {
                 "direction": direction,
@@ -2242,7 +2521,8 @@ class MarketValidator:
                     "recent_avg": round(recent_avg, 2),
                     "older_avg": round(older_avg, 2),
                     "keywords_analyzed": len(trend_keywords),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
         except Exception as e:
             self.logger.error(f"Error analyzing market trends: {e}")
@@ -2256,23 +2536,29 @@ class MarketValidator:
                     "remote",
                     "machine learning",
                     "blockchain",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
             has_trending = any(
                 term in product_concept.lower()
                 or any(term in keyword.lower() for keyword in keywords)
                 for term in trending_terms
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return {
                 "direction": "rising" if has_trending else "stable",
                     "confidence": "low",
                     "error": str(e),
-                    }
+# BRACKET_SURGEON: disabled
+#                     }
 
 
     def _assess_monetization_potential(
         self, product_concept: str, search_data: Dict
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Assess the monetization potential of the product"""
         score = 0.0
 
@@ -2298,7 +2584,9 @@ class MarketValidator:
                 "platform",
                 "service",
                 "consulting",
-                ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]
         if any(term in product_concept.lower() for term in high_value_terms):
             score += 0.4
 
@@ -2307,7 +2595,8 @@ class MarketValidator:
 
     def _identify_target_audience(
         self, product_concept: str, keywords: List[str]
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Identify the target audience for the product"""
         # Simple audience identification based on keywords
         all_text = (product_concept + " " + " ".join(keywords)).lower()
@@ -2318,11 +2607,13 @@ class MarketValidator:
             return "Digital Marketers & Content Creators"
         elif any(
             term in all_text for term in ["developer", "programming", "code", "tech"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return "Developers & Tech Professionals"
         elif any(
             term in all_text for term in ["student", "learn", "education", "course"]
-        ):
+# BRACKET_SURGEON: disabled
+#         ):
             return "Students & Learners"
         else:
             return "General Consumers"
@@ -2334,7 +2625,9 @@ class MarketValidator:
             if not requests or not BeautifulSoup:
                 self.logger.error(
                     "Required libraries not available for content gap analysis"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
                 return ["Content analysis tools not available"]
 
             content_gaps = []
@@ -2349,16 +2642,18 @@ class MarketValidator:
 
                     # Use a more realistic user agent
                     headers = {
-                        "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,
-    like Gecko) Chrome / 91.0.4472.124 Safari / 537.36"
-                    }
+                        "User - Agent": "Mozilla / 5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit / 537.36 (KHTML,"
+# BRACKET_SURGEON: disabled
+#     like Gecko) Chrome / 91.0.4472.124 Safari / 537.36""
+# BRACKET_SURGEON: disabled
+#                     }
 
                     # Note: In production, consider using Google Custom Search API instead
                     # This is a basic implementation for content gap identification
 
                     # Analyze common content types that might be missing
                     common_content_types = [
-                        f"Beginner's guide to {keyword}",
+                        f"Beginner's guide to {keyword}",'
                             f"Advanced {keyword} techniques",
                             f"{keyword} case studies",
                             f"{keyword} vs alternatives comparison",
@@ -2368,7 +2663,9 @@ class MarketValidator:
                             f"{keyword} ROI analysis",
                             f"{keyword} implementation checklist",
                             f"{keyword} common mistakes",
-                            ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                             ]
 
                     # Simulate content gap detection based on keyword analysis
                     # In a full production system, this would:
@@ -2385,7 +2682,8 @@ class MarketValidator:
                     if (
                         "advanced" not in keyword_lower
                         and "expert" not in keyword_lower
-                    ):
+# BRACKET_SURGEON: disabled
+#                     ):
                         content_gaps.append(f"Advanced {keyword} strategies")
 
                     if "case" not in keyword_lower and "example" not in keyword_lower:
@@ -2400,7 +2698,9 @@ class MarketValidator:
                 except Exception as e:
                     self.logger.warning(
                         f"Error analyzing content gaps for keyword '{keyword}': {e}"
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
                     continue
 
             # Remove duplicates and limit results
@@ -2413,7 +2713,9 @@ class MarketValidator:
                         "Advanced implementation guides",
                         "Industry - specific case studies",
                         "Tool comparison and reviews",
-                        ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
 
             # Limit to top 6 most relevant gaps
             return unique_gaps[:6]
@@ -2426,7 +2728,9 @@ class MarketValidator:
                     "Advanced technique guides",
                     "Practical implementation examples",
                     "Comparative analysis content",
-                    ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
 
 
     def _generate_product_recommendations(
@@ -2439,10 +2743,14 @@ class MarketValidator:
         if search_data["total_volume"] > 5000 and search_data["competition_level"] in [
             "low",
                 "medium",
-                ]:
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 ]:
             recommendations.extend(
                 ["Online Course", "Digital Guide / Ebook", "Video Tutorial Series"]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         if search_data["competition_level"] == "low":
             recommendations.extend(["SaaS Tool", "Mobile App", "Consulting Service"])
@@ -2461,7 +2769,8 @@ class MarketValidator:
 
     def _calculate_confidence_score(
         self, search_data: Dict, trend_data: Dict, monetization_score: float
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate overall confidence score for the opportunity"""
         score = 0.0
 
@@ -2504,7 +2813,8 @@ if __name__ == "__main__":
         try:
             news_items = await news_watcher.monitor_feeds(
                 duration_hours = 0.1
-            )  # 6 minutes
+# BRACKET_SURGEON: disabled
+#             )  # 6 minutes
             print(f"Found {len(news_items)} news items")
 
             if news_items:
@@ -2550,7 +2860,9 @@ if __name__ == "__main__":
 
             opportunity = await validator.validate_product_idea(
                 product_concept, keywords
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             print(f"Market opportunity for: {opportunity.niche}")
             print(f"Search volume: {opportunity.search_volume:,}")
             print(f"Competition: {opportunity.competition_level}")
@@ -2590,7 +2902,7 @@ class SEOAuditService:
 
         # SEO audit requests table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS seo_audit_requests (
                 request_id TEXT PRIMARY KEY,
                     website_url TEXT NOT NULL,
@@ -2602,13 +2914,17 @@ class SEOAuditService:
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     completed_at TIMESTAMP,
                     report_file_path TEXT
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # SEO audit results table
         cursor.execute(
-            """
+            """"""
             CREATE TABLE IF NOT EXISTS seo_audit_results (
                 request_id TEXT PRIMARY KEY,
                     website_url TEXT NOT NULL,
@@ -2622,9 +2938,13 @@ class SEOAuditService:
                     opportunities TEXT,
                     audit_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (request_id) REFERENCES seo_audit_requests (request_id)
-            )
-        """
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+        """"""
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         conn.commit()
         conn.close()
@@ -2637,7 +2957,7 @@ class SEOAuditService:
 
         try:
             cursor.execute(
-                """
+                """"""
                 INSERT INTO seo_audit_requests
                 (request_id,
     website_url,
@@ -2645,9 +2965,11 @@ class SEOAuditService:
     company_name,
     industry,
     target_keywords,
-    status)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#     status)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     request.request_id,
                         request.website_url,
@@ -2656,8 +2978,11 @@ class SEOAuditService:
                         request.industry,
                         json.dumps(request.target_keywords),
                         request.status,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
             logging.info(f"SEO audit request submitted: {request.request_id}")
@@ -2711,7 +3036,8 @@ class SEOAuditService:
 
     async def _perform_seo_audit(
         self, website_url: str, request_data: Dict
-    ) -> SEOAuditResult:
+# BRACKET_SURGEON: disabled
+#     ) -> SEOAuditResult:
         """Perform comprehensive SEO audit"""
         try:
             # Fetch website content
@@ -2729,12 +3055,16 @@ class SEOAuditService:
             # Technical SEO Analysis
             technical_seo = await self._analyze_technical_seo(
                 website_url, soup, response
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # On - Page SEO Analysis
             on_page_seo = await self._analyze_on_page_seo(
                 soup, request_data.get("target_keywords", [])
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Content Analysis
             content_analysis = await self._analyze_content(soup)
@@ -2743,19 +3073,27 @@ class SEOAuditService:
             competitor_analysis = await self._analyze_competitors(
                 request_data.get("industry", ""),
                     request_data.get("target_keywords", []),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Generate recommendations
             recommendations, priority_issues, opportunities = (
                 self._generate_recommendations(
                     technical_seo, on_page_seo, content_analysis, competitor_analysis
-                )
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Calculate overall score
             overall_score = self._calculate_overall_score(
                 technical_seo, on_page_seo, content_analysis
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             return SEOAuditResult(
                 website_url = website_url,
@@ -2768,7 +3106,9 @@ class SEOAuditService:
                     recommendations = recommendations,
                     priority_issues = priority_issues,
                     opportunities = opportunities,
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
         except Exception as e:
             logging.error(f"Error performing SEO audit for {website_url}: {e}")
@@ -2786,7 +3126,8 @@ class SEOAuditService:
                 "meta_tags": {"score": 0, "issues": []},
                 "structured_data": {"score": 0, "issues": []},
                 "crawlability": {"score": 0, "issues": []},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # HTTPS Check
         if url.startswith("https://"):
@@ -2805,7 +3146,9 @@ class SEOAuditService:
             else:
                 technical_seo["meta_tags"]["issues"].append(
                     f"Title tag length ({len(title_tag.text)} chars) not optimal (10 - 60 chars)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         else:
             technical_seo["meta_tags"]["issues"].append("Missing or empty title tag")
 
@@ -2816,7 +3159,9 @@ class SEOAuditService:
             else:
                 technical_seo["meta_tags"]["issues"].append(
                     f"Meta description length ({desc_length} chars) not optimal (120 - 160 chars)"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         else:
             technical_seo["meta_tags"]["issues"].append("Missing meta description")
 
@@ -2828,7 +3173,9 @@ class SEOAuditService:
             technical_seo["mobile_friendly"]["score"] = 20
             technical_seo["mobile_friendly"]["issues"].append(
                 "Missing viewport meta tag"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Structured data check
         json_ld = soup.find_all("script", type="application / ld + json")
@@ -2838,7 +3185,9 @@ class SEOAuditService:
             technical_seo["structured_data"]["score"] = 20
             technical_seo["structured_data"]["issues"].append(
                 "No structured data found"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Basic page speed analysis (response time)
         response_time = getattr(response, "elapsed", None)
@@ -2852,7 +3201,9 @@ class SEOAuditService:
                 technical_seo["page_speed"]["score"] = 40
                 technical_seo["page_speed"]["issues"].append(
                     f"Slow response time: {response_seconds:.2f}s"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return technical_seo
 
@@ -2867,7 +3218,8 @@ class SEOAuditService:
                 "internal_linking": {"score": 0, "issues": []},
                 "image_optimization": {"score": 0, "issues": []},
                 "content_quality": {"score": 0, "issues": []},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Heading structure analysis
         h1_tags = soup.find_all("h1")
@@ -2878,7 +3230,9 @@ class SEOAuditService:
         else:
             on_page_seo["heading_structure"]["issues"].append(
                 f"Multiple H1 tags found ({len(h1_tags)})"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Check for proper heading hierarchy
         headings = soup.find_all(["h1", "h2", "h3", "h4", "h5", "h6"])
@@ -2887,7 +3241,9 @@ class SEOAuditService:
         else:
             on_page_seo["heading_structure"]["issues"].append(
                 "Insufficient heading structure"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Image optimization
         images = soup.find_all("img")
@@ -2898,7 +3254,9 @@ class SEOAuditService:
             if alt_ratio < 0.8:
                 on_page_seo["image_optimization"]["issues"].append(
                     f"{len(images) - len(images_with_alt)} images missing alt text"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         else:
             on_page_seo["image_optimization"]["score"] = 50
 
@@ -2915,14 +3273,18 @@ class SEOAuditService:
             page_text = soup.get_text().lower()
             keyword_found = any(
                 keyword.lower() in page_text for keyword in target_keywords
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             if keyword_found:
                 on_page_seo["keyword_optimization"]["score"] = 70
             else:
                 on_page_seo["keyword_optimization"]["score"] = 20
                 on_page_seo["keyword_optimization"]["issues"].append(
                     "Target keywords not found in content"
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
 
         return on_page_seo
 
@@ -2934,7 +3296,8 @@ class SEOAuditService:
                 "readability": {"score": 0, "issues": []},
                 "content_structure": {"score": 0, "issues": []},
                 "uniqueness": {"score": 0, "issues": []},
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # Extract main content text
         # Remove script and style elements
@@ -2951,7 +3314,9 @@ class SEOAuditService:
         else:
             content_analysis["content_structure"]["issues"].append(
                 f"Low word count: {len(words)} words"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Basic readability analysis
         if TextBlob:
@@ -2966,7 +3331,9 @@ class SEOAuditService:
                         content_analysis["readability"]["score"] = 50
                         content_analysis["readability"]["issues"].append(
                             f"Average sentence length: {avg_sentence_length:.1f} words"
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             except Exception as e:
                 logging.warning(f"TextBlob analysis failed: {e}")
                 content_analysis["readability"]["score"] = 50
@@ -2983,7 +3350,8 @@ class SEOAuditService:
                 "top_competitors": [],
                 "opportunities": [],
                 "market_insights": [],
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         # This would typically involve more sophisticated competitor research
         # For now, provide basic analysis based on industry and keywords
@@ -2993,7 +3361,9 @@ class SEOAuditService:
         if keywords:
             competitor_analysis["market_insights"].append(
                 f'Target keywords: {", ".join(keywords[:5])}'
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
             # Simulate competition analysis
             if len(keywords) > 5:
@@ -3040,7 +3410,9 @@ class SEOAuditService:
         elif content_analysis["word_count"] < 500:
             recommendations.append(
                 "Consider expanding content to 500+ words for better SEO"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         # Opportunities
         opportunities.extend(
@@ -3050,22 +3422,29 @@ class SEOAuditService:
                     "Optimize for featured snippets",
                     "Improve page loading speed",
                     "Build high - quality backlinks",
-                    ]
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return recommendations, priority_issues, opportunities
 
 
     def _calculate_overall_score(
         self, technical_seo: Dict, on_page_seo: Dict, content_analysis: Dict
-    ) -> float:
+# BRACKET_SURGEON: disabled
+#     ) -> float:
         """Calculate overall SEO score"""
         technical_scores = [data["score"] for data in technical_seo.values()]
         on_page_scores = [data["score"] for data in on_page_seo.values()]
 
         technical_avg = (
             sum(technical_scores) / len(technical_scores) if technical_scores else 0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         on_page_avg = sum(on_page_scores) / len(on_page_scores) if on_page_scores else 0
 
         # Content score based on word count and structure
@@ -3073,19 +3452,24 @@ class SEOAuditService:
             min(100, (content_analysis["word_count"] / 500) * 100)
             if content_analysis["word_count"] > 0
             else 0
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Weighted average: 40% technical, 40% on - page, 20% content
         overall_score = (
             (technical_avg * 0.4) + (on_page_avg * 0.4) + (content_score * 0.2)
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         return round(overall_score, 1)
 
 
     async def _generate_pdf_report(
         self, audit_result: SEOAuditResult, request_data: Dict
-    ) -> str:
+# BRACKET_SURGEON: disabled
+#     ) -> str:
         """Generate PDF report from audit results"""
         if not SimpleDocTemplate:
             raise ImportError("ReportLab library not available for PDF generation")
@@ -3107,19 +3491,21 @@ class SEOAuditService:
                 fontSize = 24,
                 spaceAfter = 30,
                 textColor = colors.darkblue,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         story.append(Paragraph("AI - Powered SEO Audit Report", title_style))
         story.append(Spacer(1, 20))
 
         # Executive Summary
         story.append(Paragraph("Executive Summary", styles["Heading2"]))
-        summary_text = f"""
+        summary_text = f""""""
         Website: {audit_result.website_url}<br/>
         Audit Date: {audit_result.audit_date.strftime('%B %d, %Y')}<br/>
         Overall SEO Score: <b>{audit_result.overall_score}/100</b><br/>
         Priority Issues: {len(audit_result.priority_issues)}<br/>
         Recommendations: {len(audit_result.recommendations)}
-        """
+        """"""
         story.append(Paragraph(summary_text, styles["Normal"]))
         story.append(Spacer(1, 20))
 
@@ -3133,10 +3519,14 @@ class SEOAuditService:
                 "Good"
                 if data["score"] >= 70
                 else "Needs Improvement" if data["score"] >= 40 else "Critical"
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             tech_data.append(
                 [category.replace("_", " ").title(), f"{data['score']}/100", status]
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
 
         tech_table = Table(tech_data)
         tech_table.setStyle(
@@ -3150,9 +3540,15 @@ class SEOAuditService:
                         ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
                         ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
                         ("GRID", (0, 0), (-1, -1), 1, colors.black),
-                        ]
-            )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         ]
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         story.append(tech_table)
         story.append(Spacer(1, 20))
 
@@ -3182,22 +3578,32 @@ class SEOAuditService:
                 fontSize = 14,
                 textColor = colors.darkblue,
                 spaceAfter = 10,
-                )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                 )
         story.append(Paragraph("Ready to Improve Your SEO?", styles["Heading2"]))
         story.append(
             Paragraph(
-                "This audit has identified key areas for improvement. Our digital marketing products can help you implement these recommendations \
-    and boost your search rankings.",
+                "This audit has identified key areas for improvement. Our digital marketing products can help you implement these recommendations \"
+#     and boost your search rankings.",
                     cta_style,
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
         story.append(
             Paragraph(
-                "Visit our website to explore our SEO optimization tools \
-    and courses designed to help you succeed online.",
+                "Visit our website to explore our SEO optimization tools \"
+#     and courses designed to help you succeed online.",
                     styles["Normal"],
-                    )
-        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#         )
 
         # Build PDF
         doc.build(story)
@@ -3224,7 +3630,7 @@ class SEOAuditService:
             msg["Subject"] = f"Your SEO Audit Report - {request_data['website_url']}"
 
             # Email body
-            body = f"""
+            body = f""""""
             Dear {request_data.get('company_name', 'Valued Customer')},
 
             Thank you for requesting an SEO audit for {request_data['website_url']}.
@@ -3238,14 +3644,14 @@ class SEOAuditService:
             • Growth opportunities
 
             Our AI - powered analysis has identified specific areas where you can improve your search engine rankings \
-    and drive more organic traffic to your website.
+#     and drive more organic traffic to your website.
 
             If you have any questions about the report \
-    or would like to learn more about our SEO optimization services, please don't hesitate to contact us.
+#     or would like to learn more about our SEO optimization services, please don't hesitate to contact us.
 
             Best regards,
                 The SEO Audit Team
-            """
+            """"""
 
             msg.attach(MIMEText(body, "plain"))
 
@@ -3259,23 +3665,31 @@ class SEOAuditService:
                 part.add_header(
                     "Content - Disposition",
                         f"attachment; filename= {os.path.basename(report_path)}",
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 msg.attach(part)
 
             # Send email
             server = smtplib.SMTP(
                 self.smtp_config.get("smtp_server", ""),
                     self.smtp_config.get("smtp_port", 587),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             server.starttls()
             server.login(
                 self.smtp_config.get("username", ""),
                     self.smtp_config.get("password", ""),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
             text = msg.as_string()
             server.sendmail(
                 self.smtp_config.get("from_email", ""), request_data["email"], text
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             server.quit()
 
             logging.info(f"Audit report emailed to {request_data['email']}")
@@ -3294,12 +3708,16 @@ class SEOAuditService:
                 cursor.execute(
                     "UPDATE seo_audit_requests SET status = ?, completed_at = CURRENT_TIMESTAMP WHERE request_id = ?",
                         (status, request_id),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             else:
                 cursor.execute(
                     "UPDATE seo_audit_requests SET status = ? WHERE request_id = ?",
                         (status, request_id),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
             conn.commit()
         finally:
             conn.close()
@@ -3313,7 +3731,9 @@ class SEOAuditService:
         try:
             cursor.execute(
                 "SELECT * FROM seo_audit_requests WHERE request_id = ?", (request_id,)
-            )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#             )
             row = cursor.fetchone()
 
             if row:
@@ -3326,19 +3746,22 @@ class SEOAuditService:
 
     async def _save_audit_results(
         self, request_id: str, audit_result: SEOAuditResult, report_path: str
-    ):
+# BRACKET_SURGEON: disabled
+#     ):
         """Save audit results to database"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
         try:
             cursor.execute(
-                """
+                """"""
                 INSERT OR REPLACE INTO seo_audit_results
                 (request_id, website_url, overall_score, technical_seo, on_page_seo,
-                    content_analysis, competitor_analysis, recommendations, priority_issues, opportunities)
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     content_analysis, competitor_analysis, recommendations, priority_issues, opportunities)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            ""","""
                 (
                     request_id,
                         audit_result.website_url,
@@ -3350,14 +3773,19 @@ class SEOAuditService:
                         json.dumps(audit_result.recommendations),
                         json.dumps(audit_result.priority_issues),
                         json.dumps(audit_result.opportunities),
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             # Update request with report path
             cursor.execute(
                 "UPDATE seo_audit_requests SET report_file_path = ? WHERE request_id = ?",
                     (report_path, request_id),
-                    )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                     )
 
             conn.commit()
         finally:
@@ -3379,7 +3807,9 @@ class SEOAuditService:
                 cursor.execute(
                     "SELECT * FROM seo_audit_results WHERE request_id = ?",
                         (request_id,),
-                        )
+# FIXIT: commented possible stray closer
+# FIXIT: commented possible stray closer
+#                         )
                 result_row = cursor.fetchone()
 
                 if result_row:

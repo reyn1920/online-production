@@ -18,20 +18,20 @@ MAX_WAV_VALUE = 32768.0
 
 
 def dynamic_range_compression_torch(x, C=1, clip_val=1e-5):
-    """
+    """"""
     PARAMS
     ------
         C: compression factor
-    """
+    """"""
     return torch.log(torch.clamp(x, min=clip_val) * C)
 
 
 def dynamic_range_decompression_torch(x, C=1):
-    """
+    """"""
     PARAMS
     ------
         C: compression factor used to compress
-    """
+    """"""
     return torch.exp(x) / C
 
 
@@ -61,13 +61,15 @@ def spectrogram_torch(y, n_fft, sampling_rate, hop_size, win_size, center=False)
     if wnsize_dtype_device not in hann_window:
         hann_window[wnsize_dtype_device] = torch.hann_window(win_size).to(
             dtype=y.dtype, device=y.device
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     y = torch.nn.functional.pad(
         y.unsqueeze(1),
         (int((n_fft - hop_size) / 2), int((n_fft - hop_size) / 2)),
         mode="reflect",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     y = y.squeeze(1)
     spec = torch.stft(
         y,
@@ -80,7 +82,8 @@ def spectrogram_torch(y, n_fft, sampling_rate, hop_size, win_size, center=False)
         normalized=False,
         onesided=True,
         return_complex=False,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     spec = torch.sqrt(spec.pow(2).sum(-1) + 1e-6)
     return spec
@@ -94,7 +97,8 @@ def spec_to_mel_torch(spec, n_fft, num_mels, sampling_rate, fmin, fmax):
         mel = librosa_mel_fn(sr=sampling_rate, n_fft=n_fft, n_mels=num_mels, fmin=fmin, fmax=fmax)
         mel_basis[fmax_dtype_device] = torch.from_numpy(mel).to(
             dtype=spec.dtype, device=spec.device
-        )
+# BRACKET_SURGEON: disabled
+#         )
     spec = torch.matmul(mel_basis[fmax_dtype_device], spec)
     spec = spectral_normalize_torch(spec)
     return spec
@@ -102,7 +106,8 @@ def spec_to_mel_torch(spec, n_fft, num_mels, sampling_rate, fmin, fmax):
 
 def mel_spectrogram_torch(
     y, n_fft, num_mels, sampling_rate, hop_size, win_size, fmin, fmax, center=False
-):
+# BRACKET_SURGEON: disabled
+# ):
     if torch.min(y) < -1.0:
         print("min value is ", torch.min(y))
     if torch.max(y) > 1.0:
@@ -118,13 +123,15 @@ def mel_spectrogram_torch(
     if wnsize_dtype_device not in hann_window:
         hann_window[wnsize_dtype_device] = torch.hann_window(win_size).to(
             dtype=y.dtype, device=y.device
-        )
+# BRACKET_SURGEON: disabled
+#         )
 
     y = torch.nn.functional.pad(
         y.unsqueeze(1),
         (int((n_fft - hop_size) / 2), int((n_fft - hop_size) / 2)),
         mode="reflect",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     y = y.squeeze(1)
 
     spec = torch.stft(
@@ -138,7 +145,8 @@ def mel_spectrogram_torch(
         normalized=False,
         onesided=True,
         return_complex=False,
-    )
+# BRACKET_SURGEON: disabled
+#     )
 
     spec = torch.sqrt(spec.pow(2).sum(-1) + 1e-6)
 

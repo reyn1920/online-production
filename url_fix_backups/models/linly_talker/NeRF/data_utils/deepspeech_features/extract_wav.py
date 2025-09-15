@@ -1,6 +1,6 @@
-"""
+""""""
 Script for extracting audio (16 - bit, mono, 22000 Hz) from video file.
-"""
+""""""
 
 import argparse
 import os
@@ -8,24 +8,26 @@ import subprocess
 
 
 def parse_args():
-    """
+    """"""
     Create python script parameters.
 
     Returns
     -------
         ArgumentParser
         Resulted args.
-    """
+    """"""
     parser = argparse.ArgumentParser(
         description="Extract audio from video file",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument(
         "--in - video",
         type=str,
         required=True,
         help="path to input video file or directory",
-    )
+# BRACKET_SURGEON: disabled
+#     )
     parser.add_argument("--out - audio", type=str, help="path to output audio file")
 
     args = parser.parse_args()
@@ -33,7 +35,7 @@ def parse_args():
 
 
 def extract_audio(in_video, out_audio):
-    """
+    """"""
     Real extract audio from video file.
 
     Parameters
@@ -42,7 +44,7 @@ def extract_audio(in_video, out_audio):
         Path to input video file.
     out_audio : str
         Path to output audio file.
-    """
+    """"""
     if not out_audio:
         file_stem, _ = os.path.splitext(in_video)
         out_audio = file_stem + ".wav"
@@ -54,13 +56,13 @@ def extract_audio(in_video, out_audio):
 
 
 def main():
-    """
+    """"""
     Main body of script.
-    """
+    """"""
     args = parse_args()
     in_video = os.path.expanduser(args.in_video)
     if not os.path.exists(in_video):
-        raise Exception("Input file / directory doesn't exist: {}".format(in_video))
+        raise Exception("Input file / directory doesn't exist: {}".format(in_video))'
     if os.path.isfile(in_video):
         extract_audio(in_video=in_video, out_audio=args.out_audio)
     else:

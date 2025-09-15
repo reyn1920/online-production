@@ -1,8 +1,8 @@
 #!/usr / bin / env python3
-"""
+""""""
 Dashboard Snapshot Contract Test
 Verifies the /api / dashboard endpoint returns expected structure.
-"""
+""""""
 
 import json
 import sys
@@ -12,7 +12,7 @@ import requests
 
 
 def test_dashboard_snapshot(base_url: str = "http://127.0.0.1:8083") -> bool:
-    """
+    """"""
     Test the dashboard snapshot endpoint for expected structure.
 
     Args:
@@ -20,7 +20,7 @@ def test_dashboard_snapshot(base_url: str = "http://127.0.0.1:8083") -> bool:
 
     Returns:
         bool: True if test passes, False otherwise
-    """
+    """"""
     try:
         response = requests.get(f"{base_url}/api / dashboard", timeout=10)
 
@@ -74,7 +74,7 @@ def test_dashboard_snapshot(base_url: str = "http://127.0.0.1:8083") -> bool:
 
 
 def test_metrics_endpoint(base_url: str = "http://127.0.0.1:8083") -> bool:
-    """
+    """"""
     Test the metrics endpoint for expected structure.
 
     Args:
@@ -82,7 +82,7 @@ def test_metrics_endpoint(base_url: str = "http://127.0.0.1:8083") -> bool:
 
     Returns:
         bool: True if test passes, False otherwise
-    """
+    """"""
     try:
         response = requests.get(f"{base_url}/api / metrics", timeout=10)
 

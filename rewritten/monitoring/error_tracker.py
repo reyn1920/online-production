@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""
+""""""
 TRAE AI Error Tracking and Alerting System
 Monitors application logs, tracks errors, and sends alerts for critical issues.
-"""
+""""""
 
 import json
 import logging
@@ -19,7 +19,8 @@ from typing import Any, Dict, List, Optional
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s | %(levelname)s | %(name)s | %(message)s"
-)
+# BRACKET_SURGEON: disabled
+# )
 logger = logging.getLogger("trae_ai.error_tracker")
 
 
@@ -61,7 +62,8 @@ class ErrorTracker:
             "logs/trae - ai.log",
             "logs/trae - ai - errors.log",
             "logs/trae - ai - security.log",
-        ]
+# BRACKET_SURGEON: disabled
+#         ]
         self.error_buffer = deque(maxlen=1000)  # Keep last 1000 errors in memory
         self.alert_rules = self._load_default_alert_rules()
         self.last_positions = {}  # Track file positions for log tailing
@@ -87,7 +89,7 @@ class ErrorTracker:
 
                 # Error events table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS error_events (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             timestamp TEXT NOT NULL,
@@ -105,13 +107,15 @@ class ErrorTracker:
                             first_seen DATETIME DEFAULT CURRENT_TIMESTAMP,
                             last_seen DATETIME DEFAULT CURRENT_TIMESTAMP,
                             resolved BOOLEAN DEFAULT FALSE
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Alert history table
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS alert_history (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             timestamp TEXT NOT NULL,
@@ -123,13 +127,15 @@ class ErrorTracker:
                             triggered_by TEXT,
                             acknowledged BOOLEAN DEFAULT FALSE,
                             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 # Error patterns table for ML - based detection
                 cursor.execute(
-                    """
+                    """"""
                     CREATE TABLE IF NOT EXISTS error_patterns (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                             pattern_hash TEXT UNIQUE,
@@ -139,9 +145,11 @@ class ErrorTracker:
                             first_seen DATETIME DEFAULT CURRENT_TIMESTAMP,
                             last_seen DATETIME DEFAULT CURRENT_TIMESTAMP,
                             auto_resolved BOOLEAN DEFAULT FALSE
-                    )
-                """
-                )
+# BRACKET_SURGEON: disabled
+#                     )
+                """"""
+# BRACKET_SURGEON: disabled
+#                 )
 
                 conn.commit()
                 logger.info("Error tracking database initialized")
@@ -171,7 +179,8 @@ class ErrorTracker:
                 time_window_minutes=5,
                 severity="critical",
                 description="Any critical or fatal error",
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AlertRule(
                 name="high_error_rate",
                 pattern=r"ERROR",
@@ -179,7 +188,8 @@ class ErrorTracker:
                 time_window_minutes=10,
                 severity="warning",
                 description="High error rate detected",
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AlertRule(
                 name="security_alerts",
                 pattern=r"security|authentication|authorization|breach|attack",
@@ -187,7 +197,8 @@ class ErrorTracker:
                 time_window_minutes=1,
                 severity="critical",
                 description="Security - related incidents",
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AlertRule(
                 name="database_errors",
                 pattern=r"database|sqlite|connection.*failed|query.*error",
@@ -195,7 +206,8 @@ class ErrorTracker:
                 time_window_minutes=15,
                 severity="warning",
                 description="Database connectivity or query issues",
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AlertRule(
                 name="agent_failures",
                 pattern=r"agent.*failed|agent.*error|task.*failed",
@@ -203,7 +215,8 @@ class ErrorTracker:
                 time_window_minutes=10,
                 severity="warning",
                 description="Agent execution failures",
-            ),
+# BRACKET_SURGEON: disabled
+#             ),
             AlertRule(
                 name="memory_issues",
                 pattern=r"memory|out of memory|oom|malloc",
@@ -211,8 +224,10 @@ class ErrorTracker:
                 time_window_minutes=5,
                 severity="critical",
                 description="Memory - related issues",
-            ),
-        ]
+# BRACKET_SURGEON: disabled
+#             ),
+# BRACKET_SURGEON: disabled
+#         ]
 
     def parse_log_line(self, line: str, source_file: str) -> Optional[ErrorEvent]:
         """Parse a log line and extract error information."""
@@ -232,14 +247,16 @@ class ErrorTracker:
                         module=log_data.get("module", ""),
                         function=log_data.get("function", ""),
                         line_number=log_data.get("line", 0),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 except json.JSONDecodeError:
                     pass
 
             # Try standard format
             pattern = (
                 r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\s*\|\s*(\w+)\s*\|\s*([^|]+)\s*\|\s*(.+)"
-            )
+# BRACKET_SURGEON: disabled
+#             )
             match = re.match(pattern, line.strip())
 
             if match:
@@ -255,7 +272,8 @@ class ErrorTracker:
                         module=source_file,
                         function="",
                         line_number=0,
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
 
             return None
 
@@ -284,29 +302,31 @@ class ErrorTracker:
                 cursor.execute(
                     "SELECT id, count FROM error_events WHERE fingerprint = ?",
                     (fingerprint,),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 existing = cursor.fetchone()
 
                 if existing:
                     # Update existing error
                     cursor.execute(
-                        """
+                        """"""
                         UPDATE error_events
                         SET count = count + 1, last_seen = CURRENT_TIMESTAMP
                         WHERE id = ?
-                    """,
+                    ""","""
                         (existing[0],),
-                    )
+# BRACKET_SURGEON: disabled
+#                     )
                 else:
                     # Insert new error
                     cursor.execute(
-                        """
+                        """"""
                         INSERT INTO error_events (
                             timestamp, level, logger_name, message, module,
                                 function, line_number, exception_type, stack_trace,
                                 context, fingerprint
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
+                    ""","""
                         (
                             error.timestamp,
                             error.level,
@@ -319,8 +339,10 @@ class ErrorTracker:
                             error.stack_trace,
                             json.dumps(error.context) if error.context else None,
                             fingerprint,
-                        ),
-                    )
+# BRACKET_SURGEON: disabled
+#                         ),
+# BRACKET_SURGEON: disabled
+#                     )
 
                 conn.commit()
 
@@ -340,18 +362,20 @@ class ErrorTracker:
                 # Count matching errors in time window
                 cutoff_time = datetime.now(timezone.utc) - timedelta(
                     minutes=rule.time_window_minutes
-                )
+# BRACKET_SURGEON: disabled
+#                 )
 
                 try:
                     with sqlite3.connect(self.db_path) as conn:
                         cursor = conn.cursor()
                         cursor.execute(
-                            """
+                            """"""
                             SELECT COUNT(*) FROM error_events
                             WHERE timestamp >= ? AND message REGEXP ?
-                        """,
+                        ""","""
                             (cutoff_time.isoformat(), rule.pattern),
-                        )
+# BRACKET_SURGEON: disabled
+#                         )
 
                         count = cursor.fetchone()[0]
 
@@ -364,7 +388,8 @@ class ErrorTracker:
                                 "time_window_minutes": rule.time_window_minutes,
                                 "triggered_by": error.message[:200],
                                 "threshold": rule.threshold,
-                            }
+# BRACKET_SURGEON: disabled
+#                             }
                             triggered_alerts.append(alert)
 
                 except Exception as e:
@@ -379,12 +404,12 @@ class ErrorTracker:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    """
+                    """"""
                     INSERT INTO alert_history (
                         timestamp, rule_name, severity, message, error_count,
                             time_window_minutes, triggered_by
                     ) VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                ""","""
                     (
                         datetime.now(timezone.utc).isoformat(),
                         alert["rule_name"],
@@ -393,8 +418,10 @@ class ErrorTracker:
                         alert["error_count"],
                         alert["time_window_minutes"],
                         alert["triggered_by"],
-                    ),
-                )
+# BRACKET_SURGEON: disabled
+#                     ),
+# BRACKET_SURGEON: disabled
+#                 )
                 conn.commit()
 
             # Log alert (in production, this could send emails, Slack messages, etc.)
@@ -403,7 +430,8 @@ class ErrorTracker:
             emoji = severity_emoji.get(alert["severity"], "📢")
             logger.warning(
                 f"{emoji} ALERT [{alert['severity'].upper()}] {alert['rule_name']}: {alert['message']}"
-            )
+# BRACKET_SURGEON: disabled
+#             )
 
             # In production, implement actual notification mechanisms:
             # - Email notifications
@@ -456,38 +484,42 @@ class ErrorTracker:
                 cursor.execute(
                     "SELECT COUNT(*) FROM error_events WHERE timestamp >= ?",
                     (cutoff_time.isoformat(),),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 total_errors = cursor.fetchone()[0]
 
                 # Errors by level
                 cursor.execute(
-                    """
+                    """"""
                     SELECT level, COUNT(*) FROM error_events
                     WHERE timestamp >= ? GROUP BY level
-                """,
+                ""","""
                     (cutoff_time.isoformat(),),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 errors_by_level = dict(cursor.fetchall())
 
                 # Top error messages
                 cursor.execute(
-                    """
+                    """"""
                     SELECT message, COUNT(*) as count FROM error_events
                     WHERE timestamp >= ? GROUP BY fingerprint
                     ORDER BY count DESC LIMIT 10
-                """,
+                ""","""
                     (cutoff_time.isoformat(),),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 top_errors = cursor.fetchall()
 
                 # Recent alerts
                 cursor.execute(
-                    """
+                    """"""
                     SELECT rule_name, severity, message, timestamp FROM alert_history
                     WHERE timestamp >= ? ORDER BY timestamp DESC LIMIT 10
-                """,
+                ""","""
                     (cutoff_time.isoformat(),),
-                )
+# BRACKET_SURGEON: disabled
+#                 )
                 recent_alerts = cursor.fetchall()
 
                 return {
@@ -501,11 +533,14 @@ class ErrorTracker:
                             "severity": severity,
                             "message": message,
                             "timestamp": timestamp,
-                        }
+# BRACKET_SURGEON: disabled
+#                         }
                         for rule, severity, message, timestamp in recent_alerts
-                    ],
+# BRACKET_SURGEON: disabled
+#                     ],
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
+# BRACKET_SURGEON: disabled
+#                 }
 
         except Exception as e:
             logger.error(f"Failed to get error summary: {e}")
@@ -564,7 +599,8 @@ def main():
                 module="error_tracker.py",
                 function="main",
                 line_number=0,
-            )
+# BRACKET_SURGEON: disabled
+#             )
             tracker.store_error(test_error)
             alerts = tracker.check_alert_rules(test_error)
             for alert in alerts:

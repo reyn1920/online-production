@@ -23,7 +23,8 @@ def read_template_pair_list(path):
 
 p1, p2, label = read_template_pair_list(
     os.path.join("%s/meta" % image_path, "%s_template_pair_label.txt" % "ijbc")
-)
+# BRACKET_SURGEON: disabled
+# )
 
 methods = []
 scores = []
@@ -48,7 +49,8 @@ for method in methods:
         color=colours[method],
         lw=1,
         label=("[%s (AUC = %0.4f %%)]" % (method.split("-")[-1], roc_auc * 100)),
-    )
+# BRACKET_SURGEON: disabled
+#     )
     tpr_fpr_row = []
     tpr_fpr_row.append("%s-%s" % (method, "IJBC"))
     for fpr_iter in np.arange(len(x_labels)):
