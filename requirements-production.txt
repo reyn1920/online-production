@@ -42,7 +42,7 @@ redis==5.0.1
 celery==5.3.4
 
 # Testing (for production validation)
-pytest==7.4.3
+pytest==8.4.2
 pytest-asyncio==0.21.1
 
 # Development tools (optional in production)
