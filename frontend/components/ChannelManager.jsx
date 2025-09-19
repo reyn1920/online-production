@@ -9,13 +9,13 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
-  Plus, 
-  Settings, 
-  Trash2, 
-  Edit, 
-  Eye, 
-  Upload, 
+import {
+  Plus,
+  Settings,
+  Trash2,
+  Edit,
+  Eye,
+  Upload,
   BarChart3,
   Users,
   Calendar,
@@ -163,7 +163,7 @@ const ChannelManager = () => {
       });
 
       if (!response.ok) throw new Error('Failed to create channel');
-      
+
       const result = await response.json();
       setChannels(prev => [...prev, result.channel]);
       setShowCreateDialog(false);
@@ -192,7 +192,7 @@ const ChannelManager = () => {
       });
 
       if (!response.ok) throw new Error('Failed to delete channel');
-      
+
       setChannels(prev => prev.filter(c => c.id !== channelId));
       if (selectedChannel?.id === channelId) {
         setSelectedChannel(null);
@@ -226,7 +226,7 @@ const ChannelManager = () => {
       });
 
       if (!response.ok) throw new Error('Failed to upload content');
-      
+
       const result = await response.json();
       setShowUploadDialog(false);
       setUploadContent({
@@ -238,7 +238,7 @@ const ChannelManager = () => {
         scheduled_time: '',
         visibility: 'public'
       });
-      
+
       // Refresh channel content
       fetchChannelContent(selectedChannel.id);
     } catch (err) {
@@ -429,8 +429,8 @@ const ChannelManager = () => {
                     <div
                       key={channel.id}
                       className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                        selectedChannel?.id === channel.id 
-                          ? 'border-blue-500 bg-blue-50' 
+                        selectedChannel?.id === channel.id
+                          ? 'border-blue-500 bg-blue-50'
                           : 'hover:bg-gray-50'
                       }`}
                       onClick={() => setSelectedChannel(channel)}

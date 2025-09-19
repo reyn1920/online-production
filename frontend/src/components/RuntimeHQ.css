@@ -210,11 +210,11 @@
   .stats-grid.cols-2 {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .stats-grid.cols-3 {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .stats-grid.cols-4 {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -224,7 +224,7 @@
   .stats-grid.cols-3 {
     grid-template-columns: repeat(3, 1fr);
   }
-  
+
   .stats-grid.cols-4 {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -411,16 +411,16 @@
   .runtime-hq-title {
     font-size: 1.5rem;
   }
-  
+
   .status-card {
     padding: 1rem;
   }
-  
+
   .content-section-header,
   .content-section-body {
     padding: 1rem;
   }
-  
+
   .nav-tab {
     padding: 0.5rem 0.5rem;
     font-size: 0.8rem;

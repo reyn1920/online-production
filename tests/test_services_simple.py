@@ -13,7 +13,6 @@ from unittest.mock import Mock
 from src.services.registry import ServiceRegistry, get_service_registry
 from src.services.auth import AuthenticationService, UserRole
 from src.services.data import DataService
-from src.services.data_blueprint import DatabaseConfig
 from src.core.config import Config
 
 
@@ -95,7 +94,9 @@ class TestAuthenticationService:
         password = "testpass123"
 
         # Register user
-        user = await auth_service.register_user(username, email, password, [UserRole.USER.value])
+        user = await auth_service.register_user(
+            username, email, password, [UserRole.USER.value]
+        )
 
         # Verify user was created
         assert user is not None
@@ -112,7 +113,9 @@ class TestAuthenticationService:
         password = "testpass123"
 
         # Register user first
-        user = await auth_service.register_user(username, email, password, [UserRole.USER.value])
+        user = await auth_service.register_user(
+            username, email, password, [UserRole.USER.value]
+        )
 
         # Authenticate user
         token = await auth_service.authenticate(username, password)
@@ -130,7 +133,9 @@ class TestAuthenticationService:
         password = "testpass123"
 
         # Register and authenticate user
-        user = await auth_service.register_user(username, email, password, [UserRole.USER.value])
+        user = await auth_service.register_user(
+            username, email, password, [UserRole.USER.value]
+        )
         token = await auth_service.authenticate(username, password)
 
         # Validate token
@@ -148,7 +153,7 @@ class TestDataService:
     @pytest.fixture
     def temp_db(self):
         """Create a temporary database for testing."""
-        with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
             temp_path = f.name
         yield temp_path
         # Cleanup
@@ -172,7 +177,7 @@ class TestDataService:
         """Test that DataService initializes properly."""
         service = DataService(database_path=temp_db)
         # Test that the service has the expected attributes
-        assert hasattr(service, 'database_path')
+        assert hasattr(service, "database_path")
         assert service.database_path == temp_db
 
     def test_database_operations(self, temp_db):

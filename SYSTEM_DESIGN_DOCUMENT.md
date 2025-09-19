@@ -217,13 +217,13 @@ agents:
       - system_monitoring
       - health_checks
       - resource_management
-  
+
   research_agent:
     capabilities:
       - web_research
       - data_analysis
       - content_research
-  
+
   content_agent:
     capabilities:
       - content_generation
@@ -350,7 +350,7 @@ services:
     environment:
       - REACT_APP_API_URL=http://localhost:8000
       - REACT_APP_ENVIRONMENT=production
-  
+
   backend:
     build: .
     ports: ["8000:8000"]
@@ -358,18 +358,18 @@ services:
     environment:
       - DATABASE_URL=postgresql://user:pass@db:5432/trae_ai
       - REDIS_URL=redis://redis:6379
-  
+
   database:
     image: postgres:15
     environment:
       - POSTGRES_DB=trae_ai
       - POSTGRES_USER=trae_user
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-  
+
   redis:
     image: redis:7-alpine
     ports: ["6379:6379"]
-  
+
   nginx:
     image: nginx:alpine
     ports: ["80:80"]
@@ -383,20 +383,20 @@ services:
 ```
 frontend main_frontend
     bind *:80
-    
+
     # Security headers
     http-response set-header X-Frame-Options DENY
     http-response set-header X-Content-Type-Options nosniff
-    
+
     # Rate limiting
     stick-table type ip size 100k expire 30s store http_req_rate(10s)
     http-request track-sc0 src
     http-request reject if { sc_http_req_rate(0) gt 20 }
-    
+
     # API routing
     acl is_api path_beg /api
     use_backend api_backend if is_api
-    
+
     # Agent routing
     acl is_content path_beg /content
     use_backend content_agent_backend if is_content
@@ -440,11 +440,11 @@ class AuthService:
     def authenticate_user(self, username: str, password: str) -> Optional[User]:
         # Verify credentials against database
         # Return user object if valid
-    
+
     def create_access_token(self, user: User) -> str:
         # Generate JWT token with user claims
         # Include role-based permissions
-    
+
     def verify_token(self, token: str) -> Optional[User]:
         # Validate JWT token
         # Return user if token is valid
@@ -540,11 +540,11 @@ class Base44Client:
         self.api_key = api_key
         self.base_url = base_url
         self.session = httpx.AsyncClient()
-    
+
     async def get_production_status(self) -> Dict[str, Any]:
         # Fetch production status from Base44
         # Return structured status data
-    
+
     async def sync_user_data(self, user_id: str) -> bool:
         # Synchronize user data with Base44
         # Return success status
@@ -565,14 +565,14 @@ class Base44Client:
 async def handle_webhook(service: str, request: Request):
     payload = await request.json()
     signature = request.headers.get("X-Signature")
-    
+
     # Verify webhook signature
     if not verify_webhook_signature(payload, signature, service):
         raise HTTPException(status_code=401, detail="Invalid signature")
-    
+
     # Process webhook based on service type
     await process_webhook(service, payload)
-    
+
     return {"status": "processed"}
 ```
 
@@ -606,7 +606,7 @@ jobs:
         run: pytest tests/ --cov=./ --cov-report=xml
       - name: Security scan
         run: bandit -r . -f json -o security-report.json
-  
+
   deploy:
     needs: test
     runs-on: ubuntu-latest
@@ -629,7 +629,7 @@ class Settings(BaseSettings):
     redis_url: str
     secret_key: str
     debug: bool = False
-    
+
     class Config:
         env_file = ".env"
         case_sensitive = False
@@ -650,17 +650,17 @@ class DisasterRecovery:
     def __init__(self):
         self.backup_schedule = "0 2 * * *"  # Daily at 2 AM
         self.retention_days = 30
-    
+
     async def create_backup(self):
         # Database backup
         await self.backup_database()
-        
+
         # File system backup
         await self.backup_files()
-        
+
         # Configuration backup
         await self.backup_configuration()
-    
+
     async def restore_from_backup(self, backup_id: str):
         # Restore system from specified backup
         # Validate backup integrity
@@ -693,7 +693,7 @@ class TestAuthService:
         user = auth_service.authenticate_user("testuser", "password123")
         assert user is not None
         assert user.username == "testuser"
-    
+
     def test_authenticate_invalid_user(self):
         auth_service = AuthService()
         user = auth_service.authenticate_user("invalid", "wrong")
@@ -734,7 +734,7 @@ This system design document serves as the definitive technical specification for
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: January 2025  
-**Authors**: TRAE.AI Development Team  
+**Document Version**: 1.0
+**Last Updated**: January 2025
+**Authors**: TRAE.AI Development Team
 **Review Status**: Approved for Production Implementation

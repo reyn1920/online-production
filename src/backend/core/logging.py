@@ -8,31 +8,52 @@ import sys
 from typing import Optional
 
 
+class StructuredLogger:
+    """Structured logger wrapper for consistent logging."""
+    
+    def __init__(self, name: str):
+        self.logger = logging.getLogger(name)
+    
+    def info(self, message: str, **kwargs):
+        """Log info message."""
+        self.logger.info(message, extra=kwargs)
+    
+    def error(self, message: str, **kwargs):
+        """Log error message."""
+        self.logger.error(message, extra=kwargs)
+    
+    def warning(self, message: str, **kwargs):
+        """Log warning message."""
+        self.logger.warning(message, extra=kwargs)
+    
+    def debug(self, message: str, **kwargs):
+        """Log debug message."""
+        self.logger.debug(message, extra=kwargs)
+
+
 def setup_logging(log_level: str = "INFO", log_format: Optional[str] = None) -> None:
     """
     Setup application logging configuration.
-    
+
     Args:
         log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         log_format: Custom log format string
     """
     if log_format is None:
         log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    
+
     # Configure root logger
     logging.basicConfig(
         level=getattr(logging, log_level.upper()),
         format=log_format,
-        handlers=[
-            logging.StreamHandler(sys.stdout)
-        ]
+        handlers=[logging.StreamHandler(sys.stdout)],
     )
-    
+
     # Set specific logger levels
     logging.getLogger("uvicorn").setLevel(logging.INFO)
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
     logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
-    
+
     logger = logging.getLogger(__name__)
     logger.info(f"Logging configured with level: {log_level}")
 

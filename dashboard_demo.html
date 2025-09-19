@@ -6,7 +6,7 @@
     <title>🚀 Comprehensive Dashboard Demo</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
+        body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
@@ -144,7 +144,7 @@
                 </div>
                 <div class="chart-placeholder">📈 CPU Trend Chart</div>
             </div>
-            
+
             <div class="card">
                 <h2>📈 Application Stats</h2>
                 <div class="metric">
@@ -165,7 +165,7 @@
                 </div>
                 <div class="chart-placeholder">📊 Request Volume</div>
             </div>
-            
+
             <div class="card">
                 <h2>💰 Revenue Data</h2>
                 <div class="metric">
@@ -186,7 +186,7 @@
                 </div>
                 <div class="chart-placeholder">💹 Revenue Trend</div>
             </div>
-            
+
             <div class="card">
                 <h2>🎯 Performance</h2>
                 <div class="metric">
@@ -207,7 +207,7 @@
                 </div>
                 <div class="chart-placeholder">⚡ Performance Metrics</div>
             </div>
-            
+
             <div class="card">
                 <h2>🔔 System Alerts</h2>
                 <div class="alert">
@@ -226,7 +226,7 @@
                     <span class="metric-value success-metric">0</span>
                 </div>
             </div>
-            
+
             <div class="card">
                 <h2>🌐 Network & Security</h2>
                 <div class="metric">
@@ -250,14 +250,14 @@
         </div>
         <div class="last-updated" id="last-updated">Last updated: <span id="current-time"></span></div>
     </div>
-    
+
     <script>
         // Update current time
         function updateTime() {
             const now = new Date();
             document.getElementById('current-time').textContent = now.toLocaleString();
         }
-        
+
         // Simulate real-time updates
         function simulateUpdates() {
             // Randomly update some metrics
@@ -266,7 +266,7 @@
                 const newCpu = (Math.random() * 20 + 35).toFixed(1);
                 cpuElement.textContent = newCpu + '%';
             }
-            
+
             // Update active users
             const userElements = document.querySelectorAll('.metric-value');
             if (userElements.length > 10) {
@@ -274,16 +274,16 @@
                 userElements[7].textContent = activeUsers.toString();
             }
         }
-        
+
         // Initialize
         updateTime();
         setInterval(updateTime, 1000);
         setInterval(simulateUpdates, 5000);
-        
+
         // Add some interactivity
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Dashboard Demo loaded successfully!');
-            
+
             // Add click handlers to cards
             document.querySelectorAll('.card').forEach(card => {
                 card.addEventListener('click', function() {

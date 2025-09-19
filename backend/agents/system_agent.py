@@ -85,7 +85,7 @@ class SystemAgent(BaseAgent):
         healthy = report.get("healthy", 0)
         unhealthy = report.get("unhealthy", 0)
         notes = report.get("notes", [])
-        
+
         summary = f"System Health Report: {healthy} healthy, {unhealthy} unhealthy"
         if notes:
             summary += f" - Notes: {', '.join(notes)}"
@@ -381,23 +381,23 @@ class SystemAgent(BaseAgent):
                 optimization_results["optimizations_applied"].append(
                     "Memory cache optimization"
                 )
-                optimization_results["performance_improvement"][
-                    "memory"
-                ] = "15% improvement"
+                optimization_results["performance_improvement"]["memory"] = (
+                    "15% improvement"
+                )
             elif area == "disk":
                 optimization_results["optimizations_applied"].append(
                     "Disk defragmentation"
                 )
-                optimization_results["performance_improvement"][
-                    "disk"
-                ] = "8% improvement"
+                optimization_results["performance_improvement"]["disk"] = (
+                    "8% improvement"
+                )
             elif area == "network":
                 optimization_results["optimizations_applied"].append(
                     "Network buffer tuning"
                 )
-                optimization_results["performance_improvement"][
-                    "network"
-                ] = "12% improvement"
+                optimization_results["performance_improvement"]["network"] = (
+                    "12% improvement"
+                )
 
         await asyncio.sleep(3)  # Simulate optimization time
 

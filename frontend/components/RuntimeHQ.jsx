@@ -5,14 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Activity, 
-  Database, 
-  HardDrive, 
-  Cpu, 
-  Memory, 
-  CheckCircle, 
-  XCircle, 
+import {
+  Activity,
+  Database,
+  HardDrive,
+  Cpu,
+  Memory,
+  CheckCircle,
+  XCircle,
   AlertTriangle,
   RefreshCw,
   TrendingUp,
@@ -194,8 +194,8 @@ const RuntimeHQ = () => {
             System monitoring and management for your production environment
           </p>
         </div>
-        <Button 
-          onClick={fetchSystemStatus} 
+        <Button
+          onClick={fetchSystemStatus}
           disabled={refreshing}
           variant="outline"
         >
@@ -254,8 +254,8 @@ const RuntimeHQ = () => {
               <div className="text-2xl font-bold">
                 {systemStatus.checks?.disk_space?.usage_percent}%
               </div>
-              <Progress 
-                value={systemStatus.checks?.disk_space?.usage_percent || 0} 
+              <Progress
+                value={systemStatus.checks?.disk_space?.usage_percent || 0}
                 className="mt-2"
               />
               <p className="text-xs text-muted-foreground mt-2">
@@ -273,8 +273,8 @@ const RuntimeHQ = () => {
               <div className="text-2xl font-bold">
                 {systemStatus.checks?.memory?.usage_percent}%
               </div>
-              <Progress 
-                value={systemStatus.checks?.memory?.usage_percent || 0} 
+              <Progress
+                value={systemStatus.checks?.memory?.usage_percent || 0}
                 className="mt-2"
               />
               <p className="text-xs text-muted-foreground mt-2">

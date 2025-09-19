@@ -61,7 +61,7 @@ thumbnail:
   quality: 85
   format: 'webp'
   fallback_format: 'jpeg'
-  
+
 # Content Processing
 content:
   supported_formats:
@@ -74,7 +74,7 @@ content:
     - 'mp4'
     - 'mov'
   max_file_size: 50MB
-  
+
 # Performance Settings
 performance:
   concurrent_jobs: 4
@@ -96,7 +96,7 @@ get_current_mode() {
 # Function to set thumbnail mode
 set_thumbnail_mode() {
     local new_mode="$1"
-    
+
     # Validate mode
     case "$new_mode" in
         enabled|disabled|auto)
@@ -107,15 +107,15 @@ set_thumbnail_mode() {
             exit 1
             ;;
     esac
-    
+
     check_settings_file
-    
+
     # Create backup
     if [[ -f "$SETTINGS_FILE" ]]; then
         cp "$SETTINGS_FILE" "${SETTINGS_FILE}.backup.$(date +%s)"
         print_status "Created backup of settings file"
     fi
-    
+
     # Update the mode using sed
     if grep -q "^THUMBNAIL_MODE:" "$SETTINGS_FILE"; then
         # Replace existing line
@@ -128,22 +128,22 @@ THUMBNAIL_MODE: '$new_mode'\\
 " "$SETTINGS_FILE"
         rm -f "${SETTINGS_FILE}.tmp"
     fi
-    
+
     print_success "Thumbnail mode set to: $new_mode"
 }
 
 # Function to show current status
 show_status() {
     check_settings_file
-    
+
     local current_mode
     current_mode=$(get_current_mode)
-    
+
     echo
     print_status "=== Thumbnail System Status ==="
     echo "Current mode: $current_mode"
     echo "Settings file: $SETTINGS_FILE"
-    
+
     case "$current_mode" in
         enabled)
             echo "Status: ✅ Thumbnails will be generated for all supported content"
@@ -164,7 +164,7 @@ show_status() {
 # Function to test thumbnail generation
 test_thumbnails() {
     print_status "Testing thumbnail generation..."
-    
+
     if command -v python3 &> /dev/null; then
         if [[ -f "$SCRIPT_DIR/thumbnailer.py" ]]; then
             python3 "$SCRIPT_DIR/thumbnailer.py" 2>/dev/null || true
@@ -180,7 +180,7 @@ test_thumbnails() {
 # Function to clear thumbnail cache
 clear_cache() {
     local cache_dir="$SCRIPT_DIR/cache/thumbnails"
-    
+
     if [[ -d "$cache_dir" ]]; then
         print_status "Clearing thumbnail cache..."
         rm -rf "$cache_dir"/*

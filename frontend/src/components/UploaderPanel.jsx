@@ -25,7 +25,7 @@ const UploaderPanel = () => {
       const params = new URLSearchParams();
       if (filter !== 'all') params.append('file_type', filter);
       if (sortBy) params.append('sort_by', sortBy);
-      
+
       const response = await axios.get(`${API_BASE}/api/upload/list?${params}`);
       setUploads(response.data.uploads || []);
       setError(null);
@@ -51,7 +51,7 @@ const UploaderPanel = () => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFiles(e.dataTransfer.files);
     }
@@ -65,7 +65,7 @@ const UploaderPanel = () => {
 
   const handleFiles = async (files) => {
     const fileArray = Array.from(files);
-    
+
     for (const file of fileArray) {
       await uploadFile(file);
     }
@@ -73,15 +73,15 @@ const UploaderPanel = () => {
 
   const uploadFile = async (file) => {
     const uploadId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+
     try {
       // Initialize progress tracking
       setUploadProgress(prev => ({ ...prev, [uploadId]: 0 }));
-      
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('description', `Uploaded: ${file.name}`);
-      
+
       const response = await axios.post(`${API_BASE}/api/upload/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -93,21 +93,21 @@ const UploaderPanel = () => {
           setUploadProgress(prev => ({ ...prev, [uploadId]: percentCompleted }));
         },
       });
-      
+
       // Remove progress tracking on completion
       setUploadProgress(prev => {
         const newProgress = { ...prev };
         delete newProgress[uploadId];
         return newProgress;
       });
-      
+
       // Refresh uploads list
       await fetchUploads();
-      
+
     } catch (err) {
       setError(err.response?.data?.detail || `Failed to upload ${file.name}`);
       console.error('Upload error:', err);
-      
+
       // Remove progress tracking on error
       setUploadProgress(prev => {
         const newProgress = { ...prev };
@@ -121,7 +121,7 @@ const UploaderPanel = () => {
     if (!window.confirm('Are you sure you want to delete this upload?')) {
       return;
     }
-    
+
     try {
       await axios.delete(`${API_BASE}/api/upload/${uploadId}`);
       await fetchUploads();
@@ -136,7 +136,7 @@ const UploaderPanel = () => {
       const response = await axios.get(`${API_BASE}/api/upload/${uploadId}/download`, {
         responseType: 'blob',
       });
-      
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -174,7 +174,7 @@ const UploaderPanel = () => {
 
   const getFilteredUploads = () => {
     let filtered = uploads;
-    
+
     // Apply filter
     if (filter !== 'all') {
       filtered = uploads.filter(upload => {
@@ -193,7 +193,7 @@ const UploaderPanel = () => {
         }
       });
     }
-    
+
     // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
@@ -208,7 +208,7 @@ const UploaderPanel = () => {
           return new Date(b.created_at) - new Date(a.created_at);
       }
     });
-    
+
     return filtered;
   };
 
@@ -252,8 +252,8 @@ const UploaderPanel = () => {
           {Object.entries(uploadProgress).map(([uploadId, progress]) => (
             <div key={uploadId} className="progress-item">
               <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
+                <div
+                  className="progress-fill"
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
@@ -303,7 +303,7 @@ const UploaderPanel = () => {
             <option value="documents">Documents</option>
           </select>
         </div>
-        
+
         <div className="sort-controls">
           <label htmlFor="sort-select">Sort by:</label>
           <select
@@ -323,7 +323,7 @@ const UploaderPanel = () => {
       {/* Files List */}
       <div className="files-section">
         <h3>Uploaded Files ({getFilteredUploads().length})</h3>
-        
+
         {loading && uploads.length === 0 ? (
           <div className="loading-state">
             <div className="loading-spinner large"></div>
@@ -360,16 +360,16 @@ const UploaderPanel = () => {
                     </button>
                   </div>
                 </div>
-                
+
                 <div className="file-info">
                   <h4 className="file-name" title={upload.filename}>
                     {upload.filename}
                   </h4>
-                  
+
                   {upload.description && (
                     <p className="file-description">{upload.description}</p>
                   )}
-                  
+
                   <div className="file-meta">
                     <span className="file-size">
                       {formatFileSize(upload.file_size || 0)}
@@ -378,7 +378,7 @@ const UploaderPanel = () => {
                       {upload.file_type || 'Unknown'}
                     </span>
                   </div>
-                  
+
                   <div className="file-dates">
                     <span className="upload-date">
                       Uploaded: {formatDate(upload.created_at)}
@@ -390,7 +390,7 @@ const UploaderPanel = () => {
                     )}
                   </div>
                 </div>
-                
+
                 {/* Preview for images */}
                 {upload.file_type?.startsWith('image/') && upload.file_path && (
                   <div className="file-preview">

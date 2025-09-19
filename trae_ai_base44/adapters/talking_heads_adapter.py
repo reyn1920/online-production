@@ -1,2 +1,0 @@
-def available():
-    return True

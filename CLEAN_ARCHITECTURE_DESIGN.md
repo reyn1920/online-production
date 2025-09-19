@@ -1,8 +1,8 @@
 # Clean Architecture Design
 ## TRAE.AI Dashboard Rebuild
 
-**Version**: 2.0 (Clean Rebuild)  
-**Date**: January 27, 2025  
+**Version**: 2.0 (Clean Rebuild)
+**Date**: January 27, 2025
 **Status**: Design Phase
 
 ---

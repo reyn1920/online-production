@@ -8,15 +8,15 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Upload, 
-  File, 
-  Image, 
-  Video, 
-  Music, 
+import {
+  Upload,
+  File,
+  Image,
+  Video,
+  Music,
   FileText,
-  X, 
-  Check, 
+  X,
+  Check,
   AlertCircle,
   Loader2,
   Download,
@@ -100,14 +100,14 @@ const UploaderPanel = () => {
   const validateFile = (file) => {
     const fileType = getFileType(file.name);
     const config = fileTypeConfig[fileType];
-    
+
     if (file.size > config.maxSize) {
       return {
         valid: false,
         error: `File size exceeds ${formatFileSize(config.maxSize)} limit`
       };
     }
-    
+
     return { valid: true };
   };
 
@@ -126,7 +126,7 @@ const UploaderPanel = () => {
         progress: 0
       };
     });
-    
+
     setFiles(prev => [...prev, ...newFiles]);
   };
 
@@ -145,7 +145,7 @@ const UploaderPanel = () => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFileSelect(e.dataTransfer.files);
     }
@@ -173,7 +173,7 @@ const UploaderPanel = () => {
     for (const fileItem of validFiles) {
       try {
         // Update file status
-        setFiles(prev => prev.map(f => 
+        setFiles(prev => prev.map(f =>
           f.id === fileItem.id ? { ...f, status: 'uploading' } : f
         ));
 
@@ -204,9 +204,9 @@ const UploaderPanel = () => {
         }
 
         const result = await response.json();
-        
+
         // Update file status to success
-        setFiles(prev => prev.map(f => 
+        setFiles(prev => prev.map(f =>
           f.id === fileItem.id ? { ...f, status: 'success', uploadResult: result } : f
         ));
 
@@ -219,9 +219,9 @@ const UploaderPanel = () => {
 
       } catch (error) {
         console.error('Upload error:', error);
-        
+
         // Update file status to error
-        setFiles(prev => prev.map(f => 
+        setFiles(prev => prev.map(f =>
           f.id === fileItem.id ? { ...f, status: 'error', error: error.message } : f
         ));
 
@@ -236,7 +236,7 @@ const UploaderPanel = () => {
 
     setUploadResults(results);
     setUploading(false);
-    
+
     // Refresh upload history
     fetchUploadHistory();
   };
@@ -259,14 +259,14 @@ const UploaderPanel = () => {
   // Delete uploaded file
   const deleteUploadedFile = async (fileId) => {
     if (!confirm('Are you sure you want to delete this file?')) return;
-    
+
     try {
       const response = await fetch(`/api/upload/${fileId}`, {
         method: 'DELETE'
       });
-      
+
       if (!response.ok) throw new Error('Failed to delete file');
-      
+
       // Refresh history
       fetchUploadHistory();
     } catch (err) {
@@ -355,8 +355,8 @@ const UploaderPanel = () => {
             <CardContent className="p-6">
               <div
                 className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                  dragActive 
-                    ? 'border-blue-500 bg-blue-50' 
+                  dragActive
+                    ? 'border-blue-500 bg-blue-50'
                     : 'border-gray-300 hover:border-gray-400'
                 }`}
                 onDragEnter={handleDrag}
@@ -369,7 +369,7 @@ const UploaderPanel = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   Support for images, videos, audio, documents and more
                 </p>
-                <Button 
+                <Button
                   onClick={() => fileInputRef.current?.click()}
                   variant="outline"
                 >
@@ -392,8 +392,8 @@ const UploaderPanel = () => {
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Selected Files ({files.length})</CardTitle>
                 <div className="flex gap-2">
-                  <Button 
-                    onClick={uploadFiles} 
+                  <Button
+                    onClick={uploadFiles}
                     disabled={uploading || files.filter(f => f.status === 'ready').length === 0}
                   >
                     {uploading ? (
@@ -416,7 +416,7 @@ const UploaderPanel = () => {
                       <div className={`p-2 rounded ${fileTypeConfig[fileItem.type]?.bgColor || 'bg-gray-50'}`}>
                         {getFileIcon(fileItem.type)}
                       </div>
-                      
+
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-medium truncate">{fileItem.name}</p>
@@ -425,15 +425,15 @@ const UploaderPanel = () => {
                         <p className="text-xs text-muted-foreground">
                           {formatFileSize(fileItem.size)} • {fileItem.type}
                         </p>
-                        
+
                         {fileItem.status === 'uploading' && uploadProgress[fileItem.id] && (
                           <Progress value={uploadProgress[fileItem.id]} className="mt-2" />
                         )}
-                        
+
                         {fileItem.error && (
                           <p className="text-xs text-red-500 mt-1">{fileItem.error}</p>
                         )}
-                        
+
                         {fileItem.status === 'success' && fileItem.uploadResult && (
                           <div className="flex items-center gap-2 mt-1">
                             <Badge variant="secondary" className="text-xs">
@@ -449,7 +449,7 @@ const UploaderPanel = () => {
                           </div>
                         )}
                       </div>
-                      
+
                       <Button
                         size="sm"
                         variant="ghost"
@@ -490,7 +490,7 @@ const UploaderPanel = () => {
                       <div className={`p-2 rounded ${fileTypeConfig[getFileType(upload.filename)]?.bgColor || 'bg-gray-50'}`}>
                         {getFileIcon(getFileType(upload.filename))}
                       </div>
-                      
+
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-medium truncate">{upload.filename}</p>
@@ -502,7 +502,7 @@ const UploaderPanel = () => {
                           {formatFileSize(upload.file_size)} • Uploaded {new Date(upload.upload_time).toLocaleDateString()}
                         </p>
                       </div>
-                      
+
                       <div className="flex gap-1">
                         {upload.url && (
                           <Button

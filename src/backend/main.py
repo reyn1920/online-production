@@ -26,17 +26,17 @@ async def lifespan(app: FastAPI):
     # Startup
     settings = get_settings()
     setup_logging(settings.log_level)
-    
+
     logger.info("Starting VidScript Pro API...")
-    
+
     # Initialize database
     await db_manager.initialize()
     app.state.db_manager = db_manager
-    
+
     logger.info("Application startup complete")
-    
+
     yield
-    
+
     # Shutdown
     logger.info("Shutting down application...")
     await db_manager.close()
@@ -46,7 +46,7 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     """Create and configure FastAPI application."""
     settings = get_settings()
-    
+
     app = FastAPI(
         title="VidScript Pro API",
         description="YouTube Content Creation Platform API",
@@ -55,13 +55,13 @@ def create_app() -> FastAPI:
         docs_url="/api/docs" if settings.debug else None,
         redoc_url="/api/redoc" if settings.debug else None,
     )
-    
+
     # Security middleware
     app.add_middleware(
         TrustedHostMiddleware,
         allowed_hosts=settings.allowed_hosts,
     )
-    
+
     # CORS middleware
     app.add_middleware(
         CORSMiddleware,
@@ -70,18 +70,18 @@ def create_app() -> FastAPI:
         allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
         allow_headers=["*"],
     )
-    
+
     # API routes
     app.include_router(auth_router, prefix="/api/v1")
     app.include_router(projects_router, prefix="/api/v1/projects", tags=["projects"])
     app.include_router(channels_router, prefix="/api/v1/channels", tags=["channels"])
-    
+
     # Health check
     @app.get("/health")
     async def health_check() -> dict[str, str]:
         """Health check endpoint."""
         return {"status": "healthy", "service": "VidScript Pro API"}
-    
+
     return app
 
 
@@ -91,7 +91,7 @@ app = create_app()
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     settings = get_settings()
     uvicorn.run(
         "main:app",

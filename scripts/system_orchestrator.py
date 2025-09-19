@@ -823,9 +823,7 @@ if __name__ == '__main__':
                     1500,  # affiliates
                     500,  # merchandise
                 ]
-            ) * (
-                1 + (system_uptime / 86400)
-            )  # Increase over time
+            ) * (1 + (system_uptime / 86400))  # Increase over time
 
             qa_generation_rate = (
                 1000000000 if self.config["qa_generation"]["enabled"] else 1000

@@ -265,7 +265,7 @@
                 gap: 20px;
                 padding: 20px;
             }
-            
+
             .header h1 {
                 font-size: 2rem;
             }
@@ -283,7 +283,7 @@
             <!-- TDD Agent Controls -->
             <div class="panel">
                 <h2>🚀 TDD Agent Controls</h2>
-                
+
                 <div class="control-group">
                     <label for="projectPath">Project Path:</label>
                     <input type="text" id="projectPath" value="/Users/thomasbrianreynolds/online production" placeholder="Enter project root path">
@@ -327,12 +327,12 @@
 
                 <div class="output-area" id="testOutput">
                     🔬 TDD Agent Testing Dashboard Ready
-                    
+
                     Available Commands:
                     • Run Failing Tests - Execute pytest and capture failures
                     • Fix Failures - Generate code fixes using AI
                     • Clear Output - Reset the output area
-                    
+
                     Status: Idle
                 </div>
             </div>
@@ -340,7 +340,7 @@
             <!-- Test Results & Metrics -->
             <div class="panel">
                 <h2>📊 Test Results & Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="totalTests">0</div>
@@ -371,14 +371,14 @@
             <!-- Code Generation Panel -->
             <div class="panel full-width">
                 <h2>🤖 Code Generation & TDD Cycle</h2>
-                
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div>
                         <div class="control-group">
                             <label for="customPrompt">Custom TDD Prompt:</label>
                             <textarea id="customPrompt" placeholder="Enter custom prompt for code generation...">You are an expert Test-Driven Development AI. Based on the following pytest failure log, identify the first major failure and write the specific, minimal Python code required to fix ONLY that first failure.</textarea>
                         </div>
-                        
+
                         <button class="btn" onclick="generateCode()">
                             <span class="status-indicator status-idle" id="genStatus"></span>
                             Generate Code Fix
@@ -387,7 +387,7 @@
                             🔄 Simulate Full TDD Cycle
                         </button>
                     </div>
-                    
+
                     <div>
                         <label>Generated Code Preview:</label>
                         <div class="code-preview" id="codePreview">
@@ -443,19 +443,19 @@
         // Mock TDD Agent functions (simulating the actual Python implementation)
         async function runFailingTests() {
             if (tddState.isRunning) return;
-            
+
             tddState.isRunning = true;
             tddState.currentStep = 'testing';
             updateStatus('testStatus', 'running');
             updateProgress(25);
-            
+
             appendOutput('Starting TDD Agent test execution...', 'info');
             appendOutput(`Project Path: ${document.getElementById('projectPath').value}`, 'info');
             appendOutput(`Command: ${document.getElementById('testCommand').value}`, 'info');
-            
+
             // Simulate test execution delay
             await new Promise(resolve => setTimeout(resolve, 2000));
-            
+
             // Mock test results
             const mockResults = {
                 totalTests: 8,
@@ -483,21 +483,21 @@
                     }
                 ]
             };
-            
+
             tddState.metrics = mockResults;
             updateMetrics();
             updateProgress(100);
-            
+
             appendOutput(`Test execution completed in ${mockResults.executionTime}s`, 'success');
             appendOutput(`Found ${mockResults.failedTests} failing tests:`, 'warning');
-            
+
             mockResults.failures.forEach((failure, index) => {
                 appendOutput(`${index + 1}. ${failure.test}: ${failure.error}`, 'error');
             });
-            
+
             // Update test results display
             updateTestResultsDisplay(mockResults.failures);
-            
+
             updateStatus('testStatus', mockResults.failedTests > 0 ? 'error' : 'success');
             tddState.isRunning = false;
             tddState.currentStep = 'ready_for_fix';
@@ -506,7 +506,7 @@
         function updateTestResultsDisplay(failures) {
             const resultsContainer = document.getElementById('testResults');
             resultsContainer.innerHTML = '';
-            
+
             failures.forEach((failure, index) => {
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item failed';
@@ -524,46 +524,46 @@
                 appendOutput('Please run failing tests first', 'warning');
                 return;
             }
-            
+
             tddState.isRunning = true;
             updateStatus('fixStatus', 'running');
             updateProgress(0);
-            
+
             appendOutput('Starting code generation to fix failures...', 'info');
             appendOutput(`Mode: ${document.getElementById('mockMode').value}`, 'info');
-            
+
             // Simulate AI code generation
             await new Promise(resolve => setTimeout(resolve, 3000));
             updateProgress(50);
-            
+
             const mockGeneratedCode = `# Generated fix for ServiceRegistry.register method
 class ServiceRegistry:
     def __init__(self):
         self._services = {}
-    
+
     def register(self, name: str, service_instance):
         """Register a service instance with the given name."""
         if not name:
             raise ValueError("Service name cannot be empty")
-        
+
         self._services[name] = service_instance
         print(f"✅ Registered service: {name}")
         return service_instance
-    
+
     def get(self, name: str):
         """Retrieve a registered service by name."""
         if name not in self._services:
             raise KeyError(f"Service '{name}' not found")
         return self._services[name]`;
-            
+
             tddState.generatedCode = mockGeneratedCode;
             document.getElementById('codePreview').textContent = mockGeneratedCode;
-            
+
             updateProgress(100);
             appendOutput('Code generation completed successfully!', 'success');
             appendOutput('Generated fix for ServiceRegistry.register method', 'success');
             appendOutput('Review the generated code in the preview panel', 'info');
-            
+
             updateStatus('fixStatus', 'success');
             tddState.isRunning = false;
             tddState.currentStep = 'code_generated';
@@ -572,12 +572,12 @@ class ServiceRegistry:
         async function generateCode() {
             updateStatus('genStatus', 'running');
             appendOutput('Generating custom code based on prompt...', 'info');
-            
+
             const customPrompt = document.getElementById('customPrompt').value;
             appendOutput(`Using prompt: ${customPrompt.substring(0, 100)}...`, 'info');
-            
+
             await new Promise(resolve => setTimeout(resolve, 2000));
-            
+
             const mockCode = `# Custom generated code based on TDD principles
 def fix_test_failure():
     """
@@ -591,7 +591,7 @@ class TestHelper:
     @staticmethod
     def validate_input(data):
         return data is not None and len(str(data)) > 0`;
-            
+
             document.getElementById('codePreview').textContent = mockCode;
             appendOutput('Custom code generation completed', 'success');
             updateStatus('genStatus', 'success');
@@ -599,28 +599,28 @@ class TestHelper:
 
         async function simulateTDDCycle() {
             appendOutput('🔄 Starting full TDD cycle simulation...', 'info');
-            
+
             // Step 1: Run tests
             appendOutput('Step 1: Running tests to identify failures', 'info');
             await runFailingTests();
-            
+
             await new Promise(resolve => setTimeout(resolve, 1000));
-            
+
             // Step 2: Generate fixes
             appendOutput('Step 2: Generating code fixes', 'info');
             await fixFailures();
-            
+
             await new Promise(resolve => setTimeout(resolve, 1000));
-            
+
             // Step 3: Simulate re-running tests
             appendOutput('Step 3: Re-running tests to verify fixes', 'info');
             await new Promise(resolve => setTimeout(resolve, 2000));
-            
+
             // Mock improved results
             tddState.metrics.failedTests = 1;
             tddState.metrics.passedTests = 7;
             updateMetrics();
-            
+
             appendOutput('🎉 TDD Cycle completed! Reduced failures from 3 to 1', 'success');
             appendOutput('Next iteration would focus on remaining failure', 'info');
         }
@@ -628,13 +628,13 @@ class TestHelper:
         function clearOutput() {
             document.getElementById('testOutput').textContent = '🔬 TDD Agent Testing Dashboard Ready\n\nOutput cleared. Ready for new test execution.';
             document.getElementById('codePreview').textContent = '# Generated code will appear here\n# Click "Generate Code Fix" to see AI-generated solutions';
-            
+
             // Reset all status indicators
             updateStatus('testStatus', 'idle');
             updateStatus('fixStatus', 'idle');
             updateStatus('genStatus', 'idle');
             updateProgress(0);
-            
+
             // Reset state
             tddState = {
                 isRunning: false,
@@ -644,7 +644,7 @@ class TestHelper:
                 metrics: { totalTests: 0, passedTests: 0, failedTests: 0, executionTime: 0 }
             };
             updateMetrics();
-            
+
             // Clear test results
             document.getElementById('testResults').innerHTML = `
                 <div class="test-item">

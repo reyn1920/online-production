@@ -26,7 +26,7 @@ const RuntimeHQ = () => {
         axios.get(`${API_BASE}/api/runtimehq/system/status`),
         axios.get(`${API_BASE}/api/runtimehq/dashboard`)
       ]);
-      
+
       setSystemStatus(statusResponse.data);
       setDashboardData(dashboardResponse.data);
       setError(null);
@@ -43,7 +43,7 @@ const RuntimeHQ = () => {
       setMigrationStatus('running');
       const response = await axios.post(`${API_BASE}/api/runtimehq/database/migrate`);
       setMigrationStatus('completed');
-      
+
       // Refresh system data after migration
       setTimeout(fetchSystemData, 1000);
     } catch (err) {
@@ -92,21 +92,21 @@ const RuntimeHQ = () => {
             {systemStatus?.overall_status || 'Unknown'}
           </p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Database</h3>
           <p className={`text-2xl font-bold ${getStatusColor(systemStatus?.database?.status)}`}>
             {systemStatus?.database?.status || 'Unknown'}
           </p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Queue Tasks</h3>
           <p className="text-2xl font-bold text-blue-600">
             {dashboardData?.queue_stats?.total_tasks || 0}
           </p>
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Total Revenue</h3>
           <p className="text-2xl font-bold text-green-600">
@@ -170,7 +170,7 @@ const RuntimeHQ = () => {
                     </p>
                   )}
                 </div>
-                
+
                 <div>
                   <h4 className="font-medium text-gray-900">Storage</h4>
                   {systemStatus.storage && (
@@ -181,7 +181,7 @@ const RuntimeHQ = () => {
                   )}
                 </div>
               </div>
-              
+
               {systemStatus.services && (
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">Services</h4>
@@ -225,7 +225,7 @@ const RuntimeHQ = () => {
               {migrationStatus === 'running' ? 'Running...' : 'Run Migration'}
             </button>
           </div>
-          
+
           {migrationStatus && (
             <div className={`mt-4 p-3 rounded-md ${
               migrationStatus === 'completed' ? 'bg-green-50 text-green-800' :

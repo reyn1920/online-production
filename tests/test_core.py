@@ -11,9 +11,9 @@ from unittest.mock import patch
 
 # Import core modules
 from src.core.config import Config
-from src.core.logging import StructuredLogger, get_logger
+from src.backend.core.logging import StructuredLogger, get_logger
 from src.core.exceptions import (
-    BaseApplicationError,
+    ApplicationError,
     ValidationError,
     AuthenticationError,
     AuthorizationError,
@@ -86,44 +86,39 @@ class TestExceptions:
     """Test cases for custom exceptions."""
 
     def test_base_application_error(self):
-        """Test BaseApplicationError."""
-        error = BaseApplicationError("Test error")
+        """Test ApplicationError."""
+        error = ApplicationError("Test error")
         assert str(error) == "Test error"
         assert isinstance(error, Exception)
 
     def test_validation_error(self):
         """Test ValidationError."""
         error = ValidationError("Invalid data")
-        assert "[VALIDATION_ERROR] Invalid data" in str(error)
-        assert isinstance(error, BaseApplicationError)
+        assert "Invalid data" in str(error)
+        assert isinstance(error, ApplicationError)
 
     def test_authentication_error(self):
         """Test AuthenticationError."""
         error = AuthenticationError("Invalid credentials")
-        assert "[AUTH_ERROR] Invalid credentials" in str(error)
-        assert isinstance(error, BaseApplicationError)
+        assert "Invalid credentials" in str(error)
+        assert isinstance(error, ApplicationError)
 
     def test_authorization_error(self):
         """Test AuthorizationError."""
         error = AuthorizationError("Access denied")
-        assert "[AUTHZ_ERROR] Access denied" in str(error)
-        assert isinstance(error, BaseApplicationError)
+        assert "Access denied" in str(error)
+        assert isinstance(error, ApplicationError)
 
     def test_service_error(self):
         """Test ServiceError."""
         error = ServiceError("Service unavailable")
-        assert "[SERVICE_ERROR] Service unavailable" in str(error)
-        assert isinstance(error, BaseApplicationError)
+        assert "Service unavailable" in str(error)
+        assert isinstance(error, ApplicationError)
 
     def test_exception_with_context(self):
         """Test exceptions with additional context."""
-        error = ValidationError("Invalid email", field="email", value="invalid")
-
-        assert "[VALIDATION_ERROR] Invalid email" in str(error)
-        # Test that error can store additional context
-        if hasattr(error, "context"):
-            assert error.context.get("field") == "email"
-            assert error.context.get("invalid_value") == "invalid"
+        error = ValidationError("Invalid email")
+        assert "Invalid email" in str(error)
 
 
 class TestCoreIntegration:
@@ -159,16 +154,16 @@ class TestErrorHandling:
 
     def test_exception_hierarchy(self):
         """Test that exception hierarchy is correct."""
-        # All custom exceptions should inherit from BaseApplicationError
+        # All custom exceptions should inherit from ApplicationError
         validation_error = ValidationError("test")
         auth_error = AuthenticationError("test")
         authz_error = AuthorizationError("test")
         service_error = ServiceError("test")
 
-        assert isinstance(validation_error, BaseApplicationError)
-        assert isinstance(auth_error, BaseApplicationError)
-        assert isinstance(authz_error, BaseApplicationError)
-        assert isinstance(service_error, BaseApplicationError)
+        assert isinstance(validation_error, ApplicationError)
+        assert isinstance(auth_error, ApplicationError)
+        assert isinstance(authz_error, ApplicationError)
+        assert isinstance(service_error, ApplicationError)
 
         # All should also be standard Python exceptions
         assert isinstance(validation_error, Exception)

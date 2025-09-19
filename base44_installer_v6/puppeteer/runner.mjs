@@ -14,4 +14,4 @@ for (const url of targets){
     await page.waitForTimeout(1500);
   } catch(e){ console.log('[skip]', url, e.message) }
 }
-console.log('Done. Close the browser when finished.'); 
+console.log('Done. Close the browser when finished.');

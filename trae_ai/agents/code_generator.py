@@ -72,11 +72,11 @@ class CodeGenerator:
 class ServiceRegistry:
     def __init__(self):
         self.services = {}
-    
+
     def register(self, name: str, service: Any) -> None:
         \"\"\"Register a service with the given name.\"\"\"
         self.services[name] = service
-    
+
     def get(self, name: str) -> Any:
         \"\"\"Get a registered service by name.\"\"\"
         return self.services.get(name)
@@ -109,7 +109,7 @@ pass
         prompt = f"""
         Generate a pytest test case for the following requirement:
         {description}
-        
+
         The test should follow TDD principles and be minimal but comprehensive.
         """
 

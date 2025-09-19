@@ -38,19 +38,19 @@ class TDDAgent:
         print("Analyzing test failures to generate corrective code...")
 
         # This is a powerful prompt that asks the AI to act like a TDD practitioner
-        prompt = f""" 
-        You are an expert Test-Driven Development AI. Based on the following pytest failure log, 
-        identify the first major failure (e.g., the AttributeError for 'ServiceRegistry' not having 'register'). 
-        
-        Write the specific, minimal Python code required to fix ONLY that first failure. For example, 
-        if a method is missing, add the method definition to the correct class. 
-        
-        Return only the new Python code for the fix. 
+        prompt = f"""
+        You are an expert Test-Driven Development AI. Based on the following pytest failure log,
+        identify the first major failure (e.g., the AttributeError for 'ServiceRegistry' not having 'register').
 
-        Pytest Failure Log: 
-        --- 
-        {failure_log} 
-        --- 
+        Write the specific, minimal Python code required to fix ONLY that first failure. For example,
+        if a method is missing, add the method definition to the correct class.
+
+        Return only the new Python code for the fix.
+
+        Pytest Failure Log:
+        ---
+        {failure_log}
+        ---
         """
 
         # This calls the code generation agent with the TDD context

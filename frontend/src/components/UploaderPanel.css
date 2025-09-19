@@ -436,32 +436,32 @@
   .uploader-panel {
     padding: 1rem;
   }
-  
+
   .uploader-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .uploader-title {
     font-size: 1.5rem;
   }
-  
+
   .upload-area {
     padding: 2rem 1rem;
   }
-  
+
   .controls-section {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .file-meta {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .file-actions {
     flex-direction: column;
   }
@@ -471,19 +471,19 @@
   .uploader-panel {
     padding: 0.5rem;
   }
-  
+
   .upload-area {
     padding: 1.5rem 1rem;
   }
-  
+
   .upload-area h3 {
     font-size: 1rem;
   }
-  
+
   .files-section {
     padding: 1rem;
   }
-  
+
   .file-card {
     padding: 0.75rem;
   }
@@ -548,11 +548,11 @@
   .file-card {
     border-width: 2px;
   }
-  
+
   .upload-area {
     border-width: 3px;
   }
-  
+
   .action-btn:hover {
     background-color: #e5e7eb;
   }
@@ -566,11 +566,11 @@
   .progress-fill {
     transition: none;
   }
-  
+
   .loading-spinner {
     animation: none;
   }
-  
+
   .upload-area.drag-active .upload-icon {
     animation: none;
   }

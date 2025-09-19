@@ -1,6 +1,7 @@
 """
 Channel API endpoints for managing YouTube channels.
 """
+
 from typing import List, Optional
 from uuid import UUID
 
@@ -52,7 +53,7 @@ class ChannelResponse(BaseModel):
 async def create_channel(
     channel_data: ChannelCreate,
     session: AsyncSession = Depends(db_manager.get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Create a new channel."""
     channel = await ChannelService.create_channel(
@@ -60,51 +61,77 @@ async def create_channel(
         name=channel_data.name,
         owner_id=UUID(str(current_user.id)),
         youtube_channel_id=channel_data.youtube_channel_id,
-        description=channel_data.description
+        description=channel_data.description,
     )
-    
+
     if not channel:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Failed to create channel. YouTube channel ID may already exist."
+            detail="Failed to create channel. YouTube channel ID may already exist.",
         )
-    
+
     return ChannelResponse(
         id=channel.id,
         name=str(channel.name),
-        youtube_channel_id=str(channel.youtube_channel_id) if channel.youtube_channel_id is not None else None,
-        description=str(channel.description) if channel.description is not None else None,
-        subscriber_count=int(channel.subscriber_count) if channel.subscriber_count is not None else None,
-        video_count=int(channel.video_count) if channel.video_count is not None else None,
+        youtube_channel_id=(
+            str(channel.youtube_channel_id)
+            if channel.youtube_channel_id is not None
+            else None
+        ),
+        description=str(channel.description)
+        if channel.description is not None
+        else None,
+        subscriber_count=(
+            int(channel.subscriber_count)
+            if channel.subscriber_count is not None
+            else None
+        ),
+        video_count=int(channel.video_count)
+        if channel.video_count is not None
+        else None,
         view_count=int(channel.view_count) if channel.view_count is not None else None,
         owner_id=channel.owner_id,
         created_at=channel.created_at.isoformat(),
-        updated_at=channel.updated_at.isoformat()
+        updated_at=channel.updated_at.isoformat(),
     )
 
 
 @router.get("/", response_model=List[ChannelResponse])
 async def get_channels(
     session: AsyncSession = Depends(db_manager.get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Get all channels for the current user."""
     channels = await ChannelService.get_channels_by_owner(
         session, UUID(str(current_user.id))
     )
-    
+
     return [
         ChannelResponse(
             id=channel.id,
             name=str(channel.name),
-            youtube_channel_id=str(channel.youtube_channel_id) if channel.youtube_channel_id is not None else None,
-            description=str(channel.description) if channel.description is not None else None,
-            subscriber_count=int(channel.subscriber_count) if channel.subscriber_count is not None else None,
-            video_count=int(channel.video_count) if channel.video_count is not None else None,
-            view_count=int(channel.view_count) if channel.view_count is not None else None,
+            youtube_channel_id=(
+                str(channel.youtube_channel_id)
+                if channel.youtube_channel_id is not None
+                else None
+            ),
+            description=str(channel.description)
+            if channel.description is not None
+            else None,
+            subscriber_count=(
+                int(channel.subscriber_count)
+                if channel.subscriber_count is not None
+                else None
+            ),
+            video_count=int(channel.video_count)
+            if channel.video_count is not None
+            else None,
+            view_count=int(channel.view_count)
+            if channel.view_count is not None
+            else None,
             owner_id=channel.owner_id,
             created_at=channel.created_at.isoformat(),
-            updated_at=channel.updated_at.isoformat()
+            updated_at=channel.updated_at.isoformat(),
         )
         for channel in channels
     ]
@@ -114,30 +141,41 @@ async def get_channels(
 async def get_channel(
     channel_id: UUID,
     session: AsyncSession = Depends(db_manager.get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Get a specific channel by ID."""
     channel = await ChannelService.get_channel_by_id(
         session, channel_id, UUID(str(current_user.id))
     )
-    
+
     if not channel:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Channel not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Channel not found"
         )
-    
+
     return ChannelResponse(
         id=channel.id,
         name=str(channel.name),
-        youtube_channel_id=str(channel.youtube_channel_id) if channel.youtube_channel_id is not None else None,
-        description=str(channel.description) if channel.description is not None else None,
-        subscriber_count=int(channel.subscriber_count) if channel.subscriber_count is not None else None,
-        video_count=int(channel.video_count) if channel.video_count is not None else None,
+        youtube_channel_id=(
+            str(channel.youtube_channel_id)
+            if channel.youtube_channel_id is not None
+            else None
+        ),
+        description=str(channel.description)
+        if channel.description is not None
+        else None,
+        subscriber_count=(
+            int(channel.subscriber_count)
+            if channel.subscriber_count is not None
+            else None
+        ),
+        video_count=int(channel.video_count)
+        if channel.video_count is not None
+        else None,
         view_count=int(channel.view_count) if channel.view_count is not None else None,
         owner_id=channel.owner_id,
         created_at=channel.created_at.isoformat(),
-        updated_at=channel.updated_at.isoformat()
+        updated_at=channel.updated_at.isoformat(),
     )
 
 
@@ -146,39 +184,51 @@ async def update_channel(
     channel_id: UUID,
     channel_data: ChannelUpdate,
     session: AsyncSession = Depends(db_manager.get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Update a channel."""
     # Convert Pydantic model to dict, excluding None values
     updates = {k: v for k, v in channel_data.model_dump().items() if v is not None}
-    
+
     if not updates:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No valid fields provided for update"
+            detail="No valid fields provided for update",
         )
-    
+
     channel = await ChannelService.update_channel(
         session, channel_id, UUID(str(current_user.id)), updates
     )
-    
+
     if not channel:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Channel not found or update failed"
+            detail="Channel not found or update failed",
         )
-    
+
     return ChannelResponse(
         id=channel.id,
         name=str(channel.name),
-        youtube_channel_id=str(channel.youtube_channel_id) if channel.youtube_channel_id is not None else None,
-        description=str(channel.description) if channel.description is not None else None,
-        subscriber_count=int(channel.subscriber_count) if channel.subscriber_count is not None else None,
-        video_count=int(channel.video_count) if channel.video_count is not None else None,
+        youtube_channel_id=(
+            str(channel.youtube_channel_id)
+            if channel.youtube_channel_id is not None
+            else None
+        ),
+        description=str(channel.description)
+        if channel.description is not None
+        else None,
+        subscriber_count=(
+            int(channel.subscriber_count)
+            if channel.subscriber_count is not None
+            else None
+        ),
+        video_count=int(channel.video_count)
+        if channel.video_count is not None
+        else None,
         view_count=int(channel.view_count) if channel.view_count is not None else None,
         owner_id=channel.owner_id,
         created_at=channel.created_at.isoformat(),
-        updated_at=channel.updated_at.isoformat()
+        updated_at=channel.updated_at.isoformat(),
     )
 
 
@@ -186,17 +236,16 @@ async def update_channel(
 async def delete_channel(
     channel_id: UUID,
     session: AsyncSession = Depends(db_manager.get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Delete a channel."""
     success = await ChannelService.delete_channel(
         session, channel_id, UUID(str(current_user.id))
     )
-    
+
     if not success:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Channel not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Channel not found"
         )
 
 
@@ -204,30 +253,41 @@ async def delete_channel(
 async def get_channel_by_youtube_id(
     youtube_channel_id: str,
     session: AsyncSession = Depends(db_manager.get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Get a channel by YouTube channel ID."""
     channel = await ChannelService.get_channel_by_youtube_id(
         session, youtube_channel_id, UUID(str(current_user.id))
     )
-    
+
     if not channel:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Channel not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Channel not found"
         )
-    
+
     return ChannelResponse(
         id=channel.id,
         name=str(channel.name),
-        youtube_channel_id=str(channel.youtube_channel_id) if channel.youtube_channel_id is not None else None,
-        description=str(channel.description) if channel.description is not None else None,
-        subscriber_count=int(channel.subscriber_count) if channel.subscriber_count is not None else None,
-        video_count=int(channel.video_count) if channel.video_count is not None else None,
+        youtube_channel_id=(
+            str(channel.youtube_channel_id)
+            if channel.youtube_channel_id is not None
+            else None
+        ),
+        description=str(channel.description)
+        if channel.description is not None
+        else None,
+        subscriber_count=(
+            int(channel.subscriber_count)
+            if channel.subscriber_count is not None
+            else None
+        ),
+        video_count=int(channel.video_count)
+        if channel.video_count is not None
+        else None,
         view_count=int(channel.view_count) if channel.view_count is not None else None,
         owner_id=channel.owner_id,
         created_at=channel.created_at.isoformat(),
-        updated_at=channel.updated_at.isoformat()
+        updated_at=channel.updated_at.isoformat(),
     )
 
 
@@ -238,29 +298,44 @@ async def update_channel_stats(
     video_count: int = Query(..., ge=0),
     view_count: int = Query(..., ge=0),
     session: AsyncSession = Depends(db_manager.get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Update channel statistics."""
     channel = await ChannelService.update_channel_stats(
-        session, channel_id, UUID(str(current_user.id)),
-        subscriber_count, video_count, view_count
+        session,
+        channel_id,
+        UUID(str(current_user.id)),
+        subscriber_count,
+        video_count,
+        view_count,
     )
-    
+
     if not channel:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Channel not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Channel not found"
         )
-    
+
     return ChannelResponse(
         id=channel.id,
         name=str(channel.name),
-        youtube_channel_id=str(channel.youtube_channel_id) if channel.youtube_channel_id is not None else None,
-        description=str(channel.description) if channel.description is not None else None,
-        subscriber_count=int(channel.subscriber_count) if channel.subscriber_count is not None else None,
-        video_count=int(channel.video_count) if channel.video_count is not None else None,
+        youtube_channel_id=(
+            str(channel.youtube_channel_id)
+            if channel.youtube_channel_id is not None
+            else None
+        ),
+        description=str(channel.description)
+        if channel.description is not None
+        else None,
+        subscriber_count=(
+            int(channel.subscriber_count)
+            if channel.subscriber_count is not None
+            else None
+        ),
+        video_count=int(channel.video_count)
+        if channel.video_count is not None
+        else None,
         view_count=int(channel.view_count) if channel.view_count is not None else None,
         owner_id=channel.owner_id,
         created_at=channel.created_at.isoformat(),
-        updated_at=channel.updated_at.isoformat()
+        updated_at=channel.updated_at.isoformat(),
     )

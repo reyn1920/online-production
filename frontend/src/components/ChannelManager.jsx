@@ -35,7 +35,7 @@ const ChannelManager = () => {
         params.append('active_only', filter === 'active' ? 'true' : 'false');
       }
       if (sortBy) params.append('sort_by', sortBy);
-      
+
       const response = await axios.get(`${API_BASE}/api/channels/?${params}`);
       setChannels(response.data.channels || []);
       setError(null);
@@ -63,7 +63,7 @@ const ChannelManager = () => {
   const handleUpdateChannel = async (e) => {
     e.preventDefault();
     if (!editingChannel) return;
-    
+
     try {
       const response = await axios.put(`${API_BASE}/api/channels/${editingChannel.id}`, formData);
       setChannels(prev => prev.map(ch => ch.id === editingChannel.id ? response.data : ch));
@@ -79,7 +79,7 @@ const ChannelManager = () => {
     if (!window.confirm('Are you sure you want to delete this channel?')) {
       return;
     }
-    
+
     try {
       await axios.delete(`${API_BASE}/api/channels/${channelId}`);
       setChannels(prev => prev.filter(ch => ch.id !== channelId));
@@ -104,7 +104,7 @@ const ChannelManager = () => {
     try {
       setProcessingChannels(prev => new Set([...prev, channelId]));
       const response = await axios.post(`${API_BASE}/api/channels/${channelId}/process`);
-      
+
       // Show success message or handle response
       if (response.data.task_id) {
         // Could implement task tracking here
@@ -173,14 +173,14 @@ const ChannelManager = () => {
 
   const getFilteredChannels = () => {
     let filtered = channels;
-    
+
     // Apply filter
     if (filter === 'active') {
       filtered = channels.filter(ch => ch.is_active);
     } else if (filter === 'inactive') {
       filtered = channels.filter(ch => !ch.is_active);
     }
-    
+
     // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
@@ -193,7 +193,7 @@ const ChannelManager = () => {
           return new Date(b.created_at) - new Date(a.created_at);
       }
     });
-    
+
     return filtered;
   };
 
@@ -253,7 +253,7 @@ const ChannelManager = () => {
             <option value="inactive">Inactive Only</option>
           </select>
         </div>
-        
+
         <div className="sort-controls">
           <label htmlFor="sort-select">Sort by:</label>
           <select
@@ -272,7 +272,7 @@ const ChannelManager = () => {
       {/* Channels List */}
       <div className="channels-section">
         <h3>Channels ({getFilteredChannels().length})</h3>
-        
+
         {loading && channels.length === 0 ? (
           <div className="loading-state">
             <div className="loading-spinner large"></div>
@@ -301,14 +301,14 @@ const ChannelManager = () => {
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="channel-info">
                   <h4 className="channel-name">{channel.name}</h4>
-                  
+
                   {channel.description && (
                     <p className="channel-description">{channel.description}</p>
                   )}
-                  
+
                   <div className="channel-meta">
                     <span className="channel-date">
                       Created: {formatDate(channel.created_at)}
@@ -319,7 +319,7 @@ const ChannelManager = () => {
                       </span>
                     )}
                   </div>
-                  
+
                   {channel.stats && (
                     <div className="channel-stats">
                       <div className="stat-item">
@@ -335,7 +335,7 @@ const ChannelManager = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="channel-actions">
                   <button
                     onClick={() => handleToggleActive(channel.id, channel.is_active)}
@@ -344,7 +344,7 @@ const ChannelManager = () => {
                   >
                     {channel.is_active ? '⏸️' : '▶️'}
                   </button>
-                  
+
                   <button
                     onClick={() => handleProcessChannel(channel.id)}
                     disabled={processingChannels.has(channel.id)}
@@ -353,7 +353,7 @@ const ChannelManager = () => {
                   >
                     {processingChannels.has(channel.id) ? '⏳' : '⚙️'}
                   </button>
-                  
+
                   <button
                     onClick={() => openEditModal(channel)}
                     className="action-btn edit-btn"
@@ -361,7 +361,7 @@ const ChannelManager = () => {
                   >
                     ✏️
                   </button>
-                  
+
                   <button
                     onClick={() => handleDeleteChannel(channel.id)}
                     className="action-btn delete-btn"
@@ -384,7 +384,7 @@ const ChannelManager = () => {
               <h3>{editingChannel ? 'Edit Channel' : 'Create New Channel'}</h3>
               <button onClick={closeModals} className="modal-close">×</button>
             </div>
-            
+
             <form onSubmit={editingChannel ? handleUpdateChannel : handleCreateChannel}>
               <div className="form-group">
                 <label htmlFor="channel-name">Name *</label>
@@ -398,7 +398,7 @@ const ChannelManager = () => {
                   placeholder="Enter channel name"
                 />
               </div>
-              
+
               <div className="form-group">
                 <label htmlFor="channel-description">Description</label>
                 <textarea
@@ -410,7 +410,7 @@ const ChannelManager = () => {
                   rows={3}
                 />
               </div>
-              
+
               <div className="form-group">
                 <label htmlFor="channel-type">Type *</label>
                 <select
@@ -427,7 +427,7 @@ const ChannelManager = () => {
                   <option value="notification">Notification</option>
                 </select>
               </div>
-              
+
               <div className="modal-actions">
                 <button type="button" onClick={closeModals} className="btn btn-secondary">
                   Cancel

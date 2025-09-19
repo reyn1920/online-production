@@ -562,53 +562,53 @@
   .channel-manager {
     padding: 1rem;
   }
-  
+
   .channel-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .channel-title {
     font-size: 1.5rem;
   }
-  
+
   .header-actions {
     width: 100%;
     justify-content: flex-start;
   }
-  
+
   .controls-section {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .channel-header-card {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .channel-status {
     align-items: flex-start;
     flex-direction: row;
     gap: 0.5rem;
   }
-  
+
   .channel-actions {
     justify-content: flex-start;
   }
-  
+
   .channel-stats {
     grid-template-columns: 1fr;
   }
-  
+
   .modal-content {
     margin: 1rem;
     max-width: none;
   }
-  
+
   .modal-actions {
     flex-direction: column;
   }
@@ -618,19 +618,19 @@
   .channel-manager {
     padding: 0.5rem;
   }
-  
+
   .channels-section {
     padding: 1rem;
   }
-  
+
   .channel-card {
     padding: 1rem;
   }
-  
+
   .channel-icon {
     font-size: 2rem;
   }
-  
+
   .action-btn {
     padding: 0.375rem;
     font-size: 1rem;
@@ -661,11 +661,11 @@
   .channel-card {
     border-width: 2px;
   }
-  
+
   .action-btn {
     border-width: 2px;
   }
-  
+
   .status-badge,
   .type-badge {
     border: 1px solid currentColor;
@@ -682,11 +682,11 @@
   .form-select {
     transition: none;
   }
-  
+
   .loading-spinner {
     animation: none;
   }
-  
+
   .channel-card:hover,
   .action-btn:hover {
     transform: none;
@@ -699,20 +699,20 @@
     background-color: #111827;
     color: #f9fafb;
   }
-  
+
   .channel-card {
     background-color: #1f2937;
     border-color: #374151;
   }
-  
+
   .channels-section {
     background-color: #1f2937;
   }
-  
+
   .modal-content {
     background-color: #1f2937;
   }
-  
+
   .form-input,
   .form-textarea,
   .form-select,

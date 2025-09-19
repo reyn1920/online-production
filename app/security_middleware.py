@@ -459,12 +459,12 @@ class SecurityMiddleware:
             if origin and origin in self.config.allowed_origins:
                 response["headers"]["Access-Control-Allow-Origin"] = origin
                 response["headers"]["Access-Control-Allow-Credentials"] = "true"
-                response["headers"][
-                    "Access-Control-Allow-Methods"
-                ] = "GET, POST, PUT, DELETE, OPTIONS"
-                response["headers"][
-                    "Access-Control-Allow-Headers"
-                ] = "Content-Type, Authorization, X-CSRF-Token"
+                response["headers"]["Access-Control-Allow-Methods"] = (
+                    "GET, POST, PUT, DELETE, OPTIONS"
+                )
+                response["headers"]["Access-Control-Allow-Headers"] = (
+                    "Content-Type, Authorization, X-CSRF-Token"
+                )
 
             # Handle preflight requests
             if method == "OPTIONS":

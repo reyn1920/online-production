@@ -517,7 +517,9 @@ def main():
         status = (
             "✅"
             if category_data["configured_count"] > 0
-            else "❌" if category_data["required"] else "⚪"
+            else "❌"
+            if category_data["required"]
+            else "⚪"
         )
         print(
             f"{status} {category_name.upper()}: {category_data['configured_count']}/{category_data['total_vars']}"

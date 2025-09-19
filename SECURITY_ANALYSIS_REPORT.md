@@ -149,7 +149,7 @@ from fastapi import HTTPException
 class UserInput(BaseModel):
     username: str
     email: str
-    
+
     @validator('username')
     def validate_username(cls, v):
         if not v.isalnum():

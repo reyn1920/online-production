@@ -98,6 +98,46 @@ checkpoints/
 
 # Node modules (if any)
 node_modules/
+
+# Large directories and files specific to this project
+models/
+*.zip
+*.tar.gz
+*.rar
+*.7z
+venv_stable/
+trae_ai_base44/
+code_snapshot.md
+data/
+output/
+outputs/
+test_output/
+test_outputs/
+test_results/
+runtime_logs/
+backups/
+snapshots/
+content/
+assets/audio/
+assets/video/
+videos/
+evidence/
+proof/
+*quarantine*/
+*backup*/
+copy_of_code/
+url_fix_backups/
+rewritten/
+
+# Cache directories
+.cache/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# PID files
+*.pid
+.pid-*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

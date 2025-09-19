@@ -104,7 +104,7 @@ async def dashboard_page():
         <title>🚀 Comprehensive Dashboard</title>
         <style>
             * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { 
+            body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 min-height: 100vh;
@@ -221,13 +221,13 @@ async def dashboard_page():
             </div>
             <div class="last-updated" id="last-updated"></div>
         </div>
-        
+
         <script>
             async function loadDashboardData() {
                 try {
                     const response = await fetch('/api/comprehensive/dashboard/overview');
                     const data = await response.json();
-                    
+
                     // Update system metrics
                     const systemMetrics = document.getElementById('system-metrics');
                     systemMetrics.innerHTML = `
@@ -248,7 +248,7 @@ async def dashboard_page():
                             <span class="metric-value">${data.system_metrics.active_connections}</span>
                         </div>
                     `;
-                    
+
                     // Update app stats
                     const appStats = document.getElementById('app-stats');
                     appStats.innerHTML = `
@@ -269,7 +269,7 @@ async def dashboard_page():
                             <span class="metric-value">${data.application_stats.active_users.toLocaleString()}</span>
                         </div>
                     `;
-                    
+
                     // Update revenue data
                     const revenueData = document.getElementById('revenue-data');
                     revenueData.innerHTML = `
@@ -290,7 +290,7 @@ async def dashboard_page():
                             <span class="metric-value">${data.revenue_data.active_subscriptions}</span>
                         </div>
                     `;
-                    
+
                     // Update performance data
                     const performanceData = document.getElementById('performance-data');
                     performanceData.innerHTML = `
@@ -311,11 +311,11 @@ async def dashboard_page():
                             <span class="metric-value">${Math.floor(data.system_metrics.uptime_seconds / 3600)}h</span>
                         </div>
                     `;
-                    
+
                     // Update last updated time
                     const lastUpdated = document.getElementById('last-updated');
                     lastUpdated.textContent = `Last updated: ${new Date(data.timestamp).toLocaleString()}`;
-                    
+
                 } catch (error) {
                     console.error('Error loading dashboard data:', error);
                     document.querySelectorAll('.loading').forEach(el => {
@@ -323,11 +323,11 @@ async def dashboard_page():
                     });
                 }
             }
-            
+
             // Load data on page load and refresh every 30 seconds
             loadDashboardData();
             setInterval(loadDashboardData, 30000);
-            
+
             // Add some interactivity
             document.addEventListener('DOMContentLoaded', function() {
                 console.log('🚀 Dashboard loaded successfully!');

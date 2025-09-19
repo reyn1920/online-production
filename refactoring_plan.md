@@ -78,7 +78,7 @@ Based on the semantic audit and architectural analysis, the codebase exhibits cr
    class UserRepository:
        def find_by_id(self, user_id: int) -> Optional[User]:
            # Abstract data access
-   
+
    class DatabaseUserRepository(UserRepository):
        # Concrete implementation
    ```
@@ -102,7 +102,7 @@ Based on the semantic audit and architectural analysis, the codebase exhibits cr
 class AuthenticationService:
     def authenticate_user(self, credentials: dict) -> Optional[User]:
         # Extract from dashboard.py lines 500-650
-    
+
     def validate_session(self, session_id: str) -> bool:
         # Extract session validation logic
 ```
@@ -116,7 +116,7 @@ class BaseRepository(ABC):
     @abstractmethod
     def find_by_id(self, id: int):
         pass
-    
+
     @abstractmethod
     def save(self, entity):
         pass
@@ -128,7 +128,7 @@ class BaseRepository(ABC):
 class DashboardController:
     def __init__(self, auth_service: AuthenticationService):
         self.auth_service = auth_service
-    
+
     def dashboard_action(self, request):
         # Focused route handler
 ```

@@ -5,7 +5,6 @@ Test suite for service layer components.
 import pytest
 import asyncio
 from unittest.mock import Mock, AsyncMock
-import sqlite3
 import tempfile
 import os
 from typing import Dict, Any
@@ -14,12 +13,10 @@ from src.services.registry import ServiceRegistry, BaseService
 from src.services.auth import (
     AuthenticationService,
     UserRole,
-    AuthToken,
     TokenType,
 )
 from src.services.data import DataService, QueryResult
 from src.core.config import Config
-from src.core.exceptions import AuthenticationError
 
 
 # Test cases for ServiceRegistry
@@ -93,8 +90,8 @@ class TestAuthenticationService:
     def test_auth_service_initialization(self, auth_service):
         """Test that auth service initializes correctly."""
         assert auth_service is not None
-        assert hasattr(auth_service, 'config')
-        assert hasattr(auth_service, 'users')
+        assert hasattr(auth_service, "config")
+        assert hasattr(auth_service, "users")
 
     def test_password_hashing(self, auth_service):
         """Test password hashing functionality."""
@@ -112,15 +109,15 @@ class TestAuthenticationService:
     def test_token_generation(self, auth_service):
         """Test token generation."""
         from src.services.auth import User
-        
+
         # Create a test user first
         user = User(
             id="test_user_id",
             username="testuser",
             email="test@example.com",
-            password_hash="hashed_password"
+            password_hash="hashed_password",
         )
-        
+
         # Use the private method to generate token
         token = auth_service._generate_token(user)
         assert token is not None
@@ -140,8 +137,8 @@ class TestAuthenticationService:
         """Test role-based access control."""
         # This test would need more implementation in the auth service
         # For now, just verify the service has role-related functionality
-        assert hasattr(auth_service, '_generate_token')
-        assert hasattr(auth_service, 'validate_token')
+        assert hasattr(auth_service, "_generate_token")
+        assert hasattr(auth_service, "validate_token")
 
 
 class TestDataService:
@@ -164,7 +161,7 @@ class TestDataService:
     def test_data_service_initialization(self, data_service):
         """Test that data service initializes correctly."""
         assert data_service is not None
-        assert hasattr(data_service, 'database_path')
+        assert hasattr(data_service, "database_path")
 
     def test_database_connection(self, data_service):
         """Test database connection establishment."""
@@ -208,7 +205,9 @@ class TestDataService:
 
         # Query test data
         select_query = "SELECT * FROM test_table WHERE name = :name"
-        result = asyncio.run(data_service.execute_query(select_query, {"name": "test_item"}))
+        result = asyncio.run(
+            data_service.execute_query(select_query, {"name": "test_item"})
+        )
 
         assert result.row_count == 1
         assert len(result.rows) == 1
@@ -316,7 +315,7 @@ class TestServicePerformance:
             id="test_user_id",
             username="test_user",
             email="test@example.com",
-            password_hash="hashed_password"
+            password_hash="hashed_password",
         )
 
         import time

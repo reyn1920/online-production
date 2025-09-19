@@ -39,12 +39,12 @@ async def main():
         base_url="https://api.abacus.ai/v1",
         timeout=30.0
     )
-    
+
     server = AbacusAIMCPServer(config)
     await server.start()
-    
+
     # Server is now running and ready to handle MCP messages
-    
+
 if __name__ == "__main__":
     asyncio.run(main())
 ```

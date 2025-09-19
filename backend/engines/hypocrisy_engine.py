@@ -258,7 +258,9 @@ class HypocrisyAnalyzer:
                 "severity": (
                     "high"
                     if len(inconsistencies) > 2
-                    else "low" if inconsistencies else "none"
+                    else "low"
+                    if inconsistencies
+                    else "none"
                 ),
             }
 
@@ -326,7 +328,9 @@ class HypocrisyAnalyzer:
                     "severity": (
                         "high"
                         if variance > 1.0
-                        else "moderate" if variance > 0.5 else "low"
+                        else "moderate"
+                        if variance > 0.5
+                        else "low"
                     ),
                 }
             else:
